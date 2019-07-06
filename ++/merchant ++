@@ -1,0 +1,25 @@
+            try {
+                $sql = "UPDATE stockpile SET gold=:quant WHERE username=:username";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindParam(":quant", $param_gold, PDO::PARAM_STR);
+                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                $param_gold = $newBalance;
+                $param_username = $this->user;
+                $stmt->execute();
+                
+                
+                $sql2 = "UPDATE merchants SET potato_seed=:quant WHERE city=:city";
+                $stmt2 = $this->conn->prepare($sql2);
+                $stmt2->bindParam(":quant", $param_newValue, PDO::PARAM_STR);
+                $stmt2->bindParam(":city", $param_city, PDO::PARAM_STR);
+                $param_newValue = $newvalue;
+                $param_city = $city;
+                $stmt2->execute();
+                
+                $this->conn->commit();
+                echo "You have bought . ' ' $quantity . 'x' . $item . ' ' . 'for' . ' ' . $value";
+            }
+            catch (Exception $e) {
+                echo $e->getMessage();
+                $this->conn->rollBack();
+            }

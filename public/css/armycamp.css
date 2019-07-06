@@ -1,0 +1,12 @@
+section table td {
+    padding:5px;
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+#calc_result {
+    visibility: hidden;
+}
+#stats_individ {
+    display: none;
+}

@@ -1,0 +1,6 @@
+                <?php
+                            /* $quant = $row2['Crop_quantT'];
+                            for ($x = 0; $x < $quant; $x++) {
+                                echo "<div id='crop_$x'></div>"; ENDRES!!!
+                            } */
+                ?>

@@ -1,0 +1,43 @@
+section table td {
+    padding: 5px;
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+#show_adventure {
+    display: none;
+}
+
+#pending_adventure {
+    float: left;
+    display: none;
+}
+
+#current_adventure {
+}
+
+#new_adventure {
+    display: none;
+}
+#people figure {
+    display: inline-block;
+}
+#people img {
+    width: 100px;
+    height: 100px;
+}
+
+.error {
+    color: red;
+    font-size: 13px;
+    margin: 5px 0px 5px 0px;
+    position: absolute;   
+}
+
+.warriors {
+    border:1px solid black;
+    float:left;
+    height:200px;
+    width:150px;
+    margin:2px;
+}

@@ -1,0 +1,182 @@
+        <img id="logo" src="Pictures/TJ portals.png" />
+        <ul>
+            <li><a href="KB.php"> Home </a>
+            <li><a href="history.php"> History </a>
+            <li><a href="music.php"> Music</a>
+            <li><a href="#">4</a>
+            <li><a href="#">4</a>
+            <li><a href="#">4</a>
+            <li><a href="#">4</a>
+            <li><a href="#">4</a>
+        </ul>
+        <div id="search_div">
+            <form id="search_form">
+                <i id="search_header">Browse our databases:</i> <input type="text" width="100px" /> <button> Search</button>
+            </form>
+        </div>
+        
+        header {
+}
+
+#logo {
+    float:left;
+    margin-right:0px;
+    width:80px;
+    height:50px;
+    border-radius:2px 0px 2px 2px;
+    
+}
+
+header ul {
+    list-style-type: none;
+    padding:0px;
+    background-color:#002b80;
+    overflow:hidden;
+    margin: 0 auto;
+    box-shadow: 0px 1px 20px black;
+
+}
+
+header ul li {
+    padding:5px 0px;
+    display:inline-block;
+    text-align:center;
+    line-height: 25px;
+}
+
+header ul li a {
+    color:white;
+    text-decoration: none;
+    display:block;
+    width:80px;
+    height:25px;
+    border-radius:2px;
+}
+
+header ul li:hover {
+    background-color: #003cb3;
+}
+
+#search_div {
+    margin: 5px 15px 3px 0px;
+    float:right;
+}
+#search_header {
+    font-size:12px;
+    text-shadow: 0.2px 0.2px;
+}
+#search_div input {
+    height:20px;
+    border: 1px solid black;
+    border-radius: 4px;
+}
+#search_div button {
+    background-color:#002b80;
+    color:white;
+    border-radius: 4px;
+    box-shadow: 2px 2px 3px grey;
+    width:55px;
+    height:25px;
+    text-align:center;
+}
+
+            <form id="login">
+                Username: </br><input type="text" /></br>
+                Password: </br><input type="password" /></br>
+                <button type="submit">Login</button>
+                <a href=#"> Sign up</a>
+            </form>
+        <div id="favorites">
+            <p>
+                <h3>Favorites</h3>
+                <i> Login to edit your favorites.</i>
+            </p>
+        </div>
+        <div id="report">
+            <p> Feedback?</p>
+            <a href="report.html"> - Click here</a>
+        </div>
+        aside {
+    width:215px;
+    height:500px;
+    float:left;
+    padding: 5px 0px 0px 8px;
+    margin: 0px 0px 0px 5px;
+    background-color: #f2f2f2;
+    /*
+    border-top-style: ridge;
+    border-top-color: black;
+    border-top-width: 2px;
+    border-right-style: ridge;
+    border-right-color: black;
+    border-right-width: 2px; */
+}
+aside a {
+    color:#003cb3;
+}
+aside a:visited {
+    color:#003cb3;
+}
+
+#login {
+    font-size:14px;
+}
+
+#login input {
+    width:100px;
+}
+
+#login button {
+    background-color:#002b80;
+    color:white;
+    border-radius: 4px;
+    box-shadow: 1px 1px 2px grey;
+    width:50px;
+    height:25px;
+    text-align:center;
+    margin: 3px 0px 10px 5px;
+}
+#login a {
+    font-size:12px;
+    margin: 0px 0px 0px 3px;
+}
+#favorites {
+    font-size:14px;
+    margin: 5px 0px 5px 0px;
+}
+
+#favorites p {
+    padding:0px;
+    margin:0px;
+}
+
+#side_menu {
+    margin: 0px 0px 0px 0px;
+}
+
+#side_menu ul {
+    list-style-type:none ;
+    font-size:14px;
+}
+
+#side_menu ul li:before {
+    content:"\00BB\0020";
+}
+
+#side_menu ul li ul {
+    padding:1px 0px 1px 5px;
+}
+
+#side_menu li a {
+    text-decoration:none;
+}
+
+#report {
+    font-size:14px;
+    margin: 1px 0px 9px 9px;
+}
+
+#report p {
+    margin: 0px;
+    padding: 0px;
+}

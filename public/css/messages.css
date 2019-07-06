@@ -1,0 +1,90 @@
+section table td {
+    padding:5px;
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+section table img {
+    height:25px;
+    width:25px;
+}
+
+textarea {
+    resize: none;
+}
+
+#write_message {
+    display: none;
+}
+
+#write_message input {
+    margin-left: 3px;
+    margin-bottom: 5px;
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    border-bottom: 1px solid black;
+    background-color: #f2e6d9;
+}
+
+#write_message textarea {
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    border-bottom: none;
+    background-image: url("background.png");
+    width: 300px;
+    height: 400px;
+}
+
+#inbox, #sent {
+    margin: 0 auto;    
+}
+
+#inbox, #sent td {
+    text-align: center;
+}
+
+#sent {
+    display: none;
+}
+#message_row td a {
+    display: block;
+    cursor: pointer;
+}
+
+#message_row td a:hover {
+    color: #714e28;     
+}
+
+#message_row img {
+    width: 25px;
+    height: 25px;
+}
+
+#message {
+    border: 1px solid black;
+    width: 50%;
+    margin: auto;
+    display: none;
+}
+
+#message_info {
+    padding: 5px;
+    border: 1px solid black;
+}
+
+#message_content {
+    white-space: pre-wrap;
+    text-align: left;
+    margin: 0px 0px 0px 3px;
+    width: 300px;
+    height: 400px;
+}
+
+#message_exit {
+    
+}
+#area {
+    white-space: pre-wrap;
+}

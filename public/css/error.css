@@ -1,0 +1,16 @@
+* {
+    padding:0px;
+    margin:0px;
+}
+
+section {
+    margin-top: 10px;
+    margin-left:25%;
+    margin-right:25%;
+    padding: 10px;
+    width:50%;
+    height:30%;
+    border-radius: 3px;
+    background-color: #f2e6d9;
+    text-align: center;
+}

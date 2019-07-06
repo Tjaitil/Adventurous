@@ -1,0 +1,11 @@
+<?php foreach($this->stockpile as $key => $value): ?>
+                        
+                        <figure onclick="" ><img src="/public/images/index.jpg" height="50px" witdh="50px" />
+                        <figcaption><? echo "$value x $key"; ?></figcaption></figure>
+                    <? endforeach; ?>
+                    
+                    foreach($this->stockpile as $key => $value) {
+                if($value === "0") {
+                    unset($this->stockpile[$key]);
+                }
+            }

@@ -1,0 +1,17 @@
+.item {
+    display: inline-block;
+    float: left;
+    width:200px;
+}
+
+.item figure {
+    display: inline-block;
+    float: left;
+    width:200px;
+}
+
+section table td {
+    padding:5px;
+    border: 1px solid black;
+    border-collapse: collapse;
+}

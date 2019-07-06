@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> Canvas </title>
+    <link rel="stylesheet" type="text/css" href="canvas.css" />
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0"/>-->
+    <meta charset="utf-8" />
+    <style>
+    canvas {
+        border:1px solid #d3d3d3;
+    }
+    </style>
+    </head>
+    <body>
+        <p>Frames per second: <span id="frames"></span></p>
+        <canvas id="game_canvas" width="700" height="400"></canvas>
+        <button type="button" onkeydown="" onkeyup=""> Left </button>
+        <button type="button" onkeydown="" onkeyup=""> Up </button>
+        <button type="button" onkeydown="" onkeyup=""> Down </button>
+        <button type="button" onkeydown="" onkeyup=""> Right </button>
+    <script>
+    var world = new Image(2000, 1000);
+    world.src = "maps.jpg";
+    var player;
+    var obstaclesPos = [];
+    var obstaclesSize = [];
+    var xMovement = 0;
+    var yMovement = 0;
+    var xMovement2 = 0;
+    var yMovement2 = 0;
+    var xbase = 350 - 25;
+    var ybase = 200 - 25;
+    var xcamMove = 0;
+    var ycamMove = 0;
+    var lastCalledTime;
+    var fps;
+    var keys = [];
+    var interval = false;
+    
+    game = {};
+    
+    game.properties = {
+        context: document.getElementById("game_canvas").getContext("2d"),
+        player: new component(50, 50, "#0000A0", xbase, ybase)
+    };
+    
+    game.controls = {
+        left: false,
+        up: false,
+        right: false,
+        down: false
+    };
+    /*function requestAnimFrame() {
+      if(!lastCalledTime) {
+         lastCalledTime = Date.now();
+         fps = 0;
+         return;
+      }
+      delta = (perfomance.now() - lastCalledTime)/1000;
+      lastCalledTime = performance.now();
+      fps = math.floor(1/delta);
+      console.log(fps);
+    }*/
+    var lastLoop = new Date();
+    game.fps = function() { 
+        var thisLoop = new Date();
+        var fps = 1000 / (thisLoop - lastLoop);
+        lastLoop = thisLoop;
+        document.getElementById("frames").innerHTML = fps;
+    };
+    
+    game.startGame = function () {
+        game.loadObstacles();
+        game.properties.player.first();
+        setInterval(game.fps, 1000);
+        setInterval(game.update, 50);
+        game.properties.context.drawImage(world, xbase, ybase, 1000, 1000, 0, 0, 1000, 1000);
+    };
+    game.pieces = {
+        obstacles : []
+    };
+    
+    game.loadObstacles = function () {
+        var list = [];
+        list.push(["obstc1", 300, 255, 200, 200, "red"]);
+        list.push(["obstc2", 500, 175, 100, 100, "purple"]);
+        console.log(list);
+        
+        for(var i = 0; i < 2; i++) {
+            game.pieces.obstacles["obstacles" + (i+1)] = new gameObstacle(list[i][0], list[i][1], list[i][2], list[i][3],
+                                                                          list[i][4], list[i][5]);
+        }
+        
+        /*var obstacle1 = new gameObstacle(200, 120, 50, 50);
+        var obstacle2 = new gameObstacle(80, 70, 200, 50);
+        var obstacle3 = new gameObstacle(-250, 200, 50, 200);*/
+        /*var obstacle4 = new gameObstacle("obstc1", 300, 255, 200, 200, "agua");
+        var obstacle5 = new gameObstacle("obstc2", 500, 175, 100, 100, "purple");*/
+        /*var obstacle4 = new gameObstacle(500,255, 50, 300)*/
+    }; 
+    function gameObstacle (name, x, y, width, height, style) {
+        this.name = name;
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.diameterTop = y;
+        this.diameterRight = x + width;
+        this.diameterDown = y + height;
+        this.diameterLeft = x;
+        this.style = style;
+        ctx = game.properties.context;
+        ctx.fillStyle = style;
+        ctx.fillRect(x, y, width, height);
+        obstaclesPos.push([x, y, this.diameterTop, this.diameterRight, this.diameterDown, this.diameterLeft]);
+        console.log(obstaclesPos[0]);
+        obstaclesSize.push([width, height]);
+    }
+    window.addEventListener('keydown', function (e) {
+        switch(e.keyCode) {
+            case 37:
+                game.controls.left = true;
+                break;
+            case 38:
+                game.controls.up = true;
+                break;
+            case 39:
+                game.controls.right = true;
+                break;
+            case 40:
+                game.controls.down = true;
+                break;
+        }
+        
+    }, false);
+    window.addEventListener('keyup', function (e) {
+        switch(e.keyCode) {
+            case 37:
+                game.controls.left = false;
+                break;
+            case 38:
+                game.controls.up = false;
+                break;
+            case 39:
+                game.controls.right = false;
+                break;
+            case 40:
+                game.controls.down = false;
+                break;
+        }
+    }, false);
+    
+    game.obstacle = function() {
+            for(var i = 0; i < obstaclesSize.length; i++) {
+                game.updateObstacle(obstaclesPos[i][0], obstaclesPos[i][1], i);
+            }
+    };
+    game.updateObstacle = function (xpos, ypos, i)  {
+            obstaclesPos[i][0] = xpos;
+            obstaclesPos[i][1] = ypos;
+            ctx = game.properties.context;
+            ctx.fillStyle = game.pieces.obstacles['obstacles' + (i+1)].style;
+            console.log(game.pieces.obstacles['obstacles' + (i+1)].style);
+            ctx.fillRect(xpos - xMovement, ypos - yMovement, obstaclesSize[i][0], obstaclesSize[i][1]);
+    };
+    
+    game.viewport = {
+        counter: 0,
+        draw : function() {
+            ctx = game.properties.context;
+            ctx.save();
+            /*ctx.clearRect(-xMovement, -yMovement, 500, 300);*/
+            //Draw world and translate the image according to players movement
+            ctx.drawImage(world, xbase + xMovement, ybase + yMovement, 1000, 1000, 0, 0, 1000, 1000);
+            ctx.translate(xbase + xMovement, ybase + yMovement);
+            ctx.restore();
+            game.properties.context.fillStyle = "#0000A0";
+            game.properties.context.fillRect(xbase, ybase, player.width, player.height);
+            ctx.beginPath();
+            /*ctx.moveTo(350, 0);
+            ctx.lineTo(350, 350);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(375, 0);
+            ctx.lineTo(375, 375);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(player.diameterRight, 0);
+            ctx.lineTo(player.diameterRight, player.diameterRight);
+            ctx.stroke();*/
+            /*draw(player.diameterRight, 0, player.diameterRight, player.diameterRight);
+            draw(375, 0, 375, 375);
+            draw(0, 200, 375, 200);
+            draw(0, 200+25, 350, 200,25);
+            draw(325, 0, 325, 325);
+            draw(player.diameterLeft, 0, player.diameterLeft, player.diameterLeft);*/
+            draw(obstaclesPos[0][5] -xMovement, 0, obstaclesPos[0][5] -xMovement, obstaclesPos[0][5] -xMovement);
+            draw(obstaclesPos[0][2] -yMovement, 0, obstaclesPos[0][2] -yMovement, obstaclesPos[0][2] -xMovement);
+            draw(obstaclesPos[0][3] -xMovement, 0, obstaclesPos[0][3] -xMovement, obstaclesPos[0][3] -xMovement);
+            draw(obstaclesPos[0][4] -yMovement, 0, obstaclesPos[0][4] -yMovement, obstaclesPos[0][4] -xMovement);
+        },
+    };
+    
+    function draw(mx, my, sx, sy) {
+        var ctx = game.properties.context;
+        ctx.moveTo(mx, my);
+        ctx.lineTo(sx, sy);
+        ctx.stroke();
+    }
+    
+    function component(width, height, color, x, y) {
+        this.width = width;
+        this.height = height;
+        this.speedX = 0;
+        this.speedY = 0;    
+        this.x = x;
+        this.y = y;
+        this.top = "open";
+        this.left = "open";
+        this.down = "open";
+        this.right = "open";
+        this.first = function() {
+            ctx = game.properties.context;
+            ctx.fillStyle = "#0000A0";
+            ctx.fillRect(xbase, ybase, this.width, this.height);
+        };
+        this.newPos = function() {
+            this.top = "open";
+            this.left = "open";
+            this.down = "open";
+            this.right = "open";
+            player.diameterTop = ybase + yMovement;
+            player.diameterRight = xbase + xMovement + width;
+            player.diameterDown = ybase + yMovement + height;
+            player.diameterLeft = xbase + xMovement;
+        };    
+    }
+    
+    game.calculateDistance = function() {
+        for(var i = 0; i < obstaclesPos.length; i++) {
+           if(Math.abs(player.diameterDown - obstaclesPos[i][2]) <= 10 &&
+              player.diameterRight >= obstaclesPos[i][5] && 
+              player.diameterLeft <= obstaclesPos[i][3]) {
+                player.down = "blocked";
+                console.log("Down blocked");
+           }
+           if(Math.abs(player.diameterRight - obstaclesPos[i][5]) <= 10 &&
+              player.diameterTop <= obstaclesPos[i][4] &&
+              player.diameterDown >= obstaclesPos[i][2]) {
+                player.right = "blocked";
+                console.log("right blocked");
+           }
+           if(Math.abs(player.diameterTop - obstaclesPos[i][4]) <= 10 &&
+              player.diameterRight >= obstaclesPos[i][5] &&
+              player.diameterLeft <= obstaclesPos[i][3]) {
+                player.top = "blocked";
+                console.log("top blocked");
+           }
+           if(Math.abs(player.diameterLeft - obstaclesPos[i][3]) <= 10 &&
+              player.diameterTop <= obstaclesPos[i][4] &&
+              player.diameterDown >= obstaclesPos[i][2]) {
+                player.left = "blocked";
+                console.log("left blocked");
+           }
+        }
+        
+            if(game.controls.left && player.left == "blocked") {
+                player.speedX = 0;
+            }
+            if (game.controls.right && player.right == "blocked") {
+                player.speedX = 0;
+            }
+            if(game.controls.down && player.down == "blocked") {
+                player.speedY = 0;
+            }
+            if(game.controls.up && player.top == "blocked") {
+                player.speedY = 0;
+            }
+            
+            xMovement += player.speedX;
+            yMovement += player.speedY;
+    };
+    
+    game.update = function () {
+        player = game.properties.player;
+        player.speedX = 0;
+        player.speedY = 0;
+        if (game.controls.left == true) { player.speedX = -5; }
+        if (game.controls.right == true) { player.speedX = 5; }
+        if (game.controls.up == true) { player.speedY = -5; }
+        if (game.controls.down == true) { player.speedY = 5; }
+        if(player.speedX != 0 || player.speedY != 0) {
+            game.calculateDistance();
+            player.newPos();
+            game.viewport.draw();
+            game.obstacle(xbase, ybase);
+            /*console.log(xbase + xMovement);*/
+            
+            /*console.log(player.diameterRight);
+            console.log(player.diameterLeft);*/
+            
+            /*console.log("player.diameterRight" + "=" + xbase + "+" + "(" + player.width + "/" + 2 + ")" + "+" + xMovement);
+            console.log(ybase + yMovement);
+            console.log("Math: " + Math.abs(player.diameterDown - obstaclesPos[0][2]));
+            console.log("player.diameterdown: " + player.diameterDown);*/
+            /*console.log("diameter left: " + player.diameterLeft);
+            console.log(obstaclesPos[0]);*/
+            /*console.log(Math.abs(player.diameterTop - obstaclesPos[0][4]) <= 10,
+              player.diameterRight >= obstaclesPos[0][5],
+              player.diameterLeft <= obstaclesPos[0][3]);*/
+        }
+        /*console.log(Math.abs(player.diameterTop - obstaclesPos[0][2]) <= 5);
+        console.log(player.diameterRight >= obstaclesPos[0][5]);
+        console.log(player.diameterLeft <= obstaclesPos[0][3]);*/
+    };
+    window.onload = game.startGame();
+    </script>
+</body>
+</html>

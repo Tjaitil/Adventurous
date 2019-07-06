@@ -1,0 +1,17 @@
+section table {
+    border-collapse: collapse;
+}
+section table td {
+    padding:5px;
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+#horse_shop {
+    margin-bottom: 2%;
+    float: left;
+}
+
+#cart_shop {
+    float: left;
+}

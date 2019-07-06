@@ -1,0 +1,142 @@
+* {
+    margin:0;
+    padding:0;
+}
+
+body {
+    margin: 10px 10% 0px 10%;
+    /*font-family: 'Source Sans Pro', 'bold';*/
+    font-family: 'Old Standard TT';
+    /*background-color: #000033;*/
+}
+
+
+section {
+    background: radial-gradient(#f2e6d9 50%, #986834);
+    /*background: radial-gradient(#a9753d 50%, #4b341b);*/
+    box-sizing: content-box;
+    width: 82%;
+    border: inset 2px;
+    float: right;
+    text-align: center;
+    padding: 5px;
+    color: #392714;
+    overflow: hidden;
+    position: relative;
+}
+
+#skills {
+    width: 50%;
+    height: 100px;
+    float: left;
+    margin-bottom: 5px;
+}
+#skills div {
+    display:inline-block;
+    border:1px ridge black;
+    float:left;
+    width: 15%;
+    height: 60%;
+    padding:5px;
+    font-size: 100%;
+}
+#skills img {
+    width: 40px;
+    height: 40px;
+}
+#log {
+    width: 49%;
+    height: 15%;
+    overflow: scroll;
+    height: 100px;
+    border: 1px solid black;
+    margin-bottom: 5px;
+}
+#gamemessages {
+    width: 250px;
+    height: 200px;
+}
+
+#announcement {
+    width:300px;
+    height:500px;
+    box-shadow: 3px 3px 12px 18px black;
+    background-color: #CCCCCC;
+    border:1px solid black;
+    visibility: hidden;
+    z-index: 2;
+    position: absolute;
+    top:100px;
+    right:0;
+    bottom:0;
+    left:0;
+    margin: auto;
+}
+
+#announcement button {
+    background-color: red;
+    color:white;
+    position: relative;
+    left:5px;
+    top:5px;
+    border-radius: 5px;
+    border: 0.5px solid black;
+}
+
+#news {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 25%;
+    background-color: black;
+    border: 1px solid black;
+    opacity: 0.6;
+    z-index: 1;
+    visibility: hidden;
+}
+
+.gold {
+    width: 30px;
+    height: 30px;
+}
+#inventory {
+    float: right;
+    width: 30%;
+    height: 400px;
+    border: 3px double black;
+    overflow: scroll;
+    background-color: #a6a6a6;
+}
+#inventory img {
+    width: 50px;
+    height: 50px;
+}
+#inventory figcaption {
+    height: 21px;
+}
+#item_amount {
+    position: relative;
+    bottom: 40%;
+    left: 10%;
+    color: white;
+    text-align: right;
+}
+.stockpile_item, .inventory_item {
+    display: inline-block;
+    float: left;
+    width: 110px;
+    position: relative;
+    height: 100px;
+}
+.stockpile_buttons, .stockpile_buttons {
+    float: right;
+    top: 1px;
+    left: 30px;
+    width: 20px;
+    height: 10px;
+}
+
+@media all and (max-width: 800px) {
+    #skills div {font-size: 12px;}
+    #skills img {width: 25px; height: 25px;}
+}

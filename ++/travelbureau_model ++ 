@@ -1,0 +1,177 @@
+/*if($shop == 'cart') {
+                $sql = "SELECT wheel, value FROM travelbureau_carts WHERE wheel=:wheel";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindParam(":wheel", $param_wheel, PDO::PARAM_STR);
+                $param_wheel = $item;
+                $stmt->execute();
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                $count = $stmt->rowCount();
+                if(!$count > 0) {
+                    echo "The cart you are trying to buy does not exist!";
+                    return false;
+                }
+                if($row['value'] > $gold) {
+                    echo "You don't have enough gold to buy this item!";
+                    return false;
+                }
+                else {
+                    $cities = array("towhar", "golbak", "snerpiir", "krasnur", "tasnobil", "cruendo", "fagna");
+                    if (array_search($city, $cities) === false) {
+                        print("ERROR");
+                        return false;
+                    }
+                    $sql2 = "SELECT " . $city . " FROM travelbureau_carts WHERE wheel=:wheel";
+                    $stmt2 = $this->conn->prepare($sql2);
+                    $stmt2->bindParam(":wheel", $param_wheel, PDO::PARAM_STR);
+                    $param_wheel = $item;
+                    $stmt2->execute();
+                    $row2 = $stmt->fetch(PDO::FETCH_ASSOC);
+                    
+                    if(!$row2[$city] > 0 ) {
+                        echo "There are none left of this item in stock";
+                        return false;
+                    }
+                    
+                    $newStoreAmount = $row2[$city] - 1;
+                    $newGoldValue = $gold - $row['value'];
+                    try {
+                        $this->conn->beginTransaction();
+                        
+                        //Update cart to user
+                        $sql = "UPDATE trader SET cart=:cart WHERE username=:username";
+                        $stmt = $this->conn->prepare($sql);
+                        $stmt->bindParam(":cart", $param_cart, PDO::PARAM_STR);
+                        $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                        $param_cart = $item;
+                        $param_username = $this->username;
+                        $stmt->execute();
+                        
+                        //Update gold amount
+                        $sql2 = "UPDATE stockpile SET amount=:amount WHERE item='gold' AND username=:username";
+                        $stmt2 = $this->conn->prepare($sql2);
+                        $stmt2->bindParam(":amount", $param_amount, PDO::PARAM_STR);
+                        $stmt2->bindParam(":username", $param_username, PDO::PARAM_STR);
+                        $param_amount = $newGoldValue;
+                        $param_username = $this->username;
+                        $stmt2->execute();
+                        
+                        //Update store
+                        $sql3 = "UPDATE travelbureau_carts SET " . $city . "=:city WHERE wheel=:wheel";
+                        $stmt3 = $this->conn->prepare($sql3);
+                        $stmt3->bindParam(":city", $param_city_amount, PDO::PARAM_STR);
+                        $stmt3->bindParam(":wheel", $param_wheel, PDO::PARAM_STR);
+                        $param_city_amount = $newStoreAmount;
+                        // $param_wheel already defined
+                        $stmt3->execute();
+                        
+                        $this->conn->commit();
+                    }
+                    catch(Exception $e) {
+                        $this->conn->rollBack();
+                        print "ERROR" . $e->getMessage();
+                    }
+                    unset($stmt, $stmt2);
+                    unset($this->conn);
+                    $_SESSION['gamedata']['gold']['amount'] = $newGoldValue;
+                    echo "You bough a " . $item . " cart for "  . $row['value'];
+                }
+            }
+            /*
+             switch ($shop) {
+                case 'cart':
+                    $selectSTMT1 = "SELECT wheel, value FROM travelbureau_carts WHERE wheel=:wheel";
+                    $stmt->bindParam(":wheel", $param_wheel, PDO::PARAM_STR);
+                    $param_wheel = $item;
+                    $sql2 = "SELECT " . $city . " FROM travelbureau_carts WHERE wheel=:wheel";
+                    $updateSTMT1 = "UPDATE trader SET cart=:cart WHERE username=:username";
+                    
+                break;
+                
+                case 'shop':
+                
+                break;
+              
+             }
+            
+            else if($shop == 'horse') {
+                $sql = "SELECT type, value FROM travelbureau_horses WHERE type=:type";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindParam(":type", $param_type, PDO::PARAM_STR);
+                $param_type = $item;
+                $stmt->execute();
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                $count = $stmt->rowCount();
+                if(!$count > 0) {
+                    echo "The horse you are trying to buy does not exists!";
+                    return false;
+                }
+                if($row['value'] > $gold) {
+                    echo "You don't have enough gold to buy this item!";
+                    return false;
+                }
+                else {
+                    $cities = array("towhar", "golbak", "snerpiir", "krasnur", "tasnobil", "cruendo", "fagna");
+                    if (array_search($city, $cities) === false) {
+                        print("ERROR");
+                        return false;
+                    }
+                    $sql2 = "SELECT " . $city . " FROM travelbureau_horses WHERE type=:type";
+                    $stmt2 = $this->conn->prepare($sql2);
+                    $stmt2->bindParam(":type", $param_type, PDO::PARAM_STR);
+                    $param_type = $item;
+                    $stmt2->execute();
+                    $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
+                    
+                    if(!$row2[$city] > 0 ) {
+                        echo "There are none left of this item in stock";
+                        return false;
+                    }
+                    
+                    $newStoreAmount = $row2[$city] - 1;
+                    $newGoldValue = $gold - $row['value'];
+                    
+                    try {
+                        $this->conn->beginTransaction();
+                        
+                        //Update cart to user
+                        $sql = "UPDATE user_data SET horse=:horse WHERE username=:username";
+                        $stmt = $this->conn->prepare($sql);
+                        $stmt->bindParam(":horse", $param_horse, PDO::PARAM_STR);
+                        $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                        $param_cart = $item;
+                        $param_username = $this->username;
+                        $stmt->execute();
+                        
+                        //Update gold amount
+                        $sql2 = "UPDATE stockpile SET amount=:amount WHERE item='gold' AND username=:username";
+                        $stmt2 = $this->conn->prepare($sql2);
+                        $stmt2->bindParam(":amount", $param_amount, PDO::PARAM_STR);
+                        $stmt2->bindParam(":username", $param_username, PDO::PARAM_STR);
+                        $param_amount = $newGoldValue;
+                        $param_username = $this->username;
+                        $stmt2->execute();
+                        
+                        //Update store
+                        $sql3 = "UPDATE travelbureau_horses SET " . $city . "=:city WHERE type=:type";
+                        $stmt3 = $this->conn->prepare($sql3);
+                        $stmt3->bindParam(":city", $param_city_amount, PDO::PARAM_STR);
+                        $stmt3->bindParam(":type", $param_type, PDO::PARAM_STR);
+                        $param_city_amount = $newStoreAmount;
+                        //$param_type already defined
+                        $stmt3->execute();
+                        
+                        $this->conn->commit();
+                    }
+                    catch(Exception $e) {
+                        $this->conn->rollBack();
+                        print "ERROR" . $e->getMessage();
+                    }
+                    unset($stmt, $stmt2);
+                    unset($this->conn);
+                    $_SESSION['gamedata']['gold']['amount'] = $newGoldValue;
+                    echo "You bough a " . $item . " horse for "  . $row['value'];
+                }
+            }
+            else {
+                echo "ERROR";
+            } */

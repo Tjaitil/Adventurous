@@ -1,0 +1,36 @@
+header {
+    height:75px;
+    border-bottom: black thin;
+    margin-left:5px;
+    margin-right:5px;
+    text-align: center;
+}
+header ul {
+    list-style-type: none;
+    padding:0px;
+    background-color:#ac7339;
+    overflow:hidden;
+    margin: 0 auto;
+    box-shadow: 0px 1px 20px black;
+
+}
+
+header ul li {
+    padding:5px 0px;
+    display:inline-block;
+    text-align:center;
+    line-height: 25px;
+}
+
+header ul li a {
+    color:white;
+    text-decoration: none;
+    display:block;
+    width:80px;
+    height:25px;
+    border-radius:2px;
+}
+
+header ul li:hover {
+    background-color: #d9b38c;
+}

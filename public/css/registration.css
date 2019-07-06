@@ -1,0 +1,133 @@
+* {
+    margin:0px;
+    padding:0px;
+}
+body {
+    margin: 0px 100px 5px 100px;
+    font-family: sans-serif;
+}
+section {
+    margin:50px 5px 0px 5px;
+    width:999px;
+    float:right;
+    text-align: center;
+    position: relative;
+}
+#sect_head {
+    text-shadow: 0.2px 0.2px;
+}
+#terms {
+    z-index:3;
+    width:500px;
+    height:500px;
+    margin: 0px 0px 0px 200px;
+    background-color: #f2f2f2;
+    position: absolute;
+    border: solid black 1px;
+    text-align: center;
+    
+}
+#exit {
+    float:right;    
+}
+#terms img {
+    margin: 0px 0px 3px 50px;
+    float:right;
+    width:13px;
+    height:13px;
+}
+#in_terms {
+    background-color: #FFFFFF;
+    margin: 5px 40px 0px 40px;
+    height:400px;
+    width:400px;
+    padding: 10px;
+    overflow:scroll;
+}
+
+#terms h3 {
+    
+}
+#regi {
+    padding: 10px 0px 10px 0px;
+    background-color:#f2f2f2;
+    margin: 0px 0px 5px 0px;
+    text-align: center;
+    position: relative;
+    display:table;
+    width: 100%;
+    vertical-align: middle;
+}
+#regi input {
+    margin: 1px 0px 1px 0px;
+}
+#regi label {
+    margin: 0px 50px 0px 0px;
+}
+#field {
+    margin: 3px 10px 10px 0px;
+}
+ 
+.error {
+    color:red;
+    font-size:13px;
+    margin: 5px 0px 5px 0px;
+    position: absolute;   
+}
+
+#email {
+    margin:0px 0px 0px 0px;
+}
+#password {
+    margin: 0px 0px 0px 0px;
+}
+#confirm_password {
+    margin: 0px 0px 0px 0px;
+}
+#country {
+    margin: 0px 0px 0px 0px;
+}
+#areaCode {
+    width:35px;
+}
+#regi a {
+    width:30px;
+    height:10px;
+    font-size:12px;
+}
+#regi button {
+    background-color:#002b80;
+    color:white;
+    border-radius: 4px;
+    box-shadow: 2px 2px 3px grey;
+    width:55px;
+    height:25px;
+    text-align:center;
+    margin:3px 0px 0px 0px;
+    
+}
+
+#show_info {
+    float:right;
+    z-index: 1;
+    height:115px;
+    width:270px;
+    font-size:12px;
+    position: absolute;
+    left: 1050px;
+    bottom: 460px;
+    background-color:#ffffff;
+    border: solid black 1px;
+    padding:2px;
+    visibility: hidden;
+}
+
+footer {
+    width:1000px;
+    float:right;
+    text-align:center;
+}
+
+#info {
+    font-size:12px;
+}

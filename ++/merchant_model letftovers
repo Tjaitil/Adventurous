@@ -1,0 +1,47 @@
+ /*public function getData() {
+            if($_SESSION['gamedata']['location'] === 'travelling') {
+                header("Location: /city");
+            }
+            switch($_SESSION['gamedata']['location']) {
+                case 'towhar':
+                    $city = 'towhar';
+                    break;
+                case 'golbak':
+                    $city = 'golbak';
+                    break;
+                case 'snerpiir':
+                    $city = 'snerpiir';
+                    break;
+                case 'krasnur':
+                    $city = 'krasnur';
+                    break;
+                case 'tasnobil':
+                    $city = 'tasnobil';
+                    break;
+                case 'cruendo':
+                    $city = 'cruendo';
+                    break;
+                case 'fagna':
+                    $city = 'fagna';
+                    break;
+            }
+            $sql = "SELECT * FROM merchants WHERE city=:city";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(":city", $param_city, PDO::PARAM_STR);
+            $param_city = $city;
+            $stmt->execute();
+            $row = array();
+            $row['items'] = $stmt->fetch(PDO::FETCH_ASSOC);
+            $sql2 = "SELECT * FROM items";
+            $stmt2 = $this->conn->prepare($sql2);
+            $stmt2->execute();
+            $row['prices'] = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+            $sql3 = "SELECT gold FROM stockpile WHERE username=:username";
+            $stmt3 = $this->conn->prepare($sql3);
+            $stmt3->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_username = $this->user;
+            $stmt3->execute();
+            $stmt3row = $stmt3->fetch(PDO::FETCH_ASSOC);
+            $row['gold'] = $stmt3row['gold'];
+            return $row;
+        }*/

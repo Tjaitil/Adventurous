@@ -1,0 +1,11 @@
+#workers ul {
+    list-style-type: none;
+}
+
+.worker {
+    margin:5px;
+    border: ridge 1px black;
+    width:15%;
+    display: inline-block;
+    float:left;
+}

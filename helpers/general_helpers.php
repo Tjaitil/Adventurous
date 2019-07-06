@@ -1,0 +1,38 @@
+<?php
+    function jsecho($data) {
+        $count = count($data);
+        $i = 0;
+        foreach($data as $key) {
+            $i++;
+            if($i !== $count) {
+                echo $key . "|";
+            }
+            else {
+                echo $key;
+            }
+        }
+    }
+    
+    function jsforeach($data) {
+        foreach($data as $key) {
+            foreach($key as $subkey) {
+                echo $subkey . '|';
+            }
+            echo '|';
+        }
+    }
+    
+    function get_template($name, $data, $up = false) {
+        $filename = $name . '_tpl.php';
+        $path = constant('ROUTE_TEMPLATE') . $filename;
+        if($up != false) {
+            $path = '../' . constant('ROUTE_TEMPLATE') . $filename;   
+        }
+        if(file_exists($path)) {
+            require($path);
+        }
+        else {
+            return;
+        }
+    }
+?>

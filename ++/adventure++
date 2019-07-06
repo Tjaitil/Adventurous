@@ -1,0 +1,24 @@
+ <div id="requests">
+                <table>
+                    <thead>
+                        <tr>
+                            <td> Name:</td>
+                            <td> Difficulty: </td>
+                            <td> Where: </td>
+                            <td> Role: </td>
+                        </tr>
+                    </thead>
+                    <?php foreach($this->data['requests'] as $key): ?>
+                        <?php if(empty($this->data['requests'])):?>
+                            <td colspan="5" align="center"> No invites at the moment!</td>
+                        <?php endif;?>
+                        <tr>
+                            <td><?php echo $key[''];?></td>
+                            <td><?php echo $key[''];?></td>
+                            <td><?php echo $key[''];?></td>
+                            <td><?php echo $key[''];?></td>
+                            <td><?php echo $key[''];?></td>
+                        </tr>
+                    <?php endforeach;?>
+                </table>
+            </div>

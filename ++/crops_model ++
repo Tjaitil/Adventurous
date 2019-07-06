@@ -1,0 +1,17 @@
+                /*$sql = "SELECT fields_avail FROM farmer WHERE username= 'tjaitil';
+                        SELECT crop_type FROM crops WHERE crop_level <=:farmlevel;
+                        SELECT avail_workforce FROM farm_workforce WHERE username=:username";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                $stmt->bindParam(":farmlevel", $param_farmlevel, PDO::PARAM_STR);
+                $param_username = $this->user;
+                $param_farmlevel = $this->farmlevel;
+                $stmt->execute();
+                $data = array();
+                $data['fields'] = $stmt->fetch(PDO::FETCH_ASSOC);
+                $stmt->nextRowset();
+                $data['crop_types'] = $stmt->fetch(PDO::FETCH_ASSOC);
+                $stmt->nextRowset();
+                $data['workforce'] = $stmt->fetch(PDO::FETCH_ASSOC);
+                print_r($data);
+                return $data;*/

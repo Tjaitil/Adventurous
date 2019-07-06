@@ -1,0 +1,186 @@
+            /*for($i = 0; $i < $hits; $i++) {
+                $first = rand(0,1);
+                if($first === 0) {
+                    $daqloon_hit = $daqloon['attack'] + rand(1,3) * (0.025 * $warrior_stats['defence']);
+                    foreach($warrior_data as $key) {
+                        $key['health'] =- $daqloon_hit;
+                    }
+                }
+            }*/
+            
+            
+            /*foreach($this->warriors as $key) {
+                    $daqloon = $this->daqloons[$i];
+                    $warrior = $key;
+                    if(array_key_exists($key['warrior_id'], $this->warrior_status) == true) {
+                        unset($this->warriors[$i]);
+                        var_dump($this->warriors);
+                        print "continue" . "</br>";
+                        $i++;
+                        continue;
+                    }
+                    /*if(15 > $warrior['health']) {
+                        print "hello" . "</br>";
+                        $warrior = $this->healthCheck($warriors, $warrior, $i, $method = "warriors");
+                    }*/
+                    
+<?php
+                //Get levels of the soldiers, armour and weapons
+            
+            $warrior_data = array();
+            $warrior_data[] = array("warrior_id" => 1, "health" => 100);
+            $warrior_data[] = array("warrior_id" => 2, "health" => 100);
+            $warrior_levels = array();
+            $warrior_levels[] = array("stamina_level" => 1, "technique_level" => 1, "precision_level" => 1, "strength_level" => 1);
+            $warrior_levels[] = array("stamina_level" => 2, "technique_level" => 3, "precision_level" => 1, "strength_level" => 1);
+            
+            $warrior_stats = array();
+            $warrior_stats[] = array("attack" => 15, "defence" => 20);
+            $warrior_stats[] = array("attack" => 15, "defence" => 20);
+            
+            $warriors = array();
+            $warriors[] = array("warrior_id" => 1, "health" => 100, "stamina_level" => 1, "technique_level" => 1, "precision_level" => 1,
+                                "strength_level" => 1, "attack" => 15, "defence" => 20);
+            /*$warriors[] = array("warrior_id" => 2, "health" => 100, "stamina_level" => 1, "technique_level" => 1, "precision_level" => 1,
+                                "strength_level" => 1, "attack" => 15, "defence" => 20);*/
+            
+            $difficulty = "easy";
+            switch($difficulty) {
+                case 'easy':
+                    $hits = rand(2,5);
+                    break;
+                case 'intermediate':
+                    $hits = rand(4,8);
+                    break;
+                case 'expert':
+                    $hits = rand(7,15);
+                    break;
+            }
+            
+            $daqloons = array();
+            $daqloon_amount = 1;
+            for($i = 0; $i < $daqloon_amount; $i++) {
+                $daqloons[$i] = array("health" => rand(100,120), "id" => $i+1, "attack" => rand(7,10), "defence" => rand(12,15));
+            }
+            /*$daqloon_attack = array_sum(array_column($daqloon, "attack"));
+            $daqloon_defence = array_sum(array_column($daqloon, "defence"));*/
+            $warrior_status = array();
+            $daqloon_status = array();
+            $battle_result;
+            function daqloonHit($daqloon, $warrior){
+                $daqloon_hit = $daqloon['attack'] + rand(1,3) * (0.025 * $warrior['defence']);
+                print "warrior " . $warrior['warrior_id'] . "</br>"; 
+                print "daqloon_hit: " . $daqloon_hit . "</br>";
+                $warrior['health'] -= $daqloon_hit;
+                print "warrior health: " . $warrior['health'] . "</br>";
+                if($warrior['health'] < 10 ) {
+                    $warrior_status[$warrior['warrior_id']] = "wounded";
+                }
+                return $warrior;
+            }
+            
+            function warriorHit($daqloon, $warrior) {
+                $warrior_hit = $warrior['attack'] + rand(1,3) * (0.025 * $daqloon['defence']);
+                print "warrior_hit: " . $warrior_hit . "</br>";
+                $daqloon['health'] -= $warrior_hit;
+                print "Health: " . $daqloon['health'] . "</br>";
+                if($daqloon['health'] < 10 ) {
+                    array_push($daqloon_status, $daqloon['id'] = "wounded");
+                }
+                return $daqloon;
+            }
+            
+            $x = 0;
+            do {
+                $i = 0;
+                foreach($warriors as $key) {
+                    $daqloon = $daqloons[$i];
+                    $warrior = $key;
+                    $first = 1;
+                    if($first === 1) {
+                        $warriors[$i] = daqloonHit($daqloon, $warrior);
+                        $daqloons[$i] = warriorHit($daqloon, $warrior);
+                    }
+                    else {
+                        $warriors[$i] = warriorHit($daqloon, $warrior);
+                        $daqloons[$i] = daqloonHit($daqloon, $warrior);
+                    }
+                    $i++;
+                }
+                if(count($warrior_status) == count($warrior_data)) {
+                    $battle_result = "Player loss";
+                    print "loss";
+                    break;
+                }
+                else if(count($daqloon_status) == $daqloon_amount) {
+                    var_dump(count($daqloon_status));
+                    $battle_result = "Player wins";
+                    print "wins";
+                    break;
+                }
+                var_dump(count($daqloon_status));
+                var_dump($daqloon_amount);
+                $x++;
+            }
+            while($x < 10);
+            var_dump($daqloon_status);
+            /*
+            for($i = 0; $i < $hits; $i++) {
+                $first = rand(0,1);
+                if($first === 0) {
+                    $daqloon_hit = $daqloon['attack'] + rand(1,3) * (0.025 * $warrior_defence);
+                print "daqloon_hit: " . $daqloon_hit;
+                foreach($warrior_data as $key) {
+                    $key['health'] =- $daqloon_hit;
+                    print "Health: " . $key['health'];
+                    if($key['health'] < 10 ) {
+                        $warrior_status[$key['warrior_id']] = "wounded";
+                        $warrior_attack -= $warrior_stats[$key['warrior_id']]['attack'];
+                        $warrior_attack -= $warrior_stats[$key['warrior_id']]['defence'];
+                    }
+                }
+                    if(count($warrior_status) == count($warrior_data)) {
+                        $battle_result = "Daqloon wins";
+                    }
+                    $warrior_hit = $warrior_stats['attack'] + rand(1,3) * (0.025 * $daqloon['defence']);
+                print "warrior_hit: " . $warrior_hit;
+                foreach($daqloon as $key) {
+                    $key['health'] =- $warrior_hit + rand(1,3);
+                    print "Health:" . $key['health'];
+                    if($key['health'] < 10 ) {
+                        $daqloon_[$key['id']] = "wounded";
+                        $daqloon['attack'] =- $daqloon[$key['warrior_id']]['attack'];
+                        $daqloon['attack'] =- $daqloon[$key['warrior_id']]['defence'];
+                    }
+                }
+                }    
+                else if($first === 1) {
+                    $warrior_hit = $warrior_stats['attack'] + rand(1,3) * (0.025 * $daqloon['defence']);
+                print "warrior_hit: " . $warrior_hit;
+                foreach($daqloon as $key) {
+                    var_dump($key);
+                    $key['health'] =- $warrior_hit + rand(1,3);
+                    print "Health:" . $key['health'];
+                    if($key['health'] < 10 ) {
+                        $daqloon_[$key['id']] = "wounded";
+                        $daqloon['attack'] =- $daqloon[$key['warrior_id']]['attack'];
+                        $daqloon['attack'] =- $daqloon[$key['warrior_id']]['defence'];
+                    }
+                }
+                    if(count($daqloon_status) == $daqloon['amount']) {
+                        $battle_result = "Warriors wins";
+                    }
+                    $daqloon_hit = $daqloon['attack'] + rand(1,3) * (0.025 * $warrior_stats['defence']);
+                print "daqloon_hit: " . $daqloon_hit;
+                foreach($warrior_data as $key) {
+                    $key['health'] =- $daqloon_hit;
+                    print "Health: " . $key['health'];
+                    if($key['health'] < 10 ) {
+                        $warrior_status[$key['warrior_id']] = "wounded";
+                        $warrior_stats['attack'] =- $warrior_stats[$key['warrior_id']]['attack'];
+                        $warrior_stats['attack'] =- $warrior_stats[$key['warrior_id']]['defence'];
+                    }
+                }
+                }
+            }*/
+            ?>

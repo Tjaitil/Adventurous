@@ -1,0 +1,20 @@
+section table td {
+    padding: 5px;
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+#smith {
+    width: 50%;
+    height: 370px;
+    float: left;
+}
+#minerals {
+    float: left;
+}
+#iron, #steel, #gargonite, #adron, #yeqdon, #frajrite {
+    display: none;
+    float: left;
+}
+#ranged {
+    float: left; 
+}

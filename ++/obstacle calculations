@@ -1,0 +1,20 @@
+if(myGamePiece.diameterTop <= obstacles[i][4] && this.y > obstacles[i][1] &&
+               myGamePiece.diameterLeft < obstacles[i][3] && myGamePiece.diameterRight > obstacles[i][5]) {
+                console.log("top blocked");
+                myGamePiece.top = "blocked";
+            }
+            if(myGamePiece.diameterLeft <= obstacles[i][3] && this.x > obstacles[i][0] &&
+               myGamePiece.diameterDown > obstacles[i][2] && myGamePiece.diameterTop < obstacles[i][4]) {
+                console.log("left blocked");
+                myGamePiece.left = "blocked";
+            }
+            if(myGamePiece.diameterDown >= obstacles[i][2] && this.y < obstacles[i][1] &&
+               myGamePiece.diameterLeft < obstacles[i][3] && myGamePiece.diameterRight > obstacles[i][5]) {
+                console.log("down blocked");
+                myGamePiece.down = "blocked";
+            }
+            if(myGamePiece.diameterRight >= obstacles[i][5] && this.x < obstacles[i][0] &&
+               myGamePiece.diameterDown > obstacles[i][2] && myGamePiece.diameterTop < obstacles[i][4]){
+                console.log("right blocked");
+                myGamePiece.right = "blocked";
+            }

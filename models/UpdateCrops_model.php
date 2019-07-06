@@ -1,0 +1,90 @@
+<?php
+    class UpdateCrops_model extends model {
+        public $username;
+        public $session;
+        
+        function __construct ($username, $session) {
+            parent::__construct();
+            $this->username = $username;
+            $this->session = $session;
+        }
+        
+        public function updateCrops() {
+            //AJAX function
+            $sql = "SELECT grow_type, grow_quant, fields_avail FROM farmer WHERE username=:username AND location=:location";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
+            $param_username = $this->username;
+            $param_location = $this->session['location'];
+            $stmt->execute();
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $crop_type = $row['grow_type'];
+            
+            $sql2 = "SELECT experience FROM crops_data WHERE crop_type=:crop_type";
+            $stmt2 = $this->conn->prepare($sql2);
+            $stmt2->bindParam(":crop_type", $param_crop_type, PDO::PARAM_STR);
+            $param_crop_type = $crop_type;
+            $stmt2->execute();
+            $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
+            
+            
+            $experience = $row2['experience'] * $row['grow_quant'];
+            $total_xp = $experience + $this->session['farmer']['xp'];
+            $quantity = $row['grow_quant'] * 3; //Change to effect level
+            
+            if(in_array($this->session['location'], array('towhar', 'krasnur')) != true) {
+                return false;   
+            }
+            $workforce = $this->session['location'] . '_workforce';
+            
+            $sql3 = "SELECT $workforce, avail_workforce FROM farmer_workforce WHERE username=:username";
+            $stmt3 = $this->conn->prepare($sql3);
+            $stmt3->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $stmt3->execute();
+            $row3 = $stmt3->fetch(PDO::FETCH_ASSOC);
+            
+            try {
+                $this->conn->beginTransaction();
+                
+                $sql = "UPDATE farmer SET fields_avail=:fields_avail, grow_type=:grow_type,
+                        grow_quant=:grow_quant, plot1_harvest='false' WHERE username=:username AND location=:location";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindParam(":fields_avail", $param_fields_avail, PDO::PARAM_STR);
+                $stmt->bindParam(":grow_type", $param_grow_type, PDO::PARAM_STR);
+                $stmt->bindParam(":grow_quant", $param_grow_quant, PDO::PARAM_STR);
+                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
+                $param_fields_avail = $row['fields_avail'] + $row['grow_quant'];
+                $param_grow_type = 'none';
+                $param_grow_quant = 0;
+                $param_username = $this->username;
+                $param_loation = $this->session['location'];
+                $stmt->execute();
+                
+                $sql2 = "UPDATE farmer_workforce SET avail_workforce=:avail_workforce, $workforce= 0
+                         WHERE username=:username";
+                $stmt2 = $this->conn->prepare($sql2);
+                $stmt2->bindParam(":avail_workforce", $param_avail_workforce, PDO::PARAM_STR);
+                $stmt2->bindParam(":username", $param_username, PDO::PARAM_STR);
+                $param_avail_workforce = $row3['avail_workforce'] + $row3[$workforce];
+                $param_username = $this->username;
+                $stmt2->execute();
+                
+                update_xp($this->conn, $this->username, 'farmer', $total_xp);
+    
+                update_inventory($this->conn, $this->username, $crop_type, $quantity, true);
+                
+                $this->conn->commit();
+            }
+            catch (Exception $e) {
+                $this->conn->rollBack();
+                new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
+                return false;
+            }
+            $_SESSION['gamedata']['farmer']['xp'] = $total_xp;
+            $this->closeConn();
+        }
+    }
+?>

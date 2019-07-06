@@ -1,0 +1,227 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> Canvas </title>
+    <link rel="stylesheet" type="text/css" href="canvas.css" />
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0"/>-->
+    <meta charset="utf-8" />
+    <style>
+    canvas {
+        border:1px solid #d3d3d3;
+    }
+    </style>
+    </head>
+    <body onload="startGame()">
+    <script>
+    var world = new Image(2000, 1000);
+    world.src = "maps.jpg";
+    var player;
+    var obstaclesPos = [];
+    var obstaclesSize = [];
+    var xMovement = 0;
+    var yMovement = 0;
+    var xbase = 190;
+    var ybase = 120;
+    
+    function startGame() {
+        gameArea.start();
+        /*myGameArea.world();*/
+        gameArea.world();
+        var obstacle = new gameObstacle(250, 100, 50, 50);
+        /*new gameObstacle(80, 60, 200, 50);*/
+        player = new component(50, 50, "white", xbase, ybase);
+        player.first();
+    }
+    
+    var viewport = {
+        dwidth: 0,
+        dheight: 0,
+        draw : function(px, py) {
+            ctx = gameArea.context;
+            dwidth = px + 5;
+            dheight = py + 5;
+            ctx.drawImage(world, dwidth, dheight, 1000, 1000, 0, 0, 1000, 1000);
+        }
+    };
+    
+    var gameArea = {
+        canvas : document.createElement("canvas"),
+        start : function() {
+            this.canvas.width = 500;
+            this.canvas.height = 300;
+            this.context = this.canvas.getContext("2d");
+            document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+            window.addEventListener('keydown', function (e) {
+                gameArea.keys = (gameArea.keys || []);
+                gameArea.keys[e.keyCode] = (e.type == "keydown");
+                updateGameArea();
+            });
+            window.addEventListener('keyup', function (e) {
+                gameArea.keys[e.keyCode] = (e.type == "keydown");            
+            });
+        }, 
+        clear : function(){
+            this.context.clearRect(player.x, player.y, 50, 50);
+        },
+        world : function() {
+            this.context.drawImage(world, xbase, ybase, 1000, 1000, 0, 0, 1000, 1000);
+        },
+        update : function() {
+            viewport.draw(player.x, player.y);
+            gameArea.obstacle(player.speedX, player.speedY);
+            this.context.fillStyle = "#FFFFFF";
+            this.context.fillRect(xbase, ybase, player.width, player.height);
+        },
+        obstacle : function(speedX, speedY) {
+            for(var i = 0; i < obstaclesSize.length; i++) {
+                var xpos = obstaclesPos[i][0]-= speedX;
+                var ypos = obstaclesPos[i][1]-= speedY;
+                gameArea.updateObstacle(xpos, ypos, i);
+            }
+        },
+        updateObstacle: function (xpos,ypos, i)  {
+            var x = xpos;
+            var y = ypos;
+            var diameterTop = y - (obstaclesSize[i][1] / 2) + yMovement;
+            var diameterRight = x + (obstaclesSize[i][0] / 2) + xMovement;
+            var diameterDown = y + (obstaclesSize[i][1] / 2) + yMovement;
+            var diameterLeft = x - (obstaclesSize[i][0] / 2) + xMovement;
+            obstaclesPos[i] = [x, y, diameterTop, diameterRight, diameterDown, diameterLeft];
+            ctx = gameArea.context;
+            ctx.fillStyle = "green";
+            ctx.fillRect(x, y, obstaclesSize[i][0], obstaclesSize[i][1]);
+        }
+    };
+    
+    var viewport = {
+        dwidth: 0,
+        dheight: 0,
+        draw : function(px, py) {
+            ctx = gameArea.context;
+            dwidth = px + 5;
+            dheight = py + 5;
+            ctx.drawImage(world, dwidth, dheight, 1000, 1000, 0, 0, 1000, 1000);
+        }
+    };
+    
+    function component(width, height, color, x, y) {
+        this.gamearea = gameArea;
+        this.width = width;
+        this.height = height;
+        this.speedX = 0;
+        this.speedY = 0;    
+        this.x = x;
+        this.y = y;
+        this.first = function() {
+            ctx = gameArea.context;
+            ctx.fillStyle = "#FFFFFF";
+            ctx.fillRect(xbase, ybase, this.width, this.height);
+        };
+        this.newPos = function() {
+            this.top = "open";
+            this.left = "open";
+            this.down = "open";
+            this.right = "open";
+            this.diameterTop = this.y - 25;
+            this.diameterRight = this.x + 25;
+            this.diameterDown = this.y + 25;
+            this.diameterLeft = this.x - 25;
+            calculateDistance(this.x, this.y);
+            xMovement += this.speedX;
+            yMovement += this.speedY;
+            
+        };    
+    }
+    
+    function gameObstacle (x, y, width, height) {
+        /*this.img = img;*/
+        this.x = x;
+        this.y = y;
+        this.diameterTop = this.y - (width/2);
+        this.diameterRight = this.x + (width/2);
+        this.diameterDown = this.y + (width/2);
+        this.diameterLeft = this.x - (width/2);
+        console.log(this.x + (width/2));
+        ctx = gameArea.context;
+        ctx.fillStyle = "green";
+        ctx.fillRect(this.x, this.y, width, height);
+        obstaclesPos.push([this.x, this.y, this.diameterTop, this.diameterRight, this.diameterDown, this.diameterLeft]);
+        obstaclesSize.push([width, height]);
+    }
+    
+    function calculateDistance(x, y) {
+        console.log(obstaclesPos);
+        this.x = x;
+        this.y = y;
+        console.log(Math.abs(player.y - obstaclesPos[0][1]) < 50);
+        console.log(obstaclesPos[0][1]);
+        console.log(player.y);
+        
+        for(var i = 0; i < obstaclesPos.length; i++) {
+           if(Math.abs(player.diameterTop - obstaclesPos[i][4]) <= 5 && 
+                player.diameterLeft < obstaclesPos[i][3] && player.diameterRight > obstaclesPos[i][5]) {
+                console.log("top blocked");
+                player.top = "blocked";
+            }
+            if(Math.abs(player.diameterLeft - obstaclesPos[i][3]) <= 5 &&
+                player.diameterDown > obstaclesPos[i][5] &&
+                player.diameterTop < obstaclesPos[i][4]) {
+                console.log("left blocked");
+                player.left = "blocked";
+            }
+            if(Math.abs(player.y - obstaclesPos[i][1]) < 50 && player.diameterDown > obstaclesPos[i][2]) {
+                player.down = "blocked";
+                console.log(player.down);
+            }
+            /*if(Math.abs(player.diameterDown - obstaclesPos[i][2]) <= 5 && 
+                player.diameterRight > obstaclesPos[i][5] &&
+                player.diameterRight < obstaclesPos[i][3]) {
+                console.log("down blocked");
+                player.down = "blocked";
+            }
+            if(Math.abs(player.diameterDown - obstaclesPos[i][2]) <= 5 &&
+                player.diameterLeft > obstaclesPos[i][5] &&
+                player.diameterLeft < obstaclesPos[i][3] && player.y == obstaclesPos[i][1]) {
+                console.log("down blocked");
+                player.down = "blocked";
+            }*/
+            if(Math.abs(player.diameterRight - obstaclesPos[i][5]) <= 5 &&
+                player.diameterDown > obstaclesPos[i][2]  && player.diameterTop < obstaclesPos[i][4]) {
+                player.right = "blocked";
+            }
+        }
+            if(gameArea.keys[37] && player.left == "blocked") {
+                player.speedX = 0;
+            }
+            if(gameArea.keys[39] && player.right == "blocked") {
+                player.speedX = 0;
+            }
+            if(gameArea.keys[40] && player.down == "blocked") {
+                player.speedY = 0;
+            }
+            if(gameArea.keys[38] && player.top == "blocked") {
+                player.speedY = 0;
+            }
+            else {
+                player.x += player.speedX;
+                player.y += player.speedY;
+            }
+    }
+    
+    function updateGameArea() {
+        player.speedX = 0;
+        player.speedY = 0;
+        if (gameArea.keys && gameArea.keys[37]) {player.speedX = -5; }
+        if (gameArea.keys && gameArea.keys[39]) {player.speedX = 5; }
+        if (gameArea.keys && gameArea.keys[38]) {player.speedY = -5; }
+        if (gameArea.keys && gameArea.keys[40]) {player.speedY = 5; }
+        player.newPos();
+        gameArea.update();
+    }
+    console.log(obstaclesPos);
+    </script>
+    <p>Make sure this window has focus, then use the arrow keys on you keyboard to move the red square.</p>
+    <p>When pressing both the left and the down arrow, the red square will move both down and to the left.</p>
+</body>
+</html>
