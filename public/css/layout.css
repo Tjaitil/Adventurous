@@ -107,6 +107,7 @@ section {
     overflow: scroll;
     /*background-color: #a6a6a6;*/
     background-color: #724e27;
+    color: white;
 }
 /*#layer {
     background-color: #262626;
@@ -133,7 +134,6 @@ section {
     display: inline-block;
     float: left;
     width: 110px;
-    position: relative;
     height: 100px;
 }
 .stockpile_buttons, .stockpile_buttons {
