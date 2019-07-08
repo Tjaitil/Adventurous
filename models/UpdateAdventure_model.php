@@ -85,7 +85,7 @@
             $stmt->execute();
             $battle_result = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            $sql2 = "SELECT user_xp, warrior_xp FROM adventures_data WHERE location=:location AND difficulty=:difficulty";
+            $sql2 = "SELECT user_xp, warrior_xp_min, warrior_xp_max FROM adventures_data WHERE location=:location AND difficulty=:difficulty";
             $stmt2 = $this->conn->prepare($sql2);
             $stmt2->bindParam(":location", $param_location, PDO::PARAM_STR);
             $stmt2->bindParam(":difficulty", $param_difficulty, PDO::PARAM_STR);
@@ -132,7 +132,7 @@
                     }
                     break;
                 case 'warrior':
-                    $sql = "SELECT item, min_amount FROM adventure_rewards
+                    $sql = "SELECT item, min_amount, max_amount FROM adventure_rewards
                             WHERE role=:role AND difficulty=:difficulty AND location=:location";
                     $stmt = $this->conn->prepare($sql);
                     $stmt->bindParam(":role", $param_role, PDO::PARAM_STR);
@@ -143,7 +143,7 @@
                     $param_location = $this->adventure_data['location'];
                     $stmt->execute();
                     $rewards = $stmt->fetch(PDO::FETCH_ASSOC);
-                    
+                    $rewards['amount'] = rand($rewards['min_amount'], $rewards['max_amount']);;
                     if($battle_result != 1) {
                         $rewards['amount'] /= 2;
                     }
@@ -168,29 +168,30 @@
                     $param_username = $this->username;
                     $stmt->execute();
                     $warrior_levels = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
                     
-                    //$warrior_scale is min and max of warrior_xp
-                    $warrior_scale = explode('|', $xp_data['warrior_xp']);
-                    foreach($warrior_levels as $key) {
-                        foreach($key as $value) {
-                            $value = intval($value) + rand($warrior_scale[0], intval($warrior_scale[1]));
-                        }
+                    
+                    foreach($warrior_levels as $key => $value) {
+                        $warrior_levels[$key]['stamina_xp'] =
+                        intval($key['stamina_xp']) + rand($xp_data['warrior_xp_min'], $xp_data['warrior_xp_max']);
+                        $warrior_levels[$key]['technique_xp'] =
+                        intval($key['technique_xp']) + rand($xp_data['warrior_xp_min'], $xp_data['warrior_xp_max']);
+                        $warrior_levels[$key]['precision_xp'] =
+                        intval($key['precision_xp']) + rand($xp_data['warrior_xp_min'], $xp_data['warrior_xp_max']);
+                        $warrior_levels[$key]['strength_xp'] =
+                        intval($key['strength_xp']) + rand($xp_data['warrior_xp_min'], $xp_data['warrior_xp_max']);
                     }
-                    break;
             }
             try {
                 $this->conn->beginTransaction();
              
-                $sql = "UPDATE adventure_$role SET username WHERE adventure_id=:adventure_id AND username=:username";
+                $sql = "UPDATE adventures_$role SET username='none' WHERE adventure_id=:adventure_id AND username=:username";
                 $stmt = $this->conn->prepare($sql);
                 $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_STR);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                $param_adventure_id;
+                $param_adventure_id = $this->adventure_data['adventure_id'];
                 $param_username = $this->username;
                 $stmt->execute();
                 
-
                 if($role !== 'warrior') {
                     foreach($rewards as $key) {
                         update_stockpile($this->conn, $this->username, $key['item'], $key['amount']);
@@ -217,11 +218,11 @@
                 $stmt->execute();
                 
                 if($role === 'warrior') {
-                    $sql = "UPDATE warrior_levels SET stamina_xp=?, technique_xp=?, precision_xp=?, strength_xp?
+                    $sql = "UPDATE warrior_levels SET stamina_xp=?, technique_xp=?, precision_xp=?, strength_xp=?
                             WHERE warrior_id=? AND username=?";
                     $stmt = $this->conn->prepare($sql);
                     foreach($warrior_levels as $key) {
-                        $stmt->execute($key);
+                        $stmt->execute(array_values($key));
                     }
                 }
         
@@ -233,6 +234,7 @@
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
+            $this->gameMessage("You have completed an adventure!", true); 
             $this->closeConn();
         }
         

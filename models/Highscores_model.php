@@ -22,6 +22,11 @@
             $stmt2->execute();
             $data['miner_highscores'] = $stmt2->fetchAll(PDO::FETCH_ASSOC);
             
+            foreach($data['miner_highscores'] as $key) {
+                $key = NULL;
+            }
+            var_dump($data['miner_highscores']);
+            
             $sql3 = "SELECT username, warrior_level, warrior_xp FROM user_levels ORDER BY warrior_xp DESC LIMIT 50";
             $stmt3 = $this->conn->prepare($sql3);
             $stmt3->execute();

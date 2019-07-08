@@ -38,6 +38,8 @@
                 </tr>
             </table>
             <div id="inventory">
+                <div id="layer">
+                </div>
                 <?php require(constant('ROUTE_VIEW') . '/inventory.php'); url();?>
             </div>
             <script src="<?php echo constant('ROUTE_JS') . $name . '.js';?>"></script>

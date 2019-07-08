@@ -15,28 +15,20 @@
             //Update levels
             $profiencies = array('farmer'. 'miner', 'warrior', 'trader', 'adventurer');
             $new_level = array();
-            $levels = array();
             if(in_array($this->session['level_up'], $profiencies) != false) {
                 return false;
             }
             
-            foreach($this->session['level_up'] as $key => $value) {
-                array_push($levels, $this->session[$value]['xp']);
-            }
-            $in  = str_repeat('?,', count($levels) - 1) . '?';
-            $sql = "SELECT level, next_level FROM level_data WHERE next_level IN ($in) < next_level";
+            $sql = "SELECT level, next_level FROM level_data WHERE next_level > :xp ORDER BY next_level ASC LIMIT 1";
             $stmt = $this->conn->prepare($sql);
-            $stmt->execute($levels);
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            var_dump($row);
-            
+            $stmt->bindParam(":xp", $param_xp);
             foreach($this->session['level_up'] as $key => $value) {
-                $new_level[$value] = $r  
+                $param_xp = $this->session[$value]['xp'];
+                $stmt->execute();
+                $new_level[$value] = $levels[] = $stmt->fetch(PDO::FETCH_OBJ)->level;
             }
             
-            var_dump($this->session['level_up']);
-            var_dump($new_level);
-            /*try {
+            try {
                 $this->conn->beginTransaction();
                 foreach($this->session['level_up'] as $key) {
                     $sql = "UPDATE user_levels SET $key" . "_level=:level WHERE username=:username";         
@@ -66,7 +58,7 @@
                 $param_level = $new_level[$key];
                 $stmt->execute();
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                $this->gameMessage(sprintf($format, $key, $new_level[$key]), true);
+                sprintf($format, $key, $new_level[$key]);
                 $_SESSION['gamedata'][$key]['level'] = $new_level[$key];
                 $_SESSION['gamedata'][$key]['next_level'] = $row['next_level'];
             }
