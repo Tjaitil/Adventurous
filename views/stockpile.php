@@ -16,6 +16,20 @@
             <div id="stockpile">
                 <?php get_template('stockpile', $this->data); ?>
             </div>
+            <?php
+                /*function amount($value) {
+                    var_dump(strlen($value));
+                    switch(true) {
+                        case $value >= 1000:
+                            echo "hello";
+                            return $value / 1000 . 'k' ;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                echo amount(5000);*/
+                ?>
             <div id="inventory">
                 <p> Inventory: </p>
                 <div id="hidden">

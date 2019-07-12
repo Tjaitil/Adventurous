@@ -54,17 +54,33 @@
     }
     
     function get_xp(skill, element) {
-        ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.onload = function () {
-            if(this.readyState == 4 && this.status == 200) {
-                var data = this.responseText.split("|");
-                data.shift();
-                var skillName = skill.charAt(0).toUpperCase() + skill.slice(1);
-                element.title = skillName + '\n' + "Current xp: " + data[0] + '\n' + "Next level: " + data[1];
+        var tooltip = element.children[2];
+        tooltip.style.right = "-30%";
+        if(tooltip.style.visibility == "visible") {
+            tooltip.style.visibility = "hidden";
+            return false;
+        }
+        else {
+            if(tooltip.innerHTML.indexOf("C") != -1) {
+                tooltip.style.visibility = "visible";
+                console.log("no AJAX");
             }
-        };
-        ajaxRequest.open('GET', "handlers/handler_ses.php?variable=" + skill);
-        ajaxRequest.send();
+            else {
+                ajaxRequest = new XMLHttpRequest();
+                ajaxRequest.onload = function () {
+                    if(this.readyState == 4 && this.status == 200) {
+                        var data = this.responseText.split("|");
+                        data.shift();
+                        var skillName = skill.charAt(0).toUpperCase() + skill.slice(1);
+                        /*element.title = skillName + '\n' + "Current xp: " + data[0] + '\n' + "Next level: " + data[1];*/
+                        tooltip.innerHTML = skillName + '</br>' + "Current xp: " + data[0] + '</br>' + "Next level: " + data[1];
+                        tooltip.style.visibility = "visible";
+                    }
+                };
+                ajaxRequest.open('GET', "handlers/handler_ses.php?variable=" + skill);
+                ajaxRequest.send();
+            }
+        }
     }
     
     function close_xp(skill) {
@@ -98,3 +114,28 @@
         ajaxRequest.open('GET', "handlers/handlerf.php?file=inventory" + "&page=" + page);
         ajaxRequest.send();
     }
+    
+    function show_title(element, buttons) {
+        var div = element.parentElement;
+        var tooltip = element.children[1];
+        tooltip.style.right = "30%";
+        if(tooltip.style.visibility == "visible") {
+            tooltip.innerHTML = "";
+            tooltip.style.visibility = "hidden";
+        }
+        else {
+            tooltip.innerHTML = element.title;
+            tooltip.style.visibility = "visible";
+        }
+        if(buttons == true) {
+            var div_button = div.children[0];
+            if(div_button.style.visibility == "visible") {
+                div_button.style = "visibility: hidden";
+            }
+            else {
+                div_button.style = "visibility: visible";
+            }
+        }
+    }
+    
+    

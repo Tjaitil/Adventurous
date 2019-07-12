@@ -21,7 +21,10 @@
                         $model->$methodname($_GET['username']);
                     }
                     break;
-                case 'market':
+                case "Main":
+                    $model->$methodname($_GET['clock']);
+                    break;
+                case "market":
                     $model->$methodname($_GET['part']);
                     break;
                 case "messages":

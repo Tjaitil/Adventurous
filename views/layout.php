@@ -2,26 +2,32 @@
     require_once(constant('ROUTE_HELPER') . 'urlcheck.php');
     urlcheck();
 ?>
+<!--onmouseenter="get_xp('farmer', this);" onmouseout="get_xp('farmer', this);"-->
 <div id="skills">
-    <div onmouseenter="get_xp('farmer', this);">
+    <div onclick="get_xp('farmer', this);">
         <img src="#" />
-        <?php echo $_SESSION['gamedata']['farmer']['level']; ?>
+        <span><?php echo $_SESSION['gamedata']['farmer']['level']; ?></span>
+        <span class="tooltip"></span>
     </div>
-    <div onmouseenter="get_xp('miner', this);">
+    <div onclick="get_xp('miner', this);">
         <img src="#" />
-        <?php echo $_SESSION['gamedata']['miner']['level']; ?>
+        <span><?php echo $_SESSION['gamedata']['miner']['level']; ?></span>
+        <span class="tooltip"></span>
     </div>
-    <div onmouseenter="get_xp('trader', this);">
+    <div onclick="get_xp('trader', this);">
         <img src="#" />
-        <?php echo $_SESSION['gamedata']['trader']['level']; ?>
+        <span><?php echo $_SESSION['gamedata']['trader']['level']; ?></span>
+        <span class="tooltip"></span>
     </div>
-    <div onmouseenter="get_xp('warrior', this);">
+    <div onclick="get_xp('warrior', this);">
         <img src="#" />
-        <p> Warrior: </p><?php echo $_SESSION['gamedata']['warrior']['level']; ?>
+        <span><?php echo $_SESSION['gamedata']['warrior']['level']; ?></span>
+        <span class="tooltip"></span>
     </div>
     <div>
         <img src="#" />
-        <p> Adventurer: </p><?php echo 1; ?>
+        <span> Adventurer: </span><?php echo 1; ?>
+        <span class="tooltip"></span>
     </div>
 </div>
 <div id="log">
@@ -54,3 +60,6 @@
 <div id="news">
     <img id="" src="#"  width="20px" height="20px" onclick="closeNews();" />
 </div>
+<?php if(strlen($_SESSION['gamedata']['game_message']) > 3):?>
+    <script>getgMessage();</script>
+<?php endif;?>

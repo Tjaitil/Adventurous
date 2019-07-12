@@ -11,9 +11,9 @@
         </header>
         <section>
             <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
-            <?php var_dump($this->data); ?>
             <div id="farmer">
                 <table id="highscores">
+                    <caption> Farmer <img src="<?php echo constant('ROUTE_IMG'); ?> . 'farmer.jpg'"></caption>
                     <thead>
                         <tr>
                             <td> Name: </td>
@@ -32,6 +32,7 @@
             </div>
             <div id="miner">
                 <table>
+                    <caption> Miner <img src="<?php echo constant('ROUTE_IMG'); ?> . 'Miner.jpg'"></caption>
                     <thead>
                         <tr>
                             <td> Name: </td>
@@ -50,6 +51,7 @@
             </div>
             <div id="trader">
                 <table>
+                    <caption> Trader <img src="<?php echo constant('ROUTE_IMG'); ?> . 'trader.jpg'"></caption>
                     <thead>
                         <tr>
                             <td> Name: </td>
@@ -68,6 +70,7 @@
             </div>
             <div id="warrior">
                 <table>
+                    <caption> Warrior <img src="<?php echo constant('ROUTE_IMG'); ?> . 'warrior.jpg'"></caption>
                     <thead>
                         <tr>
                             <td> Name: </td>
@@ -86,6 +89,7 @@
             </div>
             <div id="total">
                 <table id="highscores">
+                    <caption> Total </caption>
                     <thead>
                         <tr>
                             <td> Name: </td>

@@ -1,4 +1,14 @@
 <?php
+    function amount($value) {
+        switch(true) {
+            case $value >= 1000:
+                return round($value / 1000, 1) . 'k' ;
+                break;
+            default:
+                return $value;
+                break;
+        }
+    }
     function url($url = false) {
         if($url == false) {
             $url = $_SERVER['REQUEST_URI'];
@@ -14,15 +24,23 @@
         foreach($_SESSION['gamedata']['inventory'] as $key): ?>
             <div class="inventory_item">
                 <div class="inventory_buttons">
-                    <button onclick="insert(this, 1);"> 1 </button>
-                    <button onclick="insert(this, 5);"> 5 </button>
-                    <button onclick="insert(this, 'x');"> x </button>
-                    <button onclick="insert(this, 'all');"> All </button>
+                    <!--
+                    --><button
+                        onclick="insert(this, 1);"> 1 </button><!--
+                    --><button
+                        onclick="insert(this, 5);"> 5 </button><!--
+                    --><button
+                        onclick="insert(this, 'x');"> x </button><!--
+                    --><button
+                        onclick="insert(this, 'all');"> All </button><!--
+                    -->
                 </div>
-                <figure><img src="<?php echo constant('ROUTE_IMG') . $key['item'] . '.jpg';?>" />
-                    <figcaption> x <?php echo ucwords($key['item']); ?></figcaption>
+                <figure title="<?php echo ucwords($key['item']); ?>" onclick="show_title(this, true);">
+                <img src="<?php echo constant('ROUTE_IMG') . $key['item'] . '.jpg';?>" />
+                <figcaption class="tooltip"></figcaption>
                 </figure>
-                <span id="item_amount"><? echo $key['amount'];?></span>
+                <span id="item_amount"><? echo amount($key['amount']);?></span>
+                
             </div>
         <?php endforeach; break; ?>
         <?php  
@@ -31,7 +49,7 @@
             <?php foreach($_SESSION['gamedata']['inventory'] as $key): ?>
             <div class="inventory_item">    
                 <figure onclick="select(this);"><img src="<?php echo constant('ROUTE_IMG') . $key['item'] . '.jpg';?>" />
-                    <figcaption><? echo $key['amount'];?> x <?php echo ucwords($key['item']); ?></figcaption>
+                    <figcaption><? echo amount($key['amount'])?> x <?php echo ucwords($key['item']); ?></figcaption>
                 </figure>          
             </div>
             <? endforeach; ?>

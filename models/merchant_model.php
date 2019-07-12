@@ -22,13 +22,12 @@
             }
 
             $data = array();
-            $sql = "SELECT item, " . $this->session['location'] . ", cost FROM merchants";
+            $sql = "SELECT item, {$this->session['location']}, cost FROM merchants";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(":amount", $param_amount, PDO::PARAM_STR);
             $param_amount = 0;
             $stmt->execute();
-            $city = $_SESSION['gamedata']['location'];
-            $data['city'] = $city;
+            $data['city'] = $this->session['location'];
             $data['shop'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
             $sql2 = "SELECT assignment_amount, assignment_id, cart, delivered,
@@ -55,7 +54,7 @@
                      WHERE base=:base";
             $stmt5 = $this->conn->prepare($sql5);
             $stmt5->bindParam(":base", $param_city, PDO::PARAM_STR);
-            $param_city = $_SESSION['gamedata']['location'];
+            $param_city = $this->session['location'];
             $stmt5->execute();
             $data['trader_assignments'] = $stmt5->fetchAll(PDO::FETCH_ASSOC);
             

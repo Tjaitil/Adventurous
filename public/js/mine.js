@@ -20,7 +20,7 @@
                         var t = document.createTextNode("Fetch Minerals");
                         btn.appendChild(t);
                         btn.addEventListener("click", updateMine);
-                        document.getElementById('growing').appendChild(btn);
+                        document.getElementById('mining').appendChild(btn);
                         document.getElementById("time").innerHTML = "Finished";
                     }
                     else if (distance < 0) {
@@ -30,7 +30,7 @@
                 }, 1000);
             }
         };
-        ajaxRequest.open("GET", "/handlers/handler_g.php?&model=miningarea" + "&method=checkCountdown");
+        ajaxRequest.open("GET", "/handlers/handler_g.php?&model=mine" + "&method=checkCountdown");
         ajaxRequest.send();
     }
 
@@ -40,6 +40,7 @@
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function() {
             if(this.readyState == 4 && this.status == 200) {
+                console.log(this.responseText);
                 if(this.responseText.search("ERROR") != -1) {
                     gameLog(this.responseText);
                 }

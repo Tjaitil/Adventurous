@@ -19,7 +19,6 @@
             $datetime = new DateTime($row['adventure_countdown']);
             $date = date_timestamp_get($datetime);
             $row['adventure_countdown'] = $date;
-            $this->closeConn();
             js_echo($row);
         }
         
@@ -29,7 +28,6 @@
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
-            $this->closeConn();
             return $stmt->rowCount();
         }
         
@@ -59,7 +57,6 @@
             $param_username = $this->username;
             $stmt3->execute();
             $data['requests'] = $stmt3->fetchAll(PDO::FETCH_ASSOC);
-            $this->closeConn();
             return $data;
         }
         
@@ -71,7 +68,6 @@
             $param_adventure_id = $adventure_id;
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $this->closeConn();
             js_echo($row);
         } 
         public function currentAdventure() { 
@@ -128,7 +124,6 @@
                 $param_username = $data['info']['warrior'];
                 $stmt->execute();
                 $data['warrior'] = $stmt->fetch(PDO::FETCH_ASSOC);
-                var_dump($data['warrior']);
                 
                 $sql = "SELECT required, amount FROM adventure_requirments WHERE location=:location AND difficulty=:difficulty";
                 $stmt = $this->conn->prepare($sql);
@@ -144,7 +139,6 @@
                 $stmt = $this->conn->prepare($sql);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_username = $data['info']['trader'];
-                var_dump($data['info']['trader']);
                 $stmt->execute();
                 $row = $stmt->fetch(PDO::FETCH_NUM);
                 $data['trader_diplomacy'] = $row[0];

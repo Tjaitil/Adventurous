@@ -12,10 +12,12 @@
         public function getData() {
             $data = array();
             
-            $sql = "SELECT miner_level, permits, mining_type, mining_countdown, fetch_minerals FROM miner
-                    WHERE username=:username";          
+            $sql = "SELECT permits, mining_type, mining_countdown, fetch_minerals FROM miner
+                    WHERE location=:location AND username=:username";          
             $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_location = $this->session['location'];
             $param_username = $this->username;
             $stmt->execute();
             $data['minerData'] = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -36,15 +38,16 @@
             $stmt3->execute();
             $data['workforceData'] = $stmt3->fetch(PDO::FETCH_ASSOC);
 
-            $this->closeConn();
             return $data;
         }
         
         // Function to echo date for ajax request
         public function checkCountdown($check = false) {
-            $sql = "SELECT mining_countdown, fetch_minerals FROM miner WHERE username= :username";
+            $sql = "SELECT mining_countdown, fetch_minerals FROM miner WHERE location=:location AND username=:username";
             $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_location = $this->session['location'];
             $param_username = $this->username;
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);

@@ -46,8 +46,6 @@
             $this->adventureData['location'] = $_POST['location'];
             $this->loadModel('setadventure', true);
             $this->model->newAdventure($this->adventureData);
-            header("Location: /adventures");
-            exit();
         }
         
         public function calculateContribution() {

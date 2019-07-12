@@ -81,6 +81,7 @@
                     update_stockpile($this->conn, $this->username, $item, $quantity);
                     update_inventory($this->conn, $this->username, $item, -$quantity, true);
                 }
+                
                 $this->conn->commit();
             }
             catch(Exception $e) {

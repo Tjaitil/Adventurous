@@ -1,5 +1,5 @@
 <?php
-    class setmine_model extends model {
+    class SetMine_model extends model {
         public $username;
         public $session;
         
@@ -18,13 +18,12 @@
             $param_location = $this->session['location'];
             $stmt->execute();
             if(!$stmt->rowCount() > 0) {
-                $this->gameMessage("ERROR: You are in the wrong city to grow this crop!");
+                $this->gameMessage("ERROR: You are in the wrong city to mine this mineral");
                 return false;
             }
-            $data = array();
-            $data['mineral'] = $stmt->fetch(PDO::FETCH_ASSOC);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
             unset($stmt);
-            return $data;
+            return $row;
         }
         
         public function setMineData($mining_data) {
@@ -32,20 +31,22 @@
             try {
                 $this->conn->beginTransaction();
                 $sql = "UPDATE miner SET mining_type=:mining_type, mining_countdown=:mining_countdown,
-                        permits=:permits, fetch_minerals=1 WHERE username=:username";
+                        permits=:permits, fetch_minerals=1 WHERE location=:location AND username=:username";
                 $stmt = $this->conn->prepare($sql);
                 $stmt->bindParam(":mining_type", $param_mining_type, PDO::PARAM_STR);
                 $stmt->bindParam(":mining_countdown", $param_mining_countdown, PDO::PARAM_STR);
                 $stmt->bindParam(":permits", $param_permits, PDO::PARAM_STR);
+                $stmt->bindParam(":location", $param_location, PDO::PARAM_STR); 
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_mining_type = $mining_data['mineral_type'];
                 $param_mining_countdown = $mining_data['mining_countdown'];
                 $param_permits = $mining_data['permits'];
+                $param_location = $this->session['location'];
                 $param_username = $this->username;
                 $stmt->execute();
                 
                 $sql2 = "UPDATE miner_workforce SET avail_workforce=:avail_workforce,
-                         miner_workforce=:miner_workforce WHERE username=:username";
+                {$this->session['location']}_workforce=:miner_workforce WHERE username=:username";
                 $stmt2 = $this->conn->prepare($sql2);
                 $stmt2->bindParam(":avail_workforce", $param_avail_workforce, PDO::PARAM_STR);
                 $stmt2->bindParam(":miner_workforce", $param_miner_workforce, PDO::PARAM_STR);
@@ -66,7 +67,7 @@
                 return false;
             }
             $this->closeConn();
-            $_SESSION['gamedata']['miner']['miner_xp'] = $experience;
+            $_SESSION['gamedata']['miner']['xp'] = $experience;
         }
     }
 ?>

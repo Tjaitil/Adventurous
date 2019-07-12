@@ -15,9 +15,6 @@
             <?php endif?>
         <div id="announcement"><button onclick="exit();">Exit</button></div>
         <section>
-            <?php if(strlen($_SESSION['gamedata']['game_message']) > 3):?>
-                <script>getgMessage();</script>
-            <?php endif;?>
             <?php require(constant("ROUTE_VIEW") . 'layout.php');?>
             
             <a href="/army-missions"> Missions</a>

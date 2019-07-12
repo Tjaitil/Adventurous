@@ -14,10 +14,6 @@
         }
         
         public function newAssignment($assignment_id, $favor = false) {
-            if($this->session['profiency'] != 'trader') {
-                "Your current profiency is not trader";
-                return false;
-            }
             /*$assignment_amount = str_replace(" ", "+", $assignment_amount);*/
             $sql = "SELECT assignment_id, cart FROM trader WHERE username=:username";
             $stmt = $this->conn->prepare($sql);
@@ -131,7 +127,6 @@
             }
             $this->closeConn();
             $this->gameMessage("New assignment taken", true);
-            echo 
         }
     }
 ?>

@@ -12,13 +12,12 @@
             <script src="public/js/time.js"></script>
         </header>
         <section>
-            <?php include(constant("ROUTE_VIEW") . 'layout.php');?>
-            <?php var_dump($_SESSION); ?>
+            <?php require(constant("ROUTE_VIEW") . 'layout.php');?>
             <div id="public_chat">
             <div id="chat">
-                    <ul>
-                        
-                    </ul>
+                <ul>
+                    <?php get_template('chat', $this->data['chat']);?>            
+                </ul>
             </div>
             <input type="text" id="text" />
             <button type="button" onclick="chat();"> Chat </button>
@@ -51,33 +50,11 @@
                 <!--- <script src="cityhandler.js"> --->
                 </script>
             </div>
-            <div id="ressources_view">
-                <table id="ressource_table">
-                    <thead>
-                        <tr>
-                            <th>Type:</th>
-                            <th>Quantity: (Including all types)</th>
-                        </tr>
-                        <tr>
-                            <td>Gold</td>
-                            <td><?php echo $_SESSION['gamedata']['gold']; ?></td>
-                        </tr>
-                        <tr>
-                            <td>Artefacts</td>
-                            <td>?</td>
-                        </tr>
-                        <tr>
-                            <td> Foods </td>
-                            <td> ? </td>
-                        </tr>
-                        <tr>
-                            <td> Minerals</td>
-                            <td>    ?</td>
-                        </tr>
-                    </thead>
+            <div id="countdowns">
+                <table>
+                    <caption> Countdowns: </caption>
+                    
                 </table>
-                </br>
-                <a href="/stockpile"> Check out full storage:</a>
             </div>
             <script src="<?php echo constant('ROUTE_JS');?>main.js"></script>
         </section>

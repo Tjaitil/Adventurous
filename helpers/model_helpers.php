@@ -121,9 +121,9 @@
         if(in_array($profiency, $profiencies) == false) {
             return false;
         }
-        $sql = "UPDATE user_levels SET " . $profiency . "_xp=:xp WHERE username=:username";
+        $sql = "UPDATE user_levels SET {$profiency}_xp=:xp WHERE username=:username";
         $stmt = $conn->prepare($sql);
-        $stmt->bindParam(":xp", $param_xp, PDO::PARAM_STR);
+        $stmt->bindParam(":xp", $param_xp, PDO::PARAM_INT);
         $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
         $param_xp = $xp;
         $param_username = $username;

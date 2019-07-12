@@ -122,7 +122,7 @@
             try {
                 $this->conn->beginTransaction();
                 $sql =  "UPDATE trader SET delivered=:delivered, cart_amount=0 WHERE username=:username";
-                $stmt = $thits->conn->prepare($sql);
+                $stmt = $this->conn->prepare($sql);
                 $stmt->bindParam(":delivered", $param_delivered, PDO::PARAM_STR);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_delivered = $delivered;

@@ -11,7 +11,7 @@
         
         public function fetchData () {
             $sql = "SELECT username, location, destination, profiency FROM user_data
-                    WHERE username= :username";
+                    WHERE username=:username";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
@@ -19,7 +19,7 @@
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $profiency = $row['profiency'];
             //Workforce data for farmer
-            $sql3 = "SELECT workforce_total, avail_workforce FROM farmer_workforce WHERE username= :username";
+            $sql3 = "SELECT workforce_total, avail_workforce FROM farmer_workforce WHERE username=:username";
             $stmt3 = $this->conn->prepare($sql3);
             $stmt3->bindParam(":username", $param_username, PDO::PARAM_STR);
             $stmt3->execute();

@@ -28,7 +28,6 @@
                 $param_location = $this->session['location'];
                 $stmt2->execute();
                 $data['crop_types'] = $stmt2->fetchAll(PDO::FETCH_ASSOC);
-                var_dump($this->session['location']);
                 
                 $sql3 = "SELECT avail_workforce, effect_level FROM farmer_workforce WHERE username=:username";
                 $stmt3 = $this->conn->prepare($sql3);

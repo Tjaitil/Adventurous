@@ -1,6 +1,5 @@
 <?php
     class handler {
-        
         function __construct($model = false) {
             require('../root/routes.php');
             require('../' . constant('ROUTE_HELPER') . 'general_helpers.php');

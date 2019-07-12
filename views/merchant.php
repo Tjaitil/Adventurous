@@ -30,7 +30,7 @@
                         </tr>
                     </thead>
                     <tr>
-                        <?php get_template('assigment', $this->data); ?>
+                        <?php get_template('assignment', $this->data);?>
                     </tr>
                 </table>
                 <p>Cart Capasity: <?php echo $this->data['trader_data']['capasity'];?></p>
@@ -41,11 +41,14 @@
                 <div id="deliver">
                     <button onclick="deliver();">Deliver</button>
                 </div>
+                <div id="inventory">
+                    <?php require(constant('ROUTE_VIEW') . 'inventory.php'); url();?>
+                </div>
                 <script src="<?php echo constant('ROUTE_JS') . $name . '.js';?>"></script>
             </div>
         </section>
         <aside>
-            <?php require('views/aside.php'); ?>
+            <?php require(constant('ROUTE_VIEW') . '/aside.php');?>
         </aside>
     </body>
 </html>

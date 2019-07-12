@@ -53,7 +53,10 @@
                 case "travelbureau":
                     $model->$methodname($_POST['shop'], $_POST['item']);
                     break;
-                case 'market':
+                case "Main":
+                    $model->$methodname($_POST['message']);
+                    break;
+                case "market":
                     switch($methodname) {
                         case 'cancelOffer':
                             $model->$methodname($_POST['id']);
@@ -63,7 +66,7 @@
                             break;
                     }
                     break;
-                                case 'market':
+                case 'market':
                     //method getData()
                     if($_POST['mNumber'] == 1) {
                         $model->$methodname($js1 = true);
@@ -75,7 +78,7 @@
                         $model->$methodname($js1 = true, $js2 = true, $js3 = true);
                     }
                     break;
-                case 'citycentre':
+                case "citycentre":
                     if($methodname === 'changeArtefact' ) {
                         $model->$methodname($_POST['artefact']);
                     }

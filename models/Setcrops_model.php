@@ -51,7 +51,7 @@
                 try {
                     $this->conn->beginTransaction();
                     
-                    $sql = "UPDATE Farmer SET fields_avail=:fields_avail, grow_type=:grow_type,
+                    $sql = "UPDATE farme SET fields_avail=:fields_avail, grow_type=:grow_type,
                             grow_quant=:grow_quant, grow_countdown=:grow_countdown, plot1_harvest='true'
                             WHERE username=:username";
                     $stmt = $this->conn->prepare($sql);

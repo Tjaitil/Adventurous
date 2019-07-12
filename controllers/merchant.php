@@ -9,13 +9,6 @@
         public function index() {
             $this->loadModel('Merchant', true);
             $this->data = $this->model->getData();
-            require(constant('ROUTE_HELPER') . 'splittext.php');
-            $i = 0;
-            foreach($this->data['trader_assignments'] as $key) {
-                /*$this->data['trader_assignments'][$i]['cargo'] = str_replace("_", " ", $this->data['trader_assignments'][$i]['cargo']);*/
-                $this->data['trader_assignments'][$i]['reward'] = splitText($key['reward']);
-                $i++;
-            }
             if($this->data['trader_data']['assignment_id'] != 0) {
                 $this->data['trader_data']['assignment'] =
                 "Carrying " . $this->data['trader_data'][0]['cargo'] . " from " . $this->data['trader_data'][0]['base'] . " to " .

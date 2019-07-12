@@ -10,14 +10,11 @@
             <?php require(constant('ROUTE_VIEW') . 'header.php'); ?>
         </header>
         <section>
-            <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
-            <?php if(strlen($_SESSION['gamedata']['game_message']) > 3):?>
-                <script>getgMessage();</script>
-            <?php endif;?>
+            <?php require(constant('ROUTE_VIEW') . 'layout.php');?> 
             <p id=""> Mine</p></br>
             <p id=""><?php echo (isset($this->data['notification'])) ? $this->data['notification'] : ""; ?></p>
             <?php print_r($this->error);?>
-            <p id="growing"></p>
+            <p id="mining"></p>
             <p id="time"></p>
             <form method="post" action="" id="form">
                 <label for="type"> Select mineral type:</label>

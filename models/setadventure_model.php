@@ -10,12 +10,14 @@
         }
         
          public function newAdventure($adventure_data) {
+            $categories = array();
+            
+            
             $profiences = array('farmer', 'miner', 'trader', 'warrior');
             if(array_search($this->session['profiency'], $profiences) === false) {
                 print "ERROR";
                 return false;
             }
-        
             try {
                 $this->conn->beginTransaction();
                 
@@ -26,11 +28,11 @@
                 $stmt->execute();
                 $adventure_id = $this->conn->lastInsertId();
                 
-                $sql2 = "UPDATE adventure SET current_adventure=:current_adventure WHERE username=:username";
+                $sql2 = "UPDATE current_adventure SET adventure_id=:adventure_id WHERE username=:username";
                 $stmt2 = $this->conn->prepare($sql2);
-                $stmt2->bindParam(":current_adventure", $param_current_adventure, PDO::PARAM_STR);
+                $stmt2->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_INT);
                 $stmt2->bindParam(":username", $param_username, PDO::PARAM_STR);
-                $param_current_adventure = $adventure_id;
+                $param_adventure_id = $adventure_id;
                 $param_username = $this->username;
                 $stmt2->execute();
                 
@@ -64,9 +66,10 @@
             catch(Exception $e) {
                 $this->conn->rollBack();
                 new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
-                $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
+                $this->gameMessage("ERROR: Something unexpected happened, please try again");
                 return false;
             }
+            echo "new adventure";
             $this->closeConn();
         }
         

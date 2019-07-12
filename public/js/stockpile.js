@@ -35,8 +35,7 @@
             return false;
         }
         var class_name = element.parentNode.parentNode;
-        var fig_text = class_name.children[1].children[1].innerHTML.split("x ");
-        var item = fig_text[1];
+        var item = class_name.children[1].children[1].innerHTML.trim();
         var data = "model=stockpile" + "&method=updateInventory" + "&item=" + item + "&insert=" + '1' + "&quantity=" + quantity;
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {

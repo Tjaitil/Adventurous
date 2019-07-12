@@ -10,13 +10,13 @@
             if(!isset($_SESSION['gamedata'])) {
                 $this->fetchData();
             }
+            $this->loadModel('Main', true);
+            $this->data = $this->model->getData();
             $this->render('main', 'Main', false);
         }
         function fetchData() {
             $this->loadModel('gamedata', true);
             $this->gamedata = $this->model->fetchData();
-            $this->loadModel('Main', true);
-            $this->data = $this->model->getData();
             $_SESSION['gamedata'] = $this->gamedata;
             $_SESSION['gamedata']['travelling'] = false;
             $profiency = $_SESSION['gamedata']['profiency'];

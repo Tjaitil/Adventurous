@@ -24,11 +24,47 @@
                 
         
         var c = 0;
+        
+        var timer = 0;
 
-        function chat() {
-            /*var chat = document.getElementById("chat");
+        function chat(write = false) {
+            timer = 1;
             var text = document.getElementById("text").value;
-            // allow 1px inaccuracy by adding 1
+            ajaxRequest = new XMLHttpRequest();
+            var data = "model=Main" + "&method=chat" + "&message=" + text;
+            ajaxRequest.onload = function () {
+                if(this.readyState == 4 && this.status == 200) {
+                    console.log(this.responseText);
+                    document.getElementById("chat").children[0].innerHTML += this.responseText;
+                }
+            };
+            ajaxRequest.open('POST', "handlers/handler_p.php");
+            ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            ajaxRequest.send(data);
+            updateScroll();
+            timer = 0;
+        }
+        
+        function getChat() {
+            if(timer != 0) {
+                return false;
+            }
+            console.log(getChat);
+            var chat = document.getElementById("chat").children[0].lastElementChild.split("[");
+            var element = chat[0];
+            ajaxRequest = new XMLHttpRequest();
+            ajaxRequest.onload = function () {
+                if(this.readyState == 4 && this.status == 200) {
+                    document.getElementById("chat").children[0].innerHTML += this.responseText;
+                    updateScroll();
+                }
+            };
+            ajaxRequest.open('GET', "handlers/handler_g.php?model=Main" + "&method=chat" + "&clock=" + element);
+            ajaxRequest.send();
+        }
+        
+        function updateScroll() {
+            var chat = document.getElementById("chat");
             var isScrolledToBottom = chat.scrollHeight - chat.clientHeight <= chat.scrollTop + 1;
             console.log(chat.scrollHeight - chat.clientHeight,  chat.scrollTop + 1);
             var newElement = document.createElement("LI");
@@ -37,25 +73,9 @@
             // scroll to bottom if isScrolledToBotto
             if(isScrolledToBottom) {
               chat.scrollTop = chat.scrollHeight - chat.clientHeight;
-            }*/
-            var chat = document.getElementById("chat");
-            var text = document.getElementById("text").value;
-            var scrolledDown = chat.scrollHeight - chat.clientHeight <= chat.scrollTop + 1;
-            var element = document.createElement("LI");
-            element.innerHTML = text;
-            chat.children[0].appendChild(element);
-            if(scrolledDown) {
-                chat.scrollTop = chat.scrollHeight;
             }
-        }
-        
-        function updateScroll() {
-            var chat = document.getElementById("chat");
-            console.log(chat.scrollHeight);
-            chat.scrollTop = chat.scrollHeight;
-            console.log(chat.scrollTop);
         }   
-        
+        setInterval(getChat, 2000);
         window.onload = ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
             if(this.readyState == 4 && this.status == 200) {

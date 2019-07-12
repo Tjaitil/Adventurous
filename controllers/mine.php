@@ -15,7 +15,6 @@
             $this->data = $this->model->getData();
             $this->dbAvail_workforce = $this->data['workforceData']['avail_workforce'];
             $this->permits = $this->data['minerData']['permits'];
-            $this->profiencyCheck('miner');
             $this->post();
             $this->renderWE('mine', 'Mine', $this->data, $this->error);
         }
@@ -24,7 +23,7 @@
             if($_SERVER['REQUEST_METHOD'] === "POST") {
                 $db_test = $this->model->checkCountdown($check = true);
                 if($db_test == false) {
-                    $_SESSION['gamedata']['game_message'] = "ERROR: You are already mining!";
+                    $this->model->gameMessage("ERROR: You are already mining!");
                     return false;
                 }
                 require_once(constant('ROUTE_HELPER') . 'formhandler.php');
@@ -69,22 +68,22 @@
             $result_explode = explode('|', $_POST['type']);
             $this->mining_data['mineral_type'] = $result_explode[0];
             $this->mining_data['workforce_quant'] = $_POST['workforce'];
-            $this->loadModel('setmine', true);
-            $data = $this->model->getMineralTypeData($this->mining_data['mineral_type']);
-            if(!$data != false) {
+            $this->loadModel('SetMine', true);
+            $mineral_data = $this->model->getMineralTypeData($this->mining_data['mineral_type']);
+            if($mineral_data != false) {
                 $this->prepareData($mineral_data);
             }
         }
         
-        public function prepareData($mineral_data) { 
-            $addTime = $mineral_data['mineral']['time']; - (1.5 * $this->data['workforceData']['effect_level']);
+        public function prepareData($mineral_data) {
+            $addTime = $mineral_data['time']; - (1.5 * $this->data['workforceData']['effect_level']);
             $date = date("Y-m-d H:i:s");
             $newDate = new DateTime($date);
             $newDate->modify("+{$addTime} seconds");
             $this->mining_data['mining_countdown'] = date_format($newDate, "Y-m-d H:i:s");
-            $this->mining_data['permits'] = $this->data['minerData']['permits'] - $mineral_data['mineral']['permit_cost'];
-            $this->mining_data['new_Workforce'] = $this->dbAvail_workforce - $this->mining_data['workforceQuant'];
-            $this->mining_data['experience'] = $mineralTypeData =
+            $this->mining_data['permits'] = $this->data['minerData']['permits'] - $mineral_data['permit_cost'];
+            $this->mining_data['new_workforce'] = $this->dbAvail_workforce - $this->mining_data['workforce_quant'];
+            $this->mining_data['experience'] = $mineral_data['experience'] * 0.20;
             $this->model->setMineData($this->mining_data);
         }
     }
