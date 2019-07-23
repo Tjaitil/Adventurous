@@ -19,7 +19,7 @@ section {
     border: inset 2px;
     float: right;
     text-align: center;
-    padding: 5px;
+    padding: 1%;
     color: #392714;
     overflow: hidden;
     position: relative;
@@ -100,7 +100,12 @@ section {
     width: 30px;
     height: 30px;
 }
+.item {
+    width: 50px;
+    height: 50px;
+}
 #inventory {
+    box-sizing: border-box;
     float: right;
     width: 30%;
     height: 400px;
@@ -117,10 +122,6 @@ section {
     height: 100%;
     position: absolute;
 }*/
-#inventory img {
-    width: 50px;
-    height: 50px;
-}
 #inventory figure {
     position: relative;
 }
@@ -154,20 +155,28 @@ section {
     width: 100px;
     height: 90px;
 }
+.stockpile_item img, .inventory_item img {
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+}
+/*
 .stockpile_buttons {
     float: right;
     top: 1px;
     left: 30px;
     width: 20px;
     height: 10px;
+    cursor: pointer;
 }
-.inventory_buttons {
+*/
+.inventory_buttons, .stockpile_buttons {
     visibility: hidden;
     font-size: 0;
     padding: 10%;
 }
 
-.inventory_buttons button {
+.inventory_buttons button, .stockpile_buttons button {
     margin: 0px;
     float: left;
     display: block;

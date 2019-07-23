@@ -27,39 +27,45 @@
         
         var timer = 0;
 
-        function chat(write = false) {
-            timer = 1;
+        function chat() {
+            console.log("chat");
             var text = document.getElementById("text").value;
+            if(text.length == 0) {
+                return false;
+            }
+            timer = 1;
             ajaxRequest = new XMLHttpRequest();
-            var data = "model=Main" + "&method=chat" + "&message=" + text;
+            var data = "model=Main" + "&method=Chat" + "&message=" + text;
             ajaxRequest.onload = function () {
                 if(this.readyState == 4 && this.status == 200) {
                     console.log(this.responseText);
-                    document.getElementById("chat").children[0].innerHTML += this.responseText;
+                    updateScroll(this.responseText);
                 }
             };
             ajaxRequest.open('POST', "handlers/handler_p.php");
             ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             ajaxRequest.send(data);
-            updateScroll();
             timer = 0;
         }
         
         function getChat() {
+            var chat = document.getElementById("chat");
+            chat.scrollTop = chat.scrollHeight - chat.clientHeight;
             if(timer != 0) {
                 return false;
             }
-            console.log(getChat);
-            var chat = document.getElementById("chat").children[0].lastElementChild.split("[");
+            console.log("getChat");
+            chat = document.getElementById("chat").children[0].lastElementChild.innerHTML.match(/\[(.*)\]/).pop();
+            console.log(chat);
             var element = chat[0];
             ajaxRequest = new XMLHttpRequest();
             ajaxRequest.onload = function () {
                 if(this.readyState == 4 && this.status == 200) {
-                    document.getElementById("chat").children[0].innerHTML += this.responseText;
-                    updateScroll();
+                    console.log(this.responseText);
+                    updateScroll(this.responseText);
                 }
             };
-            ajaxRequest.open('GET', "handlers/handler_g.php?model=Main" + "&method=chat" + "&clock=" + element);
+            ajaxRequest.open('GET', "handlers/handler_g.php?model=Main" + "&method=getChat" + "&clock=" + element);
             ajaxRequest.send();
         }
         
@@ -67,15 +73,15 @@
             var chat = document.getElementById("chat");
             var isScrolledToBottom = chat.scrollHeight - chat.clientHeight <= chat.scrollTop + 1;
             console.log(chat.scrollHeight - chat.clientHeight,  chat.scrollTop + 1);
-            var newElement = document.createElement("LI");
-            newElement.innerHTML = text;
-            chat.children[0].appendChild(newElement);
+            document.getElementById("chat").children[0].innerHTML += this.responseText;
             // scroll to bottom if isScrolledToBotto
             if(isScrolledToBottom) {
               chat.scrollTop = chat.scrollHeight - chat.clientHeight;
             }
         }   
-        setInterval(getChat, 2000);
+        /*setInterval(getChat, 2000);*/
+        window.onload = getChat();
+         
         window.onload = ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
             if(this.readyState == 4 && this.status == 200) {

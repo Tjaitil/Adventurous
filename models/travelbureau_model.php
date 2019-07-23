@@ -115,7 +115,6 @@
                     }
                     break;
             }
-
         
             if(!$row[$city] > 0 ) {
                 $this->gameMessage("ERROR: There are none left of this item in stock", true);

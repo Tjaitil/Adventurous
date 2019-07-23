@@ -16,7 +16,7 @@
         }
         
         public function getChat($clock = false) {
-            $sql = "SELECT id, clock, username, message FROM public_chat ORDER BY clock DESC LIMIT 30";
+            $sql = "SELECT id, clock, username, message FROM public_chat ORDER BY clock ASC LIMIT 30";
             $stmt = $this->conn->query($sql);
             $stmt->execute();
             if($clock == false) {
@@ -24,12 +24,14 @@
             }
             else {
                 $sql = "SELECT clock, username, message FROM public_chat
-                        WHERE clock > (SELECT id FROM public_chat WHERE clock=:clock ORDER BY ID ASC LIMIT 1) AS time";
+                        WHERE id >= (SELECT id FROM public_chat WHERE clock=:clock ORDER BY ID ASC LIMIT 1)
+                        ORDER BY clock DESC";
                 $stmt = $this->conn->prepare($sql);
                 $stmt->bindParam(":clock", $param_clock, PDO::PARAM_STR);
                 $param_clock = $clock;
                 $stmt->execute();
-                $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                get_template('chat', $data, true);
             }
         }
         
@@ -43,8 +45,7 @@
             $param_username = $this->username;
             $param_message = $message;
             $stmt->execute();
-            $data = $this->getChat($param_clock);
-            get_template('chat', $data, true);
+            $this->getChat($param_clock);
         }
     }
 ?>

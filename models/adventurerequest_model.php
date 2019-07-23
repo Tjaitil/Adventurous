@@ -137,7 +137,7 @@
                 return false;
             }
             
-            $sql = "SELECT adventure_id, " . $row['role'] .  " FROM adventures WHERE adventure_id=:adventure_id";
+            $sql = "SELECT adventure_id, difficulty, {$row['role']} FROM adventures WHERE adventure_id=:adventure_id";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_STR);
             $param_adventure_id = $row['adventure_id'];
@@ -160,7 +160,7 @@
             try {
                 $this->conn->beginTransaction();
             
-                $sql = "UPDATE adventures SET " . $row['role'] . "=:username WHERE adventure_id=:adventure_id";
+                $sql = "UPDATE adventures SET {$row['role']}=:username WHERE adventure_id=:adventure_id";
                 $stmt = $this->conn->prepare($sql);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_STR);
@@ -168,7 +168,7 @@
                 //$param_username is already defined;
                 $stmt->execute();
                 
-                $sql2 = "INSERT INTO adventures_" . $row['role'] . " (adventure_id, username, provided)
+                $sql2 = "INSERT INTO adventures_{$row['role']} (adventure_id, username, provided)
                          VALUES(:adventure_id, :username, 0)";
                 $stmt2 = $this->conn->prepare($sql2);
                 $stmt2->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_STR);
@@ -189,7 +189,7 @@
                 $stmt4->bindParam(":username", $param_username, PDO::PARAM_STR);
                 //$param_username and $param_adventure_id is already defined
                 $stmt4->execute();
-                
+                $this->adventureRequest($row['role'], $row3['difficulty']);
                 $this->conn->commit();
             }
             catch(Exception $e) {
@@ -199,6 +199,92 @@
                 return false;
             }
             $this->closeConn();
+        }
+        
+        private function advRequirments($role, $difficulty) {    
+            $difficulties = array();
+            $difficulties['easy'] = array("grade" => 1, "multiplier" => 1);
+            $difficulties['medium'] = array("grade" => 2, "multiplier" => 1.3);
+            $difficulties['hard'] = array("grade" => 3, "multiplier" => 1.5);
+            
+            $requirments_amount = 2;
+            $adventure_req = array();
+            $adventure_req['trader'] = array("easy" => 2/3, "medium" => 4/6, "hard" => 8/10);
+            $adventure_req['item_amount'] = array("easy" => 3, "medium" => 4, "hard" => 5);
+            $adventure_req['warrior'] = array("melee", "ranged");
+            $requirments = array();
+            
+            
+            if($role == 'trader') {
+
+                $rand = explode("/", $adventure_req['trader'][$difficulty]);
+                $requirments[] = array('amount' => rand($rand[0], $rand[1]), "location" => "");
+            }
+            else if($role == 'warrior') {
+                for($i = 0; $i < count($requirments_amount); $i++ ) {
+                    if($difficulty_check)
+                    $requirments[] = array_rand($adventure_req[$role]);
+                }
+                $counts = array_count_values($requirments);
+                $requirments = array();
+                foreach($counts as $key => $value) {
+                    $requirments[] = array("requirment" => $value, "amount" => $key);
+                }
+            }
+            else {
+                //If $role is trader or warrior
+                //Query to get the item requirements
+                                //If $role is trader or warrior
+                //Query to get the item requirements
+                $count = $adventure_req['item_amount'][$difficulty] - 1;
+            
+                $sql = "SELECT name FROM adventure_req_items WHERE role=:role AND difficulty=:difficulty
+                    ORDER BY rand() LIMIT 1;";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindParam(":role", $param_role, PDO::PARAM_STR);
+                $stmt->bindParam(":difficulty", $param_difficulty, PDO::PARAM_INT);
+                $param_role = $role;
+                $param_difficulty = $difficulties[$difficulty]['grade'];
+                $stmt->execute();
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+                $sql = "(SELECT name as requirement, difficulty, amount_min, amount_max
+                    FROM adventure_req_items WHERE role=:role AND difficulty=:difficulty AND name=:name)
+                    UNION ALL
+                    (SELECT name as requirement, difficulty, amount_min, amount_max FROM adventure_req_items
+                    WHERE role=:role AND difficulty <= :difficulty AND name != :name
+                    ORDER BY RAND() LIMIT {$count})";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindParam(":role", $param_role, PDO::PARAM_STR);
+                $stmt->bindParam(":difficulty", $param_difficulty, PDO::PARAM_INT);
+                $stmt->bindParam(":name", $param_name, PDO::PARAM_STR);
+                $param_role = $role;
+                $param_difficulty = $difficulties[$difficulty]['grade'];
+                $param_name = $row['name'];
+                $stmt->execute();
+                
+                $i = 0;
+                while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $requirements[] = $row;
+                }
+            }
+            
+            $sql = "INSERT INTO adventure_requirments (required, amount) VALUES (:required, :amount)";
+            $stmt = $this->conn($sql);
+            foreach($requirments as $key) {
+                $stmt->bindParam();
+                $stmt->bindParam();
+                $param_required = $key['requirment'];
+                if(in_array($role, array("farmer", "miner")) === true) {
+                    $rand = explode("/", $key['amount']);
+                    $param_amount = rand($rand[0], $rand[1]);
+                    ($key['difficulty'] < $difficulty_grade) ? round($param_amount*= $difficulties[$difficulty]['multiplier']) : "";
+                }
+                else {
+                    $param_amount = $key['amount'];
+                }
+                $stmt->execute();
+            }
         }
     }
 ?>

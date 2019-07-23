@@ -32,7 +32,7 @@
                     }
                     else if (distance < 0) {
                         clearInterval(x);
-                        document.getElementById("time").innerHTML = "None";
+                        document.getElementById("time").innerHTML = "";
                     }
                 }, 1000);
             }
@@ -40,6 +40,16 @@
         ajaxRequest.open('GET', "handlers/handler_js.php?model=adventures" + "&method=getCountdown");
         ajaxRequest.send();
     }
+    
+    var figures = document.getElementsByTagName("FIGURE");
+    for(var i = 0; i < figures.length; i++) {
+        figures[i].addEventListener('click', handle);
+    }
+    
+    function handle() {
+        console.log(this);
+    }
+    
     
     function startAdventure() {
         ajaxRequest = new XMLHttpRequest();

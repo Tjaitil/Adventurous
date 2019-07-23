@@ -35,12 +35,11 @@
                         onclick="insert(this, 'all');"> All </button><!--
                     -->
                 </div>
-                <figure title="<?php echo ucwords($key['item']); ?>" onclick="show_title(this, true);">
+                <figure onclick="show_title(this, true);">
                 <img src="<?php echo constant('ROUTE_IMG') . $key['item'] . '.jpg';?>" />
-                <figcaption class="tooltip"></figcaption>
+                <figcaption class="tooltip"><?php echo ucwords($key['item']); ?></figcaption>
                 </figure>
                 <span id="item_amount"><? echo amount($key['amount']);?></span>
-                
             </div>
         <?php endforeach; break; ?>
         <?php  
@@ -48,9 +47,11 @@
             case 'adventures': ?>
             <?php foreach($_SESSION['gamedata']['inventory'] as $key): ?>
             <div class="inventory_item">    
-                <figure onclick="select(this);"><img src="<?php echo constant('ROUTE_IMG') . $key['item'] . '.jpg';?>" />
-                    <figcaption><? echo amount($key['amount'])?> x <?php echo ucwords($key['item']); ?></figcaption>
-                </figure>          
+                <figure onclick="show_title(this, false);">
+                    <img src="<?php echo constant('ROUTE_IMG') . $key['item'] . '.jpg';?>" />
+                    <figcaption class="tooltip"><?php echo ucwords($key['item']);?></figcaption>
+                </figure>
+                <span id="item_amount"><? echo amount($key['amount']);?></span>
             </div>
             <? endforeach; ?>
         

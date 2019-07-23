@@ -9,11 +9,20 @@
 #menu ul {
     list-style-type: none;    
 }
-#inventory {
-    display: block;
-    margin-top:50px;
-}
 #hidden {
-    display: none;
-    
+    display: none;   
+}
+#stockpile {
+    box-sizing: border-box;
+    padding: 5px;
+    width: 69.5%;
+    border: 3px double black;
+    background-color: #724e27;
+    color: white;
+    height: auto;
+    overflow: scroll;
+    float: left;
+}
+#stockpile figure {
+    position: relative;
 }

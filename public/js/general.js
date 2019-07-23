@@ -107,7 +107,6 @@
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
             if(this.readyState == 4 && this.status == 200) {
-                console.log(this.responseText);
                 document.getElementById("inventory").innerHTML = this.responseText;
             }
         };
@@ -116,19 +115,13 @@
     }
     
     function show_title(element, buttons) {
-        var div = element.parentElement;
         var tooltip = element.children[1];
         tooltip.style.right = "30%";
-        if(tooltip.style.visibility == "visible") {
-            tooltip.innerHTML = "";
-            tooltip.style.visibility = "hidden";
-        }
-        else {
-            tooltip.innerHTML = element.title;
-            tooltip.style.visibility = "visible";
-        }
+        console.log(tooltip.style.visibility);
+        tooltip.style.visibility = "visible";
+        console.log(tooltip.style.visibility);
         if(buttons == true) {
-            var div_button = div.children[0];
+            var div_button = element.parentElement.children[0];
             if(div_button.style.visibility == "visible") {
                 div_button.style = "visibility: hidden";
             }
@@ -136,6 +129,14 @@
                 div_button.style = "visibility: visible";
             }
         }
+        var data = [tooltip, buttons, element];
+        setTimeout(hide_title, 4000, data);
     }
     
-    
+    function hide_title(data) {
+        data[0].style.visibility = "hidden";
+        if(data[1] == true) {
+            var div_button = data[2].parentElement.children[0];
+            div_button.style = "visibility: hidden";
+        }
+    }

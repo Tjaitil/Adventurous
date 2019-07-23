@@ -2,6 +2,7 @@
     class setadventure_model extends model {
         public $username;
         public $session;
+        public $adventure_data;
         
         function __construct ($username, $session) {
             parent::__construct();
@@ -10,8 +11,8 @@
         }
         
          public function newAdventure($adventure_data) {
+            $this->adventure_data = $adventure_data;
             $categories = array();
-            
             
             $profiences = array('farmer', 'miner', 'trader', 'warrior');
             if(array_search($this->session['profiency'], $profiences) === false) {
@@ -20,24 +21,23 @@
             }
             try {
                 $this->conn->beginTransaction();
-                
                 $sql = "INSERT INTO adventures (adventure_leader) VALUES (:adventure_leader)";
                 $stmt = $this->conn->prepare($sql);
                 $stmt->bindParam(":adventure_leader", $param_username, PDO::PARAM_STR);
                 $param_username = $this->username;
                 $stmt->execute();
-                $adventure_id = $this->conn->lastInsertId();
+                $this->adventure_data['adventure_id'] = $this->conn->lastInsertId();
                 
-                $sql2 = "UPDATE current_adventure SET adventure_id=:adventure_id WHERE username=:username";
+                $sql2 = "UPDATE adventure SET adventure_id=:adventure_id WHERE username=:username";
                 $stmt2 = $this->conn->prepare($sql2);
                 $stmt2->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_INT);
                 $stmt2->bindParam(":username", $param_username, PDO::PARAM_STR);
-                $param_adventure_id = $adventure_id;
+                $param_adventure_id = $this->adventure_data['adventure_id'];
                 $param_username = $this->username;
                 $stmt2->execute();
                 
-                $sql3 = "UPDATE adventures SET difficulty=:difficulty, location=:location, " .
-                         $this->session['profiency'] . "=:profiency"  . " WHERE adventure_id=:adventure_id AND
+                $sql3 = "UPDATE adventures SET difficulty=:difficulty, location=:location, 
+                         {$this->session['profiency']}=:profiency WHERE adventure_id=:adventure_id AND
                          adventure_leader=:adventure_leader";
                 $stmt3 = $this->conn->prepare($sql3);
                 $stmt3->bindParam(":difficulty", $param_difficulty, PDO::PARAM_STR);
@@ -45,14 +45,14 @@
                 $stmt3->bindParam(":profiency", $param_profiency, PDO::PARAM_STR);
                 $stmt3->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_STR);
                 $stmt3->bindParam(":adventure_leader", $param_adventure_leader, PDO::PARAM_STR);
-                $param_difficulty = $adventure_data['difficulty'];
-                $param_location = $adventure_data['location'];
+                $param_difficulty = $this->adventure_data['difficulty'];
+                $param_location = $this->adventure_data['location'];
                 $param_profiency = $this->username;
-                $param_adventure_id = $adventure_id;
+                $param_adventure_id = $this->adventure_data['adventure_id'];
                 $param_adventure_leader = $this->username;
                 $stmt3->execute();
                 
-                $sql4 = "INSERT INTO adventures_" . $this->session['profiency'] . " (adventure_id, username)
+                $sql4 = "INSERT INTO adventures_{$this->session['profiency']} (adventure_id, username)
                          VALUES(:adventure_id, :username)";
                 $stmt4 = $this->conn->prepare($sql4);
                 $stmt4->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_STR);
@@ -60,6 +60,8 @@
                 // $param_adventure_id is already defined
                 $param_username = $this->username;
                 $stmt4->execute();
+                
+                $this->advRequirments($this->session['profiency'], $this->adventure_data['difficulty']);
                 
                 $this->conn->commit();
             }
@@ -69,10 +71,102 @@
                 $this->gameMessage("ERROR: Something unexpected happened, please try again");
                 return false;
             }
-            echo "new adventure";
             $this->closeConn();
         }
         
+        private function advRequirments($role, $difficulty) {    
+            $difficulties = array();
+            $difficulties['easy'] = array("grade" => 1, "multiplier" => 1);
+            $difficulties['medium'] = array("grade" => 2, "multiplier" => 1.3);
+            $difficulties['hard'] = array("grade" => 3, "multiplier" => 1.5);
+            
+            $requirments_amount = 2;
+            $adventure_req = array();
+            $adventure_req['trader'] = array("easy" => 2/3, "medium" => 4/6, "hard" => 8/10);
+            $adventure_req['item_amount'] = array("easy" => 3, "medium" => 4, "hard" => 5);
+            $adventure_req['warrior'] = array("melee", "ranged");
+            $requirments = array();
+            
+            
+            if($role == 'trader') {
+
+                $rand = explode("/", $adventure_req['trader'][$difficulty]);
+                $requirments[] = array("requirement" => "diplomacy", 'amount' => rand($rand[0], $rand[1]));
+            }
+            else if($role == 'warrior') {
+                for($i = 0; $i < count($requirments_amount); $i++ ) {
+                    if($difficulty_check)
+                    $requirments[] = array_rand($adventure_req[$role]);
+                }
+                $counts = array_count_values($requirments);
+                $requirments = array();
+                foreach($counts as $key => $value) {
+                    $requirments[] = array("requirement" => $value, "amount" => $key);
+                }
+            }
+            else {
+                //If $role is warrior or miner
+                //Query to get the item requirements
+                $count = $adventure_req['item_amount'][$difficulty] - 1;
+            
+                $sql = "SELECT name FROM adventure_req_items WHERE role=:role AND difficulty=:difficulty
+                    ORDER BY rand() LIMIT 1;";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindParam(":role", $param_role, PDO::PARAM_STR);
+                $stmt->bindParam(":difficulty", $param_difficulty, PDO::PARAM_INT);
+                $param_role = $role;
+                $param_difficulty = $difficulties[$difficulty]['grade'];
+                $stmt->execute();
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+                $sql = "(SELECT name as requirement, difficulty, amount_min, amount_max
+                    FROM adventure_req_items WHERE role=:role AND difficulty=:difficulty AND name=:name)
+                    UNION ALL
+                    (SELECT name as requirement, difficulty, amount_min, amount_max FROM adventure_req_items
+                    WHERE role=:role AND difficulty <= :difficulty AND name != :name
+                    ORDER BY RAND() LIMIT {$count})";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindParam(":role", $param_role, PDO::PARAM_STR);
+                $stmt->bindParam(":difficulty", $param_difficulty, PDO::PARAM_INT);
+                $stmt->bindParam(":name", $param_name, PDO::PARAM_STR);
+                $param_role = $role;
+                $param_difficulty = $difficulties[$difficulty]['grade'];
+                $param_name = $row['name'];
+                $stmt->execute();
+                
+                $i = 0;
+                while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $requirements[] = $row;
+                }
+            }
+            
+            $sql = "INSERT INTO adventure_requirements (adventure_id, username, role, location, required, amount)
+            VALUES (:adventure_id, :username, :role, :location, :required, :amount)";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_STR);
+            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $stmt->bindParam(":role", $param_role, PDO::PARAM_STR);
+            $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
+            $stmt->bindParam(":required", $param_required, PDO::PARAM_STR);
+            $stmt->bindParam(":amount", $param_amount, PDO::PARAM_INT);
+            $param_username = $this->username;
+            $param_adventure_id = $this->adventure_data['adventure_id'];
+            $param_role = $this->session['profiency'];
+            $param_location = $this->adventure_data['location'];
+            foreach($requirements as $key) {
+                $param_required = $key['requirement'];
+                if(in_array($role, array("farmer", "miner")) === true) {
+                    $param_amount = rand($key['amount_min'], $key['amount_max']);
+                    ($key['difficulty'] < $difficulties[$difficulty]['grade']) ?
+                    round($param_amount*= $difficulties[$difficulty]['multiplier']) : "";
+                }
+                else {
+                    $param_amount = $key['amount'];
+                }
+                $stmt->execute();
+                var_dump($stmt->rowCount());
+            }
+        }   
         public function provide($adventure_id, $route, $item, $quantity, $warrior_check) {
             if($this->session['profiency'] == 'trader') {
                 $this->gameMessage("The trader role doesn't have to provide with anything");

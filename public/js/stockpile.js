@@ -1,5 +1,6 @@
 
     function withdraw (element, quantity) {
+        console.log("withdraw");
         if(quantity === 'x') {
             quantity = selectAmount('widthdraw');
         }
@@ -7,13 +8,13 @@
             return false;
         }
         var class_name = element.parentNode.parentNode;
-        var fig_text = class_name.children[1].children[1].innerHTML.split("x ");
-        var item = fig_text[1];
+        var item = class_name.children[1].children[1].innerHTML.trim();
         var data = "model=stockpile" + "&method=updateInventory" + "&item=" + item +
                          "&insert=" + '0' + "&quantity=" + quantity;
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
             if(this.readyState == 4 && this.status == 200) {
+                console.log(this.responseText);
                 if(this.responseText.length > 0) {
                     gameLog(this.responseText);
                 }

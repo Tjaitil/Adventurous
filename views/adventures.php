@@ -88,8 +88,7 @@
                 <?php if(!empty($this->error['adventureErr'])):?>
                     <script>alert('Finish your adventure before taking a new one!');</script>
                 <?php endif; ?>
-            </div>
-            
+            </div>      
             <div id="current_adventure">
                 <?php if($this->data['current_adventure']['current'] == 0) {
                     echo "None";
@@ -98,24 +97,24 @@
                     <div id="people">
                         <figure>
                             <img src="<?php echo constant("ROUTE_IMG") . 'gold.jpg'; ?>" title="farmer"/>
-                            <figcaption><?php echo $this->data['current_adventure']['info']['farmer'];?></figcaption>
+                            <figcaption><?php echo ucfirst($this->data['current_adventure']['info']['farmer']);?></figcaption>
                         </figure>
                         <figure>
                             <img src="<?php echo constant("ROUTE_IMG") . 'gold.jpg'; ?>" title="miner"/>
-                            <figcaption><?php echo $this->data['current_adventure']['info']['miner'];?></figcaption>
+                            <figcaption><?php echo ucfirst($this->data['current_adventure']['info']['miner']);?></figcaption>
                         </figure>
                         <figure>
                             <img src="<?php echo constant("ROUTE_IMG") . 'gold.jpg'; ?>" title="trader"/>
-                            <figcaption><?php echo $this->data['current_adventure']['info']['trader'];?></figcaption>
+                            <figcaption><?php echo ucfirst($this->data['current_adventure']['info']['trader']);?></figcaption>
                         </figure>
                         <figure>
                             <img src="<?php echo constant("ROUTE_IMG") . 'gold.jpg'; ?>" title="warrior"/>
-                            <figcaption><?php echo $this->data['current_adventure']['info']['warrior'];?></figcaption>
+                            <figcaption><?php echo ucfirst($this->data['current_adventure']['info']['warrior']);?></figcaption>
                         </figure>
-                        <?php if(in_array('none', array($this->data['current_adventure']['farmer'],
-                                 $this->data['current_adventure']['miner'],
-                                 $this->data['current_adventure']['trader'],
-                                 $this->data['current_adventure']['warrior']))):?>
+                        <?php if(in_array('none', array($this->data['current_adventure']['info']['farmer'],
+                                 $this->data['current_adventure']['info']['miner'],
+                                 $this->data['current_adventure']['info']['trader'],
+                                 $this->data['current_adventure']['info']['warrior']))):?>
                             <div id="invite">
                                 <input type="text" min="0" onkeyup="chk_me()";/><span></span></br>
                  <button onclick="adventureRequest(<?php echo $this->data['current_adventure']['info']['adventure_id'];?>,'invite');">
@@ -125,12 +124,12 @@
                         <?php endif; ?>
                         <?php if($this->data['current_adventure']['info']['adventure_leader'] ==
                                  $this->data['current_adventure']['username'] &&
-                                 $this->data['current_adventure']['info']['adventure_status'] == 0): ?>
+                                 $this->data['current_adventure']['info']['adventure_status'] == 1): ?>
                             <button onclick="startAdventure()"> Start Adventure </button>
                         <?php endif;?>
                         
                     </div>
-                    <div id="time"> None </div>
+                    <div id="time"></div>
                     <div id="report"></div>
                     <div id="requirements">
                         <table>
@@ -138,39 +137,17 @@
                                 <tr>
                                     <td> Role: </td>
                                     <td> Status: </td>
-                                    <td> Required: </td>
                                     <td> Provided: </td>
-                                    <td> Contribution left: </td>
                                 </tr>
                             </thead>
-                            <tr>
-                                <td> Farmer:</td>
-                                <td><?php echo $this->data['current_adventure']['farmer']['status']; ?></td>
-                                <td><?php echo $this->data['current_adventure']['requirements'][0]['required']; ?></td>
-                                <td><?php echo $this->data['current_adventure']['farmer']['provided']; ?></td>
-                                <td><?php echo $this->data['current_adventure']['farmer']['missing_contribution']; ?></td>
-                            </tr>
-                            <tr>
-                                <td> Miner:</td>
-                                <td><?php echo $this->data['current_adventure']['miner']['status']; ?></td>
-                                <td><?php echo $this->data['current_adventure']['requirements'][1]['required']; ?></td>
-                                <td><?php echo $this->data['current_adventure']['miner']['provided']; ?></td>
-                                <td><?php echo $this->data['current_adventure']['miner']['missing_contribution'] ?></td>
-                            </tr>
-                            <tr>
-                                <td> Trader:</td>
-                                <td><?php echo $this->data['current_adventure']['trader']['status']; ?></td>
-                                <td><?php echo $this->data['current_adventure']['requirements'][3]['required']; ?></td>
-                                <td> - </td>
-                                <td><?php echo $this->data['current_adventure']['trader']['missing_contribution'] ?></td>
-                            </tr>
-                            <tr>
-                                <td> Warrior:</td>
-                                <td><?php echo $this->data['current_adventure']['warrior']['status']; ?></td>
-                                <td><?php echo $this->data['current_adventure']['requirements'][2]['required']; ?></td>
-                                <td><?php echo $this->data['current_adventure']['warrior']['provided']; ?></td>
-                                <td><?php echo $this->data['current_adventure']['warrior']['missing_contribution']; ?></td>
-                            </tr>
+                            <?php foreach($this->data['current_adventure']['requirements'] as $key):?>
+                                <tr>
+                                    <td><?php echo ucfirst($key['role']);?></td>
+                                    <td><?php echo $key['required'];?>
+                                        <img class="item" src="<?php echo constant('ROUTE_IMG') . $key['required'];?>"/></td>
+                                    <td><?php echo $key['provided'], '/', $key['amount'];?></td>
+                                </tr>
+                            <?php endforeach; ?>
                         </table>
                     </div>
                     <div id="provide">
@@ -204,11 +181,13 @@
                         case 'farmer':?>
                         <label for="quantity"> Select how many </label>
                         <input id="quantity" name="quantity" type="number" min="0"/>
-                <button onclick="provide(<?php echo $this->data['current_adventure']
-                ['info']['adventure_id'];?>, 'item')"> Provide </button>
+                        <button onclick="provide(<?php echo $this->data['current_adventure']
+                        ['info']['adventure_id'];?>, 'item')"> Provide </button>
+                        </div>
+                        <div id="inventory">
                         <?php require(constant("ROUTE_VIEW") . "inventory.php"); url();?>
                     <?php break; ?>
-                        
+                    
                     <?php endswitch;?>
                     <?php endif;?>
                 <?php endif; ?>

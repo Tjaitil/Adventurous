@@ -113,7 +113,7 @@
                 case 'trader':
                     $sql = "SELECT item, min_amount, max_amount FROM adventure_rewards
                             WHERE role=:role AND difficulty=:difficulty AND location=:location
-                            ORDER BY RAND() LIMIT $count";
+                            ORDER BY RAND() LIMIT {$count}";
                     $stmt = $this->conn->prepare($sql);
                     $stmt->bindParam(":role", $param_role, PDO::PARAM_STR);
                     $stmt->bindParam(":difficulty", $param_difficulty, PDO::PARAM_STR);
