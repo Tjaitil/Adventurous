@@ -16,7 +16,12 @@
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
             if(this.readyState == 4 && this.status == 200) {
-                alert(this.responseText);
+                if(this.responseText.indexOf("ERROR:") != -1) {
+                    gameLog(this.responseText);
+                }
+                else {
+                    gameLog(this.responseText);
+                }
             }
         };
         ajaxRequest.open('POST', "handlers/handler_p.php");
@@ -29,10 +34,15 @@
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
             if(this.readyState == 4 && this.status == 200) {
-                alert(this.responseText);
+                if(this.responseText.indexOf('ERROR:') != -1) {
+                    gameLog(this.responseText);
+                }
+                else {
+                    gameLog(this.responseText);
+                }
             }
         };
-        ajaxRequest.open('POST', "handlers/handler_g.php");
+        ajaxRequest.open('POST', "handlers/handler_p.php");
         ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         ajaxRequest.send(data);
     }
@@ -43,7 +53,6 @@
         ajaxRequest.onload = function () {
             if(this.readyState == 4 && this.status == 200) {
                 var responseText = this.responseText;
-                
                 var test = responseText.indexOf("Assignment completed");
                 console.log(test);
                 

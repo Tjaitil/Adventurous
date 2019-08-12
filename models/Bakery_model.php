@@ -21,7 +21,6 @@
                 $this->gameMessage("ERROR: The product you are trying to make doesnt exists!", true);
                 return false;
             }
-            var_dump($this->session['gold']);
             if($this->session['gold'] < $row['cost'] * $amount) {
                 $this->gameMessage("ERROR: You don't have enough gold!", true);
                 return false;

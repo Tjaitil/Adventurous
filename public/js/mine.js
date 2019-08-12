@@ -36,7 +36,35 @@
 
     window.onload = getCountdown();
     
+    function ajaxRequest() {
+        ajaxRequest = new XMLHttpRequest();
+        ajaxRequest.onload = function () {
+            if(this.readyState == 4 && this.status == 200) {
+                gameLog(this.responseText);
+                return false;
+            }
+            else {
+                return true;
+            }
+        };
+        ajaxRequest.open('GET', "handlers/handler_g.php?model=" + "&method=");
+        ajaxRequest.send();
+    }
+    
+    
+    function test() {
+        var data =;
+        var ajaxRequest =  ajaxRequest
+        if(ajaxRequest != false) {
+            
+        }
+        else {
+            
+        }
+    }
+    
     function updateMine() {
+        var data = "model=UpdateMine" + "&method=updateMine";
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function() {
             if(this.readyState == 4 && this.status == 200) {
@@ -49,8 +77,9 @@
                 }
             }
         };
-        ajaxRequest.open("GET", "/handlers/handler_js.php?&model=updatemine" + "&method=updateMine");
-        ajaxRequest.send();
+        ajaxRequest.open("POST", "/handlers/handler_p.php");
+        ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        ajaxRequest.send(data);
     }
     function img() {
         var img = document.getElementById("type_img");

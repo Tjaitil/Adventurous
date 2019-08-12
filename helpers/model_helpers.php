@@ -44,13 +44,9 @@
             $param_username = $username;
             $stmt->execute();
         }
+        //If multiple update_inventory are being made the update only happens at the last one
         if($update = true) {
-            $sql = "SELECT item, amount FROM inventory WHERE username=:username";
-            $stmt = $conn->prepare($sql);
-            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-            $param_username = $username;
-            $stmt->execute();
-            $_SESSION['gamedata']['inventory'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            get_inventory($conn, $username);
         }
         if($item === 'gold') {
             $_SESSION['gamedata']['gold'] = get_item($_SESSION['gamedata']['inventory'], 'gold')['amount'];

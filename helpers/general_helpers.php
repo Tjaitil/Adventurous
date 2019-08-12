@@ -12,7 +12,6 @@
             }
         }
     }
-    
     function jsforeach($data) {
         foreach($data as $key) {
             foreach($key as $subkey) {
@@ -21,7 +20,6 @@
             echo '|';
         }
     }
-    
     function get_template($name, $data, $up = false) {
         $filename = $name . '_tpl.php';
         $path = constant('ROUTE_TEMPLATE') . $filename;
@@ -33,6 +31,27 @@
         }
         else {
             return;
+        }
+    }
+    function store_file($file, $arr) {
+        $filepath = constant('ROUTE_GAMEDATA') . $file . ".json";
+        if(file_exists($filepath)) {
+            file_put_contents($filepath, json_encode($arr));
+        }
+        else {
+            file_put_contents($filepath, json_encode($arr));
+        }
+    }
+    function restore_file($file, $up = false) {
+        $filepath = constant('ROUTE_GAMEDATA') . $file . ".json";
+        if($up == true) {
+            $filepath = '../' . constant('ROUTE_GAMEDATA') . $file . ".json";
+        }
+        if(file_exists($filepath)) {
+            return (json_decode(file_get_contents($filepath, true), true));
+        }
+        else {
+            return null;
         }
     }
 ?>

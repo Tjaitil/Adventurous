@@ -22,47 +22,36 @@
         }
         
         public function changeProfiency($newProfiency) {
-            $profiency = $this->session['profiency_level'];
-            $gold = $this->session['gold']['amount'];
+            $gold = $this->session['gold'];
             $newProfiency = strtolower($newProfiency);
             if($gold < 500) {
-                echo "ERROR! You dont have enough gold!";
+                $this->gameMessage("ERROR: You dont have enough gold!", true);
                 return false;
             }
-            else {
-                $newBalance = $gold - 500;
-            }
-            if($profiency > 30) {
-                // Update all profiency places where info is over level 30;                
-            }
-            else if ($profiency <= 30) {
-                try {
-                    $this->conn->beginTransaction();
-                    $sql = "UPDATE user_data SET profiency=:profiency WHERE username=:username";             
-                    $stmt = $this->conn->prepare($sql);
-                    $stmt->bindParam(":profiency", $param_profiency, PDO::PARAM_STR);
-                    $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                    $param_profiency = $newProfiency;
-                    $param_username = $this->username;
-                    $stmt->execute();
-                    
-                    $sql2 = "UPDATE stockpile SET amount=:amount WHERE username=:username AND item='gold'";
-                    $stmt2 = $this->conn->prepare($sql2);
-                    $stmt2->bindParam(":amount", $param_amount, PDO::PARAM_STR);
-                    $stmt2->bindParam(":username", $param_username, PDO::PARAM_STR);
-                    $param_amount = $newBalance;
-                    $param_username = $this->username;
-                    $stmt2->execute();
-                    $this->conn->commit();
+            try {
+                $this->conn->beginTransaction();
+                
+                if($this->session['profiency_level'] > 30) {
+                    // FIKS
                 }
-                catch(Exception $e) {
-                    $this->conn->rollBack();
-                    new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
-                    $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
-                    return false;
-                }
+                $sql = "UPDATE user_data SET profiency=:profiency WHERE username=:username";             
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindParam(":profiency", $param_profiency, PDO::PARAM_STR);
+                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                $param_profiency = $newProfiency;
+                $param_username = $this->username;
+                $stmt->execute();
+                
+                update_inventory($this->conn, $this->username, 'gold', -500, true);
+                $this->conn->commit();
             }
-            $this->gameMessage("You have succesfully changed profiency to " . $newProfiency, true);
+            catch(Exception $e) {
+                $this->conn->rollBack();
+                new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
+                return false;
+            }
+            $this->gameMessage("You have succesfully changed profiency to {$newProfiency}", true);
             $_SESSION['gamedata']['profiency'] = $newProfiency;
             unset($this->conn);
         }

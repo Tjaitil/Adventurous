@@ -5,14 +5,12 @@
         function __construct() {
             parent::__construct();
         }
-        
         public function index() {
             $this->loadModel('townhall', true);
             $this->data = $this->model->getData();
             $this->data['favor'] = $this->favorGenerate();
             $this->render('townhall', 'Town Hall', $this->data);
         }
-        
         public function favorGenerate() {
             $location = $_SESSION['gamedata']['location'];
             $location_goods = array();

@@ -49,15 +49,21 @@
         ajaxRequest.send(data);
     }
     
-    function pickUp() {
-        var data = "model=trader" + "&method=pickUp";
+    function pickUp(favor = false) {
+        var data;
+        if(favor === true) {
+            data = "model=trader" + "&method=pickUp" + "&favor=true";
+        }
+        data = "model=trader" + "&method=pickUp";
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
             if(this.readyState == 4 && this.status == 200) {
                 if(this.responseText.search("ERROR") != -1) {
                     gameLog(this.responseText);
                 }
-                gameLog(this.responseText);
+                else {
+                    gameLog(this.responseText);
+                }
             }
         };
         ajaxRequest.open('POST', "handlers/handler_p.php");
@@ -65,9 +71,12 @@
         ajaxRequest.send(data);
     }
     
-    function deliver() {
-        console.log("deliver");
-        var data = "model=trader" + "&method=deliver";
+    function deliver(favor = false) {
+        var data;
+        if(favor == true) {
+            data = "model=trader" + "&method=deliver" + "&favor=true";
+        }
+        data = "model=trader" + "&method=deliver";
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
             if(this.readyState == 4 && this.status == 200) {
@@ -75,7 +84,8 @@
                     gameLog(this.responseText);
                 }
                 else {
-                    var responseText = this.responseText;    
+                    gameLog(this.responseText);
+                    /*var responseText = this.responseText;    
                     if(responseText.indexOf("Assignment completed") !== -1) {
                         data = "model=updateassignment" + "&method=updateAssignment";
                         ajaxRequest = new XMLHttpRequest();
@@ -88,10 +98,7 @@
                         ajaxRequest.open('POST', "handlers/handler_p.php");
                         ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
                         ajaxRequest.send(data);
-                    }
-                    else {
-                        alert(this.responseText);
-                    }
+                    }*/
                 }
             }
         };

@@ -43,15 +43,14 @@
             $data['current_adventure'] = $this->currentAdventure();
             
             $sql2 = "SELECT adventure_id, difficulty, location, farmer, miner, trader, warrior FROM adventures
-                     WHERE {$data['profiency']} ='none' AND adventure_status=0";
+                     WHERE adventure_status=0";
             $stmt2 = $this->conn->prepare($sql2);
-            $stmt2->bindParam(":profiency", $param_profiency, PDO::PARAM_STR);
             $param_profiency = $_SESSION['gamedata']['profiency'];
             $stmt2->execute();
             $data['pending_adventures'] = $stmt2->fetchAll(PDO::FETCH_ASSOC);
             
-            $sql3 = "SELECT request_id, sender, receiver, adventure_id, role, method FROM adventure_requests WHERE method = 'sender' OR method='receiver'
-                     AND sender=:username OR receiver=:username";
+            $sql3 = "SELECT request_id, sender, receiver, adventure_id, role, method FROM adventure_requests
+                     WHERE sender=:username OR receiver=:username";
             $stmt3 = $this->conn->prepare($sql3);
             $stmt3->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
@@ -98,71 +97,47 @@
                 $param_adventure_id = $data['current'];
                 $stmt->execute();
                 $data['requirements'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                var_dump($data['requirements']);
-                /*while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                    var_dump($row['role']);
-                    switch($row['role']) {
-                    case 'farmer':
-                        $data['requirements']['farmer'][] = $row;
-                        break;
-                    case 'miner':
-                        $data['requirements']['miner'][]= $key;
-                        break;
-                    case 'trader':
-                        $data['requirements']['trader'][] = $key;
-                        break;
-                    case 'warrior':
-                        $data['requirements']['warrior'][] = $key;
-                        break;
+                
+                if($data['info']['trader'] != 'none') {
+                    $trader_requirement = array_filter($data['requirements'], function ($key) {
+                        return ($key['role'] === 'trader');
+                    });
+                
+                    if(count($trader_requirement) > 0) {
+                        $location = $data['info']['location'];
+                        $sql = "SELECT {$location} FROM diplomacy WHERE username=:username";
+                        $stmt = $this->conn->prepare($sql);
+                        $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                        $param_username = $data['info']['trader'];
+                        $stmt->execute();
+                        $row = $stmt->fetch(PDO::FETCH_NUM);
+                        $data['trader_diplomacy'] = $row[0];
+                        
+                        $trader_index = array_keys($trader_requirement);
+                        $trader_requirement = array_values($trader_requirement);
+                        $trader_requirement[0]['provided'] = $data['trader_diplomacy'];
+                        $data['requirements'][$trader_index[0]] = $trader_requirement[0];
+                        
+                        if($trader_requirement[0]['status'] != 1
+                           && intval($trader_requirement[0]['amount']) <= intval($data['trader_diplomacy'])) {
+                            $sql = "UPDATE adventure_requirements SET status=1 WHERE username=:username";
+                            $stmt = $this->conn->prepare($sql);
+                            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                            $param_username = $data['info']['trader'];
+                            $stmt->execute();
+                        }   
                     }
-                }*/
-                $location = $data['info']['location'];
-                $sql = "SELECT {$location} FROM diplomacy WHERE username=:username";
-                $stmt = $this->conn->prepare($sql);
-                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                $param_username = $data['info']['trader'];
-                $stmt->execute();
-                $row = $stmt->fetch(PDO::FETCH_NUM);
-                $data['trader_diplomacy'] = $row[0];
-                if($data['trader']['status'] == 0 || $data['requirements']['trader']['required'] >= $data['trader_diplomacy']) {
-                    $sql = "UPDATE adventures_trader SET status=1 WHERE username=:username";
-                    $stmt = $this->conn->prepare($sql);
-                    $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                    $param_username = $data['info']['trader'];
-                    $stmt->execute();
                 }
                 if($this->username == $data['info']['warrior']) {
-                    $sql = "SELECT warrior_id, type FROM warriors WHERE mission=0 AND training_type='none' AND username=:username"; //FIKS
+                    $sql = "SELECT w.warrior_id, w.type, wl.stamina_level, wl.technique_level, wl.precision_level, wl.strength_level
+                            FROM warriors as w
+                            INNER JOIN warrior_levels as wl ON wl.warrior_id = w.warrior_id AND wl.username = w.username
+                            WHERE w.mission=0 AND w.training_type='none' AND w.username=:username";
                     $stmt = $this->conn->prepare($sql);
                     $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                     $param_username = $this->username;
                     $stmt->execute();
-                    $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                    
-                    $warriors = array();
-                    $queryArray = array();
-                    $i = 0;
-                    foreach($row as $key) {
-                        array_push($queryArray, $key['warrior_id']);
-                        $warriors[$key['warrior_id']] = $row[$i];
-                        $i++;
-                    }
-                    
-                    $queryArray[] = $this->username;
-                    if($row != false) {
-                    $in  = str_repeat('?,', count($queryArray) - 2) . '?';
-                    $sql = "SELECT warrior_id, stamina_level, technique_level, precision_level, strength_level
-                            FROM warrior_levels WHERE warrior_id IN ($in) AND username=?";
-                    $stmt = $this->conn->prepare($sql);
-                    $stmt->execute($queryArray);
-                    $row2 = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                    
-                    foreach($row2 as $key) {
-                        $parts = array_merge($key, $warriors[$key['warrior_id']]);
-                        $warriors[$key['warrior_id']] = $parts;
-                    }
-                    }
-                    $data['warriors'] = $warriors;
+                    $data['warriors'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 }
             }
             $data['username'] = $this->username;

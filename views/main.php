@@ -56,6 +56,38 @@
                     
                 </table>
             </div>
+            <div id="diplomacy">
+                <table>
+                    <caption> Diplomacy: </caption>
+                    <thead>
+                        <tr>
+                            <td> Location: </td>
+                            <td> Diplomacy: </td>
+                        </tr>
+                    </thead>
+                    <tr>
+                        <td> Hirtam </td>
+                        <td><?php echo $this->data['diplomacy']['hirtam'];?></td>
+                    </tr>
+                    <tr>
+                        <td> Pvitul </td>
+                        <td><?php echo $this->data['diplomacy']['pvitul'];?></td>
+                    </tr>
+                    <tr>
+                        <td> Khanz </td>
+                        <td><?php echo $this->data['diplomacy']['khanz'];?></td>
+                    </tr>
+                    <tr>
+                        <td> Ter </td>
+                        <td><?php echo $this->data['diplomacy']['ter'];?></td>
+                    </tr>
+                    <tr>
+                        <td> Fansal Plains </td>
+                        <td><?php echo $this->data['diplomacy']['fansalplains'];?></td>
+                    </tr>
+                    </tr>
+                </table>
+            </div>
             <script src="<?php echo constant('ROUTE_JS');?>main.js"></script>
         </section>
         <aside>

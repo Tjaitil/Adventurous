@@ -68,7 +68,6 @@
                     $updateSTMT1 = "UPDATE trader SET cart=:cart WHERE username=:username";
                     $updateBind1 = ":cart";
                     $updateSTMT3 = "UPDATE travelbureau_carts SET $city=:city WHERE wheel=:wheel";
-                    $boughtMessage = "You bough a $item cart for ";
                 break;
                 case 'horse':
                     $selectSTMT1 = "SELECT type, $city, value FROM travelbureau_horses WHERE type=:type";
@@ -79,7 +78,6 @@
                     $updateSTMT1 = "UPDATE user_data SET horse=:horse WHERE username=:username";
                     $updateBind1 = ":horse";
                     $updateSTMT3 = "UPDATE travelbureau_horses SET $city=:city WHERE type=:type";
-                    $boughtMessage = "You bough a $item horse for ";
                 break;
              }
             $sql = $selectSTMT1;
@@ -95,18 +93,19 @@
             }
             switch($shop) {
                 case 'cart':
-                    $mineral = $row['wheel'] . ' ore';
+                    $mineral = $row['wheel'] . ' bar';
                     $mineral_amount = get_item($this->session['inventory'], $mineral)['amount'];
                     if($mineral_amount < $row['mineral_amount']) {
-                        $this->gameMessage("ERROR: You don't have enough $mineral to buy this!", true);
+                        $this->gameMessage("ERROR: You don't have enough {$mineral}s to buy this!", true);
                         return false;
                     }
                     $wood = $row['wood'] . ' log';
                     $wood_amount = get_item($this->session['inventory'], $wood)['amount'];
                     if($wood_amount < $row['wood_amount']) {
-                        $this->gameMessage("ERROR: You don't have enough " . $wood . " to buy this!", true);
+                        $this->gameMessage("ERROR: You don't have enough {$wood}s to buy this!", true);
                         return false;
                     }
+                    $boughtMessage = "You bought a {$item} cart for {$row['wood_amount']} {$mineral} and {$row['wood_amount']} {$wood}";
                     break;
                 case 'horse':
                     if($row['value'] > $this->session['gold'] && $shop == 'horse') {
@@ -114,6 +113,7 @@
                         return false;
                     }
                     break;
+                $boughtMessage = "You bought a {$item} horse for {$row['value']} gold";
             }
         
             if(!$row[$city] > 0 ) {
@@ -146,10 +146,10 @@
                 switch($shop) {
                     case 'cart':
                         if($row_count != 0) {
-                            update_inventory($this->conn, $this->username, 'gold', ($row2['value'] * 0.80), true);
+                            update_inventory($this->conn, $this->username, 'gold', ($row2['value'] * 0.80));
                         }
-                        update_inventory($this->conn, $this->username, $mineral, -$row['mineral_amount']);
-                        update_inventory($this->conn, $this->username, $wood, -$row['wood_amount']);
+                        update_inventory($this->conn, $this->username, $mineral, -$row['mineral_amount'], true);
+                        update_inventory($this->conn, $this->username, $wood, -$row['wood_amount'], true);
                         break;
                     case 'horse':
                         if($row_count != 0 ) {
@@ -178,6 +178,8 @@
                 return false;
             }
             $this->closeConn();
+            if($shop == 'cart') {
+            }
             $this->gameMessage($boughtMessage, true);
         }
     }

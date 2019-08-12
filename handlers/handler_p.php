@@ -13,12 +13,14 @@
         }
         else {
             switch($modelname) {
-                case "adventurerequest":
-                    if($methodname == "joinAdventure") {
-                        $model->$methodname($_POST['id']);
-                    }
-                    if($methodname == "adventureRequest") {
-                        $model->$methodname($_POST['id'], $_POST['route'], $_POST['invitee']);
+                case "AdventureRequest":
+                    switch($methodname) {
+                        case 'joinAdventure':
+                            $model->$methodname($_POST['id']);
+                            break;
+                        case 'request':
+                            $model->$methodname($_POST['id'], $_POST['route'], $_POST['invitee']);
+                            break;
                     }
                     break;
                 case "armory":
@@ -38,12 +40,6 @@
                 case "Bakery":
                     //method make()
                     $model->$methodname($_POST['type'], $_POST['quantity']);
-                    break;
-                case "buyworker":
-                    //method buyWorker()
-                    $profiency = $_SESSION['gamedata']['profiency'];
-                    $profiency_level = $_SESSION['gamedata']['profiency_level'];
-                    $model->$methodname($_POST['type'], $_POST['type_level'], $profiency, $profiency_level);
                     break;
                 case 'travel':
                     $city = $_SESSION['gamedata']['location'];
@@ -66,18 +62,6 @@
                             break;
                     }
                     break;
-                case 'market':
-                    //method getData()
-                    if($_POST['mNumber'] == 1) {
-                        $model->$methodname($js1 = true);
-                    }
-                    else if($_POST['mNumber'] == 2) {
-                        $model->$methodname($js1 = true, $js2 = true);
-                    }
-                    else {
-                        $model->$methodname($js1 = true, $js2 = true, $js3 = true);
-                    }
-                    break;
                 case "citycentre":
                     if($methodname === 'changeArtefact' ) {
                         $model->$methodname($_POST['artefact']);
@@ -86,16 +70,23 @@
                         $model->$methodname($_POST['amount']);
                     }
                     break;
-                case "setadventure":
-                    //method provide()
-                    $adventure_id = $_GET['id'];
-                    if($_POST['route'] == 'item') {
-                        $item = $_GET['item'];
-                        $quantity = $_GET['quantity'];
-                        $model->$methodname($_POST['id'], $_POST['route'], $_POST['item'], $_POST['quantity'], $warrior_check = false);
+                case "RecruitWorker":
+                    //method recruitWorker()
+                    if(isset($_POST['level'])) {
+                        $model->$methodname($_POST['type'], $_POST['level']);
                     }
                     else {
-                        $model->$methodname($_POST['id'], $_POST['route'], $item = false, $quantity = false, $_POST['warrior_check']);
+                        $model->$methodname($_POST['type']);   
+                    }
+                    
+                    break;
+                case "setadventure":
+                    //method provide()
+                    if(!isset($_POST['warrior_check'])) {
+                        $model->$methodname(strtolower($_POST['item']), $_POST['quantity'], $warrior_check = false);
+                    }
+                    else {
+                        $model->$methodname($item = false, $quantity = false, $_POST['warrior_check']);
                     }
                     break;
                 case "SetArmymission":
@@ -126,13 +117,22 @@
                     break;
                 case "updateassignment":
                 case "trader":
+                    if($methodname == 'pickUp') {
+                        if(isset($_POST['favor'])) {
+                            $model->$methodname($favor = true);
+                        }
+                        else {
+                            $model->$methodname();
+                        }
+                    }
+                    break;
                 case "setassignment":
                     //method newAssignment()
-                    if(!isset($_POST['favor'])) {
-                        $model->$methodname($_POST['assignment_id']);
+                    if(isset($_POST['favor'])) {
+                        $model->$methodname($_POST['assignment_id'], $favor = true);
                     }
                     else {
-                        $model->$methodname($_POST['assignment_id'], $favor = true);
+                        $model->$methodname($_POST['assignment_id']);
                     }
                     break;
             }

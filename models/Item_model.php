@@ -12,7 +12,7 @@
         
         public function checkItem($query) {
             $items = array("Potato Seed", "Tomato Seed", "Corn Seed", "Carrot Seed", "Cabbage Seed", "Wheat Seed", "Spices Seed",
-                           "Sugar Seed", "Apple Seed", "Orange Seed", "Watermelon Seed",
+                           "Sugar Seed", "Apple Seed", "Orange Seed", "Watermelon Seed", "Cooked Potato",
                            "Beech Bow", "Yew Bow",
                            "Iron Shield", "Iron Sword", "Steel Shield", "Gargonite Shield",
                            "Iron Platebody", "Birch", "Oak", "Yew");    

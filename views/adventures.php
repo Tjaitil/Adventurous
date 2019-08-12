@@ -12,30 +12,36 @@
         <section>
             <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
              <div id="requests">
-                <table>
-                    <thead>
-                        <tr>
-                            <td> From: </td>
-                            <td> To: </td>
-                            <td> Where: </td>
-                            <td> Role: </td>
-                        </tr>
-                    </thead>
-                    <?php foreach($this->data['requests'] as $key): ?>
+                <?php switch($count = count($this->data['requests'])):
+                case $count > 0: ?>
+                    <table>
+                        <thead>
+                            <tr>
+                                <td> From: </td>
+                                <td> To: </td>
+                                <td> Where: </td>
+                                <td> Role: </td>
+                            </tr>
+                        </thead>
+                        <?php foreach($this->data['requests'] as $key): ?>
                         <?php if(empty($this->data['requests']) || $this->data['requests'] == false):?>
                             <td colspan="5" align="center"> No invites at the moment!</td>
                         <?php endif;?>
                         <tr>
-                            <td><?php echo $key['sender'];?></td>
-                            <td><?php echo $key['receiver'];?></td>
+                            <td><?php echo ucfirst($key['sender']);?></td>
+                            <td><?php echo ucfirst($key['receiver']);?></td>
                             <td><?php echo $key['role'];?></td>
                             <td><?php echo $key['method'];?></td>
                             <td><button onclick="showAdventure(<?php echo $key['adventure_id'];?>);"> Show Info </button>
                                 <button onclick="joinAdventure(<?php echo $key['request_id'];?>);"> Accept </button>
                             </td>
                         </tr>
-                    <?php endforeach;?>
-                </table>
+                        <?php endforeach;?>
+                    </table>
+                    <?php break; ?>
+                <?php default:?>
+                     <span> No invites at the moment! </span>
+                <?php break; endswitch;?>
             </div>
             <div id="show_adventure">
                 <table>
@@ -91,7 +97,7 @@
             </div>      
             <div id="current_adventure">
                 <?php if($this->data['current_adventure']['current'] == 0) {
-                    echo "None";
+                    echo "No current adventure";
                 }
                 if($this->data['current_adventure']['current'] != 0):?>
                     <div id="people">
@@ -125,7 +131,7 @@
                         <?php if($this->data['current_adventure']['info']['adventure_leader'] ==
                                  $this->data['current_adventure']['username'] &&
                                  $this->data['current_adventure']['info']['adventure_status'] == 1): ?>
-                            <button onclick="startAdventure()"> Start Adventure </button>
+                            <button onclick="startAdventure();"> Start Adventure </button>
                         <?php endif;?>
                         
                     </div>
@@ -140,58 +146,35 @@
                                     <td> Provided: </td>
                                 </tr>
                             </thead>
-                            <?php foreach($this->data['current_adventure']['requirements'] as $key):?>
-                                <tr>
-                                    <td><?php echo ucfirst($key['role']);?></td>
-                                    <td><?php echo $key['required'];?>
-                                        <img class="item" src="<?php echo constant('ROUTE_IMG') . $key['required'];?>"/></td>
-                                    <td><?php echo $key['provided'], '/', $key['amount'];?></td>
-                                </tr>
-                            <?php endforeach; ?>
+                            <?php get_template('requirements', $this->data['current_adventure']['requirements']); ?>
                         </table>
                     </div>
                     <div id="provide">
-                        <div id="item">
-                            <div id="selected"></div>
-                        </div>
-                    <?php if($this->data['current_adventure']['info']['adventure_status'] == 0):
-                          switch($this->data['profiency']):
-                          case 'warrior': ?>
-               <button onclick="provide(<?php echo $this->data['current_adventure']
-               ['info']['adventure_id'];?>, 'warrior')"> Provide </button>
-                    <?php foreach($this->data['current_adventure']['warriors'] as $key): ?>
-                        <div class="warriors" id="warrior_<?php echo $key['warrior_id'];?>">
-                        <figure>
-                            <img src="<?php echo constant('ROUTE_IMG') . $key['type'] . '.jpg'?>" />
-                            <figcaption><?php
-                            echo "Warrior: " , $key['warrior_id'] , '</br>';
-                            $string = '%s level: %b </br>';
-                            echo sprintf($string, 'Stamina', $key['stamina_level']);
-                            echo sprintf($string, 'Technique', $key['technique_level']);
-                            echo sprintf($string, 'Precision', $key['precision_level']);
-                            echo sprintf($string, 'Strength', $key['strength_level']);
-                            ?></figcaption>
-                        </figure>
-                        <input type="checkbox" onclick="check(this)" />
-                        </div>
-                    <?php endforeach;?>
-                    <?php break; ?>
-                    <?php
-                        case 'miner':
-                        case 'farmer':?>
-                        <label for="quantity"> Select how many </label>
-                        <input id="quantity" name="quantity" type="number" min="0"/>
-                        <button onclick="provide(<?php echo $this->data['current_adventure']
-                        ['info']['adventure_id'];?>, 'item')"> Provide </button>
-                        </div>
-                        <div id="inventory">
+                        <?php if($this->data['current_adventure']['info']['adventure_status'] == 0):
+                              switch($this->data['profiency']):
+                              case 'warrior': ?>
+                            <button> Provide </button>
+                            <?php get_template('warrior_adventure', $this->data['current_adventure']['warriors']);?>
+                        <?php break; ?>
+                        <?php
+                            case 'miner':
+                            case 'farmer':?>
+                            <div id="item">
+                                <div id="selected"></div>
+                            </div>
+                            <label for="quantity"> Select how many </label>
+                            <input id="quantity" name="quantity" type="number" min="0"/>
+                            <button> Provide </button>
+                    </div>
+                    <div id="inventory">
                         <?php require(constant("ROUTE_VIEW") . "inventory.php"); url();?>
+                    </div>
                     <?php break; ?>
-                    
                     <?php endswitch;?>
                     <?php endif;?>
+                    
                 <?php endif; ?>
-                    </div>
+            </div>
             
             <div id="pending_adventure">
                 <p> Join one of this adventures: </p>

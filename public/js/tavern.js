@@ -1,10 +1,18 @@
-    function buyWorker(type, level = false) {
-        var data = "model=buyworker" + "&method=buyWorker" + "&type=" + type + "&type_level=" + level;
+    function recruitWorker(type, level = false) {
+        var element = event.target.parentNode;
+        var data ="model=RecruitWorker" + "&method=recruitWorker" + "&type=" + type;
+        if(level != false) {
+            data += "&level=" + level;
+        }
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
             if(this.readyState == 4 && this.status == 200) {
                 if(this.responseText.indexOf("ERROR") != -1) {
                     gameLog(this.responseText);
+                }
+                else {
+                    gameLog(this.responseText);
+                    element.parentNode.removeChild(element);
                 }
             }
         };

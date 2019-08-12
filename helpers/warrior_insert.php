@@ -12,5 +12,6 @@
         $param_type = $warrior_amount['type'];
         $param_level = $warrior_amount['level'];
         $stmt->execute();
+        // Was used in tavern_model
     }
 ?>

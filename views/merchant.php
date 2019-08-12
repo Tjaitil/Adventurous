@@ -33,7 +33,7 @@
                         <?php get_template('assignment', $this->data);?>
                     </tr>
                 </table>
-                <p>Cart Capasity: <?php echo $this->data['trader_data']['capasity'];?></p>
+                <p>Cart Capasity: <?php echo $this->data['trader_data']['cart_amount'] , '/', $this->data['trader_data']['capasity'];?></p>
                 <p>Current assignment: <?php echo $this->data['trader_data']['assignment'];?></p>
                 <div id="pick_up">
                     <button onclick="pickUp();">Pick up items</button>

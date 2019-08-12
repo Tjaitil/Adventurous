@@ -54,14 +54,11 @@
             if(timer != 0) {
                 return false;
             }
-            console.log("getChat");
             chat = document.getElementById("chat").children[0].lastElementChild.innerHTML.match(/\[(.*)\]/).pop();
-            console.log(chat);
             var element = chat[0];
             ajaxRequest = new XMLHttpRequest();
             ajaxRequest.onload = function () {
                 if(this.readyState == 4 && this.status == 200) {
-                    console.log(this.responseText);
                     updateScroll(this.responseText);
                 }
             };
@@ -69,11 +66,10 @@
             ajaxRequest.send();
         }
         
-        function updateScroll() {
+        function updateScroll(messages) {
             var chat = document.getElementById("chat");
             var isScrolledToBottom = chat.scrollHeight - chat.clientHeight <= chat.scrollTop + 1;
-            console.log(chat.scrollHeight - chat.clientHeight,  chat.scrollTop + 1);
-            document.getElementById("chat").children[0].innerHTML += this.responseText;
+            document.getElementById("chat").children[0].innerHTML += messages;
             // scroll to bottom if isScrolledToBotto
             if(isScrolledToBottom) {
               chat.scrollTop = chat.scrollHeight - chat.clientHeight;

@@ -67,11 +67,11 @@
                 $param_username = $this->username;
                 $stmt->execute();
                 
-                require('../' . constant('ROUTE_HELPER') . 'update_inventory.php');
-                update_inventory($this->conn, $this->username, $artefact, -1);
                 if($row2['uses'] > 0) {
                     update_inventory($this->conn, $this->username, "damaged " . $row2['artefact'] . '(' . $row2['uses'] . ')', 1);
                 }
+                
+                update_inventory($this->conn, $this->username, $artefact, -1, true);
                 
                 $this->conn->commit();
             }
@@ -87,17 +87,7 @@
         
         public function buyPermits($permit_amount) {
             //AJAX function
-            $sql = "SELECT amount FROM inventory WHERE item='gold' AND username=:username";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-            $param_username = $this->username;
-            $stmt->execute();
-            if(!$stmt->rowCount() > 0) {
-                $this->gameMessage("ERROR: You don't have any gold!", true);
-                return false;
-            }
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            if($row['amount'] < 50) {
+            if($this->session['gold'] < 50) {
                 $this->gameMessage("ERROR: You don't have enough gold!", true);
                 return false;
             }
@@ -120,7 +110,7 @@
                 $param_username = $this->username;
                 $stmt->execute();
                 
-                update_inventory($this->conn, $this->username, 'gold', -50);
+                update_inventory($this->conn, $this->username, 'gold', -50, true);
                 
                 $this->conn->commit();
             }

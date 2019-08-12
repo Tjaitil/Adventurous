@@ -79,12 +79,10 @@
                 foreach ($parameters as $key => $value) {
                     $sql_update .= ' ' . $key .  '=:' . $key . ',';
                     $values[':'.$key] = $value + $warrior_DBXP[$key];
-                    var_dump($warrior_DBXP[$key]);
                 }
             $sql_update = rtrim($sql_update,",");
             $sql_end = " WHERE warrior_id=:warrior_id AND username=:username";
             $sql4 = $sql_update . $sql_end;
-            var_dump($sql4);
             $values[':warrior_id'] = $warrior_id;
             $values[':username'] = $this->username;
             

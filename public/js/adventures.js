@@ -1,8 +1,8 @@
-    var div = document.getElementById("time");
-    console.log(div);
-    
-    if(div != null) {
-        div.addEventListener("load", getCountdown());
+    if(document.getElementById("provide") != null) {
+        document.getElementById("provide").getElementsByTagName("button")[0].addEventListener('click', provide);
+    }
+    if(document.getElementById("time") != null) {
+        document.getElementById("time").addEventListener("load", getCountdown());
     }
     
     function getCountdown() {
@@ -40,17 +40,18 @@
         ajaxRequest.open('GET', "handlers/handler_js.php?model=adventures" + "&method=getCountdown");
         ajaxRequest.send();
     }
+    var figures1 = document.getElementsByTagName("FIGURE");
     
-    var figures = document.getElementsByTagName("FIGURE");
+    /*var figures = document.getElementsByTagName("FIGURE");
     for(var i = 0; i < figures.length; i++) {
-        figures[i].addEventListener('click', handle);
+        console.log(figures[i]);
+        figures[i].addEventListener('click', handle.bind(figures[i]));
+    }*/
+    function handle(figure) {
+        console.log(figure);
+        select(figures[i]);
+        show_title(figures[i], false);
     }
-    
-    function handle() {
-        console.log(this);
-    }
-    
-    
     function startAdventure() {
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
@@ -60,8 +61,7 @@
         };
         ajaxRequest.open('GET', "handlers/handler_js.php?model=adventurestatus" + "&method=startAdventure");
         ajaxRequest.send();
-    }
-    
+    }  
     function show(element) {
         id = element.id;
         switch(element) {
@@ -82,7 +82,6 @@
                 break;
         }
     }
-    
     function showAdventure(id) {
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
@@ -102,13 +101,17 @@
         ajaxRequest.open('GET', "handlers/handler_g.php?model=adventures" + "&method=getAdventure" + "&id=" + id);
         ajaxRequest.send();
     }
-    
     function joinAdventure(id) {
-        var data = "model=adventurerequest" + "&method=joinAdventure" + "&id=" + id;
+        var data = "model=AdventureRequest" + "&method=joinAdventure" + "&id=" + id;
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
             if(this.readyState == 4 && this.status == 200) {
-                console.log(this.responseText);
+                if(this.responseText.indexOf("ERROR:") != -1) {
+                    gameLog(this.responseText);
+                }
+                else {
+                    gameLog(this.responseText);
+                }
             }
         };
         ajaxRequest.open('POST', "handlers/handler_p.php");
@@ -120,7 +123,7 @@
     
     function chk_me(){
         clearTimeout(timer);
-        timer=setTimeout(checkUser(),1000);
+        timer = setTimeout(checkUser, 1000);
     }
     
     function checkUser() {
@@ -135,24 +138,23 @@
                     field.innerHTML = "User doesn't exists!";
                 }
                 else {
-                    field.innerHTML = input + " " + "is a" + " " + this.responseText;
+                    field.innerHTML = jsUcfirst(input) + " " + "is a" + " " + this.responseText;
                 }
             }
         };
         ajaxRequest.open('GET', "handlers/handler_g.php?model=adventures" + "&method=checkUser" + "&username=" + input);
         ajaxRequest.send();
     }
-    
     function adventureRequest(id, route) {
         var name;
         if(route == 'invite') {
             name = document.getElementById("invite").children[0].value;
         }
-        var data = "model=adventurerequest" + "&method=adventureRequest" + "&id=" + id + "&route=" + route + "&invitee=" + name;
+        var data = "model=AdventureRequest" + "&method=request" + "&id=" + id + "&route=" + route + "&invitee=" + name;
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
             if(this.readyState == 4 && this.status == 200) {
-                console.log(this.responseText);
+                gameLog(this.responseText);
             }
         };
         ajaxRequest.open('POST', "handlers/handler_p.php");
@@ -160,31 +162,24 @@
         ajaxRequest.send(data);
     }
     
-    
-    function provide(id, route) {
+    function provide() {
         var data;
-        if(route == 'item') {
+        if(document.getElementsByClassName("warriors").length == 0) {
+            if(document.getElementById("selected").children.length == 0) {
+                gameLog("Please select a item");
+                return false;
+            }
             var item = document.getElementById("selected").children[0].children[1].innerHTML;
-            console.log(item);
             var input = document.getElementById("quantity");
             var quantity = input.value;
+            if(quantity == 0) {
+                gameLog("Please select a valid amount");
+                return false;
+            }
             input.value = 0;
-            data = "model=setadventure" + "&method=provide" + "&id=" + id +
-                            "&item=" + item + "&quantity=" + quantity + "&route=" + route;
-            ajaxRequest = new XMLHttpRequest();
-            ajaxRequest.onload = function () {
-                if(this.readyState == 4 && this.status == 200) {
-                    console.log(this.responseText);
-                    if(this.responseText.search("ERROR") != false) {
-                        treatData(this.responseText);
-                    }
-                }
-            };
-            ajaxRequest.open('POST', "handlers/handler_p.php");
-            ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            ajaxRequest.send(data);
+            data = "model=setadventure" + "&method=provide" + "&item=" + item + "&quantity=" + quantity;
         }
-        else if(route == 'warrior') {
+        else {
             var warriors_div = document.getElementsByClassName("warriors");
             var warrior_check = [];
             for(var i = 0; i < warriors_div.length; i++) {
@@ -195,31 +190,35 @@
                     warrior_check.push(warror_id);
                 }
             }
-            console.log(warrior_check);
-            data = "model=setadventure" + "&method=provide" + "&id=" + id +
-                             "&warrior_check=" + warrior_check + "&route=" + route;
-            ajaxRequest = new XMLHttpRequest();
-            ajaxRequest.onload = function () {
-                if(this.readyState == 4 && this.status == 200) {
-                    console.log(this.responseText);
-                    if(this.responseText.search("ERROR") != false) {
-                        treatData(this.responseText);
+            if(warrior_check.length == 0) {
+                gameLog("Please select warriors");
+                return false;
+            }
+            data = "model=setadventure" + "&method=provide" + "&warrior_check=" + warrior_check;    
+        }
+        ajaxRequest = new XMLHttpRequest();
+        ajaxRequest.onload = function () {
+            if(this.readyState == 4 && this.status == 200) {
+                if(this.responseText.search("ERROR") != -1) {
+                    gameLog(this.responseText);
+                }
+                else {
+                    data = this.responseText.split("#");
+                    document.getElementById("requirements").getElementsByTagName("tbody")[0].innerHTML = data[1];
+                    if(item == 'null') {
+                        document.getElementById("provide").innerHTML = data[2];
+                    }
+                    else {
+                        document.getElementById("selected").innerHTML = "";
+                        updateInventory('adventures');
                     }
                 }
-            };
-            ajaxRequest.open('POST', "handlers/handler_p.php");
-            ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            ajaxRequest.send(data);
-        }
-        function treatData(variabel) {
-            var data = variabel.split("#");
-            var info = data[0].split("|").slice(1);
-            // Alert or do something with the first message.
-            updateInfo(info);
-            updateinventory(data[1]);
-        }
+            }
+        };
+        ajaxRequest.open('POST', "handlers/handler_p.php");
+        ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        ajaxRequest.send(data);
     }
-
     function check(checkbox) {
         var parent = checkbox.parentNode;
         if(checkbox.checked) {
@@ -228,8 +227,7 @@
         else {
             document.getElementById(parent.id).style = "border: 1px solid black";
         }
-    }
-    
+    }   
     function updateInfo(info) {
         var table = document.getElementById("requirements").children[0];
         var number;

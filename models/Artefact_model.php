@@ -16,11 +16,12 @@
             try {
                 $this->conn->beginTransaction();
                 
-                update_inventory($this->conn, $this->username, x, -1);
-                
                 if($charges > 0) {
                     update_inventory($this->conn, $this->username, x, 1);
                 }
+                
+                update_inventory($this->conn, $this->username, x, -1);
+                
                 $this->conn->commit();
             }
             catch(Exception $e) {

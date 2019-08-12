@@ -62,7 +62,7 @@
                 </table>
             </div>
             <div id="inventory">
-            <?php require(constant('ROUTE_VIEW') . 'inventory.php');?>
+            <?php require(constant('ROUTE_VIEW') . 'inventory.php'); url();?>
             </div>
         </section>
         <aside>

@@ -14,7 +14,6 @@
                 header("Location: /city");
                 exit();
             }
-            
             $cities = array('towhar', 'golbak', 'snerpiir', 'krasnur', 'tasnobil', 'cruendo', 'fagna');
             if(in_array($this->session['location'], $cities) == false) {
                 $this->gameMessage("ERROR: Something unexpected happened, please try again!", true);
@@ -22,15 +21,15 @@
             }
 
             $data = array();
+            $data['city'] = $this->session['location'];
             $sql = "SELECT item, {$this->session['location']}, cost FROM merchants";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(":amount", $param_amount, PDO::PARAM_STR);
             $param_amount = 0;
             $stmt->execute();
-            $data['city'] = $this->session['location'];
             $data['shop'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
-            $sql2 = "SELECT assignment_amount, assignment_id, cart, delivered,
+            $sql2 = "SELECT assignment_id, cart, cart_amount, delivered,
                     (SELECT capasity FROM travelbureau_carts WHERE wheel= cart) as capasity FROM trader
                      WHERE username=:username";
             $stmt2 = $this->conn->prepare($sql2);
@@ -41,7 +40,7 @@
             
             
             if($data['trader_data']['assignment_id'] != 0 ) {
-                $sql4 = "SELECT base, destination, cargo, cargo_amount FROM trader_assignments WHERE assignment_id=:assignment_id";
+                $sql4 = "SELECT base, destination, cargo, assignment_amount FROM trader_assignments WHERE assignment_id=:assignment_id";
                 $stmt4 = $this->conn->prepare($sql4);
                 $stmt4->bindParam(":assignment_id", $param_assignment_id, PDO::PARAM_STR);
                 $param_assignment_id = $data['trader_data']['assignment_id'];
@@ -50,7 +49,7 @@
                 array_push($data['trader_data'], $row4);
             }
             
-            $sql5 = "SELECT assignment_id, base, destination, cargo, cargo_amount, time, reward, assignment_type FROM trader_assignments
+            $sql5 = "SELECT assignment_id, base, destination, cargo, assignment_amount, time, reward, assignment_type FROM trader_assignments
                      WHERE base=:base";
             $stmt5 = $this->conn->prepare($sql5);
             $stmt5->bindParam(":base", $param_city, PDO::PARAM_STR);
@@ -100,7 +99,7 @@
             try {
                 $this->conn->beginTransaction();
                 update_inventory($this->conn, $this->username, $item, $quantity);
-                update_inventory($this->conn, $this->username, 'gold', -$price);
+                update_inventory($this->conn, $this->username, 'gold', -$price, true);
             
                 //Update merchant
                 $sql3 = "UPDATE merchants SET $city=:quant WHERE item=:item";

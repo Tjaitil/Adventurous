@@ -53,6 +53,10 @@ section {
     border: 1px solid black;
     margin-bottom: 5px;
 }
+#log td {
+    border: none;
+    padding: 0px;
+}
 #gamemessages {
     width: 250px;
     height: 200px;

@@ -19,7 +19,6 @@
         
         public function post() {
             if($_SERVER['REQUEST_METHOD'] === "POST") {
-                ($_SESSION['gamedata']['profiency'] === 'warrior') ? " ": $this->error['profiencyErr'] = "Youre profiency is not warrior";
                 require_once(constant('ROUTE_HELPER') . 'formhandler.php');
                 $formhandler = new formhandler();
                 $result = $formhandler->checkData($_POST);
@@ -43,21 +42,21 @@
             $this->warrior_data['id'] = $_POST['id'];
             $this->warrior_data['type'] = $_POST['type'];
             $this->loadModel('settraining', true);
-            $training_type_data = $this->model->getTrainingTypeData($this->warrior_data['type']);
+            $training_type_data = $this->model->getTrainingTypeData($this->warrior_data['type'], $this->warrior_data['id']);
             if($training_type_data != false) {
                 $this->prepareData($training_type_data);    
             }
         }
         
         public function prepareData($training_type_data) {
-            $training_type_time = $training_type_data['trainingType']['time'];
+            $training_type_time = $training_type_data['training_type']['time'];
             $addTime = $training_type_time;
             $date = date("Y-m-d H:i:s");
             $new_date = new DateTime($date);
             $new_date->modify("+{$addTime} seconds");
-            $this->warrior_data['trainingCountdown'] = date_format($new_date, "Y-m-d H:i:s");
-            $this->warrior_data['userExperience'] = $training_type_data['trainingType']['experience'];
-            $this->warrior_data['warrior_xp'] = $_SESSION['gamedata']['warrior']['warrior_xp'];
+            $this->warrior_data['training_countdown'] = date_format($new_date, "Y-m-d H:i:s");
+            $this->warrior_data['user_experience'] = $training_type_data['training_type']['experience'];
+            $this->warrior_data['warrior_xp'] = $_SESSION['gamedata']['warrior']['xp'];
             $this->model->setTrainingData($this->warrior_data);
         }
     }

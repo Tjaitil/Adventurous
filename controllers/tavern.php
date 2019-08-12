@@ -8,20 +8,16 @@
         
         public function index() {
             $this->loadModel('tavern', true);
-            $this->data['user_tavern_data'] = $this->model->getData($_SESSION['gamedata']['location']);
+            $this->data['user_tavern_data'] = $this->model->getData();
             $this->workers();
             $this->data['persons'] = $this->model->getPersons($_SESSION['gamedata']['location']);
             $this->render('tavern', 'Tavern', $this->data);
         }
         
         public function workers() {
-            var_dump($this->data['user_tavern_data']['new_workers']);
             $date = date("Y-m-d");
-            var_dump($date);
             $city = $_SESSION['gamedata']['location'];
-            if($date != $this->data['user_tavern_data']['new_workers'] && $this->data['user_tavern_data'][$city] == 0) {
-                echo "workers";
-                $city = $_SESSION['gamedata']['location'];
+            if($this->data['user_tavern_data'][$city] == 0) {
                 switch($city) {
                     case 'snerpiir' || 'golbak':
                         $farmer_amount = rand(0,2);
@@ -39,16 +35,25 @@
                         $warrior_amount = rand(0,5);
                         break;
                 }
-                $warrior_types = array('melee', 'archer');
-                for($i = 0; $i < $warrior_amount; $i++) {
-                    shuffle($warrior_types);
-                    $this->data['warrior_amount'][$i]['type'] = $warrior_types[0];
-                    $this->data['warrior_amount'][$i]['level'] = rand(1,3);
+                $warrior_types = array('melee', 'ranged');
+                for($i = 0; $i < ($farmer_amount + $miner_amount + $warrior_amount); $i++) {
+                    if($i < $farmer_amount) {
+                        $this->data['workers'][$i]['type'] = 'farmer';
+                    }
+                    else if ($i < ($farmer_amount + $miner_amount)) {
+                        $this->data['workers'][$i]['type'] = 'miner';
+                    }
+                    else {
+                        $rand = array_rand($warrior_types);
+                        $this->data['workers'][$i]['type'] = $warrior_types[$rand];
+                        $this->data['workers'][$i]['level'] = rand(1,3);
+                    }
                 }
-                $this->model->updateWorkers($_SESSION['gamedata']['location'], $farmer_amount, $miner_amount, $this->data['warrior_amount']);
+                $this->model->updateWorkers($this->data['workers']);
+                $this->data['tavern']['workers'];
             }
             else if($date === $this->data['user_tavern_data']['new_workers']) {
-                $this->data['tavern'] = $this->model->getWorkers($_SESSION['gamedata']['location']);
+                $this->data['tavern']['workers'] = $this->model->getWorkers();
             }
         }
     }

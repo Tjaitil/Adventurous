@@ -19,6 +19,19 @@
             float: left;
             position: relative;
         }
+        
+        #test {
+            max-height: 0px;
+            overflow: hidden;
+            border: 1px solid red;
+        }
+        
+        #test2 {
+            max-height: 500px;
+            transition: max-height 2s ease-in;
+            overflow: hidden;
+            border: 1px solid red;
+        }
     </style>
 </head>
 <body>
@@ -42,6 +55,23 @@
             <img id="3.4" onclick="moveDiv(this.id);"/>
             <img id="3,5" onclick="moveDiv(this.id);"/>-->
     </div>
+    <div id="test">
+        <ul>
+            <li>1</li>
+            <li>2</li>
+            <li>3</li>
+            <li>4</li>
+            <li>5</li>
+        </ul>
+    </div>
+    <button onclick="show();"> Show </button>
+    <script>
+        console.log("hello");
+        function show() {
+            document.getElementById("test").setAttribute("id", "test2");
+        }
+    </script>
+    
     <script src="img.js"></script>
 </body>
 </html>

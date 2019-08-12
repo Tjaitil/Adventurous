@@ -1,0 +1,23 @@
+                    /*$warriors = array();
+                    $queryArray = array();
+                    $i = 0;
+                    foreach($row as $key) {
+                        array_push($queryArray, $key['warrior_id']);
+                        $warriors[$key['warrior_id']] = $row[$i];
+                        $i++;
+                    }
+                    
+                    $queryArray[] = $this->username;
+                    if($row != false) {
+                    $in  = str_repeat('?,', count($queryArray) - 2) . '?';
+                    $sql = "SELECT warrior_id, stamina_level, technique_level, precision_level, strength_level
+                            FROM warrior_levels WHERE warrior_id IN ($in) AND username=?";
+                    $stmt = $this->conn->prepare($sql);
+                    $stmt->execute($queryArray);
+                    $row2 = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    
+                    foreach($row2 as $key) {
+                        $parts = array_merge($key, $warriors[$key['warrior_id']]);
+                        $warriors[$key['warrior_id']] = $parts;
+                    }
+                    }*/

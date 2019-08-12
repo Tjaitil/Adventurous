@@ -1,3 +1,15 @@
+    if(document.getElementById("inventory") != null) {
+        var figures = document.getElementById("inventory").querySelectorAll('figure');
+            // ...
+            figures.forEach(function(element) {
+              // ... code code code for this one element
+                element.addEventListener('click', function() {
+                    select(element);
+                    show_title(element, false);
+                });
+            });
+    }
+    
     function select(element) {
         var img = element.cloneNode(true);
         /*img.removeAttribute("onclick");*/

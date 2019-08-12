@@ -14,15 +14,19 @@
         return i;
     }
     window.onload = clock();
-    
     function displayNav() {
         document.getElementById("nav_2").style = "display: block";
     }
-    
+    function addZero(i) {
+        if (i < 10) {
+          i = "0" + i;
+        }
+        return i;
+    }
     function gameLog(message) {
         if(message.search("\\[") == -1) {
             var d = new Date();
-            var time = "[" + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds() + "] ";
+            var time = "[" + addZero(d.getHours()) + ":" + addZero(d.getMinutes()) + ":" + addZero(d.getSeconds()) + "] ";
             message = time + message;
         }
         var tr = document.createElement("TR");
@@ -30,9 +34,14 @@
         var table = document.getElementById("game_messages");
         tr.appendChild(td);
         td.innerHTML = message;
+        var log = document.getElementById("log");
+        var isScrolledToBottom = log.scrollHeight - log.clientHeight <= log.scrollTop + 1;
         table.appendChild(tr);
-    }
-    
+        // scroll to bottom if isScrolledToBotto
+        if(isScrolledToBottom) {
+          log.scrollTop = log.scrollHeight - log.clientHeight;
+        }
+    } 
     function getgMessage() {
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
@@ -45,14 +54,12 @@
         ajaxRequest.send();
     }
     /*window.addEventListener("load", getgMessage, false);*/
-    
     function closeNews() {
         console.log('hello');
         var news = document.getElementById("news");
         news.innerHTML = "";
         news.style = "visibility: hidden;";
     }
-    
     function get_xp(skill, element) {
         var tooltip = element.children[2];
         tooltip.style.right = "-30%";
@@ -81,12 +88,10 @@
                 ajaxRequest.send();
             }
         }
-    }
-    
+    }  
     function close_xp(skill) {
         
-    }
-    
+    }   
     function updateInventory(page) {
         /*inventory_items = inventory.split("||");
         inventory_items.pop();
@@ -113,13 +118,10 @@
         ajaxRequest.open('GET', "handlers/handlerf.php?file=inventory" + "&page=" + page);
         ajaxRequest.send();
     }
-    
     function show_title(element, buttons) {
         var tooltip = element.children[1];
         tooltip.style.right = "30%";
-        console.log(tooltip.style.visibility);
         tooltip.style.visibility = "visible";
-        console.log(tooltip.style.visibility);
         if(buttons == true) {
             var div_button = element.parentElement.children[0];
             if(div_button.style.visibility == "visible") {
@@ -131,12 +133,14 @@
         }
         var data = [tooltip, buttons, element];
         setTimeout(hide_title, 4000, data);
-    }
-    
+    }  
     function hide_title(data) {
         data[0].style.visibility = "hidden";
         if(data[1] == true) {
             var div_button = data[2].parentElement.children[0];
             div_button.style = "visibility: hidden";
         }
+    }
+    function jsUcfirst(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
     }

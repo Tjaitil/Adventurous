@@ -31,8 +31,14 @@
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
             if(this.readyState == 4 && this.status == 200) {
+                if(this.responseText.indexOf("ERROR:") != -1) {
+                    gameLog(this.responseText);
+                }
+                else {
+                    document.getElementsByClassName("armory_view")[Number(warrior_id)].innerHTML = this.responseText;
+                    updateInventory('armory');
+                }
                 console.log(this.responseText);
-                updatePage();
                 updateInventory('armory');
             }
         };

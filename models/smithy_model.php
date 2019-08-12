@@ -60,12 +60,12 @@
     
             try {
                 $this->conn->beginTransaction();   
-                require('../' . constant('ROUTE_HELPER') . 'update_inventory.php');
                 update_inventory($this->conn, $this->username, $new_item, $amount);
-                update_inventory($this->conn, $this->username, $ore , -$minerals_needed);
-                if($this->session['profiency'] === 'miner') {
+                if($this->session['profiency'] !== 'miner') {
                     update_inventory($this->conn, $this->username, 'gold', -$cost);    
                 }
+                update_inventory($this->conn, $this->username, $ore , -$minerals_needed, true);
+                
                 $this->conn->commit();
             }
             catch(Exception $e) {

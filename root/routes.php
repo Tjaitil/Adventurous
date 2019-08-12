@@ -8,4 +8,5 @@
     define('ROUTE_JS', 'public/js/');
     define('ROUTE_IMG', 'public/images/');
     define('ROUTE_TEMPLATE', 'views/templates/');
+    define('ROUTE_GAMEDATA', 'gamedata/');
 ?>

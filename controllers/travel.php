@@ -6,7 +6,7 @@
         }
         
         function index() {
-            $this->render('travel', 'travel', false);
+            $this->render('travel', 'Travel', false);
         }
     }
 ?>

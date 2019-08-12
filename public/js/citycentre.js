@@ -13,7 +13,7 @@
     }
     function changeProfiency() {
         var message = 'Beware that changing profiency may result in lowering levels \n and no access to profiency specific activites';
-        var link = 'Read more on /gameguide/profiency \n Are you sure you want to continue?';
+        var link = '\n Read more on /gameguide/profiency \n Are you sure you want to continue?';
         var conf = confirm(message + link);
         if(conf !== true) {
             return false;
@@ -35,6 +35,7 @@
                 }   
             };
             ajaxRequest.open("POST", "/handlers/handler_p.php");
+            ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             ajaxRequest.send(data);
         }
     }

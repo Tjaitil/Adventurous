@@ -5,19 +5,15 @@ section table td {
     padding: 5px;
     border: 1px solid black;
 }
-
 #show_adventure {
     display: none;
 }
-
 #pending_adventure {
     float: left;
     display: none;
 }
-
 #current_adventure {
 }
-
 #new_adventure {
     display: none;
 }
@@ -28,14 +24,15 @@ section table td {
     width: 100px;
     height: 100px;
 }
-
+#invite span {
+    margin-left: 5px;
+}
 .error {
     color: red;
     font-size: 13px;
     margin: 5px 0px 5px 0px;
     position: absolute;   
 }
-
 .warriors {
     border:1px solid black;
     float:left;
@@ -48,4 +45,7 @@ section table td {
 }
 #provide {
     float: left;
+}
+@media all and (max-width: 632px) {
+    #people img {width: 75px; height: 75px;}
 }

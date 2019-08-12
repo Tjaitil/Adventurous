@@ -2,25 +2,16 @@ section ul {
     list-style-type: none;
 }
 section li {
-    display: block;
-    height:75px;
+    box-sizing: border-box;
+    display: inline-block;
 }
 section li img {
     float:left;
 }
-#miners {
-    width:100px;
-    float:left;
-    
+#workers {
+    float:left;   
 }
-#warriors {
-    width:100px;
-    float: left;
-}
-#farmers {
-    width:100px;
-    float:left;
-}
+
 #container {
     position: absolute;
 }

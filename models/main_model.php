@@ -11,6 +11,13 @@
         
         public function getData() {
             $data = array();
+            $sql = "SELECT hirtam, pvitul, khanz, ter, fansalplains FROM diplomacy WHERE username=:username";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_username = $this->username;
+            $stmt->execute();
+            $data['diplomacy'] = $stmt->fetch(PDO::FETCH_ASSOC);
+            
             $data['chat'] = $this->getChat();
             return $data;
         }

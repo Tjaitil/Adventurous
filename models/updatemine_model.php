@@ -1,5 +1,5 @@
 <?php
-    class updatemine_model extends model {
+    class UpdateMine_model extends model {
         public $username;
         public $session;
         
@@ -66,7 +66,7 @@
                 $stmt2->execute();
                 
                 update_inventory($this->conn, $this->username, $mining_type . ' ore', $quantity, true);
-                update_xp($this->conn, $this->username, 'miner', $row2['experience'] + $this->session['miner']['miner_xp']);
+                update_xp($this->conn, $this->username, 'miner', $row2['experience'] + $this->session['miner']['xp']);
                 
                 $this->conn->commit();
             }
@@ -77,6 +77,7 @@
                 return false;
             }
             $_SESSION['gamedata']['miner']['xp'] = $experience;
+            $this->gameMessage("You received {$quantity} of " . ucfirst($mining_type . 'ore'), true);
             $this->closeConn();
         }
     }

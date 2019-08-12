@@ -70,7 +70,7 @@
         var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-        document.getElementById("overview").rows[id].cells[7].innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+        document.getElementById("overview").rows[id + 1].cells[7].innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
         if (distance < 0 && report === "1"){
             clearInterval(countdown);
             var btn = document.createElement("BUTTON");
@@ -81,18 +81,14 @@
                 var tr = this.parentNode.parentNode;
                 var tr_num = tr.rowIndex;
                 updateTraining(tr_num);
-                
             });
-            document.getElementById("overview").rows[id].cells[7].innerHTML = "Finished";
-            document.getElementById("overview").rows[id].cells[7].appendChild(btn);
+            document.getElementById("overview").rows[id + 1].cells[7].appendChild(btn);
         }
         else if (distance < 0) {
             clearInterval(countdown);
-            document.getElementById("overview").rows[id].cells[7].innerHTML = "No training in session";
+            document.getElementById("overview").rows[id + 1].cells[7].innerHTML = "No training in session";
         }
     }
-        
-        
         
     function updateTraining(id) {
         var data = "model=UpdateTraining" + "&method=updateTraining" + "&warrior_id=" + id;
@@ -100,10 +96,11 @@
         ajaxRequest.onload = function() {
             if(this.readyState == 4 && this.status == 200) {
                 console.log(this.responseText);
-                if(this.responseText.search("ERROR:") != -1) {
-                    getCountdown();
+                if(this.responseText.indexOf("ERROR:") != -1) {
+                    gameLog(this.responseText);
                 }
                 else {
+                    getCountdown();
                     gameLog(this.responseText);
                 }
             }

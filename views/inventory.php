@@ -47,7 +47,7 @@
             case 'adventures': ?>
             <?php foreach($_SESSION['gamedata']['inventory'] as $key): ?>
             <div class="inventory_item">    
-                <figure onclick="show_title(this, false);">
+                <figure>
                     <img src="<?php echo constant('ROUTE_IMG') . $key['item'] . '.jpg';?>" />
                     <figcaption class="tooltip"><?php echo ucwords($key['item']);?></figcaption>
                 </figure>
@@ -66,7 +66,6 @@
             <? endforeach; break;?>
         <?php case 'smithy':
               case 'bakery':
-              case 'citycentre':
               case 'crops':?>
             <?php foreach($_SESSION['gamedata']['inventory'] as $key): ?>
             <div class="inventory_item">    
@@ -78,10 +77,12 @@
         <? break;
         default: ?>
         <?php foreach($_SESSION['gamedata']['inventory'] as $key): ?>
-            <div class="inventory_item">    
-                <figure><img src="<?php echo constant('ROUTE_IMG') . $key['item'] . '.jpg';?>"  />
-                    <figcaption><? echo $key['amount'];?> x <?php echo ucwords($key['item']); ?></figcaption>
-                </figure>          
+            <div class="inventory_item">
+                <figure onclick="show_title(this, false);">
+                    <img src="<?php echo constant('ROUTE_IMG') . $key['item'] . '.jpg';?>" />
+                    <figcaption class="tooltip"><?php echo ucwords($key['item']); ?></figcaption>
+                </figure>
+                <span id="item_amount"><? echo amount($key['amount']);?></span>
             </div>
             <? endforeach; ?>
         <? break;

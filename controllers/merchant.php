@@ -13,7 +13,7 @@
                 $this->data['trader_data']['assignment'] =
                 "Carrying " . $this->data['trader_data'][0]['cargo'] . " from " . $this->data['trader_data'][0]['base'] . " to " .
                 $this->data['trader_data'][0]['destination'] .  ", " . "delivered " . $this->data['trader_data']['delivered'] . "/" .
-                $this->data['trader_data'][0]['cargo_amount'];
+                $this->data['trader_data'][0]['assignment_amount'];
             }
             else {
                 $this->data['trader_data']['assignment'] = "none";

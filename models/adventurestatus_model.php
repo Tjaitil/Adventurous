@@ -10,69 +10,26 @@
         }
         
         public function startAdventure() {
-            $sql = "SELECT adventure_id FROM adventure WHERE username=:username";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-            $param_username = $this->username;
-            $stmt->execute();
-            if(!$stmt->rowCount() > 0) {
-                $this->gameMessages("ERROR! You currently have no adventure!", true);
-                return false;
-            }
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $adventure_id = $row['adventure_id'];
-            
             $sql = "SELECT difficulty, location, adventure_leader, farmer, miner, warrior, trader FROM adventures
-                    WHERE adventure_id=:adventure_id AND adventure_leader=:username";
+                    WHERE adventure_leader=:username";
             $stmt = $this->conn->prepare($sql);
-            $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-            $param_adventure_id = $adventure_id;
             $param_username = $this->username;
             $stmt->execute();
             if(!$stmt->rowCount() > 0) {
-                $this->gameMessages("You do not have a adventure to start!", true);
+                $this->gameMessages("ERROR: You do not have a adventure to start!", true);
                 return false;
             }
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            $sql = "SELECT status FROM adventures_farmer WHERE username=:username AND adventure_id=:adventure_id";
+            $sql = "SELECT status FROM adventure_requirements WHERE adventure_id=:adventure_id";
             $stmt = $this->conn->prepare($sql);
-            $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_STR);
-            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-            // $param_adventure_id is already defined!
-            $param_username = $row['farmer'];
+            $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_INT);
+            $param_username = $row['adventure_id'];
             $stmt->execute();
-            $farmer_data = $stmt->fetch(PDO::FETCH_ASSOC);
+            $row2 = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            $sql = "SELECT status FROM adventures_miner WHERE username=:username AND adventure_id=:adventure_id";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_STR);
-            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-            // $param_adventure_id is already defined!
-            $param_username = $row['miner'];
-            $stmt->execute();
-            $miner_data = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-            $sql = "SELECT status FROM adventures_trader WHERE username=:username AND adventure_id=:adventure_id";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_STR);
-            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-            // $param_adventure_id is already defined!
-            $param_username = $row['trader'];
-            $stmt->execute();
-            $trader_data = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-            $sql = "SELECT status FROM adventures_warrior WHERE username=:username AND adventure_id=:adventure_id";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_STR);
-            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-            // $param_adventure_id is already defined!
-            $param_username = $row['warrior'];
-            $stmt->execute();
-            $warrior_data = $stmt->fetch(PDO::FETCH_ASSOC);
-            if(in_array(0 , array($farmer_data['status'] && $miner_data['status'] && $trader_data['status'] && $warrior_data['status']))
-               != false) {
+            if(in_array(0 , $row2) != false) {
                 $sql = "SELECT time FROM adventures_data WHERE difficulty=:difficulty AND location=:location";
                 $stmt = $this->conn->prepare($sql);
                 $stmt->bindParam(":difficulty", $param_difficulty, PDO::PARAM_STR);
@@ -116,7 +73,7 @@
                 }
                 $_SESSION['gamedata']['adventure_status'] = 1;
                 $this->closeConn();
-                echo "You have started the adventure!";
+                $this->gameMessage("Adventure started!", true);
             }
         }
     }

@@ -16,14 +16,14 @@
             $param_training_type = $trainingType;
             $stmt->execute();
             $data = array();
-            $data['trainingType'] = $stmt->fetch(PDO::FETCH_ASSOC);
+            $data['training_type'] = $stmt->fetch(PDO::FETCH_ASSOC);
             
             $sql = "SELECT warrior_id FROM warriors WHERE warrior_id=:warrior_id AND location=:location AND username=:username";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);
-            $stmt->bindParam(":loaction", $param_location, PDO::PARAM_STR);
+            $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-            $param_warrior_id;
+            $param_warrior_id = $warrior_id;
             $param_location = $this->session['location'];
             $param_username = $this->username;
             $stmt->execute();
@@ -35,14 +35,14 @@
             return $data;
         }
         
-        public function setTrainingData($warriorData) {
+        public function setTrainingData($warrior_data) {
             try {
                 $this->conn->beginTransaction();
                 $sql = "UPDATE warrior SET warrior_xp=:warrior_xp WHERE username=:username";
                 $stmt = $this->conn->prepare($sql);
                 $stmt->bindParam(":warrior_xp", $param_miner_xp, PDO::PARAM_STR);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                $param_warrior_xp = $warriorData['userExperience'] + $warriorData['warrior_xp'];
+                $param_warrior_xp = $warrior_data['user_experience'] + $warrior_data['warrior_xp'];
                 $param_username = $this->username;
                 $stmt->execute();
                 
@@ -53,19 +53,13 @@
                 $stmt2->bindParam(":training_countdown", $param_training_countdown, PDO::PARAM_STR);
                 $stmt2->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);
                 $stmt2->bindParam(":username", $param_username, PDO::PARAM_STR);
-                $param_training_type = $warriorData['type'];
-                $param_training_countdown = $warriorData['trainingCountdown'];
-                $param_warrior_id = $warriorData['id'];
+                $param_training_type = $warrior_data['type'];
+                $param_training_countdown = $warrior_data['training_countdown'];
+                $param_warrior_id = $warrior_data['id'];
                 $param_username = $this->username;
                 $stmt2->execute();
                 
-                $sql3 = "UPDATE user_levels SET warrior_xp=:warrior_xp WHERE username=:username";
-                $stmt3 = $this->conn->prepare($sql3);
-                $stmt3->bindParam(":warrior_xp", $param_warrior_xp, PDO::PARAM_STR);
-                $stmt3->bindParam(":username", $param_username, PDO::PARAM_STR);
-                //param_warrior_xp defined in statement 2
-                $param_username = $this->username;
-                $stmt3->execute();
+                update_xp($this->conn, $this->username, 'warrior', $warrior_data['user_experience'] + $warrior_data['warrior_xp']);
                 
                 $this->conn->commit();
                 }

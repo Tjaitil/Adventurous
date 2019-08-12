@@ -11,6 +11,7 @@
         </header>
         <section>
             <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
+            <p> Current favor: <?php echo $_SESSION['gamedata']['favor'];?></p>
             <p> Current location: <?php echo $_SESSION['gamedata']['location']; ?></p>
             <p> Current diplomacy relation: <?php echo $this->data[$_SESSION['gamedata']['location']]; ?></p>
             <div id="favor">
@@ -26,6 +27,7 @@
                     <button onclick="deliver();">Deliver</button>
                 </div>
             <script src="<?php echo constant('ROUTE_JS') . $name . '.js';?>"></script>
+            <script src="<?php echo constant('ROUTE_JS') . 'merchant.js';?>"></script>
         </section>
         <aside>
             <?php require(constant('ROUTE_VIEW') . '/aside.php'); ?>
