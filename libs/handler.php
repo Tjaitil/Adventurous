@@ -1,30 +1,21 @@
 <?php
     class handler {
         function __construct($model = false) {
-            require('../root/routes.php');
-            require('../' . constant('ROUTE_HELPER') . 'general_helpers.php');
+            require('../root/db.php');
+            require_once('../root/routes.php');
+            require_once('../' . constant('ROUTE_HELPER') . 'general_helpers.php');
+            
             if($model = true) {
-                require('../' . constant('ROUTE_BASE') . 'ajaxexception.php');
-                require('../' . constant('ROUTE_BASE') . 'model.php');
-                require('../' . constant('ROUTE_HELPER') . 'model_helpers.php');
+                require_once('../' . constant('ROUTE_BASE') . 'ajaxexception.php');
+                require_once('../' . constant('ROUTE_BASE') . 'model.php');
+                require_once('../' . constant('ROUTE_HELPER') . 'model_helpers.php');
             }
         }
-        
         public function sessionCheck() {
             if(!isset($_SESSION)) {
               session_start();
             }
         }
-        
-        public function checkMethod($model, $method) {
-            if (method_exists($model, $method)) {
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
-        
         public function includeModel ($username, $modelname, $session, $directoryup) {
             $modelloc = $modelname . '_model.php';
             $model = $modelname . '_model';
@@ -47,7 +38,14 @@
             else {
                 return false;
             }
-    
+        }
+        public function checkMethod($model, $method) {
+            if (method_exists($model, $method)) {
+                return true;
+            }
+            else {
+                return false;
+            }
         }
     }
 ?>

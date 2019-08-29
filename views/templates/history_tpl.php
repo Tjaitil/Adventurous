@@ -4,6 +4,7 @@
     </tr>
 <?php endif;?>
 <?php
+    krsort($data);
     foreach($data as $key): ?>
             <tr>
                 <td><?php echo $key['type'];?></td>

@@ -77,7 +77,7 @@
                 return false;
             }
             $_SESSION['gamedata']['miner']['xp'] = $experience;
-            $this->gameMessage("You received {$quantity} of " . ucfirst($mining_type . 'ore'), true);
+            $this->gameMessage("You received {$quantity} of " . ucfirst($mining_type . ' ore'), true);
             $this->closeConn();
         }
     }

@@ -68,7 +68,9 @@
     <script>
         console.log("hello");
         function show() {
-            document.getElementById("test").setAttribute("id", "test2");
+            document.getElementById("test").style.maxHeight = "500px";
+            document.getElementById("test").style.transition = "max-height 2s ease-in"; 
+            console.log(document.getElementById("test"));
         }
     </script>
     

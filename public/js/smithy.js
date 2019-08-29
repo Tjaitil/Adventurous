@@ -1,3 +1,12 @@
+    window.onload = function () {
+        var buttons = document.getElementById("smith").querySelectorAll("button");
+        buttons.forEach(function(element) {
+            // ... code code code for this one element
+            element.addEventListener('click', function() {
+                smith();
+            });
+        });
+    };
     function select(element) {
         var parent = element.parentNode;
         var img = parent.getElementsByTagName("IMG");
@@ -25,35 +34,26 @@
         }
     }
     
-    function smith(item, parent, mineral = false) {
+    function smith() {
+        var amount = event.target.parentElement.children[0].value;
+        var item = event.target.closest("tr").children[0].innerHTML.toLowerCase();
+        console.log(item);
         var minerals = document.getElementsByClassName("minerals");
-        var amount = parent.children[0].value;
-        if(mineral != false) {
-            for(var i = 0; i < minerals.length; i++) {
-                if(minerals[i].style.border == "1px solid red") {
-                    this.mineral = minerals[i].getAttribute("title");
-                    break;
-                }
-            } 
-            if(this.mineral.length < 1){
-                gameLog("Please select a mineral");
-                return false;
-            }  
-        }
-        ajaxRequest = new XMLHttpRequest();
-        var data = "model=smithy" + "&method=smith" + "&item=" + item  + "&amount=" + amount + "&mineral=" + this.mineral;
-        ajaxRequest.onload = function () {
-            if(this.readyState == 4 && this.status == 200) {
-                console.log(this.responseText);
-                if(this.responseText.search("ERROR") != -1) {
-                    gameLog(this.responseText);
-                }
-                else {
-                    updateInventory('smithy');
-                }
+        console.log(minerals);
+        for(var i = 0; i < minerals.length; i++) {
+            if(minerals[i].style.border == "1px solid red") {
+                this.mineral = minerals[i].getAttribute("title");
+                break;
             }
-        };
-        ajaxRequest.open('POST', "handlers/handler_p.php");
-        ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        ajaxRequest.send(data); 
+        } 
+        if(this.mineral.length < 1){
+            gameLog("Please select a mineral");
+            return false;
+        }  
+        var data = "model=smithy" + "&method=smith" + "&item=" + item  + "&amount=" + amount + "&mineral=" + this.mineral;
+        ajaxP(data, function(response) {
+            if(response[0] !== false) {
+                updateInventory('smithy');
+            }       
+        });
     }

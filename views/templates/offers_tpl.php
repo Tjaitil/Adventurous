@@ -11,7 +11,8 @@
             <td><?php echo $key['offeror'];?></td>
             <td><span>Amount</span>
             <input type="number" name="amount" id="amount" min="0"/>
-            <button onclick="trade(<?php echo $key['id'];?>, this)">
+            <input type="hidden" value="<?php echo $key['id'];?>" />
+            <button>
             <?php echo ($key['type'] == "Buy")? "Sell" : "Buy";?></button></td>
         </tr>
 <?php endforeach;?>

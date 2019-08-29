@@ -10,7 +10,7 @@
         }
         
         public function make($type, $amount) {
-            $sql = "SELECT type_id, cost, food_units FROM bakery_data WHERE type=:type";
+            $sql = "SELECT item_id, cost, food_units FROM bakery_data WHERE type=:type";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(":type", $param_type, PDO::PARAM_STR);
             $param_type = $type;
@@ -26,10 +26,10 @@
                 return false;
             }
             
-            $sql = "SELECT ingredient, amount FROM bakery_ingredients WHERE type_id=:type_id";
+            $sql = "SELECT ingredient, amount FROM bakery_ingredients WHERE item_id";
             $stmt = $this->conn->prepare($sql);
-            $stmt->bindParam(":type_id", $param_type_id, PDO::PARAM_STR);
-            $param_type_id = $row['type_id'];
+            $stmt->bindParam(":item_id", $param_type_id, PDO::PARAM_STR);
+            $param_type_id = $row['item_id'];
             $stmt->execute();
             $row2 = $stmt->fetchAll(PDO::FETCH_ASSOC);
             

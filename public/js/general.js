@@ -7,15 +7,24 @@
         seconds = checkZero(seconds);
         document.getElementById("clock").innerHTML =
         hours + ":" + minutes + ":" + seconds;
-        var t = setTimeout(clock, 1000);
+        setTimeout(clock, 1000);
     }
     function checkZero(i) {
         if (i < 10) {i = "0" + i;}
         return i;
     }
-    window.onload = clock();
+    window.onload = function() { 
+        clock();
+        console.log(document.querySelectorAll(".temp"));
+    };
     function displayNav() {
-        document.getElementById("nav_2").style = "display: block";
+        var visibility = document.getElementById("nav_2").children[0].style.visibility;
+        if(visibility == 'visible') {
+            document.getElementById("nav_2").children[0].style.visibility = "hidden";
+        }
+        else {
+            document.getElementById("nav_2").children[0].style.visibility = "visible";
+        }
     }
     function addZero(i) {
         if (i < 10) {
@@ -54,11 +63,24 @@
         ajaxRequest.send();
     }
     /*window.addEventListener("load", getgMessage, false);*/
+    function openNews(news) {
+        console.log(news);
+        document.getElementById("news").style.visibility = "visible";
+        document.getElementById("content").style.visibility = "visible";
+        console.log(typeof news);
+        if(typeof news == 'object') {
+            document.getElementById("content").appendChild(news);
+        }
+        else {
+            document.getElementById("content").innerHTML += news;
+        }
+    }
     function closeNews() {
         console.log('hello');
         var news = document.getElementById("news");
         news.innerHTML = "";
         news.style = "visibility: hidden;";
+        document.getElementById("content").style.visibility = "hidden";
     }
     function get_xp(skill, element) {
         var tooltip = element.children[2];
@@ -88,9 +110,22 @@
                 ajaxRequest.send();
             }
         }
-    }  
-    function close_xp(skill) {
-        
+    }
+    function show_xp(skill, xp) {
+        var elements = {
+            adventurer: 0,
+            farmer: 1,
+            miner: 2,
+            trader: 3,
+            warriors: 4
+        };
+        console.log(elements[skill]);
+        var element = document.getElementById("skills").children[elements[skill]].children[3];
+        element.innerHTML = "+" + xp;
+        setTimeout(hide_xp, 2000, element);
+    }
+    function hide_xp(element) {
+        element.innerHTML = "";
     }   
     function updateInventory(page) {
         /*inventory_items = inventory.split("||");
@@ -118,7 +153,61 @@
         ajaxRequest.open('GET', "handlers/handlerf.php?file=inventory" + "&page=" + page);
         ajaxRequest.send();
     }
-    function show_title(element, buttons) {
+    var timeID = [];
+    function show_menu(element, buttons) {
+        clearTimeout(timeID.pop());
+        var item = element.getElementsByTagName("figcaption")[0].innerHTML;
+        var menu = document.getElementById("stck_opt").cloneNode(true);
+        menu.setAttribute("class", "temp");
+        menu.removeAttribute("id");
+        menu.children[0].children[0].innerHTML = item;
+        var lis = menu.children[0].children;
+        if(element.id == 'inventory_buttons') {
+            for(var i = 1; i < (lis.length - 1); i++) {
+                lis[i] = "Insert " + lis[i]; 
+            }
+        }
+        else {
+            for(var x = 1; x < (lis.length - 1); x++) {
+                lis[x] = "Withdraw " + lis[x]; 
+            }
+        }
+        var divs = document.querySelectorAll(".temp");
+        /*var div = document.createElement("div");
+        div.setAttribute("class", "temp");
+        element.appendChild(div);*/
+        
+        if(divs[0] != undefined) {
+            var parent = divs[0].parentNode;
+            parent.removeChild(divs[0]);
+        }
+        element.insertBefore(menu, element.children[0]);
+        console.log(element.scrollWidth);
+        console.log(element.clientWidth);
+        var offset = 100 - ((element.clientWidth / element.scrollWidth) * 100);
+        
+        offset = (offset / screen.width) * 100;
+        console.log(offset);
+        console.log((offset / screen.width) * 100);
+        console.log(element.children[0].children[0]);
+        element.children[0].children[0].style.right = offset + "%";
+        /*console.log(element.children[0].children[0].scrollWidth);
+        console.log(element.children[0].children[0].clientWidth);
+        console.log(element.children[0].children[0]);
+        console.log(element.children[0].children[0].children[0]);*/
+        
+        
+        var tooltip;
+        var data = [tooltip, buttons, element];
+        var id = setTimeout(hide_menu, 4000, data);
+        timeID.push(id);
+        console.log(timeID);
+    }  
+    function hide_menu(data) {
+        console.log("hide");
+        element[0].parentNode.removeChild(element[0]);
+    }
+     function show_title(element, buttons) {
         var tooltip = element.children[1];
         tooltip.style.right = "30%";
         tooltip.style.visibility = "visible";
@@ -143,4 +232,92 @@
     }
     function jsUcfirst(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+    function selectedCheck() {
+        if(document.getElementById("selected").getElementsByTagName("figure").length == 0) {
+            gameLog("Please select a valid item");
+            return false;
+        }
+        var quantity = document.getElementById("quantity").value;
+        if(quantity == 0) {
+            gameLog("Please select a valid amount");
+            return false;
+        }
+        return true;
+    }
+    function JSONForm(form) {
+        var form_data = {};
+        for(var i = 0; i < form.length; i++) {
+            console.log(form[i]);
+            switch(form[i].tagName) {
+                case 'DIV':
+                    for(var x = 0; x < form[i].children.length; x++) {
+                        if(form[i].children[x].tagName != 'INPUT') {
+                            continue;
+                        }
+                    form_data[form[i].children[x].name] = form[i].children[x].value;
+                    }
+                    break;
+                case 'INPUT':
+                    if(form[i].type == 'checkbox' && form[i].checked === true) {
+                        form_data[form[i].name] = form[i].value;
+                    }
+                    form_data[form[i].name] = form[i].value;
+                    break;
+                case 'SELECT':
+                    form_data[form[i].name] = form[i].children[form[i].selectedIndex].value;
+                    break;
+                default:
+                    break;
+                
+            }
+            if(form[i].tagName == 'DIV') {
+                
+            }
+            else if(form[i].tagName != 'INPUT') {
+                continue;
+            }
+            form_data[form[i].name] = form[i].value;
+        }
+        return form_data;
+    }
+    function responseRet(response) {
+        console.log("responseRet");
+        return response;
+    }
+    function ajaxG(data, log = true) {
+        ajaxRequest = new XMLHttpRequest();
+        ajaxRequest.onload = function () {
+            if(this.readyState == 4 && this.status == 200) {
+                if(log == tru) {
+                    gameLog(this.responseText);
+                }
+                return [false, this.responseText];
+            }
+            else {
+                return [true, this.responseText];
+            }
+        };
+        ajaxRequest.open('GET', "handlers/handler_g.php?" + data);
+        ajaxRequest.send();
+    }
+    function ajaxP(data, callback, log = true) {
+        ajaxRequest = new XMLHttpRequest();
+        ajaxRequest.onload = function () {
+            if(this.readyState == 4 && this.status == 200) {
+                console.log(this.responseText);
+                if(this.responseText.indexOf("ERROR:") != -1) {
+                    if(log == true) {
+                        gameLog(this.responseText);
+                    }
+                    callback([false, this.responseText]);
+                }
+                else {
+                    callback([true, this.responseText]);
+                }
+            }
+        };
+        ajaxRequest.open('POST', "handlers/handler_p.php");
+        ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        ajaxRequest.send(data);
     }

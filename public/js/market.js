@@ -1,4 +1,36 @@
+    window.onload = function () {
+        
+        var div = document.getElementById("offers");
+        var inputs = div.getElementsByTagName("input");
+        var buttons = div.querySelectorAll("button");
+        for(var i = 0; i < inputs.length; i++) {
+            if(inputs[i].getAttribute("type") == 'hidden') {
+                offers[inputs[i].parentElement.parentElement.nodeName + i] = inputs[i].value;
+            }
+        }
+        buttons.forEach(function(element) {
+            // ... code code code for this one element
+            element.addEventListener('click', function() {
+                trade();
+            });
+        });
+        var figures = document.getElementById("my_offers").querySelectorAll("figure");
+        figures.forEach(function(element) {
+            // ... code code code for this one element
+            element.addEventListener('click', function() {
+                fetchItem();
+            });
+        });
+        buttons = document.getElementById("my_offers").querySelectorAll("button");
+        buttons.forEach(function(element) {
+            // ... code code code for this one element
+            element.addEventListener('click', function() {
+                cancelOffer();
+            });
+        });
+    };
     
+    var offers = {};
     function toggleType() {
         var option = document.getElementById("form_select").selectedIndex;
         document.getElementById("form_cont").style.visibility = "visible";
@@ -13,7 +45,6 @@
             item_b.style.display = "block";
         }
     }
-    
     function show(element) {
         var divs = ["offers", "my_offers", "history"];
         
@@ -26,7 +57,6 @@
             }
         }
     }
-    
     var timer;
     function chk_me(){
         clearTimeout(timer);
@@ -39,7 +69,6 @@
             timer = setTimeout(checkItem, 1000)
         }
     }*/
-    
     function checkItem() {
         var query = document.getElementById("item_b").children[1].value;
         var select = document.getElementById("items");
@@ -79,7 +108,6 @@
         ajaxRequest.open('GET', "handlers/handler_g.php?model=Item" + "&method=checkItem" + "&query=" + query);
         ajaxRequest.send();
     }
-    
     function selectOpt(element) {
         document.getElementById("item_srch").value = "";
         var itemName = element.options[element.selectedIndex].value;
@@ -87,10 +115,8 @@
         img.href = "/public/img/" + itemName;
         img.style = "width: 50px; height: 50px";
         document.getElementById("selected").appendChild(img);
-        document.getElementById("item_name").value = itemName;
-        
+        document.getElementById("item_name").value = itemName;   
     }
-    
     function updatePage(part) {
         console.log("updatePage");
         ajaxRequest = new XMLHttpRequest();
@@ -150,9 +176,19 @@
         ajaxRequest.open('GET', "handlers/handler_g.php?model=market" + "&method=getData" + "&part=" + part);
         ajaxRequest.send();
     }
-    
-    function trade(id, element) {
-        var amount = element.parentNode.children[1].value;
+    function trade() {
+        var amount = event.target.parentElement.children[1].value;
+        var id = event.target.parentElement.children[2].value;
+        var tr = event.target.closest("TR");
+        var i = 0;
+        while( (tr = tr.previousSibling) != null ) {
+            i++;
+        }
+        if(offers["TR" + (i+1)] != id) {
+            gameLog("ERROR: Please try again");
+            return false;
+        }
+        
         if(amount == 0 || amount == null) {
             gameLog("ERROR: Select a amount");
             return false;
@@ -161,6 +197,7 @@
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
             if(this.readyState == 4 && this.status == 200) {
+                console.log(this.responseText);
                 if(this.responseText.search("ERROR") != -1) {
                     gameLog(this.responseText);
                 }
@@ -174,29 +211,39 @@
         ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         ajaxRequest.send(data);
     }
-    
+    function offerCheck(element, id) {
+        var tr = element.parentElement.parentElement;
+        var i = 0;
+        while( (tr = tr.previousSibling) != null ) {
+            i++;
+        }
+        if(offers["TR" + (i+1)] != id) {
+            gameLog("ERROR: Please try again");
+            return false;
+        }
+    }
     function submit() {
         document.getElementById("offer_form").clear();
         /*document.getElementById("form_cont").style.visibility = "hidden";*/
         updatePage(1);
     }
-    
-    function cancelOffer(id, element) {
+    function cancelOffer() {
+        var id = event.target.closest("TR").children[0].children[0].value;
         var data = "model=market" + "&method=cancelOffer" + "&id=" + id;
-        ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.onload = function () {
-            if(this.readyState == 4 && this.status == 200) {
-                console.log(this.responseText);
-                if(this.responseText.search("ERROR") != -1) {
-                    gameLog(this.responseText);
-                }
-                else {
-                    updateInventory('market');
-                    updatePage(3);
-                }
+        ajaxP(data, function(response) {
+            if(response[0] !== false) {
+                updateInventory('market');
+                updatePage(3);
+            } 
+        });
+    }
+    function fetchItem() {
+        var id = event.target.closest("TR").children[0].children[0].value;
+        var data = "model=market" + "&method=fetchItem" + "&id=" + id;
+        ajaxP(data, function(response) {
+            if(response[0] !== false) {
+                updateInventory('market');
+                updatePage(3);
             }
-        };
-        ajaxRequest.open('POST', 'handlers/handler_p.php');
-        ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        ajaxRequest.send(data);
+        });
     }

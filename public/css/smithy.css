@@ -5,9 +5,13 @@ section table td {
 }
 #smith {
     width: 50%;
-    height: 370px;
     float: left;
 }
+/*#smith::after {
+  content: "";
+  clear: both;
+  display: table;
+}*/
 #minerals {
     float: left;
 }

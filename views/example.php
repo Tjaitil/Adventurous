@@ -3,7 +3,7 @@
     <head>
         <title><?php echo $title; ?></title>
         <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name ?>.css" />
-        <?php include(constant('ROUTE_VIEW') . 'head.php');?>
+        <?php require(constant('ROUTE_VIEW') . 'head.php');?>
     </head>
     <body>
         <header>
@@ -11,8 +11,7 @@
         </header>
         <section>
             <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
-
-
+            
             <script src="<?php echo constant('ROUTE_JS') . $name . '.js';?>"></script>
         </section>
         <aside>

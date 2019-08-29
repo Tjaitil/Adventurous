@@ -1,5 +1,5 @@
 
-    function make(type, element) {
+    function make(item, element) {
         var parent = element.parentNode;
         var quantity = parent.children[0].value;
         parent.children[0].value = '';
@@ -8,7 +8,7 @@
             alert("Please enter a valid quantity");
             return false;
         }
-        var data = "model=Bakery" + "&method=make" + "&type=" + type + "&quantity=" + quantity;
+        var data = "model=Bakery" + "&method=make" + "&item=" + item + "&quantity=" + quantity;
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
             if(this.readyState == 4 && this.status == 200) {

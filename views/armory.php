@@ -29,7 +29,7 @@
                 <button onclick="wearArmor();"> Put on </button>
             </div>
             <div id="inventory">
-                <?php require(constant('ROUTE_VIEW') . "inventory.php"); url(); ?>
+                <?php require(constant('ROUTE_VIEW') . "inventory.php"); url();?>
             </div>
             <script src="<?php echo constant('ROUTE_JS'). 'selectitem.js';?>"></script>
             <script src="<?php echo constant('ROUTE_JS') . $name . '.js';?>"></script>

@@ -16,6 +16,10 @@
     list-style-type: none;
     float: left;
 }
+#chat ul li {
+    text-align: left;
+    display: block
+}
 #world_map {
     display:none;
     position: relative;

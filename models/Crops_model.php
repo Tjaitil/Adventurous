@@ -80,7 +80,7 @@
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            $date = date("Y-m-d h:i:s");
+            $date = date("Y-m-d H:i:s");
             $date_timestamp = date_timestamp_get(new DateTime($date));
             $countdown_timestamp = date_timestamp_get(new DateTime($row['grow_countdown']));
             if($date_timestamp > $countdown_timestamp  && $row['plot1_harvest'] === 'false') {
@@ -94,16 +94,14 @@
             try {
                 $this->conn->beginTransaction();
                 $sql = "UPDATE farmer as f INNER JOIN farmer_workforce as fw ON f.username = fw.username
-                        SET f.grow_type='none', f.grow_quant=0, f.grow_countdown=:grow_countdown, f.fields_avail=:fields_avail,
+                        SET f.grow_type='none', f.grow_quant=0, f.fields_avail=:fields_avail,
                         f.plot1_harvest='false', fw.avail_workforce=:avail_workforce, fw.$workforce=0
                         WHERE f.location=:location AND f.username=:username";
                 $stmt = $this->conn->prepare($sql);
-                $stmt->bindParam(":grow_countdown", $param_grow_countdown, PDO::PARAM_STR);
                 $stmt->bindParam(":fields_avail", $param_fields_avail, PDO::PARAM_STR);
-                $stmt->bindParam(":avail_workforce", $param_avail_workforce, PDO::PARAM_STR);
+                $stmt->bindParam(":avail_workforce", $param_avail_workforce, PDO::PARAM_INT);
                 $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                $param_grow_countdown = $date;
                 $param_fields_avail = $row['fields_avail'] + $row['grow_quant'];
                 $param_avail_workforce = $row['avail_workforce'] + $row[$workforce];
                 $param_location = $this->session['location'];
@@ -119,6 +117,36 @@
                 return false;
             }
             $this->gameMessage("You have destroyed your crops", true);
+        }
+        public function getSeeds($type, $amount) {
+            $item_amount = get_item($this->session['inventory'], $type)['amount'];
+            if(!$item_amount  > 0) {
+                $this->gameMessage("ERROR: You don't have that item", true);
+                return false;
+            }
+            
+            $seed_amount = rand(0,2);
+            
+            $seed_amount *= $amount;
+            
+            try {
+                $this->conn->beginTransaction();
+                
+                update_inventory($this->conn, $this->username, $type, - $amount);
+                
+                if($seed_amount > 0) {
+                    update_inventory($this->conn, $this->username, $type . ' seed', $seed_amount);
+                }
+                
+                $this->conn->commit();
+            }
+            catch(Exception $e) {
+                $this->conn->rollBack();
+                new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
+                return false;
+            }
+            $this->gameMessage("You got {$seed_amount} {$type} seeds", true);
         }
     }
     

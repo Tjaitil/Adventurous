@@ -2,29 +2,33 @@
     margin:0;
     padding:0;
 }
-
 body {
-    margin: 10px 10% 0px 10%;
+    margin: 10px 8% 0px 8%;
     /*font-family: 'Source Sans Pro', 'bold';*/
     font-family: 'Old Standard TT';
     /*background-color: #000033;*/
 }
-
-
 section {
-    background: radial-gradient(#f2e6d9 50%, #986834);
-    /*background: radial-gradient(#a9753d 50%, #4b341b);*/
+    /*background: radial-gradient(#f2e6d9 50%, #986834);*/
+    /*background: radial-gradient(#a9753d 75%, #4b341b);*/
+    background: radial-gradient(#c99b69 70%, #4b341b);
     box-sizing: content-box;
-    width: 82%;
+    width: 82.8%;
     border: inset 2px;
     float: right;
     text-align: center;
     padding: 1%;
     color: #392714;
+    font-weight: 200;
     overflow: hidden;
     position: relative;
 }
 
+section input {
+    background-color: #f2e6d9;
+    padding: 2px 2px 2px 8px;
+    margin: 3px;
+}
 #skills {
     width: 50%;
     height: 100px;
@@ -56,10 +60,13 @@ section {
 #log td {
     border: none;
     padding: 0px;
+    text-align: left;
+    background-color: transparent;
+    
 }
-#gamemessages {
-    width: 250px;
-    height: 200px;
+#game_messages td {
+    background-color: none;
+    text-align: left;
 }
 
 #announcement {
@@ -77,7 +84,6 @@ section {
     left:0;
     margin: auto;
 }
-
 #announcement button {
     background-color: red;
     color:white;
@@ -87,19 +93,35 @@ section {
     border-radius: 5px;
     border: 0.5px solid black;
 }
-
 #news {
+    box-sizing: border-box;
     position: absolute;
     height: 100%;
     width: 100%;
-    top: 25%;
-    background-color: black;
     border: 1px solid black;
-    opacity: 0.6;
     z-index: 1;
     visibility: hidden;
+    /*margin-left: -2%;
+    margin-right: -2%;*/
+    color: #FFFFFF;
+    background-color: black;
+    opacity: 0.8;
 }
-
+#content {
+    visibility: hidden;
+    position: absolute;
+    margin: 2% 0% 2% 16%;
+    background-color: #d1a77a;
+    z-index: 2;
+    width: 60%;
+    padding: 2%;
+}
+#cont_exit {
+    float: right;
+}
+#level_up p {
+    margin: 15px 0px 0px 0px;
+}
 .gold {
     width: 30px;
     height: 30px;
@@ -114,7 +136,8 @@ section {
     width: 30%;
     height: 400px;
     border: 3px double black;
-    overflow: scroll;
+    overflow-y: scroll;
+    overflow-x: visible;
     /*background-color: #a6a6a6;*/
     background-color: #724e27;
     color: white;
@@ -131,21 +154,21 @@ section {
 }
 #item_amount {
     position: relative;
-    bottom: 20%;
-    left: 10%;
+    top: -64%;
+    left: 24%;
     color: white;
     text-align: right;
     float: none;
 }
 .tooltip {
     position: absolute;
-    /*right: 30%;*/
+    right: 20%;
     bottom: -25%;
     border-radius: 1px;
     background-color: #f2e6d9;
     visibility: hidden;
     color: black;
-    font-size: 13px;
+    font-size: 12px;
     z-index: 2;
     padding: 1px 3px 1px 3px;
     text-align: center;
@@ -153,46 +176,107 @@ section {
     display: inline-block;
     float: right;
 }
-.stockpile_item, .inventory_item {
+.inventory_item {
     display: inline-block;
     float: left;
-    width: 100px;
+    max-width: 104px;
+    width: 30%;
     height: 90px;
+    position: relative;
+     -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; 
+}
+.stockpile_item {
+    display: inline-block;
+    float: left;
+    max-width: 104px;
+    width: 30%;
+    height: 90px;
+}
+.stockpile_item span {
+    
 }
 .stockpile_item img, .inventory_item img {
     width: 50px;
     height: 50px;
     cursor: pointer;
 }
-/*
-.stockpile_buttons {
-    float: right;
-    top: 1px;
-    left: 30px;
-    width: 20px;
-    height: 10px;
-    cursor: pointer;
-}
-*/
-.inventory_buttons, .stockpile_buttons {
+.inventory_buttons {
     visibility: hidden;
-    font-size: 0;
-    padding: 10%;
+    font-size: 12px;
 }
-
-.inventory_buttons button, .stockpile_buttons button {
+.stockpile_buttons {
+    visibility: hidden;
+    padding: 10%;
+    font-size: 12px;
+}
+.inventory_item button, .stockpile_buttons button {
+    max-width: 24px;
     margin: 0px;
     float: left;
     display: block;
     margin: 0px -1px 0px -1px;
+    padding: 1px 1px 1px 1px;
+    box-sizing: border-box;
+    text-align: center;
+    
+}
+.temp {
+}
+.temp ul {
+    text-align: left;
+    list-style-type: none;
+    border: 1px solid black;
+    position: absolute;
+    width: 100px;
+    z-index: 1;
+    top: 14%;
+    padding-top: 10px;
+    background-color: #724e27;
+    overflow: scroll;
+}
+.temp ul li {
+    background-color: #724e27;
+    padding: 2px;
+}
+.temp ul li:nth-child(1):hover {
+    background-color: #724e27;
+}
+.temp ul li:hover {
+    background-color: #986834;
 }
 
+#all {
+    width: 40%;
+}
 #inventory:hover {
     visibility: visible;
     color: white;
 }
-
-@media all and (max-width: 800px) {
+#selected {
+    height: 90px;
+}
+#selected_t {
+    height: 50px;
+    width: 50px;
+    border: 1px solid black;
+}
+#selected figure {
+    position: relative;
+}
+@media all and (max-width: 830px) {
+    body {margin: 10px 2% 0px 2%;};
     #skills div {font-size: 12px;}
     #skills img {width: 25px; height: 25px;}
+    section {width: 97.4%; font-size: 12px;}
+    .inventory_item {width: 50%;}
+    /*.inventory_buttons {
+        margin-left: 6px;
+    }*/
+        
+    }
 }

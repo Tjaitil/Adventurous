@@ -3,7 +3,7 @@
     <head>
         <title> <?php echo $title ?></title>
         <link rel="stylesheet" type="text/css" href="public/css/<?php echo $name;?>.css" />
-        <?php require('views/head.php');?>
+        <?php require(constant('ROUTE_VIEW'). 'head.php');?>
         <meta charset="utf-8"/>
     </head>
     <body>

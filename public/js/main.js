@@ -76,21 +76,25 @@
             }
         }   
         /*setInterval(getChat, 2000);*/
-        window.onload = getChat();
-         
-        window.onload = ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.onload = function () {
-            if(this.readyState == 4 && this.status == 200) {
-                console.log(this.responseText);
-                var data = this.responseText.split("|");
-                var x_value1 = Number(data[0]);
-                var x_value2 = Number(data[1]);
-                var width = x_value1 / x_value2 * 100;
-                document.getElementById("skill_bar2").style.width = width + "%"; 
-            }
+        window.onload = function () {
+            getChat();
+            getXP();
         };
-        ajaxRequest.open("GET", "handlers/handler_js.php?&model=gamedata" + "&method=getXP");
-        ajaxRequest.send();
+        function getXP() {
+            ajaxRequest = new XMLHttpRequest();
+            ajaxRequest.onload = function () {
+                if(this.readyState == 4 && this.status == 200) {
+                    console.log(this.responseText);
+                    var data = this.responseText.split("|");
+                    var x_value1 = Number(data[0]);
+                    var x_value2 = Number(data[1]);
+                    var width = x_value1 / x_value2 * 100;
+                    document.getElementById("skill_bar2").style.width = width + "%"; 
+                }
+            };
+            ajaxRequest.open("GET", "handlers/handler_js.php?&model=gamedata" + "&method=getXP");
+            ajaxRequest.send();
+        }
         
 
 var user = {

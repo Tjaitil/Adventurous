@@ -28,63 +28,63 @@
                         <td> 1 </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Sword </td>
                         <td> 2 </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword', this.parentNode);"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Spear </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Longsword </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Helm </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Platebody </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Platelegs </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Boots </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Shield </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                 </table>
                 <table id="steel">
@@ -100,63 +100,63 @@
                         <td> 1 </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Sword </td>
                         <td> 2 </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button > Make</button></td>
                     </tr>
                     <tr>
                         <td> Spear </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Longsword </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Helm </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Platebody </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Platelegs </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Boots </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Shield </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                 </table>
                 <table id="gargonite">
@@ -172,63 +172,63 @@
                         <td> 1 </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Sword </td>
                         <td> 2 </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Spear </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Longsword </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Helm </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Platebody </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Platelegs </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Boots </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Shield </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Gargonite arrows  </td>
@@ -236,7 +236,7 @@
                             15 <img title="Gargonite" src="<?php echo constant('ROUTE_IMG') . 'gargonite.jpg';?>" /></td>
                         <td> <img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.jpg';?>" /></td>
                         <td> <input type="number" min="0" />
-                        <button onclick="smith('arrow', this.parentNode, 'Gargonite');"> Smith </button></td>
+                        <button> Smith </button></td>
                     </tr>
                 </table>
                 <table id="adron">
@@ -252,63 +252,63 @@
                         <td> 1 </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Sword </td>
                         <td> 2 </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Spear </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Longsword </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Helm </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Platebody </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Platelegs </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Boots </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Shield </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Adron arrows </td>
@@ -316,7 +316,7 @@
                         15 <img src="<?php echo constant('ROUTE_IMG') . 'adron.jpg';?>" /></td>
                         <td>  <img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.jpg';?>" /></td>
                         <td> <input type="number" min="0" />
-                        <button onclick="smith('arrow', this.parentNode, 'Adron');"> Smith </button></td>
+                        <button> Smith </button></td>
                     </tr>
                 </table>
                 <table id="yeqdon">
@@ -332,63 +332,63 @@
                         <td> 1 </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button > Make</button></td>
                     </tr>
                     <tr>
                         <td> Sword </td>
                         <td> 2 </td>
                         <td> 10 </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button > Make</button></td>
                     </tr>
                     <tr>
                         <td> Spear </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button > Make</button></td>
                     </tr>
                     <tr>
                         <td> Longsword </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button > Make</button></td>
                     </tr>
                     <tr>
                         <td> Helm </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button > Make</button></td>
                     </tr>
                     <tr>
                         <td> Platebody </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button > Make</button></td>
                     </tr>
                     <tr>
                         <td> Platelegs </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button > Make</button></td>
                     </tr>
                     <tr>
                         <td> Boots </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword', this);"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Shield </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button > Make</button></td>
                     </tr>
                     <tr>
                         <td> Yeqdon arrows </td>
@@ -396,7 +396,7 @@
                         15 <img src="<?php echo constant('ROUTE_IMG') . 'yeqdon.jpg';?>" /></td>
                         <td>  <img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.jpg';?>" /></td>
                         <td> <input type="number" min="0" />
-                        <button onclick="smith('arrow', this.parentNode, 'Yeqdon');"> Smith </button></td>
+                        <button> Smith </button></td>
                     </tr>
                 </table>
                 <table id="frajrite">
@@ -412,63 +412,63 @@
                         <td> 1 </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Sword </td>
                         <td> 2 </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Spear </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Longsword </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Helm </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Platebody </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Platelegs </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Boots </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Shield </td>
                         <td>  </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
-                            <button onclick="smith('sword');"> Make</button></td>
+                            <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Frajrite arrows </td>
@@ -476,7 +476,7 @@
                         15 <img title="Frajrite" src="<?php echo constant('ROUTE_IMG') . 'frajrite.jpg';?>" /></td>
                         <td>  <img class="gold" title="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.jpg';?>" /></td>
                         <td> <input type="number" min="0" />
-                        <button onclick="smith('arrow', this.parentNode, 'frajrite');"> Smith </button></td>
+                        <button> Smith </button></td>
                     </tr>
                 </table>
             </div>

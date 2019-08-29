@@ -10,4 +10,7 @@
         <a href="/market" id="city_market_link"> Market </a>
         
         
-
+        <div>
+            <img src="<?php echo constant('ROUTE_IMG') . 'potato mal 400.jpg';?>" width="50" height="50" />
+            <img src="<?php echo constant('ROUTE_IMG') . 'potato.jpg';?>" width="50" height="50" />
+        </div>

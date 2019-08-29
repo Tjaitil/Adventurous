@@ -2,12 +2,12 @@
 <html>
     <head>
         <title><?php echo $title; ?></title>
-        <link rel="stylesheet" type="text/css" href="public/css/<?php echo $title ?>.css" />
-        <?php include('views/head.php');?>
+        <link rel="stylesheet" type="text/css" href="public/css/<?php echo $name ?>.css" />
+        <?php require(constant('ROUTE_VIEW') . 'head.php');?>
     </head>
     <body>
         <header>
-            <?php require('views/header.php'); ?>
+            <?php require(constant('ROUTE_VIEW') . 'header.php'); ?>
         </header>
         <section>
             <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
@@ -96,10 +96,9 @@
                 <?php endif; ?>
             </div>      
             <div id="current_adventure">
-                <?php if($this->data['current_adventure']['current'] == 0) {
-                    echo "No current adventure";
-                }
-                if($this->data['current_adventure']['current'] != 0):?>
+                <?php if($this->data['current_adventure']['current'] == 0): ?>
+                    <span> No current adventure! </span>
+               <?php else: ?>
                     <div id="people">
                         <figure>
                             <img src="<?php echo constant("ROUTE_IMG") . 'gold.jpg'; ?>" title="farmer"/>
@@ -117,32 +116,43 @@
                             <img src="<?php echo constant("ROUTE_IMG") . 'gold.jpg'; ?>" title="warrior"/>
                             <figcaption><?php echo ucfirst($this->data['current_adventure']['info']['warrior']);?></figcaption>
                         </figure>
+                        <div id="status">
+                        <?php
+                            $test = in_array(0, $this->data['current_adventure']['requirements']);
+                            $test2  = $this->data['current_adventure']['info']['adventure_status'] == 0;
+                            if($test == true && $test2 == true): ?>
+                            <p> Adventure status: awaiting providing </p>
+                            <?php elseif($test == false && $test2 == true): ?>
+                            <p> Adventure status: ready to start! </p>
+                            <?php else: ?>
+                            <p> Adventure status: underway! </p>
+                            <?php endif;?>
+                        </div>
+                        <div id="time"></div>
                         <?php if(in_array('none', array($this->data['current_adventure']['info']['farmer'],
                                  $this->data['current_adventure']['info']['miner'],
                                  $this->data['current_adventure']['info']['trader'],
-                                 $this->data['current_adventure']['info']['warrior']))):?>
+                                 $this->data['current_adventure']['info']['warrior']))
+                                 && $this->data['current_adventure']['info']['adventure_leader'] == $this->data['username']):?>
                             <div id="invite">
-                                <input type="text" min="0" onkeyup="chk_me()";/><span></span></br>
+                                <input type="text" min="0" onkeyup="chk_me();"/><span></span></br>
                  <button onclick="adventureRequest(<?php echo $this->data['current_adventure']['info']['adventure_id'];?>,'invite');">
                                 Invite </button>
                             </div>
-                        
-                        <?php endif; ?>
-                        <?php if($this->data['current_adventure']['info']['adventure_leader'] ==
-                                 $this->data['current_adventure']['username'] &&
-                                 $this->data['current_adventure']['info']['adventure_status'] == 1): ?>
-                            <button onclick="startAdventure();"> Start Adventure </button>
                         <?php endif;?>
-                        
+                        <?php if($this->data['current_adventure']['info']['adventure_leader'] ==
+                                 $this->data['username'] &&
+                                 in_array(0, $this->data['current_adventure']['requirements']) == false): ?>
+                            <button onclick="startAdventure();" id="adv_start"> Start Adventure </button>
+                        <?php endif;?>
                     </div>
-                    <div id="time"></div>
                     <div id="report"></div>
                     <div id="requirements">
                         <table>
                             <thead>
                                 <tr>
                                     <td> Role: </td>
-                                    <td> Status: </td>
+                                    <td> Requirement: </td>
                                     <td> Provided: </td>
                                 </tr>
                             </thead>
@@ -206,7 +216,7 @@
             <script src="<?php echo constant('ROUTE_JS') . $name . '.js';?>"></script>
         </section>
         <aside>
-            <?php require('views/aside.php'); ?>
+            <?php require(constant('ROUTE_VIEW') . 'aside.php'); ?>
         </aside>
     </body>
 </html>

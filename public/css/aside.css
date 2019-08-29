@@ -3,18 +3,18 @@ aside {
     height: 500px;
     float: left;
     padding: 5px 0px 0px 3px;
-    margin: 0px 0px 0px 5px;
+    margin: 0px 0px 0px 0px;
     background: radial-gradient(#f2e6d9 80%, #986834);
     border: inset 2px;
     position: fixed;
     display: block;
-    /* border-top-style: ridge;
+    /*border-top-style: ridge;
     border-top-color: black;
     border-top-width: 2px;
     border-right-style: ridge;
     border-right-color: black;
     border-right-width: 2px;
-    background-color: #002b80; */
+    background-color: #002b80;*/
 }
 aside a {
     color:#003cb3;
@@ -51,4 +51,9 @@ aside a:visited {
 
 #side_menu li a {
     text-decoration:none;
+}
+@media all and (max-width: 800px) {
+    aside {
+        display: none;
+    }
 }

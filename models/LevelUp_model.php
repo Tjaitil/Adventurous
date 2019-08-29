@@ -25,9 +25,8 @@
             foreach($this->session['level_up'] as $key => $value) {
                 $param_xp = $this->session[$value]['xp'];
                 $stmt->execute();
-                $new_level[$value] = $levels[] = $stmt->fetch(PDO::FETCH_OBJ)->level;
+                $new_level[$value] = $stmt->fetch(PDO::FETCH_OBJ)->level;
             }
-            
             try {
                 $this->conn->beginTransaction();
                 foreach($this->session['level_up'] as $key) {
@@ -58,9 +57,13 @@
                 $param_level = $new_level[$key];
                 $stmt->execute();
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                sprintf($format, $key, $new_level[$key]);
+                echo sprintf($format, $key, $new_level[$key]);
                 $_SESSION['gamedata'][$key]['level'] = $new_level[$key];
                 $_SESSION['gamedata'][$key]['next_level'] = $row['next_level'];
+                if($key == $this->session['profiency']) {
+                    $_SESSION['gamedata']['profiency_xp'] = $this->session[$key]['xp'];
+                    $_SESSION['gamedata']['profiency_xp_nextlevel'] = $row['next_level'];
+                }
             }
             /*$this->levelupData();*/
         }

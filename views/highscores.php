@@ -3,11 +3,11 @@
     <head>
         <title><?php echo $title; ?></title>
         <link rel="stylesheet" type="text/css" href="public/css/<?php echo $name ?>.css" />
-        <?php include('views/head.php');?>
+        <?php require(constant('ROUTE_VIEW') . 'head.php');?>
     </head>
     <body>
         <header>
-            <?php require('views/header.php'); ?>
+            <?php require(constant('ROUTE_VIEW') . 'header.php'); ?>
         </header>
         <section>
             <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
@@ -108,7 +108,7 @@
             </div>
         </section>
         <aside>
-            <?php require('views/aside.php'); ?>
+            <?php require(constant('ROUTE_VIEW') . 'aside.php'); ?>
         </aside>
     </body>
 </html>

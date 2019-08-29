@@ -1,22 +1,38 @@
 header {
     border-bottom: black thin;
-    margin-left:5px;
-    margin-right:5px;
     text-align: center;
     display: block;
     background: radial-gradient(#f2e6d9 60%, #986834);
 }
 #nav_but {
     display: none;
+    color:white;
+    background-color:#994d00;
+    width: 40%;
 }
 #nav_2 {
     list-style-type: none;
-    display: none;
-    width: 30%;
+    width: 40%;
     float: left;
+    position: absolute;
+    z-index: 1;
 }
 #nav_2 ul {
+    margin-top: 8%;
     list-style-type: none;
+    float: left;
+    visibility: hidden;
+}
+#nav_2 ul li {
+    padding: 1px;
+    color:white;
+    background-color:#994d00;
+}
+#nav_2 ul a {
+    text-decoration: none;
+}
+#nav_2 ul li a:visited {
+    color:white;
 }
 .top_bar {
     width: 15%;
@@ -68,7 +84,7 @@ header {
 #clock {
 }
 
-@media all and (max-width: 800px) {
+@media all and (max-width: 830px) {
     #nav_but {display: block;}
     .top_bar {
         display: none;

@@ -19,6 +19,8 @@
                     <?php get_template('chat', $this->data['chat']);?>            
                 </ul>
             </div>
+            
+            <button onclick="show_xp('farmer', 10);"> Show_xp </button>
             <input type="text" id="text" />
             <button type="button" onclick="chat();"> Chat </button>
             </div>
@@ -92,7 +94,7 @@
         </section>
         <aside>
             <?php
-                require('views/aside.php');
+                require(constant('ROUTE_VIEW') . 'aside.php');
             ?>
         </aside>
     </body>            

@@ -17,7 +17,7 @@
             </div>
         </section>
         <aside>
-            <?php require('views/aside.php'); ?>
+            <?php require(constant('ROUTE_VIEW') . 'aside.php'); ?>
         </aside>
     </body>
 </html>

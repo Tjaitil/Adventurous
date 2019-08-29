@@ -1,3 +1,5 @@
+    document.getElementById("seed_g").children[3].addEventListener("click", seedGenerator);
+    document.getElementById("plant_button").addEventListener("click", grow);
     function getCountdown() {
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function() {
@@ -36,6 +38,24 @@
     
     window.onload = getCountdown();
     
+    function grow() {
+        var form = document.getElementById("plant");
+        
+        if(!form.reportValidity()) {
+            console.log("error");
+        }
+        else {
+            console.log(form);
+            var JSON_data = JSONForm(form);
+            console.log(result);
+            var data = "model=SetCrops" + "&method=setCrops" + "&JSON_data=" + JSON_data;
+            ajaxP(data, function(response) {
+                if(response[0] !== false) {
+                    
+                }
+            });
+        }
+    }
     function updateCrop() {
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function() {
@@ -130,4 +150,33 @@ document.getElementById("plant_workforce").addEventListener("input", estimate.es
         }
         img.style = "display:block";
         img.src = "public/images/" + name;
+    }
+    
+    function seedGenerator() {
+        var quantity = document.getElementById("quantity").value;
+        if(!selectedCheck()) {
+            return;
+        }
+        var items = ["potato", "tomato", "corn", "carrots", "cabbages", "wheat", "sugar", "spices", "apples", "oranges", "watermelon"];
+        var item = document.getElementById("selected").children[0].children[1].innerHTML.toLowerCase();
+        if(items.indexOf(item) == -1) {
+            gameLog("ERROR: Pick a valid item");
+            return false;
+        }
+        ajaxRequest = new XMLHttpRequest();
+        var data = "model=Crops" + "&method=getSeeds" + "&item=" + item + "&quantity=" + quantity;
+        ajaxRequest.onload = function () {
+            if(this.readyState == 4 && this.status == 200) {
+                if(this.responseText.indexOf("ERROR:") != -1) {
+                    gameLog(this.responseText);   
+                }
+                else {
+                    gameLog(this.responseText);
+                    updateInventory("crops");
+                }
+            }
+        };
+        ajaxRequest.open('POST', "handlers/handler_p.php");
+        ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        ajaxRequest.send(data);  
     }

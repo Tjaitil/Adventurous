@@ -192,25 +192,27 @@
                 }
                 return $warrior;
         }
-        
         protected function warriorHit($daqloon, $warrior, $duration) {
-                $warrior_hit = $warrior['attack'] + (0.5 * $warrior['strength_level']) + 
-                               (($warrior['attack'] / 100) * $warrior['technique_level'] + rand(1,3)) //Damage increase from technique 
-                             * (0.025 * $daqloon['defence']);
+                $warrior_hit = $warrior['attack'] - (0.025 * $daqloon['defence']);
                              - ($warrior['stamina_level'] - ($duration * 0.2)); //Hit damage decrease when they are fighting
+                
+                $warrior_hit += ($warrior['type'] === 'warrior') ? (0.5 * $warrior['strength_level']) : (0.6 * $warrior['precision_level']);
                 $daqloon['health'] -= $warrior_hit;
                 $this->warrior_damage[] = $warrior_hit;
                 $this->battle_progress[] = "Daqloon " .  $daqloon['id'] . " got hit for " . $warrior_hit . " by warrior " .
                 $warrior['warrior_id'] . ", daqloon health: " . $daqloon['health'];
                 //precision_level is hit percentage for getting in a second attack
-                if(rand(1,100) <= $warrior['precision_level']) {
+                if(rand(1,100) <= $warrior['technique_level']) {
                     $daqloon['health'] -= $warrior_hit;
                     $this->warrior_damage[] = $warrior_hit;
                     $this->combo_attack['warrior'] += 1;
                     $this->battle_progress[] = "COMBO! Daqloon " .  $daqloon['id'] . " got hit for " . $warrior_hit . " by " .
                     $warrior['warrior_id'] . " Health: " . $daqloon['health'];
                 }
-
+                if(rand(1,100) <= round($warrior['technique_level'] * 0.25)) {
+                    
+                    $this->battle_progress[] = "Blocked";
+                }
                 if($daqloon['health'] < 10 ) {
                     $this->daqloon_status['d_' . $daqloon['id']] = "wounded";
                     $this->battle_progress[] =  'Daqloon ' . $daqloon['id'] . ' wounded';

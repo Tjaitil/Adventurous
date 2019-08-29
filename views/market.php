@@ -11,9 +11,6 @@
         </header>
         <section>
             <?php require(constant('ROUTE_VIEW') . 'layout.php'); ?>
-            <?php if(strlen($_SESSION['gamedata']['game_message']) > 3):?>
-                <script>getgMessage();</script>
-            <?php endif;?>
             <button onclick="show('offers');"> Offers </button>
             <button onclick="show('my_offers');"> My Offers </button>
             <button onclick="show('history');"> History </button>
@@ -45,18 +42,16 @@
                 </form>
             </div>
             <div id="offers">
-                <div id="buy">
-                    <table>
-                        <thead>
-                                <td> Item: </td>
-                                <td> Quantity: </td>
-                                <td> Price each: </td>
-                                <td> User: </td>
-                            </tr>
-                        </thead>
-                        <?php get_template('offers', $this->data['offers']);?>
-                    </table>
-                </div>
+                <table>
+                    <thead>
+                            <td> Item: </td>
+                            <td> Quantity: </td>
+                            <td> Price each: </td>
+                            <td> User: </td>
+                        </tr>
+                    </thead>
+                    <?php get_template('offers', $this->data['offers']);?>
+                </table>
             </div>
             <div id="my_offers">
                 <table>

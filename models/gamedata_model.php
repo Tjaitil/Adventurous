@@ -89,7 +89,7 @@
             $row7 = $stmt->fetch(PDO::FETCH_ASSOC);
             
             $rows = array_merge($row, $row2, $row3, $row4, $row6, $row7);
-            $this->closeConn();
+            
             return $rows;            
         }
         
@@ -98,6 +98,16 @@
             $row[] = $_SESSION['gamedata']['profiency_xp'];
             $row[] = $_SESSION['gamedata']['profiency_xp_nextlevel'];
             js_echo($row);
+        }
+        public function checkMarket() {
+            $sql = "SELECT box_item FROM offers WHERE offeror=:username AND box_item!=0";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_username = $this->username;
+            $stmt->execute();
+            if($stmt->rowCount() > 1) {
+                $this->gameMessage("You have items waiting at market");
+            }
         }
     }
 ?>

@@ -4,13 +4,14 @@
         public $session;
         
         function __construct ($username, $session) {
+            new ajaxexception(1, 2, 3, 4);
             parent::__construct();
             $this->username = $username;
             $this->session = $session;
         }
         
         public function getCountdown() {
-            $sql = "SELECT adventure_countdown, adventure_status FROM adventures WHERE (farmer OR miner OR trader OR warrior)=:username";
+            $sql = "SELECT adventure_countdown, adventure_status FROM adventures WHERE :username IN (farmer, miner, trader, warrior)";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
@@ -33,6 +34,7 @@
         
         public function getData() {
             $data = array();
+            $data['username'] = $this->username;
             $data['profiency'] = $this->session['profiency'];
             $profiencies = array("farmer", "miner", "warrior", "trader");
             if (array_search($data['profiency'], $profiencies) === false) {
@@ -125,7 +127,15 @@
                             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                             $param_username = $data['info']['trader'];
                             $stmt->execute();
-                        }   
+                        }
+                        else if($trader_requirement[0]['status'] == 1
+                                 && intval($trader_requirement[0]['amount']) > intval($data['trader_diplomacy'])) {
+                            $sql = "UPDATE adventure_requirements SET status=0 WHERE username=:username";
+                            $stmt = $this->conn->prepare($sql);
+                            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                            $param_username = $this->username;
+                            $stmt->execute();
+                        }
                     }
                 }
                 if($this->username == $data['info']['warrior']) {
@@ -139,8 +149,15 @@
                     $stmt->execute();
                     $data['warriors'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 }
+                /*if(in_array(0, $data['requirements']) == false && $data['info']['adventure_status'] == 0 ) {
+                    $sql = "UPDATE adventures SET adventure_status=1 WHERE adventure_id=:adventure_id";
+                    $stmt = $this->conn->prepare($sql);
+                    $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_STR);
+                    $param_adventure_id = $data['current'];
+                    $stmt->execute();
+                    $data['info']['adventure_status'] = 1;
+                }*/
             }
-            $data['username'] = $this->username;
             return $data;
         }
         

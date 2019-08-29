@@ -1,12 +1,91 @@
 section table td {
-    padding:5px;
+    padding: 5px;
     border: 1px solid black;
     border-collapse: collapse;
+    background-color: #f2e6d9;
 }
-
+#calculator {
+    display: none;
+}
 #calc_result {
     visibility: hidden;
 }
 #stats_individ {
+    display: none;
+}
+.warrior {
+    width: 30%;
+    height: 20%;
+    float: left;
+    border: 1px solid black;
+    padding: 1%;
+}
+.info {
+    width: 100%;
+    margin-bottom: 3px;
+}
+.info img {
+    width: 30%;
+    height: 30%;
+    float:left;
+}
+.info table {
+    border-collapse: collapse;
+}
+.info table td {
+    border: none;
+}
+.levels {
+    width: 100%;
+}
+.levels ul {
+    width: 100%;
+    float:left;
+    list-style-type: none;
+}
+.levels ul li {
+    text-align: left;
+    height: 25px;
+}
+.levels li p {
+    width: 45%;
+    float: left;
+}
+.skill_bar {
+    height: 25px;
+    width: 54%;
+    border: 1px solid black;
+    background-color: #995c00;
+    float:right;
+}
+.skill_bar2 {
+    width: 0%;
+    height:100%;
+    background-color: #ff9900;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+.skill_bar_progress {
+    width: 100%;
+    display: block;
+    text-align: center;
+    position: relative;
+    /*line-height: 25px;*/
+}
+#overview {
+    width: 100%;
+    overflow: scroll;
+}
+#transfer {
+    display: none;
+}
+#heal {
+    display: none;
+}
+#rest {
+    display: none;
+}
+#training {
     display: none;
 }

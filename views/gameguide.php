@@ -3,12 +3,12 @@
     <head>
         <title><?php echo $title; ?></title>
         <link rel="stylesheet" type="text/css" href="public/css/<?php echo $title; ?>.css" />
-        <?php include('views/head.php');?>
+        <?php include(constant('ROUTE_VIEW') . 'head.php');?>
         <meta charset="utf-8"/>
     </head>
     <body>
         <header>
-            <?php include('views/header.php');?>
+            <?php include(constant('ROUTE_VIEW') . 'header.php');?>
         </header>
         <section>
             
@@ -80,7 +80,7 @@
             </div>
         </section>
         <aside>
-            <?php include('views/aside.php');?>
+            <?php include(constant('ROUTE_VIEW') . 'aside.php');?>
         </aside>
         <!-- <script src="troop.js"></script>-->
     </body>            

@@ -24,7 +24,7 @@
                         foreach($result as $key => $value) {
                            $this->error[$key] = $value; 
                         }
-                        $_SESSION['gamedata']['game_message'] = "ERROR: There were one or more errors in your submission";
+                        $_SESSION['gamedata']['log'][]  = "ERROR: There were one or more errors in your submission";
                     return false;
                 }
                 else {

@@ -3,28 +3,26 @@
         public $conn;
 
         function __construct () {
-                if(defined('DB_SERVER') || defined('DB_username') || defined('DB_pass') || defined('DB_name')) {
-                    try {
-                        $this->conn = new PDO ("mysql:host=" . DB_server . ";dbname=" . DB_name, DB_username, DB_pass);
-                        $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                    }
-                    catch (PDOexception $e) {
-                        die ("ERROR: Could not connect." . $e->getMessage());
-                    } 
-                }
-                else {
+            try {
+                $this->conn = new PDO("mysql:host=" . DB_server . ";dbname=" . DB_name, DB_username, DB_pass);
+                $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            }
+            catch (PDOexception $e) {
+                die ("ERROR: Could not connect.i" . $e->getMessage());
+            } 
+                /*else {
                     define('DB_server', 'localhost');
                     define('DB_username', 'root');
                     define('DB_pass', '');
                     define('DB_name', 'Adventurous');
                     try {
-                        $this->conn = new PDO ("mysql:host=" . DB_server . ";dbname=" . DB_name, DB_username, DB_pass);
+                        $this->conn = new PDO("mysql:host=" . DB_server . ";dbname=" . DB_name, DB_username, DB_pass);
                         $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                     }
                     catch (PDOexception $e) {
-                        die ("ERROR: Could not connect." . $e->getMessage());
+                        die ("ERROR: Could not connectas." . $e->getMessage());
                     } 
-                }
+                }*/
         }
         
         public function gameMessage($message, $ajax = false) {
@@ -32,10 +30,12 @@
             if($ajax != false) {
                 echo $date . $message;
             }
-            else {
-                $_SESSION['gamedata']['game_message'] = $date . $message;
+            $_SESSION['gamedata']['log'][] = $date . $message;
+            if(count($_SESSION['gamedata']['log']) > 15) {
+                unset($_SESSION['gamedata']['log'][0]);
+                $_SESSION['gamedata']['log'] = array_values($_SESSION['gamedata']['log']);
             }
-        }
+         }
         public function closeConn() {
             unset($this->conn);
         }

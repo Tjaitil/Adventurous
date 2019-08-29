@@ -65,25 +65,45 @@
                 <div id="calc_result">
                     <button type="button" onclick="toggle(1);"> New calculation </button>
                 </div>
-            <table id="overview">
-                <thead>
-                    <tr>
-                        <td></td>
-                        <td>Warrior id</td>
-                        <td>Type</td>
-                        <td>Stamina level</td>
-                        <td>Technique Level</td>
-                        <td>Precision Level</td>
-                        <td>Strength Level</td>
-                        <td>Training countdown</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php get_template('armycamp', $this->data); ?>
-                </tbody>
-            </table>
-            <div>
-                <button onclick="transfer();"> Transfer warriors </button>
+            </div>
+            <div id="overview">
+                <?php get_template('warrior_levels', $this->data['warrior_data']);?>
+            </div>
+            <div id="actions">
+                <label for="action"> Select action </label>
+                <select name="action">
+                    <option selected></option>
+                    <option value="transfer"> Transfer </option>
+                    <option value="heal"> Heal </option>
+                    <option value="rest"> Rest </option>
+                    <option value="training"> Training </option>
+                    <option value="offRest"> Off rest </option>
+                    <option value="changeType"> Change Type </option>
+                </select>
+                <div>
+                    <div id="heal">
+                        <p> Select item to heal: </p>
+                        <div id="selected">
+                            <div id="selected_t"></div>
+                        </div>
+                        <input type="number" id="quantity" min="0" />
+                        <div id="inventory">
+                            <?php require(constant('ROUTE_VIEW') . "inventory.php"); url();?>
+                        </div>
+                    </div>
+                    <div id="training">
+                        <label for="type"> Select type of training</label>
+                        <select name="type">
+                            <option></option>
+                            <option value="general"> General </option>
+                            <option value="stamina"> Stamina </option>
+                            <option value="technique"> Technique </option>
+                            <option value="precision"> Precision </option>
+                            <option value="strength"> Strength </option>
+                        </select></br>
+                    </div>
+                    <button> Do Action </button>
+                </div>
                 <form method="post" action="">
                     <label for="id">Select warrior</label>
                     <select name="id">
@@ -106,6 +126,7 @@
                 <p id="training"> </p>
                 <p id="time"> </p>
                 <script src="<?php echo constant('ROUTE_JS') . $name . '.js';?>"></script>
+                <script src="<?php echo constant('ROUTE_JS') . 'selectitem.js';?>"></script>
             </div>
         </section>
         <aside>

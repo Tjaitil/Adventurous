@@ -4,7 +4,6 @@
     $handler->sessionCheck(true);
     $modelname = $_POST['model'];
     $methodname = $_POST['method'];
-
     $model = $handler->includeModel(true, $_POST['model'], $_SESSION['gamedata'], true);
     $method = $handler->checkMethod($model, $_POST['method']);
     if($method === true) {
@@ -34,12 +33,29 @@
                     }
                     break;
                 case "ArmyCamp":
-                    //method transfer()
-                    $model->$methodname($_POST['warriors']);
+                    switch($methodname) {
+                        case 'transfer':
+                        case 'offRest':
+                        case 'changeType':
+                            $model->$methodname($_POST['warriors']);
+                            break;
+                        case 'healWarrior':
+                            if(isset($_POST['item'])) {
+                            $model->$methodname($_POST['type'], $_POST['warriors'], $_POST['item'], $_POST['quantity']); 
+                            }
+                            else {
+                                $model->$methodname($_POST['type'], $_POST['warriors']);
+                            }
+                            break;
+                    }
                     break;
                 case "Bakery":
                     //method make()
-                    $model->$methodname($_POST['type'], $_POST['quantity']);
+                    $model->$methodname($_POST['item'], $_POST['quantity']);
+                    break;
+                case 'Crops':
+                    //method getSeeds()
+                    $model->$methodname($_POST['item'], $_POST['quantity']);
                     break;
                 case 'travel':
                     $city = $_SESSION['gamedata']['location'];
@@ -55,6 +71,7 @@
                 case "market":
                     switch($methodname) {
                         case 'cancelOffer':
+                        case 'fetchItem':
                             $model->$methodname($_POST['id']);
                             break;
                         case 'trade':
@@ -137,5 +154,9 @@
                     break;
             }
         }
+    }
+    else {
+        echo "model doesn't exists!";
+        return false;
     }
 ?>

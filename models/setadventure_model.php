@@ -193,7 +193,7 @@
                 $queryArray = explode(",", $warrior_check);
                 $queryArray[] = $this->username;
                 $in  = str_repeat('?,', count($queryArray) - 2) . '?';
-                $sql = "SELECT warrior_id, type FROM warriors WHERE warrior_id IN ($in) AND fetch_report=0 AND username=?";
+                $sql = "SELECT warrior_id, type FROM warriors WHERE warrior_id IN ($in) AND fetch_report=0 AND mission=0 AND username=?";
                 $stmt = $this->conn->prepare($sql);
                 $stmt->execute($queryArray);
                 if(!$stmt->rowCount() > 0) {
@@ -300,7 +300,6 @@
             $param_adventure_id = $row['adventure_id'];
             $stmt->execute();
             $requirements = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $this->closeConn();
             get_template('requirements', $requirements, true);
             if($route === 'warrior') {
                 $sql = "SELECT w.warrior_id, w.type, wl.stamina_level, wl.technique_level, wl.precision_level, wl.strength_level
@@ -314,6 +313,7 @@
                 $data['warriors'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 get_template('warrior_adventure', $data['warriors'], true);
             }
+            $this->closeConn();
         }
     }
 ?>

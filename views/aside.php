@@ -1,5 +1,5 @@
-
-        <div id="side_menu">
+    
+    <div id="side_menu">
         <h5> Categories</h5>
         <ul>
             <li><a href="#">Rules</a></li>
@@ -11,5 +11,9 @@
             <li><a href="#">1</a></li>
             <li><a href="#">1</a></li>
         </ul>
+    </div>
+    <div id="side_menu2">
+        
+        
     </div>
 

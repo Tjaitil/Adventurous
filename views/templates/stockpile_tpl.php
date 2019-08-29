@@ -11,14 +11,8 @@
     }
     foreach($data['stockpile'] as $key): ?>
         <div class="stockpile_item">
-            <div class="stockpile_buttons">
-                <button onclick="withdraw(this, 1);"> 1 </button>
-                <button onclick="withdraw(this, 5);"> 5 </button>
-                <button onclick="withdraw(this, 'x');"> x </button>
-                <button onclick="withdraw(this, 'all');"> All </button>
-            </div>
             <figure onclick="show_title(this, true);">
-                <img src="<?php echo constant('ROUTE_IMG') . $key['item'] . '.jpg';?>"/>
+                <img src="<?php echo constant('ROUTE_IMG') . $key['item'] . '.png';?>"/>
                 <figcaption class="tooltip"><?php echo ucwords($key['item']); ?></figcaption>
             </figure>
             <span id="item_amount"><?php echo amounts($key['amount']);?></span>

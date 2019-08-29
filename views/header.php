@@ -1,19 +1,21 @@
         <div id="nav">
-            <ul id="nav_2">
-                <li> Main </li>
-                <li> City </li>
-                <li> Travel </li>
-                <li> Adventures </li>
-                <li> Highscores </li>
-                <li> Messages </li>
-                <!--<li><div class="but"><a href="/main">Main</a></div></li>
-                <li><div class="but"><a href='/city'>City</a></div></li>
-                <li><div class="but"><a href="/travel">Travel</a></div></li>
-                <li><div class="but"><a href="/adventures">Adventures</a></div></li>
-                <li><div class="but"><a href="/highscores">Highscores</a></div></li>
-                <li><div class="but"><a href="/messages">Messages</a></div></li>-->
-            </ul>
-            <button id="nav_but" onclick="displayNav();"> Click </button>
+            <div id="nav_2">
+                <ul id="nav_2">
+                    <li><a href="/main">Main</a></li>
+                    <li><a href="/city">City</a></li>
+                    <li><a href="/travel">Travel</a></li>
+                    <li><a href="/adventures">Adventures </a></li>
+                    <li><a href="/highscores">Highscores </a></li>
+                    <li><a href="/messages">Messages </a></li>
+                    <!--<li><div class="but"><a href="/main">Main</a></div></li>
+                    <li><div class="but"><a href='/city'>City</a></div></li>
+                    <li><div class="but"><a href="/travel">Travel</a></div></li>
+                    <li><div class="but"><a href="/adventures">Adventures</a></div></li>
+                    <li><div class="but"><a href="/highscores">Highscores</a></div></li>
+                    <li><div class="but"><a href="/messages">Messages</a></div></li>-->
+                </ul>
+                <button id="nav_but" onclick="displayNav();"> Click </button>
+            </div>
             <div class="top_bar">
                 <div class="a"><a href="/main">1</a></div>
                 <div class="but"><a href="/main">Main</a></div>
@@ -39,6 +41,7 @@
                 <div class="but"><a href="/messages">Messages</a></div>
             </div>
         </div>
+        <a href="/profile"> Profile </a>
         <a href="/logout" id="logout"> Log Out</a>
         <div id="clock"> 00:00:00 </div>
         <script src="<?php echo constant('ROUTE_JS') . 'general.js';?>"></script>

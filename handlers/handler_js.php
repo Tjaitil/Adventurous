@@ -1,6 +1,5 @@
 <?php
     require('../libs/handler.php');
-    
     $handler = new handler(true);
     $handler->sessionCheck();
     $modelname = $_GET['model'];

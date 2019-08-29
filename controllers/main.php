@@ -16,15 +16,16 @@
         }
         function fetchData() {
             $this->loadModel('gamedata', true);
-            $this->gamedata = $this->model->fetchData();
-            $_SESSION['gamedata'] = $this->gamedata;
+            $_SESSION['gamedata'] = $this->model->fetchData();
             $_SESSION['gamedata']['travelling'] = false;
             $profiency = $_SESSION['gamedata']['profiency'];
             $_SESSION['gamedata']['profiency_level'] = $_SESSION['gamedata'][$profiency]['level'];
             $_SESSION['gamedata']['profiency_xp'] = $_SESSION['gamedata'][$profiency]['xp'];
             $_SESSION['gamedata']['profiency_xp_nextlevel'] = $_SESSION['gamedata'][$profiency]['next_level'];
-            $_SESSION['gamedata']['game_message'] = 's';
+            $_SESSION['gamedata']['log'] = array();
+            $_SESSION['gamedata']['log'][] = "Welcome to Adventurous!";
             $_SESSION['gamedata']['conversation']['progress'] = '';
+            $this->model->checkMarket();
         }
     }
 ?>

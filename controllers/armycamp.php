@@ -11,6 +11,23 @@
         public function index() {
             $this->loadModel('ArmyCamp', true);
             $this->data = $this->model->getData();
+            for($i = 0; $i < count($this->data['warrior_data']); $i++) {
+                if($this->data['warrior_data'][$i]['mission'] < 1) {
+                    $this->data['warrior_data'][$i]['status'] = "On Mission: " . $this->data['warrior_data'][$i]['mission'];
+                }
+                else if($this->data['warrior_data'][$i]['mission'] == 1) {
+                    $this->data['warrior_data'][$i]['status'] == "On Adventure";
+                }
+                if($this->data['warrior_data'][$i]['fetch_report'] == 1) {
+                    $this->data['warrior_data'][$i]['status'] = "Training";
+                }
+                if($this->data['warrior_data'][$i]['rest'] == 1) {
+                    $this->data['warrior_data'][$i]['status'] = "Resting";
+                }
+                else {
+                    $this->data['warrior_data'][$i]['status'] = "Nothing special";
+                }
+            }
             $this->data['warrior_level_up'] = $this->model->checkWarriorLevel($this->data['warrior_data']);
             $this->profiencyCheck('warrior');
             $this->post();

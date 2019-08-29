@@ -7,7 +7,7 @@
     $session_variable = $_SESSION['gamedata'][$variable];
     
     switch($variable) {
-        case 'game_message':
+        case 'log':
             $_SESSION['gamedata']['game_message'] = '1';
             break;  
         default:

@@ -23,7 +23,7 @@
         }
         
         public function getChat($clock = false) {
-            $sql = "SELECT id, clock, username, message FROM public_chat ORDER BY clock ASC LIMIT 30";
+            $sql = "SELECT id, time, username, message FROM public_chat ORDER BY time ASC LIMIT 30";
             $stmt = $this->conn->query($sql);
             $stmt->execute();
             if($clock == false) {

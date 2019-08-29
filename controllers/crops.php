@@ -29,7 +29,7 @@
             if($_SERVER['REQUEST_METHOD'] === "POST") {
                 $db_test = $this->model->checkCountdown($check = true);
                 if($db_test == false) {
-                    $_SESSION['gamedata']['game_message'] = "ERROR: There are already crops growing!";
+                    $_SESSION['gamedata']['log'][]  = "ERROR: There are already crops growing!";
                     return false;
                 }
                 $this->dbFields = $this->data['fields']['fields_avail'];
@@ -42,14 +42,14 @@
                         foreach($result as $key => $value) {
                            $this->error[$key] = $value;
                         }
-                    $_SESSION['gamedata']['game_message'] = "ERROR: There were one or more errors in your submission";
+                    $_SESSION['gamedata']['log'][]  = "ERROR: There were one or more errors in your submission";
                     return false;
                 }
                 if($_POST['quantity'] > $this->dbFields) {
-                    $_SESSION['gamedata']['game_message'] = "ERROR: You don't have that many fields available";
+                    $_SESSION['gamedata']['log'][]  = "ERROR: You don't have that many fields available";
                 }
                 else if($_POST['workforce'] > $this->dbAvail_workforce) {
-                    $_SESSION['gamedata']['game_message'] = "ERROR: You dont have that many workers available";
+                    $_SESSION['gamedata']['log'][]  = "ERROR: You dont have that many workers available";
                 }
                 else {
                     $this->bindData();

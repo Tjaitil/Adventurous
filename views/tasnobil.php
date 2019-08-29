@@ -7,5 +7,6 @@
         <a href="/tavern" id="city_tavern_link"> Tavern </a>
         <a href="/citycentre" id="city_citycentre_link"> City Centre</a>
         <a href="/bakery" id="city_bakery_link"> Bakery </a>
+        <a href="/market" id="city_market_link"> Market </a>
         
 

@@ -1,3 +1,15 @@
+    window.onload = function () {
+        getCountdown();
+        var img = document.getElementById("mineral_select").querySelectorAll("img");
+        img.forEach(function(element) {
+              // ... code code code for this one element
+                element.addEventListener('click', function() {
+                    showMineral();
+                });
+            });
+        document.getElementById("cancel").addEventListener("click", cancelMining);
+        /*document.getElementById("mineral_select").getElementsByTagName("img").addEventListener("click", showMineral);*/
+    };
     function getCountdown() {   
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function() {
@@ -33,53 +45,34 @@
         ajaxRequest.open("GET", "/handlers/handler_g.php?&model=mine" + "&method=checkCountdown");
         ajaxRequest.send();
     }
-
-    window.onload = getCountdown();
-    
-    function ajaxRequest() {
-        ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.onload = function () {
-            if(this.readyState == 4 && this.status == 200) {
-                gameLog(this.responseText);
-                return false;
-            }
-            else {
-                return true;
-            }
-        };
-        ajaxRequest.open('GET', "handlers/handler_g.php?model=" + "&method=");
-        ajaxRequest.send();
+    function showMineral() {
+        var element = event.target;
+        var clone = element.cloneNode();
+        clone.removeAttribute("onclick");
+        var mineral = element.getAttribute("alt");
+        var div = document.getElementById("mineral_data");
+        div.style.visibility = "visible";
+        div.children[0].value = jsUcfirst(mineral);
+        div.children[1].value = mineral.permits;
+        div.children[2].value = mineral.time;
+        div.insertBefore(div.children[0], clone);
     }
-    
-    
-    function test() {
-        var data =;
-        var ajaxRequest =  ajaxRequest
-        if(ajaxRequest != false) {
-            
-        }
-        else {
-            
-        }
-    }
-    
     function updateMine() {
         var data = "model=UpdateMine" + "&method=updateMine";
-        ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.onload = function() {
-            if(this.readyState == 4 && this.status == 200) {
-                console.log(this.responseText);
-                if(this.responseText.search("ERROR") != -1) {
-                    gameLog(this.responseText);
-                }
-                else {
-                    getCountdown();
-                }
-            }
-        };
-        ajaxRequest.open("POST", "/handlers/handler_p.php");
-        ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        ajaxRequest.send(data);
+        ajaxP(data, function(response) {
+            if(response[0] !== false) {
+                getCountdown();
+            }       
+        });
+    }
+    function cancelMining() {
+        var data = "model=mine" + "&method=cancelMining";
+        ajaxP(data, function(response) {
+            if(response[0] !== false) {
+                getCountdown();
+                gameLog(response[1]);
+            }       
+        });
     }
     function img() {
         var img = document.getElementById("type_img");
@@ -91,3 +84,9 @@
         img.style = "display:block";
         img.src = "public/images/" + name;
     }
+    function newMineral(name, permits, time) {
+        this.src = "public/img/" + name + " ore.jpg";
+        this.permits = permits;
+        this.time = time;
+    }
+    var iron = newMineral(iron, null, null);

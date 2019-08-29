@@ -46,6 +46,24 @@ section table td {
 #provide {
     float: left;
 }
+#adventure_rewards {
+    box-sizing: border-box;
+    width: auto;
+    border: 3px double black;
+    overflow: scroll;
+    /*background-color: #a6a6a6;*/
+    background-color: #724e27;
+    color: white;
+}
+#adventure_stats {
+    float: left;
+}
+#battle_stats {
+    float: right;
+}
+#adventure_rewards figure {
+    position: relative;
+}
 @media all and (max-width: 632px) {
     #people img {width: 75px; height: 75px;}
 }

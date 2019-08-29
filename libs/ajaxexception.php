@@ -7,7 +7,7 @@
         
         protected function errorMessage($file, $line, $error_message) {
             $message = "Error on: " . $file . ' Line ' . $line . ' ' . $error_message;
-            mail('miner123@hotmail.no', 'ERROR', $message, 'FROM: <system@adventurous.no');
+            $test = mail('miner123@hotmail.no', 'ERROR', $message, 'FROM: <system@adventurous.no');
             /*error_log($this->getMessage, 0);*/
         }
     }

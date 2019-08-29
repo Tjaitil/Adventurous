@@ -301,7 +301,7 @@
                 </br>
                 Terms and agreement: <a onclick="showterms();" href="#"> Click here</a>
                 <input id="" type="checkbox" name="checkbox" /><span class="error"><?php echo $this->error['checkboxErr']; ?></span></br>
-                <button type="submit"> Register </button>
+                <!--><button type="submit"> Register </button>-->
             </form>
     
              

@@ -12,13 +12,13 @@
         </header>
         <section>
             <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
-            <?php if(strlen($_SESSION['gamedata']['game_message']) > 3):?>
+            <?php /*if(strlen($_SESSION['gamedata']['log'][] ) > 3):?>
                 <script>getgMessage();</script>
-            <?php endif;?>
+            <?php endif;*/?>
             <p id=""></p></br>
             <p id=""><?php echo (isset($this->data['notification'])) ? $this->data['notification'] : ""; ?></p>
             <p id="demo"></p>
-            <div id="crops_view">
+            <!--<div id="crops_view">
                 Currently growing: 
                 <div id="toggle_view">
                     <a href="#" onclick="showFig();" id="crop_farm">Show farm</a>
@@ -40,12 +40,16 @@
                 </table>
                 <div id="crops">
                 </div>
-            </div>
+            </div>-->
+
             <div id="crops_action">
+                <div id="growing">
+                    <p id="time"></p></br>
+                </div>
                 Actions: 
                 <button onmousedown="destroyCrops();"> Destroy crops </button>
                 Plant:
-                <form id="plant" method="post" action="">
+                <form id="plant">
                     <label for="type"> Select crop type:</label>
                     <select name="type" id="form_select" onchange="img();" required>
                         <option></option>
@@ -56,21 +60,16 @@
                             <?php endforeach;?>
                     </select><img src="#" id="type_img" height="50px" width="50px"/></br>
                     <label for="quantitiy"> Select amount of fields: </label>
-                    <input name="quantity" id="crop_quantity" type="number" min="0" required /></br>
+                    <input name="quantity" id="crop_quantity" type="number" min="0" required />
                     (<?php echo $this->data['fields']['fields_avail']; ?>)</br>
                     <label for="workfore"> Select amount of workers:</label>
                     <input name="workforce" id="crop_workforce" type="number" min="0" required />
                     (<?php echo $this->data['workforce_data']['avail_workforce'];?>)</br>
                     <!---<label for="estimated"> Estimated time:</label>
                     <input name="estimated" id="plant_estimated" type="text" min="0" />-->
-                    <button type="submit"> Grow </button>
+                    <button type="button" id="plant_button"> Grow </button>
                 </form>
-                
             </div>
-            <div id="growing">
-                <p id="time"></p>
-            </div>
-        <script src="<?php echo constant('ROUTE_JS') . $name . '.js';?>"></script>
         <script>
             /* var corn1 = 3;
             for (var i = 0; i < corn1; i++) {
@@ -92,6 +91,16 @@
         <div id="inventory">
             <?php require(constant('ROUTE_VIEW') . 'inventory.php'); url();?>
         </div>
+                    <div id="seed_g">
+                <p>Select a item to get seeds from:</p>
+                <div id="selected">
+                    <div id="selected_t"></div>
+                </div>
+                <input type="number" id="quantity" min="0" />
+                <button> Generate </button>
+            </div>
+        <script src="<?php echo constant('ROUTE_JS') . $name . '.js';?>"></script>
+        <script src="<?php echo constant('ROUTE_JS') . 'selectitem.js';?>"></script>  
         </section>
         <aside>
             <?php require(constant('ROUTE_VIEW') . 'aside.php');?>

@@ -1,4 +1,5 @@
-    if(document.getElementById("provide") != null) {
+    var provide = document.getElementById("provide");
+    if(provide != null && provide.children.length > 0) {
         document.getElementById("provide").getElementsByTagName("button")[0].addEventListener('click', provide);
     }
     if(document.getElementById("time") != null) {
@@ -12,6 +13,7 @@
                 var data = this.responseText.split("|");
                 var time = data[0] * 1000;
                 var fetch = data[1];
+                console.log(fetch);
                 console.log(data);
                 var x = setInterval (function() {
                     var now = new Date().getTime();
@@ -23,6 +25,8 @@
                     document.getElementById("time").innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
                     if (distance < 0 && fetch === "1"){
                         clearInterval(x);
+                        /*document.getElementById("current_adventure").removeChild(document.getElementById("adv_start"));*/
+                        console.log(document.getElementById("current_adventure"));
                         var btn = document.createElement("BUTTON");
                         var t = document.createTextNode("Fetch report");
                         btn.appendChild(t);
@@ -56,10 +60,17 @@
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
             if(this.readyState == 4 && this.status == 200) {
-                console.log(this.responseText);
+                if(this.responseText.indexOf("ERROR:") != -1) {
+                    gameLog(this.responseText);
+                }
+                else {
+                    gameLog(this.responseText);
+                    document.getElementById("status").children[0].innerHTML = "Adventure status: underway!";
+                    getCountdown();
+                }
             }
         };
-        ajaxRequest.open('GET', "handlers/handler_js.php?model=adventurestatus" + "&method=startAdventure");
+        ajaxRequest.open('GET', "handlers/handler_js.php?model=AdventureStatus" + "&method=startAdventure");
         ajaxRequest.send();
     }  
     function show(element) {
@@ -118,14 +129,11 @@
         ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         ajaxRequest.send(data);
     }
-    
     var timer;
-    
     function chk_me(){
         clearTimeout(timer);
         timer = setTimeout(checkUser, 1000);
     }
-    
     function checkUser() {
         var div = document.getElementById("invite");
         var input = div.children[0].value;
@@ -161,7 +169,6 @@
         ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         ajaxRequest.send(data);
     }
-    
     function provide() {
         var data;
         if(document.getElementsByClassName("warriors").length == 0) {
@@ -170,8 +177,7 @@
                 return false;
             }
             var item = document.getElementById("selected").children[0].children[1].innerHTML;
-            var input = document.getElementById("quantity");
-            var quantity = input.value;
+            var quantity = document.getElementById("quantity").value;
             if(quantity == 0) {
                 gameLog("Please select a valid amount");
                 return false;
@@ -227,7 +233,8 @@
         else {
             document.getElementById(parent.id).style = "border: 1px solid black";
         }
-    }   
+    }
+    
     function updateInfo(info) {
         var table = document.getElementById("requirements").children[0];
         var number;
@@ -251,13 +258,22 @@
     }
     
     function updateAdventure() {
+        console.log("update_adventure");
+        var data = "model=UpdateAdventure" + "&method=updateAdventure";
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
             if(this.readyState == 4 && this.status == 200) {
-                console.log(this.responseText);
+                if(this.responseText.indexOf("ERROR:") != -1) {
+                    gameLog(this.responseText);
+                }
+                else {
+                    openNews(this.responseText);
+                    getCountdown();
+                }
             }
         };
-        ajaxRequest.open('GET', "handlers/handler_js.php?model=UpdateAdventure" + "&method=updateAdventure");
-        ajaxRequest.send();
+        ajaxRequest.open('POST', "handlers/handler_p.php");
+        ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        ajaxRequest.send(data);
     }
     

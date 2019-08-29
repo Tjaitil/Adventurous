@@ -158,4 +158,10 @@
             echo '|';
         }
     }
+    function test($foo) {
+        if($foo < 1) {
+            echo "error";
+            throw new Exception;
+        }
+    }
 ?>
