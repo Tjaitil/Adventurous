@@ -8,7 +8,7 @@
         
         public function index() {
             $this->loadModel('workforcelodge', true);
-            $this->data = $this->model->getData($_SESSION['gamedata']['profiency']);
+            $this->data = $this->model->getData();
             $this->render('workforcelodge', 'Wokforce Lodge', $this->data);
         }
     }

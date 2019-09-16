@@ -27,3 +27,34 @@
 #stockpile figure {
     position: relative;
 }
+#stck_menu {
+    visibility: hidden;
+}
+#stck_menu ul {
+    text-align: left;
+    list-style-type: none;
+    border: 1px solid black;
+    position: absolute;
+    max-width: 100px;
+    z-index: 1;
+    top: 14%;
+    padding-top: 10px;
+    background-color: #724e27;
+    overflow: scroll;
+    color: #FFFFFF;
+}
+#stck_menu ul li {
+    background-color: #724e27;
+    padding: 3px;
+    cursor: pointer;
+    width: auto;
+}
+#stck_menu ul li:nth-child(1) {
+    cursor: default;
+}
+#stck_menu ul li:nth-child(1):hover {
+    background-color: #724e27;
+}
+#stck_menu ul li:hover {
+    background-color: #986834;
+}

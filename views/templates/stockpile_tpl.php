@@ -8,10 +8,12 @@
                 return $value;
                 break;
         }
-    }
+    } ?>
+    <p> Stockpile: </p>
+    <?php
     foreach($data['stockpile'] as $key): ?>
-        <div class="stockpile_item">
-            <figure onclick="show_title(this, true);">
+        <div class="stockpile_item" onpointerdown="show_menu();">
+            <figure>
                 <img src="<?php echo constant('ROUTE_IMG') . $key['item'] . '.png';?>"/>
                 <figcaption class="tooltip"><?php echo ucwords($key['item']); ?></figcaption>
             </figure>

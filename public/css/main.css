@@ -1,13 +1,13 @@
 #public_chat {
     border: 1px solid black;
-    height: 40%;
+    height: 250px;
     width: 90%;
-    overflow: scroll;
+    overflow: hidden;
 }
 
 #chat  {
     border: 1px solid black;
-    height: 60%;
+    height: 87%;
     width: 90%;
     overflow: scroll;
 }

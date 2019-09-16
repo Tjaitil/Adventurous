@@ -7,16 +7,20 @@
         seconds = checkZero(seconds);
         document.getElementById("clock").innerHTML =
         hours + ":" + minutes + ":" + seconds;
-        setTimeout(clock, 1000);
+        var id = setTimeout(clock, 1000);
     }
     function checkZero(i) {
         if (i < 10) {i = "0" + i;}
         return i;
     }
-    window.onload = function() { 
+    window.addEventListener("load", function() {
+        var log = document.getElementById("log");
+        if(log != null) {
+            log.scrollTop = log.scrollHeight - log.clientHeight;
+        }
         clock();
-        console.log(document.querySelectorAll(".temp"));
-    };
+    });
+    
     function displayNav() {
         var visibility = document.getElementById("nav_2").children[0].style.visibility;
         if(visibility == 'visible') {
@@ -46,7 +50,7 @@
         var log = document.getElementById("log");
         var isScrolledToBottom = log.scrollHeight - log.clientHeight <= log.scrollTop + 1;
         table.appendChild(tr);
-        // scroll to bottom if isScrolledToBotto
+        // scroll to bottom if isScrolledToBottom
         if(isScrolledToBottom) {
           log.scrollTop = log.scrollHeight - log.clientHeight;
         }
@@ -154,60 +158,7 @@
         ajaxRequest.send();
     }
     var timeID = [];
-    function show_menu(element, buttons) {
-        clearTimeout(timeID.pop());
-        var item = element.getElementsByTagName("figcaption")[0].innerHTML;
-        var menu = document.getElementById("stck_opt").cloneNode(true);
-        menu.setAttribute("class", "temp");
-        menu.removeAttribute("id");
-        menu.children[0].children[0].innerHTML = item;
-        var lis = menu.children[0].children;
-        if(element.id == 'inventory_buttons') {
-            for(var i = 1; i < (lis.length - 1); i++) {
-                lis[i] = "Insert " + lis[i]; 
-            }
-        }
-        else {
-            for(var x = 1; x < (lis.length - 1); x++) {
-                lis[x] = "Withdraw " + lis[x]; 
-            }
-        }
-        var divs = document.querySelectorAll(".temp");
-        /*var div = document.createElement("div");
-        div.setAttribute("class", "temp");
-        element.appendChild(div);*/
-        
-        if(divs[0] != undefined) {
-            var parent = divs[0].parentNode;
-            parent.removeChild(divs[0]);
-        }
-        element.insertBefore(menu, element.children[0]);
-        console.log(element.scrollWidth);
-        console.log(element.clientWidth);
-        var offset = 100 - ((element.clientWidth / element.scrollWidth) * 100);
-        
-        offset = (offset / screen.width) * 100;
-        console.log(offset);
-        console.log((offset / screen.width) * 100);
-        console.log(element.children[0].children[0]);
-        element.children[0].children[0].style.right = offset + "%";
-        /*console.log(element.children[0].children[0].scrollWidth);
-        console.log(element.children[0].children[0].clientWidth);
-        console.log(element.children[0].children[0]);
-        console.log(element.children[0].children[0].children[0]);*/
-        
-        
-        var tooltip;
-        var data = [tooltip, buttons, element];
-        var id = setTimeout(hide_menu, 4000, data);
-        timeID.push(id);
-        console.log(timeID);
-    }  
-    function hide_menu(data) {
-        console.log("hide");
-        element[0].parentNode.removeChild(element[0]);
-    }
-     function show_title(element, buttons) {
+    function show_title(element, buttons) {
         var tooltip = element.children[1];
         tooltip.style.right = "30%";
         tooltip.style.visibility = "visible";
@@ -233,6 +184,11 @@
     function jsUcfirst(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
+    function jsUcWords(str) {
+        return str.replace(/\w\S*/g, function(txt){
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        });
+    }
     function selectedCheck() {
         if(document.getElementById("selected").getElementsByTagName("figure").length == 0) {
             gameLog("Please select a valid item");
@@ -248,7 +204,6 @@
     function JSONForm(form) {
         var form_data = {};
         for(var i = 0; i < form.length; i++) {
-            console.log(form[i]);
             switch(form[i].tagName) {
                 case 'DIV':
                     for(var x = 0; x < form[i].children.length; x++) {
@@ -279,23 +234,25 @@
             }
             form_data[form[i].name] = form[i].value;
         }
-        return form_data;
+        return JSON.stringify(form_data);
     }
     function responseRet(response) {
         console.log("responseRet");
         return response;
     }
-    function ajaxG(data, log = true) {
+    function ajaxG(data, callback, log = true) {
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
             if(this.readyState == 4 && this.status == 200) {
-                if(log == tru) {
-                    gameLog(this.responseText);
+                if(this.responseText.indexOf("ERROR:") != -1) {
+                    if(log == true) {
+                        gameLog(this.responseText);
+                    }
+                    callback([false, this.responseText]);
                 }
-                return [false, this.responseText];
-            }
-            else {
-                return [true, this.responseText];
+                else {
+                    callback([true, this.responseText]);
+                }
             }
         };
         ajaxRequest.open('GET', "handlers/handler_g.php?" + data);
@@ -305,7 +262,6 @@
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
             if(this.readyState == 4 && this.status == 200) {
-                console.log(this.responseText);
                 if(this.responseText.indexOf("ERROR:") != -1) {
                     if(log == true) {
                         gameLog(this.responseText);

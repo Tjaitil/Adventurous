@@ -5,18 +5,78 @@ section table td {
     padding: 5px;
     border: 1px solid black;
 }
+#new_off {
+    float: left;
+    width: 40%;
+}
 #form_cont {
     visibility: hidden;
+    height: 300px;
+}
+#form_cont input {
+    width: 100%;
+}
+#form_cont input:nth-child(2) {
+    max-width: 92px;
+}
+#form_cont input[type="number"] {
+    background-color: orange;
+    max-width: 70px;
+}
+#item {
+    float: left;
+    height: 100%;
+    width: 50%;
+    padding: 5px;
+}
+#selected {
+    margin: 0 auto;
+}
+#selected img {
+    width: 50px;
+    height: 50px;
+}
+#item_name {
+    text-align: center;
+    width: 100%;
+}
+#form_inputs {
+    width: 42%;
+    float: right;
 }
 #item_b {
     visibility: hidden;
     display: none;
 }
+#item_srch {
+    max-width: 50px;
+}
+#offers {
+    float: left;
+    width: 60%;
+}
+#offers input {
+    width: 92px;
+}
+#offers input[type="number"] {
+    max-width: 70px;
+}
+#s_item {
+    float: right;
+}
+#sch_button {
+    float: left;
+    display: none;
+}
 #my_offers {
     margin: 5px;
+    float: left;
+    width: 50%;
 }
 #history {
     display: none;
+    width: 50%;
+    float: left;
 }
 .stockpile_item, .inventory_item {
     display: inline-block;

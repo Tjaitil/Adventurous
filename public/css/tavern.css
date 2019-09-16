@@ -4,12 +4,15 @@ section ul {
 section li {
     box-sizing: border-box;
     display: inline-block;
+    float: left;
+    width: 50%;
 }
 section li img {
     float:left;
 }
 #workers {
-    float:left;   
+    float:left;
+    width: 69%;
 }
 
 #container {

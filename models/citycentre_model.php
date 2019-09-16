@@ -28,14 +28,6 @@
             $this->closeConn();
             return $data;
         }
-        
-        
-        public function updateProfiency() { //AJAX function
-            if($_SESSION['gamedata']['profiency_level'] > 30) {
-                // Update og remove stats som er over level 10;
-            }
-        }
-        
         public function changeArtefact($artefact) { //AJAX function
             $sql = "SELECT amount FROM inventory WHERE item=:item AND username=:username";
             $stmt = $this->conn->prepare($sql);
@@ -84,7 +76,6 @@
             $this->closeConn();
             js_echo(array($artefact, $amount));
         }
-        
         public function buyPermits($permit_amount) {
             //AJAX function
             if($this->session['gold'] < 50) {
@@ -122,6 +113,60 @@
             }
             $this->closeConn();
             $this->gameMessage("You bought 50 permits for the price of 100 gold", true);
+        }
+        public function upgradeLodge($skill) {
+            if(!in_array($skill, array('farmer', 'miner', 'warrior'))) {
+                return false;
+            }
+            $sql = "SELECT level FROM lodge WHERE profiency=:profiency AND username=:username";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(":profiency", $param_skill, PDO::PARAM_STR);
+            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_skill = $skill;
+            $param_username = $this->username;
+            $stmt->execute();
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $new_level = $row['level'] + 1;
+            
+            switch($skill) {
+                case 'farmer':
+                    
+                    break;
+                case 'miner':
+                    
+                    break;
+                case 'warrior':
+                    $level_data = $armycamp[$new_level];
+                    break;
+            }
+            
+            
+            try {
+                $this->conn->beginTransaction();
+                
+                $sql = "UPDATE lodge SET level=:level WHERE profiency=:profiency AND username=:username";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindParam(":level", $param_level, PDO::PARAM_INT);
+                $stmt->bindParam(":profiency", $param_skill, PDO::PARAM_STR);
+                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                $param_level = $new_level;
+                $param_skill = $skill;
+                $param_username = $this->username;
+                $stmt->execute();
+                
+                update_inventory($this->conn, $this->username, 'gold', -$level_data['cost']);
+                
+                $this->conn->commit();
+            }
+            catch(Exception $e) {
+                $this->conn->rollBack();
+            }
+            if($skill == 'warrior') {
+                $this->gameMessage("You have upgraded your armycamp to level {$new_level}", true);
+            }
+            else {
+                $this->gameMessage("You have upgraded your workforce lodge to level {$new_level}", true);
+            }
         }
     }
 ?>

@@ -153,9 +153,11 @@
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             if($row['method'] == 'request') {
                 $this->joiner = $row['sender'];
+                $receiver = $row['receiver'];
             }
             else {
                 $this->joiner = $row['receiver'];
+                $receiver = $row['sender'];
             }
 
             $sql = "SELECT adventure_id FROM adventure WHERE username=:username";
@@ -228,6 +230,19 @@
                 $stmt4->bindParam(":username", $param_username, PDO::PARAM_STR);
                 //$param_username and $param_adventure_id is already defined
                 $stmt4->execute();
+                
+                $sql5 = "INSERT INTO messages (title, sender, receiver, message) VALUES(:title, :sender, :receiver, :message)";
+                $stmt5 = $this->conn->prepare($sql5);
+                $stmt5->bindParam(":title", $param_title, PDO::PARAM_STR);
+                $stmt5->bindParam(":sender", $param_sender, PDO::PARAM_STR);
+                $stmt5->bindParam(":receiver", $param_receiver, PDO::PARAM_STR);
+                $stmt5->bindParam(":message", $param_message, PDO::PARAM_STR);
+                $param_title = "Adventure update!";
+                $param_sender = "game_info@adventurous";
+                $param_receiver = $receiver;
+                $param_message = nl2br("For your information {$this->joiner} has joined your adventure!");
+                $stmt5->execute();
+                
                 $this->advRequirements();
                 $this->conn->commit();
             }

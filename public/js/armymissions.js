@@ -128,14 +128,11 @@
     }
     
     function updateMission() {
-        ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.onload = function () {
-            if(this.readyState == 4 && this.status == 200) {
-                console.log(this.responseText);
+        var data = "model=updatearmymission" + "&model=updateMission";
+        ajaxP(data, function (response) {
+            if(response[0] !== false) {
                 document.getElementById('current_mission').innerHTML = "";
                 document.getElementById("time").innerHTML = "None";
             }
-        };
-        ajaxRequest.open('GET', "handlers/handler_js.php?model=updatearmymission" + "&method=updateMission");
-        ajaxRequest.send();
+        });
     }

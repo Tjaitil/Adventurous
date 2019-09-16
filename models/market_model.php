@@ -8,7 +8,6 @@
             $this->username = $username;
             $this->session = $session;
         }
-        
         public function getData($js = false) {
             //Function to gather data
             $data = array();
@@ -58,18 +57,11 @@
                 }
             }
         }
-        
         public function newOffer($post_data) {
             //AJAX function
+            $post_data['item'] = strtolower($post_data['item']);
             if($post_data['type'] == 'Sell') {
                 $item = get_item($this->session['inventory'], $post_data['item']);
-                /*$sql = "SELECT amount FROM inventory WHERE item=:item AND username=:username";
-                $stmt = $this->conn->prepare($sql);
-                $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
-                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                $param_item = $post_data['item'];
-                $param_username = $this->username;
-                $stmt->execute();*/
                 if($item == null) {
                     $this->gameMessage("ERROR: You don't have the item you are currently trying to sell");
                     return false;
@@ -79,6 +71,15 @@
                     $this->gameMessage("ERROR: You don't have that many to sell");
                     return false;
                 }
+                
+                /*$sql = "SELECT item FROM offers WHERE username=:username AND type='sell'";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                $param_username = $this->username;
+                $stmt->execute();
+                if($stmt->rowCount() > 6) {
+            
+                }*/
             }
             else if($post_data['type'] == 'Buy') {
                 $sql = "SELECT amount FROM inventory WHERE item='gold' AND username=:username";
@@ -152,10 +153,8 @@
             }
             $this->closeConn();
         }
-        
         public function trade($id, $amount) {
             //AJAX function
-            
             $sql = "SELECT offeror, id, type, item, price_ea, amount_left, progress FROM offers WHERE id=:id";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(":id", $param_id, PDO::PARAM_STR);
@@ -370,6 +369,7 @@
             }
         }
         public function cancelOffer($id) {
+            // AJAX function, cancels market offer
             $sql = "SELECT type, item, amount, price_ea FROM offers WHERE id=:id AND offeror=:username";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(":id", $param_id, PDO::PARAM_STR);
@@ -422,6 +422,7 @@
             $this->closeConn();
         }
         public function fetchItem($id) {
+            // AJAX function
             $sql = "SELECT id, box_item, box_amount FROM offers WHERE id=:id AND offeror=:username";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(":id", $param_id, PDO::PARAM_STR);
@@ -455,6 +456,23 @@
                 new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
+            }
+        }
+        public function searchOffers($item) {
+            //AJAX function, returns a array with offers that matches item search provided by user
+            $sql = "SELECT id, offeror, item, amount_left, price_ea, type FROM offers WHERE item LIKE :item AND offeror !=:username";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
+            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_item = "%{$item}%";
+            $param_username = $this->username;
+            $stmt->execute();
+            $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if(!$stmt->rowCount() > 0) {
+                return;
+            }
+            else {
+                get_template('offers', $row, true);
             }
         }
     }

@@ -14,7 +14,7 @@
             <h3> Welcome to tavern, here you can recrute people</h3>
             <div id="persons">
                 <?php if(empty($this->data['persons'])):?>
-                <div> No persons of relevance in tavern </div>
+                <div> No persons of relevance to talk to in tavern </div>
                 <?php endif; ?>
                 <?php foreach($this->data['persons'] as $key): ?>
                     <div><img src="#" width="50px" height="50px" /><?php echo ucfirst($key); ?>

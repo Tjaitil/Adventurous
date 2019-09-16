@@ -10,7 +10,10 @@
             <?php require(constant('ROUTE_VIEW') . 'header.php');?>
         </header>
         <section>
-            <?php include(constant("ROUTE_VIEW") . 'layout.php');?>
+            <?php require(constant("ROUTE_VIEW") . 'layout.php');?>
+            <h3 id="page_title"> Travel</h3>
+            <p id="travel"> </p>
+            <p id="travel_time"> </p>
             <div id="canvas_area">
                 <button onclick="travel('towhar');"> Towhar </button>
                 <button onclick="travel('golbak');"> Golbak </button>
@@ -25,8 +28,6 @@
                 <button onclick="travel('ter');"> Ter </button>
                 <button onclick="travel('fansal plains');"> Fansal plains </button>
             </div>
-            <p id="travel"> </p>
-            <p id="travel_time"> </p>
             <script src="<?php echo constant("ROUTE_JS") . $name . '.js';?>"></script>
         </section>
         <aside>

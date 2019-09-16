@@ -1,6 +1,7 @@
 #mine_action {
     width: 50%;
     border: 1px solid black;
+    float: left;
 }
 #mine_action::after {
   content: "";
@@ -8,7 +9,7 @@
   display: table;
 }
 #mineral_select {
-    width: 60%;
+    width: 57%;
     box-sizing: border-box;
     float: left;
 }
@@ -18,19 +19,24 @@
     float: left;
 }
 #mine_data {
-    width: 38%;
+    width: 43%;
     box-sizing: border-box;
     float: left;
     border-left: 2px solid black;
     height: 100%;
-    padding: 3%;
+    padding: 2%;
 }
 #mineral_data {
     visibility: hidden;
 }
 #mineral_data input {
     width: 56px;
+    cursor: default;
 }
+#mineral_data input:nth-child(12) {
+    cursor: text;
+}
+
 #type_img {
     width: 50px;
     height: 50px;

@@ -8,28 +8,28 @@
             $this->username = $username;
             $this->session = $session;
         }
-        
         public function getMessages() {
             $data = array();
-            $sql = "SELECT id, title, sender, receiver, date, message_read FROM messages WHERE receiver=:username ORDER BY date DESC";
+            $sql = "SELECT id, title, sender, receiver, date, message_read FROM messages
+                    WHERE receiver=:username ORDER BY date DESC LIMIT 8";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
             $data['inbox'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
-            $sql = "SELECT id, title, sender, receiver date, message_read FROM messages WHERE sender=:username";
+            $sql = "SELECT id, title, receiver, date, message_read FROM messages
+                    WHERE sender=:username ORDER BY date DESC LIMIT 8";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
-            $data['sent'] = $stmt->fetch(PDO::FETCH_ASSOC);
-            $this->closeConn();
+            $data['sent'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
             return $data;
         }
-        
         public function showMessage($message_id) {
-            $sql = "SELECT message_read, title, sender, message FROM messages WHERE id=:id";
+            $sql = "SELECT message_read, title, sender, message, date FROM messages WHERE id=:id";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(":id", $param_id, PDO::PARAM_STR);
             $param_id = $message_id;
@@ -46,7 +46,6 @@
             $this->closeConn();
             js_echo($row);
         }
-        
         public function sendMessage($messageData) {
             $sql = "INSERT INTO messages (title, sender, receiver, message) VALUES(:title, :sender, :receiver, :message)";
             $stmt = $this->conn->prepare($sql);
@@ -61,20 +60,61 @@
             $stmt->execute();
             $this->closeConn();
         }
-
         public function userCheck($username, $js = false) {
             $sql = "SELECT username FROM user_data WHERE username=:username";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $username;
             $stmt->execute();
-            $this->closeConn();
             if($js == true) {
                echo $stmt->rowCount(); 
             }
             else {
                 return $stmt->rowCount();
             }
+        }
+        public function getmMessages($table, $type, $date) {
+            // AJAX function to get the next or previous messages from both inbox and sent tables
+            switch($table) {
+                case 'inbox':
+                    if(strpos($type,'Next')) {
+                        $sql = "SELECT id, title, sender, receiver, date, message_read FROM messages
+                                WHERE receiver=:username AND date < :date ORDER BY date DESC LIMIT 8";      
+                    }
+                    else {
+                        $sql = "SELECT id, title, sender, receiver, date, message_read FROM messages
+                                WHERE receiver=:username AND date > :date ORDER BY date ASC LIMIT 8";
+                    }
+                    break;
+                case 'sent':
+                    if(strpos($type,'Next')) {
+                        $sql = "SELECT id, title, receiver, date, message_read FROM messages
+                                WHERE sender=:username AND date > :date ORDER BY date DESC LIMIT 8";      
+                    }
+                    else {
+                        $sql = "SELECT id, title, sender, receiver, date, message_read FROM messages
+                                WHERE sender=:username AND date > :date ORDER BY date ASC LIMIT 8";
+                    }
+                    break;
+                case 'default':
+                        return false;
+                    break;
+            }
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(":date", $param_date, PDO::PARAM_STR);
+            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_date = $date;
+            $param_username = $this->username;
+            $stmt->execute();
+            if(!$stmt->rowCount() > 0) {
+                return false;   
+            }
+            else if($stmt->rowCount() < 8) {
+                echo "next_false";
+            }
+            echo "#";
+            $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            get_template("messages", $row, true);
         }
     }
 ?>

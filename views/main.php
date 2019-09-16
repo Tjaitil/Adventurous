@@ -55,7 +55,7 @@
             <div id="countdowns">
                 <table>
                     <caption> Countdowns: </caption>
-                    
+                    <?php var_dump($this->data['countdowns']);?>
                 </table>
             </div>
             <div id="diplomacy">

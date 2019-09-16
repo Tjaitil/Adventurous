@@ -25,16 +25,28 @@
                     $model->$methodname($_GET['clock']);
                     break;
                 case "market":
-                    $model->$methodname($_GET['part']);
+                    if(isset($_GET['part'])) {
+                        // Method getData()
+                        $model->$methodname($_GET['part']);
+                    }
+                    else {
+                        // Method searchOffers()
+                        $model->$methodname($_GET['item']);
+                    }
+                    
                     break;
                 case "messages":
-                    if($methodname == "showMessage") {
-                        $message_id = $_GET['message_id'];
-                        $model->$methodname($message_id);
-                    }
-                    if($methodname == "userCheck") {
-                        $user = $_GET['input'];
-                        $model->$methodname($user, true);
+                    switch($methodname) {
+                        case 'showMessage':
+                            $model->$methodname($_GET['message_id']);
+                            break;
+                        case 'userCheck':
+                            // $_GET['input'] is user input
+                            $model->$methodname($_GET['input'], true);
+                            break;
+                        case 'getmMessages':
+                            $model->$methodname($_GET['table'], $_GET['type'], $_GET['date']);
+                            break;
                     }
                     break;
                 case "Item":

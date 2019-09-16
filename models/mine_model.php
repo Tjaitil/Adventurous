@@ -51,8 +51,7 @@
             $param_username = $this->username;
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $miningCountdown = $row['mining_countdown'];
-            $date = date_timestamp_get(new DateTime($miningCountdown));
+            $date = date_timestamp_get(new DateTime($row['mining_countdown']));
             
             if($check == true) {
                 $now = date_timestamp_get(new DateTime(date("Y-m-d H:i:s")));
@@ -92,17 +91,22 @@
             else if($date_timestamp > $countdown_timestamp && $row['fetch_minerals'] == 1) {
                 $this->gameMessage("ERROR: Why would you cancel completed mining?", true);
                 return false;
-            }
-            
+            }   
+            $time = strtotime($date);
+            $time = $time - (15 * 60);
+            $date = date("Y-m-d H:i:s", $time);
             try {
                 $this->conn->beginTransaction();
                 $sql = "UPDATE miner as m INNER JOIN miner_workforce as mw ON mw.username = m.username
-                        SET m.fetch_minerals=0, mw.avail_workforce=:avail_workforce, mw.$workforce=0
+                        SET m.mining_type='none', m.fetch_minerals=0, m.mining_countdown=:mining_countdown,
+                        mw.avail_workforce=:avail_workforce, mw.$workforce=0
                         WHERE location=:location AND m.username=:username";
                 $stmt = $this->conn->prepare($sql);
+                $stmt->bindParam(":mining_countdown", $param_mining_countdown, PDO::PARAM_STR);
                 $stmt->bindParam(":avail_workforce", $param_avail_workforce, PDO::PARAM_INT);
                 $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                $param_mining_countdown = $date;
                 $param_avail_workforce = $row['avail_workforce'] + $row[$workforce];
                 $param_location = $this->session['location'];
                 $param_username = $this->username;

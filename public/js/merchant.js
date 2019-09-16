@@ -1,6 +1,26 @@
     
-    function buyItem(item, quantity) {
-        this.item = item;
+    window.onload = function () {
+        var trades = document.getElementById("items").querySelectorAll(".store_item");
+        trades.forEach(function(element) {
+            // Add eventListener to each node
+            element.addEventListener('click', function() {
+                selectTrade();
+            });
+        });
+    };
+    
+    
+    function selectTrade() {
+        console.log(event.target.tagName);
+        if(event.target.tagName == 'IMG') {
+            return false;
+        }
+        var trade = event.target.closest(".store_item");
+        document.getElementById("selected_trade").innerHTML = trade.innerHTML;
+    }
+    
+    function buyItem() {
+        this.item = event.target.closest(".store_item").querySelectorAll(".figcaption").innerHTML;
         this.quantity = quantity;
         var data = "model=Merchant" + "&method=buyItem" + "&item=" + item + "&quantity=" + quantity;
         ajaxRequest = new XMLHttpRequest();
@@ -11,7 +31,7 @@
                     gameLog(this.responseText);
                 }
                 else {
-                updateStock();
+                    updateStock();
                 }
             }
         };

@@ -14,18 +14,13 @@
                 header("Location: /city");
                 exit();
             }
-            $cities = array('towhar', 'golbak', 'snerpiir', 'krasnur', 'tasnobil', 'cruendo', 'fagna');
-            if(in_array($this->session['location'], $cities) == false) {
-                $this->gameMessage("ERROR: Something unexpected happened, please try again!", true);
-                return false;
-            }
 
             $data = array();
             $data['city'] = $this->session['location'];
-            $sql = "SELECT item, {$this->session['location']}, cost FROM merchants";
+            $sql = "SELECT item, amount, want, want_amount FROM merchants WHERE location=:location";
             $stmt = $this->conn->prepare($sql);
-            $stmt->bindParam(":amount", $param_amount, PDO::PARAM_STR);
-            $param_amount = 0;
+            $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
+            $param_location = $this->session['location'];
             $stmt->execute();
             $data['shop'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
@@ -69,44 +64,47 @@
         }
         
         public function buyItem($item, $quantity) {
-            $gold = get_item($this->session['inventory'], 'gold');
             $city = $this->session['location'];
             $cities = array("towhar", "golbak", "snerpiir", "krasnur", "tasnobil", "cruendo", "fagna");
             if (array_search($city, $cities) === false) {
                 $this->gameMessage("ERROR: Something unexpected happened, please try again later!", true);
                 return false;
             }
-            $sql = "SELECT $city, cost FROM merchants WHERE item=:item";
+            $sql = "SELECT amount, want, want_amount FROM merchants WHERE item=:item";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
             $param_item = $item;
             $stmt->execute();
+            if(!$stmt->rowCount() > 0) {
+                $this->gameMessage("ERROR: This item is not for sale anymore", true);
+                return fasle;
+            }
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $dbItem = $row[$city];
-            if($gold['amount'] < $row['cost']) {
-                $this->gameMessage("ERROR: You don't have enough gold", true);
+            
+            $item_amount = get_item($this->session['inventory'], $row['want'])['amount'];
+            if(!$item_amount > 0) {
+                $this->gameMessage("ERROR: You don't have any of this item", true);
                 return false;
             }
-            if($dbItem <= 0) {
-                $this->gameMessage("ERROR: There isn't any left of this item", true);
+            else if($item_amount < $row['want_amount']) {
+                $this->gameMessage("ERROR: You don't have enough of {$row['want_amount']}", true);
                 return false;
             }
 
-            $newvalue = $dbItem - $quantity;
-            $price = $quantity * $row['cost'];
+            $total_amount = $quantity * $row['want_amount'];
             
             //Check if item exists in users stockpile
             try {
                 $this->conn->beginTransaction();
                 update_inventory($this->conn, $this->username, $item, $quantity);
-                update_inventory($this->conn, $this->username, 'gold', -$price, true);
+                update_inventory($this->conn, $this->username, $row['want'], -$total_amount, true);
             
                 //Update merchant
-                $sql3 = "UPDATE merchants SET $city=:quant WHERE item=:item";
+                $sql3 = "UPDATE merchants SET amount=:amount WHERE item=:item";
                 $stmt3 = $this->conn->prepare($sql3);
-                $stmt3->bindParam(":quant", $param_newValue, PDO::PARAM_STR);
+                $stmt3->bindParam(":amount", $param_newValue, PDO::PARAM_STR);
                 $stmt3->bindParam(":item", $param_item, PDO::PARAM_STR);
-                $param_newValue = $newvalue;
+                $param_newValue = $row['amount'] - $quantity;
                 $param_item = $item;
                 $stmt3->execute();
             
@@ -119,7 +117,6 @@
                 return false;
             }
             $this->closeConn();
-            get_inventory($this->conn, $this->username);
         }
     }
 ?>

@@ -5,6 +5,7 @@ section table td {
     padding:5px;
     border: 1px solid black;
     border-collapse: collapse;
+    background-color: #f2e6d9;
 }
 
 #horse_shop {

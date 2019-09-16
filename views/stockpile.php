@@ -3,21 +3,19 @@
     <head>
         <title><?php echo $title; ?></title>
         <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name ?>.css" />
-        <?php include('views/head.php');?>
+        <?php require(constant('ROUTE_VIEW') . 'head.php');?>
     </head>
     <body>
         <header>
-            <?php require(constant('ROUTE_VIEW') . '/header.php'); ?>
+            <?php require(constant('ROUTE_VIEW') . 'header.php'); ?>
         </header>
         <section>
             <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
-            <p id=""></p></br>
-            <p id=""></p>
+            <h3 id="page_title"> Stockpile </h3>
             <div id="stockpile">
                 <?php get_template('stockpile', $this->data); ?>
             </div>
             <div id="inventory">
-                <p> Inventory: </p>
                 <div id="hidden">
                         <div class="inventory_buttons">
                             <button onclick="insert(this, 1);"> 1 </button>
@@ -32,19 +30,8 @@
                     </div>
                 <?php require(constant('ROUTE_VIEW') . 'inventory.php'); url();?>
             </div>
-            <ul>
-                <li>1</li>
-                <li>2</li>
-                
-            </ul>
-            <ul>
-                <li ontouchstart="touchMove(this);">Insert 1</li>
-                <li ontouchstart="touchMove(this);">Insert 5</li>
-                <li ontouchstart="touchMove(this);">Insert x</li>
-                <li ontouchstart="touchMove(this);">Insert all</li>
-            </ul>
             <script src="<?php echo constant('ROUTE_JS') . $name . '.js';?>"></script>
-            <div id="stck_opt">
+            <div id="stck_menu">
                     <!--
                     <button
                         onclick="insert(this, 1);"><div>1</div></button><!--

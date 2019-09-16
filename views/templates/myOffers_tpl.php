@@ -17,7 +17,7 @@
                             <img src="<?php echo constant('ROUTE_IMG') . $key['box_item'] . '.png';?>" />
                             <figcaption class="tooltip"><?php echo ucwords($key['box_item']); ?></figcaption>
                         </figure>
-                        <span id="item_amount"><? echo $key['box_amount'];?></span>
+                        <span class="item_amount"><? echo $key['box_amount'];?></span>
                     </div>
                     <?php else:?>
                     <div>

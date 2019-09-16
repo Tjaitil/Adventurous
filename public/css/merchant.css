@@ -1,17 +1,52 @@
-.item {
+#items {
     display: inline-block;
     float: left;
-    width:200px;
+    width: 70%;
 }
-
-.item figure {
+.store_item {
     display: inline-block;
     float: left;
-    width:200px;
 }
-
-section table td {
+.store_item figure img {
+    width: 50px;
+    height: 50px;
+}
+.store_item button {
+    float:left;
+}
+.store_item label {
+    width: 100%;
+}
+#trade_sign {
+    float: left;
+    line-height: 5
+}
+#do_trade {
+    width: 151px;
+    border: 1px solid black;
+    float: left;
+}
+#selected_trade {
+    width: 100%;
+    height: 90px;
+    margin: 0 auto;
+}
+#do_trade input[type="number"] {
+    width: 25px;
+}
+#trader {
+    margin: 3px 3px 3px 3px;
+    float: left;
+}
+#assignment {
+    width: 30%;
+}
+section table {
+    border-collapse: collapse;
+}
+section table td, table th {
     padding:5px;
     border: 1px solid black;
     border-collapse: collapse;
+    background-color: #f2e6d9;
 }

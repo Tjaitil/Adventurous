@@ -5,7 +5,6 @@
     if(document.getElementById("time") != null) {
         document.getElementById("time").addEventListener("load", getCountdown());
     }
-    
     function getCountdown() {
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
@@ -57,21 +56,14 @@
         show_title(figures[i], false);
     }
     function startAdventure() {
-        ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.onload = function () {
-            if(this.readyState == 4 && this.status == 200) {
-                if(this.responseText.indexOf("ERROR:") != -1) {
-                    gameLog(this.responseText);
-                }
-                else {
-                    gameLog(this.responseText);
-                    document.getElementById("status").children[0].innerHTML = "Adventure status: underway!";
-                    getCountdown();
-                }
+        var data = "model=AdventureStatus" + "&method=startAdventure";
+        ajaxP(data, function (response) {
+            if(response[0] !== false) {
+                gameLog(this.responseText);
+                document.getElementById("status").children[0].innerHTML = "Adventure status: underway!";
+                getCountdown();
             }
-        };
-        ajaxRequest.open('GET', "handlers/handler_js.php?model=AdventureStatus" + "&method=startAdventure");
-        ajaxRequest.send();
+        });
     }  
     function show(element) {
         id = element.id;
@@ -260,20 +252,11 @@
     function updateAdventure() {
         console.log("update_adventure");
         var data = "model=UpdateAdventure" + "&method=updateAdventure";
-        ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.onload = function () {
-            if(this.readyState == 4 && this.status == 200) {
-                if(this.responseText.indexOf("ERROR:") != -1) {
-                    gameLog(this.responseText);
-                }
-                else {
-                    openNews(this.responseText);
-                    getCountdown();
-                }
+        ajaxP(data, function (response) {
+            if(response[0] !== false) {
+                openNews(this.responseText);
+                getCountdown();
             }
-        };
-        ajaxRequest.open('POST', "handlers/handler_p.php");
-        ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        ajaxRequest.send(data);
+        });
     }
     

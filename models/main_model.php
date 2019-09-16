@@ -19,11 +19,25 @@
             $data['diplomacy'] = $stmt->fetch(PDO::FETCH_ASSOC);
             
             $data['chat'] = $this->getChat();
+            
+            $sql = "SELECT grow_countdown, location, plot1_harvest FROM farmer WHERE username=:username";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_username = $this->username;
+            $stmt->execute();
+            $data['farmer_countdowns'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            $sql = "SELECT mining_countdown, location, fetch_minerals FROM miner WHERE username=:username";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_username = $this->username;
+            $stmt->execute();
+            $data['miner_countdowns'] = $stmt->fetch(PDO::FETCH_ASSOC);
+            
             return $data;
         }
-        
         public function getChat($clock = false) {
-            $sql = "SELECT id, time, username, message FROM public_chat ORDER BY time ASC LIMIT 30";
+            $sql = "SELECT id, clock, username, message FROM public_chat ORDER BY time ASC LIMIT 30";
             $stmt = $this->conn->query($sql);
             $stmt->execute();
             if($clock == false) {

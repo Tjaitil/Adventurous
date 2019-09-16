@@ -137,8 +137,9 @@
                                         $this->warriors[$i] = $this->daqloonHit($this->daqloons[$x - $w - ($i * $count)],
                                                                                 $this->warriors[$i]);
                                     }
-                                    else {
-                                        continue;
+                                    else if($this->warriors[$i]['type'] != 'ranged') {
+                                        $this->warriors[$i] = $this->daqloonHit($this->daqloons[$x - $w - ($i * $count)],
+                                                                                $this->warriors[$i]);
                                     }
                                     if($this->warriors[$i]['health'] < 10.1) {
                                         break;
@@ -180,44 +181,45 @@
         }
         
         protected function daqloonHit($daqloon, $warrior) {
+            if(rand(1,100) <= round($warrior['technique_level'] * 0.25)) {
+                    $this->battle_progress[] = "Blocked";
+            }
+            else {
                 $daqloon_hit = $daqloon['attack'] + rand(1,3) * (0.025 * $warrior['defence']);
                 $warrior['health'] -= $daqloon_hit;
                 $this->daqloon_damage[] = $daqloon_hit;
                 $this->battle_progress[] = "Warrior " . $warrior['warrior_id'] . " got hit for " . $daqloon_hit . " by daqloon " .
                 $daqloon['id'] . ", warrior health: " . $warrior['health'];
+                
                 if($warrior['health'] < 10) {
                     $this->warrior_status['w_' . $warrior['warrior_id']] = "wounded";
                     $this->battle_progress[] = "Warrior " . $warrior['warrior_id'] . " wounded";
                     $warrior['health'] = 10;
                 }
-                return $warrior;
+            }
+            return $warrior;
         }
         protected function warriorHit($daqloon, $warrior, $duration) {
-                $warrior_hit = $warrior['attack'] - (0.025 * $daqloon['defence']);
-                             - ($warrior['stamina_level'] - ($duration * 0.2)); //Hit damage decrease when they are fighting
-                
-                $warrior_hit += ($warrior['type'] === 'warrior') ? (0.5 * $warrior['strength_level']) : (0.6 * $warrior['precision_level']);
+            $warrior_hit = $warrior['attack'] - (0.025 * $daqloon['defence']);
+                         - ($warrior['stamina_level'] - ($duration * 0.2)); //Hit damage decrease when they are fighting
+            
+            $warrior_hit += ($warrior['type'] === 'warrior') ? (0.5 * $warrior['strength_level']) : (0.6 * $warrior['precision_level']);
+            $daqloon['health'] -= $warrior_hit;
+            $this->warrior_damage[] = $warrior_hit;
+            $this->battle_progress[] = "Daqloon " .  $daqloon['id'] . " got hit for " . $warrior_hit . " by warrior " .
+            $warrior['warrior_id'] . ", daqloon health: " . $daqloon['health'];
+            if(rand(1,100) <= round($warrior['technique_level'] * 0.4) && $warrior['type'] != 'ranged') {
                 $daqloon['health'] -= $warrior_hit;
                 $this->warrior_damage[] = $warrior_hit;
-                $this->battle_progress[] = "Daqloon " .  $daqloon['id'] . " got hit for " . $warrior_hit . " by warrior " .
-                $warrior['warrior_id'] . ", daqloon health: " . $daqloon['health'];
-                //precision_level is hit percentage for getting in a second attack
-                if(rand(1,100) <= $warrior['technique_level']) {
-                    $daqloon['health'] -= $warrior_hit;
-                    $this->warrior_damage[] = $warrior_hit;
-                    $this->combo_attack['warrior'] += 1;
-                    $this->battle_progress[] = "COMBO! Daqloon " .  $daqloon['id'] . " got hit for " . $warrior_hit . " by " .
-                    $warrior['warrior_id'] . " Health: " . $daqloon['health'];
-                }
-                if(rand(1,100) <= round($warrior['technique_level'] * 0.25)) {
-                    
-                    $this->battle_progress[] = "Blocked";
-                }
-                if($daqloon['health'] < 10 ) {
-                    $this->daqloon_status['d_' . $daqloon['id']] = "wounded";
-                    $this->battle_progress[] =  'Daqloon ' . $daqloon['id'] . ' wounded';
-                }
-                return $daqloon;
+                $this->combo_attack['warrior'] += 1;
+                $this->battle_progress[] = "COMBO! Daqloon " .  $daqloon['id'] . " got hit for " . $warrior_hit . " by " .
+                $warrior['warrior_id'] . " Health: " . $daqloon['health'];
+            }
+            if($daqloon['health'] < 10 ) {
+                $this->daqloon_status['d_' . $daqloon['id']] = "wounded";
+                $this->battle_progress[] =  'Daqloon ' . $daqloon['id'] . ' wounded';
+            }
+            return $daqloon;
         }
         
         public function getStatistics() {

@@ -12,6 +12,7 @@
             }
             $this->loadModel('Main', true);
             $this->data = $this->model->getData();
+            /*$this->calculateCountdowns();*/
             $this->render('main', 'Main', false);
         }
         function fetchData() {
@@ -26,6 +27,11 @@
             $_SESSION['gamedata']['log'][] = "Welcome to Adventurous!";
             $_SESSION['gamedata']['conversation']['progress'] = '';
             $this->model->checkMarket();
+        }
+        function calculateCountdowns() {
+            $date_now = date_timestamp_get(new DateTime(date("Y-m-d H:i:s")));
+            foreach($this->data['farmer_countdowns'] as $key) {
+            }
         }
     }
 ?>

@@ -1,11 +1,26 @@
-
-    <?php
-        foreach($data['shop'] as $key): ?>   
-            <div class="item">
-                <figure><img src="/public/images/gold.jpg" height="50px" witdh="50px" />
-                    <figcaption><? echo $key[$data['city']], ' ', 'x', ' ', $key['item'], ' ', '(', $key['cost'],')';?>
-                    </figcaption>
-                </figure>
-                <button onclick="buyItem('<?php echo $key['item'] ?>', 1);"> Buy </button>
+    <?php if(!count($data['shop']) > 0): ?>
+        <div>
+            <span</span>None trades available!;
+        </div>                    
+    <?php endif; ?>
+    <?php foreach($data['shop'] as $key): ?>   
+            <div class="store_item">
+                <p><?php echo $key['amount'];?></p>
+                <div class="inventory_item">
+                    <figure onclick="show_title(this);">
+                        <img src="<?php echo constant('ROUTE_IMG') . $key['item'] . '.png';?>"/>
+                        <figcaption class="tooltip"><? echo ucwords($key['item']); ?></figcaption>
+                    </figure>
+                    <span>x1</span>
+                </div>
+                <div id="trade_sign"> <=> </br>
+                </div>
+                <div class="inventory_item">
+                    <figure onclick="show_title(this);">
+                        <img src="<?php echo constant('ROUTE_IMG') . $key['want'] . '.png';?>"/>
+                        <figcaption class="tooltip"><? echo ucwords($key['want']); ?></figcaption>
+                    </figure>
+                    <span><?php echo 'x',$key['want_amount'];?></span>
+                </div>
             </div>
-    <?endforeach;?>
+    <?php endforeach;?>

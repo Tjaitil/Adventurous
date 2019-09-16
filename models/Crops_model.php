@@ -94,15 +94,17 @@
             try {
                 $this->conn->beginTransaction();
                 $sql = "UPDATE farmer as f INNER JOIN farmer_workforce as fw ON f.username = fw.username
-                        SET f.grow_type='none', f.grow_quant=0, f.fields_avail=:fields_avail,
+                        SET f.grow_type='none', f.grow_quant=0, f.fields_avail=:fields_avail, f.grow_countdown=:grow_countdown
                         f.plot1_harvest='false', fw.avail_workforce=:avail_workforce, fw.$workforce=0
                         WHERE f.location=:location AND f.username=:username";
                 $stmt = $this->conn->prepare($sql);
                 $stmt->bindParam(":fields_avail", $param_fields_avail, PDO::PARAM_STR);
+                $stmt->bindParam(":grow_countdown", $param_grow_countdown, PDO::PARAM_STR);
                 $stmt->bindParam(":avail_workforce", $param_avail_workforce, PDO::PARAM_INT);
                 $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_fields_avail = $row['fields_avail'] + $row['grow_quant'];
+                $param_grow_countdown = date("Y-m-d H:i:s");
                 $param_avail_workforce = $row['avail_workforce'] + $row[$workforce];
                 $param_location = $this->session['location'];
                 $param_username = $this->username;

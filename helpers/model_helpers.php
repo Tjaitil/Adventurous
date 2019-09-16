@@ -53,7 +53,6 @@
         }
         unset($conn);
     }
-    
     function update_stockpile($conn, $username, $item, $quantity) {
         $sql = "SELECT amount FROM stockpile WHERE item=:item AND username=:username";  
         $stmt = $conn->prepare($sql);
@@ -117,6 +116,7 @@
         if(in_array($profiency, $profiencies) == false) {
             return false;
         }
+        
         $sql = "UPDATE user_levels SET {$profiency}_xp=:xp WHERE username=:username";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(":xp", $param_xp, PDO::PARAM_INT);
@@ -126,7 +126,6 @@
         $stmt->execute();
         unset($conn);
     }
-    
     function get_item($inventory, $item) {
         foreach($inventory as $key) {
             if($key['item'] === $item) {
@@ -135,7 +134,6 @@
             }
         }    
     }
-    
     function js_echo($data) {
         $count = count($data);
         $i = 0;
@@ -149,7 +147,6 @@
             }
         }
     }
-    
     function js_foreach($data) {
         foreach($data as $key) {
             foreach($key as $subkey) {

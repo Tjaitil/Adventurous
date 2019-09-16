@@ -84,8 +84,9 @@
                     <div id="heal">
                         <p> Select item to heal: </p>
                         <div id="selected">
-                            <div id="selected_t"></div>
+                            
                         </div>
+                        <div id="selected_t"></div>
                         <input type="number" id="quantity" min="0" />
                         <div id="inventory">
                             <?php require(constant('ROUTE_VIEW') . "inventory.php"); url();?>
@@ -104,27 +105,6 @@
                     </div>
                     <button> Do Action </button>
                 </div>
-                <form method="post" action="">
-                    <label for="id">Select warrior</label>
-                    <select name="id">
-                        <option selected="selected"> </option>
-                        <?php foreach($this->data['warrior_data'] as $key):?>
-                        <option value="<?php echo $key['warrior_id'];?>"><?php echo $key['warrior_id'];?></option>
-                        <?php endforeach;?>
-                    </select></br>
-                    <label for="type"> Select type of training</label>
-                    <select name="type">
-                        <option></option>
-                        <option value="general"> General </option>
-                        <option value="stamina"> Stamina </option>
-                        <option value="technique"> Technique </option>
-                        <option value="precision"> Precision </option>
-                        <option value="strength"> Strength </option>
-                    </select></br>
-                    <button type="submit"> Start training</button>
-                </form>
-                <p id="training"> </p>
-                <p id="time"> </p>
                 <script src="<?php echo constant('ROUTE_JS') . $name . '.js';?>"></script>
                 <script src="<?php echo constant('ROUTE_JS') . 'selectitem.js';?>"></script>
             </div>

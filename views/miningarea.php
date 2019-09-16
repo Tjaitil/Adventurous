@@ -12,6 +12,7 @@
         <section>
             <p id="">Mining</p></br>
             <a href="/mine"> Mine</a>
+            <a href="/workforcelodge"> Workforce lodge </a>
             Mining countdown:
             <p id="time"></p>
             

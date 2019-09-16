@@ -6,6 +6,7 @@
     $methodname = $_POST['method'];
     $model = $handler->includeModel(true, $_POST['model'], $_SESSION['gamedata'], true);
     $method = $handler->checkMethod($model, $_POST['method']);
+
     if($method === true) {
         if(count($_POST) < 3) {
             $model->$methodname(); //If there is less than 3 parameters, the only parameter is model and method
@@ -55,7 +56,7 @@
                     break;
                 case 'Crops':
                     //method getSeeds()
-                    $model->$methodname($_POST['item'], $_POST['quantity']);
+                        $model->$methodname($_POST['item'], $_POST['quantity']);
                     break;
                 case 'travel':
                     $city = $_SESSION['gamedata']['location'];
@@ -77,6 +78,8 @@
                         case 'trade':
                             $model->$methodname($_POST['id'], $_POST['amount']);
                             break;
+                        case 'newOffer':
+                            $model->$methodname(json_decode($_POST['JSON_data']));
                     }
                     break;
                 case "citycentre":
@@ -109,6 +112,18 @@
                 case "SetArmymission":
                     //method setMission()
                     $model->$methodname($_POST['mission_id'], $_POST['warrior_check']);
+                    break;
+                case "SetCrops":
+                    //setCrops()
+                    var_dump($_POST);
+                    var_dump(json_decode($_POST['JSON_data'], true));
+                    $model->$methodname(json_decode($_POST['JSON_data'], true));
+                    break;
+                case "SetMine":
+                    $model->$methodname($_POST['mineral'], $_POST['workforce']);
+                    break;
+                case "SetTraining":
+                    $model->$methodname($_POST['warrior'], $_POST['type']);
                     break;
                 case "stockpile":
                     //method updateInventory()

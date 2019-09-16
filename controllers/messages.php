@@ -14,7 +14,6 @@
             $this->post();
             $this->renderWE('messages', 'Messages', $this->data, $this->error);
         }
-        
         public function post() {
             if($_SERVER['REQUEST_METHOD'] === "POST") {
                 require_once(constant('ROUTE_HELPER') . 'formhandler.php');
@@ -40,7 +39,6 @@
                 return false;
             }
         }
-        
         public function bindData() {
             if(empty($_POST['title'])) {
                 $this->messageData['title'] = "(No subject)";

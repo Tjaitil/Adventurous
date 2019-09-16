@@ -21,15 +21,15 @@
                         };
                     
                 }*/
-                
-        
         var c = 0;
         
         var timer = 0;
 
         function chat() {
             console.log("chat");
-            var text = document.getElementById("text").value;
+            var input = document.getElementById("text");
+            var text = input.value;
+            input.value = "";
             if(text.length == 0) {
                 return false;
             }

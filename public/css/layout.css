@@ -5,7 +5,7 @@
 body {
     margin: 10px 8% 0px 8%;
     /*font-family: 'Source Sans Pro', 'bold';*/
-    font-family: 'Old Standard TT';
+    font-family: 'Martel', serif;
     /*background-color: #000033;*/
 }
 section {
@@ -101,8 +101,7 @@ section input {
     border: 1px solid black;
     z-index: 1;
     visibility: hidden;
-    /*margin-left: -2%;
-    margin-right: -2%;*/
+    margin-left: -2%;
     color: #FFFFFF;
     background-color: black;
     opacity: 0.8;
@@ -149,10 +148,7 @@ section input {
     height: 100%;
     position: absolute;
 }*/
-#inventory figure {
-    position: relative;
-}
-#item_amount {
+.item_amount {
     position: relative;
     top: -64%;
     left: 24%;
@@ -180,6 +176,7 @@ section input {
     display: inline-block;
     float: left;
     max-width: 104px;
+    min-width: 60px;
     width: 30%;
     height: 90px;
     position: relative;
@@ -196,14 +193,16 @@ section input {
     max-width: 104px;
     width: 30%;
     height: 90px;
+    position: relative;
 }
-.stockpile_item span {
-    
-}
+
 .stockpile_item img, .inventory_item img {
     width: 50px;
     height: 50px;
     cursor: pointer;
+}
+.inventory_item figure {
+    position: relative;
 }
 .inventory_buttons {
     visibility: hidden;
@@ -225,7 +224,7 @@ section input {
     text-align: center;
     
 }
-.temp {
+/*.temp {
 }
 .temp ul {
     text-align: left;
@@ -248,8 +247,7 @@ section input {
 }
 .temp ul li:hover {
     background-color: #986834;
-}
-
+}*/
 #all {
     width: 40%;
 }
@@ -258,7 +256,9 @@ section input {
     color: white;
 }
 #selected {
-    height: 90px;
+    height: 56px;
+    width: 56px;
+    border: 2px outset #724e27;
 }
 #selected_t {
     height: 50px;
@@ -267,13 +267,26 @@ section input {
 }
 #selected figure {
     position: relative;
+    width: 50px;
+    height: 50px;
+    margin: 3px 0px 0px 3px;
+}
+.page_title {
+    padding: 1%;
+    background: radial-gradient(#f1e6da 33%, #d6b38f);
+    border-top-left-radius: 25px 50%;
+    border-bottom-left-radius: 25px 50%;
+    border-top-right-radius: 25px 50%;
+    border-bottom-right-radius: 25px 50%;
+    width: 55%;
+    margin: 0 auto;
 }
 @media all and (max-width: 830px) {
     body {margin: 10px 2% 0px 2%;};
     #skills div {font-size: 12px;}
     #skills img {width: 25px; height: 25px;}
     section {width: 97.4%; font-size: 12px;}
-    .inventory_item {width: 50%;}
+    #inventory .inventory_item {width: 50%;}
     /*.inventory_buttons {
         margin-left: 6px;
     }*/

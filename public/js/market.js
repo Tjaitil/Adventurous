@@ -1,5 +1,4 @@
     window.onload = function () {
-        
         var div = document.getElementById("offers");
         var inputs = div.getElementsByTagName("input");
         var buttons = div.querySelectorAll("button");
@@ -28,6 +27,8 @@
                 cancelOffer();
             });
         });
+        document.getElementById("item_srch").addEventListener('keyup', chk_me);
+        document.getElementById("s_item").addEventListener('keyup', chk_me);
     };
     
     var offers = {};
@@ -38,7 +39,6 @@
             document.getElementById("item_b").style.display = "none";
         }
         else {
-            document.getElementById("selected").innerHTML = "";
             document.getElementById("item_name").value = "";
             var item_b  = document.getElementById("item_b");
             item_b.style.visibility = "visible";
@@ -59,49 +59,60 @@
     }
     var timer;
     function chk_me(){
-        clearTimeout(timer);
-        timer=setTimeout(checkItem,1000);
-    }
-    /*function debounce(fn, duration) {
-    var timer;
-        return function() {
+        console.log(event.target);
+        if(event.target.id == "item_srch") {
             clearTimeout(timer);
-            timer = setTimeout(checkItem, 1000)
+            timer=setTimeout(checkItem, 1000);
         }
-    }*/
+        else {
+            clearTimeout(timer);
+            timer=setTimeout(searchOffers, 1000);
+        }
+    }
     function checkItem() {
         var query = document.getElementById("item_b").children[1].value;
+        if(query.length === 0) {
+            return;
+        }
         var select = document.getElementById("items");
+        while (select.lastChild) {
+            select.removeChild(select.lastChild);
+        }
+        var option = document.createElement("OPTION");
+        var itemText = document.createTextNode("");
         if(query.length <= 2) {
-            var option = document.createElement("OPTION");
-            var itemText = document.createTextNode("Search needs to be more than 2 characters");
+            itemText.nodeValue = "Search needs to be more than 2 characters";
             option.appendChild(itemText);
             select.appendChild(option);
             return false;
         }
+        itemText.nodeValue = "Searching...";
+        option.appendChild(itemText);
+        select.appendChild(option);
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
             if(this.readyState == 4 && this.status == 200) {
                 console.log(this.responseText);
-                while (select.hasChildNodes()) {  
-                    select.removeChild(select.firstChild);
-                }
                 var data = this.responseText.split("|");
+                console.log(data);
                 if(data.length > 10) {
-                    option = document.createElement("OPTION");
-                    itemText = document.createTextNode("Too many results, narrow it down");
+                    itemText.nodeValue = "Too many results, narrow it down";
                     option.appendChild(itemText);
                     select.appendChild(option);
                 }
-                else {
-                    option = document.createElement("OPTION");
-                    select.appendChild(option);
+                else if(data.length > 0 && this.responseText.length > 0) {
+                    select.children[0].innerHTML = " ";
                     for(var i = 0; i < data.length; i++) {
                         option = document.createElement("OPTION");
-                        itemText = document.createTextNode(data[i]);
-                        option.appendChild(itemText);
+                        option.innerHTML = data[i];
                         select.appendChild(option);
+
                     }
+                }
+                else {
+                    itemText.nodeValue = "No items found";
+                    option.appendChild(itemText);
+                    select.appendChild(option);
                 }
             }
         };
@@ -111,11 +122,60 @@
     function selectOpt(element) {
         document.getElementById("item_srch").value = "";
         var itemName = element.options[element.selectedIndex].value;
-        var img = document.createElement("IMG");
-        img.href = "/public/img/" + itemName;
-        img.style = "width: 50px; height: 50px";
-        document.getElementById("selected").appendChild(img);
-        document.getElementById("item_name").value = itemName;   
+        var div = document.getElementById("selected");
+        if(div.children[0] == undefined) {
+            var img = document.createElement("IMG");
+            img.href = "/public/img/" + itemName + ".png";
+            img.style = "width: 50px; height: 50px";
+            div.appendChild(img);
+            document.getElementById("item_name").value = itemName;     
+        }
+        else {
+            div.children[0].href = "public/img/" + itemName + ".png";
+            document.getElementById("item_name").value = itemName;    
+        }
+    }
+    function searchOffers() {
+        var item = document.getElementById("s_item").value;
+        if(item.length === 0) {
+            return false;
+        }
+        var button =document.getElementById("sch_button");
+        button.style.display = "initial";
+        button.addEventListener("click", function() {
+            var table = document.getElementById("offers").children[0];
+            table.removeChild(table.lastChild);
+            table.children[1].style.display = "initial";
+            button.style.display = "none";
+            document.getElementById("s_item").value = "";
+        });
+        var data = "model=market" + "&method=searchOffers" + "&item=" + item;
+        ajaxG(data, function(response) {
+            if(response[0] !== false) {
+                console.log(response[1]);
+                var table = document.getElementById("offers").children[0];
+                table.children[1].style.display = "none";
+                if(table.children[2] != undefined) {
+                    table.children[2].innerHTML = response[1];
+                }
+                else {
+                    table.innerHTML += response[1];
+                }
+            }
+        });
+    }
+    function newOffer() {
+        var form = document.getElementById("offer_form");
+        var JSON_data = JSONForm(form);
+        
+        var data = "model=" + "&method=" + "&JSON_data=" + JSON_data;
+        ajaxP(data, function(response) {
+            if(response[0] != false) {
+                document.getElementById("offer_form").clear();
+                /*document.getElementById("form_cont").style.visibility = "hidden";*/
+                updatePage(1);
+            }
+        });
     }
     function updatePage(part) {
         console.log("updatePage");

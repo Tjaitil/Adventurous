@@ -61,7 +61,7 @@
                     </select><img src="#" id="type_img" height="50px" width="50px"/></br>
                     <label for="quantitiy"> Select amount of fields: </label>
                     <input name="quantity" id="crop_quantity" type="number" min="0" required />
-                    (<?php echo $this->data['fields']['fields_avail']; ?>)</br>
+                    <span>(<?php echo $this->data['fields']['fields_avail']; ?>)</span></br>
                     <label for="workfore"> Select amount of workers:</label>
                     <input name="workforce" id="crop_workforce" type="number" min="0" required />
                     (<?php echo $this->data['workforce_data']['avail_workforce'];?>)</br>

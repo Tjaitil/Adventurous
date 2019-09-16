@@ -3,25 +3,25 @@
     <head>
         <title><?php echo $title; ?></title>
         <link rel="stylesheet" type="text/css" href="public/css/<?php echo $title ?>.css" />
-        <?php include('views/head.php');?>
+        <?php include(constant('ROUTE_VIEW') . '/head.php');?>
     </head>
     <body>
         <header>
-            <?php require('views/header.php'); ?>
+            <?php require(constant('ROUTE_VIEW') . '/header.php');?>
         </header>
         <section>
-            <?php var_dump($this->data);?>
+            <?php require(constant('ROUTE_VIEW') . '/layout.php');?>
             <div id="actions">
-                <button onclick="toggle('inbox');">Inbox</button>
-                <button onclick="toogle('sent');">Sent</button>
-                <button onclick="showWriteMessage();"> New Message: </button>
+                <button> Inbox </button>
+                <button> Sent </button>
+                <button> Write Message</button>
             </div>
             <div id="write_message">
                 <form id="message_form" method="post" action="/messages">
                 <label for="name"> Title: </label>
                 <input type="text" name="title" /></br>
                 <label for="receiver"> Receiver: </label>
-                <input id="receiver" type="text" name="receiver" onfocusout="setTimeout(userCheck, 1000)" /></br>
+                <input id="receiver" type="text" name="receiver" /></br>
                 <textarea id="the_message" name="message" placeholder="Enter message here:"
                           style="background-image: url(<?php echo constant("ROUTE_IMG") . 'background.png';?>)">
                     
@@ -30,42 +30,38 @@
                 </form>
             </div>
             <table id="inbox">
-                <tr>
-                    <td></td>
-                    <td> Title </td>
-                    <td> From </td>
-                    <td> Date </td>
-                    <td> Read </td>
-                </tr>
-                    <?php foreach($this->data['inbox'] as $key): ?>
-                            <tr id="message_row">
-                                <td><input type="checkbox" /></td>
-                                <td><a onclick="showMessage(<?php echo $key['id'];?>, this)" ><?php echo $key['title']; ?></a></td>
-                                <td><?php echo $key['sender']; ?></td>
-                                <td><?php echo $key['date']; ?></td>
-                                <td><img src="<?php echo $key['message_read'];?>.jpg"/></td>
-                            </tr>
-                    <?php endforeach;
-                    ?>
+                <thead>
+                    <tr>
+                        <td></td>
+                        <td> Title </td>
+                        <td> From </td>
+                        <td> Date </td>
+                        <td> Read </td>
+                    </tr>
+                </thead>
+                    <?php get_template("messages", $this->data['inbox']);?>
+                <tfoot>
+                    <tr>
+                        <td colspan="5"><button class="previous"> < Prev </button><button class="next"> Next > </button></td>
+                    </tr> 
+                </tfoot>
             </table>
             <table id="sent">
-                <tr>
-                    <td></td>
-                    <td> Title </td>
-                    <td> From </td>
-                    <td> Date </td>
-                    <td> Read </td>
-                </tr>
-                    <?php foreach($this->data['sent'] as $key): ?>
-                            <tr id="message_row">
-                                <td><input type="checkbox" /></td>
-                                <td><a onclick="showMessage(<?php echo $key['id'];?>, this)"><?php echo $key['title']; ?></a></td>
-                                <td><?php echo $key['sender']; ?></td>
-                                <td><?php echo $key['date']; ?></td>
-                                <td><img src="<?php echo $key['message_read'];?>.jpg"/></td>
-                            </tr>
-                    <?php endforeach;
-                    ?>
+                <thead>
+                    <tr>
+                        <td></td>
+                        <td> Title </td>
+                        <td> To </td>
+                        <td> Date </td>
+                        <td> Read </td>
+                    </tr>
+                </thead>
+                    <?php get_template("messages", $this->data['sent']);?>
+                <tfoot>
+                    <tr>
+                        <td colspan="5"><button class="previous"> < Prev </button><button class="next"> Next > </button></td>
+                    </tr> 
+                </tfoot>
             </table>
             <div id="message">
                 <table id="message_info">
@@ -77,8 +73,12 @@
                         <td> From: </td>
                         <td></td>
                     </tr>
+                    <tr>
+                        <td> Date </td>
+                        <td></td>
+                    </tr>
                 </table>
-                <button onclick="toggle('inbox');"> Back to messages:</button>
+                <button> Back to messages </button>
                 <div id="message_content">
                     
                 </div>
@@ -88,7 +88,7 @@
             <script src="<?php echo constant('ROUTE_JS') . $name . ".js"; ?>"></script>
         </section>
         <aside>
-            <?php require('views/aside.php'); ?>
+            <?php require(constant('ROUTE_VIEW') . '/aside.php'); ?>
         </aside>
     </body>
 </html>

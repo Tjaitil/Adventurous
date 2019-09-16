@@ -6,7 +6,7 @@
         }
         
         public function index () {
-            $this->render('Maintenance', 'maintenance', false);
+            $this->render('maintenance', 'Maintenance', false);
         }
     }
 ?>

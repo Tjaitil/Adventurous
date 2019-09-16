@@ -1,0 +1,22 @@
+section table {
+    border-collapse: collapse;
+}
+
+section table td {
+    padding:5px;
+    border: 1px solid black;
+    background-color: #f2e6d9;
+}
+#farmer_workers {
+    float: left;
+    width: 50%;
+    box-sizing: border-box;
+}
+#farmer_workers table {
+    display: table;
+    margin: 0 auto;
+}
+#miner_workers table {
+    display: table;
+    margin: 0 auto;
+}

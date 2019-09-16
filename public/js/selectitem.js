@@ -4,12 +4,18 @@
             figures.forEach(function(element) {
               // ... code code code for this one element
                 element.addEventListener('click', function() {
-                    select(element);
-                    show_title(element, false);
+                    var location = window.location.toString();
+                    if(location.indexOf("market") == -1) {
+                        select(element);
+                        show_title(element, false);   
+                    }
+                    else {
+                        select_i();
+                        show_title(element, false);
+                    }
                 });
             });
     }
-    
     function select(element) {
         var img = element.cloneNode(true);
         /*img.removeAttribute("onclick");*/
@@ -20,17 +26,16 @@
         parent.appendChild(img);
     }
     
-    function select_i(element) {
+    function select_i() {
+        var element = event.target.closest("figure");
         document.getElementById("form_select").selectedIndex = 2;
         toggleType();
-        console.log(toggleType);
-        var text = element.children[1].innerHTML;
-        var text_comb = text.split("x");
-        if(text_comb[1].trim() === 'Gold') {
+        var item = element.children[1].innerHTML.toLowerCase().trim();
+        if(item === 'gold') {
             gameLog("ERROR: You cannot sell gold!");
             return false;
         }
-        document.getElementById("item_name").value = text_comb[1].trim();
+        document.getElementById("item_name").value = jsUcWords(item);
         var img = element.cloneNode(true);
         img.removeChild(img.children[1]);
         img.removeAttribute("onclick");

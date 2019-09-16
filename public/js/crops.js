@@ -1,5 +1,6 @@
     document.getElementById("seed_g").children[3].addEventListener("click", seedGenerator);
     document.getElementById("plant_button").addEventListener("click", grow);
+    var intervals = [];
     function getCountdown() {
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function() {
@@ -9,6 +10,7 @@
                 var harvest = data[1];
                 console.log(data);
                 var x = setInterval (function() {
+                    intervals.push(x);
                     var now = new Date().getTime();
                     var distance = time - now;
                     var days = Math.floor(distance / (1000 * 60 * 60 * 24));
@@ -45,32 +47,25 @@
             console.log("error");
         }
         else {
-            console.log(form);
             var JSON_data = JSONForm(form);
-            console.log(result);
+            console.log(JSON_data);
             var data = "model=SetCrops" + "&method=setCrops" + "&JSON_data=" + JSON_data;
             ajaxP(data, function(response) {
                 if(response[0] !== false) {
-                    
+                    getCountdown();
+                    var text = response[1].split("|");
+                    console.log(text);
                 }
             });
         }
     }
     function updateCrop() {
-        ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.onload = function() {
-            if(this.readyState == 4 && this.status == 200) {
-                console.log(this.responseText);
-                if(this.responseText.search("ERROR") != -1) {
-                    gameLog(this.responseText);
-                }
-                else {
-                    getCountdown();
-                }
+        var data = "model=UpdateCrops" + "&method=updateCrops";
+        ajaxP(data, function (response) {
+            if(response[0] !== false) {
+                getCountdown(); 
             }
-        };
-        ajaxRequest.open("GET", "/handlers/handler_js.php?&model=UpdateCrops" + "&method=updateCrops");
-        ajaxRequest.send();
+        });
     }
     
     function destroyCrops() {
@@ -78,69 +73,15 @@
         if(conf != true) {
             return false;
         }
-        ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.onload = function () {
-            if(this.readyState == 4 && this.status == 200) {
-                if(this.responseText.indexOf("ERROR") != -1) {
-                    gameLog(this.responseText);
-                }
-                else {
-                    gameLog(this.responseText);
-                }
+        var data = "model=Crops" + "&method=destroyCrops";
+        ajaxP(data, function(response) {
+            if(response[0] !== false) {
+                gameLog(this.responseText);
+                window.clearInterval(intervals.pop());
+                getCountdown();
             }
-        };
-        ajaxRequest.open('GET', "handlers/handler_g.php?model=Crops" + "&method=destroyCrops");
-        ajaxRequest.send();
+        });
     }
-/*
- *
- *document.getElementById("workforce_ava").innerHTML = ava;
-            document.getElementById("workforce_tot").innerHTML= workforce;
- *
- *var estimate = {
-        crop: document.getElementById("plant_crop").value,
-        quantity: document.getElementById("plant_quantity").value,
-        workforce: document.getElementById("plant_workforce").value,
-        console: function () {console.log(this.crop);},
-        estimated: function () {
-            var cropf = this.crop;
-            var quantityf = this.quantity;
-            var workforcef = this.workforce;
-            var combined = cropf * quantityf / workforcef + "s";
-            document.getElementById("plant_estimated").value = this.crop +  "+"  + this.quantity + "+" + this.workforce + "=" + combined;
-        },
-    };*/
-/*document.getElementById("plant_crop").addEventListener("change", estimate.estimated);
-document.getElementById("plant_quantity").addEventListener("input", estimate.estimated);
-document.getElementById("plant_workforce").addEventListener("input", estimate.estimated);*/
-
-                /*var type = {
-                    make: function(name, location, level) {
-                    this.name = name;
-                    this.location = location;
-                    this.level = level;
-                  }
-                };
-                
-                var corn  = new type.make('corn', 'USA');
-                console.log(corn);
-            
-                var corn1 = 3;
-
-                for (var i = 0; i < corn1; i++) {
-                document.getElementById("crop_" + [i]).style.backgroundColor = "red";
-                }
-            
-                function showTable () {
-                document.getElementById("crops_table").style.visibility = "visible";
-                document.getElementById("crops_table").style.display = "block";
-                document.getElementById("crops").style.visibility = "hidden";
-                }
-                function showFig () {
-                document.getElementById("crops_table").style.visibility = "hidden";
-                document.getElementById("crops_table").style.display = "none";
-                document.getElementById("crops").style.visibility = "visible";
-                }*/
     function img() {
         var img = document.getElementById("type_img");
         var select = document.getElementById("form_select");
