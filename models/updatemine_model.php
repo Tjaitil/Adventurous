@@ -27,19 +27,15 @@
             $stmt2->execute();
             $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
             
-            // Endre experience;
-            /*$mineralEffectivity = 1 *(1 + 0.25 * $this->data['workforceData']['effect_level']);*/
-            
-            $sql3 = "SELECT avail_workforce, {$this->session['location']}_workforce, mineral_quant_level, effect_level
+            $sql3 = "SELECT avail_workforce, {$this->session['location']}_workforce, mineral_quant_level
                      FROM miner_workforce WHERE username=:username";
             $stmt3 = $this->conn->prepare($sql3);
             $stmt3->bindParam(":username", $param_username, PDO::PARAM_STR);
             $stmt3->execute();
             $row3 = $stmt3->fetch(PDO::FETCH_ASSOC);
             
-            
-            $rand_min = $row2['min_per_period'] * (1.25 * $row3['effect_level']) + (0.5 * $row3[$this->session['location'] . '_workforce']);
-            $rand_max = $row2['max_per_period'] * (1.25 * $row3['effect_level']) + (0.5 * $row3[$this->session['location'] . '_workforce']);
+            $rand_min = $row2['min_per_period'] + (0.5 * $row3[$this->session['location'] . '_workforce']);
+            $rand_max = $row2['max_per_period'] + (0.5 * $row3[$this->session['location'] . '_workforce']);
             $quantity = rand($rand_min, $rand_max);
             $experience_gain = ($row2['experience'] * 0.80);
             $experience =  $experience_gain + $this->session['miner']['xp'];
@@ -65,10 +61,12 @@
                 $stmt2->execute();
                 
                 update_inventory($this->conn, $this->username, $mining_type . ' ore', $quantity, true);
-                // Only gain xp when miner is profiency or if miner level is below 0 
+                
+                // Only gain xp when miner level is below 30 or if profiency is miner
                 if($this->session['miner']['level'] < 30 || $this->session['profiency'] == 'miner') {
                     update_xp($this->conn, $this->username, 'miner', $row2['experience'] + $this->session['miner']['xp']);
                 }
+                
                 $this->conn->commit();
             }
             catch (Exception $e) {
@@ -77,7 +75,6 @@
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
-            $_SESSION['gamedata']['miner']['xp'] = $experience;
             $this->gameMessage("You received {$quantity} of " . ucfirst($mining_type . ' ore'), true);
             echo "|{$experience_gain}";
             $this->closeConn();

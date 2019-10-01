@@ -124,6 +124,7 @@
         $param_xp = $xp;
         $param_username = $username;
         $stmt->execute();
+        $_SESSION['gamedata'][$profiency]['xp'] = $xp;
         unset($conn);
     }
     function get_item($inventory, $item) {

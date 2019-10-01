@@ -13,7 +13,7 @@
             $profiences = array('farmer', 'miner');
             $data = array();
             
-            $sql = "SELECT workforce_total, towhar_workforce, krasnur_workforce, avail_workforce, effect_level
+            $sql = "SELECT workforce_total, towhar_workforce, krasnur_workforce, avail_workforce, efficiency_level
                     FROM farmer_workforce WHERE username=:username";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
@@ -21,7 +21,7 @@
             $stmt->execute();
             $data['farmer_workers'] = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            $sql = "SELECT workforce_total, golbak_workforce, snerpiir_workforce, avail_workforce, effect_level
+            $sql = "SELECT workforce_total, golbak_workforce, snerpiir_workforce, avail_workforce, efficiency_level
                     FROM miner_workforce WHERE username=:username";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);

@@ -10,7 +10,6 @@
         readCheck();
         
         var prev = document.querySelectorAll(".previous");
-        console.log(prev);
         prev.forEach(function(element) {
             // Add functions to each node
             element.disabled = true;
@@ -208,7 +207,6 @@
             ajaxG(data, function(response) {
                 if(response[0] != false) {
                     responseText = response[1].split("#");
-                    console.log(responseText[0]);
                     if(responseText[0].length > 0) {
                         button.disabled = true;
                     }

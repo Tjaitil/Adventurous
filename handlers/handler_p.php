@@ -6,7 +6,6 @@
     $methodname = $_POST['method'];
     $model = $handler->includeModel(true, $_POST['model'], $_SESSION['gamedata'], true);
     $method = $handler->checkMethod($model, $_POST['method']);
-
     if($method === true) {
         if(count($_POST) < 3) {
             $model->$methodname(); //If there is less than 3 parameters, the only parameter is model and method
@@ -23,14 +22,14 @@
                             break;
                     }
                     break;
-                case "armory":
+                case "Armory":
                     if(isset($_POST['part'])) {
                         //method removeArmor()
-                        $model->$methodname($_POST['warrior_id'], $_POST['item'], $_POST['part']);
+                        $model->$methodname($_POST['warrior_id'], $_POST['item'], strtolower($_POST['part']));
                     }
                     else {
                         //method wearArmor()
-                        $model->$methodname($_POST['warrior_id'], $_POST['item']);
+                        $model->$methodname($_POST['warrior_id'], strtolower($_POST['item']), $_POST['hand']);
                     }
                     break;
                 case "ArmyCamp":
@@ -79,8 +78,12 @@
                             $model->$methodname($_POST['id'], $_POST['amount']);
                             break;
                         case 'newOffer':
-                            $model->$methodname(json_decode($_POST['JSON_data']));
+                            $model->$methodname(json_decode($_POST['JSON_data'], true));
                     }
+                    break;
+                case "Merchant":
+                    // Method buyItem();
+                    $model->$methodname(strtolower($_POST['item']), $_POST['amount'], $_POST['bond']);
                     break;
                 case "citycentre":
                     if($methodname === 'changeArtefact' ) {

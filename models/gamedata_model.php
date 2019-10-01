@@ -100,12 +100,12 @@
             js_echo($row);
         }
         public function checkMarket() {
-            $sql = "SELECT box_item FROM offers WHERE offeror=:username AND box_item!=0";
+            $sql = "SELECT box_item FROM offers WHERE offeror=:username AND box_amount > 0";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
-            if($stmt->rowCount() > 1) {
+            if($stmt->rowCount() > 0) {
                 $this->gameMessage("You have items waiting at market");
             }
         }

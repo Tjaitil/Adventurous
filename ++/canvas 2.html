@@ -18,9 +18,10 @@
         <button type="button" onkeydown="" onkeyup=""> Up </button>
         <button type="button" onkeydown="" onkeyup=""> Down </button>
         <button type="button" onkeydown="" onkeyup=""> Right </button>
+		<img src="smithy.png" id="smithy" width="200" height="200" />
     <script>
     var world = new Image(2000, 1000);
-    world.src = "world.jpg";
+    world.src = "map.png";
     var player;
     var obstaclesPos = [];
     var obstaclesSize = [];
@@ -85,12 +86,12 @@
     };
     game.loadGamePieces = function() {
         var list = [];
-        list.push(["obstc1", 300, 255, 200, 200, "red"]);
+        list.push(["obstc1", 700, 255, 200, 200, "red"]);
         list.push(["obstc2", 500, 175, 100, 100, "purple"]);
         console.log(list);
         
         var links = [];
-        links.push(["link2", 600, 200, 75, 75, "green", "towhar"]);
+        links.push(["link2", 100, 100, 75, 75, "smithy", "towhar"]);
         
         for(var i = 0; i < 2; i++) {
             game.pieces.obstacles[i] = new gameObstacle(list[i][0], list[i][1], list[i][2], list[i][3],
@@ -100,7 +101,7 @@
             game.pieces.links[x] = new gameLinks(links[x][0], links[x][1], links[x][2], links[x][3],
                                                                           links[x][4], links[x][5], links[x][6]);
         }
-        
+        console.log(linksSize);
         /*var obstacle1 = new gameObstacle(200, 120, 50, 50);
         var obstacle2 = new gameObstacle(80, 70, 200, 50);
         var obstacle3 = new gameObstacle(-250, 200, 50, 200);*/
@@ -137,13 +138,13 @@
         this.diameterRight = x + width;
         this.diameterDown = y + height;
         this.diameterLeft = x;
-        this.style = style;
+        this.img = new Image(50, 50);
+		this.img.src = style + ".png";
         this.location = location;
         ctx = game.properties.context;
-        ctx.fillStyle = style;
-        ctx.fillRect(x, y, width, height);
+		ctx.drawImage(this.img, x, y);
         linksPos.push([x, y, this.diameterTop, this.diameterRight, this.diameterDown, this.diameterLeft]);
-        linksSize.push([width, height]);
+        linksSize.push(this.img);
     }
     window.addEventListener('keydown', function (e) {
         switch(e.keyCode) {
@@ -188,19 +189,21 @@
             for(var x = 0; x < linksPos.length; x++) {
                 //Change xpos and ypos for links
                 ctx = game.properties.context;
-                ctx.fillStyle = game.pieces.links[x].style;
-                ctx.fillRect(linksPos[x][0] - xMovement, linksPos[x][1] - yMovement, linksSize[x][0], linksSize[x][1]);
+				ctx.drawImage(game.pieces.links[x].img, linksPos[x][0] - xMovement, linksPos[x][1] - yMovement, 400, 400);
+				/*ctx.translate(linksPos[x][0] - xMovement, linksPos[x][1] - yMovement);*/
+                /*ctx.fillRect(linksPos[x][0] - xMovement, linksPos[x][1] - yMovement, linksSize[x][0], linksSize[x][1]);*/
             }
     };
     game.viewport = {
         counter: 0,
         draw : function() {
             ctx = game.properties.context;
+			ctx.clearRect(+xMovement, +yMovement, 500, 300);
             ctx.save();
-            /*ctx.clearRect(-xMovement, -yMovement, 500, 300);*/
+            
             //Draw world and translate the image according to players movement
             ctx.drawImage(world, xbase + xMovement, ybase + yMovement, 1000, 1000, 0, 0, 1000, 1000);
-            ctx.translate(xbase + xMovement, ybase + yMovement);
+            ctx.translate(xbase - xMovement, ybase - yMovement);
             ctx.restore();
             game.properties.context.fillStyle = "#0000A0";
             game.properties.context.fillRect(xbase, ybase, player.width, player.height);
@@ -211,11 +214,11 @@
             draw(0, 200+25, 350, 200,25);
             draw(325, 0, 325, 325);
             draw(player.diameterLeft, 0, player.diameterLeft, player.diameterLeft);*/
-            draw(linksPos[0][5] - xMovement, 0, linksPos[0][5] - xMovement, linksPos[0][5] - xMovement);
+            /*draw(linksPos[0][5] - xMovement, 0, linksPos[0][5] - xMovement, linksPos[0][5] - xMovement);
             draw(0, linksPos[0][2] - yMovement, linksPos[0][2] - xMovement, linksPos[0][2] - yMovement);
             draw(linksPos[0][3] - xMovement, 0, linksPos[0][3] - xMovement, linksPos[0][3] - xMovement);
-            /*draw(obstaclesPos[0][4] - yMovement, 0, obstaclesPos[0][4] - yMovement, obstaclesPos[0][4] - xMovement);*/
-            draw(linksPos[0][2] - yMovement, 0, linksPos[0][2] - yMovement, linksPos[0][2] - xMovement);
+            /*draw(obstaclesPos[0][4] - yMovement, 0, obstaclesPos[0][4] - yMovement, obstaclesPos[0][4] - xMovement);
+            draw(linksPos[0][2] - yMovement, 0, linksPos[0][2] - yMovement, linksPos[0][2] - xMovement);*/
         },
     };
     

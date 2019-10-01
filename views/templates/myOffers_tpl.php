@@ -7,7 +7,7 @@
             <tr>
                 
                 <td><?php echo $key['type'];?><input type="hidden" value="<?php echo $key['id'];?>" /></td>
-                <td><?php echo $key['item'];?></td>
+                <td><?php echo ucwords($key['item']);?></td>
                 <td><?php echo $key['price_ea'];?><img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.jpg';?>" /></td>
                 <td><?php echo $key['progress'] , '/' , $key['amount'];?> </td>
                 <td><button onclick="cancelOffer(<?php echo $key['id'];?>, this);"> Cancel offer</button></td>

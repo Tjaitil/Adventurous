@@ -220,7 +220,10 @@
                     update_stockpile($this->conn, $this->username. $this->adventure_data['location'] . 'crystal', 1, true);
                 }
                 
-                update_xp($this->conn, $this->username, $role, $xp_data['user_xp']);
+                // Only gain xp when skill level is below 30 or if profiency is skill
+                if($this->session[$role]['level'] < 30 || $this->session['profiency'] == $role) {
+                    update_xp($this->conn, $this->username, $role, $xp_data['user_xp']);
+                }
                 
                 $sql = "UPDATE adventure SET adventure_id=0, adventure_status=0 WHERE username=:username";
                 $stmt = $this->conn->prepare($sql);

@@ -214,25 +214,23 @@
                     }
                     break;
                 case 'INPUT':
+                    if(form[i].name.length == 0) {
+                        break;
+                    }
                     if(form[i].type == 'checkbox' && form[i].checked === true) {
                         form_data[form[i].name] = form[i].value;
                     }
                     form_data[form[i].name] = form[i].value;
                     break;
                 case 'SELECT':
-                    form_data[form[i].name] = form[i].children[form[i].selectedIndex].value;
+                    if(form[i].name.length > 0) {
+                        form_data[form[i].name] = form[i].children[form[i].selectedIndex].value;
+                        break;
+                    }
                     break;
                 default:
-                    break;
-                
+                    break;   
             }
-            if(form[i].tagName == 'DIV') {
-                
-            }
-            else if(form[i].tagName != 'INPUT') {
-                continue;
-            }
-            form_data[form[i].name] = form[i].value;
         }
         return JSON.stringify(form_data);
     }
@@ -263,6 +261,7 @@
         ajaxRequest.onload = function () {
             if(this.readyState == 4 && this.status == 200) {
                 if(this.responseText.indexOf("ERROR:") != -1) {
+                    console.log(this.responseText);
                     if(log == true) {
                         gameLog(this.responseText);
                     }

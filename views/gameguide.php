@@ -3,12 +3,12 @@
     <head>
         <title><?php echo $title; ?></title>
         <link rel="stylesheet" type="text/css" href="public/css/<?php echo $title; ?>.css" />
-        <?php include(constant('ROUTE_VIEW') . 'head.php');?>
+        <?php require(constant('ROUTE_VIEW') . 'head.php');?>
         <meta charset="utf-8"/>
     </head>
     <body>
         <header>
-            <?php include(constant('ROUTE_VIEW') . 'header.php');?>
+            <?php require(constant('ROUTE_VIEW') . 'header.php');?>
         </header>
         <section>
             
@@ -77,11 +77,29 @@
                         <li> 4 </li>
                     </ul>
                 </div>
+                <div>
+                    <h3> Efficiency level: </h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <td> Level: </td>
+                                <td> Max Effiency level: </td>
+                            </tr>
+                        </thead>
+                        <tr>
+                            <td> 1 </td>
+                            <td> 1 </td>
+                        </tr>
+                        <tr>
+                            <td> 5 </td>
+                            <td> 2 </td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </section>
         <aside>
-            <?php include(constant('ROUTE_VIEW') . 'aside.php');?>
+            <?php require(constant('ROUTE_VIEW') . 'aside.php');?>
         </aside>
-        <!-- <script src="troop.js"></script>-->
     </body>            
 </html>

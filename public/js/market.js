@@ -34,7 +34,7 @@
     var offers = {};
     function toggleType() {
         var option = document.getElementById("form_select").selectedIndex;
-        document.getElementById("form_cont").style.visibility = "visible";
+        document.getElementById("form_cont").style.display = "block";
         if(option === 2) {
             document.getElementById("item_b").style.display = "none";
         }
@@ -48,6 +48,7 @@
     function show(element) {
         var divs = ["offers", "my_offers", "history"];
         
+        document.getElementById("form_cont").style.display = "none";
         for(var i = 0; i < divs.length; i++) {
             if(divs[i] == element) {
                 document.getElementById(divs[i]).style = "display: inline";
@@ -168,17 +169,17 @@
         var form = document.getElementById("offer_form");
         var JSON_data = JSONForm(form);
         
-        var data = "model=" + "&method=" + "&JSON_data=" + JSON_data;
+        var data = "model=market" + "&method=newOffer" + "&JSON_data=" + JSON_data;
         ajaxP(data, function(response) {
+            console.log(response[1]);
             if(response[0] != false) {
-                document.getElementById("offer_form").clear();
-                /*document.getElementById("form_cont").style.visibility = "hidden";*/
+                document.getElementById("offer_form").reset();
+                document.getElementById("form_cont").style.display = "none";
                 updatePage(1);
             }
         });
     }
     function updatePage(part) {
-        console.log("updatePage");
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
             if(this.readyState == 4 && this.status == 200) {
@@ -239,7 +240,7 @@
     function trade() {
         var amount = event.target.parentElement.children[1].value;
         var id = event.target.parentElement.children[2].value;
-        var tr = event.target.closest("TR");
+        /*var tr = event.target.closest("TR");
         var i = 0;
         while( (tr = tr.previousSibling) != null ) {
             i++;
@@ -247,7 +248,7 @@
         if(offers["TR" + (i+1)] != id) {
             gameLog("ERROR: Please try again");
             return false;
-        }
+        }*/
         
         if(amount == 0 || amount == null) {
             gameLog("ERROR: Select a amount");
@@ -283,7 +284,7 @@
         }
     }
     function submit() {
-        document.getElementById("offer_form").clear();
+        document.getElementById("offer_form").reset();
         /*document.getElementById("form_cont").style.visibility = "hidden";*/
         updatePage(1);
     }

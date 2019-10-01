@@ -14,7 +14,7 @@
             <div>
                 <a href="/armycamp"> << Back to army camp</a>
             </div>
-            <p id="">Army Missions</p></br>
+            <h3 id="page_title"> Army Missions </h3>
             <div id="current_mission">
             <p> Mission:</p><p id="time"></p>
             </div>

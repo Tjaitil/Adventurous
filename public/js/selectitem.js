@@ -21,9 +21,13 @@
         /*img.removeAttribute("onclick");*/
         img.children[0].style.height = "50px";
         img.children[0].style.width = "50px";
+        img.children[1].style.visibility = "hidden";
         var parent = document.getElementById("selected");
         parent.innerHTML = "";
         parent.appendChild(img);
+        if(window.location.href.search("armory") != -1) {
+            toggleOption();
+        }
     }
     
     function select_i() {

@@ -103,6 +103,7 @@
                 var rT = response[1].split("|");
                 gameLog(rT[0]);
                 show_xp('miner', rT[1]);
+                updateInventory("mine");
             }       
         });
         console.log(intervals);

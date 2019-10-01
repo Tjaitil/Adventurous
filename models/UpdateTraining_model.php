@@ -86,7 +86,12 @@
             $values[':warrior_id'] = $warrior_id;
             $values[':username'] = $this->username;
             
-            $warrior_experience = 20;
+            $sql = "SELECT experience FROM training_type_data WHERE training_type=:training_type";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(":training_type", $param_training_type, PDO::PARAM_STR);
+            $param_training_type = $type;
+            $stmt->execute();
+            $warrior_experience = $stmt->fetch(PDO::FETCH_OBJ)->experience;
         
             try {
                 $this->conn->beginTransaction();
@@ -106,13 +111,10 @@
                 $param_username = $this->username;
                 $stmt2->execute();
                 
-                $sql3 = "UPDATE user_levels SET warrior_xp=:warrior_xp WHERE username=:username";
-                $stmt3 = $this->conn->prepare($sql3);
-                $stmt3->bindParam(":warrior_xp", $param_warrior_xp, PDO::PARAM_STR);
-                $stmt3->bindParam(":username", $param_username, PDO::PARAM_STR);
-                // $param_warrior_xp already defined in statement 1
-                $param_username = $this->username;
-                $stmt3->execute();
+                // Only gain xp when warrior level is below 30 or if profiency is warrior 
+                if($this->session['warrior']['level'] < 30 || $this->session['profiency'] == 'warrior') {
+                    update_xp($this->conn, $this->username, 'warrior', $param_warrior_xp);
+                }
                 
                 $stmt4 = $this->conn->prepare($sql4);
                 $stmt4->execute($values);
@@ -126,7 +128,6 @@
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
-            $_SESSION['gamedata']['warrior']['warrior_xp'] = $param_warrior_xp;
             $this->closeConn();
         }
     }

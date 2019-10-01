@@ -13,7 +13,7 @@
             <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
             <h3 id="page_title">Workforce Lodge</h3></br>
             <div id="farmer_workers">
-                <p>Current effiency level: <?php echo $this->data['farmer_workers']['effect_level'];?></p>
+                <p>Current efficiency level: <?php echo $this->data['farmer_workers']['efficiency_level'];?></p>
                 <table>
                     <tr>
                         <td> Total workforce </td>
@@ -34,7 +34,7 @@
                 </table>
             </div>
             <div id="miner_workers">
-                <p> Current effiency level: <?php echo $this->data['miner_workers']['effect_level'];?></p>
+                <p> Current efficiency level: <?php echo $this->data['miner_workers']['efficiency_level'];?></p>
                 <table>
                     <tr>
                         <td> Total workforce </td>

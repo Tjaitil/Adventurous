@@ -3,6 +3,7 @@
     urlcheck();
 ?>
 <!--onmouseenter="get_xp('farmer', this);" onmouseout="get_xp('farmer', this);"-->
+<div>
 <div id="skills">
     <div>
         <img src="#" />
@@ -62,6 +63,7 @@
     if(count($_SESSION['gamedata']['level_up']) > 0): ?>
     <script src="<?php echo constant("ROUTE_JS") . 'levelup.js'?>"></script>
 <?php endif;  ?>
+</div>
 <div id="news">
 </div>
 <div id="content">

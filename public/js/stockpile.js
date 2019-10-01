@@ -55,7 +55,7 @@
                 });
             }
         }
-        setTimeout(hide_menu, 4000);
+        timeID.push(setTimeout(hide_menu, 4000));
     }  
     function hide_menu() {
         document.getElementById("stck_menu").style.visibility = "hidden";
@@ -78,7 +78,6 @@
             }
         });
     }
-    
     function insert() {
         document.getElementById("stck_menu").style.visibility = "hidden";
         var item = event.target.parentNode.children[0].innerHTML.toLowerCase();
@@ -96,7 +95,6 @@
             }
         });
     }
-    
     function selectAmount(type) {
         var amount = prompt("Select a number to withdraw " + type);
         if(amount == false) {
@@ -110,7 +108,6 @@
             return amount;
         }
     }
-    
     function updatePage() {
         updateInventory('stockpile');
         ajaxRequest = new XMLHttpRequest();

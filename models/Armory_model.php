@@ -10,35 +10,49 @@
             $this->session = $session;
         }
         
-        public function getData($js = false) {
-            $sql = "SELECT warrior_id, helm, left_hand, body, right_hand, legs, boots FROM warrior_armory WHERE username=:username";
+        public function getData() {
+            $sql = "SELECT warrior_id, helm, left_hand, body, right_hand, legs, boots,
+                    (SELECT SUM(attack) FROM smithy_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS attack,
+                    (SELECT SUM(defence) FROM smithy_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS defence
+                    FROM warrior_armory
+                    WHERE username=:username";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
             $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
             $this->closeConn();
-            if($js === true) {
-                get_template('armory', array('warrior_armory' => $row), true);
-            }
-            else {
-                return $row;
-            }
+            
+            return $row;
         }
-        
-        public function wearArmor($warrior_id, $item) {
+        public function wearArmor($warrior_id, $item, $hand = false) {
             $this->warrior_id = $warrior_id;
-            $armory = array("Iron", "Steel", "Gargonite", "Adron", "yeqdon", "Frajrite");
-            $result = false;
-            foreach($armory as $key) {
-                if(strpos($item, $key) !== false) {
-                    $result = true;
-                }
+            $minerals = array("iron", "steel", "gargonite", "adron", "yeqdon", "frajrite");
+            $items = array("sword", "spear", "dagger", "shield", "platebody", "platelegs", "helm");
+            // Check out if the $item matches $mineral and $item
+            $item_array = explode(" ", $item);
+            if(array_search($item_array[0], $minerals) === false) {
+                $result = true;
             }
-            if(!$result === true) {
+            if(array_search($item_array[1], $items) === false) {
+                $result = true;
+            }
+            if(isset($result)) {
                 $this->gameMessage("ERROR: The item you are trying to put doesn't exists", true);
                 return false;
+            }
+            
+            if(in_array($item_array[0], array('frajrite', 'wujkin'))) { 
+                $sql = "SELECT {$item_array[0]} FROM warrior_permissions WHERE username=:username";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                $param_username = $this->username;
+                $stmt->execute();
+                $row = $stmt->fetch(PDO::FETCH_NUM);
+                if($row[0] == 0) {
+                    $this->gameMessage("ERROR: You don't have permission to wear this armour", true);
+                    return false;
+                }
             }
             
             $sql = "SELECT warrior_id FROM warriors WHERE warrior_id=:warrior_id AND username=:username";
@@ -53,10 +67,10 @@
                 return false;
             }
             
-            $sql = "SELECT type FROM armory WHERE name=:name";
+            $sql = "SELECT type FROM smithy_data WHERE item=:item";
             $stmt = $this->conn->prepare($sql);
-            $stmt->bindParam(":name", $param_name, PDO::PARAM_STR);
-            $param_name = $item;
+            $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
+            $param_item = $item;
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             
@@ -64,8 +78,10 @@
                 $this->gameMessage("ERROR: Type of armor doesn't exists", true);
                 return false;
             }
-            
-            $sql = "SELECT {row['type']} FROM warrior_armory WHERE warrior_id=:warrior_id AND username=:username";
+            if($row['type'] == 'hand') {
+                $row['type'] = $hand  .'_hand';
+            }
+            $sql = "SELECT {$row['type']} FROM warrior_armory WHERE warrior_id=:warrior_id AND username=:username";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
@@ -160,16 +176,18 @@
         }
         public function getWarriorstats() {
             $sql = "SELECT warrior_id, helm, left_hand, body, right_hand, legs, boots,
-                    (SELECT SUM(attack) FROM ... WHERE item IN (helm, left_hand, body, right_hand, boots)) AS attack,
-                    (SELECT SUM(defence) FROM ... WHERE item IN (helm, left_hand, body, right_hand, boots)) AS defence
-                    FROM armory WHERE warrior_id=:warrior_id AND username=:username";
+                    (SELECT SUM(attack) FROM smithy_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS attack,
+                    (SELECT SUM(defence) FROM smithy_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS defence
+                    FROM warrior_armory WHERE warrior_id=:warrior_id AND username=:username";
             $stmt = $this->conn->prepare($sql);
-            $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);
+            $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_INT);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_warrior_id = $this->warrior_id;
             $param_username = $this->username;
             $stmt->execute();
-            get_template('armory',$stmt->fetch(PDO::FETCH_ASSOC), true);
+            $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $row[0]['check'] = true;
+            get_template('armory', $row, true);
         }
     }
 ?>

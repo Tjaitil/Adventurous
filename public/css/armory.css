@@ -1,7 +1,7 @@
 #warriors {
     float: left;
     clear: right;
-    width: 100%;
+    width: 70%;
 }
 .armory_view {
     height: 300px;
@@ -12,7 +12,6 @@
     display: inline-block;
     float: left;
 }
-
 .armory_view img {
     width: 50px;
     height: 50px;
@@ -20,43 +19,41 @@
     border: 1px solid black;
     box-sizing: border-box;
 }
-
 .helm {
-    top: 25px;
+    top: 80px;
     left: 75px;
 }
-
 .left_hand {
-    top: 80px;
+    top: 135px;
     left: 20px;
 }
-
 .body {
-    top: 80px;
-    left: 75px;
-}
-
-.right_hand {
-    top: 80px;
-    left: 130px;
-}
-
-.legs {
     top: 135px;
     left: 75px;
 }
-
-.boots {
+.right_hand {
+    top: 135px;
+    left: 130px;
+}
+.legs {
     top: 190px;
     left: 75px;
 }
-
+.boots {
+    top: 245px;
+    left: 75px;
+}
+#type {
+    visibility: hidden;
+}
 #put_on {
     width: 100px;
     border: 1px solid red;
     float: left;
 }
-
+#selected {
+    margin: 0 auto;
+}
 .stockpile_item, .inventory_item {
     display: inline-block;
     float: left;

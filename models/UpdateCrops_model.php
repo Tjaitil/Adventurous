@@ -8,7 +8,6 @@
             $this->username = $username;
             $this->session = $session;
         }
-        
         public function updateCrops() {
             //AJAX function
             $sql = "SELECT grow_type, grow_quant, fields_avail FROM farmer WHERE username=:username AND location=:location";
@@ -21,7 +20,7 @@
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $crop_type = $row['grow_type'];
             
-            $sql2 = "SELECT experience FROM crops_data WHERE crop_type=:crop_type";
+            $sql2 = "SELECT experience, min_crop_count, max_crop_count FROM crops_data WHERE crop_type=:crop_type";
             $stmt2 = $this->conn->prepare($sql2);
             $stmt2->bindParam(":crop_type", $param_crop_type, PDO::PARAM_STR);
             $param_crop_type = $crop_type;
@@ -31,7 +30,9 @@
             
             $experience = $row2['experience'] * $row['grow_quant'];
             $total_xp = $experience + $this->session['farmer']['xp'];
-            $quantity = $row['grow_quant'] * 3; //Change to effect level
+            $rand_min = ($row['grow_quant'] * 0.3) + $row2['min_crop_count'];;
+            $rand_max = ($row['grow_quant'] * 0.3) + $row2['max_crop_count'];
+            $quantity = round(rand($rand_min, $rand_max));
             
             if(in_array($this->session['location'], array('towhar', 'krasnur')) != true) {
                 return false;   
@@ -71,7 +72,10 @@
                 $param_username = $this->username;
                 $stmt2->execute();
                 
-                update_xp($this->conn, $this->username, 'farmer', $total_xp);
+                // Only gain xp when farmer level is below 30 or if profiency is farmer
+                if($this->session['farmer']['level'] < 30 || $this->session['profiency'] == 'farmer') { 
+                    update_xp($this->conn, $this->username, 'farmer', $total_xp);
+                }
     
                 update_inventory($this->conn, $this->username, $crop_type, $quantity, true);
                 
@@ -83,7 +87,6 @@
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
-            $_SESSION['gamedata']['farmer']['xp'] = $total_xp;
             $this->closeConn();
         }
     }

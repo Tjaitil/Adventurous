@@ -29,7 +29,6 @@
                         div.appendChild(element);
                     }
                     openNews(div);
-                    getXP();
             }
         };
         ajaxRequest.open("POST", "handlers/handler_p.php");

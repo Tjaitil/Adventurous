@@ -29,7 +29,7 @@
                 $stmt2->execute();
                 $data['crop_types'] = $stmt2->fetchAll(PDO::FETCH_ASSOC);
                 
-                $sql3 = "SELECT avail_workforce, effect_level FROM farmer_workforce WHERE username=:username";
+                $sql3 = "SELECT avail_workforce, efficiency_level FROM farmer_workforce WHERE username=:username";
                 $stmt3 = $this->conn->prepare($sql3);
                 $stmt3->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_username = $this->username;

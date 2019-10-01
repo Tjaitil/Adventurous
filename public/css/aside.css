@@ -51,6 +51,7 @@ aside a:visited {
 
 #side_menu li a {
     text-decoration:none;
+    font-size: 14px;
 }
 @media all and (max-width: 800px) {
     aside {

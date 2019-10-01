@@ -15,7 +15,7 @@
                 <a href="/armycamp"> << Back to army camp</a>
             </div>
             <div id="warriors">
-                <?php get_template('armory', $this->data) ;?>
+                <?php get_template('armory', $this->data['warrior_armory']) ;?>
             </div>
             <div id="put_on">
                 <div id="selected">
@@ -25,6 +25,10 @@
                     <?php foreach($this->data['warrior_armory'] as $key): ?>
                     <option><?php echo $key['warrior_id'];?></option>
                     <?php endforeach;?>
+                </select>
+                <select id="type">
+                    <option value="right"> Right hand </option>
+                    <option value="left"> Left hand </option>
                 </select>
                 <button onclick="wearArmor();"> Put on </button>
             </div>

@@ -35,7 +35,9 @@
                                 <label for="item_srch"> Enter name: </label>
                                 <input id="item_srch" type="text" /></br>
                                 Select item:
-                                <select id="items" onchange="selectOpt(this);"></select>
+                                <select id="items" onchange="selectOpt(this);">
+                                    <option selected="selected"></option>
+                                </select>
                             </div>
                                 <label for="price"> Select price each:</label>
                                 <input type="number" name="price" min="0" required /></br>

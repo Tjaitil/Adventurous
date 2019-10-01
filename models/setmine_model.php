@@ -9,7 +9,7 @@
             $this->session = $session;
         }
         public function setMine($mineral, $workforce) {
-            $sql = "SELECT m.mining_type, m.permits, mw.avail_workforce, mw.effect_level
+            $sql = "SELECT m.mining_type, m.permits, mw.avail_workforce, mw.efficiency_level
                     FROM miner AS m INNER JOIN miner_workforce AS mw ON mw.username = m.username
                     WHERE location=:location AND m.username=:username";
             $stmt = $this->conn->prepare($sql);
@@ -44,7 +44,7 @@
                 return false;
             }
     
-            $addTime = $row2['time']; - (1.5 * $row['effect_level']);
+            $addTime = $row2['time'] - (10 * $row['effficiency_level']);
             $date = date("Y-m-d H:i:s");
             $newDate = new DateTime($date);
             $newDate->modify("+{$addTime} seconds");

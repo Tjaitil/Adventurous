@@ -11,9 +11,15 @@
         </header>
         <section>
             <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
+            <h3 class="page_title"> Smithy </h3>
             <div id="smith">
                 <div id="minerals">
-                <?php require(constant('ROUTE_VIEW') . 'minerals.php');?>
+                    <img src="#" class="minerals" title="iron" onclick="showMineral('iron', this);" />
+                    <img src="#" class="minerals" title="steel" onclick="showMineral('steel', this);" />
+                    <img src="#" class="minerals" title="gargonite" onclick="showMineral('gargonite', this);" />
+                    <img src="#" class="minerals" title="adron" onclick="showMineral('adron', this);" />
+                    <img src="#" class="minerals" title="yedqon" onclick="showMineral('yeqdon', this);"/>
+                    <img src="#" class="minerals" title="frajrite" onclick="showMineral('frajrite', this);"/>
                 </div>
                 <table id="iron">
                     <thead>
@@ -118,42 +124,42 @@
                     </tr>
                     <tr>
                         <td> Longsword </td>
-                        <td>  </td>
+                        <td> 2 </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
                             <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Helm </td>
-                        <td>  </td>
+                        <td> 3 </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
                             <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Platebody </td>
-                        <td>  </td>
+                        <td> 5 </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
                             <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Platelegs </td>
-                        <td>  </td>
+                        <td> 5 </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
                             <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Boots </td>
-                        <td>  </td>
+                        <td> 2 </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
                             <button> Make</button></td>
                     </tr>
                     <tr>
                         <td> Shield </td>
-                        <td>  </td>
+                        <td> 4 </td>
                         <td>  </td>
                         <td><input type="number" min="0" />
                             <button> Make</button></td>
@@ -312,8 +318,8 @@
                     </tr>
                     <tr>
                         <td> Adron arrows </td>
-                        <td>  <img src="<?php echo constant('ROUTE_IMG') . 'adron.jpg';?>" /> =
-                        15 <img src="<?php echo constant('ROUTE_IMG') . 'adron.jpg';?>" /></td>
+                        <td>  <img src="<?php echo constant('ROUTE_IMG') . 'adron bar.png';?>" class="item" /> =
+                        15 <img src="<?php echo constant('ROUTE_IMG') . 'adron.jpg';?>" class="item" /></td>
                         <td>  <img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.jpg';?>" /></td>
                         <td> <input type="number" min="0" />
                         <button> Smith </button></td>
@@ -410,7 +416,7 @@
                     <tr>
                         <td> Bar </td>
                         <td> 1 </td>
-                        <td>  </td>
+                        <td> 100 </td>
                         <td><input type="number" min="0" />
                             <button> Make</button></td>
                     </tr>

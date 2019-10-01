@@ -3,6 +3,10 @@
         public $username;
         public $session;
         public $assignment_types;
+        public $assignment_type;
+        public $assignment_amount;
+        public $cargo;
+        public $favor;
 
         function __construct ($username, $session) {
             parent::__construct();
@@ -12,7 +16,7 @@
         }
         public function pickUp() {
             //AJAX function
-            $sql = "SELECT t.assignment_id, t.cart, t.cart_amount, ta.assignment_amount, ta.assignment_type, ta.base
+            $sql = "SELECT t.assignment_id, t.cart, t.cart_amount, t.delivered, ta.assignment_amount, ta.assignment_type, ta.base
                     FROM trader AS t INNER JOIN trader_assignments AS ta ON ta.assignment_id = t.assignment_id
                     WHERE t.username=:username"; 
             $stmt = $this->conn->prepare($sql);
@@ -47,8 +51,8 @@
             }
             $cart_space = $row3['capasity'] - $row['cart_amount'];
             // If assignment_amount is less than the cart space available;
-            if($row['assignment_amount'] < $cart_space) {
-                $cart_space = $row['assignment_amount'];
+            if($row['assignment_amount'] < $cart_space + $row['delivered']) {
+                $cart_space = $row['assignment_amount'] - $row['delivered'];
             }
         
             try {
@@ -69,11 +73,12 @@
                 return false;
             }
             $this->closeConn();
-            $this->gameMessage("You have picked up " . $cart_space . " items", true);   
+            $this->gameMessage("You have picked up " . $cart_space . " items", true);
+            echo "|{$param_cart_amount}/{$row3['capasity']}";
         }   
         public function deliver() {
             //AJAX function
-            $sql = "SELECT t.assignment_id, t.cart_amount, t.delivered, ta.assignment_amount, ta.assignment_type, ta.destination
+            $sql = "SELECT t.assignment_id, t.cart_amount, t.delivered, ta.assignment_amount, ta.cargo, ta.assignment_type, ta.destination
                     FROM trader AS t INNER JOIN trader_assignments AS ta ON ta.assignment_id = t.assignment_id
                     WHERE t.username=:username"; 
             $stmt = $this->conn->prepare($sql);
@@ -81,7 +86,7 @@
             $param_username = $this->username;
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $favor = ($row['assignment_type'] === 'favor') ? true : false;
+            $this->favor = ($row['assignment_type'] === 'favor') ? true : false;
             
             if($row['assignment_id'] == 0) {
                 $this->gameMessage("ERROR: You don't have a any assignment", true);
@@ -113,7 +118,10 @@
                 $param_username = $this->username;
                 $stmt->execute();
                 
-                update_xp($this->conn, $this->username, 'trader', $xp + $this->session['trader']['xp']);
+                // Only gain xp when miner level is below 30 or if profiency is miner
+                if($this->session['trader']['level'] < 30 || $this->session['profiency'] == 'trader') {
+                    update_xp($this->conn, $this->username, 'trader', $xp + $this->session['trader']['xp']);
+                } 
                 
                 $this->conn->commit();
             }
@@ -123,18 +131,22 @@
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
-            $_SESSION['gamedata']['trader']['xp'] = $xp + $this->session['trader']['xp'];
             //Echo to prevent getting the timestamp from gameMessage()
             $this->gameMessage("You have delivered: {$row['cart_amount']}, Total: {$param_delivered}", true);
+            echo "|";
+            jsecho(array($xp, $row['cart_amount'],"{$delivered}/{$row['assignment_amount']}"));
             if($row['assignment_amount'] == $delivered) {
-                $this->updateAssignment($favor);
+                $this->assignment_type = $row['assignment_type'];
+                $this->assignment_amount = $row['assignment_amount'];
+                $this->cargo = $row['cargo'];
+                $this->updateAssignment();
             }
             else {
                 $this->closeConn();
             }
         }
-        private function updateAssignment($favor = false) {
-            if($favor != true) {
+        private function updateAssignment() {
+            if($this->favor != true) {
                 $sql = "SELECT cart_amount, trading_countdown FROM trader WHERE username=:username";
                 $stmt = $this->conn->prepare($sql);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
@@ -151,15 +163,28 @@
             $datetime = date_create();
             $date_now = date_timestamp_get($datetime);
             $date_assignment = date_timestamp_get($trading_countdown);
-            if($date_assignment > $date_now) {
+            
+            switch($this->assignment_type) {
+                case 'small trade':
+                    $xp = 50;
+                    break;
+                case 'medium trade':
+                    $xp = 100;
+                    break;
+                case 'favor':
+                    $xp = 90;
+                    break;
+                case 'long trade':
+                    $xp = 150;
+                    break;
+            }
+            
+            if($date_assignment > $date_now && $this->favor == false) {
                 $time_left = $date_assignment - $date_now;
-                // Calculate the time that is left, 2xp for every minute
-                $xp =  $time_left / 0.0083;
+                // Calculate the time that is left, 0.2xp for every minute
+                $xp += $xp_bonus = round($time_left * 0.1);
             }
-            else {
-                $xp = 50;
-            }
-            if($favor === true) {
+            if($this->favor === true) {
                 $locations = array("hirtam", "pvitul", "khanz", "ter", "fansalplains");
                 $sql = "SELECT hirtam, pvitul, khanz, ter, fansalplains FROM diplomacy WHERE username=:username";
                 $stmt = $this->conn->prepare($sql);
@@ -180,23 +205,26 @@
                     $new_diplomacy[$locations[$i]] = intval($diplomacy[$locations[$i]]) * $city_relations[$locations[$i]];
                 }
             }
+            $reward_amount =  round($this->assignment_amount / 5);
             
             try {
                 $this->conn->beginTransaction();
                 
-                $sql = "UPDATE trader SET trader_xp=:trader_xp, assignment_id=0, delivered=0
+                $sql = "UPDATE trader SET assignment_id=0, delivered=0
                         WHERE username=:username";
                 $stmt = $this->conn->prepare($sql);
-                $stmt->bindParam(":trader_xp", $param_trader_xp, PDO::PARAM_STR);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_trader_xp = $xp + $this->session['trader']['xp'];
                 $param_username = $this->username;
                 $stmt->execute();
                 
-                update_xp($this->conn, $this->username, 'trader', $param_trader_xp);
+                // Only gain xp when miner level is below 30 or if profiency is miner
+                if($this->session['trader']['level'] < 30 || $this->session['profiency'] == 'trader') {
+                    update_xp($this->conn, $this->username, 'trader', $xp + $this->session['trader']['xp']);
+                }
                 
-                if($favor != true) {
-                    update_inventory($this->conn, $this->username, 'gold' , $row2['amount'], true);
+                if($this->favor != true) {
+                    update_inventory($this->conn, $this->username, $this->cargo , $reward_amount, true);
                 }
                 else {
                     $sql2 = "UPDATE diplomacy SET hirtam=:hirtam, pvitul=:pvitul, khanz=:khanz, ter=:ter, fansalplains=:fansalplains
@@ -215,8 +243,6 @@
                     $param_FansalPlains = $new_diplomacy['fansalplains'];
                     $param_username = $this->username;
                     $stmt2->execute();
-                    
-                    unset($_SESSION['gamedata']['favor']);
                 }
                 $this->conn->commit();
             }
@@ -226,13 +252,21 @@
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
+            
             $this->closeConn();
-            $_SESSION['gamedata']['trader']['xp'] = $param_trader_xp;
-            if($favor != true) {
-                $this->gameMessage("XP bonus for finishing assignment before deadline", true); 
+            echo "|finished!|";
+            if($this->favor != true) {
+                if(isset($xp_bonus)) {
+                    $this->gameMessage("You received {$xp_bonus} for finishing before deadline!", true);
+                    echo "|";
+                }
+                $this->gameMessage("You finished assignment and received {$reward_amount} of {$this->cargo}", true);
+                echo "|{$xp}";
             }
             else {
-                $this->gameMessage("You have finsihed your favor assignment", true); 
+                $this->gameMessage("You have finsihed your favor assignment", true);
+                unset($_SESSION['gamedata']['favor']);
+                echo "|{$xp}";
             }
         }
     }

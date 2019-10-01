@@ -44,7 +44,9 @@ textarea {
 #inbox, #sent td {
     text-align: center;
 }
-
+#inbox tr td:nth-child(2), #sent tr td:nth-child(2) {
+    cursor: pointer;
+}
 #sent {
     display: none;
 }

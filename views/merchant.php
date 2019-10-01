@@ -12,16 +12,18 @@
         <section>
             <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
             <h3 class="page_title"><?php echo $title;?></h3>
-            <div id="items">
+            <div id="trades">
+                <div>
                 <?php get_template('merchantStock', $this->data); ?>
+                </div>
                 <div id="do_trade">
                     <div id="selected_trade">
                         
                     </div>
-                    <label for="quantity"> Quantity </label></br>
-                    <input type="number" id="quantity" name="quantity" /></br>
-                    <label for="bond"> Use bonds? </label></br>
-                    <input type="checkbox" /></br>
+                    <label for="amount"> Amount </label></br>
+                    <input type="number" id="amount" name="amount" /></br>
+                    <label for="bond"> Use bond? </label></br>
+                    <input type="checkbox" id="bond" name="bond" /></br>
                     <button> Trade </button>
                 </div>
             </div>
@@ -37,7 +39,6 @@
                             <th> Cargo </th>
                             <th> Cargo Amount </th>
                             <th> Time </th>
-                            <th> Reward </th>
                             <th> Assignment Type </th>
                             <th></th>
                         </tr>

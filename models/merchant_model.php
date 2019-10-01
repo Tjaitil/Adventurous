@@ -44,7 +44,7 @@
                 array_push($data['trader_data'], $row4);
             }
             
-            $sql5 = "SELECT assignment_id, base, destination, cargo, assignment_amount, time, reward, assignment_type FROM trader_assignments
+            $sql5 = "SELECT assignment_id, base, destination, cargo, assignment_amount, time, assignment_type FROM trader_assignments
                      WHERE base=:base";
             $stmt5 = $this->conn->prepare($sql5);
             $stmt5->bindParam(":base", $param_city, PDO::PARAM_STR);
@@ -63,7 +63,7 @@
             }
         }
         
-        public function buyItem($item, $quantity) {
+        public function buyItem($item, $amount, $bond) {
             $city = $this->session['location'];
             $cities = array("towhar", "golbak", "snerpiir", "krasnur", "tasnobil", "cruendo", "fagna");
             if (array_search($city, $cities) === false) {
@@ -80,31 +80,35 @@
                 return fasle;
             }
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-            $item_amount = get_item($this->session['inventory'], $row['want'])['amount'];
+            $want_item = ($bond == 'false') ? $row['want'] : 'trading bond';
+            $item_amount = get_item($this->session['inventory'], $want_item)['amount'];
             if(!$item_amount > 0) {
-                $this->gameMessage("ERROR: You don't have any of this item", true);
+                $this->gameMessage("ERROR: You don't have any {$want_item}s", true);
                 return false;
             }
             else if($item_amount < $row['want_amount']) {
-                $this->gameMessage("ERROR: You don't have enough of {$row['want_amount']}", true);
+                $this->gameMessage("ERROR: You don't have enough {$want_item}s", true);
                 return false;
             }
 
-            $total_amount = $quantity * $row['want_amount'];
-            
+            $total_amount = $amount * $row['want_amount'];
             //Check if item exists in users stockpile
             try {
                 $this->conn->beginTransaction();
-                update_inventory($this->conn, $this->username, $item, $quantity);
-                update_inventory($this->conn, $this->username, $row['want'], -$total_amount, true);
+                if($bond == 'false') {
+                    update_inventory($this->conn, $this->username, $row['want'], -$total_amount);   
+                }
+                else {
+                    update_inventory($this->conn, $this->username, 'trade bond', -1);   
+                }
+                update_inventory($this->conn, $this->username, $item, $amount, true);
             
                 //Update merchant
                 $sql3 = "UPDATE merchants SET amount=:amount WHERE item=:item";
                 $stmt3 = $this->conn->prepare($sql3);
                 $stmt3->bindParam(":amount", $param_newValue, PDO::PARAM_STR);
                 $stmt3->bindParam(":item", $param_item, PDO::PARAM_STR);
-                $param_newValue = $row['amount'] - $quantity;
+                $param_newValue = $row['amount'] - $amount;
                 $param_item = $item;
                 $stmt3->execute();
             

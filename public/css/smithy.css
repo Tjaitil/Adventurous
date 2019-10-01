@@ -4,7 +4,7 @@ section table td {
     border-collapse: collapse;
 }
 #smith {
-    width: 50%;
+    width: 63%;
     float: left;
 }
 /*#smith::after {
@@ -21,4 +21,11 @@ section table td {
 }
 #ranged {
     float: left; 
+}
+.minerals {
+    width: 50px;
+    height: 50px;
+}
+#smith input[type="number"] {
+    width: 25px;
 }

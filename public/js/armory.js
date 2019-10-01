@@ -1,22 +1,57 @@
     
+    document.getElementById("selected").addEventListener("change", function() {
+        console.log("hello");
+    });
+    
+    function toggleOption() {
+        var element = document.getElementById("selected").children[0].children[1].innerHTML;
+        if(element.search("Sword") != -1 || element.search("Dagger") != -1) {
+            document.getElementById("type").style.visibility = "visible";
+        }
+        else {
+            document.getElementById("type").style.visibility = "hidden";
+        }
+    }
     function wearArmor() {
         var warrior_id = document.getElementById("select_warrior").selectedIndex;
         var element = document.getElementById("selected");
         var item = element.children[0].children[1].innerHTML;
         item = item.trim();
-        var data = "model=Armory" + "&method=wearArmor" + "&warrior_id=" + warrior_id + "&item=" + item;
-        ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.onload = function () {
-            if(this.readyState == 4 && this.status == 200) {
-                console.log(this.responseText);
+        var result = false;
+        var minerals = ["Iron", "Steel", "Gargonite", "Adron", "Yeqdon", "Frajrite"];
+        var items = ["Sword", "Spear", "Dagger", "Shield", "Platebody", "Platelegs", "Helm"];
+        // Check out if the $item matches $mineral and $item
+        var item_array = item.split(" ");
+        console.log(item_array);
+        console.log(items.indexOf(item_array[0]));
+        if(minerals.indexOf(item_array[0]) == -1) {
+            result = true;
+        }
+        if(items.indexOf(item_array[1]) == -1) {
+            result = true;
+        }
+        if(result === true) {
+            gameLog("ERROR: Select a valid item to wear!");
+            return false;
+        }
+        var select = document.getElementById("type");
+        var hand;
+        console.log(select);
+        if(select.style.visibility == "visible") {
+            hand = select.options[select.selectedIndex].value;
+        }
+        else {
+            hand = false;
+        }
+        var data = "model=Armory" + "&method=wearArmor" + "&warrior_id=" + warrior_id + "&item=" + item  + "&hand=" + hand;
+        ajaxP(data, function(response) {
+            if(response[0] != false) {
+                console.log(response[1]);
                 document.getElementById("selected").innerHTML = "";
-                updatePage();
                 updateInventory('armory');
+                document.querySelectorAll(".armory_view")[warrior_id -1].innerHTML = response[1];
             }
-        };
-        ajaxRequest.open('POST', "handlers/handler_p.php");
-        ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        ajaxRequest.send(data);
+        }, false);
     }
     
     function removeArmor(element) {
@@ -28,23 +63,12 @@
             return false;
         }
         var data = "model=Armory" + "&method=removeArmor" + "&warrior_id=" + warrior_id + "&item=" + item + "&part=" + part;
-        ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.onload = function () {
-            if(this.readyState == 4 && this.status == 200) {
-                if(this.responseText.indexOf("ERROR:") != -1) {
-                    gameLog(this.responseText);
-                }
-                else {
-                    document.getElementsByClassName("armory_view")[Number(warrior_id)].innerHTML = this.responseText;
-                    updateInventory('armory');
-                }
-                console.log(this.responseText);
+        ajaxP(data, function(response) {
+            if(response[0] != false) {
+                document.getElementsByClassName("armory_view")[warrior_id - 1].innerHTML = response[1];
                 updateInventory('armory');
             }
-        };
-        ajaxRequest.open('POST', "handlers/handler_p.php");
-        ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        ajaxRequest.send(data);
+        });
     }
     
     function updatePage() {

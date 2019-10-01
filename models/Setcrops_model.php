@@ -11,7 +11,7 @@
         }
         public function setCrops($POST) {
             // $POST is the user variables from crops.js
-            $sql = "SELECT f.fields_avail, f.grow_type, fw.avail_workforce, fw.effect_level
+            $sql = "SELECT f.fields_avail, f.grow_type, fw.avail_workforce, fw.efficiency_level
                     FROM farmer as f INNER JOIN farmer_workforce as fw ON fw.username = f.username
                     WHERE f.username=:username";
             $stmt = $this->conn->prepare($sql);
@@ -59,7 +59,7 @@
             }
             $experience = $row2['experience'] + $this->session['farmer']['xp'];
             
-            $addTime = $row2['time'] * $POST['quantity'] / $POST['workforce'] - (5 * $row['effect_level']);
+            $addTime = $row2['time'] * $POST['quantity'] / $POST['workforce'] - (10 * $row['effiency_level']);
             $date = date("Y-m-d H:i:s");
             $newDate = new DateTime($date);
             $newDate->modify("+{$addTime} seconds");
@@ -107,7 +107,6 @@
                 return false;
             }
             $this->closeConn();
-            $_SESSION['gamedata']['farmer']['xp'] = $experience;
             js_echo(array($param_avail_workforce, $param_fields_avail));
         }
     }

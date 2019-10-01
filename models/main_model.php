@@ -10,6 +10,7 @@
         }
         
         public function getData() {
+        
             $data = array();
             $sql = "SELECT hirtam, pvitul, khanz, ter, fansalplains FROM diplomacy WHERE username=:username";
             $stmt = $this->conn->prepare($sql);

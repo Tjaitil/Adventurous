@@ -10,8 +10,8 @@ section table td {
     width: 40%;
 }
 #form_cont {
-    visibility: hidden;
-    height: 300px;
+    display: none;
+    height: 250px;
 }
 #form_cont input {
     width: 100%;
@@ -20,7 +20,6 @@ section table td {
     max-width: 92px;
 }
 #form_cont input[type="number"] {
-    background-color: orange;
     max-width: 70px;
 }
 #item {

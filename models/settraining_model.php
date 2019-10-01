@@ -35,9 +35,9 @@
             $stmt->bindParam(":training_type", $param_training_type, PDO::PARAM_STR);
             $param_training_type = $type;
             $stmt->execute();
-            $data = array();
             $row2 = $stmt->fetch(PDO::FETCH_ASSOC);
             
+            $data = array();
             $addTime = $row2['time'];
             $date = date("Y-m-d H:i:s");
             $new_date = new DateTime($date);

@@ -1,20 +1,27 @@
-#items {
+#trades {
     display: inline-block;
     float: left;
-    width: 70%;
+    width: 69%;
+    margin: 0px 5px 5px 0px;
+    box-sizing: border-box;
 }
-.store_item {
+.store_trade {
     display: inline-block;
     float: left;
+    cursor: pointer;
+    background-color: #724e27;
+    color: white;
+    border: 1px solid black;
+    border-radius: 15px;
 }
-.store_item figure img {
+.store_trade figure img {
     width: 50px;
     height: 50px;
 }
-.store_item button {
+.store_trade button {
     float:left;
 }
-.store_item label {
+.store_trade label {
     width: 100%;
 }
 #trade_sign {
@@ -24,7 +31,9 @@
 #do_trade {
     width: 151px;
     border: 1px solid black;
-    float: left;
+    float: right;
+    background-color: #724e27;
+    color: white;
 }
 #selected_trade {
     width: 100%;
@@ -39,7 +48,6 @@
     float: left;
 }
 #assignment {
-    width: 30%;
 }
 section table {
     border-collapse: collapse;

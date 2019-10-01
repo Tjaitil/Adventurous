@@ -8,7 +8,6 @@
             $this->username = $username;
             $this->session = $session;
         }
-        
         public function smith($item, $mineral, $amount) {
             //AJAX function
             $ore = $mineral . ' ' . 'ore';

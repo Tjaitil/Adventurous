@@ -17,6 +17,7 @@
     width: 70px;
     height: 70px;
     float: left;
+    border: 1px solid black;
 }
 #mine_data {
     width: 43%;

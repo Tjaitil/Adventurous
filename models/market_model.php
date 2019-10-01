@@ -12,7 +12,7 @@
             //Function to gather data
             $data = array();
             $sql = "SELECT id, offeror, item, amount_left, price_ea, type FROM offers
-                    WHERE NOT offeror=:username";
+                    WHERE NOT offeror=:username AND amount_left > 0";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
@@ -155,7 +155,7 @@
         }
         public function trade($id, $amount) {
             //AJAX function
-            $sql = "SELECT offeror, id, type, item, price_ea, amount_left, progress FROM offers WHERE id=:id";
+            $sql = "SELECT offeror, id, type, item, price_ea, amount_left, progress, box_amount FROM offers WHERE id=:id";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(":id", $param_id, PDO::PARAM_STR);
             $param_id = $id;
@@ -256,24 +256,25 @@
                     $param_item = $row['item'];
                     $stmt->execute();
                 }
+                
+                $sql = "UPDATE offers SET progress=:progress, amount_left=:amount_left, box_item=:box_item, box_amount=:box_amount
+                        WHERE id=:id AND offeror=:username";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindParam(":progress", $param_progress, PDO::PARAM_INT);
+                $stmt->bindParam(":amount_left", $param_amount_left, PDO::PARAM_INT);
+                $stmt->bindParam(":box_item", $param_box_item, PDO::PARAM_STR);
+                $stmt->bindParam(":box_amount", $param_box_amount, PDO::PARAM_INT);
+                $stmt->bindParam(":id", $param_id, PDO::PARAM_INT);
+                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                $param_progress = $row['progress'] + $progress;
+                $param_amount_left = $new_amount;
+                $param_box_item = $offeror['item'];
+                $param_box_amount = $offeror['amount'] + $row['box_amount'];
+                $param_id = $id;
+                $param_username = $row['offeror'];
+                $stmt->execute();
+                
                 if($new_amount > 0) {
-                    $sql = "UPDATE offers SET progress=:progress, amount_left=:amount_left, box_item=:box_item, box_amount=:box_amount
-                    WHERE id=:id AND offeror=:username";
-                    $stmt = $this->conn->prepare($sql);
-                    $stmt->bindParam(":progress", $param_progress, PDO::PARAM_INT);
-                    $stmt->bindParam(":amount_left", $param_amount_left, PDO::PARAM_INT);
-                    $stmt->bindParam(":box_item", $param_box_item, PDO::PARAM_STR);
-                    $stmt->bindParam(":box_amount", $param_box_amount, PDO::PARAM_INT);
-                    $stmt->bindParam(":id", $param_id, PDO::PARAM_INT);
-                    $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                    $param_progress = $row['progress'] + $progress;
-                    $param_amount_left = $new_amount;
-                    $param_box_item = $offeror['item'];
-                    $param_box_amount = $offeror['amount'];
-                    $param_id = $id;
-                    $param_username = $row['offeror'];
-                    $stmt->execute();
-                    
                     $sql = "UPDATE escrow SET amount=:amount WHERE id=:id AND offeror=:offeror";
                     $stmt = $this->conn->prepare($sql);
                     $stmt->bindParam(":amount", $param_amount, PDO::PARAM_INT);
@@ -285,13 +286,12 @@
                     $stmt->execute();
                 }
                 else if($new_amount == 0) {
-                    
                     $sql2 = "DELETE FROM escrow WHERE id=:id AND offeror=:offeror";
                     $stmt2 = $this->conn->prepare($sql2);
                     $stmt2->bindParam(":id", $param_id, PDO::PARAM_STR);
                     $stmt2->bindParam(":offeror", $param_offeror, PDO::PARAM_STR);
-                    //$param_offeror is already defined in statement 1
                     $param_id = $id;
+                    $param_offeror = $row['offeror'];
                     $stmt2->execute();
                 }
                 
@@ -423,9 +423,9 @@
         }
         public function fetchItem($id) {
             // AJAX function
-            $sql = "SELECT id, box_item, box_amount FROM offers WHERE id=:id AND offeror=:username";
+            $sql = "SELECT id, amount_left, box_item, box_amount FROM offers WHERE id=:id AND offeror=:username";
             $stmt = $this->conn->prepare($sql);
-            $stmt->bindParam(":id", $param_id, PDO::PARAM_STR);
+            $stmt->bindParam(":id", $param_id, PDO::PARAM_INT);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_id = $id;
             $param_username = $this->username;
@@ -438,14 +438,24 @@
             
             try {
                 $this->conn->beginTransaction();
-            
-                $sql = "UPDATE offers SET box_amount=0 WHERE id=:id AND offeror=:username";
-                $stmt = $this->conn->prepare($sql);
-                $stmt->bindParam(":id", $param_id, PDO::PARAM_STR);
-                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                $param_id = $id;
-                $param_username = $this->username;
-                $stmt->execute();
+                if($row['amount_left'] == 0) {
+                    $sql = "DELETE FROM offers WHERE id=:id AND offeror=:username";
+                    $stmt = $this->conn->prepare($sql);
+                    $stmt->bindParam(":id", $param_id, PDO::PARAM_INT);
+                    $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                    $param_id = $id;
+                    $param_username = $this->username;
+                    $stmt->execute();
+                }
+                else {
+                    $sql = "UPDATE offers SET box_amount=0 WHERE id=:id AND offeror=:username";
+                    $stmt = $this->conn->prepare($sql);
+                    $stmt->bindParam(":id", $param_id, PDO::PARAM_INT);
+                    $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                    $param_id = $id;
+                    $param_username = $this->username;
+                    $stmt->execute();   
+                }
                 
                 update_inventory($this->conn, $this->username, $row['box_item'], $row['box_amount'], true);
                 

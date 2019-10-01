@@ -11,7 +11,7 @@
         </header>
         <section>
             <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
-            <h4>Welcome to city centre, what do you want to do?</h4>
+            <h3 class="page_title"> City Centre </h3>
             <button onclick="show('profiency');"> Profiency </button>
             <button onclick="show('keep');"> Keep </button>
             <button onclick="show('permits');"> Permits</button>
@@ -46,8 +46,8 @@
                 <button onclick="changeArtefact();"> Change artefact </button>
             </div>
             <div id="permits">
-                <h3> Buy permits: </h3>
                 <table>
+                    <caption> Buy Permits: </caption>
                     <thead>
                         <tr>
                             <td> Amount: </td>
@@ -60,9 +60,28 @@
                         <td><button onclick="buyPermits(50);"> Buy </button></td>
                     </tr>
                 </table>
+                <table>
+                    <thead>
+                        <tr>
+                            <td> Item: </td>
+                            <td> Cost: </td>
+                            <td><button> Buy </button></td>
+                        </tr>
+                    </thead>
+                    <tr>
+                        <td> Frajrite items </td>
+                        <td> </td>
+                        <td><button> Buy </button></td>
+                    </tr>
+                    <tr>
+                        <td> Wujkin items </td>
+                        <td>  </td>
+                        <td><button> Buy </button></td>
+                    </tr>
+                </table>
             </div>
             <div id="inventory">
-            <?php require(constant('ROUTE_VIEW') . 'inventory.php'); url();?>
+                <?php require(constant('ROUTE_VIEW') . 'inventory.php'); url();?>
             </div>
         </section>
         <aside>
