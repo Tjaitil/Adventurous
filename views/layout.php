@@ -44,22 +44,6 @@
     </table>
 </div>
 <?php
-    $profiencies = array('farmer', 'miner', 'trader', 'warrior');
-    
-    $next_level = array($_SESSION['gamedata']['farmer']['xp'], $_SESSION['gamedata']['miner']['xp'],
-                       $_SESSION['gamedata']['trader']['xp'], $_SESSION['gamedata']['warrior']['xp']);
-    
-    $_SESSION['gamedata']['level_up'] = array();
-    for($i = 0; $i < count($profiencies); $i++) {
-        if($_SESSION['gamedata'][$profiencies[$i]]['xp'] >= $_SESSION['gamedata'][$profiencies[$i]]['next_level']) {
-            if($_SESSION['gamedata'][$profiencies[$i]]['level'] >= 30 && $_SESSION['gamedata']['profiency'] !== $profiencies[$i]) {
-                continue;
-            }
-            else {
-                array_push($_SESSION['gamedata']['level_up'], $profiencies[$i]);
-            }
-        }
-    }
     if(count($_SESSION['gamedata']['level_up']) > 0): ?>
     <script src="<?php echo constant("ROUTE_JS") . 'levelup.js'?>"></script>
 <?php endif;  ?>

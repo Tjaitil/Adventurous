@@ -64,11 +64,12 @@
         ajaxRequest.send();
     }
     
-    function travel (destination) {
+    function travel(destination) {
         var data = "model=travel" + "&method=getData" + "&destination=" + destination;
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
             if(this.readyState == 4 && this.status == 200) {
+                console.log(this.responseText);
                 if(this.responseText.length > 0) {
                     gameLog(this.responseText);
                 }

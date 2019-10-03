@@ -12,7 +12,7 @@
         public function fetchData () {
             $sql = "SELECT username, location, destination, profiency FROM user_data
                     WHERE username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
@@ -20,13 +20,13 @@
             $profiency = $row['profiency'];
             //Workforce data for farmer
             $sql3 = "SELECT workforce_total, avail_workforce FROM farmer_workforce WHERE username=:username";
-            $stmt3 = $this->conn->prepare($sql3);
+            $stmt3 = $this->db->conn->prepare($sql3);
             $stmt3->bindParam(":username", $param_username, PDO::PARAM_STR);
             $stmt3->execute();
             $row3 = $stmt3->fetch(PDO::FETCH_ASSOC);
             
             $sql4 = "SELECT amount FROM inventory WHERE username=:username AND item='gold'";
-            $stmt4 = $this->conn->prepare($sql4);
+            $stmt4 = $this->db->conn->prepare($sql4);
             $stmt4->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt4->execute();
@@ -37,12 +37,11 @@
             //Select stats for player
             $sql5 = "SELECT farmer_level, farmer_xp, miner_level, miner_xp, warrior_level, warrior_xp, trader_level, trader_xp FROM
                     user_levels WHERE username=:username";
-            $stmt5 = $this->conn->prepare($sql5);
+            $stmt5 = $this->db->conn->prepare($sql5);
             $stmt5->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt5->execute();
             $row5 = $stmt5->fetch(PDO::FETCH_ASSOC);
-            
             $row2 = array();
             $row2['farmer'] = array("level" => $row5['farmer_level'], "xp" => $row5['farmer_xp']);
             $row2['miner'] = array("level" => $row5['miner_level'], "xp" => $row5['miner_xp']);
@@ -50,7 +49,7 @@
             $row2['trader'] = array("level" => $row5['trader_level'], "xp" => $row5['trader_xp']);
             
             $sql6 = "SELECT item, amount FROM inventory WHERE username=:username";
-            $stmt6 = $this->conn->prepare($sql6);
+            $stmt6 = $this->db->conn->prepare($sql6);
             $stmt6->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt6->execute();
@@ -64,7 +63,7 @@
                     SELECT next_level FROM level_data WHERE level=:warrior_level
                     UNION ALL
                     SELECT next_level FROM level_data WHERE level=:trader_level";
-            $stmt2 = $this->conn->prepare($sql2);
+            $stmt2 = $this->db->conn->prepare($sql2);
             $stmt2->bindParam(":farmer_level", $param_farmer_level, PDO::PARAM_STR);
             $stmt2->bindParam(":miner_level", $param_miner_level, PDO::PARAM_STR);
             $stmt2->bindParam(":warrior_level", $param_warrior_level, PDO::PARAM_STR);
@@ -82,7 +81,7 @@
             /*$row2 = $stmt2->fetchAll(PDO::FETCH_ASSOC);*/
             
             $sql = "SELECT adventure_status FROM adventure WHERE username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
@@ -101,7 +100,7 @@
         }
         public function checkMarket() {
             $sql = "SELECT box_item FROM offers WHERE offeror=:username AND box_amount > 0";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();

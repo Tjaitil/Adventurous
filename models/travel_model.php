@@ -14,9 +14,9 @@
         //AJAX functions:
         //checkCountdown, updateLocation
         
-        function __construct ($username, $session) {
+        function __construct ($session) {
             parent::__construct();
-            $this->username = $username;
+            $this->username = $session['username'];
             $this->session = $session;
         }
         
@@ -29,7 +29,7 @@
                     return;
                 }
                 $sql = "SELECT location, arrive_time, destination FROM user_data WHERE username=:username";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_username = $this->username;
                 $stmt->execute();
@@ -37,7 +37,7 @@
                 $_SESSION['gamedata']['arrive_time'] = $row['arrive_time'];
                 $date = date_timestamp_get(new DateTime($row['arrive_time']));
                 js_echo(array($date, $row['destination']));
-                $this->closeConn();
+                $this->db->closeConn();
         }
         public function getData($base, $destination, $travelCountdown) {
             $this->base = $base;
@@ -54,14 +54,14 @@
             }
             else if ($this->travelCountdown < $time) {
                 $sql = "SELECT horse FROM user_data WHERE username=:username";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_username = $this->username;
                 $stmt->execute();
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
                 if($row['horse'] !== 'none') {
                     $sql = "SELECT speed FROM travelbureau_horses WHERE type=:type";
-                    $stmt = $this->conn->prepare($sql);
+                    $stmt = $this->db->conn->prepare($sql);
                     $stmt->bindParam(":type", $param_type, PDO::PARAM_STR);
                     $param_type = $row['horse'];
                     $stmt->execute();
@@ -74,9 +74,10 @@
                 $queryArray[1] = $this->destination;
                 $in  = str_repeat('?,', count($queryArray) - 1) . '?';
                 $sql = "SELECT city, location_x, location_y FROM travel_times WHERE city IN ($in)";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->execute($queryArray);
                 $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                var_dump($row);
                 $this->baseData = $row[0];
                 $this->destinationData = $row[1];
                 $_SESSION['gamedata']['destination'] = $this->destination;
@@ -85,7 +86,7 @@
                                             $this->destinationData['location_y']);
                 $this->travel();
             }
-            $this->closeConn();
+            $this->db->closeConn();
         }
         
         public function calculateDistance($x1, $y1, $x2, $y2) {
@@ -103,7 +104,7 @@
             $new_date->modify("+{$this->time}seconds");
             $this->arrive_time = date_format($new_date, "Y-m-d H:i:s");
             $sql = "UPDATE user_data SET location=:location, destination=:destination, arrive_time=:arrive_time WHERE username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(':location', $param_location, PDO::PARAM_STR);
             $stmt->bindParam(':destination', $param_destination, PDO::PARAM_STR);
             $stmt->bindParam(':arrive_time', $param_arrive_time, PDO::PARAM_STR);
@@ -114,7 +115,7 @@
             $param_username = $this->username;
             $stmt->execute();
             $_SESSION['gamedata']['location'] = $param_location;
-            $this->closeConn();
+            $this->db->closeConn();
        }
        
         public function updateLocation($base, $destination, $db_countdown) {
@@ -122,14 +123,14 @@
                 return false;
             }
             $sql = "UPDATE user_data SET location=:destination WHERE username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":destination", $param_destination, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_destination = $destination;
             $param_username = $this->username;
             $stmt->execute();
             $_SESSION['gamedata']['location'] = $destination;
-            $this->closeConn();
+            $this->db->closeConn();
        }
     }
 ?>

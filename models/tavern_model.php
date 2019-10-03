@@ -3,15 +3,14 @@
         public $username;
         public $session;
         
-        function __construct ($username, $session) {
+        function __construct ($session) {
             parent::__construct();
-            $this->username = $username;
+            $this->username = $session['username'];
             $this->session = $session;
         }
-        
         public function getPersons() {
             $sql = "SELECT name from persons WHERE location=:location";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
             $param_location = $this->session['location'];
             $stmt->execute();
@@ -19,7 +18,7 @@
             if($row == false) {
                 return array();
             }
-            $this->closeConn();
+            $this->db->closeConn();
             return $row;
         }
         public function getData() {
@@ -29,7 +28,7 @@
                 return false;
             }            
             $sql = "SELECT new_workers, {$this->session['location']} FROM tavern_times WHERE username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
@@ -39,7 +38,7 @@
         
         public function getWorkers() { 
             $sql = "SELECT type, level FROM tavern_workers WHERE city=:city AND username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":city", $param_city, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_city = $this->session['location'];
@@ -57,17 +56,17 @@
             
             //Delete yesterdays workers
             $sql = "DELETE FROM tavern_workers WHERE username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
             
             try {
-                $this->conn->beginTransaction();
+                $this->db->conn->beginTransaction();
                 
                 //Set $city to 1 so that the game doesn't generate new workers for the city;
                 $sql = "UPDATE tavern_times SET new_workers=:new_workers, {$this->session['location']}=1 WHERE username=:username";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":new_workers", $param_new_workers, PDO::PARAM_STR);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_new_workers = date("Y-m-d");
@@ -76,7 +75,7 @@
                 
                 $sql2 = "INSERT INTO tavern_workers (username, city, type, level)
                          VALUES(:username, :city, :type, :level);";
-                $stmt2 = $this->conn->prepare($sql2);
+                $stmt2 = $this->db->conn->prepare($sql2);
                 $stmt2->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $stmt2->bindParam(":city", $param_city, PDO::PARAM_STR);
                 $stmt2->bindParam(":type", $param_type, PDO::PARAM_STR);
@@ -94,11 +93,11 @@
                     $stmt2->execute();
                 }
                 
-                $this->conn->commit();
+                $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->conn->rollBack();
-                new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->db->conn->rollBack();
+                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }

@@ -3,9 +3,9 @@
         public $username;
         public $session;
         
-        function __construct ($username, $session) {
+        function __construct ($session) {
             parent::__construct();
-            $this->username = $username;
+            $this->username = $session['username'];
             $this->session = $session;
         }
     }

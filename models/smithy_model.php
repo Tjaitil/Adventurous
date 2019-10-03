@@ -3,9 +3,9 @@
         public $username;
         public $session;
         
-        function __construct ($username, $session) {
+        function __construct ($session) {
             parent::__construct();
-            $this->username = $username;
+            $this->username = $session['username'];
             $this->session = $session;
         }
         public function smith($item, $mineral, $amount) {
@@ -18,7 +18,7 @@
             }
             
             $sql = "SELECT item, amount FROM inventory WHERE (item=:item OR item='gold') AND username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_item = $ore;
@@ -31,7 +31,7 @@
             }
             
             $sql = "SELECT amount_required, level, cost FROM smithy_data WHERE item=:item";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
             $param_item = $mineral . ' ' . $item;
             $stmt->execute();
@@ -58,23 +58,23 @@
             $new_item = $mineral . ' ' . $item;
     
             try {
-                $this->conn->beginTransaction();   
-                update_inventory($this->conn, $this->username, $new_item, $amount);
+                $this->db->conn->beginTransaction();   
+                update_inventory($this->db->conn, $this->username, $new_item, $amount);
                 if($this->session['profiency'] !== 'miner') {
-                    update_inventory($this->conn, $this->username, 'gold', -$cost);    
+                    update_inventory($this->db->conn, $this->username, 'gold', -$cost);    
                 }
-                update_inventory($this->conn, $this->username, $ore , -$minerals_needed, true);
+                update_inventory($this->db->conn, $this->username, $ore , -$minerals_needed, true);
                 
-                $this->conn->commit();
+                $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->conn->rollBack();
-                new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->db->conn->rollBack();
+                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
-            $this->closeConn();
-            get_inventory($this->conn, $this->username);
+            $this->db->closeConn();
+            get_inventory($this->db->conn, $this->username);
         }
     }
 ?>

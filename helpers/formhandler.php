@@ -19,19 +19,14 @@
             }
             if ($error_count === 0) {
                 foreach($this->POST_array as $key => $value) {
-                    $tValue = trim($value);
-                    $this->data[$key] = $value;
+                    $this->data[$key] = trim($value);
                 }
                 return $this->data;
             }
             else if($error_count > 0) {
-                var_dump($this->error);
                 return $this->error;
             }
             
-        }
-        
-        
-        
+        }   
     }
 ?>

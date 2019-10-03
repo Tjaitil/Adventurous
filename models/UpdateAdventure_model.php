@@ -13,14 +13,14 @@
         public $combo_attack = array('warrior' => 0, 'daqloon' => 0);
         public $battle_statistics = array();
         
-        function __construct ($username, $session) {
+        function __construct ($session) {
             parent::__construct();
-            $this->username = $username;
+            $this->username = $session['username'];
             $this->session = $session;
         }
         public function updateAdventure() {
             $sql = "SELECT adventure_id FROM adventure WHERE username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
@@ -34,7 +34,7 @@
             
             $sql = "SELECT difficulty, location, farmer, miner, trader, warrior, adventure_status, adventure_countdown,
                     battle_result FROM adventures WHERE adventure_id=:adventure_id";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_STR);
             $param_adventure_id = $adventure_id;
             $stmt->execute();
@@ -55,7 +55,7 @@
             else {
                 $sql = "SELECT daqloon_damage, warrior_damage, warrior_wounded, daqloon_wounded, warrior_combo, daqloon_combo
                         FROM adventure_battles WHERE adventure_id=:adventure_id";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_INT);
                 $param_adventure_id;
                 $stmt->execute();
@@ -78,14 +78,14 @@
         }
         public function updateRole($role) {
             $sql = "SELECT battle_result FROM adventures WHERE adventure_id=:adventure_id";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_STR);
             $param_adventure_id = $this->adventure_data['adventure_id'];
             $stmt->execute();
             $battle_result = $stmt->fetch(PDO::FETCH_ASSOC);
             
             $sql2 = "SELECT user_xp, warrior_xp_min, warrior_xp_max FROM adventures_data WHERE location=:location AND difficulty=:difficulty";
-            $stmt2 = $this->conn->prepare($sql2);
+            $stmt2 = $this->db->conn->prepare($sql2);
             $stmt2->bindParam(":location", $param_location, PDO::PARAM_STR);
             $stmt2->bindParam(":difficulty", $param_difficulty, PDO::PARAM_STR);
             $param_location = $this->adventure_data['location'];
@@ -117,7 +117,7 @@
                     $sql = "SELECT item, min_amount, max_amount FROM adventure_rewards
                             WHERE role=:role AND difficulty=:difficulty
                             ORDER BY RAND() LIMIT 1";
-                    $stmt = $this->conn->prepare($sql);
+                    $stmt = $this->db->conn->prepare($sql);
                     $stmt->bindParam(":role", $param_role, PDO::PARAM_STR);
                     $stmt->bindParam(":difficulty", $param_difficulty, PDO::PARAM_STR);
                     $param_role = $role;
@@ -128,7 +128,7 @@
                     $sql2 = "SELECT item, min_amount, max_amount FROM adventure_rewards
                             WHERE role=:role AND difficulty <= :difficulty AND item !=:name
                             ORDER BY RAND() LIMIT {$count}";
-                    $stmt2 = $this->conn->prepare($sql2);
+                    $stmt2 = $this->db->conn->prepare($sql2);
                     $stmt2->bindParam(":role", $param_role, PDO::PARAM_STR);
                     $stmt2->bindParam(":difficulty", $param_difficulty, PDO::PARAM_INT);
                     $stmt2->bindParam(":name", $param_name, PDO::PARAM_STR);
@@ -146,7 +146,7 @@
                     $sql = "SELECT item, min_amount, max_amount FROM adventure_rewards
                             WHERE role=:role AND difficulty=:difficulty
                             ORDER BY RAND() LIMIT 1";
-                    $stmt = $this->conn->prepare($sql);
+                    $stmt = $this->db->conn->prepare($sql);
                     $stmt->bindParam(":role", $param_role, PDO::PARAM_STR);
                     $stmt->bindParam(":difficulty", $param_difficulty, PDO::PARAM_STR);
                     $param_role = $role;
@@ -157,7 +157,7 @@
                     $sql = "SELECT item, min_amount, max_amount FROM adventure_rewards
                             WHERE role=:role AND difficulty <= :difficulty AND item != :name
                             ORDER BY RAND() LIMIT {$count}";
-                    $stmt = $this->conn->prepare($sql);
+                    $stmt = $this->db->conn->prepare($sql);
                     $stmt->bindParam(":role", $param_role, PDO::PARAM_STR);
                     $stmt->bindParam(":difficulty", $param_difficulty, PDO::PARAM_INT);
                     $stmt->bindParam(":name", $param_name, PDO::PARAM_STR); 
@@ -172,7 +172,7 @@
                     $sql = "SELECT stamina_xp, technique_xp, precision_xp, strength_xp, warrior_id, username FROM warrior_levels
                             WHERE warrior_id IN (SELECT warrior_id FROM warriors WHERE mission=1 AND username=:username)
                                   AND username=:username";
-                    $stmt = $this->conn->prepare($sql);
+                    $stmt = $this->db->conn->prepare($sql);
                     $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                     $param_username = $this->username;
                     $stmt->execute();
@@ -209,38 +209,38 @@
             }
         
             try {
-                $this->conn->beginTransaction();
+                $this->db->conn->beginTransaction();
                 /*
                 foreach($rewards as $key) {
-                    update_stockpile($this->conn, $this->username, $key['item'], $key['amount']);
+                    update_inventory($this->db->conn, $this->username, $key['item'], $key['amount']);
                 }
                 
                 if($crystal_chance === 1) {
                     $rewards[] = array("item" => $this->adventure_data['location'] . 'crystal', "amount" => 1);
-                    update_stockpile($this->conn, $this->username. $this->adventure_data['location'] . 'crystal', 1, true);
+                    update_inventory($this->db->conn, $this->username. $this->adventure_data['location'] . 'crystal', 1, true);
                 }
                 
                 // Only gain xp when skill level is below 30 or if profiency is skill
                 if($this->session[$role]['level'] < 30 || $this->session['profiency'] == $role) {
-                    update_xp($this->conn, $this->username, $role, $xp_data['user_xp']);
+                    update_xp($this->db->conn, $this->username, $role, $xp_data['user_xp']);
                 }
                 
                 $sql = "UPDATE adventure SET adventure_id=0, adventure_status=0 WHERE username=:username";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_username = $this->username;
                 $stmt->execute();
 
                 if(count($roles) - $none == 0) {
                     $sql = "DELETE FROM adventures WHERE adventure_id=adventure_id";
-                    $stmt = $this->conn->prepare($sql);
+                    $stmt = $this->db->conn->prepare($sql);
                     $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_INT);
                     $param_adventure_id = $this->adventure_data['adventure_id'];
                     $stmt->execute();
                 }
                 else {
                     $sql = "UPDATE adventures SET {$role}='none' WHERE adventure_id=:adventure_id AND {$role}=:username";
-                    $stmt = $this->conn->prepare($sql);
+                    $stmt = $this->db->conn->prepare($sql);
                     $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_STR);
                     $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                     $param_adventure_id = $this->adventure_data['adventure_id'];
@@ -251,22 +251,22 @@
                 if($role === 'warrior') {
                     $sql = "UPDATE warrior_levels SET stamina_xp=?, technique_xp=?, precision_xp=?, strength_xp=?
                             WHERE warrior_id=? AND username=?";
-                    $stmt = $this->conn->prepare($sql);
+                    $stmt = $this->db->conn->prepare($sql);
                     foreach($warrior_levels as $key) {
                         $stmt->execute(array_values($key));
                     }
                     $sql2 = "UPDATE warriors SET mission=0 WHERE warrior_id= ? AND username = ?";
-                    $stmt2 = $this->conn->prepare($sql2);
+                    $stmt2 = $this->db->conn->prepare($sql2);
                     foreach($warrior_levels as $key) {
                         $stmt2->execute($key['warrior_id'], $key['username']);
                     }
                 }*/
         
-                $this->conn->commit();
+                $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->conn->rollBack();
-                new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->db->conn->rollBack();
+                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
@@ -277,12 +277,12 @@
                                                     'statistics' => $this->battle_statistics,
                                                     'warrior_xp' => $warrior_xp), true);
             
-            $this->closeConn();
+            $this->db->closeConn();
         }
         public function getResult() {
             //Get levels of the soldiers, armour and weapons
             $sql = "SELECT warrior_id FROM warriors WHERE mission=1 AND username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->adventure_data['warrior'];
             $stmt->execute();
@@ -295,18 +295,18 @@
             $in  = str_repeat('?,', count($query_array) - 2) . '?';
             
             $sql = "SELECT warrior_id, type, health FROM warriors WHERE warrior_id IN ($in) AND username=?";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->execute($query_array);
             $warrior_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
             $sql = "SELECT stamina_level, technique_level, precision_level, strength_level FROM warrior_levels
                     WHERE warrior_id IN ($in) AND username=?";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->execute($query_array);
             $warrior_levels = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
             $sql = "SELECT attack, defence FROM warrior_armory WHERE warrior_id IN ($in) AND username=?";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->execute($query_array);
             $stats = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
@@ -317,7 +317,7 @@
             
             //Get the strength of daqloon
             $sql = "SELECT attack, defence, amount FROM daqloon_stats WHERE difficulty=:difficulty";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":difficulty", $param_difficulty, PDO::PARAM_STR);
             $param_difficulty = $this->adventure_data['difficulty'];
             $stmt->execute();
@@ -441,10 +441,10 @@
             }
             $this->getStatistics();
             try {
-                $this->conn->beginTransaction();
+                $this->db->conn->beginTransaction();
                 
                 $sql = "UPDATE adventures SET battle_result=:battle_result WHERE adventure_id=:adventure_id";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":battle_result", $param_battle_result, PDO::PARAM_STR);
                 $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_STR);
                 $param_battle_result = $battle_result;
@@ -452,7 +452,7 @@
                 $stmt->execute();
                 
                 $sql2 = "UPDATE warriors SET health = ? WHERE warrior_id = ? AND username = ?";
-                $stmt2 = $this->conn->prepare($sql2);
+                $stmt2 = $this->db->conn->prepare($sql2);
                 foreach($update_data as $key) {
                     $stmt2->execute($key);
                 }
@@ -461,7 +461,7 @@
                         (adventure_id, daqloon_damage, warrior_damage, warrior_wounded, daqloon_wounded, warrior_combo, daqloon_combo)
                         VALUES(:adventure_id, :daqloon_damage, :warrior_damage, :daqloon_wounded, :warrior_wounded, :daqloon_combo,
                         :warrior_combo)";
-                $stmt3 = $this->conn->prepare($sql3);
+                $stmt3 = $this->db->conn->prepare($sql3);
                 $stmt3->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_INT);
                 $stmt3->bindParam(":daqloon_damage", $param_daqloon_damage, PDO::PARAM_INT);
                 $stmt3->bindParam(":warrior_damage", $param_warrior_damage, PDO::PARAM_INT);
@@ -478,11 +478,11 @@
                 $param_warrior_combo = $this->battle_statistics['warrior_combo'];
                 $stmt3->execute();
                 
-                $this->conn->commit();
+                $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->conn->rollBack();
-                new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->db->conn->rollBack();
+                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
@@ -526,7 +526,7 @@
         } 
         protected function calculateCrystal() {
             $sql = "SELECT min_chance, max_chance FROM adventure_crystals WHERE difficulty=:difficulty AND location=:location";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":difficulty", $param_difficulty, PDO::PARAM_STR);
             $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
             $param_difficulty = $this->adventure_data['difficulty'];

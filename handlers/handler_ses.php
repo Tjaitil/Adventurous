@@ -1,6 +1,6 @@
 <?php
     require('../libs/handler.php');
-    $handler = new handler();
+    $handler = new handler(false);
     $handler->sessionCheck();
     $variable = $_GET['variable'];
     

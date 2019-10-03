@@ -1,10 +1,10 @@
 <?php
     require('../libs/handler.php');
-    $handler = new handler();
+    $handler = new handler(true);
     $handler->sessionCheck(true);
     $modelname = $_POST['model'];
     $methodname = $_POST['method'];
-    $model = $handler->includeModel(true, $_POST['model'], $_SESSION['gamedata'], true);
+    $model = $handler->includeModel($_POST['model'], $_SESSION['gamedata']);
     $method = $handler->checkMethod($model, $_POST['method']);
     if($method === true) {
         if(count($_POST) < 3) {
@@ -174,7 +174,6 @@
         }
     }
     else {
-        echo "model doesn't exists!";
         return false;
     }
 ?>

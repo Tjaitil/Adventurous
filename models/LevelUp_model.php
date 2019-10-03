@@ -4,11 +4,10 @@
         public $session;
         public $profiency;
         
-        function __construct ($username, $session) {
+        function __construct ($session) {
             parent::__construct();
-            $this->username = $username;
+            $this->username = $session['username'];
             $this->session = $session;
-            $this->profiency = $_SESSION['gamedata']['profiency'];
         }
         
         public function updateData() {
@@ -20,7 +19,7 @@
             }
             
             $sql = "SELECT level, next_level FROM level_data WHERE next_level > :xp ORDER BY next_level ASC LIMIT 1";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":xp", $param_xp);
             foreach($this->session['level_up'] as $key => $value) {
                 $param_xp = $this->session[$value]['xp'];
@@ -28,10 +27,10 @@
                 $new_level[$value] = $stmt->fetch(PDO::FETCH_OBJ)->level;
             }
             try {
-                $this->conn->beginTransaction();
+                $this->db->conn->beginTransaction();
                 foreach($this->session['level_up'] as $key) {
                     $sql = "UPDATE user_levels SET $key" . "_level=:level WHERE username=:username";         
-                    $stmt = $this->conn->prepare($sql);
+                    $stmt = $this->db->conn->prepare($sql);
                     $stmt->bindParam(":level", $param_level, PDO::PARAM_STR);
                     $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                     $param_level = $new_level[$key];
@@ -39,11 +38,11 @@
                     $stmt->execute();
                     
                 }
-                $this->conn->commit();
+                $this->db->conn->commit();
             }
             catch (Exception $e) {
-                $this->conn->rollBack();
-                new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->db->conn->rollBack();
+                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
@@ -52,7 +51,7 @@
             $format = "You have leveled up %s to %d!";
             foreach($this->session['level_up'] as $key) {
                 $sql = "SELECT next_level FROM level_data WHERE level=:level"; 
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":level", $param_level, PDO::PARAM_STR);
                 $param_level = $new_level[$key];
                 $stmt->execute();
@@ -71,7 +70,7 @@
         public function levelupData() {
             //Get data for the level that you have unlocked
             $sql = "SELECT images, unlocked FROM levelup_data WHERE level=:level AND profiency=:profiency";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":level", $param_level, PDO::PARAM_STR);
             $stmt->bindParam(":profiency", $param_profiency, PDO::PARAM_STR);
             $param_level = $this->newLevel;
@@ -80,7 +79,7 @@
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $images = explode("|", $row['images']);
             $unlocked = explode("|", $row['unlocked']);
-            $this->closeConn();
+            $this->db->closeConn();
             js_echo($images);
             echo "unlocked|";
             js_echo($unlocked);

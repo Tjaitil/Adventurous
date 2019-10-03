@@ -8,9 +8,9 @@
         public $cargo;
         public $favor;
 
-        function __construct ($username, $session) {
+        function __construct ($session) {
             parent::__construct();
-            $this->username = $username;
+            $this->username = $session['username'];
             $this->session = $session;
             $this->assignment_types = $assignment_types = restore_file('trader_assignment_types', true);
         }
@@ -19,7 +19,7 @@
             $sql = "SELECT t.assignment_id, t.cart, t.cart_amount, t.delivered, ta.assignment_amount, ta.assignment_type, ta.base
                     FROM trader AS t INNER JOIN trader_assignments AS ta ON ta.assignment_id = t.assignment_id
                     WHERE t.username=:username"; 
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
@@ -35,7 +35,7 @@
                 return false;
             }
             $sql = "SELECT capasity FROM travelbureau_carts WHERE wheel=:wheel";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":wheel", $param_wheel, PDO::PARAM_STR);
             $param_wheel = $row['cart'];
             $stmt->execute();
@@ -56,23 +56,23 @@
             }
         
             try {
-                $this->conn->beginTransaction();
+                $this->db->conn->beginTransaction();
                 $sql = "UPDATE trader SET cart_amount=:cart_amount WHERE username=:username";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":cart_amount", $param_cart_amount, PDO::PARAM_STR);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_cart_amount = $row['cart_amount'] + $cart_space;
                 $param_username = $this->username;
                 $stmt->execute();
-                $this->conn->commit();
+                $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->conn->rollBack();
-                new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->db->conn->rollBack();
+                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
-            $this->closeConn();
+            $this->db->closeConn();
             $this->gameMessage("You have picked up " . $cart_space . " items", true);
             echo "|{$param_cart_amount}/{$row3['capasity']}";
         }   
@@ -81,7 +81,7 @@
             $sql = "SELECT t.assignment_id, t.cart_amount, t.delivered, ta.assignment_amount, ta.cargo, ta.assignment_type, ta.destination
                     FROM trader AS t INNER JOIN trader_assignments AS ta ON ta.assignment_id = t.assignment_id
                     WHERE t.username=:username"; 
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
@@ -109,9 +109,9 @@
             $delivered = $row['delivered'] + $row['cart_amount']; 
             
             try {
-                $this->conn->beginTransaction();
+                $this->db->conn->beginTransaction();
                 $sql =  "UPDATE trader SET delivered=:delivered, cart_amount=0 WHERE username=:username";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":delivered", $param_delivered, PDO::PARAM_STR);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_delivered = $delivered;
@@ -120,14 +120,14 @@
                 
                 // Only gain xp when miner level is below 30 or if profiency is miner
                 if($this->session['trader']['level'] < 30 || $this->session['profiency'] == 'trader') {
-                    update_xp($this->conn, $this->username, 'trader', $xp + $this->session['trader']['xp']);
+                    update_xp($this->db->conn, $this->username, 'trader', $xp + $this->session['trader']['xp']);
                 } 
                 
-                $this->conn->commit();
+                $this->db->conn->commit();
             }
             catch (Exception $e) {
-                $this->conn->rollBack();
-                new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->db->conn->rollBack();
+                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
@@ -142,13 +142,13 @@
                 $this->updateAssignment();
             }
             else {
-                $this->closeConn();
+                $this->db->closeConn();
             }
         }
         private function updateAssignment() {
             if($this->favor != true) {
                 $sql = "SELECT cart_amount, trading_countdown FROM trader WHERE username=:username";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_username = $this->username;
                 $stmt->execute();
@@ -187,14 +187,14 @@
             if($this->favor === true) {
                 $locations = array("hirtam", "pvitul", "khanz", "ter", "fansalplains");
                 $sql = "SELECT hirtam, pvitul, khanz, ter, fansalplains FROM diplomacy WHERE username=:username";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_username = $this->username;
                 $stmt->execute();
                 $diplomacy = $stmt->fetch(PDO::FETCH_ASSOC);
                 
                 $sql = "SELECT hirtam, pvitul, khanz, ter, fansalplains FROM city_relations WHERE city=:city";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":city", $param_city, PDO::PARAM_STR);
                 $param_city = $this->session['favor']['base'];
                 $stmt->execute();
@@ -208,11 +208,11 @@
             $reward_amount =  round($this->assignment_amount / 5);
             
             try {
-                $this->conn->beginTransaction();
+                $this->db->conn->beginTransaction();
                 
                 $sql = "UPDATE trader SET assignment_id=0, delivered=0
                         WHERE username=:username";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_trader_xp = $xp + $this->session['trader']['xp'];
                 $param_username = $this->username;
@@ -220,16 +220,16 @@
                 
                 // Only gain xp when miner level is below 30 or if profiency is miner
                 if($this->session['trader']['level'] < 30 || $this->session['profiency'] == 'trader') {
-                    update_xp($this->conn, $this->username, 'trader', $xp + $this->session['trader']['xp']);
+                    update_xp($this->db->conn, $this->username, 'trader', $xp + $this->session['trader']['xp']);
                 }
                 
                 if($this->favor != true) {
-                    update_inventory($this->conn, $this->username, $this->cargo , $reward_amount, true);
+                    update_inventory($this->db->conn, $this->username, $this->cargo , $reward_amount, true);
                 }
                 else {
                     $sql2 = "UPDATE diplomacy SET hirtam=:hirtam, pvitul=:pvitul, khanz=:khanz, ter=:ter, fansalplains=:fansalplains
                         WHERE username=:username";
-                    $stmt2 = $this->conn->prepare($sql2);
+                    $stmt2 = $this->db->conn->prepare($sql2);
                     $stmt2->bindParam(":hirtam", $param_Hirtam, PDO::PARAM_STR);
                     $stmt2->bindParam(":pvitul", $param_Pvitul, PDO::PARAM_STR);
                     $stmt2->bindParam(":khanz", $param_Khanz, PDO::PARAM_STR);
@@ -244,16 +244,16 @@
                     $param_username = $this->username;
                     $stmt2->execute();
                 }
-                $this->conn->commit();
+                $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->conn->rollBack();
-                new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->db->conn->rollBack();
+                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
             
-            $this->closeConn();
+            $this->db->closeConn();
             echo "|finished!|";
             if($this->favor != true) {
                 if(isset($xp_bonus)) {

@@ -8,7 +8,8 @@
         }
         
         public function index() {
-            var_dump($_SESSION['gamedata']['location']);
+
+            $_SESSION['gamedata']['location'] = 'golbak';
              $this->city = $_SESSION['gamedata']['location'];
             
              $this->cityfile = constant("ROUTE_VIEW") . $this->city . '.php';

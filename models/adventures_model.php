@@ -3,16 +3,15 @@
         public $username;
         public $session;
         
-        function __construct ($username, $session) {
-            new ajaxexception(1, 2, 3, 4);
+        function __construct ($session) {
             parent::__construct();
-            $this->username = $username;
+            $this->username = $session['username'];
             $this->session = $session;
         }
         
         public function getCountdown() {
             $sql = "SELECT adventure_countdown, adventure_status FROM adventures WHERE :username IN (farmer, miner, trader, warrior)";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
@@ -25,7 +24,7 @@
         
         public function checkAdventure() {
             $sql = "SELECT adventure_id FROM adventure WHERE username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
@@ -46,14 +45,14 @@
             
             $sql2 = "SELECT adventure_id, difficulty, location, farmer, miner, trader, warrior FROM adventures
                      WHERE adventure_status=0";
-            $stmt2 = $this->conn->prepare($sql2);
+            $stmt2 = $this->db->conn->prepare($sql2);
             $param_profiency = $_SESSION['gamedata']['profiency'];
             $stmt2->execute();
             $data['pending_adventures'] = $stmt2->fetchAll(PDO::FETCH_ASSOC);
             
             $sql3 = "SELECT request_id, sender, receiver, adventure_id, role, method FROM adventure_requests
                      WHERE sender=:username OR receiver=:username";
-            $stmt3 = $this->conn->prepare($sql3);
+            $stmt3 = $this->db->conn->prepare($sql3);
             $stmt3->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt3->execute();
@@ -65,7 +64,7 @@
         public function getAdventure($adventure_id) {
             $sql = "SELECT difficulty, location, farmer, miner, trader, warrior FROM adventures
                      WHERE adventure_id=:adventure_id";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_STR);
             $param_adventure_id = $adventure_id;
             $stmt->execute();
@@ -76,7 +75,7 @@
             $data = array();
             
             $sql = "SELECT adventure_id FROM adventure WHERE username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
@@ -85,7 +84,7 @@
             if($data['current'] != 0) {
                 $sql = "SELECT adventure_id, difficulty, location, adventure_leader, farmer, miner, trader, warrior, adventure_status
                         FROM adventures WHERE adventure_id=:adventure_id";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":adventure_id", $param_id, PDO::PARAM_STR);
                 $param_id = $data['current'];
                 $stmt->execute();
@@ -94,7 +93,7 @@
                 $sql = "SELECT role, required, amount, provided, status FROM adventure_requirements WHERE adventure_id=:adventure_id AND
                 role IN ('farmer', 'miner', 'trader', 'warrior')
                         ORDER BY role ASC";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_STR);
                 $param_adventure_id = $data['current'];
                 $stmt->execute();
@@ -108,7 +107,7 @@
                     if(count($trader_requirement) > 0) {
                         $location = $data['info']['location'];
                         $sql = "SELECT {$location} FROM diplomacy WHERE username=:username";
-                        $stmt = $this->conn->prepare($sql);
+                        $stmt = $this->db->conn->prepare($sql);
                         $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                         $param_username = $data['info']['trader'];
                         $stmt->execute();
@@ -123,7 +122,7 @@
                         if($trader_requirement[0]['status'] != 1
                            && intval($trader_requirement[0]['amount']) <= intval($data['trader_diplomacy'])) {
                             $sql = "UPDATE adventure_requirements SET status=1 WHERE username=:username";
-                            $stmt = $this->conn->prepare($sql);
+                            $stmt = $this->db->conn->prepare($sql);
                             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                             $param_username = $data['info']['trader'];
                             $stmt->execute();
@@ -131,7 +130,7 @@
                         else if($trader_requirement[0]['status'] == 1
                                  && intval($trader_requirement[0]['amount']) > intval($data['trader_diplomacy'])) {
                             $sql = "UPDATE adventure_requirements SET status=0 WHERE username=:username";
-                            $stmt = $this->conn->prepare($sql);
+                            $stmt = $this->db->conn->prepare($sql);
                             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                             $param_username = $this->username;
                             $stmt->execute();
@@ -143,7 +142,7 @@
                             FROM warriors as w
                             INNER JOIN warrior_levels as wl ON wl.warrior_id = w.warrior_id AND wl.username = w.username
                             WHERE w.mission=0 AND w.training_type='none' AND w.username=:username";
-                    $stmt = $this->conn->prepare($sql);
+                    $stmt = $this->db->conn->prepare($sql);
                     $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                     $param_username = $this->username;
                     $stmt->execute();
@@ -151,7 +150,7 @@
                 }
                 /*if(in_array(0, $data['requirements']) == false && $data['info']['adventure_status'] == 0 ) {
                     $sql = "UPDATE adventures SET adventure_status=1 WHERE adventure_id=:adventure_id";
-                    $stmt = $this->conn->prepare($sql);
+                    $stmt = $this->db->conn->prepare($sql);
                     $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_STR);
                     $param_adventure_id = $data['current'];
                     $stmt->execute();
@@ -163,17 +162,17 @@
         
         public function checkUser($username) {
             $sql = "SELECT profiency FROM user_data WHERE username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $username;
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $this->closeConn();
+            $this->db->closeConn();
             echo $row['profiency'];
         }
         /*public function leaveAdventure() {
             $sql = "SELECT id, adventure_leader FROM adventures WHERE farmer OR miner OR trader OR warrior =:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
@@ -195,14 +194,14 @@
             }
             
             try {
-                $this->conn->beginTransaction();
+                $this->db->conn->beginTransaction();
                 
                 if()
                 
-                $this->conn->commit();
+                $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->conn->rollBack();
+                $this->db->conn->rollBack();
                 
             }
         }*/

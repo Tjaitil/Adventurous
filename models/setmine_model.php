@@ -3,16 +3,16 @@
         public $username;
         public $session;
         
-        function __construct ($username, $session) {
+        function __construct ($session) {
             parent::__construct();
-            $this->username = $username;
+            $this->username = $session['username'];
             $this->session = $session;
         }
         public function setMine($mineral, $workforce) {
             $sql = "SELECT m.mining_type, m.permits, mw.avail_workforce, mw.efficiency_level
                     FROM miner AS m INNER JOIN miner_workforce AS mw ON mw.username = m.username
                     WHERE location=:location AND m.username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_location = $this->session['location'];
@@ -28,7 +28,7 @@
                 return false;
             }
             $sql = "SELECT experience, time, permit_cost FROM minerals_data WHERE mineral_type=:mineral_type AND location=:location";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":mineral_type", $param_mineral_type, PDO::PARAM_STR);
             $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
             $param_mineral_type = $mineral;
@@ -44,17 +44,17 @@
                 return false;
             }
     
-            $addTime = $row2['time'] - (10 * $row['effficiency_level']);
+            $addTime = $row2['time'] - (10 * $row['efficiency_level']);
             $date = date("Y-m-d H:i:s");
             $newDate = new DateTime($date);
             $newDate->modify("+{$addTime} seconds");
             
             $experience = ($row2['experience'] * 0.20) + $this->session['miner']['xp'];
             try {
-                $this->conn->beginTransaction();
+                $this->db->conn->beginTransaction();
                 $sql = "UPDATE miner SET mining_type=:mining_type, mining_countdown=:mining_countdown,
                         permits=:permits, fetch_minerals=1 WHERE location=:location AND username=:username";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":mining_type", $param_mining_type, PDO::PARAM_STR);
                 $stmt->bindParam(":mining_countdown", $param_mining_countdown, PDO::PARAM_STR);
                 $stmt->bindParam(":permits", $param_permits, PDO::PARAM_STR);
@@ -69,7 +69,7 @@
                 
                 $sql2 = "UPDATE miner_workforce SET avail_workforce=:avail_workforce,
                 {$this->session['location']}_workforce=:miner_workforce WHERE username=:username";
-                $stmt2 = $this->conn->prepare($sql2);
+                $stmt2 = $this->db->conn->prepare($sql2);
                 $stmt2->bindParam(":avail_workforce", $param_avail_workforce, PDO::PARAM_STR);
                 $stmt2->bindParam(":miner_workforce", $param_miner_workforce, PDO::PARAM_STR);
                 $stmt2->bindParam(":username", $param_username, PDO::PARAM_STR);
@@ -78,17 +78,17 @@
                 $param_username = $this->username;
                 $stmt2->execute();
                 
-                update_xp($this->conn, $this->username, 'miner', $experience);
+                update_xp($this->db->conn, $this->username, 'miner', $experience);
                 
-                $this->conn->commit();
+                $this->db->conn->commit();
                 }
             catch (Exception $e) {
-                $this->conn->rollBack();
-                new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
-                $this->gameMessage("ERROR: Something unexpected happened, please try again");
+                $this->db->conn->rollBack();
+                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
-            $this->closeConn();
+            $this->db->closeConn();
             $_SESSION['gamedata']['miner']['xp'] = $experience;
             jsecho(array($param_permits, $param_avail_workforce));
         }

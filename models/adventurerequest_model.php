@@ -5,10 +5,12 @@
         public $adventure_data;
         public $joiner;
         
-        function __construct ($username, $session) {
+        
+        function __construct ($session) {
             parent::__construct();
-            $this->username = $username;
+            $this->username = $session['username'];
             $this->session = $session;
+            // Assign the database class to db property;
         }
         public function request($adventure_id, $route, $invitee = false) {
             //Send request or invite to join adventure
@@ -19,7 +21,7 @@
             
             if($route == 'request') {
                 $sql = "SELECT adventure_leader FROM adventures WHERE adventure_id=:adventure_id";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_INT);
                 $param_adventure_id = $adventure_id;
                 $stmt->execute();
@@ -30,7 +32,7 @@
             }
             else if($route == 'invite') {
                 $sql = "SELECT adventure_id FROM adventure WHERE username=:username";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_username = strtolower($invitee);
                 $stmt->execute();
@@ -48,7 +50,7 @@
             $sql = "SELECT sender, receiver, adventure_id FROM adventure_requests
                     WHERE adventure_id=:adventure_id AND (sender =:username1 OR receiver =:username1)
                     AND (sender =:username2 OR receiver =:username2)";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_INT);
             $stmt->bindParam(":username1", $param_username1, PDO::PARAM_STR);
             $stmt->bindParam(":username2", $param_username2, PDO::PARAM_STR);
@@ -62,14 +64,14 @@
             }
             
             $sql = "SELECT profiency FROM user_data WHERE username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             ($route  == 'request')? $param_username = $this->username : $param_username = $invitee;
             $stmt->execute();
             $role = $stmt->fetch(PDO::FETCH_OBJ)->profiency;
             
             $sql = "SELECT farmer, miner, trader, warrior FROM adventures WHERE adventure_id=:adventure_id";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_STR);
             $param_adventure_id = $adventure_id;
             $stmt->execute();
@@ -94,10 +96,10 @@
             }
             
             try {
-                $this->conn->beginTransaction();
+                $this->db->conn->beginTransaction();
                 
                 $sql = "INSERT INTO messages (title, sender, receiver, message) VALUES (:title, :sender, :receiver, :message)";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":title", $param_title, PDO::PARAM_STR);
                 $stmt->bindParam(":sender", $param_sender, PDO::PARAM_STR);
                 $stmt->bindParam(":receiver", $param_receiver, PDO::PARAM_STR);
@@ -110,7 +112,7 @@
                 
                 $sql2 = "INSERT INTO adventure_requests (sender, receiver, adventure_id, role, method)
                          VALUES(:sender, :receiver, :adventure_id, :role, :method)";
-                $stmt2 = $this->conn->prepare($sql2);
+                $stmt2 = $this->db->conn->prepare($sql2);
                 $stmt2->bindParam(":sender", $param_sender, PDO::PARAM_STR);
                 $stmt2->bindParam(":receiver", $param_receiver, PDO::PARAM_STR);
                 $stmt2->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_STR);
@@ -123,16 +125,16 @@
                 $param_method = $route;
                 $stmt2->execute();
                 
-                $this->conn->commit();
+                $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->conn->rollBack();
-                new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->db->conn->rollBack();
+                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
             unset($stmt, $stmt2);
-            unset($this->conn);
+            unset($this->db->conn);
             if($route == 'invite') {
                 $this->gameMessage("Invite sent to ". ucfirst($invitee), true);
             }
@@ -142,7 +144,7 @@
         }
         public function joinAdventure($request_id) {
             $sql = "SELECT sender, receiver, adventure_id, method, role FROM adventure_requests WHERE request_id=:request_id";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":request_id", $param_request_id, PDO::PARAM_STR);
             $param_request_id = $request_id;
             $stmt->execute();
@@ -161,7 +163,7 @@
             }
 
             $sql = "SELECT adventure_id FROM adventure WHERE username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->joiner;
             $stmt->execute();
@@ -178,7 +180,7 @@
         
             $sql = "SELECT adventure_id, difficulty, {$row['role']} FROM adventures
                     WHERE adventure_id=:adventure_id";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_INT);
             $param_adventure_id = $row['adventure_id'];
             $stmt->execute();
@@ -193,7 +195,7 @@
             }
             
             $sql = "SELECT profiency FROM user_data WHERE username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             //$param_username already defined;
             $stmt->execute();
@@ -209,9 +211,9 @@
                 return false;
             }
             try {
-                $this->conn->beginTransaction();
+                $this->db->conn->beginTransaction();
                 $sql = "UPDATE adventures SET {$row['role']}=:username WHERE adventure_id=:adventure_id";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_STR);
                 $param_adventure_id = $row['adventure_id'];
@@ -219,20 +221,20 @@
                 $stmt->execute();
                 
                 $sql3 = "DELETE FROM adventure_requests WHERE request_id=:request_id";
-                $stmt3 = $this->conn->prepare($sql3);
+                $stmt3 = $this->db->conn->prepare($sql3);
                 $stmt3->bindParam(":request_id", $param_request_id, PDO::PARAM_STR);
                 $param_request_id = $request_id;
                 $stmt3->execute();
                 
                 $sql4 = "UPDATE adventure SET adventure_id=:adventure_id WHERE username=:username";
-                $stmt4 = $this->conn->prepare($sql4);
+                $stmt4 = $this->db->conn->prepare($sql4);
                 $stmt4->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_STR);
                 $stmt4->bindParam(":username", $param_username, PDO::PARAM_STR);
                 //$param_username and $param_adventure_id is already defined
                 $stmt4->execute();
                 
                 $sql5 = "INSERT INTO messages (title, sender, receiver, message) VALUES(:title, :sender, :receiver, :message)";
-                $stmt5 = $this->conn->prepare($sql5);
+                $stmt5 = $this->db->conn->prepare($sql5);
                 $stmt5->bindParam(":title", $param_title, PDO::PARAM_STR);
                 $stmt5->bindParam(":sender", $param_sender, PDO::PARAM_STR);
                 $stmt5->bindParam(":receiver", $param_receiver, PDO::PARAM_STR);
@@ -244,21 +246,21 @@
                 $stmt5->execute();
                 
                 $this->advRequirements();
-                $this->conn->commit();
+                $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->conn->rollBack();
-                new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->db->conn->rollBack();
+                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
-            $this->closeConn();
+            $this->db->closeConn();
             
             $this->gameMessage(ucfirst($this->joiner) ." has joined the adventure!", true);
         }
         private function advRequirements() {
             $sql = "SELECT profiency FROM user_data WHERE username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->joiner;
             $stmt->execute();
@@ -301,7 +303,7 @@
             
                 $sql = "SELECT name FROM adventure_req_items WHERE role=:role AND difficulty=:difficulty
                     ORDER BY rand() LIMIT 1;";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":role", $param_role, PDO::PARAM_STR);
                 $stmt->bindParam(":difficulty", $param_difficulty, PDO::PARAM_INT);
                 $param_role = $role;
@@ -315,7 +317,7 @@
                     (SELECT name as requirement, difficulty, amount_min, amount_max FROM adventure_req_items
                     WHERE role=:role AND difficulty <= :difficulty AND name != :name
                     ORDER BY RAND() LIMIT {$count})";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":role", $param_role, PDO::PARAM_STR);
                 $stmt->bindParam(":difficulty", $param_difficulty, PDO::PARAM_INT);
                 $stmt->bindParam(":name", $param_name, PDO::PARAM_STR);
@@ -332,7 +334,7 @@
             
             $sql = "INSERT INTO adventure_requirements (adventure_id, username, role, required, amount)
             VALUES (:adventure_id, :username, :role, :required, :amount)";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_INT);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $stmt->bindParam(":role", $param_role, PDO::PARAM_STR);

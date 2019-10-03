@@ -3,24 +3,23 @@
         public $username;
         public $session;
         
-        
-        function __construct ($username, $session) {
+        function __construct ($session) {
             parent::__construct();
-            $this->username = $username;
+            $this->username = $session['username'];
             $this->session = $session;
         }
         
         // Function to echo date for ajax request
         public function getCountdown() {
             $sql = "SELECT training_countdown, fetch_report FROM warriors WHERE location=:location AND username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_location = $this->session['location'];
             $param_username = $this->username;
             $stmt->execute();
             $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $this->closeConn();
+            $this->db->closeConn();
             $data = array();
             foreach($row as $key) {
                 $datetime = new DateTime($key['training_countdown']);
@@ -35,7 +34,7 @@
                     b.precision_level, b.precision_xp, b.strength_level, b.strength_xp
                     FROM warriors AS a INNER JOIN warrior_levels AS b ON b.username = a.username AND b.warrior_id = a.warrior_id
                     WHERE a.location=:location AND a.username=:username GROUP BY a.warrior_id;";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
             $param_username = $this->username;
@@ -68,7 +67,7 @@
             // $in makes a prepared statement string by replacing the value with a ? to get multiple values;
             $in  = str_repeat('?,', count($combined) - 1) . '?';
             $sql = "SELECT skill_level, next_level FROM warriors_level_data WHERE skill_level IN ($in)";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->execute($combined);
             $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
@@ -101,15 +100,14 @@
     
             if(count($level_up) > 0) {
                 try {
-                    $this->conn->beginTransaction();
+                    $this->db->conn->beginTransaction();
                     
-                    require(constant("ROUTE_HELPER") . 'warrior_update.php');
                     for($i = 0; $i < count($statements); $i++ ) {
-                        warrior_update($statements[$i], $this->conn, $this->username);
+                        $this->warriorUpdate($statements[$i]);
                     }
                     
                     $sql2 = "UPDATE warrior SET warrior_xp=:warrior_xp WHERE username=:username";
-                    $stmt2 = $this->conn->prepare($sql2);
+                    $stmt2 = $this->db->conn->prepare($sql2);
                     $stmt2->bindParam(":warrior_xp", $param_warrior_xp, PDO::PARAM_STR);
                     $stmt2->bindParam(":username", $param_username, PDO::PARAM_STR);
                     $param_warrior_xp = $_SESSION['gamedata']['warrior']['warrior_xp'] + 20;
@@ -117,39 +115,45 @@
                     $stmt2->execute();
                     
                     $sql3 = "UPDATE user_levels SET warrior_xp=:warrior_xp WHERE username=:username";
-                    $stmt3 = $this->conn->prepare($sql3);
+                    $stmt3 = $this->db->conn->prepare($sql3);
                     $stmt3->bindParam(":warrior_xp", $param_warrior_xp, PDO::PARAM_STR);
                     $stmt3->bindParam(":username", $param_username, PDO::PARAM_STR);
                     //$param_warrior_xp and $param_username already defined;
                     $stmt3->execute();
                     
-                    $this->conn->commit();
+                    $this->db->conn->commit();
                 }
                 catch(Exception $e) {
-                    $this->conn->rollBack();
-                    new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
+                    $this->db->conn->rollBack();
+                    $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
                     $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                     return false;
                 }
                 $_SESSION['gamedata']['warrior']['warrior_xp'] = $param_warrior_xp;
                 unset($stmt, $stmt2, $stmt3);
-                $this->closeConn();
+                $this->db->closeConn();
                 return $level_up;
             }
             else {
                 return $level_up;
             }
         }
+        private function warriorUpdate($sql) {
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_username = $this->username;
+            $stmt->execute();
+        }
         public function transfer($warriors) {
-            //Ajax function
-            //Transfer 
+            // Ajax function
+            // Transfer 
             /*$query_array = $warriors;
             $query_array[] = $this->username;*/
             $query_array = explode(",", $warriors);
             $query_array[] = $this->username;
             $in  = str_repeat('?,', count($query_array) - 2) . '?';
             $sql = "SELECT location FROM warriors WHERE warrior_id IN ($in) AND username= ?";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->execute($query_array);
             if($stmt->rowCount() < count($query_array) - 1) {
                 $this->gameMessage("ERROR: Some of the selected warriors does not exists!", true);
@@ -178,17 +182,17 @@
             }
             array_unshift($query_array, $city);
             try {
-                $this->conn->beginTransaction();
+                $this->db->conn->beginTransaction();
                 
                 $sql = "UPDATE warriors SET location= ? WHERE warrior_id IN ($in) AND username = ?";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->execute($query_array);
                 
-                $this->conn->commit();
+                $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->conn->rollBack();
-                new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->db->conn->rollBack();
+                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
@@ -201,7 +205,7 @@
             $query_array[] = $this->session['location'];
             $sql = "SELECT warrior_id, health FROM warriors
             WHERE fetch_report=0 AND mission=0 AND warrior_id IN ($in) AND username=? AND location=?";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->execute($query_array);
             if(!$stmt->rowCount() > 0) {
                 $this->gameMessage("ERROR: One or more of your warriors does not exists!", true);
@@ -249,10 +253,10 @@
                 $rest_start = date("Y-m-d H:i:s"); 
             }
             try {
-                $this->conn->beginTransaction();
+                $this->db->conn->beginTransaction();
                 if($type == 'item') {
                     $sql = "UPDATE warriors SET health=:health WHERE warrior_id=:warrior_id AND username=:username";
-                    $stmt = $this->conn->prepare($sql);
+                    $stmt = $this->db->conn->prepare($sql);
                     $stmt->bindParam(":health", $param_health, PDO::PARAM_STR);
                     $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_INT);
                     $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
@@ -261,19 +265,19 @@
                     $param_username = $this->username;
                     $stmt->execute();
                     
-                    update_inventory($this->conn, $this->username, $item, - $amount);
+                    update_inventory($this->db->conn, $this->username, $item, - $amount);
                 }
                 else {
                     array_unshift($query_array, $rest_start);
                     $sql = "UPDATE warriors SET rest=1, rest_start=? WHERE warrior_id IN ($in) AND username=?";
-                    $stmt = $this->conn->prepare($sql);
+                    $stmt = $this->db->conn->prepare($sql);
                     $stmt->execute($query_array);
                 }
-                $this->conn->commit();
+                $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->conn->rollBack();
-                new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->db->conn->rollBack();
+                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
@@ -291,7 +295,7 @@
             $query_array[] = $this->username;
             $query_array[] = $this->session['location'];
             $sql = "SELECT warrior_id, health, rest_start FROM warriors WHERE rest=1 AND warrior_id IN ($in) AND username=? AND location=?";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->execute($query_array);
             if(!$stmt->rowCount() > 0) {
                 $this->gameMessage("ERROR: One or more of your warriors does not exists!", true);
@@ -323,19 +327,19 @@
             }
         
             try {
-                $this->conn->beginTransaction();
+                $this->db->conn->beginTransaction();
                 
                 foreach($warrior_data as $key) {
                     $sql = "UPDATE warriors SET rest=0, health=? WHERE warrior_id=? AND username=?";
-                    $stmt = $this->conn->prepare($sql);
+                    $stmt = $this->db->conn->prepare($sql);
                     $stmt->execute(array($key['health'], $key['warrior_id'], $this->username));
                 }
                 
-                $this->conn->commit();
+                $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->conn->rollBack();
-                new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->db->conn->rollBack();
+                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
@@ -343,7 +347,7 @@
         }
         public function changeType($warrior_id) {
             $sql = "SELECT type FROM warriors WHERE warrior_id=:warrior_id AND location=:location AND username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_INT);
             $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
@@ -366,10 +370,10 @@
             }
             
             try {
-                $this->conn->beginTransaction();
+                $this->db->conn->beginTransaction();
                 
                 $sql = "UPDATE warriors SET type=:type WHERE warrior_id=:warrior_id AND username=:username";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":type", $param_type, PDO::PARAM_STR);
                 $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_INT);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
@@ -378,13 +382,13 @@
                 $param_username = $this->username;
                 $stmt->execute();
                 
-                update_inventory($this->conn, $this->username, 'gold', -$prices[$type]);
+                update_inventory($this->db->conn, $this->username, 'gold', -$prices[$type]);
                 
-                $this->conn->commit();
+                $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->conn->rollBack();
-                new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->db->conn->rollBack();
+                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }

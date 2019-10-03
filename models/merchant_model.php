@@ -3,12 +3,11 @@
         public $username;
         public $session;
         
-        function __construct ($username, $session) {
+        function __construct ($session) {
             parent::__construct();
-            $this->username = $username;
+            $this->username = $session['username'];
             $this->session = $session;
         }
-        
         public function getData($js = false) {
             if($this->session['location'] === 'travelling') {
                 header("Location: /city");
@@ -18,7 +17,7 @@
             $data = array();
             $data['city'] = $this->session['location'];
             $sql = "SELECT item, amount, want, want_amount FROM merchants WHERE location=:location";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
             $param_location = $this->session['location'];
             $stmt->execute();
@@ -27,7 +26,7 @@
             $sql2 = "SELECT assignment_id, cart, cart_amount, delivered,
                     (SELECT capasity FROM travelbureau_carts WHERE wheel= cart) as capasity FROM trader
                      WHERE username=:username";
-            $stmt2 = $this->conn->prepare($sql2);
+            $stmt2 = $this->db->conn->prepare($sql2);
             $stmt2->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt2->execute();
@@ -36,7 +35,7 @@
             
             if($data['trader_data']['assignment_id'] != 0 ) {
                 $sql4 = "SELECT base, destination, cargo, assignment_amount FROM trader_assignments WHERE assignment_id=:assignment_id";
-                $stmt4 = $this->conn->prepare($sql4);
+                $stmt4 = $this->db->conn->prepare($sql4);
                 $stmt4->bindParam(":assignment_id", $param_assignment_id, PDO::PARAM_STR);
                 $param_assignment_id = $data['trader_data']['assignment_id'];
                 $stmt4->execute();
@@ -46,14 +45,14 @@
             
             $sql5 = "SELECT assignment_id, base, destination, cargo, assignment_amount, time, assignment_type FROM trader_assignments
                      WHERE base=:base";
-            $stmt5 = $this->conn->prepare($sql5);
+            $stmt5 = $this->db->conn->prepare($sql5);
             $stmt5->bindParam(":base", $param_city, PDO::PARAM_STR);
             $param_city = $this->session['location'];
             $stmt5->execute();
             $data['trader_assignments'] = $stmt5->fetchAll(PDO::FETCH_ASSOC);
             
             $data['gold'] = $this->session['gold'];
-            $this->closeConn();
+            $this->db->closeConn();
             // if statement to check if ajax request is being called
             if($js === true) {
                 get_template('merchantStock', $data, true);
@@ -71,7 +70,7 @@
                 return false;
             }
             $sql = "SELECT amount, want, want_amount FROM merchants WHERE item=:item";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
             $param_item = $item;
             $stmt->execute();
@@ -94,33 +93,33 @@
             $total_amount = $amount * $row['want_amount'];
             //Check if item exists in users stockpile
             try {
-                $this->conn->beginTransaction();
+                $this->db->conn->beginTransaction();
                 if($bond == 'false') {
-                    update_inventory($this->conn, $this->username, $row['want'], -$total_amount);   
+                    update_inventory($this->db->conn, $this->username, $row['want'], -$total_amount);   
                 }
                 else {
-                    update_inventory($this->conn, $this->username, 'trade bond', -1);   
+                    update_inventory($this->db->conn, $this->username, 'trade bond', -1);   
                 }
-                update_inventory($this->conn, $this->username, $item, $amount, true);
+                update_inventory($this->db->conn, $this->username, $item, $amount, true);
             
                 //Update merchant
                 $sql3 = "UPDATE merchants SET amount=:amount WHERE item=:item";
-                $stmt3 = $this->conn->prepare($sql3);
+                $stmt3 = $this->db->conn->prepare($sql3);
                 $stmt3->bindParam(":amount", $param_newValue, PDO::PARAM_STR);
                 $stmt3->bindParam(":item", $param_item, PDO::PARAM_STR);
                 $param_newValue = $row['amount'] - $amount;
                 $param_item = $item;
                 $stmt3->execute();
             
-                $this->conn->commit();
+                $this->db->conn->commit();
             }
             catch (Exception $e) {
-                $this->conn->rollBack();
-                new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->db->conn->rollBack();
+                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
-            $this->closeConn();
+            $this->db->closeConn();
         }
     }
 ?>

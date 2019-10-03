@@ -15,7 +15,7 @@
         function fetchData($user) {
             $this->user = $user;
             $sql = "SELECT profiency_xp, profiency_xp_nextlevel FROM user_data WHERE username= :username";
-            $stmt = $this->conn->query($sql);
+            $stmt = $this->db->conn->query($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->user;
             if ($stmt->execute()) {
@@ -27,7 +27,7 @@
             else {
                 echo "soemthing went wrong";
             }
-            $this->closeConn();
+            $this->db->closeConn();
         }
         
         function echoData() {

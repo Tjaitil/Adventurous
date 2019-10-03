@@ -3,16 +3,16 @@
         public $username;
         public $session;
         
-        function __construct ($username, $session) {
+        function __construct ($session) {
             parent::__construct();
-            $this->username = $username;
+            $this->username = $session['username'];
             $this->session = $session;
         }
         public function getMessages() {
             $data = array();
             $sql = "SELECT id, title, sender, receiver, date, message_read FROM messages
                     WHERE receiver=:username ORDER BY date DESC LIMIT 8";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
@@ -20,7 +20,7 @@
             
             $sql = "SELECT id, title, receiver, date, message_read FROM messages
                     WHERE sender=:username ORDER BY date DESC LIMIT 8";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
@@ -30,7 +30,7 @@
         }
         public function showMessage($message_id) {
             $sql = "SELECT message_read, title, sender, message, date FROM messages WHERE id=:id";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":id", $param_id, PDO::PARAM_STR);
             $param_id = $message_id;
             $stmt->execute();
@@ -38,17 +38,17 @@
             
             if($row['message_read'] == 0) {
                 $sql = "UPDATE messages SET message_read=1 WHERE id=:id";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":id", $param_id, PDO::PARAM_STR);
                 $param_id = $message_id;
                 $stmt->execute();
             }
-            $this->closeConn();
+            $this->db->closeConn();
             js_echo($row);
         }
         public function sendMessage($messageData) {
             $sql = "INSERT INTO messages (title, sender, receiver, message) VALUES(:title, :sender, :receiver, :message)";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":title", $param_title, PDO::PARAM_STR);
             $stmt->bindParam(":sender", $param_sender, PDO::PARAM_STR);
             $stmt->bindParam(":receiver", $param_receiver, PDO::PARAM_STR);
@@ -58,11 +58,11 @@
             $param_receiver = $messageData['receiver'];
             $param_message = $messageData['message'];
             $stmt->execute();
-            $this->closeConn();
+            $this->db->closeConn();
         }
         public function userCheck($username, $js = false) {
             $sql = "SELECT username FROM user_data WHERE username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $username;
             $stmt->execute();
@@ -100,7 +100,7 @@
                         return false;
                     break;
             }
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":date", $param_date, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_date = $date;

@@ -3,15 +3,15 @@
         public $username;
         public $session;
         
-        function __construct ($username, $session) {
+        function __construct ($session) {
             parent::__construct();
-            $this->username = $username;
+            $this->username = $session['username'];
             $this->session = $session;
         }
         
         public function make($type, $amount) {
             $sql = "SELECT item_id, cost, food_units FROM bakery_data WHERE type=:type";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":type", $param_type, PDO::PARAM_STR);
             $param_type = $type;
             $stmt->execute();
@@ -27,7 +27,7 @@
             }
             
             $sql = "SELECT ingredient, amount FROM bakery_ingredients WHERE item_id";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":item_id", $param_type_id, PDO::PARAM_STR);
             $param_type_id = $row['item_id'];
             $stmt->execute();
@@ -56,7 +56,7 @@
             
             $in  = str_repeat('?,', count($items) - 2) . '?';
             $sql = "SELECT item, amount FROM inventory WHERE item IN ($in) AND username= ?";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->execute($items);
             $row2 = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
@@ -72,22 +72,22 @@
             }*/
             
             try {
-                $this->conn->beginTransaction();
+                $this->db->conn->beginTransaction();
             
                 for($i = 0; $i<count($row2); $i++) {
-                    update_inventory($this->conn, $this->username, $row2[$i]['ingredient'], -$row2[$i]['amount'] * $amount);
+                    update_inventory($this->db->conn, $this->username, $row2[$i]['ingredient'], -$row2[$i]['amount'] * $amount);
                 }
-                update_inventory($this->conn, $this->username, $type, $amount);
-                update_inventory($this->conn, $this->username, 'gold', -$row['cost'] * $amount, true);
-                $this->conn->commit();
+                update_inventory($this->db->conn, $this->username, $type, $amount);
+                update_inventory($this->db->conn, $this->username, 'gold', -$row['cost'] * $amount, true);
+                $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->conn->rollBack();
-                new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->db->conn->rollBack();
+                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
-            $this->closeConn();
+            $this->db->closeConn();
         }
     }
 ?>

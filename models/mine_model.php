@@ -3,18 +3,17 @@
         public $username;
         public $session;
         
-        function __construct ($username, $session) {
+        function __construct ($session, $db) {
             parent::__construct();
-            $this->username = $username;
+            $this->username = $session['username'];
             $this->session = $session;
         }
-        
         public function getData() {
             $data = array();
             
             $sql = "SELECT permits, mining_type, mining_countdown, fetch_minerals FROM miner
                     WHERE location=:location AND username=:username";          
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_location = $this->session['location'];
@@ -23,7 +22,7 @@
             $data['minerData'] = $stmt->fetch(PDO::FETCH_ASSOC);
             
             $sql2 = "SELECT mineral_type, permit_cost FROM minerals_data WHERE miner_level <=:minerlevel AND location=:location";
-            $stmt2 = $this->conn->prepare($sql2);
+            $stmt2 = $this->db->conn->prepare($sql2);
             $stmt2->bindParam(":minerlevel", $param_minerlevel, PDO::PARAM_STR);
             $stmt2->bindParam(":location", $param_location, PDO::PARAM_STR);
             $param_minerlevel = $this->session['miner']['level'];
@@ -32,7 +31,7 @@
             $data['mineral_types'] = $stmt2->fetchAll(PDO::FETCH_ASSOC);
             
             $sql3 = "SELECT avail_workforce, efficiency_level FROM miner_workforce WHERE username=:username";         
-            $stmt3 = $this->conn->prepare($sql3);
+            $stmt3 = $this->db->conn->prepare($sql3);
             $stmt3->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt3->execute();
@@ -44,7 +43,7 @@
         // Function to echo date for ajax request
         public function checkCountdown($check = false) {
             $sql = "SELECT mining_countdown, fetch_minerals FROM miner WHERE location=:location AND username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_location = $this->session['location'];
@@ -62,7 +61,7 @@
                     return false;
                 }
             }
-            $this->closeConn();
+            $this->db->closeConn();
             js_echo(array($date, $row['fetch_minerals']));
         }
         public function cancelMining() {
@@ -73,7 +72,7 @@
             $sql = "SELECT m.mining_countdown, m.fetch_minerals, mw.avail_workforce, mw.$workforce FROM miner as m
                     INNER JOIN miner_workforce as mw ON mw.username = m.username
                     WHERE m.location=:location AND m.username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_location = $this->session['location'];
@@ -96,12 +95,12 @@
             $time = $time - (15 * 60);
             $date = date("Y-m-d H:i:s", $time);
             try {
-                $this->conn->beginTransaction();
+                $this->db->conn->beginTransaction();
                 $sql = "UPDATE miner as m INNER JOIN miner_workforce as mw ON mw.username = m.username
                         SET m.mining_type='none', m.fetch_minerals=0, m.mining_countdown=:mining_countdown,
                         mw.avail_workforce=:avail_workforce, mw.$workforce=0
                         WHERE location=:location AND m.username=:username";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":mining_countdown", $param_mining_countdown, PDO::PARAM_STR);
                 $stmt->bindParam(":avail_workforce", $param_avail_workforce, PDO::PARAM_INT);
                 $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
@@ -112,11 +111,11 @@
                 $param_username = $this->username;
                 $stmt->execute();
                     
-                $this->conn->commit();
+                $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->conn->rollBack();
-                new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->db->conn->rollBack();
+                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }

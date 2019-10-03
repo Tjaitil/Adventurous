@@ -10,7 +10,6 @@
     /*require(constant('ROUTE_BASE') . 'bootstrap.php');
     require(constant('ROUTE_BASE') . 'model.php');
     require(constant('ROUTE_BASE') . 'view.php') */
-    require(constant('ROUTE_BASE') . 'ajaxexception.php');
     require(constant('ROUTE_HELPER') . 'general_helpers.php');
     require(constant('ROUTE_HELPER') . 'model_helpers.php');
     $bootstrap = new bootstrap($session);

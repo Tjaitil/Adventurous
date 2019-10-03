@@ -3,9 +3,9 @@
         public $username;
         public $session;
         
-        function __construct ($username, $session) {
+        function __construct ($session) {
             parent::__construct();
-            $this->username = $username;
+            $this->username = $session['username'];
             $this->session = $session;
         }
         public function getData($js = false) {
@@ -13,7 +13,7 @@
             $data = array();
             $sql = "SELECT id, offeror, item, amount_left, price_ea, type FROM offers
                     WHERE NOT offeror=:username AND amount_left > 0";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
@@ -21,14 +21,14 @@
             
             $sql2 = "SELECT id, type, item, amount, price_ea, progress, box_item, box_amount
             FROM offers WHERE offeror=:username";
-            $stmt2 = $this->conn->prepare($sql2);
+            $stmt2 = $this->db->conn->prepare($sql2);
             $stmt2->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt2->execute();
             $data['my_offers'] = $stmt2->fetchAll(PDO::FETCH_ASSOC);
             
             $sql3 = "SELECT id, type, item, amount, price_ea FROM offer_records WHERE username=:username";
-            $stmt3 = $this->conn->prepare($sql3);
+            $stmt3 = $this->db->conn->prepare($sql3);
             $stmt3->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt3->execute();
@@ -73,7 +73,7 @@
                 }
                 
                 /*$sql = "SELECT item FROM offers WHERE username=:username AND type='sell'";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_username = $this->username;
                 $stmt->execute();
@@ -83,7 +83,7 @@
             }
             else if($post_data['type'] == 'Buy') {
                 $sql = "SELECT amount FROM inventory WHERE item='gold' AND username=:username";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_username = $this->username;
                 $stmt->execute();
@@ -98,11 +98,11 @@
                 }
             }
             try {
-                $this->conn->beginTransaction();
+                $this->db->conn->beginTransaction();
                 
                 $sql = "INSERT INTO offers (offeror, type, item, amount, price_ea, amount_left)
                         VALUES (:username, :type, :item, :amount, :price_ea, :amount_left)";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $stmt->bindParam(":type", $param_type, PDO::PARAM_STR);
                 $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
@@ -119,12 +119,12 @@
                 
                 $sql2 = "INSERT INTO escrow (id, offeror, item, amount)
                          VALUES (:id, :username, :item, :amount)";
-                $stmt2 = $this->conn->prepare($sql2);
+                $stmt2 = $this->db->conn->prepare($sql2);
                 $stmt2->bindParam(":id", $param_id, PDO::PARAM_STR);
                 $stmt2->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $stmt2->bindParam(":item", $param_item, PDO::PARAM_STR);
                 $stmt2->bindParam(":amount", $param_amount, PDO::PARAM_STR);
-                $param_id = $this->conn->lastInsertId();
+                $param_id = $this->db->conn->lastInsertId();
                 
                 if($post_data['type'] === 'Sell') {
                     $param_item = $post_data['item'];
@@ -137,26 +137,26 @@
                 $stmt2->execute();
                 
                 if($post_data['type'] == 'Sell') {
-                    update_inventory($this->conn, $this->username, $param_item, -$param_amount, true);
+                    update_inventory($this->db->conn, $this->username, $param_item, -$param_amount, true);
                 }
                 else if($post_data['type'] == 'Buy') {
-                    update_inventory($this->conn, $this->username, 'gold', -$param_amount * $param_price_ea, true);
+                    update_inventory($this->db->conn, $this->username, 'gold', -$param_amount * $param_price_ea, true);
                 }
                 
-                $this->conn->commit();
+                $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->conn->rollBack();
-                new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
-                $this->gameMessage("ERROR: Something unexpected happened, please try again");
+                $this->db->conn->rollBack();
+                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
-            $this->closeConn();
+            $this->db->closeConn();
         }
         public function trade($id, $amount) {
             //AJAX function
             $sql = "SELECT offeror, id, type, item, price_ea, amount_left, progress, box_amount FROM offers WHERE id=:id";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":id", $param_id, PDO::PARAM_STR);
             $param_id = $id;
             $stmt->execute();
@@ -178,7 +178,7 @@
             //If the offeror is buying
             if($row['type'] === 'Buy') {
                $sql = "SELECT item, amount FROM inventory WHERE item=:item AND username=:username";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_item = $row['item'];
@@ -197,7 +197,7 @@
             // If the offeror is selling
             else if($row['type'] === 'Sell') {
                 $sql = "SELECT amount FROM inventory WHERE item='gold' AND username=:username";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_username = $this->username;
                 $stmt->execute();
@@ -216,7 +216,7 @@
             $cost = $amount * $row['price_ea'];
             
             $sql = "SELECT week_price, week_amount FROM item_prices WHERE item=:item";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
             $param_item = $row['item'];
             $stmt->execute();
@@ -236,22 +236,22 @@
             //For update_records function
             $row['amount'] = $amount;
             try {
-                $this->conn->beginTransaction();
+                $this->db->conn->beginTransaction();
             
                 //Update this->username
                 if($row['type'] === 'Buy') {
-                    update_inventory($this->conn, $this->username, $row['item'], -$amount);
-                    update_inventory($this->conn, $this->username, 'gold', $cost, true);
+                    update_inventory($this->db->conn, $this->username, $row['item'], -$amount);
+                    update_inventory($this->db->conn, $this->username, 'gold', $cost, true);
                 }
                 else {
-                    update_inventory($this->conn, $this->username, $row['item'], $amount);
-                    update_inventory($this->conn, $this->username, 'gold', -$cost, true);
+                    update_inventory($this->db->conn, $this->username, $row['item'], $amount);
+                    update_inventory($this->db->conn, $this->username, 'gold', -$cost, true);
                 }
                         
                 
                 if(!$row_count > 0) {
                     $sql = "INSERT INTO item_prices (item) VALUES (:item)";
-                    $stmt = $this->conn->prepare($sql);
+                    $stmt = $this->db->conn->prepare($sql);
                     $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
                     $param_item = $row['item'];
                     $stmt->execute();
@@ -259,7 +259,7 @@
                 
                 $sql = "UPDATE offers SET progress=:progress, amount_left=:amount_left, box_item=:box_item, box_amount=:box_amount
                         WHERE id=:id AND offeror=:username";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":progress", $param_progress, PDO::PARAM_INT);
                 $stmt->bindParam(":amount_left", $param_amount_left, PDO::PARAM_INT);
                 $stmt->bindParam(":box_item", $param_box_item, PDO::PARAM_STR);
@@ -276,7 +276,7 @@
                 
                 if($new_amount > 0) {
                     $sql = "UPDATE escrow SET amount=:amount WHERE id=:id AND offeror=:offeror";
-                    $stmt = $this->conn->prepare($sql);
+                    $stmt = $this->db->conn->prepare($sql);
                     $stmt->bindParam(":amount", $param_amount, PDO::PARAM_INT);
                     $stmt->bindParam(":id", $param_id, PDO::PARAM_INT);
                     $stmt->bindParam(":offeror", $param_offeror, PDO::PARAM_STR);
@@ -287,7 +287,7 @@
                 }
                 else if($new_amount == 0) {
                     $sql2 = "DELETE FROM escrow WHERE id=:id AND offeror=:offeror";
-                    $stmt2 = $this->conn->prepare($sql2);
+                    $stmt2 = $this->db->conn->prepare($sql2);
                     $stmt2->bindParam(":id", $param_id, PDO::PARAM_STR);
                     $stmt2->bindParam(":offeror", $param_offeror, PDO::PARAM_STR);
                     $param_id = $id;
@@ -296,7 +296,7 @@
                 }
                 
                 $sql2 = "UPDATE item_prices SET week_amount=:week_amount, week_price=:week_price WHERE item=:item";
-                $stmt2 = $this->conn->prepare($sql2);
+                $stmt2 = $this->db->conn->prepare($sql2);
                 $stmt2->bindParam(":week_amount", $param_week_amount, PDO::PARAM_STR);
                 $stmt2->bindParam(":week_price", $param_week_price, PDO::PARAM_STR);
                 $stmt2->bindParam(":item", $param_item, PDO::PARAM_STR);
@@ -306,7 +306,7 @@
                 $stmt2->execute();
                 
                 $sql3 = "UPDATE escrow SET amount=:amount WHERE id=:id AND offeror=:offeror";
-                $stmt3 = $this->conn->prepare($sql3);
+                $stmt3 = $this->db->conn->prepare($sql3);
                 $stmt3->bindParam(":id", $param_id, PDO::PARAM_STR);
                 $stmt3->bindParam(":amount", $param_amount, PDO::PARAM_STR);
                 $stmt3->bindParam(":offeror", $param_offeror, PDO::PARAM_STR);
@@ -319,19 +319,19 @@
                 $this->update_records($row['offeror'], $row, $row['type']);
                 //Make sure the offer type is different for the user trading than the offeror
                 $this->update_records($this->username, $row, $user_type);
-                $this->conn->commit();
+                $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->conn->rollBack();
-                new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->db->conn->rollBack();
+                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
-            $this->closeConn();
+            $this->db->closeConn();
         }
         private function update_records($username, $offer_info, $type) {
             $sql = "SELECT username, amount FROM offer_records WHERE id=:id AND username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":id", $param_id, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_id = $offer_info['id'];
@@ -341,7 +341,7 @@
             if(!$stmt->rowCount() > 0) {
                 $sql = "INSERT INTO offer_records (id, username, type, item, amount, price_ea)
                         VALUES (:id, :username, :type, :item, :amount, :price_ea)";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":id", $param_id, PDO::PARAM_STR);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $stmt->bindParam(":type", $param_type, PDO::PARAM_STR);
@@ -358,7 +358,7 @@
             }
             else {
                 $sql = "UPDATE offer_records SET amount=:amount WHERE id=:id AND username=:username";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":amount", $param_amount, PDO::PARAM_STR);
                 $stmt->bindParam(":id", $param_id, PDO::PARAM_STR);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
@@ -371,7 +371,7 @@
         public function cancelOffer($id) {
             // AJAX function, cancels market offer
             $sql = "SELECT type, item, amount, price_ea FROM offers WHERE id=:id AND offeror=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":id", $param_id, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_id = $id;
@@ -384,7 +384,7 @@
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             
             $sql =  "SELECT item, amount FROM escrow WHERE id=:id AND offeror=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":id", $param_id, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             //$param_id, $param_username already defined in statement 1
@@ -392,10 +392,10 @@
             $row2 = $stmt->fetch(PDO::FETCH_ASSOC);
             
             try {
-                $this->conn->beginTransaction();
+                $this->db->conn->beginTransaction();
                 
                 $sql = "DELETE FROM offers WHERE id=:id AND offeror=:username";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":id", $param_id, PDO::PARAM_STR);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_id = $id;
@@ -403,28 +403,28 @@
                 $stmt->execute();
                 
                 $sql2 = "DELETE FROM escrow WHERE id=:id AND offeror=:username";
-                $stmt2 = $this->conn->prepare($sql2);
+                $stmt2 = $this->db->conn->prepare($sql2);
                 $stmt2->bindParam(":id", $param_id, PDO::PARAM_STR);
                 $stmt2->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_id = $id;
                 $param_username = $this->username;
                 $stmt2->execute();                
                 
-                update_inventory($this->conn, $this->username, $row2['item'], $row2['amount'], true);
-                $this->conn->commit();
+                update_inventory($this->db->conn, $this->username, $row2['item'], $row2['amount'], true);
+                $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->conn->rollBack();
-                new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->db->conn->rollBack();
+                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
-            $this->closeConn();
+            $this->db->closeConn();
         }
         public function fetchItem($id) {
             // AJAX function
             $sql = "SELECT id, amount_left, box_item, box_amount FROM offers WHERE id=:id AND offeror=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":id", $param_id, PDO::PARAM_INT);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_id = $id;
@@ -437,10 +437,10 @@
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             
             try {
-                $this->conn->beginTransaction();
+                $this->db->conn->beginTransaction();
                 if($row['amount_left'] == 0) {
                     $sql = "DELETE FROM offers WHERE id=:id AND offeror=:username";
-                    $stmt = $this->conn->prepare($sql);
+                    $stmt = $this->db->conn->prepare($sql);
                     $stmt->bindParam(":id", $param_id, PDO::PARAM_INT);
                     $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                     $param_id = $id;
@@ -449,7 +449,7 @@
                 }
                 else {
                     $sql = "UPDATE offers SET box_amount=0 WHERE id=:id AND offeror=:username";
-                    $stmt = $this->conn->prepare($sql);
+                    $stmt = $this->db->conn->prepare($sql);
                     $stmt->bindParam(":id", $param_id, PDO::PARAM_INT);
                     $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                     $param_id = $id;
@@ -457,13 +457,13 @@
                     $stmt->execute();   
                 }
                 
-                update_inventory($this->conn, $this->username, $row['box_item'], $row['box_amount'], true);
+                update_inventory($this->db->conn, $this->username, $row['box_item'], $row['box_amount'], true);
                 
-                $this->conn->commit();
+                $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->conn->rollBack();
-                new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->db->conn->rollBack();
+                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
@@ -471,7 +471,7 @@
         public function searchOffers($item) {
             //AJAX function, returns a array with offers that matches item search provided by user
             $sql = "SELECT id, offeror, item, amount_left, price_ea, type FROM offers WHERE item LIKE :item AND offeror !=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_item = "%{$item}%";

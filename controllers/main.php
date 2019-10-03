@@ -4,12 +4,13 @@
         public $data;
 
         function __construct() {
-            parent::__construct();
+            parent::__construct(false);
         }
         function index() {
             if(!isset($_SESSION['gamedata'])) {
                 $this->fetchData();
             }
+            $this->checkLevel();
             $this->loadModel('Main', true);
             $this->data = $this->model->getData();
             /*$this->calculateCountdowns();*/

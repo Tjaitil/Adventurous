@@ -3,15 +3,14 @@
         public $username;
         public $session;
         
-        function __construct ($username, $session) {
+        function __construct ($session, $db) {
             parent::__construct();
-            $this->username = $username;
+            $this->username = $session['username'];
             $this->session = $session;
         }
-        
         public function updateTraining($warrior_id) {
             $sql = "SELECT training_type FROM warriors WHERE warrior_id=:warrior_id AND username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_warrior_id = $warrior_id;
@@ -65,7 +64,7 @@
             }
             
             $sql = $select_SQL;
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_warrior_id = $warrior_id;
@@ -87,16 +86,16 @@
             $values[':username'] = $this->username;
             
             $sql = "SELECT experience FROM training_type_data WHERE training_type=:training_type";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":training_type", $param_training_type, PDO::PARAM_STR);
             $param_training_type = $type;
             $stmt->execute();
             $warrior_experience = $stmt->fetch(PDO::FETCH_OBJ)->experience;
         
             try {
-                $this->conn->beginTransaction();
+                $this->db->conn->beginTransaction();
                 $sql = "UPDATE warrior SET warrior_xp=:warrior_xp WHERE username=:username";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":warrior_xp", $param_warrior_xp, PDO::PARAM_STR);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_warrior_xp = $warrior_experience + $this->session['warrior']['xp'];
@@ -104,7 +103,7 @@
                 $stmt->execute();
                 
                 $sql2 = "UPDATE warriors SET fetch_report=0, training_type='none' WHERE warrior_id=:warrior_id AND username=:username";
-                $stmt2 = $this->conn->prepare($sql2);
+                $stmt2 = $this->db->conn->prepare($sql2);
                 $stmt2->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);
                 $stmt2->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_warrior_id = $warrior_id;
@@ -113,22 +112,22 @@
                 
                 // Only gain xp when warrior level is below 30 or if profiency is warrior 
                 if($this->session['warrior']['level'] < 30 || $this->session['profiency'] == 'warrior') {
-                    update_xp($this->conn, $this->username, 'warrior', $param_warrior_xp);
+                    update_xp($this->db->conn, $this->username, 'warrior', $param_warrior_xp);
                 }
                 
-                $stmt4 = $this->conn->prepare($sql4);
+                $stmt4 = $this->db->conn->prepare($sql4);
                 $stmt4->execute($values);
 
-                $this->conn->commit();
+                $this->db->conn->commit();
                 $this->gameMessage("You have trained your soldier", true);
             }
             catch (Exception $e) {
-                $this->conn->rollBack();
-                new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->db->conn->rollBack();
+                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
-            $this->closeConn();
+            $this->db->closeConn();
         }
     }
 ?>

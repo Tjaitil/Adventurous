@@ -6,7 +6,7 @@
         public $session;
         
         function __construct ($session) {
-            parent::__construct();
+            parent::__construct(false);
             if(isset($_SESSION['username'])) {
                 header("Location: /main");
                 exit();
@@ -16,8 +16,7 @@
                 $this->checkData();
             }
         }
-        public function index () {
-
+        public function index() {
             $array = array(NULL, 'none');
             /*if (isset($_SESSION['gamedata'])) {
                     header("Location: /main");
@@ -43,7 +42,7 @@
                 return $this->error;
             }
             if(empty($this->error['userErr']) || empty($this->error['passErr'])) {
-                $this->loadModel('login', false);
+                $this->loadModel('Login', false);
                 $checkuser = $this->model->checkuser($this->username, $this->password);
                 if ($this->model->status == false) {
                     $this->error['loginfail'] = "Something went wrong, please try again later";
@@ -52,10 +51,12 @@
                     if (password_verify($this->password, $this->model->row['password'])) {
                         $this->session->setSession($this->username, $loggedin = true);
                         if($this->model->profiency != "none") {
+                            // If profiency is set redirect to main
                            header('Location: /main');
                            exit();
                         }
                         else {
+                            // If the user has no profiency it is a new user and needs to chose one
                             header('Location: /newuser');
                             exit();
                         }

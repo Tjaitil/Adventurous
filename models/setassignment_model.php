@@ -6,10 +6,11 @@
         public $favor;
         public $assignment_type;
         
-        function __construct ($username, $session) {
+        function __construct ($session) {
             parent::__construct();
-            $this->username = $username;
+            $this->username = $session['username'];
             $this->session = $session;
+            // Assign the database class to db property
             $this->destination = $this->session['favor']['destination'];
             $this->favor = $this->session['favor'];
             $this->assignment_type = restore_file('trader_assignment_types', true);
@@ -17,7 +18,7 @@
         public function newAssignment($assignment_id, $favor = false) {
             /*$assignment_amount = str_replace(" ", "+", $assignment_amount);*/
             $sql = "SELECT assignment_id, cart FROM trader WHERE username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
@@ -32,7 +33,7 @@
             }
             if($favor != true) {
                 $sql = "SELECT destination, assignment_amount, time, assignment_type FROM trader_assignments WHERE assignment_id=:assignment_id";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":assignment_id", $param_assignment_id, PDO::PARAM_STR);
                 $param_assignment_id = $assignment_id;
                 $stmt->execute();
@@ -41,7 +42,7 @@
             else {
                 $sql = "SELECT destination, assignment_amount, time, assignment_type FROM trader_assignments
                 WHERE assignment_id=:assignment_id AND assignment_type='favor'";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":assignment_id", $param_assignment_id, PDO::PARAM_STR);
                 $param_assignment_id = $assignment_id;
                 $stmt->execute();
@@ -49,7 +50,7 @@
             }
             if($favor != true) {
                 $sql2 = "SELECT xp, time FROM assignment_types WHERE type=:type";
-                $stmt2 = $this->conn->prepare($sql2);
+                $stmt2 = $this->db->conn->prepare($sql2);
                 $stmt2->bindParam(":type", $param_type, PDO::PARAM_STR);
                 $param_type = $assignment_data['assignment_type'];
                 $stmt2->execute();
@@ -68,10 +69,10 @@
             }
             
             try {
-                $this->conn->beginTransaction();
+                $this->db->conn->beginTransaction();
                 
                 $sql = "UPDATE trader SET assignment_id=:assignment_id, trading_countdown=:trading_countdown WHERE username=:username";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":assignment_id", $param_id, PDO::PARAM_STR);
                 $stmt->bindParam(":trading_countdown", $param_trading_countdown, PDO::PARAM_STR);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
@@ -80,17 +81,17 @@
                 $param_username = $this->username;
                 $stmt->execute();
                 
-                update_xp($this->conn, $this->username, 'trader', $this->session['trader']['xp'] + $assignment_XP);
+                update_xp($this->db->conn, $this->username, 'trader', $this->session['trader']['xp'] + $assignment_XP);
                 
-                $this->conn->commit();
+                $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->conn->rollBack();
-                new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->db->conn->rollBack();
+                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
-            $this->closeConn();
+            $this->db->closeConn();
             $_SESSION['gamedata']['trader']['xp'] =  $this->session['trader']['xp'] + $assignment_XP;
             $this->gameMessage("New assignment taken", true);
         }

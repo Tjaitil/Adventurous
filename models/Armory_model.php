@@ -2,11 +2,10 @@
     class Armory_model extends model {
         public $username;
         public $session;
-        public $warrior_id;
         
-        function __construct ($username, $session) {
+        function __construct ($session) {
             parent::__construct();
-            $this->username = $username;
+            $this->username = $session['username'];
             $this->session = $session;
         }
         
@@ -16,12 +15,12 @@
                     (SELECT SUM(defence) FROM smithy_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS defence
                     FROM warrior_armory
                     WHERE username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
             $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $this->closeConn();
+            $this->db->closeConn();
             
             return $row;
         }
@@ -44,7 +43,7 @@
             
             if(in_array($item_array[0], array('frajrite', 'wujkin'))) { 
                 $sql = "SELECT {$item_array[0]} FROM warrior_permissions WHERE username=:username";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_username = $this->username;
                 $stmt->execute();
@@ -56,7 +55,7 @@
             }
             
             $sql = "SELECT warrior_id FROM warriors WHERE warrior_id=:warrior_id AND username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_warrior_id = $warrior_id;
@@ -68,7 +67,7 @@
             }
             
             $sql = "SELECT type FROM smithy_data WHERE item=:item";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
             $param_item = $item;
             $stmt->execute();
@@ -82,7 +81,7 @@
                 $row['type'] = $hand  .'_hand';
             }
             $sql = "SELECT {$row['type']} FROM warrior_armory WHERE warrior_id=:warrior_id AND username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_warrior_id = $warrior_id;
@@ -91,9 +90,9 @@
             $row2 = $stmt->fetch(PDO::FETCH_ASSOC);
             
             try {
-                $this->conn->beginTransaction();
+                $this->db->conn->beginTransaction();
                 $sql = "UPDATE warrior_armory SET {$row['type']}=:item WHERE warrior_id=:warrior_id AND username=:username";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
                 $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
@@ -103,19 +102,19 @@
                 $stmt->execute();
                 
                 if($row2[$row['type']] != 'none') {
-                    update_inventory($this->conn, $this->username, $row2[$row['type']], 1);
+                    update_inventory($this->db->conn, $this->username, $row2[$row['type']], 1);
                 }
-                update_inventory($this->conn, $this->username, $item, -1, true);
-                $this->conn->commit();
+                update_inventory($this->db->conn, $this->username, $item, -1, true);
+                $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->conn->rollBack();
-                new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->db->conn->rollBack();
+                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
             $this->getWarriorstats();
-            $this->closeConn();
+            $this->db->closeConn();
         } 
         public function removeArmor($warrior_id, $item, $part) {
             $this->warrior_id = $warrior_id;
@@ -126,7 +125,7 @@
             }
             
             $sql = "SELECT {$part} FROM warrior_armory WHERE warrior_id=:warrior_id AND username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_warrior_id = $warrior_id;
@@ -140,7 +139,7 @@
             }
             
             $sql = "SELECT warrior_id FROM warriors WHERE warrior_id=:warrior_id AND username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_warrior_id = $warrior_id;
@@ -152,34 +151,34 @@
             }
             
             try {
-                $this->conn->beginTransaction();
+                $this->db->conn->beginTransaction();
                 
                 $sql = "UPDATE warrior_armory SET {$part}='none' WHERE warrior_id=:warrior_id AND username=:username";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_warrior_id = $warrior_id;
                 $param_username = $this->username;
                 $stmt->execute();
-                update_inventory($this->conn, $this->username, $item, 1, true);
+                update_inventory($this->db->conn, $this->username, $item, 1, true);
             
-                $this->conn->commit();
+                $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->conn->rollBack();
-                new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->db->conn->rollBack();
+                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
             $this->getWarriorstats();
-            $this->closeConn();
+            $this->db->closeConn();
         }
         public function getWarriorstats() {
             $sql = "SELECT warrior_id, helm, left_hand, body, right_hand, legs, boots,
                     (SELECT SUM(attack) FROM smithy_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS attack,
                     (SELECT SUM(defence) FROM smithy_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS defence
                     FROM warrior_armory WHERE warrior_id=:warrior_id AND username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_INT);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_warrior_id = $this->warrior_id;

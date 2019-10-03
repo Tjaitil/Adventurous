@@ -3,12 +3,11 @@
         public $username;
         public $session;
         
-        function __construct ($username, $session) {
+        function __construct ($session) {
             parent::__construct();
-            $this->username = $username;
+            $this->username = $session['username'];
             $this->session = $session;
         }
-        
         public function getData($js = false) {
             $city = $_SESSION['gamedata']['location'];
             if($_SESSION['gamedata']['location'] === 'travelling') {
@@ -20,7 +19,7 @@
                 return false;
             }
             $sql = "SELECT type, $city, value FROM travelbureau_horses";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":amount", $param_amount, PDO::PARAM_STR);
             $param_amount = 0;
             $stmt->execute();
@@ -29,10 +28,10 @@
             $data['city'] = $city;
             
             $sql = "SELECT wheel, wood, value, capasity, $city, mineral_amount, wood_amount FROM travelbureau_carts"; 
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->execute();
             $data['cart_shop'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $this->closeConn();
+            $this->db->closeConn();
              // if statement to check if ajax request is being called
             if($js === true) {
                 // "||" is for next item and "#" is to split the different shops
@@ -81,7 +80,7 @@
                 break;
              }
             $sql = $selectSTMT1;
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam($selectBind1, $param, PDO::PARAM_STR);
             $param = $item;
             $stmt->execute();
@@ -122,7 +121,7 @@
             }
             //Check if user has a horse already, if so 80% of the price will be refunded.
             $sql = $selectSTMT2;
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
@@ -131,11 +130,11 @@
             
             $newStoreAmount = $row[$city] - 1;
             try {
-                $this->conn->beginTransaction();
+                $this->db->conn->beginTransaction();
                 
                 //Update cart to trader/ horse to user
                 $sql = $updateSTMT1;
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam($updateBind1, $param, PDO::PARAM_STR);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param = $item;
@@ -146,38 +145,38 @@
                 switch($shop) {
                     case 'cart':
                         if($row_count != 0) {
-                            update_inventory($this->conn, $this->username, 'gold', ($row2['value'] * 0.80));
+                            update_inventory($this->db->conn, $this->username, 'gold', ($row2['value'] * 0.80));
                         }
-                        update_inventory($this->conn, $this->username, $mineral, -$row['mineral_amount'], true);
-                        update_inventory($this->conn, $this->username, $wood, -$row['wood_amount'], true);
+                        update_inventory($this->db->conn, $this->username, $mineral, -$row['mineral_amount'], true);
+                        update_inventory($this->db->conn, $this->username, $wood, -$row['wood_amount'], true);
                         break;
                     case 'horse':
                         if($row_count != 0 ) {
-                            update_inventory($this->conn, $this->username, 'gold', (-$row['value'] + ($row2['value'] * 0.80)), true);
+                            update_inventory($this->db->conn, $this->username, 'gold', (-$row['value'] + ($row2['value'] * 0.80)), true);
                         }
                         else {
-                            update_inventory($this->conn, $this->username, 'gold', -$row['value'], true); 
+                            update_inventory($this->db->conn, $this->username, 'gold', -$row['value'], true); 
                         }
                         break;
                 }
                 //Update store
                 $sql3 = $updateSTMT3;
-                $stmt3 = $this->conn->prepare($sql3);
+                $stmt3 = $this->db->conn->prepare($sql3);
                 $stmt3->bindParam(":city", $param_city_amount, PDO::PARAM_STR);
                 $stmt3->bindParam($selectBind1, $param_item, PDO::PARAM_STR);
                 $param_item = $item;
                 $param_city_amount = $newStoreAmount;
                 $stmt3->execute();
                 
-                $this->conn->commit();
+                $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->conn->rollBack();
-                new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->db->conn->rollBack();
+                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
-            $this->closeConn();
+            $this->db->closeConn();
             if($shop == 'cart') {
             }
             $this->gameMessage($boughtMessage, true);

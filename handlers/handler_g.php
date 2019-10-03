@@ -1,11 +1,11 @@
 <?php
     require('../libs/handler.php');
-    $handler = new handler();
+    $handler = new handler(true);
     $handler->sessionCheck(true);
     $modelname = $_GET['model'];
     $methodname = $_GET['method'];
     
-    $model = $handler->includeModel(true, $_GET['model'], $_SESSION['gamedata'], true);
+    $model = $handler->includeModel($_GET['model'], $_SESSION['gamedata']);
     $method = $handler->checkMethod($model, $_GET['method']);
     if ($method === true) {
         if(count($_GET) < 3) {

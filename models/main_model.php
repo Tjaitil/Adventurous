@@ -3,9 +3,9 @@
         public $username;
         public $session;
         
-        function __construct ($username, $session) {
+        function __construct ($session) {
             parent::__construct();
-            $this->username = $username;
+            $this->username = $session['username'];
             $this->session = $session;
         }
         
@@ -13,7 +13,7 @@
         
             $data = array();
             $sql = "SELECT hirtam, pvitul, khanz, ter, fansalplains FROM diplomacy WHERE username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
@@ -22,14 +22,14 @@
             $data['chat'] = $this->getChat();
             
             $sql = "SELECT grow_countdown, location, plot1_harvest FROM farmer WHERE username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
             $data['farmer_countdowns'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
             $sql = "SELECT mining_countdown, location, fetch_minerals FROM miner WHERE username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
@@ -39,7 +39,7 @@
         }
         public function getChat($clock = false) {
             $sql = "SELECT id, clock, username, message FROM public_chat ORDER BY time ASC LIMIT 30";
-            $stmt = $this->conn->query($sql);
+            $stmt = $this->db->conn->query($sql);
             $stmt->execute();
             if($clock == false) {
                 return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -48,7 +48,7 @@
                 $sql = "SELECT clock, username, message FROM public_chat
                         WHERE id >= (SELECT id FROM public_chat WHERE clock=:clock ORDER BY ID ASC LIMIT 1)
                         ORDER BY clock DESC";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":clock", $param_clock, PDO::PARAM_STR);
                 $param_clock = $clock;
                 $stmt->execute();
@@ -59,7 +59,7 @@
         
         public function chat($message) {
             $sql = "INSERT INTO public_chat (clock, username, message) VALUES (:clock, :username, :message)";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":clock", $param_clock, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $stmt->bindParam(":message", $param_message, PDO::PARAM_STR);

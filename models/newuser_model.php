@@ -9,7 +9,7 @@
         
         public function selectProfiency($profiency) {
             $sql = "SELECT profiency FROM user_data WHERE username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
@@ -31,7 +31,7 @@
             $data['Warrior'] = array('warrior', 'tasnobil');
             
             $sql = "UPDATE user_data SET location=:location, destination=:destination, profiency=:profiency WHERE username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
             $stmt->bindParam(":destination", $param_location, PDO::PARAM_STR);
             $stmt->bindParam(":profiency", $param_profiency, PDO::PARAM_STR);
@@ -42,7 +42,7 @@
             $stmt->execute();
             
             $_SESSION['gamedata']['profiency'] = $param_profiency;
-            $this->closeConn();
+            $this->db->closeConn();
         }
     }
 ?>

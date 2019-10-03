@@ -25,13 +25,14 @@
                 method = "insert";
                 liN = menu.querySelectorAll("LI");
                 liN.forEach(function(element, index) {
+                    // First element is the item name
                     if(index === 0) {
                         return;   
                     }
-                     // Add event for each element;
-                     element.addEventListener('click', function() {
-                         insert();
-                     });
+                    // Remove event for each element
+                    element.removeEventListener('click', withdraw);
+                    // Add event for each element;
+                    element.addEventListener('click', insert);
                 });
             }
         }
@@ -42,16 +43,17 @@
             if(method == 'insert' || method == false) {
                 //Change addEventListener function
                 method = "withdraw";
-                console.log("change");
                 liN = menu.querySelectorAll("LI");
                 liN.forEach(function(element, index) {
+                    // First element is the item name
                     if(index === 0) {
+                        console.log(element);
                         return;   
                     }
-                     // Add event for each element;
-                     element.addEventListener('click', function() {
-                         withdraw();
-                     });
+                    // Remove event for each element
+                    element.removeEventListener('click', insert);
+                    // Add event for each element;
+                    element.addEventListener('click', withdraw);
                 });
             }
         }
@@ -73,6 +75,7 @@
         var data = "model=stockpile" + "&method=updateInventory" + "&item=" + item +
                          "&insert=" + '0' + "&quantity=" + quantity;
         ajaxP(data, function(response) {
+            console.log(response[1]);
             if(response[0] !== false) {
                 updatePage();
             }
@@ -90,6 +93,7 @@
         }
         var data = "model=stockpile" + "&method=updateInventory" + "&item=" + item + "&insert=" + '1' + "&quantity=" + quantity;
         ajaxP(data, function(response) {
+            console.log(response[1]);
             if(response[0] !== false) {
                 updatePage();
             }
@@ -114,35 +118,8 @@
         ajaxRequest.onload = function () {
             if(this.readyState == 4 && this.status == 200) {
                 document.getElementById("stockpile").innerHTML = this.responseText;
-                /*var stockpile_items = this.responseText.split("||");
-                stockpile_items.pop();
-                for(var i = 0; i < stockpile_items.length; i++) {
-                    var stockpile_item = stockpile_items[i].split("|");
-                    document.getElementsByClassName("stockpile_item")[i].children[1].children[1].innerHTML =
-                    stockpile_item[0] + " x " + stockpile_item[1];
-                }*/
             }
         };
         ajaxRequest.open('GET', "handlers/handler_js.php?model=stockpile" + "&method=getStockpile");
         ajaxRequest.send();
-        /* 
-        inventory_items = inventory.split("||");
-        inventory_items.pop();
-        var class_length = document.getElementsByClassName("inventory_item").length;
-        if(inventory_items.length > class_length ) {
-            console.log("clone");
-            var clone = document.getElementById("hidden").cloneNode(true);
-            clone.removeAttribute("id");
-            clone.setAttribute("class", "inventory_item");
-            document.getElementById("inventory").appendChild(clone);
-        }
-        if(inventory_items.length < class_length) {
-            document.getElementsByClassName("inventory_item")[class_length - 1].remove();
-        }
-        for(var x = 0; x < inventory_items.length; x++) {
-            var inventory_item = inventory_items[x].split("|");
-            console.log(inventory_item);
-            document.getElementsByClassName("inventory_item")[x].children[1].children[1].innerHTML =
-            inventory_item[0] + " x " + inventory_item[1];
-        }*/
     }

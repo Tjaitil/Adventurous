@@ -1,12 +1,11 @@
 <?php
     class SetCrops_model extends model {
-        // Store session username in variable
         public $username;
         public $session;
         
-        function __construct ($username, $session) {
+        function __construct ($session) {
             parent::__construct();
-            $this->username = $username;
+            $this->username = $session['username'];
             $this->session = $session;
         }
         public function setCrops($POST) {
@@ -14,7 +13,7 @@
             $sql = "SELECT f.fields_avail, f.grow_type, fw.avail_workforce, fw.efficiency_level
                     FROM farmer as f INNER JOIN farmer_workforce as fw ON fw.username = f.username
                     WHERE f.username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
@@ -30,7 +29,7 @@
             
             $sql = "SELECT farmer_level, experience, time, seed_required FROM crops_data
                     WHERE crop_type=:crop_type AND farmer_level<=:farmer_level AND location=:location";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":crop_type", $param_crop_type, PDO::PARAM_STR);
             $stmt->bindParam(":farmer_level", $param_farmer_level, PDO::PARAM_INT);
             $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
@@ -45,7 +44,7 @@
             $row2 = $stmt->fetch(PDO::FETCH_ASSOC);
             
             $sql = "SELECT amount FROM inventory WHERE item=:item AND username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_item = $POST['type'] . ' seed';
@@ -64,12 +63,12 @@
             $newDate = new DateTime($date);
             $newDate->modify("+{$addTime} seconds");
             try {
-                $this->conn->beginTransaction();
+                $this->db->conn->beginTransaction();
                 
                 $sql = "UPDATE farmer SET fields_avail=:fields_avail, grow_type=:grow_type,
                         grow_quant=:grow_quant, grow_countdown=:grow_countdown, plot1_harvest='true'
                         WHERE location=:location AND username=:username";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":fields_avail", $param_fields_avail, PDO::PARAM_INT);
                 $stmt->bindParam(":grow_type", $param_grow_type, PDO::PARAM_STR);
                 $stmt->bindParam(":grow_quant", $param_grow_quant, PDO::PARAM_INT);
@@ -86,7 +85,7 @@
                 
                 $sql2 = "UPDATE farmer_workforce SET avail_workforce=:avail_workforce,
                                 {$this->session['location']}_workforce=:crop_workforce WHERE username=:username";
-                $stmt2 = $this->conn->prepare($sql2);
+                $stmt2 = $this->db->conn->prepare($sql2);
                 $stmt2->bindParam(":avail_workforce", $param_avail_workforce, PDO::PARAM_STR);
                 $stmt2->bindParam(":crop_workforce", $param_crop_workforce, PDO::PARAM_STR);
                 $stmt2->bindParam(":username", $param_username, PDO::PARAM_STR);
@@ -95,18 +94,18 @@
                 $param_username = $this->username;
                 $stmt2->execute();
                 
-                update_xp($this->conn, $this->username, 'farmer', $experience);
-                update_inventory($this->conn, $this->username, $POST['type'] . ' seed', -$row2['seed_required'], true);
+                update_xp($this->db->conn, $this->username, 'farmer', $experience);
+                update_inventory($this->db->conn, $this->username, $POST['type'] . ' seed', -$row2['seed_required'], true);
                 
-                $this->conn->commit();
+                $this->db->conn->commit();
             }
             catch (Exception $e) {
-                $this->conn->rollBack();
-                new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
-                $this->gameMessage("ERROR: Something unexpected happened, please try again");
+                $this->db->conn->rollBack();
+                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
-            $this->closeConn();
+            $this->db->closeConn();
             js_echo(array($param_avail_workforce, $param_fields_avail));
         }
     }

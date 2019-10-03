@@ -2,7 +2,7 @@
 <html>
     <head>
         <title><?php echo $title; ?></title>
-        <link rel="stylesheet" type="text/css" href="public/css/<?php echo $title ?>.css" />
+        <link rel="stylesheet" type="text/css" href="public/css/<?php echo $name ?>.css" />
         <?php include(constant('ROUTE_VIEW') . '/head.php');?>
     </head>
     <body>

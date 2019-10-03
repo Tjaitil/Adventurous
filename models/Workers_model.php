@@ -3,9 +3,9 @@
         public $username;
         public $session;
         
-        function __construct ($username, $session) {
+        function __construct ($session, $db) {
             parent::__construct();
-            $this->username = $username;
+            $this->username = $session['username'];
             $this->session = $session;
         }
         public function upgradeEffiency($skill) {
@@ -15,14 +15,14 @@
             }
             
             $sql = "SELECT efficiency_level FROM {$skill}_workforce WHERE username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             
             $sql = "SELECT max_efficiency_level FROM level_data WHERE level=:level";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":level", $param_level, PDO::PARAM_INT);
             $param_level = $this->session[$skill]['level'];
             $stmt->execute();
@@ -40,23 +40,23 @@
                 return false;
             }
             try {
-                $this->conn->beginTransacion();
+                $this->db->conn->beginTransacion();
                 
                 $sql = "UPDATE {$skill}_workforce SET efficiency_level=:efficiency_level WHERE username=:username";
-                $stmt = $this->conn->prepare($sql);
+                $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":efficiency_level", $param_efficiency_level, PDO::PARAM_INT);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_efficiency_level = $row['effency_level'] + 1;
                 $param_username = $this->username;
                 $stmt->execute();
                 
-                update_inventory($this->conn, $this->username, 'gold', -$amount);
+                update_inventory($this->db->conn, $this->username, 'gold', -$amount);
                 
-                $this->conn->commit();
+                $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->conn->rollBack();
-                new ajaxexception($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->db->conn->rollBack();
+                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
