@@ -35,7 +35,6 @@
             $modelPath = constant("ROUTE_MODEL");
             $path = $modelPath . $name.'_model.php';
             if(file_exists($path)) {
-                require $modelPath .$name.'_model.php';
                 $modelName = $name . '_model';
                 $db = new database();
                 if(in_array($modelName, array('newuser_model', 'gamedata_model')) == true) {
