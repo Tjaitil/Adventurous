@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title> <?php echo $title ?></title>
-        <link rel="stylesheet" type="text/css" href="public/css/<?php echo $name;?>.css" />
+        <title> <?php echo $title;?></title>
         <?php require(constant('ROUTE_VIEW'). 'head.php');?>
+        <link rel="stylesheet" type="text/css" href="public/css/<?php echo $name;?>.css" />
         <meta charset="utf-8"/>
     </head>
     <body>

@@ -1,5 +1,5 @@
 <?php
-    class setassignment_model extends model {
+    class SetAssignment_model extends model {
         public $username;
         public $session;
         public $destination;
@@ -16,6 +16,12 @@
             $this->assignment_type = restore_file('trader_assignment_types', true);
         }
         public function newAssignment($assignment_id, $favor = false) {
+            
+            if($this->session['hunger'] < 10) {
+                $this->gameMessage("ERROR: Your hunger is too high, please eat!", true);
+                return false;
+            }
+            
             /*$assignment_amount = str_replace(" ", "+", $assignment_amount);*/
             $sql = "SELECT assignment_id, cart FROM trader WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);
@@ -31,23 +37,12 @@
                 $this->gameMsssage("ERROR! You don't have a cart", true);
                 return false;
             }
-            if($favor != true) {
-                $sql = "SELECT destination, assignment_amount, time, assignment_type FROM trader_assignments WHERE assignment_id=:assignment_id";
-                $stmt = $this->db->conn->prepare($sql);
-                $stmt->bindParam(":assignment_id", $param_assignment_id, PDO::PARAM_STR);
-                $param_assignment_id = $assignment_id;
-                $stmt->execute();
-                $assignment_data = $stmt->fetch(PDO::FETCH_ASSOC);
-            }
-            else {
-                $sql = "SELECT destination, assignment_amount, time, assignment_type FROM trader_assignments
-                WHERE assignment_id=:assignment_id AND assignment_type='favor'";
-                $stmt = $this->db->conn->prepare($sql);
-                $stmt->bindParam(":assignment_id", $param_assignment_id, PDO::PARAM_STR);
-                $param_assignment_id = $assignment_id;
-                $stmt->execute();
-                $assignment_data = $stmt->fetch(PDO::FETCH_ASSOC);
-            }
+            $sql = "SELECT destination, assignment_amount, time, assignment_type FROM trader_assignments WHERE assignment_id=:assignment_id";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->bindParam(":assignment_id", $param_assignment_id, PDO::PARAM_STR);
+            $param_assignment_id = $assignment_id;
+            $stmt->execute();
+            $assignment_data = $stmt->fetch(PDO::FETCH_ASSOC);
             if($favor != true) {
                 $sql2 = "SELECT xp, time FROM assignment_types WHERE type=:type";
                 $stmt2 = $this->db->conn->prepare($sql2);

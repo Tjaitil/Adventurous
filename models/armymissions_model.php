@@ -40,30 +40,41 @@
         public function getWarriors() {
             $warrior_id = array();
             $warrior_id[0] = $this->username;
-            $sql = "SELECT warrior_id, type FROM warriors WHERE fetch_report='0' AND username=:username";
+            $sql = "SELECT warrior_id, type FROM warriors WHERE fetch_report = '0' AND mission = '0' AND username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
             $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            foreach($row as $key) {
-                array_push($warrior_id, $key['warrior_id']);
+            $warriors = array();
+            if($stmt->rowCount() > 0) {
+                foreach($row as $key) {
+                    array_push($warrior_id, $key['warrior_id']);
+                }
+                $in  = str_repeat('?,', count($warrior_id) - 2) . '?';
+                $sql = "SELECT warrior_id, stamina_level, technique_level, precision_level, strength_level FROM warrior_levels
+                WHERE username= ? AND warrior_id IN ($in) ";
+                $stmt = $this->db->conn->prepare($sql);
+                $stmt->execute($warrior_id);
+                $row2 = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                
+                $sql = "SELECT
+                        (SELECT SUM(attack) FROM smithy_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS attack,
+                        (SELECT SUM(defence) FROM smithy_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS defence
+                        FROM warrior_armory
+                        WHERE username=:username";
+                $stmt = $this->db->conn->prepare($sql);
+                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                $param_username = $this->username;
+                $stmt->execute();
+                $row3 = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $this->db->closeConn();
+                
+                foreach($row2 as $key => $value) {
+                    array_push($warriors, array_merge($row[$key], $row2[$key], $row3[$key]));
+                }
             }
-            $in  = str_repeat('?,', count($warrior_id) - 2) . '?';
-            $sql = "SELECT stamina_level, technique_level, precision_level, strength_level FROM warrior_levels
-            WHERE username= ? AND warrior_id IN ($in) ";
-            $stmt = $this->db->conn->prepare($sql);
-            $stmt->execute($warrior_id);
-            $row2 = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $this->db->closeConn();
-            for($i = 0; $i < count($row2); $i++) {
-                echo "Warrior: " . $row[$i]['warrior_id'] . '|';
-                echo "Type: " . $row[$i]['type'] . '|';
-                echo "Stamina level: " . $row2[$i]['stamina_level'] . '|';
-                echo "Technique level: " . $row2[$i]['technique_level'] . '|';
-                echo "Precision level: " . $row2[$i]['precision_level'] . '|';
-                echo "Strength level: " . $row2[$i]['strength_level'] . '||';
-            }
+            get_template('warrior_select', $warriors, true);
         }
     }
 ?>

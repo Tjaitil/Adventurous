@@ -1,5 +1,5 @@
 <?php
-    class setadventure_model extends model {
+    class SetAdventure_model extends model {
         public $username;
         public $session;
         public $adventure_data;
@@ -8,6 +8,35 @@
             parent::__construct();
             $this->username = $session['username'];
             $this->session = $session;
+        }
+        public function checkAdventure() {
+            // Check if user has an already existing adventure
+            $sql = "SELECT adventure_id FROM adventure WHERE username=:username";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_username = $this->username;
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+        public function toggleInvite() {
+            $sql = "SELECT invite_only FROM adventures WHERE adventure_leader=:adventure_leader";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_username = $this->username;
+            $stmt->execute();
+            if(!$stmt->rowCount() > 1) {
+                $this->gameMessage("ERROR: You are currently not in an adventure", true);
+            }
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            $sql = "UPDATE adventures SET invite_only=:invite_only WHERE adventure_leader=:adventure_leader";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->bindParam(":invite_only", $param_invite_only, PDO::PARAM_INT);
+            $stmt->bindParam(":adventure_leader", $param_adventure_leader, PDO::PARAM_STR);
+            $param_invite_only = ($row['invite_only'] == 1) ? 0 : 1;
+            $param_adventure_leader = $this->username;
+            $stmt->execute();
+            echo ($param_invite_only == 1) ? 'on' : 'off';
         }
         public function newAdventure($adventure_data) {
             $this->adventure_data = $adventure_data;
@@ -20,10 +49,19 @@
             }
             try {
                 $this->db->conn->beginTransaction();
-                $sql = "INSERT INTO adventures (adventure_leader) VALUES (:adventure_leader)";
+                $sql = "INSERT INTO adventures (adventure_leader, difficulty, location, {$this->session['profiency']}, invite_only)
+                        VALUES (:adventure_leader, :difficulty, :location, :profiency, :invite_only)";
                 $stmt = $this->db->conn->prepare($sql);
-                $stmt->bindParam(":adventure_leader", $param_username, PDO::PARAM_STR);
-                $param_username = $this->username;
+                $stmt->bindParam(":adventure_leader", $param_adventure_leader, PDO::PARAM_STR);
+                $stmt->bindParam(":difficulty", $param_difficulty, PDO::PARAM_STR);
+                $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
+                $stmt->bindParam(":profiency", $param_profiency, PDO::PARAM_STR);
+                $stmt->bindParam(":invite_only", $param_invite_only, PDO::PARAM_INT);
+                $param_adventure_leader = $this->username;
+                $param_difficulty = $this->adventure_data['difficulty'];
+                $param_location = $this->adventure_data['location'];
+                $param_profiency = $this->username;
+                $param_invite_only = $this->adventure_data['invite_only'];
                 $stmt->execute();
                 $this->adventure_data['adventure_id'] = $this->db->conn->lastInsertId();
                 
@@ -34,31 +72,6 @@
                 $param_adventure_id = $this->adventure_data['adventure_id'];
                 $param_username = $this->username;
                 $stmt2->execute();
-                
-                $sql3 = "UPDATE adventures SET difficulty=:difficulty, location=:location, 
-                         {$this->session['profiency']}=:profiency WHERE adventure_id=:adventure_id AND
-                         adventure_leader=:adventure_leader";
-                $stmt3 = $this->db->conn->prepare($sql3);
-                $stmt3->bindParam(":difficulty", $param_difficulty, PDO::PARAM_STR);
-                $stmt3->bindParam(":location", $param_location, PDO::PARAM_STR);
-                $stmt3->bindParam(":profiency", $param_profiency, PDO::PARAM_STR);
-                $stmt3->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_STR);
-                $stmt3->bindParam(":adventure_leader", $param_adventure_leader, PDO::PARAM_STR);
-                $param_difficulty = $this->adventure_data['difficulty'];
-                $param_location = $this->adventure_data['location'];
-                $param_profiency = $this->username;
-                $param_adventure_id = $this->adventure_data['adventure_id'];
-                $param_adventure_leader = $this->username;
-                $stmt3->execute();
-                
-                $sql4 = "INSERT INTO adventures_{$this->session['profiency']} (adventure_id, username)
-                         VALUES(:adventure_id, :username)";
-                $stmt4 = $this->db->conn->prepare($sql4);
-                $stmt4->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_STR);
-                $stmt4->bindParam(":username", $param_username, PDO::PARAM_STR);
-                // $param_adventure_id is already defined
-                $param_username = $this->username;
-                $stmt4->execute();
                 
                 $this->advRequirements();
                 

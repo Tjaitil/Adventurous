@@ -3,15 +3,17 @@
     height: 250px;
     width: 90%;
     overflow: hidden;
+    margin-bottom: 10px;
 }
-
 #chat  {
     border: 1px solid black;
     height: 87%;
-    width: 90%;
-    overflow: scroll;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding: 0px 0px 0px 3px;
+    box-sizing: border-box;
 }
-
 #chat ul {
     list-style-type: none;
     float: left;
@@ -19,6 +21,14 @@
 #chat ul li {
     text-align: left;
     display: block
+}
+#public_chat input[type="text"] {
+    float: left;
+    width: 92%;
+}
+#public_chat button {
+    float: left;
+    margin-top: 4px;
 }
 #world_map {
     display:none;
@@ -63,12 +73,14 @@
 #town_map {
     width:40%;
     height:300px;
+    float: left;
     border: 1px solid black;
     margin:0px 0px 0px 10px;
     display:inline-block;
+    box-sizing: border-box;
 }
 #countdowns {
-    width:20%;
+    width: 32%;
     height:300px;
     margin: 0px 0px 0px 0px;
     border: 1px solid black;

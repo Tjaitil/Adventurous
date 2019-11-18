@@ -1,4 +1,4 @@
-<?php foreach($data as $key):?>
+<?php foreach($data as $key): ?>
         <div id="warrior_<?php echo $key['warrior_id'];?>" class="warrior">
             <div class="info">
                 <img src="#" />

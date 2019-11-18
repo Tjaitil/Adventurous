@@ -2,8 +2,8 @@
 <html>
     <head>
         <title><?php echo $title; ?></title>
-        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name ?>.css" />
         <?php require(constant('ROUTE_VIEW') . 'head.php');?>
+        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name ?>.css" />
     </head>
     <body>
         <header>
@@ -29,32 +29,30 @@
                         <td> Time </td>
                     </tr>
                     <?php foreach($this->data['armyMissions'] as $key):?>
-                    <?php $i = 0;?>
                     <tr>
-                        <td><?php echo $key['location'];?></td>
+                        <td><?php echo ucfirst($key['location']);?></td>
                         <td><?php echo $key['required_warriors'];?></td>
                         <td><?php echo $key['mission'];?></td>
                         <td>
-                            <?php echo $key['reward'][$i * 1 + 1];?>
-                            <img width="15" height="15" src="<?php echo constant('ROUTE_IMG') . $key['reward'][$i * 1] . '.jpg';?>"/>
+                            <?php echo $key['reward'];?>
+                            <img width="15" height="15" src="<?php echo constant('ROUTE_IMG') . 'gold.png';?>"/>
                         </td>
                         <td><?php echo $key['time'];?></td>
                         <td><button onclick="prepareMission(this, <?php echo $key['mission_id']; ?>);"> Do mission</button></td>
                     </tr>
-                    <?php $i++;?>
                     <?php endforeach;?>
                 </thead>
             </table>
-            <div id="mission">
-                <div id="mission_enabled">
-                    <button onclick="exit();">Exit</button>
-                    <table id="mission_table">
-                                                
-                    </table>
-                    <p>Select Warriors:</p>
+            <div id="mission_enabled">
+                <button onclick="exit();">Exit</button>
+                <table id="mission_table">
+                                            
+                </table>
+                <p>Select Warriors:</p>
+                <div id="warriors_container">
                     
-                    <button id="mission_button" onclick="doMission();"> Do Mission </button>
                 </div>
+                <button id="mission_button" onclick="doMission();"> Do Mission </button>
             </div>
             <script src="<?php echo constant('ROUTE_JS') . $name . '.js';?>"></script>
         </section>

@@ -8,7 +8,11 @@
             $this->username = $session['username'];
             $this->session = $session;
         }
-        public function updateTraining($warrior_id) {
+        public function updateTraining($POST) {
+            // $POST variable holds the post data
+            // This function is called from an AJAX request from armycamp.js
+            // Function to update the data of the warrior who has completed training
+            $warrior_id = $POST['warrior_id'];
             $sql = "SELECT training_type FROM warriors WHERE warrior_id=:warrior_id AND username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);

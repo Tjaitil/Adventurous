@@ -1,26 +1,56 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title><?php echo $title; ?></title>
+        <title><?php echo $title;?></title>
+        <?php require(constant('ROUTE_VIEW') . 'head.php');?>
         <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name ?>.css" />
-        <?php include(constant('ROUTE_VIEW') . 'head.php');?>
     </head>
     <body>
         <header>
-            <?php require(constant('ROUTE_VIEW') . 'header.php'); ?>
+            <?php require(constant('ROUTE_VIEW') . 'header.php');?>
         </header>
         <section>
             <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
             <h3 class="page_title"> Smithy </h3>
             <div id="smith">
                 <div id="minerals">
-                    <img src="#" class="minerals" title="iron" onclick="showMineral('iron', this);" />
-                    <img src="#" class="minerals" title="steel" onclick="showMineral('steel', this);" />
-                    <img src="#" class="minerals" title="gargonite" onclick="showMineral('gargonite', this);" />
-                    <img src="#" class="minerals" title="adron" onclick="showMineral('adron', this);" />
-                    <img src="#" class="minerals" title="yedqon" onclick="showMineral('yeqdon', this);"/>
-                    <img src="#" class="minerals" title="frajrite" onclick="showMineral('frajrite', this);"/>
+                    <img src="<?php echo constant('ROUTE_IMG') . 'iron.png';?>"
+                    class="minerals" title="iron" onclick="showMineral('iron', this);" />
+                    <img src="<?php echo constant('ROUTE_IMG') . 'steel.png';?>"
+                    class="minerals" title="steel" onclick="showMineral('steel', this);" />
+                    <img src="<?php echo constant('ROUTE_IMG') . 'gargonite.png';?>"
+                    class="minerals" title="gargonite" onclick="showMineral('gargonite', this);" />
+                    <img src="<?php echo constant('ROUTE_IMG') . 'adron.png';?>"
+                    class="minerals" title="adron" onclick="showMineral('adron', this);" />
+                    <img src="<?php echo constant('ROUTE_IMG') . 'yeqdon.png';?>"
+                    class="minerals" title="yedqon" onclick="showMineral('yeqdon', this);"/>
+                    <img src="<?php echo constant('ROUTE_IMG') . 'frajrite.png';?>"
+                    class="minerals" title="frajrite" onclick="showMineral('frajrite', this);"/>
                 </div>
+                <?php
+                    function generateTable($array) {
+                        foreach($array as $key):
+                        if(strpos($key['item'], 'arrows') === false): ?>
+                        <tr>
+                            <td><?php echo ucwords($key['item']);?></td>
+                            <td><?php echo $key['amount_required'];?></td>
+                            <td> <?php echo $key['cost'];?></td>
+                            <td><input type="number" min="0" />
+                            <button> Make</button></td>
+                        </tr>
+                        <?php else:
+                        $mineral = explode(" ", $key['item'])[0];
+                        ?>
+                        <tr>
+                            <td><?php echo ucwords($key['item']);?></td>
+                            <td> 1 <img src="<?php echo constant('ROUTE_IMG') . $mineral . 'png';?>" /> =
+                                15 <img src="<?php echo constant('ROUTE_IMG') . $key['item']. '.png';?>" /></td>
+                            <td> <img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.png';?>" /></td>
+                            <td> <input type="number" min="0" />
+                            <button> Smith </button></td>
+                        </tr>
+                     <?php endif;endforeach;
+                     };?>
                 <table id="iron">
                     <thead>
                         <tr>
@@ -29,69 +59,7 @@
                             <td> Cost: </td>
                         </tr>
                     </thead>
-                    <tr>
-                        <td> Bar </td>
-                        <td> 1 </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Sword </td>
-                        <td> 2 </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Spear </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Longsword </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Helm </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Platebody </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Platelegs </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Boots </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Shield </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
+                    <?php generateTable($this->data['iron']);?>
                 </table>
                 <table id="steel">
                     <thead>
@@ -101,69 +69,7 @@
                             <td> Cost: </td>
                         </tr>
                     </thead>
-                    <tr>
-                        <td> Bar </td>
-                        <td> 1 </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Sword </td>
-                        <td> 2 </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button > Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Spear </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Longsword </td>
-                        <td> 2 </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Helm </td>
-                        <td> 3 </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Platebody </td>
-                        <td> 5 </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Platelegs </td>
-                        <td> 5 </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Boots </td>
-                        <td> 2 </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Shield </td>
-                        <td> 4 </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
+                    <?php generateTable($this->data['steel']);?>
                 </table>
                 <table id="gargonite">
                     <thead>
@@ -173,77 +79,7 @@
                             <td> Cost: </td>
                         </tr>
                     </thead>
-                    <tr>
-                        <td> Bar </td>
-                        <td> 1 </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Sword </td>
-                        <td> 2 </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Spear </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Longsword </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Helm </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Platebody </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Platelegs </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Boots </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Shield </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Gargonite arrows  </td>
-                        <td> 1 <img title="Gargonite" src="<?php echo constant('ROUTE_IMG') . 'gargonite.jpg';?>" /> =
-                            15 <img title="Gargonite" src="<?php echo constant('ROUTE_IMG') . 'gargonite.jpg';?>" /></td>
-                        <td> <img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.jpg';?>" /></td>
-                        <td> <input type="number" min="0" />
-                        <button> Smith </button></td>
-                    </tr>
+                    <?php generateTable($this->data['gargonite']);?>
                 </table>
                 <table id="adron">
                     <thead>
@@ -253,77 +89,7 @@
                             <td> Cost: </td>
                         </tr>
                     </thead>
-                    <tr>
-                        <td> Bar </td>
-                        <td> 1 </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Sword </td>
-                        <td> 2 </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Spear </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Longsword </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Helm </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Platebody </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Platelegs </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Boots </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Shield </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Adron arrows </td>
-                        <td>  <img src="<?php echo constant('ROUTE_IMG') . 'adron bar.png';?>" class="item" /> =
-                        15 <img src="<?php echo constant('ROUTE_IMG') . 'adron.jpg';?>" class="item" /></td>
-                        <td>  <img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.jpg';?>" /></td>
-                        <td> <input type="number" min="0" />
-                        <button> Smith </button></td>
-                    </tr>
+                    <?php generateTable($this->data['adron']);?>
                 </table>
                 <table id="yeqdon">
                     <thead>
@@ -333,77 +99,7 @@
                             <td> Cost: </td>
                         </tr>
                     </thead>
-                    <tr>
-                        <td> Bar </td>
-                        <td> 1 </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button > Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Sword </td>
-                        <td> 2 </td>
-                        <td> 10 </td>
-                        <td><input type="number" min="0" />
-                            <button > Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Spear </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button > Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Longsword </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button > Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Helm </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button > Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Platebody </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button > Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Platelegs </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button > Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Boots </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Shield </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button > Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Yeqdon arrows </td>
-                        <td>  <img src="<?php echo constant('ROUTE_IMG') . 'yeqdon.jpg';?>" /> =
-                        15 <img src="<?php echo constant('ROUTE_IMG') . 'yeqdon.jpg';?>" /></td>
-                        <td>  <img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.jpg';?>" /></td>
-                        <td> <input type="number" min="0" />
-                        <button> Smith </button></td>
-                    </tr>
+                    <?php generateTable($this->data['yeqdon']);?>
                 </table>
                 <table id="frajrite">
                     <thead>
@@ -413,84 +109,13 @@
                             <td> Cost: </td>
                         </tr>
                     </thead>
-                    <tr>
-                        <td> Bar </td>
-                        <td> 1 </td>
-                        <td> 100 </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Sword </td>
-                        <td> 2 </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Spear </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Longsword </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Helm </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Platebody </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Platelegs </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Boots </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Shield </td>
-                        <td>  </td>
-                        <td>  </td>
-                        <td><input type="number" min="0" />
-                            <button> Make</button></td>
-                    </tr>
-                    <tr>
-                        <td> Frajrite arrows </td>
-                        <td>  <img title="Frajrite" src="<?php echo constant('ROUTE_IMG') . 'frajrite.jpg';?>" /> =
-                        15 <img title="Frajrite" src="<?php echo constant('ROUTE_IMG') . 'frajrite.jpg';?>" /></td>
-                        <td>  <img class="gold" title="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.jpg';?>" /></td>
-                        <td> <input type="number" min="0" />
-                        <button> Smith </button></td>
-                    </tr>
+                    <?php generateTable($this->data['frajrite']);?>
                 </table>
             </div>
             <div id="inventory">
                 <?php require(constant('ROUTE_VIEW') . 'inventory.php'); url();?>    
             </div>
             <script src="<?php echo constant('ROUTE_JS') . 'smithy.js';?>"></script>
-            <script></script>
         </section>
         <aside>
             <?php require(constant('ROUTE_VIEW') . '/aside.php'); ?>

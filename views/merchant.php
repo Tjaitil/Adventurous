@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title><?php echo $title; ?></title>
-        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name ?>.css" />
+        <title><?php echo $title;?></title>
         <?php require(constant('ROUTE_VIEW') . '/head.php');?>
+        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name ?>.css" />
     </head>
     <body>
         <header>
-            <?php require(constant('ROUTE_VIEW') . 'header.php'); ?>
+            <?php require(constant('ROUTE_VIEW') . 'header.php');?>
         </header>
         <section>
             <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
@@ -44,7 +44,7 @@
                         </tr>
                     </thead>
                     <tr>
-                        <?php get_template('assignment', $this->data);?>
+                        <?php get_template('assignment', $this->data['trader_assignments']);?>
                     </tr>
                 </table>
                 <div id="assignment">
@@ -58,6 +58,7 @@
                     </div>
                 </div>
                 <script src="<?php echo constant('ROUTE_JS') . $name . '.js';?>"></script>
+                <script src="<?php echo constant('ROUTE_JS') . 'trader.js';?>"></script>
             </div>
         </section>
         <aside>

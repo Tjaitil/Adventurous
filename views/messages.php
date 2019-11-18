@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title><?php echo $title; ?></title>
-        <link rel="stylesheet" type="text/css" href="public/css/<?php echo $name ?>.css" />
-        <?php include(constant('ROUTE_VIEW') . '/head.php');?>
+        <title><?php echo $title;?></title>
+        <?php require(constant('ROUTE_VIEW') . '/head.php');?>
+        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name;?>.css" />
     </head>
     <body>
         <header>
@@ -88,7 +88,7 @@
             <script src="<?php echo constant('ROUTE_JS') . $name . ".js"; ?>"></script>
         </section>
         <aside>
-            <?php require(constant('ROUTE_VIEW') . '/aside.php'); ?>
+            <?php require(constant('ROUTE_VIEW') . '/aside.php');?>
         </aside>
     </body>
 </html>

@@ -1,0 +1,59 @@
+#action_div {
+    width: 50%;
+    max-width: 407px;
+    border: 5px double #251a0e;
+    float: left;
+    background-color: #f2e6d9;
+}
+#action_div::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+#actions {
+    width: 100%;
+    padding: 2px;
+    border-bottom: 3px solid black;
+}
+#select {
+    width: 58%;
+    max-width: 231px;
+    box-sizing: border-box;
+    float: left;
+    padding: 1.5px;
+}
+.crop, .mineral {
+    width: 70px;
+    height: 70px;
+    float: left;
+    border: 2px solid black;
+    font-size: 12px;
+    box-sizing: border-box;
+    margin: 3px;
+}
+#data_container {
+    width: 42%;
+    box-sizing: border-box;
+    float: left;
+    border-left: 3px solid black;
+    height: 100%;
+    padding: 2%;
+}
+#data {
+    visibility: hidden;
+}
+#data input {
+    width: 56px;
+    cursor: default;
+}
+#data input:nth-child(12) {
+    cursor: text;
+}
+#data figure {
+    width: 100%;
+    height: 70px;
+}
+#data figure img {
+    margin: 0 auto;
+    float: none;
+}

@@ -1,25 +1,25 @@
     
     window.addEventListener("load", function () {
         getCountdown();
-        var img = document.getElementById("mineral_select").querySelectorAll("img");
+        var img = document.getElementById("select").querySelectorAll("img");
         img.forEach(function(element) {
               // ... code code code for this one element
                 element.addEventListener('click', function() {
-                    showMineral();
+                    showSelect();
                 });
             });
         document.getElementById("cancel").addEventListener("click", cancelMining);
         /*document.getElementById("mineral_select").getElementsByTagName("img").addEventListener("click", showMineral);*/
-        document.getElementById("mine_form").children[12].addEventListener("click", setMine);
+        document.getElementById("data_form").querySelectorAll("button")[0].addEventListener("click", setMine);
     });
     
     var intervals = [];
     function getCountdown() {
         document.getElementById("mining").innerHTML = "Currently Mining";
-        ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.onload = function() {
-            if(this.readyState == 4 && this.status == 200) {
-                var data = this.responseText.split("|");
+        var data = "&model=mine" + "&method=checkCountdown";
+        ajaxG(data, function(response) {
+            if(response[0] != false) {
+                var data = response[1].split("|");
                 var time = data[0] * 1000;
                 var fetch = data[1];
                 console.log(data);
@@ -49,30 +49,29 @@
                     }
                 }, 1000);
             }
-        };
-        ajaxRequest.open("GET", "/handlers/handler_g.php?&model=mine" + "&method=checkCountdown");
-        ajaxRequest.send();
+        });
     }
-    function showMineral() {
+    /*function showMineral() {
         var element = event.target;
         var clone = element.cloneNode(true);
         clone.removeAttribute("onclick");
         var mineral = element.getAttribute("alt");
         var div = document.getElementById("mine_form");
         div.style.visibility = "visible";
-        div.children[1].value = jsUcfirst(mineral);
-        div.children[4].value = this[mineral].time;
-        div.children[7].value = this[mineral].permits;
-        if(div.children[0].tagName != 'IMG') {
-            div.insertBefore(clone, div.children[0]);
+        console.log(div.children[1]);
+        var div_inputs = div.querySelectorAll("input");
+        div_inputs[0].value = jsUcfirst(mineral);
+        div_inputs[1].value = this[mineral].time;
+        div_inputs[2].value = this[mineral].permits;
+        if(div.children[0].children.length == 0) {
+            div.children[0].appendChild(clone);
         }
         else {
             clone.src = this[mineral].src;
-            console.log(this[mineral].src);
         }
-    }
+    }*/
     function setMine() {
-        var form = document.getElementById("mine_form");
+        var form = document.getElementById("data_form");
         
         if(!form[3].reportValidity()) {
             console.log("error");
@@ -84,11 +83,11 @@
             ajaxP(data, function(response) {
                 if(response[0] !== false) {
                     getCountdown();
-                    // rT = repsonseText from AJAX request
-                    var rT = response[1].split("|");
-                    var form = document.getElementById("mine_form");
-                    form.children[11].innerHTML = "(" + rT[1] + ")";
-                    form.children[0].innerHTML = "Total permits:" + rT[0];
+                    // RepsonseText from AJAX request
+                    var responseText = response[1].split("|");
+                    var form = document.getElementById("data_form");
+                    form.querySelectorAll("span")[0].innerHTML = "(" + responseText[1] + ")";
+                    form.children[0].innerHTML = "Total permits:" + responseText[0];
                 }
             });
         }
@@ -97,13 +96,14 @@
     function updateMine() {
         var data = "model=UpdateMine" + "&method=updateMine";
         ajaxP(data, function(response) {
+            console.log(response);
             if(response[0] !== false) {
                 getCountdown();
-                // rT = responseText
-                var rT = response[1].split("|");
-                gameLog(rT[0]);
-                show_xp('miner', rT[1]);
+                var responseText = response[1].split("|");
+                gameLog(responseText[0]);
+                show_xp('miner', responseText[1]);
                 updateInventory("mine");
+                document.getElementById("data_form").querySelectorAll("span")[0].innerHTML = "(" + responseText[2] + ")";
             }       
         });
         console.log(intervals);

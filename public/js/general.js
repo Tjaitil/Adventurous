@@ -22,12 +22,12 @@
     });
     
     function displayNav() {
-        var visibility = document.getElementById("nav_2").children[0].style.visibility;
+        var visibility = document.getElementById("nav_2").children[1].style.visibility;
         if(visibility == 'visible') {
-            document.getElementById("nav_2").children[0].style.visibility = "hidden";
+            document.getElementById("nav_2").children[1].style.visibility = "hidden";
         }
         else {
-            document.getElementById("nav_2").children[0].style.visibility = "visible";
+            document.getElementById("nav_2").children[1].style.visibility = "visible";
         }
     }
     function addZero(i) {
@@ -68,10 +68,8 @@
     }
     /*window.addEventListener("load", getgMessage, false);*/
     function openNews(news) {
-        console.log(news);
         document.getElementById("news").style.visibility = "visible";
         document.getElementById("content").style.visibility = "visible";
-        console.log(typeof news);
         if(typeof news == 'object') {
             document.getElementById("content").appendChild(news);
         }
@@ -87,32 +85,31 @@
         document.getElementById("content").style.visibility = "hidden";
     }
     function get_xp(skill, element) {
-        var tooltip = element.children[2];
+        var tooltip = element.children[1];
         tooltip.style.right = "-30%";
         if(tooltip.style.visibility == "visible") {
             tooltip.style.visibility = "hidden";
             return false;
         }
+        else if(skill == 'adventurer') {
+            tooltip.innerHTML = skill.charAt(0).toUpperCase() + skill.slice(1);
+            tooltip.style.visibility = "visible";
+        }
         else {
-            if(tooltip.innerHTML.indexOf("C") != -1) {
-                tooltip.style.visibility = "visible";
-                console.log("no AJAX");
-            }
-            else {
-                ajaxRequest = new XMLHttpRequest();
-                ajaxRequest.onload = function () {
-                    if(this.readyState == 4 && this.status == 200) {
-                        var data = this.responseText.split("|");
-                        data.shift();
-                        var skillName = skill.charAt(0).toUpperCase() + skill.slice(1);
-                        /*element.title = skillName + '\n' + "Current xp: " + data[0] + '\n' + "Next level: " + data[1];*/
-                        tooltip.innerHTML = skillName + '</br>' + "Current xp: " + data[0] + '</br>' + "Next level: " + data[1];
-                        tooltip.style.visibility = "visible";
-                    }
-                };
-                ajaxRequest.open('GET', "handlers/handler_ses.php?variable=" + skill);
-                ajaxRequest.send();
-            }
+            ajaxRequest = new XMLHttpRequest();
+            ajaxRequest.onload = function () {
+                if(this.readyState == 4 && this.status == 200) {
+                    console.log(this.responseText);
+                    var data = this.responseText.split("|");
+                    data.shift();
+                    var skillName = skill.charAt(0).toUpperCase() + skill.slice(1);
+                    /*element.title = skillName + '\n' + "Current xp: " + data[0] + '\n' + "Next level: " + data[1];*/
+                    tooltip.innerHTML = skillName + '</br>' + "Current xp: " + data[0] + '</br>' + "Next level: " + data[1];
+                    tooltip.style.visibility = "visible";
+                }
+            };
+            ajaxRequest.open('GET', "handlers/handler_ses.php?variable=" + skill);
+            ajaxRequest.send();
         }
     }
     function show_xp(skill, xp) {
@@ -132,22 +129,6 @@
         element.innerHTML = "";
     }   
     function updateInventory(page) {
-        /*inventory_items = inventory.split("||");
-        inventory_items.pop();
-        var class_length = document.getElementsByClassName("inventory_item").length;
-        if(inventory_items.length > class_length ) {
-            var clone = document.getElementsByClassName("inventory_item")[0].cloneNode(true);
-            clone.setAttribute("class", "inventory_item");
-            document.getElementById("inventory").appendChild(clone);
-        }
-        if(inventory_items.length < class_length) {
-            document.getElementsByClassName("inventory_item")[class_length - 1].remove();
-        }
-        for(var x = 0; x < inventory_items.length; x++) {
-            var inventory_item = inventory_items[x].split("|");
-            document.getElementsByClassName("inventory_item")[x].children[0].children[1].innerHTML =
-            inventory_item[1] + " x " + inventory_item[0];
-        }*/
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
             if(this.readyState == 4 && this.status == 200) {
@@ -189,17 +170,27 @@
             return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
         });
     }
-    function selectedCheck() {
+    function selectedCheck(quantity_r = true) {
         if(document.getElementById("selected").getElementsByTagName("figure").length == 0) {
             gameLog("Please select a valid item");
             return false;
         }
-        var quantity = document.getElementById("quantity").value;
-        if(quantity == 0) {
-            gameLog("Please select a valid amount");
-            return false;
+        var div = document.getElementById("selected");
+        var figure = div.querySelectorAll("figure")[0];
+        var item = figure.children[1].innerHTML.toLowerCase();
+        
+        // amount_r is variable that opens up for checking only item or item and amount
+        if(quantity_r === true) {
+            var quantity = document.getElementById("quantity").value;
+            if(quantity == 0) {
+                gameLog("Please select a valid amount");
+                return false;
+            }
+            return [item, amount];
         }
-        return true;
+        else {
+            return [item];
+        }
     }
     function JSONForm(form) {
         var form_data = {};
@@ -256,12 +247,29 @@
         ajaxRequest.open('GET', "handlers/handler_g.php?" + data);
         ajaxRequest.send();
     }
+    function ajaxJS(data, callback, log = true) {
+        ajaxRequest = new XMLHttpRequest();
+        ajaxRequest.onload = function () {
+            if(this.readyState == 4 && this.status == 200) {
+                if(this.responseText.indexOf("ERROR:") != -1) {
+                    if(log == true) {
+                        gameLog(this.responseText);
+                    }
+                    callback([false, this.responseText]);
+                }
+                else {
+                    callback([true, this.responseText]);
+                }
+            }
+        };
+        ajaxRequest.open('GET', "handlers/handler_js.php?" + data);
+        ajaxRequest.send();
+    }
     function ajaxP(data, callback, log = true) {
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
             if(this.readyState == 4 && this.status == 200) {
                 if(this.responseText.indexOf("ERROR:") != -1) {
-                    console.log(this.responseText);
                     if(log == true) {
                         gameLog(this.responseText);
                     }

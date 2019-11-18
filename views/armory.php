@@ -2,8 +2,8 @@
 <html>
     <head>
         <title><?php echo $title; ?></title>
-        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name ?>.css" />
         <?php include(constant('ROUTE_VIEW') . 'head.php');?>
+        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name ?>.css" />
     </head>
     <body>
         <header>

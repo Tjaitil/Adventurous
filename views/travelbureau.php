@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title><?php echo $title; ?></title>
+        <title><?php echo $title;?></title>
+        <?php require(constant('ROUTE_VIEW') . 'head.php');?>
         <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name ?>.css" />
-        <?php include('views/head.php');?>
     </head>
     <body>
         <header>
-            <?php require('views/header.php'); ?>
+            <?php require(constant('ROUTE_VIEW') . 'header.php');?>
         </header>
         <section>
             <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
@@ -39,7 +39,7 @@
             </div>
         </section>
         <aside>
-            <?php require('views/aside.php'); ?>
+            <?php require(constant('ROUTE_VIEW') . 'aside.php');?>
         </aside>
     </body>
 </html>

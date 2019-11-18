@@ -120,7 +120,12 @@
             }
             $this->gameMessage("You have destroyed your crops", true);
         }
-        public function getSeeds($type, $amount) {
+        public function getSeeds($POST) {
+            // $POST variable holds the post data
+            // This function is called from an AJAX request
+            // Function to get seeds from crop item
+            $type = $POST['type'];
+            $amount = $POST['amount'];
             $item_amount = get_item($this->session['inventory'], $type)['amount'];
             if(!$item_amount  > 0) {
                 $this->gameMessage("ERROR: You don't have that item", true);

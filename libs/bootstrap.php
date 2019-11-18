@@ -59,18 +59,23 @@
               $this->controller->index();
           }
           
-          private function loadExistingController () {
-              $file = $this->controllerPath . $this->url[0] . '.php';
-              if(file_exists($file)) {
-                  require $file;
-                  $this->controller = new $this->url[0]($this->session);
-                  $this->controller->index();
-              }
-              else {
+        private function loadExistingController () {
+            $file = $this->controllerPath . $this->url[0] . '.php';
+            if(file_exists($file)) {
+                require $file;
+                if($this->url[0] == 'gameguide') {
+                    $this->controller = new $this->url[0]($this->url);
+                    $this->controller->index();
+                }
+                else {
+                    $this->controller = new $this->url[0]($this->session);
+                    $this->controller->index();
+                }
+            }
+            else {
                 $this->error();
-              }
-          }
-          
+            }
+        }
           private function error() {
               require_once($this->controllerPath . $this->errorFile);
               $this->controller = new notfound();

@@ -9,7 +9,12 @@
             $this->session = $session;
         }
         
-        public function make($type, $amount) {
+        public function make($POST) {
+            // $POST variable holds the post data
+            // This function is called from an AJAX request
+            // Function to make food dish
+            $type = $POST['type'];
+            $amount = $POST['amount'];
             $sql = "SELECT item_id, cost, food_units FROM bakery_data WHERE type=:type";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":type", $param_type, PDO::PARAM_STR);

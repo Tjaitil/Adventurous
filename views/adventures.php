@@ -2,8 +2,8 @@
 <html>
     <head>
         <title><?php echo $title; ?></title>
-        <link rel="stylesheet" type="text/css" href="public/css/<?php echo $name ?>.css" />
         <?php require(constant('ROUTE_VIEW') . 'head.php');?>
+        <link rel="stylesheet" type="text/css" href="public/css/<?php echo $name ?>.css" />
     </head>
     <body>
         <header>
@@ -12,37 +12,39 @@
         <section>
             <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
              <div id="requests">
-                <?php switch($count = count($this->data['requests'])):
-                case $count > 0: ?>
-                    <table>
-                        <thead>
-                            <tr>
-                                <td> From: </td>
-                                <td> To: </td>
-                                <td> Where: </td>
-                                <td> Role: </td>
-                            </tr>
-                        </thead>
-                        <?php foreach($this->data['requests'] as $key): ?>
-                        <?php if(empty($this->data['requests']) || $this->data['requests'] == false):?>
-                            <td colspan="5" align="center"> No invites at the moment!</td>
-                        <?php endif;?>
+                <table>
+                    <thead>
                         <tr>
-                            <td><?php echo ucfirst($key['sender']);?></td>
-                            <td><?php echo ucfirst($key['receiver']);?></td>
-                            <td><?php echo $key['role'];?></td>
-                            <td><?php echo $key['method'];?></td>
-                            <td><button onclick="showAdventure(<?php echo $key['adventure_id'];?>);"> Show Info </button>
-                                <button onclick="joinAdventure(<?php echo $key['request_id'];?>);"> Accept </button>
-                            </td>
+                            <td> From: </td>
+                            <td> To: </td>
+                            <td> Where: </td>
+                            <td> Role: </td>
                         </tr>
-                        <?php endforeach;?>
-                    </table>
-                    <?php break; ?>
-                <?php default:?>
-                     <span> No invites at the moment! </span>
-                <?php break; endswitch;?>
+                    </thead>
+                    <?php if(count($this->data['requests']) == 0 || $this->data['requests'] == false):?>
+                        <tr>
+                            <td colspan="5" align="center"> No invites at the moment!</td>
+                        </tr>
+                    <?php endif;?>
+                    <?php foreach($this->data['requests'] as $key): ?>
+                    <tr>
+                        <td><?php echo ucfirst($key['sender']);?></td>
+                        <td><?php echo ucfirst($key['receiver']);?></td>
+                        <td><?php echo $key['role'];?></td>
+                        <td><?php echo $key['method'];?></td>
+                        <td><button onclick="showAdventure(<?php echo $key['adventure_id'];?>);"> Show Info </button>
+                            <button onclick="joinAdventure(<?php echo $key['request_id'];?>);"> Accept </button>
+                        </td>
+                    </tr>
+                    <?php endforeach;?>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4"><button class="previous"> < Prev </button><button class="next"> Next > </button></td>
+                        </tr> 
+                    </tfoot>
+                </table>
             </div>
+             
             <div id="show_adventure">
                 <table>
                     <thead>
@@ -73,12 +75,12 @@
             <div id="new_adventure">
                 <form method="post" action="/adventures">
                     <label for="difficulty"> Select difficulty: </label>
-                    <select name="difficulty">
+                    <select name="difficulty" onchange="checkLevel();" id="diff_select">
                         <option>  </option>
                         <option value="easy"> Easy </option>
                         <option value="medium"> Medium </option>
                         <option value="hard"> Hard </option>
-                    </select><span class="error"><?php echo $this->error['difficultyErr'];?></span></br>
+                    </select></br>
                     <label for="location"> Select location: </label>
                     <select name="location">
                         <option value="">  </option>
@@ -87,7 +89,9 @@
                         <option value="khanz"> Khanz </option>
                         <option value="ter"> Ter </option>
                         <option value="fansal plains"> Fansal plains </option>
-                    </select><span class="error"><?php echo $this->error['locationErr'];?></span>
+                    </select></br>
+                    <label for="invite_only">Invite only?</label>
+                    <input type="checkbox" name="invite_only"/>
                     <p> Note that certain adventures demand that the trader has a certain diplomacy relation! </p>
                     <button> Go on adventure </button>
                 </form>
@@ -135,9 +139,14 @@
                                  $this->data['current_adventure']['info']['warrior']))
                                  && $this->data['current_adventure']['info']['adventure_leader'] == $this->data['username']):?>
                             <div id="invite">
+                                <?php if($this->data['current_adventure']['info']['invite_only'] == 1): ?>
                                 <input type="text" min="0" onkeyup="chk_me();"/><span></span></br>
                  <button onclick="adventureRequest(<?php echo $this->data['current_adventure']['info']['adventure_id'];?>,'invite');">
                                 Invite </button>
+                                <?php endif;?>
+                                <p>Invite only: <?php echo ($this->data['current_adventure']['info']['invite_only'] == 1) ? 'On' : 'Off';?>
+                                </p>
+                                <button> Toggle invite only</button>
                             </div>
                         <?php endif;?>
                         <?php if($this->data['current_adventure']['info']['adventure_leader'] ==
@@ -199,6 +208,11 @@
                             <td> Warrior: </td>
                         </tr>
                     </thead>
+                    <?php if(count($this->data['pending_adventures']) == 0): ?>
+                        <tr>
+                            <td colspan="6"> No adventures to join </td>
+                        </tr>
+                    <?php endif;?>
                     <?php foreach($this->data['pending_adventures'] as $key): ?>
                     <tr>
                         <td><?php echo $key['difficulty']; ?></td>
@@ -210,6 +224,11 @@
                         <td><button onclick="adventureRequest(<?php echo $key['adventure_id']; ?>, 'request');"> Ask to join </button></td>
                     </tr>
                     <?php endforeach; ?>
+                    <tfoot>
+                        <tr>
+                            <td colspan="6"><button class="previous"> < Prev </button><button class="next"> Next > </button></td>
+                        </tr> 
+                    </tfoot>
                 </table>
             </div>
             <script src="<?php echo constant('ROUTE_JS') . 'selectitem.js';?>"></script>

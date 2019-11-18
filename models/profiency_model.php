@@ -20,10 +20,12 @@
             return $row['profiency'];
         }
         
-        public function changeProfiency($newProfiency) {
-            $gold = $this->session['gold'];
-            $newProfiency = strtolower($newProfiency);
-            if($gold < 500) {
+        public function changeProfiency($POST) {
+            // $POST variable holds the post data
+            // This function is called from an AJAX request from citycentre.js
+            // Function to change the profiency of the player
+            $new_profiency = strtolower($POST['newProfiency']);
+            if($this->session['gold'] < 500) {
                 $this->gameMessage("ERROR: You dont have enough gold!", true);
                 return false;
             }
@@ -37,7 +39,7 @@
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":profiency", $param_profiency, PDO::PARAM_STR);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                $param_profiency = $newProfiency;
+                $param_profiency = $new_profiency;
                 $param_username = $this->username;
                 $stmt->execute();
                 
@@ -50,9 +52,9 @@
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
-            $this->gameMessage("You have succesfully changed profiency to {$newProfiency}", true);
-            $_SESSION['gamedata']['profiency'] = $newProfiency;
-            unset($this->db->conn);
+            $this->gameMessage("You have succesfully changed profiency to {$new_profiency}", true);
+            $_SESSION['gamedata']['profiency'] = $new_profiency;
+            $this->db->closeConn();
         }
     }
 ?>

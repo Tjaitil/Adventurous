@@ -18,9 +18,9 @@
                 $this->gameMessage("ERROR: Something unexpected happened, please try again!", true);
                 return false;
             }
-            
+            $difficulties = array("easy" => 1.0, "medium" => 5.0, "hard" => 12);
             if($route == 'request') {
-                $sql = "SELECT adventure_leader FROM adventures WHERE adventure_id=:adventure_id";
+                $sql = "SELECT adventure_leader, difficulty FROM adventures WHERE adventure_id=:adventure_id";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_INT);
                 $param_adventure_id = $adventure_id;
@@ -29,8 +29,22 @@
                     $this->gameMessage("ERROR: This adventure is no longer available!", true);
                 }
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                if($difficulties[$row['difficulty']] > $this->session['adventurer_respect']) {
+                    $this->gameMessae("ERROR: You don't have high enough adventure_respect to join this adventure!", true);
+                }
             }
             else if($route == 'invite') {
+                $sql = "SELECT difficulty, invite_only FROM adventures WHERE adventure_leader=:username";
+                $stmt = $this->db->conn->prepare($sql);
+                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                $param_username = $this->username;
+                $stmt->execute();
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                if($row['invite_only'] == 0) {
+                    $this->gameMessage("ERROR: Invite only is on for this adventure", true);
+                    return false;
+                }
+                
                 $sql = "SELECT adventure_id FROM adventure WHERE username=:username";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
@@ -44,6 +58,17 @@
                 if($stmt->fetch(PDO::FETCH_OBJ)->adventure_id != 0) {
                     $this->gameMessage("ERROR: The person you have invite is already in an adventure", true);
                     return false;
+                }
+                $sql = "SELECT adventurer_respect FROM user_levels WHERE username=:username";
+                $stmt = $this->db->conn->prepare($sql);
+                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                $param_username = strtolower($invitee);
+                $stmt->execute();
+                $row2 = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                
+                if($difficulties[$row['difficulty']] > $row2['adventurer_respect']) {
+                    $this->gameMessae("ERROR: The person you are trying to invite doesn't have high enough adventurer respect", true);
                 }
             }
             
@@ -142,7 +167,9 @@
                 $this->gameMessage("Request sent to ". ucfirst($row['adventure_leader']), true);
             }
         }
-        public function joinAdventure($request_id) {
+        public function joinAdventure($POST) {
+            // $POST variable holds the post data
+            $request_id = $POST['request_id'];
             $sql = "SELECT sender, receiver, adventure_id, method, role FROM adventure_requests WHERE request_id=:request_id";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":request_id", $param_request_id, PDO::PARAM_STR);

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title><?php echo $title; ?></title>
+        <title><?php echo $title;?></title>
+        <?php require(constant('ROUTE_VIEW') . 'head.php');?>
         <link rel="stylesheet" type="text/css" href="public/css/<?php echo $title ?>.css" />
-        <?php include(constant('ROUTE_VIEW') . 'head.php');?>
     </head>
     <body>
         <header>
@@ -11,7 +11,7 @@
         </header>
         <section>
             <?php require(constant("ROUTE_VIEW") . 'layout.php');?>
-            <h3 id="page_title"> Travel</h3>
+            <h3 class="page_title"> Travel</h3>
             <p id="travel"> </p>
             <p id="travel_time"> </p>
             <div id="canvas_area">

@@ -60,8 +60,7 @@
         $param_username = $username;
         $stmt->execute();
         $_SESSION['gamedata']['inventory'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    
+    }  
     function update_xp($conn, $username, $profiency, $xp) {
         $profiencies = array("farmer", "miner", "trader", "warrior");
         if(in_array($profiency, $profiencies) == false) {

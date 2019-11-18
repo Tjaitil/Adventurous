@@ -7,6 +7,7 @@ body {
     /*font-family: 'Source Sans Pro', 'bold';*/
     font-family: 'Martel', serif;
     /*background-color: #000033;*/
+    overflow-x: hidden;
 }
 section {
     /*background: radial-gradient(#f2e6d9 50%, #986834);*/
@@ -20,39 +21,75 @@ section {
     padding: 1%;
     color: #392714;
     font-weight: 200;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: hidden;
     position: relative;
 }
-
 section input {
-    background-color: #f2e6d9;
+    background-color: #e5cdb3;
     padding: 2px 2px 2px 8px;
     margin: 3px;
 }
+section table {
+    border-collapse: collapse;
+}
+section table td {
+    padding:5px;
+    background-color: #f2e6d9;
+}
+section table tr {
+    border: 1px solid black;
+}
 #skills {
     width: 50%;
-    height: 100px;
+    height: 86px;
     float: left;
     margin-bottom: 5px;
 }
 #skills div {
     position: relative;
-    display:inline-block;
-    border:1px ridge black;
-    float:left;
-    width: 15%;
-    height: 60%;
-    padding:5px;
+    display: inline-block;
+    border: 1px ridge black;
+    float: left;
+    width: 19%;
+    max-width: 70px;
+    padding: 3px;
     font-size: 100%;
+    box-sizing: border-box;
 }
 #skills img {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
+    border: 1px solid black;
+}
+#skills figure {
+    position: relative;
+}
+#skills figcaption {
+    position: absolute;
+    bottom: -12px;
+    left: 16px;
+}
+.skill_tooltip {
+    position: absolute;
+    right: 20%;
+    border-radius: 1px;
+    background-color: #f2e6d9;
+    visibility: hidden;
+    color: black;
+    font-size: 12px;
+    z-index: 2;
+    padding: 1px 3px 1px 3px;
+    text-align: center;
+    width: auto;
+    display: inline-block;
+    float: right;
 }
 #log {
     width: 49%;
     height: 15%;
-    overflow: scroll;
+    overflow-x: hidden;
+    overflow-y: scroll;
     height: 100px;
     border: 1px solid black;
     margin-bottom: 5px;
@@ -64,11 +101,24 @@ section input {
     background-color: transparent;
     
 }
+#game_messages tr {
+    border: none;
+}
 #game_messages td {
     background-color: none;
     text-align: left;
 }
-
+#hunger {
+    width: 49%;
+    margin-bottom: 3px;
+}
+.hunger_state {
+    width: 10px;
+    height: 10px;
+    border: 1px solid blue;
+    margin: 1px;
+    float: left;
+}
 #announcement {
     width:300px;
     height:500px;
@@ -97,7 +147,7 @@ section input {
     box-sizing: border-box;
     position: absolute;
     height: 100%;
-    width: 100%;
+    width: 101%;
     border: 1px solid black;
     z-index: 1;
     visibility: hidden;
@@ -172,7 +222,7 @@ section input {
     display: inline-block;
     float: right;
 }
-.inventory_item {
+.inventory_item, .item {
     display: inline-block;
     float: left;
     max-width: 104px;
@@ -195,13 +245,12 @@ section input {
     height: 90px;
     position: relative;
 }
-
-.stockpile_item img, .inventory_item img {
+.stockpile_item img, .inventory_item img, .item img {
     width: 50px;
     height: 50px;
     cursor: pointer;
 }
-.inventory_item figure {
+.inventory_item figure, .item figure {
     position: relative;
 }
 .inventory_buttons {
@@ -224,34 +273,6 @@ section input {
     text-align: center;
     
 }
-.item {
-    width: 50px;
-    height: 50px;
-}
-/*.temp {
-}
-.temp ul {
-    text-align: left;
-    list-style-type: none;
-    border: 1px solid black;
-    position: absolute;
-    width: 100px;
-    z-index: 1;
-    top: 14%;
-    padding-top: 10px;
-    background-color: #724e27;
-    overflow: scroll;
-}
-.temp ul li {
-    background-color: #724e27;
-    padding: 2px;
-}
-.temp ul li:nth-child(1):hover {
-    background-color: #724e27;
-}
-.temp ul li:hover {
-    background-color: #986834;
-}*/
 #all {
     width: 40%;
 }
@@ -285,30 +306,42 @@ section input {
     width: 55%;
     margin: 0 auto 10px auto;
 }
-/* width */
+/*width*/
 ::-webkit-scrollbar {
   width: 10px;
 }
 
-/* Track */
+/*Track*/
 ::-webkit-scrollbar-track {
-  background: #f1f1f1; 
+  background: #4d4d4d;
 }
  
-/* Handle */
+/*Handle*/
 ::-webkit-scrollbar-thumb {
   background: #888;
   border-radius: 10px;
 }
 
-/* Handle on hover */
+/*Handle on hover*/
 ::-webkit-scrollbar-thumb:hover {
-  background: #555; 
+  /*background: #737373; */
 }
+button {
+    background-color: #f2e6d9;
+    border-radius: 5px;
+    border: 1px outset;
+    box-shadow: 1px 1px 1px 1px #372715;
+    padding: 3px 6px 3px 7px;
+    color: black;
+    font-weight: bold;
+}
+button:active {
+    background-color: #ebd9c6
+}
+button:focus {outline:0;}
 @media all and (max-width: 830px) {
     body {margin: 10px 2% 0px 2%;};
     #skills div {font-size: 12px;}
-    #skills img {width: 25px; height: 25px;}
     section {width: 97.4%; font-size: 12px;}
     #inventory .inventory_item {width: 50%;}
     /*.inventory_buttons {

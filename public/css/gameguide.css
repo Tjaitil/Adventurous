@@ -1,55 +1,3 @@
-* {
-    margin:0;
-    padding:0;
-}
-body {
-    margin: 10px 100px 0px 100px;
-    font-family: 'almendra';
-}
-header {
-    border-bottom: black thin;
-    margin-left:5px;
-    margin-right:5px;
-    text-align: center;
-}
-header ul {
-    list-style-type: none;
-    padding:0px;
-    background-color:#ac7339;
-    overflow:hidden;
-    margin: 0 auto;
-    box-shadow: 0px 1px 20px black;
-
-}
-
-header ul li {
-    padding:5px 0px;
-    display:inline-block;
-    text-align:center;
-    line-height: 25px;
-}
-
-header ul li a {
-    color:white;
-    text-decoration: none;
-    display:block;
-    width:80px;
-    height:25px;
-    border-radius:2px;
-}
-
-header ul li:hover {
-    background-color: #d9b38c;
-}
-section {
-    background: radial-gradient(#f2e6d9 80%, #986834);
-    box-sizing: content-box;
-    width:80%;
-    border: inset 2px;
-    float:right;
-    text-align: center;
-    padding:5px;
-}
 #welcome_butt a {
     color: white;
     text-decoration: none;
@@ -119,57 +67,28 @@ section {
     text-align: center;
     border:1px solid black;
 }
-aside {
-    width:221px;
-    height:500px;
-    float:left;
-    padding: 5px 0px 0px 3px;
-    margin: 0px 0px 0px 5px;
-    background: radial-gradient(#f2e6d9 80%, #986834);
-    border: inset 2px;
-    position: relative;
-    /* border-top-style: ridge;
-    border-top-color: black;
-    border-top-width: 2px;
-    border-right-style: ridge;
-    border-right-color: black;
-    border-right-width: 2px;
-    background-color: #002b80; */
-    position: fixed;
+#guide_title {
+    
 }
-aside a {
-    color:#003cb3;
-    text-shadow: 0.2px 0.2px #003cb3;
+#content_table {
+    float: left;
+    width: 30%;
+    box-sizing: border-box;
+    border: 1px dashed black;
 }
-aside a:visited {
-    color:#003cb3;
+#content_table li {
+    padding: 2px;
 }
-#side_menu {
-    margin: 0px 0px 0px 0px;
+#content_table a {
+    text-decoration: none;
 }
-
-#side_menu ul {
-    list-style-type:none ;
-    font-size:14px;
-    position: absolute;
-    left:10px;
+#content_table a:visited, :hover {
+    text-decoration: none;
 }
-#side_menu li {
-    width:100px;
-    padding:1px;
+#content {
+    box-sizing: border-box;
+    width: 70%;
 }
-#side_menu ul li:before {
-    content:"\00BB\0020";
-}
-/* #side_menu li:hover {
-    background-color:#e6e6e6;
-    width:120px;
-    transition: width 1s;
-} */
-#side_menu ul li ul {
-    padding:1px 0px 1px 5px;
-}
-
-#side_menu li a {
-    text-decoration:none;
+.p_header {
+    border-bottom: 1px solid black;
 }

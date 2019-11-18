@@ -62,7 +62,7 @@
         if(item === 'none') {
             return false;
         }
-        var data = "model=Armory" + "&method=removeArmor" + "&warrior_id=" + warrior_id + "&item=" + item + "&part=" + part;
+        var data = "model=Armory" + "&method=removeArmor" + "&warrior_id=" + warrior_id + "&part=" + part;
         ajaxP(data, function(response) {
             if(response[0] != false) {
                 document.getElementsByClassName("armory_view")[warrior_id - 1].innerHTML = response[1];
@@ -72,26 +72,10 @@
     }
     
     function updatePage() {
-        ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.onload = function () {
-            if(this.readyState == 4 && this.status == 200) {
-                document.getElementById("warriors").innerHTML = this.responseText;
-                /*var soldiers = this.responseText.split("||");
-                soldiers.pop();
-                var list = document.getElementsByClassName("armory_view");
-                var children_count = list[0].children;
-                for(var i = 0; i < list.length; i++) {
-                    var soldier_armor = soldiers[i].split("|");
-                    var y = i;
-                    for(var x = 0; x < children_count.length - 1; x++) {
-                        var element = list[y].children[x + 1];
-                        var source = "public/images/" + soldier_armor[x + 1] + ".jpg";
-                        element.src = source.replace(" ", "_");
-                        element.title = soldier_armor[x + 1];
-                    }
-                }*/
+        var data = "model=Armory" + "&method=getData";
+        ajaxJS(data, function(response) {
+            if(response[0] != false) {
+                document.getElementById("warriors").innerHTML = response[1];
             }
-        };
-        ajaxRequest.open('GET', "handlers/handler_js.php?model=Armory" + "&method=getData");
-        ajaxRequest.send();
+        });
     }

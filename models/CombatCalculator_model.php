@@ -16,9 +16,11 @@
             $this->username = $username;
             $this->session = $session;
         }
-        
-        public function calculate($data) {
-            $data = (array) $data;
+        public function calculate($POST) {
+            // $POST variable holds the post data
+            // This function is called from an AJAX request from armycamp.js
+            // Function to calculate the fight result based on the provided information
+            $data = json_decode($POST['form_data'], true);
             $warrior_stats = array();
             
             $total_amount = intval($data['melee_amount']) + intval($data['ranged_amount']);

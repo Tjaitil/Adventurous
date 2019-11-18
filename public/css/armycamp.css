@@ -15,7 +15,6 @@ section table td {
 }
 .warrior {
     width: 30%;
-    height: 20%;
     float: left;
     border: 1px solid black;
     padding: 1%;
@@ -74,8 +73,8 @@ section table td {
     /*line-height: 25px;*/
 }
 #overview {
+    margin-top: 10px;
     width: 100%;
-    overflow: scroll;
 }
 #transfer {
     display: none;

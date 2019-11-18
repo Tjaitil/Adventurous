@@ -22,8 +22,8 @@ foreach($data as $key):
         <img onclick="removeArmor(this);"
              title="<?php echo $key['boots'];?>"
              class="boots" src="<?php echo constant("ROUTE_IMG") . str_replace(" ", "_", $key['boots']) . '.jpg'?>" />
-        <p> Attack: <?php echo $key['attack'];?></p>
-        <p> Defence: <?php echo $key['defence'];?></p>
+        <p> Attack: <?php echo $key['attack'] + 10;?></p>
+        <p> Defence: <?php echo $key['defence'] + 15;?></p>
     <?php if(!isset($key['check'])):?>
         </div>
     <?php endif;?>

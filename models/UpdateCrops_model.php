@@ -7,6 +7,7 @@
             parent::__construct();
             $this->username = $session['username'];
             $this->session = $session;
+            $this->commonModels(true, true);
         }
         public function updateCrops() {
             //AJAX function
@@ -33,6 +34,8 @@
             $rand_min = ($row['grow_quant'] * 0.3) + $row2['min_crop_count'];;
             $rand_max = ($row['grow_quant'] * 0.3) + $row2['max_crop_count'];
             $quantity = round(rand($rand_min, $rand_max));
+            $artefact_bonus = $this->Artefact_model->artefactCheck();
+            $quantity *= $artefact_bonus;
             
             if(in_array($this->session['location'], array('towhar', 'krasnur')) != true) {
                 return false;   
@@ -47,6 +50,10 @@
             
             try {
                 $this->db->conn->beginTransaction();
+                
+                if($artefact_bonus > 1) {
+                    $this->ArtefactModel->updateArtefact();
+                }
                 
                 $sql = "UPDATE farmer SET fields_avail=:fields_avail, grow_type=:grow_type,
                         grow_quant=:grow_quant, plot1_harvest='false' WHERE username=:username AND location=:location";
@@ -74,10 +81,10 @@
                 
                 // Only gain xp when farmer level is below 30 or if profiency is farmer
                 if($this->session['farmer']['level'] < 30 || $this->session['profiency'] == 'farmer') { 
-                    update_xp($this->db->conn, $this->username, 'farmer', $total_xp);
+                    $this->UpdateGamedata->updateXP('farmer', $total_xp);
                 }
     
-                update_inventory($this->db->conn, $this->username, $crop_type, $quantity, true);
+                $this->UpdateGamedata->updateInventory($crop_type, $quantity, true);
                 
                 $this->db->conn->commit();
             }

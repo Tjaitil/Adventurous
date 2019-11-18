@@ -1,9 +1,9 @@
     
     function gethighscores(type) {
-        ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.onload = function () {
-            if(this.readyState == 4 && this.status == 200) {
-                var data = this.responseText.split("||");
+        var data = "model=" + "&method=";
+        ajaxG(data, function(response) {
+            if(response[0] != false) {
+                data = response[1].split("||");
                 var table = document.getElementById("highscores");
                 table.removeChild(table.childNodes[1]);
                 var tr = document.createElement("TR");
@@ -18,7 +18,6 @@
                     table.appendChild(tr);
                 }
             }
-        ajaxRequest.open('GET', "handlers/handler_g.php?model=" + "&method=");
-        ajaxRequest.send();
-    };
+        });
+    }
     

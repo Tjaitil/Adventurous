@@ -8,8 +8,28 @@
             $this->username = $session['username'];
             $this->session = $session;
         }
-        public function smith($item, $mineral, $amount) {
-            //AJAX function
+        public function getData() {
+            $data = array();
+            $sql = "SELECT item, amount_required, cost FROM smithy_data ORDER BY amount_required";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->execute();
+            $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $minerals = array("iron", "steel", "clay", "gargonite", "adron", "yedqon", "frajrite");
+            foreach($minerals as $key) {
+                $mineral = $key;
+                $data[$key] = array_filter($row, function($key) use ($mineral) {
+                    return stripos($key['item'], $mineral) !== false;
+                });
+            }
+            return $data;
+        }
+        public function smith($POST) {
+            // $POST variable holds the post data
+            // This function is called from an AJAX request from smithy.js
+            // Function to smith items from minerals
+            $item = strtolower($POST['item']);
+            $mineral = strtolower($POST['mineral']);
+            $amount = $POST['amount'];
             $ore = $mineral . ' ' . 'ore';
             $minerals = array("iron", "steel", "gargonite", "adron", "yeqdon", "frajrite");
             if(in_array($mineral, $minerals) == false) {

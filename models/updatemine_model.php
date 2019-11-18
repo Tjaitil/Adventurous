@@ -7,6 +7,7 @@
             parent::__construct();
             $this->username = $session['username'];
             $this->session = $session;
+            $this->UpdateGamedata = $this->loadModel('UpdateGamedata');
         }
         public function updateMine() {
             $sql = "SELECT mining_type FROM miner WHERE location=:location AND username=:username";
@@ -36,11 +37,16 @@
             $rand_min = $row2['min_per_period'] + (0.5 * $row3[$this->session['location'] . '_workforce']);
             $rand_max = $row2['max_per_period'] + (0.5 * $row3[$this->session['location'] . '_workforce']);
             $quantity = rand($rand_min, $rand_max);
-            $experience_gain = ($row2['experience'] * 0.80);
-            $experience =  $experience_gain + $this->session['miner']['xp'];
+            $artefact_bonus = $this->Artefact_model->artefactCheck();
+            $quantity *= $artefact_bonus;
             
             try {
                 $this->db->conn->beginTransaction();
+                
+                if($artefact_bonus > 1) {
+                    $this->ArtefactModel->updateArtefact();
+                }
+                
                 $sql = "UPDATE miner SET mining_type='none',
                         fetch_minerals=0 WHERE username =:username";
                 $stmt = $this->db->conn->prepare($sql);
@@ -59,13 +65,10 @@
                 $param_username = $this->username;
                 $stmt2->execute();
                 
-                update_inventory($this->db->conn, $this->username, $mining_type . ' ore', $quantity, true);
-                
-                // Only gain xp when miner level is below 30 or if profiency is miner
-                if($this->session['miner']['level'] < 30 || $this->session['profiency'] == 'miner') {
-                    update_xp($this->db->conn, $this->username, 'miner', $row2['experience'] + $this->session['miner']['xp']);
-                }
-                
+                // Update inventory
+                $this->UpdateGamedata->updateInventory($mining_type . ' ore', $quantity, true);
+                // Update xp
+                $this->UpdateGamedata->updateXP('miner', $row2['experience']);
                 $this->db->conn->commit();
             }
             catch (Exception $e) {
@@ -75,7 +78,7 @@
                 return false;
             }
             $this->gameMessage("You received {$quantity} of " . ucfirst($mining_type . ' ore'), true);
-            echo "|{$experience_gain}";
+            js_echo('|{$experience_gain}', $param_avail_workforce);
             $this->db->closeConn();
         }
     }

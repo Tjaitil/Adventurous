@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title><?php echo $title; ?></title>
-        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name ?>.css" />
+        <title><?php echo $title;?></title>
         <?php include(constant('ROUTE_VIEW') . 'head.php');?>
+        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name ?>.css" />
     </head>
     <body>
         <header>
@@ -17,17 +17,10 @@
             <button onclick="show('history');"> History </button>
             <div id="new_off">
                 <form id="offer_form">
-                    <label for="type"> Buy/Sell: </label>
-                    <select id="form_select" name="type" onchange="toggleType();">
-                        <option selected="selected">  </option>
-                        <option value="Buy"> Buy </option>
-                        <option value="Sell"> Sell </option></br>
-                    </select>
                     <div id="form_cont">
+                        <label for="type"> Offer type: </label>
+                        <input type="text" name="type" />
                         <div id="item">
-                            <div id="selected">
-                                <div></div>
-                            </div>
                             <input type="text" id="item_name" name="item" placeholder="Item Name" readonly />
                         </div>
                         <div id="form_inputs">
@@ -53,12 +46,15 @@
             </div>
             <div id="my_offers">
                 <table>
+                    <caption> My offers </caption>
                     <thead>
                         <tr>
                             <td> Offer type: </td>
                             <td> Item: </td>
                             <td> Amount: </td>
                             <td> Progress </td>
+                            <td </td>
+                            <td></td>
                         </tr>
                     </thead>
                     <?php get_template('myOffers', $this->data['my_offers']);?>
@@ -66,6 +62,7 @@
             </div>
             <div id="offers">
                 <table>
+                    <caption> Browse offers </caption>
                     <thead>
                         <tr>
                             <td colspan="4"><button id="sch_button"> Back to offers </button>
@@ -79,6 +76,11 @@
                         </tr>
                     </thead>
                     <?php get_template('offers', $this->data['offers']);?>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4"><button class="previous"> < Prev </button><button class="next"> Next > </button></td>
+                        </tr> 
+                    </tfoot>
                 </table>
             </div>
             <div id="history">

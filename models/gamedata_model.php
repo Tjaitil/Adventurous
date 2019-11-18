@@ -8,9 +8,8 @@
             parent::__construct();
             $this->username = $username;
         }
-        
-        public function fetchData () {
-            $sql = "SELECT username, location, destination, profiency FROM user_data
+        public function fetchData() {
+            $sql = "SELECT username, location, destination, profiency, hunger FROM user_data
                     WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
@@ -35,8 +34,9 @@
             $row4['gold'] = $gold;
             
             //Select stats for player
-            $sql5 = "SELECT farmer_level, farmer_xp, miner_level, miner_xp, warrior_level, warrior_xp, trader_level, trader_xp FROM
-                    user_levels WHERE username=:username";
+            $sql5 = "SELECT adventurer_respect, farmer_level, farmer_xp, miner_level, miner_xp, warrior_level, warrior_xp,
+                     trader_level, trader_xp
+                     FROM user_levels WHERE username=:username";
             $stmt5 = $this->db->conn->prepare($sql5);
             $stmt5->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
@@ -47,6 +47,7 @@
             $row2['miner'] = array("level" => $row5['miner_level'], "xp" => $row5['miner_xp']);
             $row2['warrior'] = array("level" => $row5['warrior_level'], "xp" => $row5['warrior_xp']);
             $row2['trader'] = array("level" => $row5['trader_level'], "xp" => $row5['trader_xp']);
+            $row2['adventurer_respect'] = $row5['adventurer_respect']; 
             
             $sql6 = "SELECT item, amount FROM inventory WHERE username=:username";
             $stmt6 = $this->db->conn->prepare($sql6);
@@ -86,12 +87,12 @@
             $param_username = $this->username;
             $stmt->execute();
             $row7 = $stmt->fetch(PDO::FETCH_ASSOC);
+        
             
             $rows = array_merge($row, $row2, $row3, $row4, $row6, $row7);
             
             return $rows;            
         }
-        
         public function getXP () {
             $row = array();
             $row[] = $_SESSION['gamedata']['profiency_xp'];

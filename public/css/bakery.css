@@ -4,14 +4,7 @@ section table td {
     border-collapse: collapse;
 }
 
-section table img {
-    height:25px;
-    width:25px;
-}
 
-.stockpile_item, .inventory_item {
-    display: inline-block;
-    float: left;
-    width: 100px;
-    position: relative;
+input[type="number"] {
+    max-width: 30px;
 }

@@ -2,9 +2,9 @@
     class model {
         protected $db;
         protected $UpdateGamedata;
-        protected $artefactModel;
+        protected $ArtefactModel;
         // $updateGamedata is the variable that holds updateGamedata_model if it is being instantiated with $this->loadModel from foo_model
-        // $artefactModel is the variable that holds updateGamedata_model if it is being instantiated with $this->loadModel from foo_model
+        // $Artefact_model is the variable that holds updateGamedata_model if it is being instantiated with $this->loadModel from foo_model
         function __construct() {
             $this->includeDB();
         }
@@ -13,10 +13,10 @@
             if($ajax != false) {
                 echo $date . $message;
             }
-            $_SESSION['gamedata']['log'][] = $date . $message;
-            if(count($_SESSION['gamedata']['log']) > 15) {
-                unset($_SESSION['gamedata']['log'][0]);
-                $_SESSION['gamedata']['log'] = array_values($_SESSION['gamedata']['log']);
+            $_SESSION['log'][] = $date . $message;
+            if(count($_SESSION['log']) > 15) {
+                unset($_SESSION['log'][0]);
+                $_SESSION['log'] = array_values($_SESSION['log']);
             }
         }
         protected function reportError($file, $line, $error_message, $ajax = true) {
@@ -29,10 +29,19 @@
                 $this->db = new database();
             }
         }
+        protected function commonModels($UpdateGamedata = false, $ArtefactModel = false) {
+            // Load common models
+            if($UpdateGamedata === true) {
+                $this->UpdateGamedata = $this->loadModel('UpdateGamedata', true);
+            }
+            if($ArtefactModel === true) {
+                $this->ArtefactModel = $this->loadModel('ArtefactModel', true);
+            }
+        }
         protected function loadModel($model, $directoryUP = true) {
             $model = $model . '_model';
             if(class_exists($model)) {
-                return new $model($this->session);
+                return new $model($this->session, $this->db);
             }
             else {
                 $this->reportError('model', false, 'model not found' . $model, false);

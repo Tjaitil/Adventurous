@@ -1,5 +1,5 @@
 <?php
-    class updatearmymission_model extends model {
+    class UpdateArmymission_model extends model {
         public $username;
         public $session;
         
@@ -24,26 +24,20 @@
             $stmt->execute();
             $row2 = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            $reward = explode("|", $row2['reward']);
-            
-            
             try {
                 $this->db->conn->beginTransaction();
                 
-                $sql = "UPDATE warrior SET warrior_xp=:warrior_xp, mission=0 WHERE username=:username";
+                $sql = "UPDATE warrior SET mission=0 WHERE username=:username";
                 $stmt = $this->db->conn->prepare($sql);
-                $stmt->bindParam(":warrior_xp", $param_warrior_xp, PDO::PARAM_STR);
-                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                $param_warrior_xp = $warrior_xp + 100;
+                $stmt->bindParam(":username", $param_username, PDO::PARAM_INT);
                 $param_username = $this->username;
                 $stmt->execute();
                 
-                $sql2 = "UPDATE user_levels SET warrior_xp=:warrior_xp WHERE username=:username";
-                $stmt2 = $this->db->conn->prepare($sql2);
-                $stmt2->bindParam(":warrior_xp", $param_warrior_xp, PDO::PARAM_STR);
-                $stmt2->bindParam(":username", $param_username, PDO::PARAM_STR);
-                //$param_warrior_xp and $param_username is already defined in statement 1
-                $stmt2->execute();
+                
+                // Only gain xp when warrior level is below 30 or if profiency is farmer
+                if($this->session['warrior']['level'] < 30 || $this->session['profiency'] == 'warrior') { 
+                    update_xp($this->db->conn, $this->username, 'warrior', 100);
+                }
                 
                 $sql3 = "UPDATE warriors SET mission=0 WHERE username=:username";
                 $stmt3 = $this->db->conn->prepare($sql3);
@@ -51,7 +45,7 @@
                 //$param_username already is already defined in statement 1
                 $stmt3->execute();
                 
-                update_inventory($this->db->conn, $this->username, $reward[0], $reward[1]);
+                update_inventory($this->db->conn, $this->username, 'gold', $row2['reward']);
                 
                 $this->db->conn->commit();
             }
@@ -62,7 +56,6 @@
                 return false;
             }
             $this->db->closeConn();
-            $_SESSION['gamedata']['warrior']['warrior_xp'] = $param_warrior_xp;
         }
     }
 ?>

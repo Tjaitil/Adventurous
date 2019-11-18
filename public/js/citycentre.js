@@ -1,3 +1,13 @@
+    window.addEventListener("load", function() {
+       // Add events to buttons
+       document.getElementById("profiency").querySelectorAll("button")[0].addEventListener("click", changeProfiency);
+       var keep_buttons = document.getElementById("keep").querySelectorAll("button");
+       keep_buttons[0].addEventListener("click", changeArtefact);
+       keep_buttons[1].addEventListener("click", newArtefact);
+       document.getElementById("permits").querySelectorAll("button")[0].addEventListener("click", buyPermits);
+       
+    });
+    
     
     function show(element) {
         var divs = ["profiency", "keep", "permits"];
@@ -22,76 +32,71 @@
             var select = document.getElementById("profiency_select");
             var val = select.value;
             var data = "model=profiency" + "&method=changeProfiency" + "&newProfiency=" + val;
-            ajaxRequest = new XMLHttpRequest();
-            ajaxRequest.onload = function () {
-                if(this.readyState == 4 && this.status == 200) {
-                    console.log(this.responseText);
-                    if(this.responseText.search("ERROR") != -1) {
-                        gameLog(this.responseText);
-                    }
-                    else {
-                        gameLog(this.responseText);
-                    }
-                }   
-            };
-            ajaxRequest.open("POST", "/handlers/handler_p.php");
-            ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            ajaxRequest.send(data);
+            ajaxP(data, function(response) {
+                if(response[0] !== false) {
+                    gameLog(response[1]);
+                }       
+            });
         }
     }
-    
     function changeArtefact() {
-        var text = document.getElementById("selected").innerHTML;
-        var text_comb = text.split("x");
-        
-        text_comb[1] = text_comb[1].split("(");
-        var artefact = text_comb[1][0];
-        var artefacts = ["energizer", "fighter"];
-        if(artefacts.indexOf(artefact) == -1) {
+        var itemData = selectedCheck(false);
+        console.log(itemData);
+        if(itemData.length === false) {
+            return false;
+        }
+        var artefacts = ["harvester", "prospector", "collector", "healer", "rewardist", "fighter"];
+        if(artefacts.indexOf(itemData[0]) == -1) {
             gameLog("That is not an artefact");
         }
         else {
-            ajaxRequest = new XMLHttpRequest();
-            var data = "model=citycentre" + "&method=changeArtefact" + "&artefact=" + artefact;
-            ajaxRequest.onload = function () {
-                if(this.readyState == 4 && this.status == 200) {
-                    if(this.responseText.search("ERROR") != -1) {
-                        gameLog(this.responseText);
-                    }
-                }
-                else {
-                    var data = this.responseText.split("|");
+            var data = "model=Artefact" + "&method=changeArtefact" + "&artefact=" + itemData[0];
+            ajaxP(data, function(response) {
+                console.log(response);
+                if(response[0] !== false) {
+                    var data = response[1].split("|");
                     var artefactDiv = document.getElementById("artefact");
-                    artefactDiv.children[0].img.src = "public/images/" + data[0] + '.jpg';
-                    artefactDiv.children[1].innerHTML = "Current Artefact:" + data[0];
-                    artefactDiv.children[2].innerHTML = "Uses left:" + data[1];
+                    artefact = data[0].split("|")[0].trim();
+                    artefactDiv.children[0].src = "public/images/" + data[0] + '.jpg';
+                    artefactDiv.querySelectorAll("p")[0].innerHTML = "Current Artefact:" + data[0];
                     updateInventory();
-                }
-            };
-            ajaxRequest.open('POST', "handlers/handler_p.php");
-            ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            ajaxRequest.send(data);
-                
+                }       
+            });   
         }
     }
-    
-    function buyPermits(val) {
-        var amount = val;
-        ajaxRequest = new XMLHttpRequest();
+    function buyPermits() {
+        var amount = 50;
         var data = "model=citycentre" + "&method=buyPermits" + "&amount=" + amount;
-        ajaxRequest.onload = function () {
-            if(this.readyState == 4 && this.status == 200) {
-                console.log(this.responseText);
-                if(this.responseText.search("ERROR") != -1) {
-                    gameLog(this.responseText);
-                }
-                else {
-                    gameLog(this.responseText);
-                    updateInventory();
-                }
+        ajaxP(data, function(response) {
+            if(response[0] !== false) {
+                gameLog(response[1]);
+                updateInventory();
+            }       
+        });
+    }
+    function newArtefact() {
+        var data = "model=Artefact" + "&method=newArtefact";
+        ajaxP(data, function(response) {
+            if(response[0] !== false) {
+                var responseText = response[1].split("|");
+                openNews('Waiting');
+                setTimeout( function() {
+                        document.getElementById("content").innerText = "";
+                        var img = document.createElement("IMG");
+                        img.href = "/public/img/" + responseText[1] + ".png";
+                        img.style = "width: 50px; height: 50px; margin-left: 10px";
+                        openNews(responseText[0] + responseText[1]);
+                        openNews(img);
+                    }, 3000);
             }
-        };
-        ajaxRequest.open('POST', "handlers/handler_p.php");
-        ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        ajaxRequest.send(data);
+        });
+    }
+    function setArtefact() {
+        
+        var data = "model=Artefact" + "&method=setArtefact";
+        ajaxP(data, function(response) {
+            if(response[0] !== false) {
+                    
+            }
+        });
     }

@@ -8,7 +8,17 @@
             $this->username = $session['username'];
             $this->session = $session;
         }
-        public function setMine($mineral, $workforce) {
+        public function setMine($POST) {
+            // $POST variable holds the post data
+            // This function is called from an AJAX request
+            // Function to set mining
+            $mineral = $POST['mineral'];
+            $workforce = $POST['workforce'];
+            
+            if($this->session['hunger'] < 10) {
+                $this->gameMessage("ERROR: Your hunger is too high, please eat!", true);
+                return false;
+            }
             $sql = "SELECT m.mining_type, m.permits, mw.avail_workforce, mw.efficiency_level
                     FROM miner AS m INNER JOIN miner_workforce AS mw ON mw.username = m.username
                     WHERE location=:location AND m.username=:username";
@@ -27,23 +37,29 @@
                 $this->gameMessage("ERROR: You don't have that many workforce available", true);
                 return false;
             }
-            $sql = "SELECT experience, time, permit_cost FROM minerals_data WHERE mineral_type=:mineral_type AND location=:location";
+            $sql = "SELECT miner_level, experience, time, permit_cost FROM minerals_data
+                    WHERE mineral_type=:mineral_type AND location=:location";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":mineral_type", $param_mineral_type, PDO::PARAM_STR);
             $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
             $param_mineral_type = $mineral;
             $param_location = $this->session['location'];
+            var_dump($mineral);
             $stmt->execute();
-            if(!$stmt->rowCount() > 0) {
-                $this->gameMessage("ERROR: You are in the wrong city to mine this mineral");
+            $row2 = $stmt->fetch(PDO::FETCH_ASSOC);
+            if($row2['miner_level'] > $this->session['miner']['level']) {
+                $this->gameMessage("ERROR: You are too low level to mine this mineral", true);
                 return false;
             }
-            $row2 = $stmt->fetch(PDO::FETCH_ASSOC);
+            if(!$stmt->rowCount() > 0) {
+                $this->gameMessage("ERROR: You are in the wrong city to mine this mineral", true);
+                return false;
+            }
             if($row2['permit_cost'] > $row['permits']) {
                 $this->gameMessage("ERROR: You don't have enough permits!", true);
                 return false;
             }
-    
+            
             $addTime = $row2['time'] - (10 * $row['efficiency_level']);
             $date = date("Y-m-d H:i:s");
             $newDate = new DateTime($date);

@@ -9,7 +9,16 @@
             $this->session = $session;
         }
         public function setCrops($POST) {
-            // $POST is the user variables from crops.js
+            // $POST variable holds the post data
+            // This function is called from an AJAX request
+            // Function to set crops
+            $POST = json_decode($POST, true);
+            
+            if($this->session['hunger'] < 10) {
+                $this->gameMessage("ERROR: Your hunger is too high, please eat!", true);
+                return false;
+            }
+            
             $sql = "SELECT f.fields_avail, f.grow_type, fw.avail_workforce, fw.efficiency_level
                     FROM farmer as f INNER JOIN farmer_workforce as fw ON fw.username = f.username
                     WHERE f.username=:username";

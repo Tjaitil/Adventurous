@@ -8,18 +8,16 @@
         }
         
         public function index() {
-
-            $_SESSION['gamedata']['location'] = 'golbak';
-             $this->city = $_SESSION['gamedata']['location'];
+            $this->city = str_replace(" ", "-", $_SESSION['gamedata']['location']);
             
-             $this->cityfile = constant("ROUTE_VIEW") . $this->city . '.php';
-             if(file_exists($this->cityfile)) {
-                $this->render('city', ucfirst($this->city), $this->cityfile);
-             }
-             else {
-                
-             }
-
+            $this->cityfile = constant("ROUTE_VIEW") . $this->city . '.php';
+            if(file_exists($this->cityfile)) {
+               $this->render('city', ucfirst($this->city), $this->cityfile);
+            }
+            else {
+               header("Location: /notfound");
+               die();
+            }
         }
     }
 ?>

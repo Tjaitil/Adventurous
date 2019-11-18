@@ -21,7 +21,7 @@
             $stmt->execute();
             $data['minerData'] = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            $sql2 = "SELECT mineral_type, permit_cost FROM minerals_data WHERE miner_level <=:minerlevel AND location=:location";
+            $sql2 = "SELECT mineral_type, permit_cost FROM minerals_data";
             $stmt2 = $this->db->conn->prepare($sql2);
             $stmt2->bindParam(":minerlevel", $param_minerlevel, PDO::PARAM_STR);
             $stmt2->bindParam(":location", $param_location, PDO::PARAM_STR);
@@ -41,7 +41,7 @@
         }
         
         // Function to echo date for ajax request
-        public function checkCountdown($check = false) {
+        public function checkCountdown() {
             $sql = "SELECT mining_countdown, fetch_minerals FROM miner WHERE location=:location AND username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
@@ -51,16 +51,6 @@
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $date = date_timestamp_get(new DateTime($row['mining_countdown']));
-            
-            if($check == true) {
-                $now = date_timestamp_get(new DateTime(date("Y-m-d H:i:s")));
-                if($now > $date) {
-                    return true;
-                }
-                else if($now < $date) {
-                    return false;
-                }
-            }
             $this->db->closeConn();
             js_echo(array($date, $row['fetch_minerals']));
         }

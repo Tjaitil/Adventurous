@@ -24,8 +24,13 @@
             
             return $row;
         }
-        public function wearArmor($warrior_id, $item, $hand = false) {
-            $this->warrior_id = $warrior_id;
+        public function wearArmor($POST) {
+            // $POST variable holds the post data
+            $this->warrior_id = $POST['warrior_id'];
+            $item = strtolower($POST['item']);
+            // If $hand variable is not equals to false it means that a specific hand is selected for the sword, dagger or spear
+            $hand = $POST['hand'];
+            
             $minerals = array("iron", "steel", "gargonite", "adron", "yeqdon", "frajrite");
             $items = array("sword", "spear", "dagger", "shield", "platebody", "platelegs", "helm");
             // Check out if the $item matches $mineral and $item
@@ -116,8 +121,11 @@
             $this->getWarriorstats();
             $this->db->closeConn();
         } 
-        public function removeArmor($warrior_id, $item, $part) {
-            $this->warrior_id = $warrior_id;
+        public function removeArmor($POST) {
+            // $POST variable holds the post data
+            $this->warrior_id = $POST['warrior_id'];
+            $part = strtolower($POST['part']);
+            
             $parts = array("helm", "left_hand", "body", "right_hand", "legs", "boots");
             if(array_search($part, $parts) === false) {
                 $this->gameMessage("ERROR: That part does not exists", true);
@@ -128,21 +136,16 @@
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-            $param_warrior_id = $warrior_id;
+            $param_warrior_id = $this->warrior_id;
             $param_username = $this->username;
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-            if($row[$part] != $item) {
-                $this->gameMessage("ERROR: The selected warrior is not wearing that", true);
-                return false;
-            }
             
             $sql = "SELECT warrior_id FROM warriors WHERE warrior_id=:warrior_id AND username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-            $param_warrior_id = $warrior_id;
+            $param_warrior_id = $this->warrior_id;
             $param_username = $this->username;
             $stmt->execute();
             if(!$stmt->rowCount() > 0) {
@@ -157,10 +160,10 @@
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                $param_warrior_id = $warrior_id;
+                $param_warrior_id = $this->warrior_id;
                 $param_username = $this->username;
                 $stmt->execute();
-                update_inventory($this->db->conn, $this->username, $item, 1, true);
+                update_inventory($this->db->conn, $this->username, $row[$part], 1, true);
             
                 $this->db->conn->commit();
             }
@@ -174,6 +177,7 @@
             $this->db->closeConn();
         }
         public function getWarriorstats() {
+            // Perform a query with two subqueries which retrieves the sum of attack and the sum of defence as well as armor
             $sql = "SELECT warrior_id, helm, left_hand, body, right_hand, legs, boots,
                     (SELECT SUM(attack) FROM smithy_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS attack,
                     (SELECT SUM(defence) FROM smithy_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS defence

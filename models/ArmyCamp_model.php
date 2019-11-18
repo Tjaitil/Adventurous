@@ -1,5 +1,5 @@
 <?php
-    class ArmyCamp_model extends model {
+    class ArmyCamp_model extends model /*implements getDataInterface*/ {
         public $username;
         public $session;
         
@@ -7,25 +7,6 @@
             parent::__construct();
             $this->username = $session['username'];
             $this->session = $session;
-        }
-        
-        // Function to echo date for ajax request
-        public function getCountdown() {
-            $sql = "SELECT training_countdown, fetch_report FROM warriors WHERE location=:location AND username=:username";
-            $stmt = $this->db->conn->prepare($sql);
-            $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
-            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-            $param_location = $this->session['location'];
-            $param_username = $this->username;
-            $stmt->execute();
-            $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $this->db->closeConn();
-            $data = array();
-            foreach($row as $key) {
-                $datetime = new DateTime($key['training_countdown']);
-                $date = date_timestamp_get($datetime);
-                echo $date . "|" . $key['fetch_report'] . "||";
-            }
         }
         public function getData($js = false) {
             $data = array();
@@ -46,6 +27,24 @@
             }
             else {
                 return $data;
+            }
+        }
+        public function getCountdown() {
+            // Function to echo date for ajax request
+            $sql = "SELECT training_countdown, fetch_report FROM warriors WHERE location=:location AND username=:username";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
+            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_location = $this->session['location'];
+            $param_username = $this->username;
+            $stmt->execute();
+            $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $this->db->closeConn();
+            $data = array();
+            foreach($row as $key) {
+                $datetime = new DateTime($key['training_countdown']);
+                $date = date_timestamp_get($datetime);
+                echo $date . "|" . $key['fetch_report'] . "||";
             }
         }
         public function checkWarriorLevel($warrior_levels) {
@@ -103,7 +102,10 @@
                     $this->db->conn->beginTransaction();
                     
                     for($i = 0; $i < count($statements); $i++ ) {
-                        $this->warriorUpdate($statements[$i]);
+                        $stmt = $this->db->conn->prepare($statements[$i]);
+                        $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                        $param_username = $this->username;
+                        $stmt->execute();
                     }
                     
                     $sql2 = "UPDATE warrior SET warrior_xp=:warrior_xp WHERE username=:username";
@@ -138,18 +140,11 @@
                 return $level_up;
             }
         }
-        private function warriorUpdate($sql) {
-            $stmt = $this->db->conn->prepare($sql);
-            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-            $param_username = $this->username;
-            $stmt->execute();
-        }
-        public function transfer($warriors) {
-            // Ajax function
-            // Transfer 
-            /*$query_array = $warriors;
-            $query_array[] = $this->username;*/
-            $query_array = explode(",", $warriors);
+        public function transfer($POST) {
+            // $POST variable holds the post data
+            // This function is called from an AJAX request from armycamp.js
+            // Function to transfer warriors between Tasnobil and Cruendo
+            $query_array = explode(",", $POST['warriors']);
             $query_array[] = $this->username;
             $in  = str_repeat('?,', count($query_array) - 2) . '?';
             $sql = "SELECT location FROM warriors WHERE warrior_id IN ($in) AND username= ?";
@@ -199,6 +194,8 @@
             $this->getData($js = true);
         }
         public function healWarrior($type, $warriors, $item = false, $amount = false) {
+            // This function is called from an AJAX request from armycamp.js
+            // Function to heal warrior with either item or set warrior on rest
             $query_array = explode(",", $warriors);
             $in  = str_repeat('?,', count($query_array) - 1) . '?';
             $query_array[] = $this->username;
@@ -289,8 +286,11 @@
                 $this->gameMessage("Warrior(s) on rest!", true);
             }
         }
-        public function offRest($warriors) {
-            $query_array = explode(",", $warriors);
+        public function offRest($POST) {
+            // $POST variable holds the post data
+            // This function is called from an AJAX request from armycamp.js
+            // Function to get warrior(s) off rest and available for other actions
+            $query_array = explode(",", $POST['warriors']);
             $in  = str_repeat('?,', count($query_array) - 1) . '?';
             $query_array[] = $this->username;
             $query_array[] = $this->session['location'];
@@ -345,7 +345,11 @@
             }
                 $this->gameMessage("Warriors off rest!", true);
         }
-        public function changeType($warrior_id) {
+        public function changeType($POST) {
+            // $POST variable holds the post data
+            // This function is called from an AJAX request from armycamp.js
+            // Function to get warrior(s) off rest and available for other actions
+            $warrior_id = $POST['warriors'];
             $sql = "SELECT type FROM warriors WHERE warrior_id=:warrior_id AND location=:location AND username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_INT);

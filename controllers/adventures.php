@@ -42,14 +42,24 @@
         }
         
         public function bindData() {
+            $this->loadModel('SetAdventure', true);
+            $adventure_status = $this->model->checkAdventure()['adventure_id'];
+            if($adventure_status != 0) {
+                $this->gameMessage("ERROR: Finish your current adventure before starting a new one");
+            }
+            
+            $difficulties = array("easy" => 1.0, "medium" => 5.0, "hard" => 12);
+            if($difficulties[$_POST['difficulty']] > $_SESSION['gamedata']['adventurer_respect']) {
+                $this->gameMessage("ERROR: Adventurer respect too low for this difficulty");    
+            }
             $this->adventureData['difficulty'] = $_POST['difficulty'];
             $this->adventureData['location'] = $_POST['location'];
-            $this->loadModel('setadventure', true);
+            $this->adventureData['invite_only'] = (isset($_POST['invite_only'])) ? 1 : 0;
+            
             $this->model->newAdventure($this->adventureData);
         }
         
         public function calculateContribution() {
-            
             $this->data['current_adventure']['requirments']['farmer'] = array();
             $this->data['current_adventure']['requirments']['miner'] = array();
             $this->data['current_adventure']['requirments']['trader'] = array();

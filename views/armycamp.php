@@ -2,8 +2,8 @@
 <html>
     <head>
         <title><?php echo $title; ?></title>
-        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name ?>.css" />
         <?php include(constant('ROUTE_VIEW') . 'head.php');?>
+        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name ?>.css" />
     </head>
     <body>
         <header>
@@ -16,7 +16,7 @@
         <div id="announcement"><button onclick="exit();">Exit</button></div>
         <section>
             <?php require(constant("ROUTE_VIEW") . 'layout.php');?>
-            <h3 id="page_title"> Armycamp </h3>
+            <h3 class="page_title"> Armycamp </h3>
             <a href="/army-missions"> Missions</a>
             <a href="/armory"> Armory </a>
             <button type="button" onclick="show('overview');"> Training Overview </button>

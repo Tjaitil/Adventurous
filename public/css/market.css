@@ -58,7 +58,7 @@ section table td {
     width: 92px;
 }
 #offers input[type="number"] {
-    max-width: 70px;
+    max-width: 30px;
 }
 #s_item {
     float: right;
@@ -72,14 +72,15 @@ section table td {
     float: left;
     width: 50%;
 }
+#my_offers tr {
+    border: 1px solid black;
+    background-color: #f2e6d9;
+}
+#my_offers td {
+    border: none;
+}
 #history {
     display: none;
     width: 50%;
     float: left;
-}
-.stockpile_item, .inventory_item {
-    display: inline-block;
-    float: left;
-    width: 100px;
-    position: relative;
 }

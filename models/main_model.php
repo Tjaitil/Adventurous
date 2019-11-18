@@ -10,7 +10,6 @@
         }
         
         public function getData() {
-        
             $data = array();
             $sql = "SELECT hirtam, pvitul, khanz, ter, fansalplains FROM diplomacy WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);
@@ -33,8 +32,29 @@
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
-            $data['miner_countdowns'] = $stmt->fetch(PDO::FETCH_ASSOC);
+            $data['miner_countdowns'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
+            $sql = "SELECT assignment_id FROM trader WHERE username=:username";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_username = $this->username;
+            $stmt->execute();
+            $data['trader_countdown'] = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            $sql = "SELECT mission FROM warrior WHERE username=:username";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_username = $this->username;
+            $stmt->execute();
+            $data['army_mission'] = $stmt->fetch(PDO::FETCH_OBJ)->mission;
+            
+            $sql = "SELECT training_countdown, fetch_report FROM warriors WHERE username=:username";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_username = $this->username;
+            $stmt->execute();
+            $data['warriors_countdowns'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+               
             return $data;
         }
         public function getChat($clock = false) {
@@ -56,8 +76,10 @@
                 get_template('chat', $data, true);
             }
         }
-        
         public function chat($message) {
+            // $POST variable holds the post data
+            // This function is called from an AJAX request
+            // Function to enter new message into public chat
             $sql = "INSERT INTO public_chat (clock, username, message) VALUES (:clock, :username, :message)";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":clock", $param_clock, PDO::PARAM_STR);
@@ -65,7 +87,7 @@
             $stmt->bindParam(":message", $param_message, PDO::PARAM_STR);
             $param_clock = date("H:i:s");
             $param_username = $this->username;
-            $param_message = $message;
+            $param_message = $POST['message'];
             $stmt->execute();
             $this->getChat($param_clock);
         }

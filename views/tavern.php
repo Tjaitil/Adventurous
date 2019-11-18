@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title><?php echo $title; ?></title>
+        <title><?php echo $title;?></title>
+        <?php require(constant('ROUTE_VIEW') . 'head.php');?>
         <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name ?>.css" />
-        <?php include(constant('ROUTE_VIEW') . 'head.php');?>
     </head>
     <body>
         <header>
@@ -11,7 +11,7 @@
         </header>
         <section>
             <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
-            <h3> Welcome to tavern, here you can recrute people</h3>
+            <h3 class="page_title"> Tavern </h3>
             <div id="persons">
                 <?php if(empty($this->data['persons'])):?>
                 <div> No persons of relevance to talk to in tavern </div>
@@ -23,6 +23,13 @@
             </div>
             </br>
             <?php get_template('tavern', $this->data); ?>
+            <div id="eat">
+                <div id="selected">
+                    
+                </div>
+                <input type="number" min="0" />
+                <button> Eat </button>
+            </div>
             <div id="inventory">
                 <?php require(constant('ROUTE_VIEW') . 'inventory.php'); url();?>
             </div>
@@ -36,6 +43,7 @@
                     </div>
                 </div>
             <script src="<?php echo constant("ROUTE_JS"). $name . '.js';?>"></script>
+            <script src="<?php echo constant("ROUTE_JS") . 'selectitem.js';?>"></script>
         </section>
         <aside>
             <?php require(constant('ROUTE_VIEW') . 'aside.php'); ?>

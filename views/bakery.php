@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title><?php echo $title; ?></title>
-        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name ?>.css" />
+        <title><?php echo $title;?></title>
         <?php include(constant('ROUTE_VIEW') . 'head.php');?>
+        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name ?>.css" />
     </head>
     <body>
         <header>
-            <?php require(constant('ROUTE_VIEW') . 'header.php'); ?>
+            <?php require(constant('ROUTE_VIEW') . 'header.php');?>
         </header>
         <section>
             <?php require(constant("ROUTE_VIEW") . 'layout.php');?>
@@ -23,7 +23,13 @@
                     </tr>
                 </thead>
                 <tr>
-                    <td> Cooked Potato  <img src="<?php echo constant('ROUTE_IMG') . '';?>" /></td>
+                    <td><div class="item">
+                            <figure onclick="show_title(this, false);">
+                                <img src="<?php echo constant('ROUTE_IMG') . 'cooked potato' . '.png';?>" />
+                                <figcaption class="tooltip"><?php echo ucwords('cooked potato'); ?></figcaption>
+                            </figure>
+                        </div>
+                    </td>
                     <td> Potato <img src="<?php echo constant('ROUTE_IMG') . '';?>" /></td>
                     <td> 50 <img src="<?php echo constant('ROUTE_IMG') . '';?>" /></td>
                     <td> 1 </td>

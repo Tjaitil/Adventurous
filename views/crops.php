@@ -2,7 +2,8 @@
 <html>
     <head>
         <title><?php echo $title;?></title>
-        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name?>.css" />
+        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name;?>.css" />
+        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS');?>select.css" />
         <?php require(constant('ROUTE_VIEW') . 'head.php');?>
         <meta charset="utf-8"/>
     </head>
@@ -12,36 +13,40 @@
         </header>
         <section>
             <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
-            <?php /*if(strlen($_SESSION['gamedata']['log'][] ) > 3):?>
-                <script>getgMessage();</script>
-            <?php endif;*/?>
-            <p id=""></p></br>
-            <p id=""><?php echo (isset($this->data['notification'])) ? $this->data['notification'] : ""; ?></p>
-            <p id="demo"></p>
-            <!--<div id="crops_view">
-                Currently growing: 
-                <div id="toggle_view">
-                    <a href="#" onclick="showFig();" id="crop_farm">Show farm</a>
-                    <a href="#" onclick="showTable();" id="crop_list"> Show list</a></br> 
+            <div id="action_div">
+                <div id="actions">
+                    <div id="growing">
+                        <p id="time"></p></br>
+                    </div>
+                    <button onmousedown="destroyCrops();"> Destroy crops </button>
                 </div>
-                <table id="crops_table">
-                        <thead>
-                            <tr>
-                                <th> Type of Crop</th>
-                                <th> Number of fields </th>
-                            </tr>
-                                <td></td>
-                                <td></td>
-                            <tr>
-                                <td>    1   </td>
-                                <td>    2   </td>
-                            </tr>
-                        </thead>
-                </table>
-                <div id="crops">
+                <div id="select">
+                    <?php
+                    foreach($this->data['crop_types'] as $key): ?>
+                    <img class="crop" src="<?php echo constant('ROUTE_IMG') . $key['crop_type'] . '.png';?>"
+                    alt="<?php echo $key['crop_type'];?>"/>
+                    <?php endforeach;?>
                 </div>
-            </div>-->
-
+                <div id="data_container">
+                    <div id="data">
+                        <form id="data_form">
+                            <figure></figure>
+                            <div class="row">
+                                <label for="crop"> Crop: </label>
+                                <input type="text" name="crop" readonly /></br>
+                            </div>
+                            <label for="time"> Time: </label>
+                            <input type="text" name="time" readonly /></br>
+                            <label for="seeds"> Seeds: </label>
+                            <input type="text" name="seeds" readonly /></br>
+                            <label for="workforce"> Workforce:</label>
+                            <input name="workforce" id="" type="number" min="0" required />
+                            <span>(<?php echo $this->data['workforce_data']['avail_workforce']?>)</span>
+                            <button type="button"> Grow </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
             <div id="crops_action">
                 <div id="growing">
                     <p id="time"></p></br>
@@ -70,24 +75,7 @@
                     <button type="button" id="plant_button"> Grow </button>
                 </form>
             </div>
-        <script>
-            /* var corn1 = 3;
-            for (var i = 0; i < corn1; i++) {
-                document.getElementById("crop_" + [i]).style.backgroundColor = "red";
-            }
-            function showTable () {
-                document.getElementById("crops_table").style.visibility = "visible";
-                document.getElementById("crops_table").style.display = "block";
-                document.getElementById("crops").style.visibility = "hidden";
-            }
-            function showFig () {
-                document.getElementById("crops_table").style.visibility = "hidden";
-                document.getElementById("crops_table").style.display = "none";
-                document.getElementById("crops").style.visibility = "visible";
-            }
-            */
             
-        </script>
         <div id="inventory">
             <?php require(constant('ROUTE_VIEW') . 'inventory.php'); url();?>
         </div>
@@ -96,11 +84,12 @@
                 <div id="selected">
                     <div id="selected_t"></div>
                 </div>
-                <input type="number" id="quantity" min="0" />
+                <input type="number" id="amount" min="0" />
                 <button> Generate </button>
             </div>
         <script src="<?php echo constant('ROUTE_JS') . $name . '.js';?>"></script>
-        <script src="<?php echo constant('ROUTE_JS') . 'selectitem.js';?>"></script>  
+        <script src="<?php echo constant('ROUTE_JS') . 'selectitem.js';?>"></script>
+        <script src="<?php echo constant('ROUTE_JS') . 'select.js';?>"></script>  
         </section>
         <aside>
             <?php require(constant('ROUTE_VIEW') . 'aside.php');?>

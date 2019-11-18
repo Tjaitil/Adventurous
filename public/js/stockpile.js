@@ -114,12 +114,10 @@
     }
     function updatePage() {
         updateInventory('stockpile');
-        ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.onload = function () {
-            if(this.readyState == 4 && this.status == 200) {
-                document.getElementById("stockpile").innerHTML = this.responseText;
+        var data = "model=stockpile" + "&method=getStockpile";
+        ajaxJS(data, function(response) {
+            if(response[0] != false) {
+                document.getElementById("stockpile").innerHTML = response[1];
             }
-        };
-        ajaxRequest.open('GET', "handlers/handler_js.php?model=stockpile" + "&method=getStockpile");
-        ajaxRequest.send();
+        });
     }

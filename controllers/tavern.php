@@ -17,7 +17,7 @@
         public function workers() {
             $date = date("Y-m-d");
             $city = $_SESSION['gamedata']['location'];
-            if($this->data['user_tavern_data'][$city] == 0) {
+            if(intval($this->data['user_tavern_data'][$city]) === 0) {
                 switch($city) {
                     case 'snerpiir' || 'golbak':
                         $farmer_amount = rand(0,2);
@@ -39,9 +39,11 @@
                 for($i = 0; $i < ($farmer_amount + $miner_amount + $warrior_amount); $i++) {
                     if($i < $farmer_amount) {
                         $this->data['workers'][$i]['type'] = 'farmer';
+                        $this->data['workers'][$i]['level'] = 0;
                     }
                     else if ($i < ($farmer_amount + $miner_amount)) {
                         $this->data['workers'][$i]['type'] = 'miner';
+                        $this->data['workers'][$i]['level'] = 0;
                     }
                     else {
                         $rand = array_rand($warrior_types);
@@ -49,8 +51,8 @@
                         $this->data['workers'][$i]['level'] = rand(1,3);
                     }
                 }
+                $this->data['tavern']['workers'] = $this->data['workers'];
                 $this->model->updateWorkers($this->data['workers']);
-                $this->data['tavern']['workers'];
             }
             else if($date === $this->data['user_tavern_data']['new_workers']) {
                 $this->data['tavern']['workers'] = $this->model->getWorkers();

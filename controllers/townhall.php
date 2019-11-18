@@ -6,38 +6,31 @@
             parent::__construct();
         }
         public function index() {
+            $this->checkLocation();
             $this->loadModel('townhall', true);
             $this->data = $this->model->getData();
-            $this->data['favor'] = $this->favorGenerate();
+            /*$this->data['favor'] = $this->favorGenerate();*/
+            $this->determineAssignment();
             $this->render('townhall', 'Town Hall', $this->data);
         }
-        public function favorGenerate() {
-            $location = $_SESSION['gamedata']['location'];
-            $location_goods = array();
-            $location_goods['hirtam'] = array('Tomato Seeds', 'Iron', 'Clay');
-            $location_goods['pvitul'] = array('Tomato Seeds', 'Iron', 'Clay');
-            $location_goods['khanz'] = array('Tomato Seeds', 'Iron', 'Clay');
-            $location_goods['ter'] = array('Tomato Seeds', 'Iron', 'Clay');
-            $location_goods['fansal plains'] = array('Tomato Seeds', 'Iron', 'Clay');
-            
-            
-            $amount = rand(10,40);
-            /*$amount['1'];
-            $amount['2'];
-            $amount['3'];
-            $amount['4'];
-            $amount['5'];
-            $amount['6'];*/
-            
-            var_dump($location_goods[$location]);
-            $random_key = array_rand($location_goods[$location], 1);
-            $data = array();
-            $data['item'] = $location_goods[$location][$random_key];
-            $data['amount'] = $amount;
-            $data['destination'] = 'golbak';
-            $data['base'] = $_SESSION['gamedata']['location'];
-            $_SESSION['gamedata']['favor'] = $data;
-            var_dump($_SESSION['gamedata']['favor']);
+        private function checkLocation() {
+            $location = str_replace(" ", "", $_SESSION['gamedata']['location']);
+            $locations = array("hirtam", "pvitul", "khanz", "ter", "fansalplains");
+            if(array_search($location, $locations) === false) {
+                header("Location: /city");
+                die();
+            }
+        }
+        private function determineAssignment() {
+            if($this->data['trader_data']['assignment_id'] != 0) {
+                $this->data['trader_data']['assignment'] =
+                "Carrying " . $this->data['trader_data'][0]['cargo'] . " from " . $this->data['trader_data'][0]['base'] . " to " .
+                $this->data['trader_data'][0]['destination'] .  ", " . "delivered " . $this->data['trader_data']['delivered'] . "/" .
+                $this->data['trader_data'][0]['assignment_amount'] . " ({$this->data['trader_data'][0]['assignment_type']})";
+            }
+            else {
+                $this->data['trader_data']['assignment'] = "none";
+            }
         }
     }
 ?>

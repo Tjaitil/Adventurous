@@ -1,5 +1,6 @@
 #mine_action {
     width: 50%;
+    max-width: 407px;
     border: 1px solid black;
     float: left;
 }
@@ -9,18 +10,14 @@
   display: table;
 }
 #mineral_select {
-    width: 57%;
+    width: 58%;
+    max-width: 231px;
     box-sizing: border-box;
     float: left;
+    padding: 1.5px;
 }
-.mineral {
-    width: 70px;
-    height: 70px;
-    float: left;
-    border: 1px solid black;
-}
-#mine_data {
-    width: 43%;
+#mineral_data_container {
+    width: 42%;
     box-sizing: border-box;
     float: left;
     border-left: 2px solid black;
@@ -37,7 +34,14 @@
 #mineral_data input:nth-child(12) {
     cursor: text;
 }
-
+#mine_form figure {
+    width: 100%;
+    height: 70px;
+}
+#mine_form figure img {
+    margin: 0 auto;
+    float: none;
+}
 #type_img {
     width: 50px;
     height: 50px;

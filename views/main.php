@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title><?php echo $title; ?></title>
-        <link rel="stylesheet" type="text/css" href="<?php echo constant("ROUTE_CSS") . $name; ?>.css" />
+        <title><?php echo $title;?></title>
         <?php include(constant("ROUTE_VIEW") . 'head.php');?>
-        <meta charset="utf-8"/>
+        <link rel="stylesheet" type="text/css" href="<?php echo constant("ROUTE_CSS") . $name; ?>.css" />
     </head>
     <body>
         <header>
@@ -19,9 +18,7 @@
                     <?php get_template('chat', $this->data['chat']);?>            
                 </ul>
             </div>
-            
-            <button onclick="show_xp('farmer', 10);"> Show_xp </button>
-            <input type="text" id="text" />
+            <input type="text" id="text" placeholder="Write message" />
             <button type="button" onclick="chat();"> Chat </button>
             </div>
             <img src="map.png" id="world_map" height="300px" width="500px"/>
@@ -55,7 +52,35 @@
             <div id="countdowns">
                 <table>
                     <caption> Countdowns: </caption>
-                    <?php var_dump($this->data['countdowns']);?>
+                    <thead>
+                        <tr>
+                            <td> Profiency </td>
+                            <td> What </td>
+                        </tr>
+                    </thead>
+                    <tr>
+                        <td> Farmer </td>
+                        <td><p>Towhar: <?php echo $this->data['countdowns']['farmer'][0];?></p>
+                            <p>Cruendo: <?php echo $this->data['countdowns']['farmer'][1];?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td> Miner </td>
+                        <td><p>Golbak: <?php echo $this->data['countdowns']['miner'][0];?></p>
+                            <p>Snerpiir: <?php echo $this->data['countdowns']['miner'][1];?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td> Trader </td>
+                        <td><?php echo 'Assignment: ' , $this->data['countdowns']['trader'];?></td>
+                    </tr>
+                    <tr>
+                        <td> Warrior </td>
+                        <td><p><?php echo 'Armymission: ' , $this->data['countdowns']['warrior']['mission'];?></p>
+                            <p><?php echo 'Warrior(s) finished: ' , $this->data['countdowns']['warrior']['finished'];?></p>
+                            <p><?php echo 'Warrior(s) training: ' , $this->data['countdowns']['warrior']['training'];?></p>
+                            <p><?php echo 'Warrior(s) idle: ' , $this->data['countdowns']['warrior']['idle'];?></p>
+                    </tr>
                 </table>
             </div>
             <div id="diplomacy">

@@ -9,7 +9,7 @@
             parent::__construct();
             $this->username = $session['username'];
             $this->session = $session;
-            // Assign the database class to db property
+            $this->UpdateGamedata = $this->loadModel('UpdateGamedata');
         }
         
         public function getStockpile($js = false) {

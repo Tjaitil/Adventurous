@@ -215,7 +215,7 @@
                     update_inventory($this->db->conn, $this->username, $key['item'], $key['amount']);
                 }
                 
-                if($crystal_chance === 1) {
+                if($crystal_chance ===x 1) {
                     $rewards[] = array("item" => $this->adventure_data['location'] . 'crystal', "amount" => 1);
                     update_inventory($this->db->conn, $this->username. $this->adventure_data['location'] . 'crystal', 1, true);
                 }

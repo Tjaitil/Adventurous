@@ -26,6 +26,7 @@
         });
         document.getElementById("receiver").addEventListener("keyup", chk_me());
     });
+    
     var timer;
     function chk_me(){
         clearTimeout(timer);
@@ -120,43 +121,36 @@
         document.getElementById("sent").style.display = "none";
         /*document.getElementsByTagName("SECTION")[0].appendChild(div);*/
         
-        ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.onload = function () {
-            if(this.readyState == 4 && this.status == 200) {
-                var data = this.responseText.split("|");
+        var dat = "model=messages" + "&method=showMessage" + "&message_id=" + message_id;
+        ajaxG(data, function(response) {
+            if(response[0] != false) {
+                var responseText = response[1].split("|");
                 console.log(data);
                 console.log(document.getElementById("message_info"));
-                document.getElementById("message_info").children[0].children[0].children[1].innerHTML = data[1];
-                document.getElementById("message_info").children[0].children[1].children[1].innerHTML = data[2];
-                document.getElementById("message_info").children[0].children[2].children[1].innerHTML = data[3];
-                document.getElementById("message").children[2].innerHTML = data[3];
+                document.getElementById("message_info").children[0].children[0].children[1].innerHTML = responseText [1];
+                document.getElementById("message_info").children[0].children[1].children[1].innerHTML = responseText [2];
+                document.getElementById("message_info").children[0].children[2].children[1].innerHTML = responseText [3];
+                document.getElementById("message").children[2].innerHTML = responseText[3];
                 if(data[0] == 0) {
                     var parent = element.parentNode.parentNode;
                     var img = parent.children[4].children[0];
                     img.setAttribute("src", "/1.png");
                 }
             }
-        };
-        ajaxRequest.open('GET', "handlers/handler_g.php?model=messages" + "&method=showMessage" + "&message_id=" + message_id);
-        ajaxRequest.send(); 
+        });
     }
     
     function userCheck() {
         var input = document.getElementById("receiver");
-        ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.onload = function () {
-            if(this.readyState == 4 && this.status == 200) {
-                if(this.responseText == 0) {
-                    input.setCustomValidity("The user you are trying to send message to does not exists!");
-                    console.log(this.responseText);
-                }
-                else if(this.responseText > 0) {
-                    console.log("User Exists!");
-                }
+        var data = "model=messages" + "&method=userCheck" + "&input=" + input.value;
+        ajaxG(data, function(response) {
+            if(response[0] == false) {
+                input.setCustomValidity("The user you are trying to send message to does not exists!");    
             }
-        };
-        ajaxRequest.open('GET', "handlers/handler_g.php?model=messages" + "&method=userCheck" + "&input=" + input.value);
-        ajaxRequest.send();
+            if(response[0] != false) {
+            
+            }
+        });
     }
     var pages = {
         
@@ -169,6 +163,7 @@
     function getmMessages() {
         var button = event.target;
         var table = button.closest("table");
+        // tb = tbody
         var tb = table.children[1];
         var date = table.children[1].lastElementChild.children[3].innerHTML;
         var type = button.innerHTML;
@@ -206,7 +201,7 @@
             var data = "model=messages" + "&method=getmMessages" + "&table=" + table + "&type=" + type + "&date=" + date;
             ajaxG(data, function(response) {
                 if(response[0] != false) {
-                    responseText = response[1].split("#");
+                    var responseText = response[1].split("#");
                     if(responseText[0].length > 0) {
                         button.disabled = true;
                     }

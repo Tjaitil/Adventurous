@@ -1,28 +1,23 @@
-section table td {
-    padding:5px;
-    border: 1px solid black;
-    border-collapse: collapse;
+section {
+    overflow-y: scroll;
 }
-
 #mission {
     position: relative;
 }
-
 #mission_enabled {
     position: absolute;
     margin: auto;
-    top:50px;
-    left:0px;
-    right:0px;
-    bottom:0px;
+    top: 300px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
     background-color: white;
     border: 1px solid black;
-    width:500px;
+    width: 500px;
     height: 300px;
     visibility: hidden;
     padding:10px;
 }
-
 #mission_enabled button {
     position: relative;
     top: 0px;
@@ -34,7 +29,6 @@ section table td {
     border: 1px solid black;
     border-collapse: collapse;
 }
-
 #mission_enabled button {
     background-color: red;
     color:white;
@@ -44,11 +38,37 @@ section table td {
     border-radius: 5px;
     border: 0.5px solid black;
 }
-
+#warriors_container {
+    overflow-x: scroll;
+}
+#warriors_container img {
+    width: 30px;
+    height: 30px;
+}
+#warriors_container {
+    
+}
+#warriors_container figure figure {
+    float: left;
+    width: 30px;
+    height: 30px;
+}
+#warriors_container figcaption {
+    display: none;
+}
+.skill_level {
+    position: relative;
+    top: -57%;
+    left: -8%;
+    color: black;
+    text-align: right;
+    float: none;
+}
 .warriors {
-    border:1px solid black;
-    float:left;
-    height:200px;
-    width:100px;
-    margin:2px;
+    border: 1px solid black;
+    float: left;
+    height: 200px;
+    width: 100px;
+    margin: 2px;
+    cursor: pointer;
 }

@@ -32,7 +32,6 @@
     
     function select_i() {
         var element = event.target.closest("figure");
-        document.getElementById("form_select").selectedIndex = 2;
         toggleType();
         var item = element.children[1].innerHTML.toLowerCase().trim();
         if(item === 'gold') {

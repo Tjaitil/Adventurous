@@ -19,7 +19,6 @@
             $this->username = $session['username'];
             $this->session = $session;
         }
-        
         public function checkCountdown() {
                 $time = date("Y-m-d H:i:s");
                 if(isset($_SESSION['gamedata']['arrive_time']) && $_SESSION['gamedata']['arrive_time'] > $time) {
@@ -119,7 +118,7 @@
        }
        
         public function updateLocation($base, $destination, $db_countdown) {
-            if ($base === $destination) {
+            if($base === $destination) {
                 return false;
             }
             $sql = "UPDATE user_data SET location=:destination WHERE username=:username";
@@ -131,6 +130,15 @@
             $stmt->execute();
             $_SESSION['gamedata']['location'] = $destination;
             $this->db->closeConn();
+            
+            $file = '../' . constant('ROUTE_VIEW') . $destination . '.php';
+            var_dump($file);
+            if(file_exists($file)) {
+                require($file);
+            }
+            else {
+                echo "ERROR!";
+            }
        }
     }
 ?>

@@ -2,8 +2,7 @@
 <html>
     <head>
         <title>Registration</title>
-        <link rel="stylesheet" type="text/css" href="public/css/registration.css" />
-        <meta charset="utf-8"/>
+        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS'). $name;?>.css" />
     </head>
     <body onload="standardterms();">
             <script src="js/registration.js"></script>

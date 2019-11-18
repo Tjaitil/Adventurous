@@ -1,4 +1,4 @@
-<h3 id="page_title"> Snerpiir </h3>
+<h3 class="page_title"> Snerpiir </h3>
         <a href="/miningarea" id="city_miningarea_link"> Mining Area </a>
         <a href="/stockpile" id="city_stockpile_link"> Stockpile </a>
         <a href="/tavern" id="city_tavern_link"> Tavern </a>

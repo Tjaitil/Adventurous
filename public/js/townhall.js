@@ -1,53 +1,27 @@
     
+
     function doFavor() {
-        /*var element = document.getElementById("favor");
+        var element = document.getElementById("favor");
         var item = element.children[0].innerHTML;
         var amount = element.children[1].innerHTML;
-        
-        ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.onload = function () {
-            if(this.readyState == 4 && this.status == 200) {
-                console.log(this.responseText);
-            }
-        };
-        ajaxRequest.open('GET', "handlers/ajax.php?model=" + "&method=" + "&item=" + item + "&amount=" + amount);
-        ajaxRequest.send();*/
+    
         var data = "model=setassignment" + "&method=newAssignment" + "&favor=true" + "&assignment_id=" + 1;
-        ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.onload = function () {
-            if(this.readyState == 4 && this.status == 200) {
-                if(this.responseText.indexOf("ERROR:") != -1) {
-                    gameLog(this.responseText);
-                }
-                else {
-                    gameLog(this.responseText);
-                }
-            }
-        };
-        ajaxRequest.open('POST', "handlers/handler_p.php");
-        ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        ajaxRequest.send(data);
+        ajaxP(data, function(response) {
+           if(response[0] != false) {
+                gameLog(response[1]);
+           }
+        });
     }
     
-    function pickUp() {
+    /*function pickUp() {
         var data = "model=trader" + "&method=pickUp" + "&favor=true";
-        ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.onload = function () {
-            if(this.readyState == 4 && this.status == 200) {
-                if(this.responseText.indexOf('ERROR:') != -1) {
-                    gameLog(this.responseText);
-                }
-                else {
-                    gameLog(this.responseText);
-                }
-            }
-        };
-        ajaxRequest.open('POST', "handlers/handler_p.php");
-        ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        ajaxRequest.send(data);
-    }
-    
-    function deliver() {
+        ajaxP(data, function(response) {
+           if(response[0] != false) {
+                gameLog(response[0]);
+           }
+        });
+    }*/
+    /*function deliver() {
         var data = "model=trader" + "&method=deliver" + "&favor=true";
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
@@ -77,5 +51,5 @@
         ajaxRequest.open('POST', "handlers/handler_p.php");
         ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         ajaxRequest.send(data);
-    }
+    }*/
     

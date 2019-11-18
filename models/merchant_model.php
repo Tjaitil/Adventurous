@@ -34,7 +34,9 @@
             
             
             if($data['trader_data']['assignment_id'] != 0 ) {
-                $sql4 = "SELECT base, destination, cargo, assignment_amount FROM trader_assignments WHERE assignment_id=:assignment_id";
+                $sql4 = "SELECT base, destination, cargo, assignment_amount, assignment_type
+                         FROM trader_assignments
+                         WHERE assignment_id=:assignment_id";
                 $stmt4 = $this->db->conn->prepare($sql4);
                 $stmt4->bindParam(":assignment_id", $param_assignment_id, PDO::PARAM_STR);
                 $param_assignment_id = $data['trader_data']['assignment_id'];
@@ -61,11 +63,15 @@
                 return $data;
             }
         }
-        
-        public function buyItem($item, $amount, $bond) {
-            $city = $this->session['location'];
+        public function buyItem($POST) {
+            // $POST variable holds the post data
+            // This function is called from an AJAX request from merchant.js
+            // Function to trade item with merchant
+            $item = strtolower($POST['item']);
+            $amount = $POST['amount'];
+            $bond = $POST['bond'];
             $cities = array("towhar", "golbak", "snerpiir", "krasnur", "tasnobil", "cruendo", "fagna");
-            if (array_search($city, $cities) === false) {
+            if (array_search($this->session['location'], $cities) === false) {
                 $this->gameMessage("ERROR: Something unexpected happened, please try again later!", true);
                 return false;
             }

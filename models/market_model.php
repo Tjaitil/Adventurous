@@ -27,7 +27,7 @@
             $stmt2->execute();
             $data['my_offers'] = $stmt2->fetchAll(PDO::FETCH_ASSOC);
             
-            $sql3 = "SELECT id, type, item, amount, price_ea FROM offer_records WHERE username=:username";
+            $sql3 = "SELECT id, type, item, amount, price_ea FROM offer_records WHERE username=:username LIMIT 10";
             $stmt3 = $this->db->conn->prepare($sql3);
             $stmt3->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
@@ -60,6 +60,17 @@
         public function newOffer($post_data) {
             //AJAX function
             $post_data['item'] = strtolower($post_data['item']);
+            
+            $sql  ="SELECT item FROM offers WHERE offeror=:offeror";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->bindParam(":offeror", $param_username, PDO::PARAM_STR);
+            $param_username = $this->username;
+            $stmt->execute();
+            if($stmt->rowCount() + 1 > 6) {
+                $this->gameMessage("ERROR: You can only have 6 errors");
+                return false;
+            }
+            
             if($post_data['type'] == 'Sell') {
                 $item = get_item($this->session['inventory'], $post_data['item']);
                 if($item == null) {
@@ -330,7 +341,8 @@
             $this->db->closeConn();
         }
         private function update_records($username, $offer_info, $type) {
-            $sql = "SELECT username, amount FROM offer_records WHERE id=:id AND username=:username";
+            $sql = "SELECT (SELECT COUNT(amount) FROM offer_records WHERE username=:username) as count, username, amount
+                    FROM offer_records WHERE id=:id AND username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":id", $param_id, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
@@ -338,6 +350,14 @@
             $param_username = $username;
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if($row['count'] > 11) {
+                $sql = "DELETE FROM offer_records WHERE username=:username ORDER BY time DESC LIMIT 1";
+                $stmt = $this->db->conn->prepare($sql);
+                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                $param_username = $this->username;
+                $stmt->execute();
+            }
             if(!$stmt->rowCount() > 0) {
                 $sql = "INSERT INTO offer_records (id, username, type, item, amount, price_ea)
                         VALUES (:id, :username, :type, :item, :amount, :price_ea)";

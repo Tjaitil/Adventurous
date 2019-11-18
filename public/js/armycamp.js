@@ -95,20 +95,16 @@
             form_data[form[i].name] = form[i].value;
         }
         var data = "model=CombatCalculator" + "&method=calculate" + "&form_data=" + JSON.stringify(form_data);
-        ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.onload = function () {
-            if(this.readyState == 4 && this.status == 200) {
-                console.log(this.responseText);
+        ajaxP(data, function(response) {
+            if(response[0] !== false) {
+                console.log(response[1]);
                 show('calculator');
                 document.getElementById("calc_form").style = "display: none";
                 var div = document.getElementById("calc_result");
                 div.style = "visibility: visible";
-                div.innerHTML += this.responseText;   
-            }
-        };
-        ajaxRequest.open('POST', "handlers/handler_p.php");
-        ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        ajaxRequest.send(data);
+                div.innerHTML += response[1];
+            }       
+        }); 
     }
     function toogleActions() {
         var select = document.getElementsByName("action")[0];
@@ -193,32 +189,22 @@
         document.getElementsByName("action")[0].selectedIndex = 0;
     }
     function transfer(warriors) {
-        ajaxRequest = new XMLHttpRequest();
         var data = "model=ArmyCamp" + "&method=transfer" + "&warriors=" + warriors;
-        ajaxRequest.onload = function () {
-            if(this.readyState == 4 && this.status == 200) {
-                console.log(this.responseText);
-                if(this.responseText.search("ERROR:") != -1) {
-                    gameLog(this.responseText);
-                }
-                else {
-                    document.getElementById("overview").children[1].innerHTML = this.responseText;
-                    getCountdown();
-                }
-            }
-        };
-        ajaxRequest.open('POST', "handlers/handler_p.php");
-        ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        ajaxRequest.send(data);
+        ajaxP(data, function(response) {
+            if(response[0] !== false) {
+                document.getElementById("overview").children[1].innerHTML = response[1];
+                getCountdown();
+            }       
+        });
     }
     var intervalID = {
             
     };
-    function getCountdown() { 
-        ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.onload = function () {
-            if(this.readyState == 4 && this.status == 200) {
-                data = this.responseText.split("||");
+    function getCountdown() {
+        var data = "model=ArmyCamp" + "&method=getCountdown";
+        ajaxJS(data, function(response) {
+            if(response[0] != false) {
+                data = response[1].split("||");
                 data.pop();
                 warriors = [];
                 for(var i = 0; i < data.length; i++) {
@@ -229,9 +215,7 @@
                     intervalID[warrior] = setInterval(createCount(time, report, i),1000);
                 }
             }
-        };
-        ajaxRequest.open('GET', "handlers/handler_js.php?model=ArmyCamp" + "&method=getCountdown");
-        ajaxRequest.send();
+        });
     } 
     function createCount(time, report, i) {
         return function() {
@@ -269,25 +253,14 @@
     function updateTraining(id) {
         console.log(id);
         var data = "model=UpdateTraining" + "&method=updateTraining" + "&warrior_id=" + id;
-        ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.onload = function() {
-            if(this.readyState == 4 && this.status == 200) {
-                console.log(this.responseText);
-                if(this.responseText.indexOf("ERROR:") != -1) {
-                    gameLog(this.responseText);
-                }
-                else {
-                    getCountdown();
-                    gameLog(this.responseText);
-                }
-            }
-        };
-        ajaxRequest.open("POST", "/handlers/handler_p.php");
-        ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        ajaxRequest.send(data);
+        ajaxP(data, function(response) {
+            if(response[0] !== false) {
+                getCountdown();
+                gameLog(response[1]);
+            }       
+        });
     }
     function healWarrior(type, warriors) {
-        console.log(warriors);
         var data = "model=ArmyCamp" + "&method=healWarrior";
         if(type == 'heal') {
             var quantity = document.getElementById("quantity").value;
@@ -313,40 +286,19 @@
         else {
             data += "&type=" + 'rest' + "&warriors=" + warriors;
         }
-       ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.onload = function () {
-            if(this.readyState == 4 && this.status == 200) {
-                if(this.responseText.indexOf("ERROR:") != -1) {
-                    gameLog(this.responseText);
-                    return false;
-                }
-                else {
-                    gameLog(this.responseText);
-                }
-            }
-        };
-        ajaxRequest.open('POST', "handlers/handler_p.php");
-        ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        ajaxRequest.send(data);
+        ajaxP(data, function(response) {
+            if(response[0] !== false) {
+                gameLog(response[1]);
+            }       
+        });
     }
     function offRest(warriors) {
-        
         var data = "model=ArmyCamp" + "&method=offRest" + "&warriors=" + warriors;
-        ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.onload = function () {
-            if(this.readyState == 4 && this.status == 200) {
-                if(this.responseText.indexOf("ERROR:") != -1) {
-                    gameLog(this.responseText);
-                    return false;
-                }
-                else {
-                    gameLog(this.responseText);
-                }
-            }
-        };
-        ajaxRequest.open('POST', "handlers/handler_p.php");
-        ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        ajaxRequest.send(data);
+        ajaxP(data, function(response) {
+            if(response[0] !== false) {
+                gameLog(response[1]);
+            }       
+        }); 
     }
     function training(warriors, warriorsI) {
         var select = document.getElementById("training").children[1];

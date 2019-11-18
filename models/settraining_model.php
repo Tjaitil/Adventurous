@@ -14,7 +14,13 @@
             return $data;
         }
         
-        public function setTraining($warrior, $type) {
+        public function setTraining($POST) {
+            // $POST variable holds the post data
+            // This function is called from an AJAX request
+            // Function to set training
+            $warrior = $POST['warrior'];
+            $type = $POST['type'];
+            
             $sql = "SELECT warrior_id FROM warriors WHERE warrior_id=:warrior_id AND location=:location AND username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);

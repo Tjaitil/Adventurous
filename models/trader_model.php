@@ -3,10 +3,10 @@
         public $username;
         public $session;
         public $assignment_types;
-        public $assignment_type;
-        public $assignment_amount;
-        public $cargo;
-        public $favor;
+        private $assignment_type;
+        private $assignment_amount;
+        private $cargo;
+        private $favor;
 
         function __construct ($session) {
             parent::__construct();
@@ -16,6 +16,11 @@
         }
         public function pickUp() {
             //AJAX function
+            if($this->session['hunger'] < 10) {
+                $this->gameMessage("ERROR: Your hunger is too high, please eat!", true);
+                return false;
+            }
+            
             $sql = "SELECT t.assignment_id, t.cart, t.cart_amount, t.delivered, ta.assignment_amount, ta.assignment_type, ta.base
                     FROM trader AS t INNER JOIN trader_assignments AS ta ON ta.assignment_id = t.assignment_id
                     WHERE t.username=:username"; 
@@ -34,6 +39,7 @@
                 $this->gameMessage("ERROR: You are in the wrong city to pick up items", true);
                 return false;
             }
+            
             $sql = "SELECT capasity FROM travelbureau_carts WHERE wheel=:wheel";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":wheel", $param_wheel, PDO::PARAM_STR);
@@ -78,6 +84,12 @@
         }   
         public function deliver() {
             //AJAX function
+            
+            if($this->session['hunger'] < 10) {
+                $this->gameMessage("ERROR: Your hunger is too high, please eat!", true);
+                return false;
+            }
+            
             $sql = "SELECT t.assignment_id, t.cart_amount, t.delivered, ta.assignment_amount, ta.cargo, ta.assignment_type, ta.destination
                     FROM trader AS t INNER JOIN trader_assignments AS ta ON ta.assignment_id = t.assignment_id
                     WHERE t.username=:username"; 
@@ -139,6 +151,7 @@
                 $this->assignment_type = $row['assignment_type'];
                 $this->assignment_amount = $row['assignment_amount'];
                 $this->cargo = $row['cargo'];
+                $this->assignment_base = $row['base'];
                 $this->updateAssignment();
             }
             else {
@@ -196,7 +209,7 @@
                 $sql = "SELECT hirtam, pvitul, khanz, ter, fansalplains FROM city_relations WHERE city=:city";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":city", $param_city, PDO::PARAM_STR);
-                $param_city = $this->session['favor']['base'];
+                $param_city = $this->assignment_base;
                 $stmt->execute();
                 $city_relations = $stmt->fetch(PDO::FETCH_ASSOC);
                 
@@ -256,17 +269,18 @@
             $this->db->closeConn();
             echo "|finished!|";
             if($this->favor != true) {
+                echo "|{$xp}";
                 if(isset($xp_bonus)) {
                     $this->gameMessage("You received {$xp_bonus} for finishing before deadline!", true);
                     echo "|";
                 }
                 $this->gameMessage("You finished assignment and received {$reward_amount} of {$this->cargo}", true);
-                echo "|{$xp}";
             }
             else {
-                $this->gameMessage("You have finsihed your favor assignment", true);
-                unset($_SESSION['gamedata']['favor']);
                 echo "|{$xp}";
+                $this->gameMessage("You have finsihed your favor assignment", true);
+                echo "|";
+                $this->gameMessage("Diplomacy relations have been updated!", true);
             }
         }
     }

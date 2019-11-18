@@ -4,29 +4,33 @@ header {
     display: block;
     background: radial-gradient(#f2e6d9 60%, #986834);
 }
-#nav_but {
-    display: none;
-    color:white;
-    background-color:#994d00;
-    width: 40%;
-}
 #nav_2 {
     list-style-type: none;
-    width: 40%;
+    width: 19%;
     float: left;
-    position: absolute;
-    z-index: 1;
+}
+#nav_but {
+    display: none;
+    color: white;
+    background-color:#994d00;
+    width: 100%;
+    max-width: 100px;
+    border: none;
 }
 #nav_2 ul {
-    margin-top: 8%;
+    margin-top: 2px;
     list-style-type: none;
     float: left;
     visibility: hidden;
+    position: absolute;
+    z-index: 1;
+    width: 100%;
 }
 #nav_2 ul li {
     padding: 1px;
     color:white;
     background-color:#994d00;
+    max-width: 100px;
 }
 #nav_2 ul a {
     text-decoration: none;
@@ -34,36 +38,40 @@ header {
 #nav_2 ul li a:visited {
     color:white;
 }
+#nav_2 li:nth-child(7) {
+    height: 2px;
+    background-color: #4b341b;
+}
 .top_bar {
     width: 15%;
     margin:0px 0px 10px 0px;
     position: relative;
     display: inline-block;
 }
-.a  {
+.top_a  {
     display: block;
-    height:75px;
-    width:75px;
-    color:white;
-    background-color:#994d00;
-    margin:0px 0px 0px 0px;
+    height: 75px;
+    width: 75px;
+    color: white;
+    background-color: #994d00;
+    margin: 0px 0px 0px 0px;
     border-radius: 40px;
     z-index: 2;
     position: relative;
-    top:10px;
-    left:0px;
+    top: 10px;
+    left: 0px;
     text-decoration: none;
     box-shadow: 3px 3px 5px black;
     line-height: 50px;
 }
-.a a {
+.top_a a {
     text-decoration: none;
     color:white;
     display:block;
     line-height: 70px;
 }
-.but {
-    width:130px;
+.top_but {
+    max-width:130px;
     height:25px;
     background-color:#994d00;
     position: relative;
@@ -74,7 +82,7 @@ header {
     border-radius: 2px;
     box-shadow: 1px 1px 5px black;
 }
-.but a {
+.top_but a {
     text-align: center;
     margin:0px 0px 0px 40px;
     text-decoration: none;
@@ -88,6 +96,21 @@ header {
 @media all and (max-width: 830px) {
     #nav_but {display: block;}
     .top_bar {
+        font-size: 8px;
+    }
+    .top_a {
         display: none;
+    }
+    .top_but {
+        bottom: 0px;
+        width: 100%;
+        left: 0px;
+    }
+    .top_but a {
+        bottom: 0px;
+        margin: 0px;
+    }
+    #nav_2 {
+        font-size: 13px;
     }
 }

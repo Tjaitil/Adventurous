@@ -1,10 +1,10 @@
 <?php $i = 0;
-    if(!count($data['trader_assignments']) > 0):?>
+    if(!count($data) > 0):?>
     <tr>
         <td colspan="8"> None </td>
     </tr>
     <?php endif;
-    foreach($data['trader_assignments'] as $key): ?>
+    foreach($data as $key): ?>
     <tr>
         <td class="city"><?php echo ucfirst($key['base']);?></td>
         <td class="destination"><?php echo ucfirst($key['destination']);?></td>

@@ -1,11 +1,21 @@
-    document.getElementById("seed_g").children[3].addEventListener("click", seedGenerator);
-    document.getElementById("plant_button").addEventListener("click", grow);
+    window.addEventListener("load", function () {
+        getCountdown();
+        var img = document.getElementById("select").querySelectorAll("img");
+        img.forEach(function(element) {
+              // ... code code code for this one element
+                element.addEventListener('click', function() {
+                    showSelect();
+                });
+            });
+        document.getElementById("data_form").querySelectorAll("button")[0].addEventListener("click", grow);
+        document.getElementById("seed_g").children[3].addEventListener("click", seedGenerator);
+    });
     var intervals = [];
     function getCountdown() {
-        ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.onload = function() {
-            if(this.readyState == 4 && this.status == 200) {
-                var data = this.responseText.split("|");
+        var data = "model=Crops" + "&method=checkCountdown";
+        ajaxJS(data, function(response) {
+            if(response[0] != false) {
+                var data = response[1].split("|");
                 var time = data[0] * 1000;
                 var harvest = data[1];
                 console.log(data);
@@ -33,13 +43,9 @@
                     }
                 }, 1000);
             }
-        };
-        ajaxRequest.open("GET", "/handlers/handler_g.php?&model=Crops" + "&method=checkCountdown");
-        ajaxRequest.send();
+        });
     }
-    
     window.onload = getCountdown();
-    
     function grow() {
         var form = document.getElementById("plant");
         
@@ -76,7 +82,7 @@
         var data = "model=Crops" + "&method=destroyCrops";
         ajaxP(data, function(response) {
             if(response[0] !== false) {
-                gameLog(this.responseText);
+                gameLog(response[1]);
                 window.clearInterval(intervals.pop());
                 getCountdown();
             }
@@ -94,30 +100,25 @@
     }
     
     function seedGenerator() {
-        var quantity = document.getElementById("quantity").value;
-        if(!selectedCheck()) {
-            return;
+        var itemData = selectedCheck();
+        if(itemData === false) {
+            return false;
         }
         var items = ["potato", "tomato", "corn", "carrots", "cabbages", "wheat", "sugar", "spices", "apples", "oranges", "watermelon"];
-        var item = document.getElementById("selected").children[0].children[1].innerHTML.toLowerCase();
-        if(items.indexOf(item) == -1) {
+        if(items.indexOf(itemData[0]) == -1) {
             gameLog("ERROR: Pick a valid item");
             return false;
         }
-        ajaxRequest = new XMLHttpRequest();
-        var data = "model=Crops" + "&method=getSeeds" + "&item=" + item + "&quantity=" + quantity;
-        ajaxRequest.onload = function () {
-            if(this.readyState == 4 && this.status == 200) {
-                if(this.responseText.indexOf("ERROR:") != -1) {
-                    gameLog(this.responseText);   
-                }
-                else {
-                    gameLog(this.responseText);
-                    updateInventory("crops");
-                }
+        var data = "model=Crops" + "&method=getSeeds" + "&item=" + itemData[0] + "&amount=" + itemData[1];
+        ajaxP(data, function(response) {
+            if(response[0] !== false) {
+                updateInventory("crops");
             }
-        };
-        ajaxRequest.open('POST', "handlers/handler_p.php");
-        ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        ajaxRequest.send(data);  
+        });
     }
+    function newCrop(name, seeds, time) {
+        this.src = "public/img/" + name + " ore.png";
+        this.seeds = seeds;
+        this.time = time;
+    }
+    var potato = new newCrop('potato', 1, 1000);
