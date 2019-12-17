@@ -84,7 +84,6 @@
                 </div>
                 <button onclick="answer();"> Answer </button>
             </div>
-            <div id="area"><p> Area</p></div>
             <script src="<?php echo constant('ROUTE_JS') . $name . ".js"; ?>"></script>
         </section>
         <aside>

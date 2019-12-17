@@ -76,7 +76,6 @@
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->execute($queryArray);
                 $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                var_dump($row);
                 $this->baseData = $row[0];
                 $this->destinationData = $row[1];
                 $_SESSION['gamedata']['destination'] = $this->destination;

@@ -9,7 +9,7 @@
             parent::__construct();
             $this->username = $session['username'];
             $this->session = $session;
-            $this->UpdateGamedata = $this->loadModel('UpdateGamedata');
+            $this->commonModels(true, false);
         }
         
         public function getStockpile($js = false) {
@@ -74,12 +74,14 @@
                 if($insert === "0") {
                     //widthdraw from stockpile
                     $this->updateStockpile($item, -$quantity);
-                    update_inventory($this->db->conn, $this->username, $item, $quantity, true);
+                    // Update inventory
+                    $this->UpdateGamedata->updateInventory($item, $quantity, true);
                 }
                 else  if($insert === "1" ) {
                     //Insert into stockpile
                     $this->updateStockpile($item, $quantity);
-                    update_inventory($this->db->conn, $this->username, $item, -$quantity, true);
+                    // Update inventory
+                    $this->UpdateGamedata->updateInventory($item, -$quantity, true);
                 }
                 
                 $this->db->conn->commit();

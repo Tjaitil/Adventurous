@@ -7,6 +7,7 @@
             parent::__construct();
             $this->username = $session['username'];
             $this->session = $session;
+            $this->commonModels(true, false);
         }
         public function setMine($POST) {
             // $POST variable holds the post data
@@ -44,7 +45,6 @@
             $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
             $param_mineral_type = $mineral;
             $param_location = $this->session['location'];
-            var_dump($mineral);
             $stmt->execute();
             $row2 = $stmt->fetch(PDO::FETCH_ASSOC);
             if($row2['miner_level'] > $this->session['miner']['level']) {
@@ -65,7 +65,7 @@
             $newDate = new DateTime($date);
             $newDate->modify("+{$addTime} seconds");
             
-            $experience = ($row2['experience'] * 0.20) + $this->session['miner']['xp'];
+            $experience = ($row2['experience'] * 0.20);
             try {
                 $this->db->conn->beginTransaction();
                 $sql = "UPDATE miner SET mining_type=:mining_type, mining_countdown=:mining_countdown,
@@ -94,7 +94,8 @@
                 $param_username = $this->username;
                 $stmt2->execute();
                 
-                update_xp($this->db->conn, $this->username, 'miner', $experience);
+                // Update xp
+                $this->UpdateGamedata->updateXP('miner', $experience);
                 
                 $this->db->conn->commit();
                 }
@@ -105,7 +106,6 @@
                 return false;
             }
             $this->db->closeConn();
-            $_SESSION['gamedata']['miner']['xp'] = $experience;
             jsecho(array($param_permits, $param_avail_workforce));
         }
     }

@@ -7,6 +7,7 @@
             parent::__construct();
             $this->username = $session['username'];
             $this->session = $session;
+            $this->commonModels(true, false);
         }
         public function checkHunger() {
             // This function is called from an ajax request
@@ -90,7 +91,8 @@
                 $param_username = $this->username;
                 $stmt->execute();
                 
-                update_inventory($this->db->conn, $this->username, $item, -$amount);
+                // Update inventory
+                $this->UpdateGamedata->updateInventory($item, -$amount, true);
                 
                 $this->db->conn->commit();
             }

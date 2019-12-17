@@ -12,7 +12,9 @@ section table img {
 textarea {
     resize: none;
 }
-
+#actions {
+    margin-bottom: 5px;
+}
 #write_message {
     display: none;
 }

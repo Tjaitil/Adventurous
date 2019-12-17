@@ -17,25 +17,25 @@ aside {
     background-color: #002b80;*/
 }
 aside a {
-    color:#003cb3;
+    color: #003cb3;
     text-shadow: 0.2px 0.2px #003cb3;
 }
 aside a:visited {
-    color:#003cb3;
+    color: #003cb3;
 }
 #side_menu {
     margin: 0px 0px 0px 0px;
 }
 
 #side_menu ul {
-    list-style-type:none ;
-    font-size:15px;
+    list-style-type: none ;
+    font-size: 15px;
     position: absolute;
-    left:10px;
+    left: 10px;
 }
 #side_menu li {
-    width:100px;
-    padding:1px;
+    width: 104px;
+    padding: 1px;
 }
 #side_menu ul li:before {
     content:"\00BB\0020";
@@ -46,11 +46,11 @@ aside a:visited {
     transition: width 1s;
 } */
 #side_menu ul li ul {
-    padding:1px 0px 1px 5px;
+    padding: 1px 0px 1px 5px;
 }
 
 #side_menu li a {
-    text-decoration:none;
+    text-decoration: none;
     font-size: 14px;
 }
 @media all and (max-width: 800px) {

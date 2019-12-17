@@ -7,6 +7,7 @@
             parent::__construct();
             $this->username = $session['username'];
             $this->session = $session;
+            $this->commonModels(true, false);
         }
         public function getData($js = false) {
             $city = $_SESSION['gamedata']['location'];
@@ -145,17 +146,21 @@
                 switch($shop) {
                     case 'cart':
                         if($row_count != 0) {
-                            update_inventory($this->db->conn, $this->username, 'gold', ($row2['value'] * 0.80));
+                            // Update inventory
+                            $this->UpdateGamedata->updateInventory('gold', ($row2['value'] * 0.80));
                         }
-                        update_inventory($this->db->conn, $this->username, $mineral, -$row['mineral_amount'], true);
-                        update_inventory($this->db->conn, $this->username, $wood, -$row['wood_amount'], true);
+                        // Update inventory
+                        $this->UpdateGamedata->updateInventory($mineral, -$row['mineral_amount']);
+                        $this->UpdateGamedata->updateInventory($wood, -$row['wood_amount'], true);
                         break;
                     case 'horse':
                         if($row_count != 0 ) {
-                            update_inventory($this->db->conn, $this->username, 'gold', (-$row['value'] + ($row2['value'] * 0.80)), true);
+                            // Update inventory
+                            $this->UpdateGamedata->updateInventory('gold', (-$row['value'] + ($row2['value'] * 0.80)), true);
                         }
                         else {
-                            update_inventory($this->db->conn, $this->username, 'gold', -$row['value'], true); 
+                            // Update inventory
+                            $this->UpdateGamedata->updateInventory('gold', -$row['value'], true);
                         }
                         break;
                 }

@@ -105,8 +105,9 @@ section table tr {
     border: none;
 }
 #game_messages td {
-    background-color: none;
+    background-color: transparent;
     text-align: left;
+    padding: 2px;
 }
 #hunger {
     width: 49%;
@@ -156,7 +157,7 @@ section table tr {
     background-color: black;
     opacity: 0.8;
 }
-#content {
+#news_content {
     visibility: hidden;
     position: absolute;
     margin: 2% 0% 2% 16%;
@@ -174,10 +175,12 @@ section table tr {
 .gold {
     width: 30px;
     height: 30px;
+    vertical-align: middle;
 }
 .item {
     width: 50px;
     height: 50px;
+    vertical-align: middle;
 }
 #inventory {
     box-sizing: border-box;
@@ -249,6 +252,11 @@ section table tr {
     width: 50px;
     height: 50px;
     cursor: pointer;
+}
+.item_img {
+    width: 50px;
+    height: 50px;
+    vertical-align: middle;
 }
 .inventory_item figure, .item figure {
     position: relative;

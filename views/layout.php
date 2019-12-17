@@ -73,7 +73,7 @@
 <!-- News is the black "curtain" which the content is displayed upon -->
 <div id="news">
 </div>
-<div id="content">
+<div id="news_content">
     <img id="cont_exit" src="#"  width="20px" height="20px" onclick="closeNews();" />
 </div>
 <figcaption class="tooltip"><?php echo ucwords($key['item']); ?></figcaption>

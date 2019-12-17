@@ -7,6 +7,7 @@
             parent::__construct();
             $this->username = $session['username'];
             $this->session = $session;
+            $this->commonModels(true, false);
         }
         public function getData() {
             $data = array();
@@ -14,7 +15,7 @@
             $stmt = $this->db->conn->prepare($sql);
             $stmt->execute();
             $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $minerals = array("iron", "steel", "clay", "gargonite", "adron", "yedqon", "frajrite");
+            $minerals = array("iron", "steel", "clay", "gargonite", "adron", "yeqdon", "frajrite");
             foreach($minerals as $key) {
                 $mineral = $key;
                 $data[$key] = array_filter($row, function($key) use ($mineral) {
@@ -53,14 +54,14 @@
             $sql = "SELECT amount_required, level, cost FROM smithy_data WHERE item=:item";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
-            $param_item = $mineral . ' ' . $item;
+            $param_item = $item;
             $stmt->execute();
             $row2 = $stmt->fetch(PDO::FETCH_ASSOC);
             if(!$stmt->rowCount() > 0) {
                 $this->gameMessage("ERROR: That item does not exist!", true);
                 return false;
             }
-            if($row2['level'] > $this->session['miner']['miner_level']) {
+            if($row2['level'] > $this->session['miner']['level']) {
                 $this->gameMessage("ERROR: Your level is too low", true);
                 return false;
             }
@@ -75,15 +76,18 @@
                 $this->gameMessage("ERROR! You don't have enough gold", true);
                 return false;
             }
-            $new_item = $mineral . ' ' . $item;
     
             try {
-                $this->db->conn->beginTransaction();   
-                update_inventory($this->db->conn, $this->username, $new_item, $amount);
+                $this->db->conn->beginTransaction();
+                
+                // Update inventory
+                $this->UpdateGamedata->updateInventory($item, $amount);
                 if($this->session['profiency'] !== 'miner') {
-                    update_inventory($this->db->conn, $this->username, 'gold', -$cost);    
+                    // Update inventory
+                    $this->UpdateGamedata->updateInventory('gold', -$cost);   
                 }
-                update_inventory($this->db->conn, $this->username, $ore , -$minerals_needed, true);
+                // Update inventory
+                $this->UpdateGamedata->updateInventory($ore , -$minerals_needed, true);
                 
                 $this->db->conn->commit();
             }
@@ -94,7 +98,6 @@
                 return false;
             }
             $this->db->closeConn();
-            get_inventory($this->db->conn, $this->username);
         }
     }
 ?>

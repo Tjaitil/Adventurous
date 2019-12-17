@@ -21,7 +21,7 @@
             $stmt->execute();
             $data['minerData'] = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            $sql2 = "SELECT mineral_type, permit_cost FROM minerals_data";
+            $sql2 = "SELECT mineral_type, permit_cost FROM minerals_data ORDER BY miner_level ASC";
             $stmt2 = $this->db->conn->prepare($sql2);
             $stmt2->bindParam(":minerlevel", $param_minerlevel, PDO::PARAM_STR);
             $stmt2->bindParam(":location", $param_location, PDO::PARAM_STR);
@@ -42,7 +42,7 @@
         
         // Function to echo date for ajax request
         public function checkCountdown() {
-            $sql = "SELECT mining_countdown, fetch_minerals FROM miner WHERE location=:location AND username=:username";
+            $sql = "SELECT mining_countdown, fetch_minerals, mining_type FROM miner WHERE location=:location AND username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
@@ -52,7 +52,7 @@
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $date = date_timestamp_get(new DateTime($row['mining_countdown']));
             $this->db->closeConn();
-            js_echo(array($date, $row['fetch_minerals']));
+            js_echo(array($date, $row['fetch_minerals'], $row['mining_type']));
         }
         public function cancelMining() {
             if(in_array($this->session['location'], array('golbak', 'snerpiir')) != true) {

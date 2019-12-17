@@ -7,10 +7,11 @@
             parent::__construct();
             $this->username = $session['username'];
             $this->session = $session;
+            $this->commonModels(true, false);
         }
         
         public function getData() {
-            $sql = "SELECT warrior_id, helm, left_hand, body, right_hand, legs, boots,
+            $sql = "SELECT warrior_id, helm, ammunition, left_hand, body, right_hand, legs, boots,
                     (SELECT SUM(attack) FROM smithy_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS attack,
                     (SELECT SUM(defence) FROM smithy_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS defence
                     FROM warrior_armory
@@ -63,7 +64,7 @@
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-            $param_warrior_id = $warrior_id;
+            $param_warrior_id = $this->warrior_id;
             $param_username = $this->username;
             $stmt->execute();
             if(!$stmt->rowCount() > 0) {
@@ -89,7 +90,7 @@
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-            $param_warrior_id = $warrior_id;
+            $param_warrior_id = $this->warrior_id;
             $param_username = $this->username;
             $stmt->execute();
             $row2 = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -102,14 +103,17 @@
                 $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_item = $item;
-                $param_warrior_id = $warrior_id;
+                $param_warrior_id = $this->warrior_id;
                 $param_username = $this->username;
                 $stmt->execute();
                 
                 if($row2[$row['type']] != 'none') {
-                    update_inventory($this->db->conn, $this->username, $row2[$row['type']], 1);
+                    // Update inventory
+                    $this->UpdateGamedata->updateInventory($row2[$row['type']], 1);
                 }
-                update_inventory($this->db->conn, $this->username, $item, -1, true);
+                // Update inventory
+                $this->UpdateGamedata->updateInventory($item, -1, true);
+                
                 $this->db->conn->commit();
             }
             catch(Exception $e) {
@@ -163,7 +167,9 @@
                 $param_warrior_id = $this->warrior_id;
                 $param_username = $this->username;
                 $stmt->execute();
-                update_inventory($this->db->conn, $this->username, $row[$part], 1, true);
+                
+                // Update inventory
+                $this->UpdateGamedata->updateInventory($row[$part], 1, true);
             
                 $this->db->conn->commit();
             }

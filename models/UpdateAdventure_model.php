@@ -17,6 +17,7 @@
             parent::__construct();
             $this->username = $session['username'];
             $this->session = $session;
+            $this->commonModels(true, true);
         }
         public function updateAdventure() {
             $sql = "SELECT adventure_id FROM adventure WHERE username=:username";
@@ -212,18 +213,18 @@
                 $this->db->conn->beginTransaction();
                 /*
                 foreach($rewards as $key) {
-                    update_inventory($this->db->conn, $this->username, $key['item'], $key['amount']);
+                    // Update inventory
+                    $this->UpdateGamedata->updateInventory($key['item'], $key['amount'], true);
                 }
                 
                 if($crystal_chance ===x 1) {
                     $rewards[] = array("item" => $this->adventure_data['location'] . 'crystal', "amount" => 1);
-                    update_inventory($this->db->conn, $this->username. $this->adventure_data['location'] . 'crystal', 1, true);
+                    // Update inventory
+                    $this->UpdateGamedata->updateInventory($this->adventure_data['location'] . 'crystal', 1, true);
                 }
                 
-                // Only gain xp when skill level is below 30 or if profiency is skill
-                if($this->session[$role]['level'] < 30 || $this->session['profiency'] == $role) {
-                    update_xp($this->db->conn, $this->username, $role, $xp_data['user_xp']);
-                }
+                // Update xp
+                $this->UpdateGamedata->updateXP($role, $xp_data['user_xp']);
                 
                 $sql = "UPDATE adventure SET adventure_id=0, adventure_status=0 WHERE username=:username";
                 $stmt = $this->db->conn->prepare($sql);
@@ -394,8 +395,9 @@
                                         $this->warriors[$i] = $this->daqloonHit($this->daqloons[$x - $w - ($i * $count)],
                                                                                 $this->warriors[$i]);
                                     }
-                                    else {
-                                        continue;
+                                    else if($this->warriors[$i]['type'] != 'ranged') {
+                                        $this->warriors[$i] = $this->daqloonHit($this->daqloons[$x - $w - ($i * $count)],
+                                                                                $this->warriors[$i]);
                                     }
                                     if($this->warriors[$i]['health'] < 10.1) {
                                         break;
@@ -436,6 +438,7 @@
                 }
             }
             while(empty($battle_result));
+            
             for($i = 0; $i < count($this->warriors); $i++) {
                 $update_data[$i] = array($this->warriors[$i]['health'], $this->warriors[$i]['warrior_id'], $this->username);
             }

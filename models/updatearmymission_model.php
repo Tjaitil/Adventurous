@@ -7,9 +7,9 @@
             parent::__construct();
             $this->username = $session['username'];
             $this->session = $session;
+            $this->commonModels(true, false);
         }
         public function updateMission() {
-            $warrior_xp = $_SESSION['gamedata']['warrior']['warrior_xp'];
             $sql = "SELECT mission FROM warrior WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
@@ -33,19 +33,16 @@
                 $param_username = $this->username;
                 $stmt->execute();
                 
-                
-                // Only gain xp when warrior level is below 30 or if profiency is farmer
-                if($this->session['warrior']['level'] < 30 || $this->session['profiency'] == 'warrior') { 
-                    update_xp($this->db->conn, $this->username, 'warrior', 100);
-                }
-                
                 $sql3 = "UPDATE warriors SET mission=0 WHERE username=:username";
                 $stmt3 = $this->db->conn->prepare($sql3);
                 $stmt3->bindParam(":username", $param_username, PDO::PARAM_STR);
                 //$param_username already is already defined in statement 1
                 $stmt3->execute();
                 
-                update_inventory($this->db->conn, $this->username, 'gold', $row2['reward']);
+                // Update inventory
+                $this->UpdateGamedata->updateInventory('gold', $row2['reward']);
+                // Update xp
+                $this->UpdateGamedata->updateXP('warrior', 100);
                 
                 $this->db->conn->commit();
             }

@@ -7,6 +7,7 @@
             parent::__construct();
             $this->username = $session['username'];
             $this->session = $session;
+            $this->commonModels(true, false);
         }
         public function getData($js = false) {
             if($this->session['location'] === 'travelling') {
@@ -101,12 +102,15 @@
             try {
                 $this->db->conn->beginTransaction();
                 if($bond == 'false') {
-                    update_inventory($this->db->conn, $this->username, $row['want'], -$total_amount);   
+                    // Update inventory
+                    $this->UpdateGamedata->updateInventory($row['want'], -$total_amount); 
                 }
                 else {
-                    update_inventory($this->db->conn, $this->username, 'trade bond', -1);   
+                    // Update inventory
+                    $this->UpdateGamedata->updateInventory('trade bond', -1);  
                 }
-                update_inventory($this->db->conn, $this->username, $item, $amount, true);
+                // Update inventory
+                $this->UpdateGamedata->updateInventory($item, $amount, true);
             
                 //Update merchant
                 $sql3 = "UPDATE merchants SET amount=:amount WHERE item=:item";

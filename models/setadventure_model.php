@@ -8,6 +8,7 @@
             parent::__construct();
             $this->username = $session['username'];
             $this->session = $session;
+            $this->commonModels(true, false);
         }
         public function checkAdventure() {
             // Check if user has an already existing adventure
@@ -279,7 +280,8 @@
                 $stmt->execute();
                 
                 if($route === 'item') {
-                    update_inventory($this->db->conn, $this->username, $item, -$quantity, true);
+                    // Update inventory
+                    $this->UpdateGamedata->updateInventory($item, -$quantity, true);
                 }
                 else if ($route === 'warrior') {
                     $sql2 = "UPDATE warriors SET mission=1 WHERE warrior_id IN ($in) AND username=?";

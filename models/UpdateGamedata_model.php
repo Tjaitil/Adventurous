@@ -10,6 +10,8 @@
             $this->session = $session;
         }
         public function updateInventory($item, $quantity, $update = false, $unset = false) {
+            // Function to update the players inventory in database and also session
+            
             $sql = "SELECT amount FROM inventory WHERE item=:item AND username=:username";  
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
@@ -69,10 +71,12 @@
             // $conn is unset by the model that is instantiating this class
         }
         public function updateXP($profiency, $xp) {
+            // Update the players experience in on of the profiences in database
+            
             if($this->session[$profiency]['level'] >= 30 && $this->session['profiency'] != $profiency) {
                 return false;    
             }
-            $profiencies = array("farmer", "miner", "trader", "warrior");
+            $profiencies = array("adventurer", "farmer", "miner", "trader", "warrior");
             if(in_array($profiency, $profiencies) == false) {
                 return false;
             }
@@ -81,10 +85,10 @@
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":xp", $param_xp, PDO::PARAM_INT);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-            $param_xp = $xp;
+            $param_xp = $this->session[$profiency]['xp'] + $xp;
             $param_username = $this->username;
             $stmt->execute();
-            $_SESSION['gamedata'][$profiency]['xp'] = $this->session['miner']['xp'] + $xp;
+            $_SESSION['gamedata'][$profiency]['xp'] = $this->session[$profiency]['xp'] + $xp;
             // $conn is unset by the model that is instantiating this class
         }
     }

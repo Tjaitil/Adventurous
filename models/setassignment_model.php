@@ -14,6 +14,7 @@
             $this->destination = $this->session['favor']['destination'];
             $this->favor = $this->session['favor'];
             $this->assignment_type = restore_file('trader_assignment_types', true);
+            $this->commonModels(true, false);
         }
         public function newAssignment($assignment_id, $favor = false) {
             
@@ -76,7 +77,10 @@
                 $param_username = $this->username;
                 $stmt->execute();
                 
-                update_xp($this->db->conn, $this->username, 'trader', $this->session['trader']['xp'] + $assignment_XP);
+                // Update xp
+                if($assignment_XP > 0) {
+                    $this->UpdateGamedata->updateXP('trader', $assignment_XP);    
+                }
                 
                 $this->db->conn->commit();
             }
@@ -87,7 +91,6 @@
                 return false;
             }
             $this->db->closeConn();
-            $_SESSION['gamedata']['trader']['xp'] =  $this->session['trader']['xp'] + $assignment_XP;
             $this->gameMessage("New assignment taken", true);
         }
     }

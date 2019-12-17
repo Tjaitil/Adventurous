@@ -7,6 +7,7 @@
             parent::__construct();
             $this->username = $session['username'];
             $this->session = $session;
+            $this->commonModels(true, false);
         }
         public function recruitWorker($type, $level = false) {
             // AJAX function
@@ -162,7 +163,8 @@
                     $stmt4->execute();
                 }
                 
-                update_inventory($this->db->conn, $this->username, 'gold', - $row['price'], true);
+                // Update inventory
+                $this->UpdateGamedata->updateInventory('gold', - $row['price'], true);
 
                 $sql5 = "DELETE FROM tavern_workers WHERE city=:city AND type=:type AND level=:level LIMIT 1";
                 $stmt5 = $this->db->conn->prepare($sql5);

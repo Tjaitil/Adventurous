@@ -69,12 +69,12 @@
     /*window.addEventListener("load", getgMessage, false);*/
     function openNews(news) {
         document.getElementById("news").style.visibility = "visible";
-        document.getElementById("content").style.visibility = "visible";
+        document.getElementById("news_content").style.visibility = "visible";
         if(typeof news == 'object') {
-            document.getElementById("content").appendChild(news);
+            document.getElementById("news_content").appendChild(news);
         }
         else {
-            document.getElementById("content").innerHTML += news;
+            document.getElementById("news_content").innerHTML += news;
         }
     }
     function closeNews() {
@@ -82,7 +82,7 @@
         var news = document.getElementById("news");
         news.innerHTML = "";
         news.style = "visibility: hidden;";
-        document.getElementById("content").style.visibility = "hidden";
+        document.getElementById("news_content").style.visibility = "hidden";
     }
     function get_xp(skill, element) {
         var tooltip = element.children[1];
@@ -121,7 +121,7 @@
             warriors: 4
         };
         console.log(elements[skill]);
-        var element = document.getElementById("skills").children[elements[skill]].children[3];
+        var element = document.getElementById("skills").children[elements[skill]].children[2];
         element.innerHTML = "+" + xp;
         setTimeout(hide_xp, 2000, element);
     }
@@ -269,6 +269,7 @@
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
             if(this.readyState == 4 && this.status == 200) {
+                console.log(this.responseText);
                 if(this.responseText.indexOf("ERROR:") != -1) {
                     if(log == true) {
                         gameLog(this.responseText);

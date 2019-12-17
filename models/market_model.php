@@ -7,6 +7,7 @@
             parent::__construct();
             $this->username = $session['username'];
             $this->session = $session;
+            $this->commonModels(true, false);
         }
         public function getData($js = false) {
             //Function to gather data
@@ -148,10 +149,12 @@
                 $stmt2->execute();
                 
                 if($post_data['type'] == 'Sell') {
-                    update_inventory($this->db->conn, $this->username, $param_item, -$param_amount, true);
+                    // Update inventory
+                    $this->UpdateGamedata->updateInventory($param_item, -$param_amount, true);
                 }
                 else if($post_data['type'] == 'Buy') {
-                    update_inventory($this->db->conn, $this->username, 'gold', -$param_amount * $param_price_ea, true);
+                    // Update inventory
+                    $this->UpdateGamedata->updateInventory('gold', -$param_amount * $param_price_ea, true);
                 }
                 
                 $this->db->conn->commit();
@@ -251,12 +254,15 @@
             
                 //Update this->username
                 if($row['type'] === 'Buy') {
-                    update_inventory($this->db->conn, $this->username, $row['item'], -$amount);
-                    update_inventory($this->db->conn, $this->username, 'gold', $cost, true);
+                    // Update inventory
+                    $this->UpdateGamedata->updateInventory($row['item'], -$amount);
+                    $this->UpdateGamedata->updateInventory('gold', $cost, true);
+                    
                 }
                 else {
-                    update_inventory($this->db->conn, $this->username, $row['item'], $amount);
-                    update_inventory($this->db->conn, $this->username, 'gold', -$cost, true);
+                    // Update inventory
+                    $this->UpdateGamedata->updateInventory($row['item'], $amount);
+                    $this->UpdateGamedata->updateInventory('gold', -$cost, true);
                 }
                         
                 
@@ -430,7 +436,9 @@
                 $param_username = $this->username;
                 $stmt2->execute();                
                 
-                update_inventory($this->db->conn, $this->username, $row2['item'], $row2['amount'], true);
+                // Update inventory
+                $this->UpdateGamedata->updateInventory($row2['item'], $row2['amount'], true);
+                
                 $this->db->conn->commit();
             }
             catch(Exception $e) {
@@ -477,7 +485,8 @@
                     $stmt->execute();   
                 }
                 
-                update_inventory($this->db->conn, $this->username, $row['box_item'], $row['box_amount'], true);
+                // Update inventory
+                $this->UpdateGamedata->updateInventory($row['box_item'], $row['box_amount'], true);
                 
                 $this->db->conn->commit();
             }

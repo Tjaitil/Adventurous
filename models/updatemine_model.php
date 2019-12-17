@@ -7,9 +7,12 @@
             parent::__construct();
             $this->username = $session['username'];
             $this->session = $session;
-            $this->UpdateGamedata = $this->loadModel('UpdateGamedata');
+            $this->commonModels(true, true);
         }
         public function updateMine() {
+            // Function to reset the mine, free up workforce and give player the minerals they have received
+            // This function is called from an AJAX request from mine.js
+            
             $sql = "SELECT mining_type FROM miner WHERE location=:location AND username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
@@ -37,9 +40,9 @@
             $rand_min = $row2['min_per_period'] + (0.5 * $row3[$this->session['location'] . '_workforce']);
             $rand_max = $row2['max_per_period'] + (0.5 * $row3[$this->session['location'] . '_workforce']);
             $quantity = rand($rand_min, $rand_max);
-            $artefact_bonus = $this->Artefact_model->artefactCheck();
-            $quantity *= $artefact_bonus;
-            
+            $artefact_bonus = $this->ArtefactModel->artefactCheck('prospector');
+            $quantity = round($quantity * $artefact_bonus);
+        
             try {
                 $this->db->conn->beginTransaction();
                 
@@ -78,7 +81,8 @@
                 return false;
             }
             $this->gameMessage("You received {$quantity} of " . ucfirst($mining_type . ' ore'), true);
-            js_echo('|{$experience_gain}', $param_avail_workforce);
+            echo "|";
+            js_echo(array($row2['experience'], $param_avail_workforce));
             $this->db->closeConn();
         }
     }

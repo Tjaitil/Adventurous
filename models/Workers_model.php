@@ -7,9 +7,13 @@
             parent::__construct();
             $this->username = $session['username'];
             $this->session = $session;
+            $this->commonModels(true, false);
         }
-        public function upgradeEffiency($skill) {
-            // AJAX function, upgrade efficiency level for farmer and miner
+        public function upgradeEffiency($POST) {
+            // $POST variable holds the post data
+            // This function is called from an AJAX request from citycentre.js
+            // Function to upgrade efficiency level for farmer and miner
+            $skill = $POST['skill'];
             if(in_array($skill, array('farmer', 'miner')) != true) {
                 return false;
             }
@@ -50,7 +54,8 @@
                 $param_username = $this->username;
                 $stmt->execute();
                 
-                update_inventory($this->db->conn, $this->username, 'gold', -$amount);
+                // Update inventory
+                $this->UpdateGamedata->updateInventory('gold', -$amount, true);
                 
                 $this->db->conn->commit();
             }
@@ -61,6 +66,7 @@
                 return false;
             }
             $this->gameMessage("Your efficiency level for {$skill} workforce is now {$param_efficiency_level}", true);
+            echo "|" . $param_efficiency_level;
         }
     }
 ?>

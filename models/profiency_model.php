@@ -7,6 +7,7 @@
             parent::__construct();
             $this->username = $session['username'];
             $this->session = $session;
+            $this->commonModels(true, false);
         }
         public function getData() {
             //Get profiency
@@ -43,7 +44,9 @@
                 $param_username = $this->username;
                 $stmt->execute();
                 
-                update_inventory($this->db->conn, $this->username, 'gold', -500, true);
+                // Update inventory
+                $this->UpdateGamedata->updateInventory('gold', -500, true);
+                
                 $this->db->conn->commit();
             }
             catch(Exception $e) {

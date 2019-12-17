@@ -41,7 +41,7 @@
                             <label for="permit"> Permit: </label>
                             <input type="text" name="permit" readonly /></br>
                             <label for="workforce"> Workforce:</label>
-                            <input name="workforce" id="" type="number" min="0" required />
+                            <input name="workforce" type="number" min="0" required />
                             <span>(<?php echo $this->data['workforceData']['avail_workforce']?>)</span>
                             <button type="button"> Mine </button>
                         </form>

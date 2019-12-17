@@ -34,7 +34,7 @@
             </div>
             <div id="keep">
                 <div id="artefact">
-                    <p> Current artefact: <?php echo $this->data['artefact_data']['artefact'];?>
+                    <p> Current artefact: <?php echo ucfirst($this->data['artefact_data']['artefact']);?>
                     <?php if($this->data['artefact_data']['artefact'] === 'none'): ?>
                         <img style="background-color:white;" />
                     <?php else: ?>
@@ -80,6 +80,30 @@
                         <td> Wujkin items </td>
                         <td>  </td>
                         <td><button> Buy </button></td>
+                    </tr>
+                </table>
+            </div>
+            <div id="efficiency">
+                <table>
+                    <thead>
+                        <tr>
+                            <td> Profiency </td>
+                            <td> Effiency level </td>
+                            <td> Cost </td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tr>
+                        <td> Farmer </td>
+                        <td><?php echo $this->data['effiency']['farmer'];?></td>
+                        <td><?php echo $this->data['effiency']['farmer'] * 150;?></td>
+                        <td><button> Upgrade </button></td>
+                    </tr>
+                    <tr>
+                        <td> Miner </td>
+                        <td><?php echo $this->data['effiency']['miner'];?></td>
+                        <td><?php echo $this->data['effiency']['miner'] * 150;?></td>
+                        <td><button> Upgrade </button></td>
                     </tr>
                 </table>
             </div>

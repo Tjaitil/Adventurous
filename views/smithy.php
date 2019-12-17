@@ -32,9 +32,12 @@
                         foreach($array as $key):
                         if(strpos($key['item'], 'arrows') === false): ?>
                         <tr>
-                            <td><?php echo ucwords($key['item']);?></td>
+                            <td><figure>
+                                <img class="item_img" src="<?php echo constant('ROUTE_IMG') . $key['item']. '.png';?>" />
+                                <figcaption><?php echo ucwords($key['item']);?></figcaption>
+                            </figure></td>
                             <td><?php echo $key['amount_required'];?></td>
-                            <td> <?php echo $key['cost'];?></td>
+                            <td><?php echo $key['cost'];?><img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.png';?>" /></td>
                             <td><input type="number" min="0" />
                             <button> Make</button></td>
                         </tr>
@@ -42,10 +45,13 @@
                         $mineral = explode(" ", $key['item'])[0];
                         ?>
                         <tr>
-                            <td><?php echo ucwords($key['item']);?></td>
+                            <td><figure>
+                                <img class="item_img" src="<?php echo constant('ROUTE_IMG') . $key['item']. '.png';?>" />
+                                <figcaption><?php echo ucwords($key['item']);?></figcaption>
+                            </figure></td>
                             <td> 1 <img src="<?php echo constant('ROUTE_IMG') . $mineral . 'png';?>" /> =
                                 15 <img src="<?php echo constant('ROUTE_IMG') . $key['item']. '.png';?>" /></td>
-                            <td> <img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.png';?>" /></td>
+                            <td><?php echo $key['cost'];?><img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.png';?>" /></td>
                             <td> <input type="number" min="0" />
                             <button> Smith </button></td>
                         </tr>
@@ -55,8 +61,9 @@
                     <thead>
                         <tr>
                             <td> Item: </td>
-                            <td> Required: </td>
+                            <td> Ores required: </td>
                             <td> Cost: </td>
+                            <td></td>
                         </tr>
                     </thead>
                     <?php generateTable($this->data['iron']);?>
@@ -65,8 +72,9 @@
                     <thead>
                         <tr>
                             <td> Item: </td>
-                            <td> Required: </td>
+                            <td> Ores required: </td>
                             <td> Cost: </td>
+                            <td></td>
                         </tr>
                     </thead>
                     <?php generateTable($this->data['steel']);?>
@@ -75,8 +83,9 @@
                     <thead>
                         <tr>
                             <td> Item: </td>
-                            <td> Required: </td>
+                            <td> Ores required: </td>
                             <td> Cost: </td>
+                            <td></td>
                         </tr>
                     </thead>
                     <?php generateTable($this->data['gargonite']);?>
@@ -85,8 +94,9 @@
                     <thead>
                         <tr>
                             <td> Item: </td>
-                            <td> Required: </td>
+                            <td> Ores required: </td>
                             <td> Cost: </td>
+                            <td></td>
                         </tr>
                     </thead>
                     <?php generateTable($this->data['adron']);?>
@@ -95,8 +105,9 @@
                     <thead>
                         <tr>
                             <td> Item: </td>
-                            <td> Required: </td>
+                            <td> Ores required: </td>
                             <td> Cost: </td>
+                            <td></td>
                         </tr>
                     </thead>
                     <?php generateTable($this->data['yeqdon']);?>
@@ -105,8 +116,9 @@
                     <thead>
                         <tr>
                             <td> Item: </td>
-                            <td> Required: </td>
+                            <td> Ores required: </td>
                             <td> Cost: </td>
+                            <td></td>
                         </tr>
                     </thead>
                     <?php generateTable($this->data['frajrite']);?>

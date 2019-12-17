@@ -7,6 +7,7 @@
             parent::__construct();
             $this->username = $session['username'];
             $this->session = $session;
+            $this->commonModels(true, true);
         }
         public function getData($js = false) {
             $data = array();
@@ -108,20 +109,8 @@
                         $stmt->execute();
                     }
                     
-                    $sql2 = "UPDATE warrior SET warrior_xp=:warrior_xp WHERE username=:username";
-                    $stmt2 = $this->db->conn->prepare($sql2);
-                    $stmt2->bindParam(":warrior_xp", $param_warrior_xp, PDO::PARAM_STR);
-                    $stmt2->bindParam(":username", $param_username, PDO::PARAM_STR);
-                    $param_warrior_xp = $_SESSION['gamedata']['warrior']['warrior_xp'] + 20;
-                    $param_username = $this->username;
-                    $stmt2->execute();
-                    
-                    $sql3 = "UPDATE user_levels SET warrior_xp=:warrior_xp WHERE username=:username";
-                    $stmt3 = $this->db->conn->prepare($sql3);
-                    $stmt3->bindParam(":warrior_xp", $param_warrior_xp, PDO::PARAM_STR);
-                    $stmt3->bindParam(":username", $param_username, PDO::PARAM_STR);
-                    //$param_warrior_xp and $param_username already defined;
-                    $stmt3->execute();
+                    // Update xp
+                    $this->UpdateGamedata->updateXP('warrior', 20);
                     
                     $this->db->conn->commit();
                 }
@@ -131,7 +120,6 @@
                     $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                     return false;
                 }
-                $_SESSION['gamedata']['warrior']['warrior_xp'] = $param_warrior_xp;
                 unset($stmt, $stmt2, $stmt3);
                 $this->db->closeConn();
                 return $level_up;
@@ -262,7 +250,9 @@
                     $param_username = $this->username;
                     $stmt->execute();
                     
-                    update_inventory($this->db->conn, $this->username, $item, - $amount);
+                    // Update inventory
+                    $this->UpdateGamedata->updateInventory($item, - $amount, true);
+            
                 }
                 else {
                     array_unshift($query_array, $rest_start);
@@ -386,7 +376,8 @@
                 $param_username = $this->username;
                 $stmt->execute();
                 
-                update_inventory($this->db->conn, $this->username, 'gold', -$prices[$type]);
+                // Update inventory
+                $this->UpdateGamedata->updateInventory('gold', -$prices[$type], true);
                 
                 $this->db->conn->commit();
             }

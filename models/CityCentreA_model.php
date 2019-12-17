@@ -8,7 +8,7 @@
             parent::__construct();
             $this->username = $session['username'];
             $this->session = $session;
-            $this->UpdateGamedata = $this->loadModel('UpdateGamedata');
+            $this->commonModels(true, false);
         }
         public function buyPermits($POST) {
             // $POST variable holds the post data
@@ -38,7 +38,8 @@
                 $param_username = $this->username;
                 $stmt->execute();
                 
-                update_inventory($this->db->conn, $this->username, 'gold', -50, true);
+                // Update inventory
+                $this->UpdateGamedata->updateInventory('gold', -50, true);
                 
                 $this->db->conn->commit();
             }
@@ -91,7 +92,8 @@
                 $param_username = $this->username;
                 $stmt->execute();
                 
-                update_inventory($this->db->conn, $this->username, 'gold', -$level_data['cost']);
+                // Update inventory
+                $this->UpdateGamedata->updateInventory('gold', -$level_data['cost'], true);
                 
                 $this->db->conn->commit();
             }

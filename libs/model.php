@@ -35,7 +35,7 @@
                 $this->UpdateGamedata = $this->loadModel('UpdateGamedata', true);
             }
             if($ArtefactModel === true) {
-                $this->ArtefactModel = $this->loadModel('ArtefactModel', true);
+                $this->ArtefactModel = $this->loadModel('Artefact', true);
             }
         }
         protected function loadModel($model, $directoryUP = true) {

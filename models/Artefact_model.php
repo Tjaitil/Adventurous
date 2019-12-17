@@ -8,7 +8,7 @@
             parent::__construct();
             $this->username = $session['username'];
             $this->session = $session;
-            $this->updateGamedata = $this->loadModel('updateGamedata', true);
+            $this->commonModels(true, false);
         }
         public function newArtefact() {
             $crystals = array('hirtam crystal', 'pvitul crystal', 'khanz crystal', 'ter crystal', 'fansal crystal');
@@ -36,7 +36,7 @@
                 for($i = 0; $i < count($crystals); $i++) {
                     $this->updateGamedata->updateInventory($crystals[$i], -1);
                 }
-                $this->updateGamedata->updateInventory($new_artefact, 1, true);
+                $this->updateGamedata->updateInventory($new_artefact . ' (10)', 1, true);
                 
                 $this->db->conn->commit();
             }
@@ -54,7 +54,6 @@
             // This function is called from an AJAX request from citycentre.js
             // Function to change the active artefact for user
             $artefact = $POST['artefact'];
-            var_dump($artefact);
             $sql = "SELECT amount FROM inventory WHERE item=:item AND username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
@@ -73,14 +72,20 @@
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
+            $old_artefact = $stmt->fetch(PDO::FETCH_OBJ)->artefact;
+            
             if($stmt->rowCount() > 0) {
-                $charges = preg_match('#\((.*)\)#', $row2['artefact'], $y)[0];
-                $old_artefact = $stmt->fetch(PDO::FETCH_OBJ)->artefact;
+                $preg = preg_match('#\((.*)\)#', $old_artefact, $matches);
+                $charges = $matches[1];
+                $artefact_sub = explode("(", $old_artefact)[0];
+                $old_artefact = $artefact_sub . "({$charges})";
             }
             else {
                 $charges = 0;
             }
-            
+            if(strpos($artefact, "(") == false) {
+                $artefact = $artefact . " (10)";
+            }
             try {
                 $this->db->conn->beginTransaction();
                 
@@ -93,10 +98,11 @@
                 $stmt->execute();
                 
                 if($charges > 0) {
-                    update_inventory($this->db->conn, $this->username, $old_artefact, 1);
+                    // Update inventory
+                    $this->UpdateGamedata->updateInventory($old_artefact, 1);
                 }
-                
-                update_inventory($this->db->conn, $this->username, $artefact, -1, true);
+                // Update inventory
+                $this->UpdateGamedata->updateInventory($artefact, -1, true);
                 
                 $this->db->conn->commit();
             }
@@ -107,18 +113,19 @@
                 return false;
             }
             $this->db->closeConn();
+            $_SESSION['gamedata']['artefact'] = $artefact;
             js_echo(array($artefact));
-            echo "hello";
         }
-        public function artefactCheck() {
-            if(in_array($this->session['artefact']['name'], $this->artefacts) != true) {
-                return false;
+        public function artefactCheck($type) {
+            preg_match('#\((.*)\)#', $this->session['artefact'], $matches);
+            if($matches[1] == 0) {
+                return 1;
             }
-            if(!$this->session['artefact'] > 0) {
-                return false;
+            $artefact = trim(explode("(", $this->session['artefact'])[0]);
+            if($artefact !== $type) {
+                return 1;
             }
-            
-            switch($this->session[‘artefact’]) {
+            switch($artefact) {
                 case 'harvester':
                     return 1.2;
                     break;
@@ -138,31 +145,34 @@
                     return 1.2;
                     break;
                 default:
-                    return 0;
+                    return 1;
                     break;
             }
         }
         public function updateArtefact() {
             $sql = "SELECT artefact FROM user_data WHERE username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
             $artefact = $stmt->fetch(PDO::FETCH_OBJ)->artefact;
             
-            $charges = preg_match('#\((.*)\)#', $x, $y)[0] - 1;
-            $artefact_sub = explode("(", $artefact);
-            $artefact_sub = (strpos($artefact_sub, 'damaged') === false) ? 'damaged ' . $artefact_sub : $artefact_sub;
+            preg_match('#\((.*)\)#', $artefact, $matches);
+            $charges = $matches[1] - 1;
+            $artefact_sub = trim(explode("(", $artefact)[0]);
+            
                 
             $sql = "UPDATE user_data SET artefact=:artefact WHERE username=:username";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bindParam(":artefact", $param_artefact, PDO::PARAM_INT);
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->bindParam(":artefact", $param_artefact, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-            $param_artefact = $artefact_sub[0] . " ({$charges})";
+            $param_artefact = $artefact_sub . " ({$charges})";
             $param_username = $this->username;
             $stmt->execute();
-
-            $this->gameMessage($this->session['artefact'] . " artefact used, charges left: {$param_charges}", true);
+            
+            $_SESSION['gamedata']['artefact'] = $param_artefact;
+            $this->gameMessage($this->session['artefact'] . " artefact used, charges left: {$charges}", true);
+            echo "|";
         }
     }
 ?>

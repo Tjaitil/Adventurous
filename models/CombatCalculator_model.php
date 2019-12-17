@@ -202,6 +202,11 @@
             return $warrior;
         }
         protected function warriorHit($daqloon, $warrior, $duration) {
+            if($warrior['ammunition'] === 0) {
+                $this->battle_progress[] = 'Ammunition empty!';
+                $daqloon['health'] -= 10;
+                return $daqloon;
+            }
             $warrior_hit = $warrior['attack'] - (0.025 * $daqloon['defence']);
                          - ($warrior['stamina_level'] - ($duration * 0.2)); //Hit damage decrease when they are fighting
             
@@ -230,6 +235,10 @@
                           'warrior_wounded' => count($this->warrior_status), 'daqloon_wounded' => count($this->daqloon_status),
                           'warrior_combo' => $this->combo_attack['warrior'], 'daqloon_combo' => $this->combo_attack['daqloon']);
             get_template('calculatorResult', $data, true);
+        }
+        
+        protected function calculateDamage($warrior) {
+            
         }
     }
 ?>

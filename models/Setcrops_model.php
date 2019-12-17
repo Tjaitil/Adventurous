@@ -7,6 +7,7 @@
             parent::__construct();
             $this->username = $session['username'];
             $this->session = $session;
+            $this->commonModels(true, false);
         }
         public function setCrops($POST) {
             // $POST variable holds the post data
@@ -65,7 +66,6 @@
                 $this->gameMessage("ERROR: You don't have enough seeds!", true);
                 return false;
             }
-            $experience = $row2['experience'] + $this->session['farmer']['xp'];
             
             $addTime = $row2['time'] * $POST['quantity'] / $POST['workforce'] - (10 * $row['effiency_level']);
             $date = date("Y-m-d H:i:s");
@@ -103,8 +103,10 @@
                 $param_username = $this->username;
                 $stmt2->execute();
                 
-                update_xp($this->db->conn, $this->username, 'farmer', $experience);
-                update_inventory($this->db->conn, $this->username, $POST['type'] . ' seed', -$row2['seed_required'], true);
+                // Update inventory
+                $this->UpdateGamedata->updateInventory($POST['type'] . ' seed', -$row2['seed_required'], true);
+                // Update xp
+                $this->UpdateGamedata->updateXP('farmer', $row2['experience']);
                 
                 $this->db->conn->commit();
             }

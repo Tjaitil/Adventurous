@@ -43,9 +43,8 @@
                     <td><input type="number" min="0" /><button onclick="make('Cooked Potato', this);"> Make </button></td>
                 </tr>
             </table>
+            <button onclick="lol();"> Click </button>
             <div id="inventory">
-                <div id="layer">
-                </div>
                 <?php require(constant('ROUTE_VIEW') . '/inventory.php'); url();?>
             </div>
             <script src="<?php echo constant('ROUTE_JS') . $name . '.js';?>"></script>

@@ -25,7 +25,7 @@
         for(var i = 0; i < divs.length; i++) {
             if(divs[i] == mineral) {
                 document.getElementById(divs[i]).style = "display: inline";
-                minerals[i].style = "border: 1px solid red";
+                minerals[i].style = "border: 2px solid brown";
             }
             else {
                 document.getElementById(divs[i]).style = "display: none";
@@ -37,9 +37,7 @@
     function smith() {
         var amount = event.target.parentElement.children[0].value;
         var item = event.target.closest("tr").children[0].innerHTML.toLowerCase();
-        console.log(item);
         var minerals = document.getElementsByClassName("minerals");
-        console.log(minerals);
         for(var i = 0; i < minerals.length; i++) {
             if(minerals[i].style.border == "1px solid red") {
                 this.mineral = minerals[i].getAttribute("title");
@@ -49,7 +47,8 @@
         if(this.mineral.length < 1){
             gameLog("Please select a mineral");
             return false;
-        }  
+        }
+        event.target.parentElement.children[0].value = "";
         var data = "model=smithy" + "&method=smith" + "&item=" + item  + "&amount=" + amount + "&mineral=" + this.mineral;
         ajaxP(data, function(response) {
             if(response[0] !== false) {

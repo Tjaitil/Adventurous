@@ -4,6 +4,11 @@
     margin: 1%;
     border-collapse: collapse;
 }
+#adventurer table img, #farmer table img, #miner table img, #trader table img, #warrior table img {
+    width: 50px;
+    height: 50px;
+    margin-left: 3px;
+}
 /*tr:hover {
     background-color: #e5d4b3;
 }*/

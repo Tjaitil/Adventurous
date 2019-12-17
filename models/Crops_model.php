@@ -7,6 +7,7 @@
             parent::__construct();
             $this->username = $session['username'];
             $this->session = $session;
+            $this->commonModels(true, false);
         }
             
         public function getData() {
@@ -40,7 +41,7 @@
             }
             
         public function checkCountdown($check = false) {
-            $sql = "SELECT grow_countdown, plot1_harvest FROM farmer WHERE username=:username AND location=:location";
+            $sql = "SELECT grow_countdown, plot1_harvest, crop_type FROM farmer WHERE username=:username AND location=:location";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
@@ -60,7 +61,7 @@
                 }
             }
             $this->db->closeConn();
-            js_echo(array($date, $row['plot1_harvest']));
+            js_echo(array($date, $row['plot1_harvest'], $row['crop_type']));
         }
         
         public function destroyCrops() {
@@ -139,11 +140,12 @@
             try {
                 $this->db->conn->beginTransaction();
                 
-                update_inventory($this->db->conn, $this->username, $type, - $amount);
-                
                 if($seed_amount > 0) {
-                    update_inventory($this->db->conn, $this->username, $type . ' seed', $seed_amount);
+                    // Update inventory
+                    $this->UpdateGamedata->updateInventory($type . ' seed', $seed_amount);
                 }
+                // Update inventory
+                $this->UpdateGamedata->updateInventory($type, - $amount, true);
                 
                 $this->db->conn->commit();
             }

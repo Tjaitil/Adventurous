@@ -10,7 +10,9 @@
             $this->commonModels(true, true);
         }
         public function updateCrops() {
-            //AJAX function
+            // Function to reset crops, free up workforce and give player the amount of crops they have grown
+            // This function is called from an AJAX request from crops.js
+            
             $sql = "SELECT grow_type, grow_quant, fields_avail FROM farmer WHERE username=:username AND location=:location";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
@@ -34,8 +36,8 @@
             $rand_min = ($row['grow_quant'] * 0.3) + $row2['min_crop_count'];;
             $rand_max = ($row['grow_quant'] * 0.3) + $row2['max_crop_count'];
             $quantity = round(rand($rand_min, $rand_max));
-            $artefact_bonus = $this->Artefact_model->artefactCheck();
-            $quantity *= $artefact_bonus;
+            $artefact_bonus = $this->Artefact_model->artefactCheck('harvester');
+            $quantity = round($quantity * $artefact_bonus);
             
             if(in_array($this->session['location'], array('towhar', 'krasnur')) != true) {
                 return false;   

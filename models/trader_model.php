@@ -13,6 +13,7 @@
             $this->username = $session['username'];
             $this->session = $session;
             $this->assignment_types = $assignment_types = restore_file('trader_assignment_types', true);
+            $this->commonModels(true, false);
         }
         public function pickUp() {
             //AJAX function
@@ -130,10 +131,8 @@
                 $param_username = $this->username;
                 $stmt->execute();
                 
-                // Only gain xp when miner level is below 30 or if profiency is miner
-                if($this->session['trader']['level'] < 30 || $this->session['profiency'] == 'trader') {
-                    update_xp($this->db->conn, $this->username, 'trader', $xp + $this->session['trader']['xp']);
-                } 
+                // Update xp
+                $this->UpdateGamedata->updateXP('trader', $xp);
                 
                 $this->db->conn->commit();
             }
@@ -231,13 +230,12 @@
                 $param_username = $this->username;
                 $stmt->execute();
                 
-                // Only gain xp when miner level is below 30 or if profiency is miner
-                if($this->session['trader']['level'] < 30 || $this->session['profiency'] == 'trader') {
-                    update_xp($this->db->conn, $this->username, 'trader', $xp + $this->session['trader']['xp']);
-                }
+                // Update xp
+                $this->UpdateGamedata->updateXP('trader', $xp);
                 
                 if($this->favor != true) {
-                    update_inventory($this->db->conn, $this->username, $this->cargo , $reward_amount, true);
+                    // Update inventory
+                    $this->UpdateGamedata->updateInventory($this->cargo , $reward_amount, true);
                 }
                 else {
                     $sql2 = "UPDATE diplomacy SET hirtam=:hirtam, pvitul=:pvitul, khanz=:khanz, ter=:ter, fansalplains=:fansalplains

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title><?php echo $name; ?></title>
-        <link rel="stylesheet" type="text/css" href="public/css/<?php echo $title; ?>.css" />
+        <title><?php echo $title; ?></title>
+        <link rel="stylesheet" type="text/css" href="<?php echo '../' . constant('ROUTE_CSS') . $name; ?>.css" />
         <?php require(constant('ROUTE_VIEW') . 'head.php');?>
         <meta charset="utf-8"/>
     </head>

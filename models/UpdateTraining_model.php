@@ -7,6 +7,7 @@
             parent::__construct();
             $this->username = $session['username'];
             $this->session = $session;
+            $this->commonModels(true, false);
         }
         public function updateTraining($POST) {
             // $POST variable holds the post data
@@ -98,13 +99,6 @@
         
             try {
                 $this->db->conn->beginTransaction();
-                $sql = "UPDATE warrior SET warrior_xp=:warrior_xp WHERE username=:username";
-                $stmt = $this->db->conn->prepare($sql);
-                $stmt->bindParam(":warrior_xp", $param_warrior_xp, PDO::PARAM_STR);
-                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                $param_warrior_xp = $warrior_experience + $this->session['warrior']['xp'];
-                $param_username = $this->username;
-                $stmt->execute();
                 
                 $sql2 = "UPDATE warriors SET fetch_report=0, training_type='none' WHERE warrior_id=:warrior_id AND username=:username";
                 $stmt2 = $this->db->conn->prepare($sql2);
@@ -114,10 +108,8 @@
                 $param_username = $this->username;
                 $stmt2->execute();
                 
-                // Only gain xp when warrior level is below 30 or if profiency is warrior 
-                if($this->session['warrior']['level'] < 30 || $this->session['profiency'] == 'warrior') {
-                    update_xp($this->db->conn, $this->username, 'warrior', $param_warrior_xp);
-                }
+                // Update xp
+                $this->UpdateGamedata->updateXP('warrior', $warrior_experience);
                 
                 $stmt4 = $this->db->conn->prepare($sql4);
                 $stmt4->execute($values);

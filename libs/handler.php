@@ -33,7 +33,7 @@
             }
         }
         public function checkMethod($model, $method) {
-            if (method_exists($model, $method)) {
+            if(method_exists($model, $method)) {
                 return true;
             }
             else {

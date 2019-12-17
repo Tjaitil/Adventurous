@@ -12,13 +12,16 @@
     });
     var intervals = [];
     function getCountdown() {
+        document.getElementById("growing").innerHTML = "No crops growing";
         var data = "model=Crops" + "&method=checkCountdown";
         ajaxJS(data, function(response) {
             if(response[0] != false) {
                 var data = response[1].split("|");
                 var time = data[0] * 1000;
                 var harvest = data[1];
-                console.log(data);
+                if(data[2].indexOf("none") != -1) {
+                    document.getElementById("growing").innerHTML = "Currently growing " + jsUcfirst(data[2]);
+                }
                 var x = setInterval (function() {
                     intervals.push(x);
                     var now = new Date().getTime();
@@ -34,12 +37,12 @@
                         var t = document.createTextNode("Harvest");
                         btn.appendChild(t);
                         btn.addEventListener("click", updateCrop);
-                        document.getElementById('growing').appendChild(btn);
-                        document.getElementById("time").innerHTML = "Finished";
+                        document.getElementById('time').appendChild(btn);
+                        document.getElementById("growing").innerHTML = "Finished";
                     }
                     else if (distance < 0) {
                         clearInterval(x);
-                        document.getElementById("time").innerHTML = "None growing";
+                        document.getElementById("growing").innerHTML = "No crops growing";
                     }
                 }, 1000);
             }
@@ -117,8 +120,18 @@
         });
     }
     function newCrop(name, seeds, time) {
-        this.src = "public/img/" + name + " ore.png";
+        this.src = "public/img/" + name + ".png";
         this.seeds = seeds;
         this.time = time;
     }
     var potato = new newCrop('potato', 1, 1000);
+    var tomato = new newCrop('tomato', 1, 1000);
+    var corn = new newCrop('corn', 1, 1000);
+    var carrots = new newCrop('carrots', 1, 1000);
+    var cabbages = new newCrop('cabbages', 1, 1000);
+    var wheat = new newCrop('wheat', 1, 1000);
+    var sugar = new newCrop('sugar', 1, 1000);
+    var spices = new newCrop('spices', 1, 1000);
+    var apples = new newCrop('apples', 1, 1000);
+    var oranges = new newCrop('oranges', 1, 1000);
+    var watermelon = new newCrop('watermelon', 1, 1000);

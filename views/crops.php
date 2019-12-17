@@ -15,9 +15,8 @@
             <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
             <div id="action_div">
                 <div id="actions">
-                    <div id="growing">
-                        <p id="time"></p></br>
-                    </div>
+                    <p id="growing"> </p></br>
+                    <p id="time"></p>>
                     <button onmousedown="destroyCrops();"> Destroy crops </button>
                 </div>
                 <div id="select">
@@ -79,7 +78,7 @@
         <div id="inventory">
             <?php require(constant('ROUTE_VIEW') . 'inventory.php'); url();?>
         </div>
-                    <div id="seed_g">
+            <div id="seed_g">
                 <p>Select a item to get seeds from:</p>
                 <div id="selected">
                     <div id="selected_t"></div>

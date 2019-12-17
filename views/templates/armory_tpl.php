@@ -8,6 +8,9 @@ foreach($data as $key):
              title="<?php echo $key['helm'];?>"
              class="helm" src="<?php echo constant("ROUTE_IMG") . str_replace(" ", "_", $key['helm']) . '.jpg'?>"/>
         <img onclick="removeArmor(this);"
+             title="<?php echo $key['ammunition'];?>"
+             class="ammunition" src="<?php echo constant("ROUTE_IMG") . str_replace(" ", "_", $key['ammunition']) . '.jpg'?>"/>
+        <img onclick="removeArmor(this);"
              title="<?php echo $key['left_hand'];?>"
              class="left_hand" src="<?php echo constant("ROUTE_IMG") . str_replace(" ", "_", $key['left_hand']) . '.jpg'?>" />
         <img onclick="removeArmor(this);"

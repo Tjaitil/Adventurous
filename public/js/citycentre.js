@@ -5,7 +5,7 @@
        keep_buttons[0].addEventListener("click", changeArtefact);
        keep_buttons[1].addEventListener("click", newArtefact);
        document.getElementById("permits").querySelectorAll("button")[0].addEventListener("click", buyPermits);
-       
+       document.getElementById("efficiency").querySelectorAll("button")[0].addEventListener("click", upgradeEffiency);
     });
     
     
@@ -58,7 +58,7 @@
                     var artefactDiv = document.getElementById("artefact");
                     artefact = data[0].split("|")[0].trim();
                     artefactDiv.children[0].src = "public/images/" + data[0] + '.jpg';
-                    artefactDiv.querySelectorAll("p")[0].innerHTML = "Current Artefact:" + data[0];
+                    artefactDiv.querySelectorAll("p")[0].innerHTML = "Current Artefact:" + jsUcfirst(data[0]); 
                     updateInventory();
                 }       
             });   
@@ -66,7 +66,7 @@
     }
     function buyPermits() {
         var amount = 50;
-        var data = "model=citycentre" + "&method=buyPermits" + "&amount=" + amount;
+        var data = "model=citycentreA" + "&method=buyPermits" + "&amount=" + amount;
         ajaxP(data, function(response) {
             if(response[0] !== false) {
                 gameLog(response[1]);
@@ -81,7 +81,7 @@
                 var responseText = response[1].split("|");
                 openNews('Waiting');
                 setTimeout( function() {
-                        document.getElementById("content").innerText = "";
+                        document.getElementById("news_content").innerText = "";
                         var img = document.createElement("IMG");
                         img.href = "/public/img/" + responseText[1] + ".png";
                         img.style = "width: 50px; height: 50px; margin-left: 10px";
@@ -92,11 +92,30 @@
         });
     }
     function setArtefact() {
-        
         var data = "model=Artefact" + "&method=setArtefact";
         ajaxP(data, function(response) {
             if(response[0] !== false) {
                     
             }
+        });
+    }
+    function upgradeEffiency() {
+        var tr = event.target.closest("tr");
+        var skill;
+        if(tr.previousSibling != null) {
+            skill = "farmer";
+        }
+        else {
+            skill = "miner";
+        }
+        var data = "model=Workers" + "&method=upgradeEffiency" + "&skill=" + skill;
+        ajaxP(data, function(response) {
+            if(response[0] !== false) {
+                updateInventory();
+                var responseText = response[1].split("|");
+                gameLog(responseText[0]);
+                tr.children[1].innerHTML = responseText[1];
+                tr.children[2].childNodes[0] = responseText[1] * 150;
+            }    
         });
     }
