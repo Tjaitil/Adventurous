@@ -11,7 +11,7 @@
         }
         
         public function getData() {
-            $sql = "SELECT warrior_id, helm, ammunition, left_hand, body, right_hand, legs, boots,
+            $sql = "SELECT warrior_id, helm, ammunition, ammunition_amount, left_hand, body, right_hand, legs, boots,
                     (SELECT SUM(attack) FROM smithy_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS attack,
                     (SELECT SUM(defence) FROM smithy_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS defence
                     FROM warrior_armory
@@ -31,9 +31,10 @@
             $item = strtolower($POST['item']);
             // If $hand variable is not equals to false it means that a specific hand is selected for the sword, dagger or spear
             $hand = $POST['hand'];
+            $amount = ($POST['amount'] === 'false') ? 1 : $POST['amount'];
             
             $minerals = array("iron", "steel", "gargonite", "adron", "yeqdon", "frajrite");
-            $items = array("sword", "spear", "dagger", "shield", "platebody", "platelegs", "helm");
+            $items = array("sword", "spear", "dagger", "shield", "platebody", "platelegs", "helm", "arrows");
             // Check out if the $item matches $mineral and $item
             $item_array = explode(" ", $item);
             if(array_search($item_array[0], $minerals) === false) {
@@ -44,6 +45,17 @@
             }
             if(isset($result)) {
                 $this->gameMessage("ERROR: The item you are trying to put doesn't exists", true);
+                return false;
+            }
+            
+            $item_data = get_item($this->session['inventory'], $item);
+            
+            if(!isset($item_data['item'])) {
+                $this->gameMessage("ERROR: You don't have that item in your inventory", true);
+                return false;
+            }
+            else if($amount !== false && $item_data['amount'] < $amount) {
+                $this->gameMessage("ERROR: You don't have that amount in your inventory", true);
                 return false;
             }
             
@@ -85,8 +97,14 @@
             }
             if($row['type'] == 'hand') {
                 $row['type'] = $hand  .'_hand';
+                $sql = "SELECT {$row['type']} FROM warrior_armory WHERE warrior_id=:warrior_id AND username=:username";    
             }
-            $sql = "SELECT {$row['type']} FROM warrior_armory WHERE warrior_id=:warrior_id AND username=:username";
+            else if ($row['type'] == 'ammunition') {
+                $sql = "SELECT {$row['type']}, ammunition_amount FROM warrior_armory WHERE warrior_id=:warrior_id AND username=:username";   
+            }
+            else {
+                $sql = "SELECT {$row['type']} FROM warrior_armory WHERE warrior_id=:warrior_id AND username=:username"; 
+            }
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
@@ -97,22 +115,53 @@
             
             try {
                 $this->db->conn->beginTransaction();
-                $sql = "UPDATE warrior_armory SET {$row['type']}=:item WHERE warrior_id=:warrior_id AND username=:username";
-                $stmt = $this->db->conn->prepare($sql);
-                $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
-                $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);
-                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                $param_item = $item;
-                $param_warrior_id = $this->warrior_id;
-                $param_username = $this->username;
-                $stmt->execute();
-                
-                if($row2[$row['type']] != 'none') {
+                if($row['type'] === 'ammunition') {
+                    $sql = "UPDATE warrior_armory SET {$row['type']}=:item, ammunition_amount=:ammunition_amount
+                            WHERE warrior_id=:warrior_id AND username=:username";
+                    $stmt = $this->db->conn->prepare($sql);
+                    $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
+                    $stmt->bindParam(":ammunition_amount", $param_ammunition_amount, PDO::PARAM_INT);
+                    $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);
+                    $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                    $param_item = $item;
+                    if($row2[$row['type']] !== $item) {
+                        $param_ammunition_amount = $amount;
+                    }
+                    else {
+                        $param_ammunition_amount = $amount + $row2['ammunition_amount'];
+                    }
+                    $param_warrior_id = $this->warrior_id;
+                    $param_username = $this->username;
+                    $stmt->execute();
+                }
+                else {
+                    $sql = "UPDATE warrior_armory SET {$row['type']}=:item WHERE warrior_id=:warrior_id AND username=:username";
+                    $stmt = $this->db->conn->prepare($sql);
+                    $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
+                    $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);
+                    $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                    $param_item = $item;
+                    $param_warrior_id = $this->warrior_id;
+                    $param_username = $this->username;
+                    $stmt->execute();   
+                }
+                if($row2[$row['type']] != 'none' && $row['type'] != 'ammunition') {
                     // Update inventory
                     $this->UpdateGamedata->updateInventory($row2[$row['type']], 1);
                 }
-                // Update inventory
-                $this->UpdateGamedata->updateInventory($item, -1, true);
+                else if($row2[$row['type']] != 'none' && $row['type'] == 'ammunition' && $row2[$row['type']] !== $item) {
+                    // Update inventory if there is other type of ammunition equipped
+                    $this->UpdateGamedata->updateInventory($row2[$row['type']], $row2['ammunition_amount']);
+                }
+                
+                if($row['type'] === 'ammunition') {
+                    // Update inventory
+                    $this->UpdateGamedata->updateInventory($item, -$amount, true);        
+                }
+                else {
+                    // Update inventory
+                    $this->UpdateGamedata->updateInventory($item, -1, true);  
+                }
                 
                 $this->db->conn->commit();
             }
@@ -130,13 +179,17 @@
             $this->warrior_id = $POST['warrior_id'];
             $part = strtolower($POST['part']);
             
-            $parts = array("helm", "left_hand", "body", "right_hand", "legs", "boots");
+            $parts = array("helm", "ammunition", "left_hand", "body", "right_hand", "legs", "boots");
             if(array_search($part, $parts) === false) {
                 $this->gameMessage("ERROR: That part does not exists", true);
                 return false;
             }
-            
-            $sql = "SELECT {$part} FROM warrior_armory WHERE warrior_id=:warrior_id AND username=:username";
+            if($part === 'ammunition') {
+                $sql = "SELECT {$part}, ammunition_amount FROM warrior_armory WHERE warrior_id=:warrior_id AND username=:username";   
+            }
+            else {
+                $sql = "SELECT {$part} FROM warrior_armory WHERE warrior_id=:warrior_id AND username=:username";
+            }
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
@@ -160,16 +213,29 @@
             try {
                 $this->db->conn->beginTransaction();
                 
-                $sql = "UPDATE warrior_armory SET {$part}='none' WHERE warrior_id=:warrior_id AND username=:username";
+                if($part === 'ammunition') {
+                    $sql = "UPDATE warrior_armory SET {$part}='none', ammunition_amount=0
+                            WHERE warrior_id=:warrior_id AND username=:username";
+                }
+                else {
+                    $sql = "UPDATE warrior_armory SET {$part}='none' WHERE warrior_id=:warrior_id AND username=:username";
+                }
+                
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_warrior_id = $this->warrior_id;
                 $param_username = $this->username;
-                $stmt->execute();
+                $stmt->execute();    
                 
-                // Update inventory
-                $this->UpdateGamedata->updateInventory($row[$part], 1, true);
+                if($part === 'ammunition') {
+                    // Update inventory
+                    $this->UpdateGamedata->updateInventory($row[$part], $row['ammunition_amount'], true);    
+                }
+                else {
+                    // Update inventory
+                    $this->UpdateGamedata->updateInventory($row[$part], 1, true);
+                }
             
                 $this->db->conn->commit();
             }
@@ -184,7 +250,7 @@
         }
         public function getWarriorstats() {
             // Perform a query with two subqueries which retrieves the sum of attack and the sum of defence as well as armor
-            $sql = "SELECT warrior_id, helm, left_hand, body, right_hand, legs, boots,
+            $sql = "SELECT warrior_id, helm, ammunition, ammunition_amount, left_hand, body, right_hand, legs, boots,
                     (SELECT SUM(attack) FROM smithy_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS attack,
                     (SELECT SUM(defence) FROM smithy_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS defence
                     FROM warrior_armory WHERE warrior_id=:warrior_id AND username=:username";

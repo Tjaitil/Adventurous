@@ -60,15 +60,19 @@ section table tr {
 #skills img {
     width: 50px;
     height: 50px;
-    border: 1px solid black;
 }
 #skills figure {
     position: relative;
 }
-#skills figcaption {
-    position: absolute;
-    bottom: -12px;
+#ad_tooltip {
     left: 16px;
+    position: absolute;
+    bottom: -3px;
+}
+.skill_level {
+    position: absolute;
+    bottom: -3px;
+    left: 27px;
 }
 .skill_tooltip {
     position: absolute;
@@ -209,7 +213,39 @@ section table tr {
     text-align: right;
     float: none;
 }
-.tooltip {
+#item_tooltip {
+    visibility: hidden;
+}
+#item_tooltip ul {
+    text-align: left;
+    list-style-type: none;
+    border: 1px solid black;
+    position: absolute;
+    max-width: 100px;
+    z-index: 1;
+    top: 14%;
+    padding-top: 3px;
+    background-color: #724e27;
+    overflow: scroll;
+    color: #FFFFFF;
+    font-size: 12px;
+}
+#item_tooltip ul li {
+    background-color: #724e27;
+    padding: 2px;
+    cursor: pointer;
+    width: auto;
+}
+#item_tooltip ul li:nth-child(1) {
+    cursor: default;
+}
+#item_tooltip ul li:nth-child(1):hover {
+    background-color: #724e27;
+}
+#item_tooltip ul li:hover {
+    background-color: #986834;
+}
+/*.tooltip {
     position: absolute;
     right: 20%;
     bottom: -25%;
@@ -224,7 +260,7 @@ section table tr {
     width: auto;
     display: inline-block;
     float: right;
-}
+}*/
 .inventory_item, .item {
     display: inline-block;
     float: left;
@@ -288,6 +324,10 @@ section table tr {
     visibility: visible;
     color: white;
 }
+#inventory figcaption {
+    visibility: hidden;
+    position: absolute;
+}
 #selected {
     height: 56px;
     width: 56px;
@@ -339,9 +379,10 @@ button {
     border-radius: 5px;
     border: 1px outset;
     box-shadow: 1px 1px 1px 1px #372715;
-    padding: 3px 6px 3px 7px;
+    padding: 10px 12px 10px 12px;
     color: black;
     font-weight: bold;
+    font-size: 13px;
 }
 button:active {
     background-color: #ebd9c6
@@ -357,4 +398,12 @@ button:focus {outline:0;}
     }*/
         
     }
+#anno {
+    background-color: #8B4513;
+    width: 50%;
+    height: 300px;
+    position: fixed;
+    /*position: -webkit-sticky;*/
+    border: 1px solid white;
+    left: 31%;
 }

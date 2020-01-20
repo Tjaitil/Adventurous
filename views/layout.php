@@ -5,16 +5,16 @@
 <div id="skills">
     <div onclick="get_xp('adventurer', this);">
         <figure>
-            <img src="#" />
-            <figcaption class="skill_level"><?php echo $_SESSION['gamedata']['adventurer_respect'];?></figcaption>
+            <img src="<?php echo constant('ROUTE_IMG') . 'adventurer icon.png';?>" />
+            <figcaption id="ad_tooltip"><?php echo $_SESSION['gamedata']['adventurer_respect'];?></figcaption>
         </figure>
         <span class="skill_tooltip"></span>
         <span></span>
     </div>
     <div onclick="get_xp('farmer', this);">
         <figure>
-            <img src="#" />
-            <figcaption><?php echo $_SESSION['gamedata']['farmer']['level'];?></figcaption>
+            <img src="<?php echo constant('ROUTE_IMG') . 'farmer icon.png';?>" />
+            <figcaption class="skill_level"><?php echo $_SESSION['gamedata']['farmer']['level'];?></figcaption>
         </figure>
         <span class="skill_tooltip"></span>
         <!-- Span to display xp when gained -->
@@ -22,8 +22,8 @@
     </div>
     <div onclick="get_xp('miner', this);">
         <figure>
-            <img src="#" />
-            <figcaption><?php echo $_SESSION['gamedata']['miner']['level'];?></figcaption>
+            <img src="<?php echo constant('ROUTE_IMG') . 'miner icon.png';?>" />
+            <figcaption class="skill_level"><?php echo $_SESSION['gamedata']['miner']['level'];?></figcaption>
         </figure>
         <span class="skill_tooltip"></span>
         <!-- Span to display xp when gained -->
@@ -31,8 +31,8 @@
     </div>
     <div onclick="get_xp('trader', this);">
         <figure>
-            <img src="#" />
-            <figcaption><?php echo $_SESSION['gamedata']['trader']['level'];?></figcaption>
+            <img src="<?php echo constant('ROUTE_IMG') . 'trader icon.png';?>" />
+            <figcaption class="skill_level"><?php echo $_SESSION['gamedata']['trader']['level'];?></figcaption>
         </figure>
         <span class="skill_tooltip"></span>
         <!-- Span to display xp when gained -->
@@ -40,8 +40,8 @@
     </div>
     <div onclick="get_xp('warrior', this);">
         <figure>
-            <img src="#" />
-            <figcaption><?php echo $_SESSION['gamedata']['farmer']['level'];?></figcaption>
+            <img src="<?php echo constant('ROUTE_IMG') . 'warrior icon.png';?>" />
+            <figcaption class="skill_level"><?php echo $_SESSION['gamedata']['farmer']['level'];?></figcaption>
         </figure>
         <span class="skill_tooltip"></span>
         <!-- Span to display xp when gained -->
@@ -76,4 +76,10 @@
 <div id="news_content">
     <img id="cont_exit" src="#"  width="20px" height="20px" onclick="closeNews();" />
 </div>
-<figcaption class="tooltip"><?php echo ucwords($key['item']); ?></figcaption>
+<div id="alert">
+    <img id="cont_exit" src="#"  width="20px" height="20px" />
+    <div id="alert_content">
+        
+    </div>
+    <button> Submit </button>
+</div>

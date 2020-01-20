@@ -32,24 +32,14 @@
             </div>
             <script src="<?php echo constant('ROUTE_JS') . $name . '.js';?>"></script>
             <div id="stck_menu">
-                    <!--
-                    <button
-                        onclick="insert(this, 1);"><div>1</div></button><!--
-                    <button
-                        onclick="insert(this, 5);"><div>5</div></button><!--
-                    <button
-                        onclick="insert(this, 'x');"><div>x</div></button><!--
-                    <button
-                        onclick="insert(this, 'all');" id="all">All</button><!--
-                    -->
-                    <ul>
-                        <li></li>
-                        <li ontouchstart="touchMove(this);">Insert 1</li>
-                        <li ontouchstart="touchMove(this);">Insert 5</li>
-                        <li ontouchstart="touchMove(this);">Insert x</li>
-                        <li ontouchstart="touchMove(this);">Insert all</li>
-                    </ul>
-                </div>
+                <ul>
+                    <li></li>
+                    <li ontouchstart="touchMove(this);">Insert 1</li>
+                    <li ontouchstart="touchMove(this);">Insert 5</li>
+                    <li ontouchstart="touchMove(this);">Insert x</li>
+                    <li ontouchstart="touchMove(this);">Insert all</li>
+                </ul>
+            </div>
         </section>
         <aside>
             <?php require(constant('ROUTE_VIEW') . '/aside.php'); ?>

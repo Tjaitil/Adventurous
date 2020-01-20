@@ -19,8 +19,11 @@
                 $_SESSION['log'] = array_values($_SESSION['log']);
             }
         }
-        protected function reportError($file, $line, $error_message, $ajax = true) {
+        protected function reportError($file, $line, $error_message, $ajax = true,  $title = false) {
             $message = "Error on: " . $file . ' Line ' . $line . ' ' . $error_message . ' ' . $ajax;
+            if($title === false) {
+                $title = 'FROM: <system@adventurous.no';
+            }
             $test = mail('miner123@hotmail.no', 'ERROR', $message, 'FROM: <system@adventurous.no');
         }
         protected function includeDB() {

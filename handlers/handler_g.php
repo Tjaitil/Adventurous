@@ -56,6 +56,9 @@
                     //method talk()
                     $model->$methodname($_GET['person'], $_GET['part']);
                     break;
+                default:
+                    $model->$methodname($_GET);
+                    break;
             }
         }
     }

@@ -1,10 +1,35 @@
-    var provide = document.getElementById("provide");
-    if(provide != null && provide.children.length > 0) {
+    var provide_div = document.getElementById("provide");
+    if(provide_div != null && provide_div.children.length > 0) {
         document.getElementById("provide").getElementsByTagName("button")[0].addEventListener('click', provide);
     }
     if(document.getElementById("time") != null) {
         document.getElementById("time").addEventListener("load", getCountdown());
     }
+    window.onload = function () {
+        if(document.getElementById("invite") != null) {
+            var buttons = document.getElementById("invite").querySelectorAll("button");
+            for(var i = 0; i < buttons.length; i++) {
+                if(buttons[i].innerText.indexOf("Toggle") != -1) {
+                    buttons[i].addEventListener("click", toggleInvite);
+                    break;
+                }
+            }
+        }
+        // Add event to the warriors
+        var divs = document.querySelectorAll(".warriors");
+        if(divs.length > 0) {
+            divs.forEach(function(element) {
+                // ... code code code for this one element
+                element.addEventListener('click', function() {
+                    check();
+                });
+            });
+        }
+        // If div with id people does not exists there is no active adventure
+        if(document.getElementById("people") != null) {
+            document.getElementsByName("leave_adventure")[0].addEventListener("click", leaveAdventure);
+        }
+    };
     function getCountdown() {
         var data = "model=adventures" + "&method=getCountdown";
         ajaxJS(data, function(response) {
@@ -25,7 +50,6 @@
                     if (distance < 0 && fetch === "1"){
                         clearInterval(x);
                         /*document.getElementById("current_adventure").removeChild(document.getElementById("adv_start"));*/
-                        console.log(document.getElementById("current_adventure"));
                         var btn = document.createElement("BUTTON");
                         var t = document.createTextNode("Fetch report");
                         btn.appendChild(t);
@@ -84,15 +108,22 @@
         ajaxP(data, function(response) {
             if(response[0] != false) {
                 var div = document.getElementById("invite");
-                div.querySelectorAll("p")[0].innerHTML = "Invite only: " + response[1];
+                
+                var p = div.querySelectorAll("p");                
+                for(var i = 0; i < p.length; i++) {
+                    if(p[i].innerText.indexOf("invite") != -1) {
+                        p[i].innerHTML = "Leader invite only: " + response[1];
+                        break;
+                    }
+                }
                 if(response[1] == 'off') {
-                    for(var i = 0; i < 4; i++) {
+                    for(i = 0; i < 4; i++) {
                         div.children[i].style.display = "none";
                     }
                 }
                 else {
                     for(var x = 0; x < 4; x++) {
-                        div.children[x].style.display = "block";
+                        div.children[x].style.display = "inline";
                     }
                 }
             }
@@ -149,6 +180,7 @@
         ajaxP(data, function(response) {
             if(response[0] != false) {
                 gameLog(response[1]);
+                window.location.replace("/adventures");
             }
         });
     }
@@ -174,7 +206,7 @@
         }); 
     }
     function adventureRequest(id, route) {
-        var name;
+        var name = false;
         if(route == 'invite') {
             name = document.getElementById("invite").children[0].value;
         }
@@ -187,12 +219,13 @@
     }
     function provide() {
         var data;
+        var item;
         if(document.getElementsByClassName("warriors").length == 0) {
             if(document.getElementById("selected").children.length == 0) {
                 gameLog("Please select a item");
                 return false;
             }
-            var item = document.getElementById("selected").children[0].children[1].innerHTML;
+            item = document.getElementById("selected").children[0].children[1].innerHTML;
             var quantity = document.getElementById("quantity").value;
             if(quantity == 0) {
                 gameLog("Please select a valid amount");
@@ -202,16 +235,7 @@
             data = "model=setadventure" + "&method=provide" + "&item=" + item + "&quantity=" + quantity;
         }
         else {
-            var warriors_div = document.getElementsByClassName("warriors");
-            var warrior_check = [];
-            for(var i = 0; i < warriors_div.length; i++) {
-                var checkbox = warriors_div[i].children[1];
-                if(checkbox.checked === true) {
-                    var warrior = warriors_div[i].id;
-                    var warror_id = warrior.replace("warrior_", "");
-                    warrior_check.push(warror_id);
-                }
-            }
+            var warrior_check = warriorsCheck();
             if(warrior_check.length == 0) {
                 gameLog("Please select warriors");
                 return false;
@@ -220,10 +244,11 @@
         }
         ajaxP(data, function(response) {
             if(response[0] !== false) {
-                data = response[1].split("#");
-                document.getElementById("requirements").getElementsByTagName("tbody")[0].innerHTML = data[1];
-                if(item == 'null') {
-                    document.getElementById("provide").innerHTML = data[2];
+                var responseText = response[1].split("|");
+                gameLog(responseText[0]);
+                document.getElementById("requirements").getElementsByTagName("tbody")[0].innerHTML = responseText[1];
+                if(typeof warrior_check !== undefined) {
+                    document.getElementById("provide").innerHTML = responseText[2];
                 }
                 else {
                     document.getElementById("selected").innerHTML = "";
@@ -241,7 +266,6 @@
             document.getElementById(parent.id).style = "border: 1px solid black";
         }
     }
-    
     function updateInfo(info) {
         var table = document.getElementById("requirements").children[0];
         var number;
@@ -263,7 +287,6 @@
             table.children[1].children[number].children[1].innerHTML = 1;
         }
     }
-    
     function updateAdventure() {
         console.log("update_adventure");
         var data = "model=UpdateAdventure" + "&method=updateAdventure";
@@ -271,6 +294,15 @@
             if(response[0] !== false) {
                 openNews(response[1]);
                 getCountdown();
+            }
+        });
+    }
+    function leaveAdventure() {
+        var data = "model=adventures" + "&method=leaveAdventure";
+        ajaxP(data, function(response) {
+            if(response[0] !== false) {
+                gameLog(response[1]);
+                window.location.replace("/adventures");
             }
         });
     }

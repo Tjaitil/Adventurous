@@ -7,7 +7,6 @@
                 <td><?php echo ucwords($data[$i]['item']);?></td>
                 <td><?php echo $data[$i]['price_ea'];?><img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.jpg';?>" /></td>
                 <td><?php echo $data[$i]['progress'] , '/' , $data[$i]['amount'];?> </td>
-                <td><button> Cancel offer</button></td>
                 <td><?php if($data[$i]['box_amount'] > 0): ?>
                      <div class="inventory_item">
                         <figure>
@@ -17,6 +16,10 @@
                         <span class="item_amount"><? echo $data[$i]['box_amount'];?></span>
                     </div>
                     <?php else:?>
+                    <?php endif;?>
+                </td>
+                <td><?php if(intval($data[$i]['progress']) < intval($data[$i]['amount'])): ?>
+                    <button> Cancel offer</button>
                     <?php endif;?>
                 </td>
         </tr>

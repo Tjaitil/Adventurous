@@ -38,7 +38,7 @@
             }
             else {
                 // Report if user tries to access a method that doesn't exists
-                $this->errorReport($method . "doesn't exists in" . get_class($model));
+                $this->errorReport($method . " doesn't exists in" . get_class($model));
             }
         }
         private function errorReport($message) {

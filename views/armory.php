@@ -30,6 +30,10 @@
                     <option value="right"> Right hand </option>
                     <option value="left"> Left hand </option>
                 </select>
+                <div id="ranged_alt">
+                    <label for="amount"> Amount of arrows/knives</label>
+                    <input name="amount" type="number" min="1" />
+                </div>
                 <button onclick="wearArmor();"> Put on </button>
             </div>
             <div id="inventory">

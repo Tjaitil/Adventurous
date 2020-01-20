@@ -58,6 +58,9 @@
                 }
             }
         }
+        public function getOffers() {
+            
+        }
         public function newOffer($post_data) {
             //AJAX function
             $post_data['item'] = strtolower($post_data['item']);

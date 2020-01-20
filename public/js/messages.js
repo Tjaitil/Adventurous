@@ -107,7 +107,6 @@
             }
         }
         if(title.search("RE") == -1) {
-            console.log("ready");
             title = "RE: " + title;
         }
         var receiver = info[3].innerHTML;
@@ -121,16 +120,21 @@
         document.getElementById("sent").style.display = "none";
         /*document.getElementsByTagName("SECTION")[0].appendChild(div);*/
         
-        var dat = "model=messages" + "&method=showMessage" + "&message_id=" + message_id;
+        var td = event.target.closest("td");
+        if(td.style.fontWeight != "normal") {
+            td.style.fontWeight != "normal";
+        }
+        
+        var data = "model=messages" + "&method=showMessage" + "&message_id=" + message_id;
         ajaxG(data, function(response) {
             if(response[0] != false) {
                 var responseText = response[1].split("|");
-                console.log(data);
+                console.log(responseText);
                 console.log(document.getElementById("message_info"));
                 document.getElementById("message_info").children[0].children[0].children[1].innerHTML = responseText [1];
                 document.getElementById("message_info").children[0].children[1].children[1].innerHTML = responseText [2];
                 document.getElementById("message_info").children[0].children[2].children[1].innerHTML = responseText [3];
-                document.getElementById("message").children[2].innerHTML = responseText[3];
+                document.getElementById("message").children[2].innerHTML = responseText[4];
                 if(data[0] == 0) {
                     var parent = element.parentNode.parentNode;
                     var img = parent.children[4].children[0];

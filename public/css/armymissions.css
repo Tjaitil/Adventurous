@@ -16,7 +16,7 @@ section {
     width: 500px;
     height: 300px;
     visibility: hidden;
-    padding:10px;
+    padding: 10px;
 }
 #mission_enabled button {
     position: relative;
@@ -25,50 +25,16 @@ section {
     
 }
 #mission_enabled td { 
-    padding:5px;
+    padding: 5px;
     border: 1px solid black;
     border-collapse: collapse;
 }
 #mission_enabled button {
-    background-color: red;
-    color:white;
+    background-color: #8B4513;
+    color: white;
     position: relative;
-    left:5px;
-    top:5px;
+    left: 5px;
+    top: 5px;
     border-radius: 5px;
     border: 0.5px solid black;
-}
-#warriors_container {
-    overflow-x: scroll;
-}
-#warriors_container img {
-    width: 30px;
-    height: 30px;
-}
-#warriors_container {
-    
-}
-#warriors_container figure figure {
-    float: left;
-    width: 30px;
-    height: 30px;
-}
-#warriors_container figcaption {
-    display: none;
-}
-.skill_level {
-    position: relative;
-    top: -57%;
-    left: -8%;
-    color: black;
-    text-align: right;
-    float: none;
-}
-.warriors {
-    border: 1px solid black;
-    float: left;
-    height: 200px;
-    width: 100px;
-    margin: 2px;
-    cursor: pointer;
 }

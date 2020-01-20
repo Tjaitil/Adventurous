@@ -1,0 +1,42 @@
+#warriors_container {
+    overflow-x: scroll;
+    white-space: nowrap;
+}
+#warriors_container img {
+    width: 30px;
+    height: 30px;
+}
+#warriors_container {
+    
+}
+#warriors_container figure figure {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+}
+#warriors_container figcaption {
+    display: none;
+}
+.warriors span {
+    position: relative;
+    top: -57%;
+    left: -70%;
+    color: black;
+    text-align: right;
+    float: none;
+}
+.warriors {
+    border: 1px solid black;
+    height: 200px;
+    width: 140px;
+    margin: 2px;
+    cursor: pointer;
+    display: inline-block;
+    background-color: #f2e6d9;
+    padding: 5px 0px 0px 0px;
+}
+.warriors input[type="checkbox"] {
+    position: relative;
+    right: 40%;
+    top: 28%;
+}

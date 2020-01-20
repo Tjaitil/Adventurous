@@ -54,5 +54,42 @@
             }
             $this->db->closeConn();
         }
+        public function cancelMission() {
+            $sql = "SELECT mission FROM warrior WHERE username=:username";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_username = $this->username;
+            $stmt->execute();
+            $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            try {
+                
+                $this->db->conn->beginTransaction();
+                
+                $sql = "UPDATE warrior SET mission=0 WHERE username=:username";
+                $stmt = $this->db->conn->prepare($sql);
+                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                $param_username = $this->username;
+                $stmt->execute();
+                
+                $sql = "UPDATE warriors SET mission=0 WHERE mission=mission AND username=:username";
+                $stmt = $this->db->conn->prepare($sql);
+                $stmt->bindParam(":mission", $param_mission, PDO::PARAM_INT);
+                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                $param_mission = $row['mission'];
+                $param_username = $this->username;
+                $stmt->execute();
+                $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                $this->db->conn->commit();
+            }
+            catch(Exception $e) {
+                $this->db->conn->rollBack();
+                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
+                return false;
+            }
+            $this->db->closeConn();
+        }
     }
 ?>

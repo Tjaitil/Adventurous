@@ -1,3 +1,7 @@
+    window.addEventListener("load", function () {
+      getCountdown();
+      document.getElementById("current_mission").querySelectorAll("button")[0].addEventListener("click", cancelMission);
+    });
     
     function getCountdown() {
         var data = "model=armymissions" + "&method=getCountdown";
@@ -32,7 +36,7 @@
             }
         });
     }
-    window.onload = getCountdown();
+    
     var div = document.getElementById("mission_enabled").innerHTML;
     
     function prepareMission(tr_id, mission_id) {
@@ -43,57 +47,22 @@
         console.log(clone.id);
         var ele = document.getElementById("mission_enabled");
         ele.style.visibility = "visible";
-        var checkbox;
         document.getElementById("mission_table").appendChild(clone);
         var data = "model=armymissions" + "&method=getWarriors";
         ajaxJS(data, function(response) {
             console.log(response[1]);
             if(response[0] != false) {
-                /*var warriors = response[1].split("||");
-                warriors.pop();
-                for(var i = 0; i < warriors.length; i++) {
-                    var warrior = warriors[i].split("|");
-                    var div = document.createElement("DIV");
-                    div.setAttribute("class", "warriors");
-                    div.setAttribute("id", "warrior_" + [i + 1]);
-                        for(var x = 0; x < warrior.length; x++) {
-                            div.innerHTML += warrior[x];
-                        }
-                    checkbox = document.createElement("input");
-                    checkbox.setAttribute("type", "checkbox");
-                    
-                    div.appendChild(checkbox);
-                    document.getElementById("warriors").appendChild(div);
-                    //Call function and provide it with checkbox. It will return a function which then calls another function.
-                    //Doing it this way you can add a event with a parameter.
-                    checkbox.addEventListener("click", checkboxed(checkbox))
-                    checkbox.addEventListener("click", check);
-                }*/
-                document.getElementById("warriors_container").innerHTML = response[1];
+                document.getElementById("mission_enabled").innerHTML += response[1];
                 var divs = document.querySelectorAll(".warriors");
                 divs.forEach(function(element) {
                     // ... code code code for this one element
                     element.addEventListener('click', function() {
+                        // warriorSelect.js
                         check();
                     });
                 });
             }
         });
-    }
-    function checkboxed(checkbox) {
-        return function(){
-            check();
-        };
-    }
-    function check() {
-        var div = event.target.closest(".warriors");
-        var checkbox = div.querySelectorAll("input[type=checkbox]")[0];
-        if(checkbox.checked) {
-            document.getElementById(div.id).style = "border: 1px solid red";
-        }
-        else {
-            document.getElementById(div.id).style = "border: 1px solid black";
-        }
     }
     function exit() {
         var ele = document.getElementById("mission_enabled");
@@ -101,20 +70,14 @@
         ele.innerHTML = div;
     }
     function doMission() {
-        var warriors_div = document.getElementsByClassName("warriors");
-        console.log(warriors_div[1]);
-        var warrior_check = [];
-        for(var i = 0; i < warriors_div.length; i++) {
-            var checkbox = warriors_div[i].querySelectorAll("input[type=checkbox]")[0];
-            if(checkbox.checked === true) {
-                var warrior = warriors_div[i].id;
-                var warror_id = warrior.replace("warrior_", "");
-                warrior_check.push(warror_id);
-            }
-        }
+        // warriorSelect.js
+        var warrior_check = warriorsCheck();
         // Send array with warriors id and mission id to model
-        console.log(warrior_check);
-        var mission_id = document.getElementById("mission_table").children[0].id;
+        if(warrior_check.length == 0) {
+                gameLog("Please select warriors");
+                return false;
+            }
+        var mission_id = document.getElementById("missison_table").children[0].id;
         var data = "model=SetArmymission" + "&method=setMission" + "&mission_id=" + mission_id + "&warrior_check=" + warrior_check;
         ajaxP(data, function(response) {
             console.log(response);
@@ -123,6 +86,14 @@
                 document.getElementById("mission_table").innerHTML = "";
                 document.getElementById("warriors_container").innerHTML = "";
                 document.getElementById("mission_enabled").style.visibility = "hidden";
+            }
+        });
+    }
+    function cancelMission() {
+        var data = "model=UpdateArmymission" + "&method=cancelMission";
+        ajaxP(data, function(response) {
+            if(response[0] != false) {
+                getCountdown();    
             }
         });
     }

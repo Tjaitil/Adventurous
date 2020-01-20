@@ -1,13 +1,13 @@
-#adventurer table, #farmer table, #miner table, #trader table, #warrior table, #total table {
+.highscores {
     float: left;
     width: 20%;
     margin: 1%;
     border-collapse: collapse;
 }
-#adventurer table img, #farmer table img, #miner table img, #trader table img, #warrior table img {
+.highscores img {
     width: 50px;
     height: 50px;
-    margin-left: 3px;
+    vertical-align: middle;
 }
 /*tr:hover {
     background-color: #e5d4b3;

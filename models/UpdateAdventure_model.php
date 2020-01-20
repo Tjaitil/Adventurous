@@ -256,11 +256,12 @@
                     foreach($warrior_levels as $key) {
                         $stmt->execute(array_values($key));
                     }
-                    $sql2 = "UPDATE warriors SET mission=0 WHERE warrior_id= ? AND username = ?";
+                    $sql2 = "UPDATE warriors SET mission=0 WHERE mission=1 AND username=:usernae";
                     $stmt2 = $this->db->conn->prepare($sql2);
-                    foreach($warrior_levels as $key) {
-                        $stmt2->execute($key['warrior_id'], $key['username']);
-                    }
+                    $stmt2 = $this->db->conn->prepare($sql2);
+                    $stmt2->bindParam(":username", $param_username, PDO::PARAM_STR);
+                    $param_username = $this->username;
+                    $stmt2->execute();
                 }*/
         
                 $this->db->conn->commit();

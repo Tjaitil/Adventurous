@@ -18,9 +18,31 @@
         if(log != null) {
             log.scrollTop = log.scrollHeight - log.clientHeight;
         }
+        if(document.getElementById("inventory") != null) {
+            document.getElementById("inventory").addEventListener("scroll", function() {
+               console.log("scroll");
+               document.getElementById("item_tooltip").style.visibility = "hidden";
+            });
+            var figures = document.getElementById("inventory").querySelectorAll("figure");
+            figures.forEach(function(element) {
+              // ... code code code for this one element
+                element.addEventListener('click', function() {
+                    show_title();
+                });
+            });
+        }
         clock();
+        checkMessages();
     });
-    
+    function checkMessages() {
+        var data = "model=messages" + "&method=checkMessages";
+        ajaxG(data, function(response) {
+           console.log(response[1]);
+            if(response[1] > 0) {
+                document.getElementById("nav").querySelectorAll(".top_but")[5].children[0].innerHTML += ' ' + '(' + response[1] + ')';
+            }
+        });
+    }
     function displayNav() {
         var visibility = document.getElementById("nav_2").children[1].style.visibility;
         if(visibility == 'visible') {
@@ -128,31 +150,41 @@
     function hide_xp(element) {
         element.innerHTML = "";
     }   
-    function updateInventory(page) {
+    function updateInventory(page, addSelect = false) {
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
             if(this.readyState == 4 && this.status == 200) {
                 document.getElementById("inventory").innerHTML = this.responseText;
+                if(addSelect !== false) {
+                    addSelectEvent();
+                }
             }
         };
         ajaxRequest.open('GET', "handlers/handlerf.php?file=inventory" + "&page=" + page);
         ajaxRequest.send();
     }
     var timeID = [];
-    function show_title(element, buttons) {
-        var tooltip = element.children[1];
-        tooltip.style.right = "30%";
-        tooltip.style.visibility = "visible";
-        if(buttons == true) {
-            var div_button = element.parentElement.children[0];
-            if(div_button.style.visibility == "visible") {
-                div_button.style = "visibility: hidden";
-            }
-            else {
-                div_button.style = "visibility: visible";
-            }
+    function show_title() {
+        var element = event.target.closest("div");
+        var item = element.getElementsByTagName("figcaption")[0].innerHTML;
+        var menu = document.getElementById("item_tooltip");
+        // Insert item name at the first li
+        menu.children[0].children[0].innerHTML = item;
+        menu.style.visibility = "visible";
+        // Declare menu top by measuring the positon from top of parent and also if inventory/stockpile is scrolled
+        var menuTop = element.offsetTop - element.parentNode.scrollTop + 50;
+        menu.children[0].style.top = menuTop + "px";
+        if(item.length < 8) {
+            menu.children[0].style.left = element.offsetLeft +  20 + "px";
+            menu.children[0].children[0].style.width = "50px";
+            menu.children[0].children[0].style.textAlign = "center";
+            
         }
-        var data = [tooltip, buttons, element];
+        else {
+            menu.children[0].style.left = element.offsetLeft + 10 + "px";
+            menu.children[0].children[0].style.width = "auto";
+        }
+        
         setTimeout(hide_title, 4000, data);
     }  
     function hide_title(data) {
@@ -285,3 +317,18 @@
         ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         ajaxRequest.send(data);
     }
+    /*function alertMessage(page, pIdentifier = false) {
+        // pIdentifer is used to identify which content to append if this function is used multiple times on the same page
+        var button = document.createElement("button");
+        button.appendChild(document.createTextNode("Submit"));
+        button.setAttribute("id", "alert_submit");
+        var content = document.getElementById("alert_content");
+
+        var page;
+        switch(page) {
+            case 'armory':
+                var document
+                break;
+        }
+        content.appendChild(button);
+    }*/

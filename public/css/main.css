@@ -81,7 +81,6 @@
 }
 #countdowns {
     width: 32%;
-    height:300px;
     margin: 0px 0px 0px 0px;
     border: 1px solid black;
     float:right;
@@ -98,11 +97,11 @@
     border-collapse: collapse;
 }
 #upgrades {
-    width:50%;
-    height:150px;
-    border:1px solid black;
-    margin-top:10px;
-    margin-left:25%;
+    width: 50%;
+    height: 150px;
+    border: 1px solid black;
+    margin-top: 10px;
+    margin-left: 25%;
 }
 #diplomacy {
     float: left;    

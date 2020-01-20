@@ -4,6 +4,7 @@
         <title><?php echo $title; ?></title>
         <?php require(constant('ROUTE_VIEW') . 'head.php');?>
         <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name ?>.css" />
+        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . 'warriorSelect';?>.css" />
     </head>
     <body>
         <header>
@@ -17,6 +18,7 @@
             <h3 id="page_title"> Army Missions </h3>
             <div id="current_mission">
             <p> Mission:</p><p id="time"></p>
+            <button> Cancel mission </button>
             </div>
             <table>
                 <thead>
@@ -49,12 +51,10 @@
                                             
                 </table>
                 <p>Select Warriors:</p>
-                <div id="warriors_container">
-                    
-                </div>
                 <button id="mission_button" onclick="doMission();"> Do Mission </button>
             </div>
             <script src="<?php echo constant('ROUTE_JS') . $name . '.js';?>"></script>
+            <script src="<?php echo constant('ROUTE_JS') . 'warriorSelect' . '.js';?>"></script>
         </section>
         <aside>
             <?php require(constant('ROUTE_VIEW') . '/aside.php'); ?>

@@ -8,6 +8,9 @@
         if(element.search("Sword") != -1 || element.search("Dagger") != -1) {
             document.getElementById("type").style.visibility = "visible";
         }
+        else if(element.search("Arrow") != -1 || element.search("Knives") != -1) {
+            document.getElementById("ranged_alt").style.visibility = "visible";
+        }
         else {
             document.getElementById("type").style.visibility = "hidden";
         }
@@ -19,7 +22,7 @@
         item = item.trim();
         var result = false;
         var minerals = ["Iron", "Steel", "Gargonite", "Adron", "Yeqdon", "Frajrite"];
-        var items = ["Sword", "Spear", "Dagger", "Shield", "Platebody", "Platelegs", "Helm"];
+        var items = ["Sword", "Spear", "Dagger", "Shield", "Platebody", "Platelegs", "Helm", "Arrows"];
         // Check out if the $item matches $mineral and $item
         var item_array = item.split(" ");
         console.log(item_array);
@@ -43,13 +46,23 @@
         else {
             hand = false;
         }
-        var data = "model=Armory" + "&method=wearArmor" + "&warrior_id=" + warrior_id + "&item=" + item  + "&hand=" + hand;
+        var rangedAmount = document.getElementById("ranged_alt");
+        var amount;
+        if(rangedAmount.style.visibility == "visible") {
+            amount = rangedAmount.querySelectorAll("input")[0].value;
+        }
+        else {
+            amount = false;
+        }
+        var data = "model=Armory" + "&method=wearArmor" + "&warrior_id=" + warrior_id + "&item=" + item  + "&hand=" +
+                    hand + "&amount=" + amount;
         ajaxP(data, function(response) {
+            console.log(response);
             if(response[0] != false) {
-                console.log(response[1]);
                 document.getElementById("selected").innerHTML = "";
-                updateInventory('armory');
+                document.getElementById("ranged_alt").children[1].value = 1;
                 document.querySelectorAll(".armory_view")[warrior_id -1].innerHTML = response[1];
+                updateInventory('armory', true);
             }
         }, false);
     }
@@ -67,10 +80,10 @@
             if(response[0] != false) {
                 document.getElementsByClassName("armory_view")[warrior_id - 1].innerHTML = response[1];
                 updateInventory('armory');
+                addSelectEvent();
             }
         });
     }
-    
     function updatePage() {
         var data = "model=Armory" + "&method=getData";
         ajaxJS(data, function(response) {

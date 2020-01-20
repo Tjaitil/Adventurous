@@ -29,7 +29,7 @@
 }
 .left_hand {
     top: 135px;
-    left: 20px;
+    left: 130px;
 }
 .body {
     top: 135px;
@@ -37,7 +37,7 @@
 }
 .right_hand {
     top: 135px;
-    left: 130px;
+    left: 20px;
 }
 .legs {
     top: 190px;
@@ -50,6 +50,9 @@
 #type {
     visibility: hidden;
 }
+#ranged_alt {
+    visibility: hidden;
+}
 #put_on {
     width: 100px;
     border: 1px solid red;
@@ -57,10 +60,4 @@
 }
 #selected {
     margin: 0 auto;
-}
-.stockpile_item, .inventory_item {
-    display: inline-block;
-    float: left;
-    width: 100px;
-    position: relative;
 }

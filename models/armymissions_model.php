@@ -23,7 +23,6 @@
             $this->db->closeConn();
             return $data;
         }
-        
         public function getCountdown() {
             $sql = "SELECT mission_countdown, mission FROM warrior WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);
@@ -34,45 +33,38 @@
             $datetime = new DateTime($row['mission_countdown']);
             $date = date_timestamp_get($datetime);
             $this->db->closeConn();
+            
             js_echo(array($date, $row['mission']));
         }
-        
         public function getWarriors() {
-            $warrior_id = array();
-            $warrior_id[0] = $this->username;
-            $sql = "SELECT warrior_id, type FROM warriors WHERE fetch_report = '0' AND mission = '0' AND username=:username";
+            $warriors = array();
+            
+            $sql = "SELECT w.warrior_id, w.type, wl.stamina_level, wl.technique_level, wl.precision_level, wl.strength_level
+                            FROM warriors as w
+                            INNER JOIN warrior_levels as wl ON wl.warrior_id = w.warrior_id AND wl.username = w.username
+                            WHERE w.mission=0 AND w.training_type='none' AND w.username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
             $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $warriors = array();
-            if($stmt->rowCount() > 0) {
-                foreach($row as $key) {
-                    array_push($warrior_id, $key['warrior_id']);
-                }
-                $in  = str_repeat('?,', count($warrior_id) - 2) . '?';
-                $sql = "SELECT warrior_id, stamina_level, technique_level, precision_level, strength_level FROM warrior_levels
-                WHERE username= ? AND warrior_id IN ($in) ";
-                $stmt = $this->db->conn->prepare($sql);
-                $stmt->execute($warrior_id);
-                $row2 = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    
+            $query_array = array_column($row, 'warrior_id');
+            array_unshift($query_array, $this->username);
+            $in  = str_repeat('?,', count($query_array) - 2) . '?';
                 
-                $sql = "SELECT
-                        (SELECT SUM(attack) FROM smithy_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS attack,
-                        (SELECT SUM(defence) FROM smithy_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS defence
-                        FROM warrior_armory
-                        WHERE username=:username";
-                $stmt = $this->db->conn->prepare($sql);
-                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                $param_username = $this->username;
-                $stmt->execute();
-                $row3 = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $this->db->closeConn();
+            $sql = "SELECT
+                    (SELECT SUM(attack) FROM smithy_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS attack,
+                    (SELECT SUM(defence) FROM smithy_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS defence
+                    FROM warrior_armory
+                    WHERE username= ? AND warrior_id IN ($in)";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->execute($query_array);
+            $row2 = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $this->db->closeConn();
                 
-                foreach($row2 as $key => $value) {
-                    array_push($warriors, array_merge($row[$key], $row2[$key], $row3[$key]));
-                }
+            foreach($row2 as $key => $value) {
+                array_push($warriors, array_merge($row[$key], $row2[$key]));
             }
             get_template('warrior_select', $warriors, true);
         }

@@ -22,7 +22,7 @@
         public function toggleInvite() {
             $sql = "SELECT invite_only FROM adventures WHERE adventure_leader=:adventure_leader";
             $stmt = $this->db->conn->prepare($sql);
-            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $stmt->bindParam(":adventure_leader", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
             if(!$stmt->rowCount() > 1) {
@@ -50,19 +50,19 @@
             }
             try {
                 $this->db->conn->beginTransaction();
-                $sql = "INSERT INTO adventures (adventure_leader, difficulty, location, {$this->session['profiency']}, invite_only)
-                        VALUES (:adventure_leader, :difficulty, :location, :profiency, :invite_only)";
+                $sql = "INSERT INTO adventures (adventure_leader, difficulty, location, {$this->session['profiency']}, other_invite)
+                        VALUES (:adventure_leader, :difficulty, :location, :profiency, :other_invite)";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":adventure_leader", $param_adventure_leader, PDO::PARAM_STR);
                 $stmt->bindParam(":difficulty", $param_difficulty, PDO::PARAM_STR);
                 $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
                 $stmt->bindParam(":profiency", $param_profiency, PDO::PARAM_STR);
-                $stmt->bindParam(":invite_only", $param_invite_only, PDO::PARAM_INT);
+                $stmt->bindParam(":other_invite", $param_other_invite, PDO::PARAM_INT);
                 $param_adventure_leader = $this->username;
                 $param_difficulty = $this->adventure_data['difficulty'];
                 $param_location = $this->adventure_data['location'];
                 $param_profiency = $this->username;
-                $param_invite_only = $this->adventure_data['invite_only'];
+                $param_other_invite = $this->adventure_data['other_invite'];
                 $stmt->execute();
                 $this->adventure_data['adventure_id'] = $this->db->conn->lastInsertId();
                 
@@ -215,7 +215,6 @@
                     return false;
                 }
                 $row3 = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                var_dump($row3);
                 $item = $row3[0]['type'] . ' warrior';
             }
         
@@ -305,7 +304,7 @@
                 $string = "You have provided %s warriors";
                 $this->gameMessage(sprintf($string, $quantity), true);
             }
-            echo "#";
+            echo "|";
             get_inventory($this->db->conn, $this->username);
             $sql = "SELECT role, required, amount, provided, status FROM adventure_requirements WHERE adventure_id=:adventure_id AND
             role IN ('farmer', 'miner', 'trader', 'warrior')
@@ -315,7 +314,23 @@
             $param_adventure_id = $row['adventure_id'];
             $stmt->execute();
             $requirements = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if(count($trader_requirement) > 0) {
+                $location = $data['info']['location'];
+                $sql = "SELECT {$location} FROM diplomacy WHERE username=:username";
+                $stmt = $this->db->conn->prepare($sql);
+                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                $param_username = $data['info']['trader'];
+                $stmt->execute();
+                $row = $stmt->fetch(PDO::FETCH_NUM);
+                $data['trader_diplomacy'] = $row[0];
+                
+                $trader_index = array_keys($trader_requirement);
+                $trader_requirement = array_values($trader_requirement);
+                $trader_requirement[0]['provided'] = $data['trader_diplomacy'];
+                $data['requirements'][$trader_index[0]] = $trader_requirement[0];
+            }
             get_template('requirements', $requirements, true);
+            echo "|";
             if($route === 'warrior') {
                 $sql = "SELECT w.warrior_id, w.type, wl.stamina_level, wl.technique_level, wl.precision_level, wl.strength_level
                         FROM warriors as w

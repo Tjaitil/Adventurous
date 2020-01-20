@@ -21,7 +21,7 @@
             <div class="levels">
                 <p class="countdown"></p>
                 <ul>
-                    <li><p>Technique_level <?php echo $key['technique_level'];?></p>
+                    <li><p>Technique level <?php echo $key['technique_level'];?></p>
                         <div class="skill_bar">
                             <div class="skill_bar2">
                         

@@ -76,7 +76,7 @@
         }
     }
     function calculate() {
-        var form = document.getElementById("calc_form").children[0].children;
+        /*var form = document.getElementById("calc_form").children[0].children;
         console.log(form);
         var form_data = {};
         for(var i = 0; i < form.length; i++) {
@@ -93,9 +93,13 @@
                 continue;
             }
             form_data[form[i].name] = form[i].value;
-        }
-        var data = "model=CombatCalculator" + "&method=calculate" + "&form_data=" + JSON.stringify(form_data);
+        }*/
+        var form_data = {};
+        form_data['warriors'] = ["1", "2", "3"];
+        form_data['daqloon'] = 3;
+        var data = "model=CombatCalculator" + "&method=calculate" + "&form_data=" + JSON.stringify(form_data) + "&route=" + "db";
         ajaxP(data, function(response) {
+            console.log(response);
             if(response[0] !== false) {
                 console.log(response[1]);
                 show('calculator');

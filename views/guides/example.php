@@ -1,7 +1,7 @@
 <h3 class="guide_title"> Profiencies </h3>
 <div id="content_table">
     <ol>
-    <?php $contents = array();
+    <?php $contents = array("");
     for($i = 0; $i < count($contents); $i++): ?>
         <li><a href="#<?php echo $contents[$i];?>"><?php echo $contents[$i];?></a></li>
     <?php endfor;?>

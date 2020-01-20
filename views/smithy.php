@@ -14,17 +14,17 @@
             <h3 class="page_title"> Smithy </h3>
             <div id="smith">
                 <div id="minerals">
-                    <img src="<?php echo constant('ROUTE_IMG') . 'iron.png';?>"
+                    <img src="<?php echo constant('ROUTE_IMG') . 'iron ore.png';?>"
                     class="minerals" title="iron" onclick="showMineral('iron', this);" />
-                    <img src="<?php echo constant('ROUTE_IMG') . 'steel.png';?>"
+                    <img src="<?php echo constant('ROUTE_IMG') . 'steel ore.png';?>"
                     class="minerals" title="steel" onclick="showMineral('steel', this);" />
-                    <img src="<?php echo constant('ROUTE_IMG') . 'gargonite.png';?>"
+                    <img src="<?php echo constant('ROUTE_IMG') . 'gargonite ore.png';?>"
                     class="minerals" title="gargonite" onclick="showMineral('gargonite', this);" />
-                    <img src="<?php echo constant('ROUTE_IMG') . 'adron.png';?>"
+                    <img src="<?php echo constant('ROUTE_IMG') . 'adron ore.png';?>"
                     class="minerals" title="adron" onclick="showMineral('adron', this);" />
-                    <img src="<?php echo constant('ROUTE_IMG') . 'yeqdon.png';?>"
+                    <img src="<?php echo constant('ROUTE_IMG') . 'yeqdon ore.png';?>"
                     class="minerals" title="yedqon" onclick="showMineral('yeqdon', this);"/>
-                    <img src="<?php echo constant('ROUTE_IMG') . 'frajrite.png';?>"
+                    <img src="<?php echo constant('ROUTE_IMG') . 'frajrite ore.png';?>"
                     class="minerals" title="frajrite" onclick="showMineral('frajrite', this);"/>
                 </div>
                 <?php

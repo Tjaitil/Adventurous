@@ -1,20 +1,5 @@
     if(document.getElementById("inventory") != null) {
-        var figures = document.getElementById("inventory").querySelectorAll('figure');
-            // ...
-            figures.forEach(function(element) {
-              // ... code code code for this one element
-                element.addEventListener('click', function() {
-                    var location = window.location.toString();
-                    if(location.indexOf("market") == -1) {
-                        select(element);
-                        show_title(element, false);   
-                    }
-                    else {
-                        select_i();
-                        show_title(element, false);
-                    }
-                });
-            });
+        addSelectEvent(false);
     }
     function select(element) {
         var img = element.cloneNode(true);
@@ -29,7 +14,6 @@
             toggleOption();
         }
     }
-    
     function select_i() {
         var element = event.target.closest("figure");
         toggleType();
@@ -45,4 +29,19 @@
         var parent = document.getElementById("selected");
         parent.innerHTML = "";
         parent.appendChild(img);
+    }
+    function addSelectEvent() {
+        var figures = document.getElementById("inventory").querySelectorAll('figure');
+        figures.forEach(function(element) {
+            element.addEventListener('click', function() {
+                var location = window.location.toString();
+                if(location.indexOf("market") == -1) {
+                    console.log("add");
+                    select(element);
+                }
+                else {
+                    select_i();
+                }
+            });
+        });
     }

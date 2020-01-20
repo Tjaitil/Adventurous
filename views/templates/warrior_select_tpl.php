@@ -1,3 +1,4 @@
+<div id="warriors_container">
 <?php if(!count($data) > 0):?>
     <p> No warriors available!</p>
 <?php endif;?>
@@ -7,9 +8,6 @@
             <img src="<?php echo constant('ROUTE_IMG') . $key['type'];?>.png" />
             <p> Attack: <?php echo ($key['attack'] == null) ? 10 : $key['attack'] + 10;?></p>
             <p> Defence: <?php echo ($key['defence'] == null) ? 12 : $key['defence'] + 12;?></p>
-            <figcaption>
-                <span></span>
-            </figcaption>
             <figure>
                 <img src="<?php echo constant('ROUTE_IMG') . 'stamina_icon.png';?>" />
                 <span class="skill_level"><?php echo $key['stamina_level'];?></span>
@@ -27,6 +25,8 @@
                 <span class="skill_level"><?php echo $key['precision_level'];?></span>
             </figure>
         </figure>
+        </br>
         <input type="checkbox" />
     </div>
 <?php endforeach;?>
+</div>

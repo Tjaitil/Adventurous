@@ -22,6 +22,11 @@
             $url = $url;
         } ?>
         <p> Inventory: </p>
+        <div id="item_tooltip">
+            <ul>
+                <li></li>
+            </ul>
+        </div>
 <?php
         switch($url):
         case 'stockpile':
@@ -34,22 +39,10 @@
                 <span class="item_amount"><?php echo amount($key['amount']);?></span>
             </div>
         <?php endforeach; break;?>
-        <?php  
-            case 'armory':
-            case 'adventures': ?>
-            <?php foreach($_SESSION['gamedata']['inventory'] as $key): ?>
-                <div class="inventory_item">    
-                    <figure>
-                        <img src="<?php echo constant('ROUTE_IMG') . $key['item'] . '.jpg';?>" />
-                        <figcaption class="tooltip"><?php echo ucwords($key['item']);?></figcaption>
-                    </figure>
-                    <span class="item_amount"><?php echo amount($key['amount']);?></span>
-                </div>
-            <?php endforeach; break;?>
         <?php default: ?>
         <?php foreach($_SESSION['gamedata']['inventory'] as $key): ?>
             <div class="inventory_item">
-                <figure onclick="show_title(this, false);">
+                <figure>
                     <img src="<?php echo constant('ROUTE_IMG') . $key['item'] . '.png';?>" />
                     <figcaption class="tooltip"><?php echo ucwords($key['item']); ?></figcaption>
                 </figure>

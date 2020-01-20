@@ -25,7 +25,7 @@
         
         myoffersListeners();
         
-        setInterval(intervalUpdate, 10000);
+        /*setInterval(intervalUpdate, 10000);*/
         document.getElementById("item_srch").addEventListener('keyup', chk_me);
         document.getElementById("s_item").addEventListener('keyup', chk_me);
     };
@@ -58,9 +58,10 @@
     function toggleType() {
         var div = document.getElementById("form_cont");
         div.style.display = "block";
-        console.log(event.target.innerText);
+        var select = document.getElementById("form_select");
+        var type = select.children[select.selectedIndex].innerText;
         var item_b  = document.getElementById("item_b");
-        if(event.target.innerText === "Sell" || event.target.innerText == "") {
+        if(type === "Sell" || type.length == 0) {
             item_b.style.display = "none";
             div.children[1].value = "Sell";
         }

@@ -14,10 +14,10 @@
     foreach($data['stockpile'] as $key): ?>
         <div class="stockpile_item" onpointerdown="show_menu();">
             <figure>
-                <img src="<?php echo constant('ROUTE_IMG') . $key['item'] . '.png';?>"/>
+                <img src="<?php echo constant('ROUTE_IMG') . trim(explode('(', $key['item'])[0]). '.png';?>"/>
                 <figcaption class="tooltip"><?php echo ucwords($key['item']); ?></figcaption>
             </figure>
-            <span id="item_amount"><?php echo amounts($key['amount']);?></span>
+            <span class="item_amount"><?php echo amounts($key['amount']);?></span>
         </div>
     <?php endforeach; ?>
     <p><?php echo count($data['stockpile']), " / 60"?></p>

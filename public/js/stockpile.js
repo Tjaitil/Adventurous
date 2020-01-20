@@ -3,11 +3,13 @@
     var method = false;
     
     function show_menu() {
+        console.log("show_menu");
         // Show menu above the item;
         clearTimeout(timeID.pop());
         var element = event.target.closest("div");
         var item = element.getElementsByTagName("figcaption")[0].innerHTML;
         var menu = document.getElementById("stck_menu");
+        // Insert item name at the first li
         menu.children[0].children[0].innerHTML = item;
         menu.style.visibility = "visible";
         // Declare menu top by measuring the positon from top of parent and also if inventory/stockpile is scrolled
@@ -15,6 +17,7 @@
         menu.children[0].style.top = menuTop + "px";
         menu.children[0].style.left = element.offsetLeft + "px";
         var lis = menu.children[0].children;
+        // Variable for holding the querySelectorAll("LI");
         var liN;
         if(element.className == 'inventory_item') {
             for(var i = 1; i < (lis.length - 1); i++) {

@@ -10,7 +10,7 @@
         }
         public function getMessages() {
             $data = array();
-            $sql = "SELECT id, title, sender, receiver, date, message_read FROM messages
+            $sql = "SELECT id, title, sender as receiver, date, message_read FROM messages
                     WHERE receiver=:username ORDER BY date DESC LIMIT 8";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
@@ -29,7 +29,7 @@
             return $data;
         }
         public function showMessage($message_id) {
-            $sql = "SELECT message_read, title, sender, message, date FROM messages WHERE id=:id";
+            $sql = "SELECT message_read, title, sender, date, message FROM messages WHERE id=:id";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":id", $param_id, PDO::PARAM_STR);
             $param_id = $message_id;
@@ -115,6 +115,16 @@
             echo "#";
             $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
             get_template("messages", $row, true);
+        }
+        public function checkMessages() {
+            $sql = "SELECT COUNT(message_read) FROM messages WHERE message_read = 0 AND receiver=:username";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_username = $this->username;
+            $stmt->execute();
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            echo $row['COUNT(message_read)'];
         }
     }
 ?>

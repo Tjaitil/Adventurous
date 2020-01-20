@@ -17,10 +17,19 @@
             <button onclick="show('history');"> History </button>
             <div id="new_off">
                 <form id="offer_form">
+                    <label for="type"> Buy/Sell: </label>
+                    <select id="form_select" name="type" onchange="toggleType();">
+                        <option selected="selected">  </option>
+                        <option value="Buy"> Buy </option>
+                        <option value="Sell"> Sell </option></br>
+                    </select>
                     <div id="form_cont">
                         <label for="type"> Offer type: </label>
-                        <input type="text" name="type" />
+                        <input type="text" name="type" readonly />
                         <div id="item">
+                            <div id="selected">
+                            
+                            </div>
                             <input type="text" id="item_name" name="item" placeholder="Item Name" readonly />
                         </div>
                         <div id="form_inputs">
@@ -49,9 +58,9 @@
                     <caption> My offers </caption>
                     <thead>
                         <tr>
-                            <td> Offer type: </td>
-                            <td> Item: </td>
-                            <td> Amount: </td>
+                            <td> Offer type </td>
+                            <td> Item </td>
+                            <td> Amount each </td>
                             <td> Progress </td>
                             <td </td>
                             <td></td>
@@ -65,20 +74,21 @@
                     <caption> Browse offers </caption>
                     <thead>
                         <tr>
-                            <td colspan="4"><button id="sch_button"> Back to offers </button>
+                            <td colspan="5"><button id="sch_button"> Back to offers </button>
                                 <input id="s_item" type="text" name="item" placeholder="Search for item" /></td>
                         </tr>
                         <tr>
-                            <td> Item: </td>
-                            <td> Quantity: </td>
-                            <td> Price each: </td>
-                            <td> User: </td>
+                            <td> Item </td>
+                            <td> Quantity </td>
+                            <td> Price each </td>
+                            <td> User </td>
+                            <td> </td>
                         </tr>
                     </thead>
                     <?php get_template('offers', $this->data['offers']);?>
                     <tfoot>
                         <tr>
-                            <td colspan="4"><button class="previous"> < Prev </button><button class="next"> Next > </button></td>
+                            <td colspan="5"><button class="previous"> < Prev </button><button class="next"> Next > </button></td>
                         </tr> 
                     </tfoot>
                 </table>

@@ -6,12 +6,27 @@ function tooglePage() {
     var data;
     var table;
     var data_number;
-    switch(type) {
+    var page;
+    var type;
+    if(event.target.indexOf("Next") != -1) {
+        type = "Next";
+    }
+    else {
+        type = "Prev";   
+    }
+    switch(page) {
         case 'farmer':
             data = "model=highscores" + "&method=";
             break;
-        case 'offers':
+        case 'market':
             data = "";
+            table = document.getElementById("offers").children[0];
+            break;
+        case 'highscores':
+            table = event.target.closest("div").id.trim();
+            xp = table.children[1].lastChild.children[2].innerHTML;
+            
+            data = "model=highscores" + "&method=getNextPage" + "&skill=" + table + "&xp" + xp;
             break;
     }
     ajaxG(data, function(response) {

@@ -54,7 +54,7 @@
             }
             $this->adventureData['difficulty'] = $_POST['difficulty'];
             $this->adventureData['location'] = $_POST['location'];
-            $this->adventureData['invite_only'] = (isset($_POST['invite_only'])) ? 1 : 0;
+            $this->adventureData['other_invite'] = (isset($_POST['other_invite'])) ? 1 : 0;
             
             $this->model->newAdventure($this->adventureData);
         }
