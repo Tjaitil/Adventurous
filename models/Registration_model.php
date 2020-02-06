@@ -1,5 +1,5 @@
 <?php
-    class registration_model extends model {
+    class Registration_model extends model {
         
         function __construct () {
             parent::__construct();

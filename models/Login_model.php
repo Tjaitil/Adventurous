@@ -7,7 +7,6 @@
         function __construct() {
             parent::__construct();
         }
-        
         public function checkUser($username, $password) {
             $sql = "SELECT username, password FROM users WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);

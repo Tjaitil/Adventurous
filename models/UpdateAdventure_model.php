@@ -274,6 +274,7 @@
             }
             $this->adventure_data['user_xp'] = $xp_data['user_xp'];
             $this->adventure_data['role'] = $role;
+            // get_template to show user
             get_template('adventure_rewards', array('adventure_data' => $this->adventure_data,
                                                     'rewards' => $rewards,
                                                     'statistics' => $this->battle_statistics,

@@ -9,7 +9,7 @@
         }
         
         public function index() {
-            $this->loadModel('adventures', true);
+            $this->loadModel('Adventures', true);
             $this->data = $this->model->getData();
             /*if($this->data['current_adventure']['current'] != 0) {
                 $this->calculateContribution();

@@ -13,6 +13,15 @@
         if (i < 10) {i = "0" + i;}
         return i;
     }
+    function addShowTitle() {
+        var figures = document.getElementById("inventory").querySelectorAll("figure");
+        figures.forEach(function(element) {
+            // ... code code code for this one element
+              element.addEventListener('click', function() {
+                  show_title();
+              });
+        });   
+    }
     window.addEventListener("load", function() {
         var log = document.getElementById("log");
         if(log != null) {
@@ -23,19 +32,13 @@
                console.log("scroll");
                document.getElementById("item_tooltip").style.visibility = "hidden";
             });
-            var figures = document.getElementById("inventory").querySelectorAll("figure");
-            figures.forEach(function(element) {
-              // ... code code code for this one element
-                element.addEventListener('click', function() {
-                    show_title();
-                });
-            });
+            addShowTitle();
         }
         clock();
         checkMessages();
     });
     function checkMessages() {
-        var data = "model=messages" + "&method=checkMessages";
+        var data = "model=Messages" + "&method=checkMessages";
         ajaxG(data, function(response) {
            console.log(response[1]);
             if(response[1] > 0) {
@@ -89,22 +92,63 @@
         ajaxRequest.send();
     }
     /*window.addEventListener("load", getgMessage, false);*/
-    function openNews(news) {
+    function openNews(content) {
         document.getElementById("news").style.visibility = "visible";
         document.getElementById("news_content").style.visibility = "visible";
-        if(typeof news == 'object') {
-            document.getElementById("news_content").appendChild(news);
+        if(typeof content == 'object') {
+            
+            if(Object.keys(content).length > 1) {
+                for(var i = 0; i < Object.keys(content).length; i++) {
+                    document.getElementById("news_content").appendChild(content[i]);
+                }
+            }
         }
         else {
-            document.getElementById("news_content").innerHTML += news;
+            document.getElementById("news_content").innerHTML += content;
         }
     }
     function closeNews() {
-        console.log('hello');
         var news = document.getElementById("news");
         news.innerHTML = "";
         news.style = "visibility: hidden;";
         document.getElementById("news_content").style.visibility = "hidden";
+    }
+    function alertMessage(page, pIdentifier = false) {
+        // pIdentifer is used to identify which content to append if this function is used multiple times on the same page
+        var subButton = document.createElement("button");
+        subButton.appendChild(document.createTextNode("Submit"));
+        subButton.setAttribute("id", "alert_submit");
+        var cancButton = document.createElement("button");
+        cancButton.appendChild(document.createTextNode("Cancel"));
+        cancButton.setAttribute("id", "alert_cancel");
+        
+        var content = {};
+        switch(page) {
+            case 'citycentre':
+                var link = document.createElement("a");
+                link.appendChild(document.createTextNode("here"));
+                link.setAttribute("href", "/gameguide/profiency");
+                console.log(link);
+                var p = document.createElement("p");
+                var message =
+                'Beware that changing profiency may result in lowering levels </br> and no access to profiency specific activites';
+                var message2 = '</br> Read more on </br>';
+                var message3 = "Are you sure you want to continue?";
+                p.innerHTML = message + message2;
+                p.appendChild(link);
+                p.innerHTML += '</br>' + message3;
+                content[0] = p;
+                break;
+        }
+        content[1] = subButton;
+        content[2] = cancButton;
+        openNews(content);
+        document.getElementById("alert_submit").addEventListener("click", function() {
+            changeProfiency();
+            closeNews();
+        });
+        document.getElementById("alert_cancel").addEventListener("click", closeNews);
+        document.getElementById("cont_exit").addEventListener("click", closeNews);
     }
     function get_xp(skill, element) {
         var tooltip = element.children[1];
@@ -158,6 +202,7 @@
                 if(addSelect !== false) {
                     addSelectEvent();
                 }
+                addShowTitle();
             }
         };
         ajaxRequest.open('GET', "handlers/handlerf.php?file=inventory" + "&page=" + page);
@@ -166,6 +211,7 @@
     var timeID = [];
     function show_title() {
         var element = event.target.closest("div");
+        console.log(element);
         var item = element.getElementsByTagName("figcaption")[0].innerHTML;
         var menu = document.getElementById("item_tooltip");
         // Insert item name at the first li
@@ -317,18 +363,3 @@
         ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         ajaxRequest.send(data);
     }
-    /*function alertMessage(page, pIdentifier = false) {
-        // pIdentifer is used to identify which content to append if this function is used multiple times on the same page
-        var button = document.createElement("button");
-        button.appendChild(document.createTextNode("Submit"));
-        button.setAttribute("id", "alert_submit");
-        var content = document.getElementById("alert_content");
-
-        var page;
-        switch(page) {
-            case 'armory':
-                var document
-                break;
-        }
-        content.appendChild(button);
-    }*/

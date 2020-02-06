@@ -1,5 +1,5 @@
 <?php
-    class armyMissions_model extends model {
+    class ArmyMissions_model extends model {
         public $username;
         public $session;
         
@@ -54,8 +54,8 @@
             $in  = str_repeat('?,', count($query_array) - 2) . '?';
                 
             $sql = "SELECT
-                    (SELECT SUM(attack) FROM smithy_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS attack,
-                    (SELECT SUM(defence) FROM smithy_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS defence
+                    (SELECT SUM(attack) FROM armory_items_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS attack,
+                    (SELECT SUM(defence) FROM armory_items_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS defence
                     FROM warrior_armory
                     WHERE username= ? AND warrior_id IN ($in)";
             $stmt = $this->db->conn->prepare($sql);

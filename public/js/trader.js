@@ -9,9 +9,9 @@
     function pickUp() {
         var data;
         if(window.location.href.indexOf("townhall") != -1) {
-            data = "model=trader" + "&method=pickUp" + "&favor=true";
+            data = "model=Trader" + "&method=pickUp" + "&favor=true";
         }
-        data = "model=trader" + "&method=pickUp";
+        data = "model=Trader" + "&method=pickUp";
         ajaxP(data, function(response) {
             if(response[0] != false) {
                 var responseText = response[1].split("|");
@@ -25,9 +25,9 @@
     function deliver() {
         var data;
         if(window.location.href.indexOf("townhall") != -1) {
-            data = "model=trader" + "&method=deliver" + "&favor=true";
+            data = "model=Trader" + "&method=deliver" + "&favor=true";
         }
-        data = "model=trader" + "&method=deliver";
+        data = "model=Trader" + "&method=deliver";
         ajaxP(data, function(response) {
             console.log(response);
             if(response[0] != false) {

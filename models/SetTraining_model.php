@@ -14,7 +14,6 @@
             unset($stmt);
             return $data;
         }
-        
         public function setTraining($POST) {
             // $POST variable holds the post data
             // This function is called from an AJAX request

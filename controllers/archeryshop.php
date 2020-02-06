@@ -1,15 +1,15 @@
 <?php
-    class workforcelodge extends controller  {
+    class ArcheryShop extends controller {
         public $data = array();
         
         function __construct() {
             parent::__construct();
         }
-        
         public function index() {
-            $this->loadModel('Workforcelodge', true);
+            $this->loadModel('ArcheryShop', true);
             $this->data = $this->model->getData();
-            $this->render('workforcelodge', 'Wokforce Lodge', $this->data);
+            $this->render('archeryshop', 'Archery Shop', $this->data);
         }
+        
     }
 ?>

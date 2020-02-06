@@ -1,9 +1,10 @@
 #action_div {
-    width: 50%;
+    width: 51%;
     max-width: 407px;
     border: 5px double #251a0e;
     float: left;
     background-color: #f2e6d9;
+    margin-left: 10%;
 }
 #action_div::after {
   content: "";

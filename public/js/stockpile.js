@@ -75,7 +75,7 @@
         if(quantity == false) {
             return false;
         }
-        var data = "model=stockpile" + "&method=updateInventory" + "&item=" + item +
+        var data = "model=Stockpile" + "&method=updateInventory" + "&item=" + item +
                          "&insert=" + '0' + "&quantity=" + quantity;
         ajaxP(data, function(response) {
             console.log(response[1]);
@@ -94,7 +94,7 @@
         if(quantity == false) {
             return false;
         }
-        var data = "model=stockpile" + "&method=updateInventory" + "&item=" + item + "&insert=" + '1' + "&quantity=" + quantity;
+        var data = "model=Stockpile" + "&method=updateInventory" + "&item=" + item + "&insert=" + '1' + "&quantity=" + quantity;
         ajaxP(data, function(response) {
             console.log(response[1]);
             if(response[0] !== false) {
@@ -117,7 +117,7 @@
     }
     function updatePage() {
         updateInventory('stockpile');
-        var data = "model=stockpile" + "&method=getStockpile";
+        var data = "model=Stockpile" + "&method=getStockpile";
         ajaxJS(data, function(response) {
             if(response[0] != false) {
                 document.getElementById("stockpile").innerHTML = response[1];

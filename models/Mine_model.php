@@ -1,5 +1,5 @@
 <?php
-    class mine_model extends model  {
+    class Mine_model extends model  {
         public $username;
         public $session;
         

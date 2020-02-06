@@ -1,5 +1,5 @@
 <?php
-    class newuser_model extends model {
+    class NewUser_model extends model {
         public $username;
         
         function __construct ($username) {

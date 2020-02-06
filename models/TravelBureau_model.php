@@ -1,5 +1,5 @@
 <?php
-    class travelbureau_model extends model {
+    class TravelBureau_model extends model {
         public $username;
         public $session;
         

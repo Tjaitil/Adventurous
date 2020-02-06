@@ -2,7 +2,7 @@
     function buyItem (item, shop) {
         this.item = item;
         this.shop = shop;
-        var data = "model=travelbureau" + "&method=buyItem" + "&item=" + item + "&shop=" + shop;
+        var data = "model=TravelBureau" + "&method=buyItem" + "&item=" + item + "&shop=" + shop;
         ajaxP(data, function(response) {
            if(response[0] != false) {
                 gameLog(response[1]);
@@ -12,7 +12,7 @@
     }
     
     function updateStock() {
-        var data = "model=travelbureau" + "&method=getData";
+        var data = "model=TravelBureau" + "&method=getData";
         ajaxG(data, function(response) {
             var data = response[1].split("#");
             document.getElementById("horse_shop").children[1].innerHTML = data[0];

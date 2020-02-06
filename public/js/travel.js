@@ -1,7 +1,7 @@
     window.addEventListener("load", countdown());
     function countdown() {
         document.getElementById("travel").innerHTML = "Travelling done";
-        var data = "model=travel" + "&method=checkCountdown";
+        var data = "model=Travel" + "&method=checkCountdown";
         ajaxJS(data, function(response) {
                 var responseText = response[1].split("|");
                 var time = responseText[0] * 1000;
@@ -25,7 +25,7 @@
         });
     }
     function travel(destination) {
-        var data = "model=travel" + "&method=getData" + "&destination=" + destination;
+        var data = "model=Travel" + "&method=getData" + "&destination=" + destination;
         ajaxP(data, function(response) {
            if(response[0] != false) {
                 countdown();
@@ -33,7 +33,7 @@
         });
     }
     function updateLocation(destination) {
-        var data = "model=travel" + "&method=updateLocation" + "&destination=" + destination;
+        var data = "model=Travel" + "&method=updateLocation" + "&destination=" + destination;
         ajaxP(data, function(response) {
             if(response[0] != false) {
                 if(location.href.indexOf("city") != -1) {

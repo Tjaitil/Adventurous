@@ -11,7 +11,6 @@
         }
         public function updateInventory($item, $quantity, $update = false, $unset = false) {
             // Function to update the players inventory in database and also session
-            
             $sql = "SELECT amount FROM inventory WHERE item=:item AND username=:username";  
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
@@ -21,6 +20,11 @@
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $count = $stmt->rowCount();
+            
+            if(count($this->session['inventory']) === 19) {
+                throw new Exception("This is an error! inv_amount");
+            }
+            
             if($count === 0 && $quantity > 0) {
                 // Insert new item into bank
                 $sql = "INSERT INTO inventory (username, item, amount) VALUES(:username, :item, :amount)";

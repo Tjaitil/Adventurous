@@ -1,5 +1,5 @@
 <?php
-    class trader_model extends model {
+    class Trader_model extends model {
         public $username;
         public $session;
         public $assignment_types;

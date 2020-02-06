@@ -75,7 +75,7 @@
                         $this->daqloonHit($daqloon, $warrior);
 
                         // If warrior is wounded it will not be able to hit
-                        if(isset($this->warriros[$i])) {
+                        if(isset($this->warriors[$i])) {
                             $this->warriorHit($daqloon, $warrior);
                         }
                     }
@@ -202,7 +202,6 @@
             $this->warriors[$this->warrior_i] = $warrior;
         }
         protected function warriorHit($daqloon, $warrior, $second = false, $number = false) {
-            
             $tech_min = (15 - $warrior['technique_level'] < 1) ? 1 :  15 - $warrior['technique_level'];
             if(rand(1, 100) <= $warrior['technique_level']) {
                 $this->battle_progress[] = "Attack missed from warrior " . $warrior['warrior_id'];
@@ -218,6 +217,7 @@
                 $warrior_hit = $warrior['attack'] - (0.025 * $daqloon['defence']);
                          - ($warrior['stamina_level'] - ($this->duration * 0.2)); //Hit damage decrease when they are fighting
                 $this->warriors['ammunition'] -= 1;
+                echo "Ammo: " . $this->warriors['ammunition'];
             }
             else if(!isset($warrior_hit)) {
                 $warrior_hit = $warrior['attack'] - (0.025 * $daqloon['defence']);
@@ -249,7 +249,6 @@
             }
         }
         public function getStatistics() {
-            print_r($this->battle_progress);
             $data = array('battle_progress' => $this->battle_progress, 'result'  => $this->battle_result,
                           'daqloon_damage' => array_sum($this->daqloon_damage), 'warrior_damage' => array_sum($this->warrior_damage),
                           'warrior_wounded' => count($this->warrior_status), 'daqloon_wounded' => count($this->daqloon_status),
@@ -307,9 +306,9 @@
             $warriors = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
             $sql = "SELECT warrior_id, helm, ammunition, left_hand, body, right_hand, legs, boots,
-                    (SELECT SUM(attack) FROM smithy_data WHERE item IN (helm, left_hand, body, right_hand, boots) AND item)
+                    (SELECT SUM(attack) FROM armory_items_data WHERE item IN (helm, left_hand, body, right_hand, boots) AND item)
                     AS attack,
-                    (SELECT SUM(defence) FROM smithy_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS defence
+                    (SELECT SUM(defence) FROM armory_items_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS defence
                     FROM warrior_armory
                     WHERE warrior_id IN ($in) AND username=?";
             $stmt = $this->db->conn->prepare($sql);

@@ -6,7 +6,7 @@
         }
         
         public function index () {
-            $this->loadModel('travelbureau', true);
+            $this->loadModel('TravelBureau', true);
             $this->data = $this->model->getData($_SESSION['gamedata']['location']);
             $this->render('travelbureau', 'Travel Bureau', $this->data);
         }

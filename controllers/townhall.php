@@ -7,7 +7,7 @@
         }
         public function index() {
             $this->checkLocation();
-            $this->loadModel('townhall', true);
+            $this->loadModel('TownHall', true);
             $this->data = $this->model->getData();
             /*$this->data['favor'] = $this->favorGenerate();*/
             $this->determineAssignment();

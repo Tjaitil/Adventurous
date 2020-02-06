@@ -1,5 +1,5 @@
 <?php
-    class tavern_model extends model {
+    class Tavern_model extends model {
         public $username;
         public $session;
         

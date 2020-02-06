@@ -1,11 +1,15 @@
 #show_adventure {
     display: none;
 }
+
 #pending_adventure {
     float: left;
     display: none;
 }
 #current_adventure {
+}
+#tabs {
+    margin: 5px 0px 0px 0px;
 }
 #new_adventure {
     display: none;
@@ -19,6 +23,9 @@
 }
 #invite span {
     margin-left: 5px;
+}
+#report {
+    margin: 5px 0px 0px 0px;
 }
 .error {
     color: red;
@@ -47,6 +54,7 @@
     /*background-color: #a6a6a6;*/
     background-color: #724e27;
     color: white;
+    margin-bottom: 5px;
 }
 #adventure_stats {
     float: left;

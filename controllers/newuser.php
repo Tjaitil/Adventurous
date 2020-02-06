@@ -17,12 +17,11 @@
         
         public function post() {
             if($_SERVER['REQUEST_METHOD'] === "POST") {
-                var_dump($_POST);
                 if(empty($_POST['profiency'])) {
                     $this->error['profiencyErr'] = "Please select a profiency!";
                 }
                 if(empty($this->error['profiencyErr'])) {
-                    $this->loadModel('newuser', true);
+                    $this->loadModel('NewUser', true);
                     $this->model->selectProfiency(trim($_POST['profiency']));
                     header("Location: /main");
                     exit();

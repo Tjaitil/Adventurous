@@ -16,7 +16,7 @@
         <div id="announcement"><button onclick="exit();">Exit</button></div>
         <section>
             <?php require(constant("ROUTE_VIEW") . 'layout.php');?>
-            <h3 class="page_title"> Armycamp </h3>
+            <h3 class="page_title"> Army camp </h3>
             <a href="/army-missions"> Missions</a>
             <a href="/armory"> Armory </a>
             <button type="button" onclick="show('overview');"> Training Overview </button>

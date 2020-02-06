@@ -1,5 +1,5 @@
 <?php
-    class talk_model extends model {
+    class Talk_model extends model {
         public $username;
         public $session;
         

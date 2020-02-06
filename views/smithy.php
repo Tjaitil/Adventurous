@@ -29,6 +29,17 @@
                 </div>
                 <?php
                     function generateTable($array) {
+                        
+                        // Generate thead and tr tags ?>
+                        <thead>
+                            <tr>
+                                <td> Item: </td>
+                                <td> Ores required: </td>
+                                <td> Cost: </td>
+                                <td></td>
+                            </tr>
+                        </thead>
+                    <?php
                         foreach($array as $key):
                         if(strpos($key['item'], 'arrows') === false): ?>
                         <tr>
@@ -58,69 +69,21 @@
                      <?php endif;endforeach;
                      };?>
                 <table id="iron">
-                    <thead>
-                        <tr>
-                            <td> Item: </td>
-                            <td> Ores required: </td>
-                            <td> Cost: </td>
-                            <td></td>
-                        </tr>
-                    </thead>
                     <?php generateTable($this->data['iron']);?>
                 </table>
                 <table id="steel">
-                    <thead>
-                        <tr>
-                            <td> Item: </td>
-                            <td> Ores required: </td>
-                            <td> Cost: </td>
-                            <td></td>
-                        </tr>
-                    </thead>
                     <?php generateTable($this->data['steel']);?>
                 </table>
                 <table id="gargonite">
-                    <thead>
-                        <tr>
-                            <td> Item: </td>
-                            <td> Ores required: </td>
-                            <td> Cost: </td>
-                            <td></td>
-                        </tr>
-                    </thead>
                     <?php generateTable($this->data['gargonite']);?>
                 </table>
                 <table id="adron">
-                    <thead>
-                        <tr>
-                            <td> Item: </td>
-                            <td> Ores required: </td>
-                            <td> Cost: </td>
-                            <td></td>
-                        </tr>
-                    </thead>
                     <?php generateTable($this->data['adron']);?>
                 </table>
                 <table id="yeqdon">
-                    <thead>
-                        <tr>
-                            <td> Item: </td>
-                            <td> Ores required: </td>
-                            <td> Cost: </td>
-                            <td></td>
-                        </tr>
-                    </thead>
                     <?php generateTable($this->data['yeqdon']);?>
                 </table>
                 <table id="frajrite">
-                    <thead>
-                        <tr>
-                            <td> Item: </td>
-                            <td> Ores required: </td>
-                            <td> Cost: </td>
-                            <td></td>
-                        </tr>
-                    </thead>
                     <?php generateTable($this->data['frajrite']);?>
                 </table>
             </div>

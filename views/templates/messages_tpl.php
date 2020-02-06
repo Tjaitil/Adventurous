@@ -4,6 +4,6 @@
             <td><a onclick="showMessage(<?php echo $key['id'];?>, this)"><?php echo $key['title']; ?></a></td>
             <td><?php echo ucfirst($key['receiver']); ?></td>
             <td><?php echo $key['date']; ?></td>
-            <td><img src="<?php echo $key['message_read'];?>.jpg"/></td>
+            <td><img src="<?php echo $key['message_read'] . '_read';?>.jpg"/></td>
         </tr>
 <?php endforeach;?>

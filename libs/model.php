@@ -3,10 +3,12 @@
         protected $db;
         protected $UpdateGamedata;
         protected $ArtefactModel;
+        protected $errorHandler;
         // $updateGamedata is the variable that holds updateGamedata_model if it is being instantiated with $this->loadModel from foo_model
         // $Artefact_model is the variable that holds updateGamedata_model if it is being instantiated with $this->loadModel from foo_model
         function __construct() {
             $this->includeDB();
+            $this->errorHandler = new errorhandler();
         }
         public function gameMessage($message, $ajax = false) {
             $date = '[' . date("H:i:s") . '] ';
@@ -20,7 +22,8 @@
             }
         }
         protected function reportError($file, $line, $error_message, $ajax = true,  $title = false) {
-            $message = "Error on: " . $file . ' Line ' . $line . ' ' . $error_message . ' ' . $ajax;
+            $message = "Error on: " . $file . ' Line ' . $line . ' ' . $error_message . ' ' . ' ajax= ' . $ajax;
+            var_dump($error_message);
             if($title === false) {
                 $title = 'FROM: <system@adventurous.no';
             }

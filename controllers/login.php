@@ -48,7 +48,7 @@
                     $this->error['loginfail'] = "Something went wrong, please try again later";
                 }
                 else if (!$this->model->status == false) {
-                    if (password_verify($this->password, $this->model->row['password'])) {
+                    if(password_verify($this->password, $this->model->row['password'])) {
                         $this->session->setSession($this->username, $loggedin = true);
                         if($this->model->profiency != "none") {
                             // If profiency is set redirect to main

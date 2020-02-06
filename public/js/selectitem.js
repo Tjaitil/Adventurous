@@ -36,7 +36,6 @@
             element.addEventListener('click', function() {
                 var location = window.location.toString();
                 if(location.indexOf("market") == -1) {
-                    console.log("add");
                     select(element);
                 }
                 else {

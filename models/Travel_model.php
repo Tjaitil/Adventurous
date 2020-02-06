@@ -1,5 +1,5 @@
 <?php
-    class travel_model extends model {
+    class Travel_model extends model {
         public $username;
         public $session;
         public $base;
@@ -86,7 +86,6 @@
             }
             $this->db->closeConn();
         }
-        
         public function calculateDistance($x1, $y1, $x2, $y2) {
             $tan1 = ($x1 - $x2);
             $tan2 = ($y1 - $y2);
@@ -94,7 +93,6 @@
             $speed = 10 / $this->speed_reduction;
             $this->time = $distance / $speed * 50;
        }
-       
         public function travel() {
             $this->time = intval($this->time);
             $date = date("Y-m-d H:i:s");
@@ -114,8 +112,7 @@
             $stmt->execute();
             $_SESSION['gamedata']['location'] = $param_location;
             $this->db->closeConn();
-       }
-       
+        }
         public function updateLocation($base, $destination, $db_countdown) {
             if($base === $destination) {
                 return false;

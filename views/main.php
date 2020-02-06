@@ -28,7 +28,8 @@
             <div id="profile">
                 <span id="profile_header"> Player Card</span></br>
                 <img id="profile_picture" src="" height="50%" width="74%" /></br>
-                <span id="profile_profiency"><?php echo ucfirst($_SESSION['gamedata']['profiency']); ?></span>
+                <span id="profile_profiency"><?php echo ucfirst($_SESSION['gamedata']['profiency']) . ' level '
+                                                . $_SESSION['gamedata']['profiency_level'];?></span>
                 <div id="skill_bar">
                     
                     <div id="skill_bar2">
@@ -36,7 +37,6 @@
                     </div>
                     <div id="skill_bar_progress"><span id="progress_value1"><?php echo $_SESSION['gamedata']['profiency_xp'];?></span>
                     &nbsp/&nbsp<span id="progress_value2"><?php echo $_SESSION['gamedata']['profiency_xp_nextlevel']; ?></span></div>
-                    <?php echo $_SESSION['gamedata']['profiency_level']; ?>
                 </div></br>
                 <a href="#"> View more profile details >></a>
                 <p id="demo"></p>

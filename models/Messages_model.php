@@ -1,5 +1,5 @@
 <?php
-    class messages_model extends model {
+    class Messages_model extends model {
         public $username;
         public $session;
         

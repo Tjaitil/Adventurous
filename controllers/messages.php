@@ -9,7 +9,7 @@
         }
         
         public function index() {
-            $this->loadModel('messages', true);
+            $this->loadModel('Messages', true);
             $this->data = $this->model->getMessages();
             $this->post();
             $this->renderWE('messages', 'Messages', $this->data, $this->error);

@@ -77,11 +77,19 @@ section table td {
     margin: 5px;
     float: left;
     width: 50%;
-    border: 9px inset #604706;
 }
 #my_offers tr {
     border: 1px solid black;
     background-color: #f2e6d9;
+}
+#my_offers tr:after {
+    content: "";
+    border: 2px solid red;
+    position: absolute;
+    left: 40px;
+    width: 45%;
+    height: 1px;
+    background-color: red;
 }
 #my_offers td {
     border: none;

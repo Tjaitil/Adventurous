@@ -19,7 +19,6 @@
         }
         
         public function changePassword($new_password) {
-        
             $sql = "UPDATE users SET password=:password WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":password", $param_password, PDO::PARAM_STR);

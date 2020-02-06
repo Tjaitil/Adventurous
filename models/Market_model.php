@@ -1,5 +1,5 @@
 <?php
-    class market_model extends model {
+    class Market_model extends model {
         public $username;
         public $session;
         

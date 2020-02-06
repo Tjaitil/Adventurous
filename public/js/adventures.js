@@ -31,7 +31,7 @@
         }
     };
     function getCountdown() {
-        var data = "model=adventures" + "&method=getCountdown";
+        var data = "model=Adventures" + "&method=getCountdown";
         ajaxJS(data, function(response) {
             if(response[0] != false) {
                 var data = response[1].split("|");
@@ -56,6 +56,7 @@
                         btn.addEventListener("click", updateAdventure);
                         document.getElementById("report").appendChild(btn);
                         document.getElementById("time").innerHTML = "Finished";
+                        document.getElementsByName("leave_adventure")[0].style.display = "none";
                     }
                     else if (distance < 0) {
                         clearInterval(x);
@@ -160,7 +161,7 @@
         }
     }
     function showAdventure(id) {
-        var data = "model=adventures" + "&method=getAdventure" + "&id=" + id;
+        var data = "model=Adventures" + "&method=getAdventure" + "&id=" + id;
         ajaxG(data, function(response) {
             if(response[0] != false) {
                 data = response[1].split("|");
@@ -193,7 +194,7 @@
         var div = document.getElementById("invite");
         var input = div.querySelectorAll("input")[0].value;
         var field = div.querySelectorAll("span")[0];
-        var data = "model=adventures" + "&method=checkUser" + "&username=" + input;
+        var data = "model=Adventures" + "&method=checkUser" + "&username=" + input;
         ajaxG(data, function(response) {
             if(response[0] != false) {
                 if(response[1] == "") {
@@ -298,7 +299,7 @@
         });
     }
     function leaveAdventure() {
-        var data = "model=adventures" + "&method=leaveAdventure";
+        var data = "model=Adventures" + "&method=leaveAdventure";
         ajaxP(data, function(response) {
             if(response[0] !== false) {
                 gameLog(response[1]);

@@ -181,9 +181,15 @@
             }
             $this->getData($js = true);
         }
-        public function healWarrior($type, $warriors, $item = false, $amount = false) {
+        public function healWarrior($POST) {
+            // $POST variable holds the post data
             // This function is called from an AJAX request from armycamp.js
             // Function to heal warrior with either item or set warrior on rest
+            $type = $POST['type'];
+            $warriors = $POST['warriors'];
+            $item = $POST['item'];
+            $amount = $POST['amount'];
+            
             $query_array = explode(",", $warriors);
             $in  = str_repeat('?,', count($query_array) - 1) . '?';
             $query_array[] = $this->username;

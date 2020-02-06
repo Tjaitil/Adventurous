@@ -166,7 +166,7 @@
         }
         var button = document.getElementById("sch_button");
         button.style.display = "initial";
-        var data = "model=market" + "&method=searchOffers" + "&item=" + item;
+        var data = "model=Market" + "&method=searchOffers" + "&item=" + item;
         ajaxG(data, function(response) {
             if(response[0] !== false) {
                 var table = document.getElementById("offers").children[0];
@@ -184,7 +184,7 @@
         var form = document.getElementById("offer_form");
         var JSON_data = JSONForm(form);
         
-        var data = "model=market" + "&method=newOffer" + "&JSON_data=" + JSON_data;
+        var data = "model=Market" + "&method=newOffer" + "&JSON_data=" + JSON_data;
         ajaxP(data, function(response) {
             if(response[0] != false) {
                 document.getElementById("offer_form").reset();
@@ -194,7 +194,7 @@
         });
     }
     function updatePage(part) {
-        var data = "model=market" + "&method=getData" + "&part=" + part;
+        var data = "model=Market" + "&method=getData" + "&part=" + part;
         ajaxG(data, function(response) {
             if(response[0] != false) {
                 var data = response[1].split("#");
@@ -233,7 +233,7 @@
             gameLog("ERROR: Select a amount");
             return false;
         }
-        var data = "model=market" + "&method=trade" + "&id=" + id  + "&amount=" + amount;
+        var data = "model=Market" + "&method=trade" + "&id=" + id  + "&amount=" + amount;
         ajaxP(data, function(response) {
             console.log(response);
             if(response[0] !== false) {
@@ -260,7 +260,7 @@
     }
     function cancelOffer() {
         var id = event.target.closest("TR").children[0].children[0].value;
-        var data = "model=market" + "&method=cancelOffer" + "&id=" + id;
+        var data = "model=Market" + "&method=cancelOffer" + "&id=" + id;
         ajaxP(data, function(response) {
             if(response[0] !== false) {
                 updateInventory('market');
@@ -270,7 +270,7 @@
     }
     function fetchItem() {
         var id = event.target.closest("TR").children[0].children[0].value;
-        var data = "model=market" + "&method=fetchItem" + "&id=" + id;
+        var data = "model=Market" + "&method=fetchItem" + "&id=" + id;
         ajaxP(data, function(response) {
             if(response[0] !== false) {
                 updateInventory('market');

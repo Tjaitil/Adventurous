@@ -1,5 +1,5 @@
 <?php
-    class townhall_model extends model {
+    class TownHall_model extends model {
         public $username;
         public $session;
         

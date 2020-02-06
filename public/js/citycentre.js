@@ -1,11 +1,14 @@
     window.addEventListener("load", function() {
        // Add events to buttons
-       document.getElementById("profiency").querySelectorAll("button")[0].addEventListener("click", changeProfiency);
+       document.getElementById("profiency").querySelectorAll("button")[0].addEventListener("click", function () {
+            alertMessage('citycentre');
+        });
        var keep_buttons = document.getElementById("keep").querySelectorAll("button");
        keep_buttons[0].addEventListener("click", changeArtefact);
        keep_buttons[1].addEventListener("click", newArtefact);
        document.getElementById("permits").querySelectorAll("button")[0].addEventListener("click", buyPermits);
        document.getElementById("efficiency").querySelectorAll("button")[0].addEventListener("click", upgradeEffiency);
+
     });
     
     
@@ -22,22 +25,18 @@
         }
     }
     function changeProfiency() {
-        var message = 'Beware that changing profiency may result in lowering levels \n and no access to profiency specific activites';
-        var link = '\n Read more on /gameguide/profiency \n Are you sure you want to continue?';
-        var conf = confirm(message + link);
-        if(conf !== true) {
+        var select = document.getElementById("profiency_select");
+        var val = select.value;
+        if(!val) {
+            gameLog("Please select a profiency!");
             return false;
         }
-        else {
-            var select = document.getElementById("profiency_select");
-            var val = select.value;
-            var data = "model=profiency" + "&method=changeProfiency" + "&newProfiency=" + val;
-            ajaxP(data, function(response) {
-                if(response[0] !== false) {
-                    gameLog(response[1]);
-                }       
-            });
-        }
+        var data = "model=Profiency" + "&method=changeProfiency" + "&newProfiency=" + val;
+        ajaxP(data, function(response) {
+            if(response[0] !== false) {
+                gameLog(response[1]);
+            }       
+        });
     }
     function changeArtefact() {
         var itemData = selectedCheck(false);

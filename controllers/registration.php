@@ -10,7 +10,7 @@
         }
         
         public function index() {
-            $this->loadModel('registration', false);
+            $this->loadModel('Registration', false);
             $this->post();
             $this->renderWE('registration', 'Registration', false, $this->error);
         }

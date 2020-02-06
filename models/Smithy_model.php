@@ -1,5 +1,5 @@
 <?php
-    class smithy_model extends model {
+    class Smithy_model extends model {
         public $username;
         public $session;
         
@@ -11,7 +11,7 @@
         }
         public function getData() {
             $data = array();
-            $sql = "SELECT item, amount_required, cost FROM smithy_data ORDER BY amount_required";
+            $sql = "SELECT item, mineral_required, cost FROM armory_items_data ORDER BY mineral_required";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->execute();
             $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -51,7 +51,7 @@
                 return false;
             }
             
-            $sql = "SELECT amount_required, level, cost FROM smithy_data WHERE item=:item";
+            $sql = "SELECT mineral_required, level, cost FROM armory_items_data WHERE item=:item";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
             $param_item = $item;
@@ -66,8 +66,16 @@
                 return false;
             }
             
-            $minerals_needed = $row2['amount_required'] * $amount;
-            if($row2['amount_required'] * $amount > $row[0]['amount']) {
+            if(strpos($item, 'arrows') !== false) {
+                $item_data = get_item($this->session, 'unfinished arrow');
+                if(!$item_data['amount'] < 5 || $item_data['amount'] < $amount) {
+                    $this->gameMessage("ERROR: You don't have enough unfinished arrows in your inventory", true);
+                    return false;    
+                }
+            }
+            
+            $minerals_needed = $row2['mineral_required'] * $amount;
+            if($row2['mineral_required'] * $amount > $row[0]['amount']) {
                 $this->gameMessage("ERROR! You dont have enough ores", true);
                 return false;
             }
@@ -76,12 +84,19 @@
                 $this->gameMessage("ERROR! You don't have enough gold", true);
                 return false;
             }
-    
+            
             try {
                 $this->db->conn->beginTransaction();
                 
-                // Update inventory
-                $this->UpdateGamedata->updateInventory($item, $amount);
+                if(strpos($item, 'arrows') !== false) {
+                    $this->UpdateGamedata->updateInventory($item, $amount * 5);
+                    $this->UpdateGamedata->updateInventory('unfinished arrow', -$minerals_needed * 5, true);
+                }
+                else {
+                    // Update inventory if item is not type of arrows
+                    $this->UpdateGamedata->updateInventory($item, $amount);
+                }
+                
                 if($this->session['profiency'] !== 'miner') {
                     // Update inventory
                     $this->UpdateGamedata->updateInventory('gold', -$cost);   

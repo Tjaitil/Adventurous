@@ -19,7 +19,7 @@
     function talk(person, part) {
         document.getElementById("curtain").style.display = "block";
         document.getElementById("conversation").style.display = "block";
-        var data = "model=talk" + "&method=talk" + "&person=" + person + "&part=" + part;
+        var data = "model=Talk" + "&method=talk" + "&person=" + person + "&part=" + part;
         ajaxG(data, function(response) {
             if(response[0] != false) {
                 var responseText = response[1].split("|");

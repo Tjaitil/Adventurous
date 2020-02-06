@@ -1,5 +1,5 @@
 <?php
-    class profiency_model extends model {
+    class Profiency_model extends model {
         public $username;
         public $session;
         

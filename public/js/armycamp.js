@@ -265,14 +265,15 @@
         });
     }
     function healWarrior(type, warriors) {
-        var data = "model=ArmyCamp" + "&method=healWarrior";
+        var item = false;
+        var quantity = false;
         if(type == 'heal') {
-            var quantity = document.getElementById("quantity").value;
+            quantity = document.getElementById("quantity").value;
             var check = selectedCheck();
             if(check == false) {
                 return false;
             }
-            var item = document.getElementById("selected").children[0].children[1].innerHTML.toLowerCase();
+            item = document.getElementById("selected").children[0].children[1].innerHTML.toLowerCase();
             var healing = {
                 'yest-herb': 4,
                 'healing': 3,
@@ -285,11 +286,8 @@
             else if(healing[item] < quantity) {
                 quantity = healing[item];
             }
-            data += "&type=item" + "&warriors=" + warriors[0] + "&item=" + item + "&quantity=" + quantity;
         }
-        else {
-            data += "&type=" + 'rest' + "&warriors=" + warriors;
-        }
+        var data = "model=ArmyCamp" + "&method=healWarrior" + "&item=" + item + "&quantity=" + quantity;
         ajaxP(data, function(response) {
             if(response[0] !== false) {
                 gameLog(response[1]);

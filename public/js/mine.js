@@ -119,7 +119,7 @@
         console.log(intervals);
     }
     function cancelMining() {
-        var data = "model=mine" + "&method=cancelMining";
+        var data = "model=Mine" + "&method=cancelMining";
         ajaxP(data, function(response) {
             if(response[0] !== false) {
                 window.clearInterval(intervals.pop());

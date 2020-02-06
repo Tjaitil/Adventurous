@@ -2,34 +2,22 @@
     require('../libs/handler.php');
     $handler = new handler(true);
     $handler->sessionCheck(true);
+    $errorHandler = new errorhandler();
     $modelname = $_POST['model'];
     $methodname = $_POST['method'];
     $model = $handler->includeModel($_POST['model'], $_SESSION['gamedata']);
     $method = $handler->checkMethod($model, $_POST['method']);
     if($method === true) {
-        
         switch($modelname) {
-            case "ArmyCamp":
-                switch($methodname) {
-                    case 'healWarrior':
-                        if(isset($_POST['item'])) {
-                            $model->$methodname($_POST['type'], $_POST['warriors'], $_POST['item'], $_POST['quantity']); 
-                        }
-                        else {
-                            $model->$methodname($_POST['type'], $_POST['warriors']);
-                        }
-                        break;
-                }
-                break;
-            case 'travel':
+            case 'Travel':
                 $city = $_SESSION['gamedata']['location'];
                 $travel_countdown = $_SESSION['gamedata']['arrive_time'];
                 $model->$methodname($city, $_POST['destination'], $travel_countdown);
                 break;
-            case "travelbureau":
+            case "Travelbureau":
                 $model->$methodname($_POST['shop'], $_POST['item']);
                 break;
-            case "market":
+            case "Market":
                 switch($methodname) {
                     case 'cancelOffer':
                     case 'fetchItem':
@@ -52,7 +40,7 @@
                 }
                 
                 break;
-            case "setadventure":
+            case "SetAdventure":
                 //method provide()
                 if(!isset($_POST['warrior_check'])) {
                     $model->$methodname(strtolower($_POST['item']), $_POST['quantity'], $warrior_check = false);
@@ -61,12 +49,12 @@
                     $model->$methodname($item = false, $quantity = false, $_POST['warrior_check']);
                 }
                 break;
-            case "stockpile":
+            case "Stockpile":
                 //method updateInventory()
                 $model->$methodname($_POST['insert'], strtolower($_POST['item']), $_POST['quantity']);
                 break;
-            case "updateassignment":
-            case "trader":
+            case "Updateassignment":
+            case "Trader":
                 if($methodname == 'pickUp') {
                     if(isset($_POST['favor'])) {
                         $model->$methodname($favor = true);
@@ -76,7 +64,7 @@
                     }
                 }
                 break;
-            case "setassignment":
+            case "Setassignment":
                 //method newAssignment()
                 if(isset($_POST['favor'])) {
                     $model->$methodname($_POST['assignment_id'], $favor = true);

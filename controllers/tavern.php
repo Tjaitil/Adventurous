@@ -7,7 +7,7 @@
         }
         
         public function index() {
-            $this->loadModel('tavern', true);
+            $this->loadModel('Tavern', true);
             $this->data['user_tavern_data'] = $this->model->getData();
             $this->workers();
             $this->data['persons'] = $this->model->getPersons($_SESSION['gamedata']['location']);

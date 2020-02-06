@@ -7,7 +7,6 @@
             });
         });
         document.getElementById("message").children[1].addEventListener("click", toggle);
-        readCheck();
         
         var prev = document.querySelectorAll(".previous");
         prev.forEach(function(element) {
@@ -25,26 +24,25 @@
             });
         });
         document.getElementById("receiver").addEventListener("keyup", chk_me());
+        readCheck();
     });
     
     var timer;
     function chk_me(){
         clearTimeout(timer);
-        timer = setTimeout(readCheck, 1000);
+        timer = setTimeout(userCheck, 1000);
     }
     function readCheck() {
         var tbodyRows = document.getElementById("inbox").children[1].children;
         var x;
+        console.log(tbodyRows);
+        var src;
         for(var i = 0; i < tbodyRows.length; i++) {
             // Check the src of image in last tr, if it is 0 the message has not been read
-            if(tbodyRows[i].children[4].children[0].src.indexOf("0") != -1) {
+            src = tbodyRows[i].children[4].children[0].src.split("/").pop();
+            if(src.indexOf(0) != -1) {
                 for(x = 0; x < tbodyRows[i].children.length; x++) {
                     tbodyRows[i].children[x].style.fontWeight = "bold";
-                }
-            }
-            else if(tbodyRows[i].children[4].children[0].src.indexOf("0") == -1 && tbodyRows[i].children[2].style.fontWeight == "bold") {
-                for(x = 0; x < tbodyRows[i].children.length; x++) {
-                    tbodyRows[i].children[x].style.fontWeight = "normal";
                 }
             }
         }
@@ -64,9 +62,6 @@
             else {
                 document.getElementById(div).style.display = "none";
             }
-        }
-        if(element == 'Inbox') {
-            readCheck();
         }
     }
     
@@ -114,23 +109,25 @@
     }
     
     function showMessage(message_id, element) {
+        var td = event.target.closest("td");
+        if(td.style.fontWeight !== "normal") {
+            tr = td.parentNode;
+            for(x = 0; x < tr.children.length; x++) {
+                tr.children[x].style.fontWeight = "initial";
+            }
+        }
+        
         document.getElementById("inbox").style.display = "none";
         document.getElementById("message").style.display = "block";
         document.getElementById("write_message").style.display = "none";
         document.getElementById("sent").style.display = "none";
         /*document.getElementsByTagName("SECTION")[0].appendChild(div);*/
+    
         
-        var td = event.target.closest("td");
-        if(td.style.fontWeight != "normal") {
-            td.style.fontWeight != "normal";
-        }
-        
-        var data = "model=messages" + "&method=showMessage" + "&message_id=" + message_id;
+        var data = "model=Messages" + "&method=showMessage" + "&message_id=" + message_id;
         ajaxG(data, function(response) {
             if(response[0] != false) {
                 var responseText = response[1].split("|");
-                console.log(responseText);
-                console.log(document.getElementById("message_info"));
                 document.getElementById("message_info").children[0].children[0].children[1].innerHTML = responseText [1];
                 document.getElementById("message_info").children[0].children[1].children[1].innerHTML = responseText [2];
                 document.getElementById("message_info").children[0].children[2].children[1].innerHTML = responseText [3];
@@ -140,13 +137,14 @@
                     var img = parent.children[4].children[0];
                     img.setAttribute("src", "/1.png");
                 }
+                checkMessages();
             }
         });
     }
     
     function userCheck() {
         var input = document.getElementById("receiver");
-        var data = "model=messages" + "&method=userCheck" + "&input=" + input.value;
+        var data = "model=Messages" + "&method=userCheck" + "&input=" + input.value;
         ajaxG(data, function(response) {
             if(response[0] == false) {
                 input.setCustomValidity("The user you are trying to send message to does not exists!");    
@@ -202,7 +200,7 @@
         }
         var page = pages[table + (index + increment)];
         if(page == undefined) {
-            var data = "model=messages" + "&method=getmMessages" + "&table=" + table + "&type=" + type + "&date=" + date;
+            var data = "model=Messages" + "&method=getmMessages" + "&table=" + table + "&type=" + type + "&date=" + date;
             ajaxG(data, function(response) {
                 if(response[0] != false) {
                     var responseText = response[1].split("#");

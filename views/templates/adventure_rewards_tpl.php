@@ -7,9 +7,14 @@
                 <img src="<?php echo constant('ROUTE_IMG') . $key['item'] . '.jpg';?>" />
                 <figcaption class="tooltip"><?php echo ucwords($key['item']);?></figcaption>
             </figure>
-            <span id="item_amount"><? echo $key['amount'];?></span>
+            <span class="item_amount"><? echo $key['amount'];?></span>
         </div>
     <?php endforeach; ?>
+    <div id="item_tooltip">
+        <ul>
+            <li></li>
+        </ul>
+    </div>
     </div>
         <table id="adventure_stats"s>
             <thead>
@@ -23,7 +28,7 @@
             <tr>
                 <td><?php echo ucfirst($data['adventure_data']['location']);?></td>
                 <td><?php echo $data['adventure_data']['difficulty'];?></td>
-                <td><?php echo $data['adventure_data']['role'];?></td>
+                <td><?php echo ucfirst($data['adventure_data']['role']);?></td>
                 <td><?php echo $data['adventure_data']['user_xp'];?></td>
             </tr>
         </table>

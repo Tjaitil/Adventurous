@@ -1,5 +1,5 @@
 <?php
-    class stockpile_model extends model {
+    class Stockpile_model extends model {
         public $username;
         public $session;
         protected $insert_stockpile = false;
@@ -30,6 +30,8 @@
         }
         public function updateInventory($insert, $item, $quantity) {
             //$insert, 1 = insert, 0 = widthdraw
+            
+            
             $sql = "SELECT amount FROM stockpile WHERE item=:item AND username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
@@ -87,9 +89,7 @@
                 $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->db->conn->rollBack();
-                $this->reportError($e->getFile()(), $e->getLine()(), $e->getMessage()());
-                $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
+                $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
             $this->db->closeConn();

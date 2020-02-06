@@ -21,8 +21,8 @@
         var item = element.children[0].children[1].innerHTML;
         item = item.trim();
         var result = false;
-        var minerals = ["Iron", "Steel", "Gargonite", "Adron", "Yeqdon", "Frajrite"];
-        var items = ["Sword", "Spear", "Dagger", "Shield", "Platebody", "Platelegs", "Helm", "Arrows"];
+        var minerals = ["Iron", "Steel", "Gargonite", "Adron", "Yeqdon", "Frajrite", "Oak", "Beech", "Yew"];
+        var items = ["Sword", "Spear", "Dagger", "Shield", "Platebody", "Platelegs", "Helm", "Arrows", "Bow" , "Knives"];
         // Check out if the $item matches $mineral and $item
         var item_array = item.split(" ");
         console.log(item_array);
@@ -79,7 +79,7 @@
         ajaxP(data, function(response) {
             if(response[0] != false) {
                 document.getElementsByClassName("armory_view")[warrior_id - 1].innerHTML = response[1];
-                updateInventory('armory');
+                updateInventory('armory', true);
                 addSelectEvent();
             }
         });

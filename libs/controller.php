@@ -31,7 +31,7 @@
                 }
             }
         }
-        public function loadModel($name, $username) {
+        public function loadModel($name, $db) {
             $modelPath = constant("ROUTE_MODEL");
             $path = $modelPath . $name.'_model.php';
             if(file_exists($path)) {
@@ -41,7 +41,7 @@
                     $this->model = new $modelName($_SESSION['username'], $db);
                 }
                 else {
-                    switch($username) {
+                    switch($db) {
                         case true:
                             $session = $_SESSION['gamedata'];
                             $session['username'] = $_SESSION['username'];

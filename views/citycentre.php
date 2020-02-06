@@ -55,6 +55,7 @@
                         <tr>
                             <td> Amount: </td>
                             <td> Cost: </td>
+                            <td></td>
                         </tr>
                     </thead>
                     <tr>

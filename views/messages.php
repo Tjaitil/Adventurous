@@ -63,7 +63,7 @@
                     </tr> 
                 </tfoot>
             </table>
-            <div id="message">
+            <div id="message" class="page_content">
                 <table id="message_info">
                     <tr>
                         <td> Title: </td>

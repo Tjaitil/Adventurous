@@ -7,7 +7,7 @@
         }
         
         public function index() {
-            $this->loadModel('stockpile', true);
+            $this->loadModel('Stockpile', true);
             $this->data = $this->model->getStockpile();
             $this->data['max_amount'] = 60;
             $this->render('stockpile', 'Stockpile', $this->data);
