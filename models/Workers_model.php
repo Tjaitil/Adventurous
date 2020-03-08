@@ -60,9 +60,7 @@
                 $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->db->conn->rollBack();
-                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
-                $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
+                $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
             $this->gameMessage("Your efficiency level for {$skill} workforce is now {$param_efficiency_level}", true);

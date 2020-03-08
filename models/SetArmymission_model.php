@@ -30,6 +30,7 @@
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":mission_id", $param_mission_id, PDO::PARAM_STR);
             $param_mission_id = $mission_id;
+            var_dump($mission_id);
             $stmt->execute();
             $mission_data = $stmt->fetch(PDO::FETCH_ASSOC);
             
@@ -42,6 +43,9 @@
             $stmt->execute($queryArray);
             $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $row_count = $stmt->rowCount();
+            var_dump($mission_data);
+            var_dump($mission_data['required_warriors']);
+            var_dump($row_count);
             if($mission_data['required_warriors'] != $row_count) {
                 $this->gameMessage("ERROR: You have not selected the right amount of warriors");
                 return false;
@@ -65,7 +69,7 @@
                 $param_username = $this->username;
                 $stmt->execute();
                 
-                // Only gain xp when farmer level is below 30 or if profiency is warrior
+                // Only gain xp when warrior level is below 30 or if profiency is warrior
                 if($this->session['warrior']['level'] < 30 || $this->session['profiency'] == 'warrior') { 
                     $this->UpdateGamedata->updateXP('warrior', (10 * $mission_data['required_warriors']));
                 }
@@ -77,10 +81,8 @@
                 $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->db->conn->rollBack();
-                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
-                $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
-                return false; 
+                $this->errorHandler->catchAJAX($this->db, $e);
+                return false;
             }
             $this->db->closeConn();
         }

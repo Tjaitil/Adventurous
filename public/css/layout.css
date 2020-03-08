@@ -15,10 +15,11 @@ section {
     background: radial-gradient(#c99b69 70%, #4b341b);
     box-sizing: content-box;
     width: 82.8%;
+    min-height: 400px;
     border: inset 2px;
     float: right;
     text-align: center;
-    padding: 1%;
+    padding: 1% 1% 5% 1%;
     color: #392714;
     font-weight: 200;
     overflow-x: hidden;
@@ -31,6 +32,7 @@ section input {
     margin: 3px;
 }
 section table {
+    position: relative;
     border-collapse: collapse;
     border: 3px ridge #5f4121;
 }
@@ -39,7 +41,14 @@ section table td {
     background-color: #f2e6d9;
 }
 section table tr {
-    border: 1px solid black;
+}
+section tbody tr:after {
+    content: "";
+    position: absolute;
+    left: 10%;
+    width: 80%;
+    height: 2px;
+    background-color: #5f4121;
 }
 section table, section div, section button {
     margin-bottom: 5px;
@@ -48,6 +57,23 @@ section table, section div, section button {
 section a:visited {
     text-decoration: none;
 }
+table button {
+    margin-top: 5px;
+}
+button {
+    background-color: #f2e6d9;
+    border-radius: 5px;
+    border: 1px outset;
+    box-shadow: 1px 1px 1px 1px #372715;
+    padding: 10px 12px 10px 12px;
+    color: black;
+    font-weight: bold;
+    font-size: 13px;
+}
+button:active {
+    background-color: #ebd9c6
+}
+button:focus {outline:0;}
 #skills {
     width: 50%;
     height: 86px;
@@ -106,7 +132,6 @@ section a:visited {
     overflow-y: scroll;
     height: 100px;
     border: 1px solid black;
-    margin-bottom: 5px;
     background-color: #f2e6d9;
     z-index: 1;
     position: relative;
@@ -116,13 +141,15 @@ section a:visited {
     padding: 0px;
     text-align: left;
     background-color: transparent;
-    
 }
 #game_messages {
     border: none;
 }
 #game_messages tr {
     border: none;
+}
+#game_messages tr::after {
+    content: none;
 }
 #game_messages td {
     background-color: transparent;
@@ -196,28 +223,23 @@ section a:visited {
 }
 #news_content {
     visibility: hidden;
+    height: 300px;
     position: absolute;
     margin: 2% 0% 2% 16%;
     background-color: #d1a77a;
     z-index: 2;
     width: 60%;
     padding: 2%;
+    overflow-y: scroll;
+}
+#news_content table {
+    margin: 0 auto;
 }
 #cont_exit {
     float: right;
 }
 #level_up p {
     margin: 15px 0px 0px 0px;
-}
-.gold {
-    width: 30px;
-    height: 30px;
-    vertical-align: middle;
-}
-.item {
-    width: 50px;
-    height: 50px;
-    vertical-align: middle;
 }
 #inventory {
     box-sizing: border-box;
@@ -239,14 +261,6 @@ section a:visited {
     height: 100%;
     position: absolute;
 }*/
-.item_amount {
-    position: relative;
-    top: -64%;
-    left: 24%;
-    color: white;
-    text-align: right;
-    float: none;
-}
 #item_tooltip {
     visibility: hidden;
 }
@@ -297,7 +311,13 @@ section a:visited {
     display: inline-block;
     float: right;*/
 }
-.inventory_item, .item {
+/* class with img of gold*/
+.gold, .warrior_skill {
+    width: 30px;
+    height: 30px;
+    vertical-align: middle;
+}
+.inventory_item {
     display: inline-block;
     float: left;
     max-width: 104px;
@@ -311,6 +331,18 @@ section a:visited {
        -moz-user-select: none; /* Firefox */
         -ms-user-select: none; /* Internet Explorer/Edge */
             user-select: none; 
+}
+.item .tooltip {
+    display: none;
+}
+.item {
+    display: inline-block;
+    float: left;
+    max-width: 104px;
+    min-width: 60px;
+    width: 30%;
+    height: 80px;
+    position: relative;
 }
 .stockpile_item {
     display: inline-block;
@@ -333,6 +365,9 @@ section a:visited {
 .inventory_item figure, .item figure {
     position: relative;
 }
+.item figure {
+    top: 20%;
+}
 .inventory_buttons {
     visibility: hidden;
     font-size: 12px;
@@ -351,6 +386,19 @@ section a:visited {
     padding: 1px 1px 1px 1px;
     box-sizing: border-box;
     text-align: center;
+}
+.item_amount {
+    position: relative;
+    top: -64%;
+    left: 24%;
+    color: white;
+    text-align: right;
+    float: none;
+}
+.item .item_amount {
+    top: -54%;
+    left: 30%;
+    color: black;
 }
 #all {
     width: 40%;
@@ -402,29 +450,21 @@ section a:visited {
 ::-webkit-scrollbar-thumb:hover {
   /*background: #737373; */
 }
-button {
-    background-color: #f2e6d9;
-    border-radius: 5px;
-    border: 1px outset;
-    box-shadow: 1px 1px 1px 1px #372715;
-    padding: 10px 12px 10px 12px;
-    color: black;
-    font-weight: bold;
-    font-size: 13px;
+
+@media all and (max-width: 1040px)  {
+    section {width: 97.4%; font-size: 14px;};
 }
-button:active {
-    background-color: #ebd9c6
-}
-button:focus {outline:0;}
+
 @media all and (max-width: 830px) {
     body {margin: 10px 2% 0px 2%;};
-    #skills div {font-size: 12px;}
-    section {width: 97.4%; font-size: 12px;}
+    #skills div {font-size: 14px;}
+    section {width: 97.4%; font-size: 14px;}
     #inventory .inventory_item {width: 50%;}
     /*.inventory_buttons {
         margin-left: 6px;
     }*/
-    }
+    #skills div {min-width: 53px;};
+}
 html, body {
   height: 100%;
 }

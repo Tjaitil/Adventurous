@@ -17,19 +17,6 @@
             case "Travelbureau":
                 $model->$methodname($_POST['shop'], $_POST['item']);
                 break;
-            case "Market":
-                switch($methodname) {
-                    case 'cancelOffer':
-                    case 'fetchItem':
-                        $model->$methodname($_POST['id']);
-                        break;
-                    case 'trade':
-                        $model->$methodname($_POST['id'], $_POST['amount']);
-                        break;
-                    case 'newOffer':
-                        $model->$methodname(json_decode($_POST['JSON_data'], true));
-                }
-                break;
             case "RecruitWorker":
                 //method recruitWorker()
                 if(isset($_POST['level'])) {

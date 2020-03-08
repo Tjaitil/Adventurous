@@ -53,7 +53,7 @@ aside a:visited {
     text-decoration: none;
     font-size: 14px;
 }
-@media all and (max-width: 800px) {
+@media all and (max-width: 1040px) {
     aside {
         display: none;
     }

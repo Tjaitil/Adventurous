@@ -18,7 +18,7 @@
         }
         public function index() {
             $array = array(NULL, 'none');
-            /*if (isset($_SESSION['gamedata'])) {
+            /*if(isset($_SESSION['gamedata'])) {
                     header("Location: /main");
             }*/
             // Return site with a error array

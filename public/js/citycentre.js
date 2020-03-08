@@ -25,18 +25,19 @@
         }
     }
     function changeProfiency() {
+        console.log('hello');
         var select = document.getElementById("profiency_select");
         var val = select.value;
         if(!val) {
             gameLog("Please select a profiency!");
             return false;
         }
-        var data = "model=Profiency" + "&method=changeProfiency" + "&newProfiency=" + val;
+        /*var data = "model=Profiency" + "&method=changeProfiency" + "&newProfiency=" + val;
         ajaxP(data, function(response) {
             if(response[0] !== false) {
                 gameLog(response[1]);
             }       
-        });
+        });*/
     }
     function changeArtefact() {
         var itemData = selectedCheck(false);

@@ -13,7 +13,10 @@
         });
         }
         getCountdown();
+        calculateSkillbar();
     });
+    var warriorsIndex;
+    var warriors;
     function show(element) {
         var divs = ["overview", "calculator"];
         
@@ -144,20 +147,21 @@
     function actions() {
         var select = document.getElementsByName("action")[0];
         var value = select.options[select.selectedIndex].value;
-        var warriorsD = document.getElementsByClassName("warrior");
+        // warriorsD is the node list of the warriors
+        warriorsD = document.getElementsByClassName("warrior");
         // warrriorsI is the div index of the warrior;
-        var warriorsI = [];
+        warriorsIndex = [];
         // warriors is the id of warriors;
-        var warriors = [];
+        warriors = [];
         for(var i = 0; i < warriorsD.length; i++) {
             if(warriorsD[i].style.border === "3px solid black") {
-                warriorsI.push(i);
+                warriorsIndex.push(i);
                 var id = warriorsD[i].id.split("_")[1];
                 warriors.push(id);
             }
         }
         if(warriors.length === 0) {
-            gameLog("ERROR: You have not selected any warriors to transfer");
+            gameLog("ERROR: You have not selected any warriors to action");
             return false;
         }
         var m_warriors = ["transfer", "rest"];
@@ -176,7 +180,7 @@
                 healWarrior('rest', warriors);
                 break;
             case 'offRest':
-                offRest(warriors);
+                offRest();
                 break;
             case 'training':
                 training(warriors, warriorsI);
@@ -189,8 +193,21 @@
             break;
         }
     }
-    function updatePage() {
+    function updatePage(warriorsIndex, functionName) {
+        
         document.getElementsByName("action")[0].selectedIndex = 0;
+        var data = "model=ArmyCamp" + "&method=getData" + "&warriors=";
+        ajaxJS(data, function(response) {
+            if(response[0] != false) {
+                
+            }
+        });
+        switch(functionName) {
+            case 'as':
+                
+                break;
+        }
+        
     }
     function transfer(warriors) {
         var data = "model=ArmyCamp" + "&method=transfer" + "&warriors=" + warriors;
@@ -202,8 +219,32 @@
         });
     }
     var intervalID = {
+        
             
     };
+    function calculateSkillbar(warriorIndex = false) {
+        var skillBars = document.getElementById("overview").querySelectorAll(".skill_bar"); 
+        if(warriorIndex != false) {
+            // skillBars2 holds the nodes from the specified warriorIndexes
+            skillBars2 = [];
+            for(var x = 0; x < warriorsIndex.length; x++) {
+                skillBars2.push(skillBars[warriorsIndex[x]]);
+            }
+            skillBars = skillBars2;
+        }
+        
+        var xp;
+        var nextlevel;
+        var width;
+        
+        for(var i = 0; i < skillBars.length; i++) {
+            xp = skillBars[i].querySelectorAll(".progress_value1")[0].innerHTML;
+            nextlevel = skillBars[i].querySelectorAll(".progress_value2")[0].innerHTML;
+            width = xp / nextlevel * 100;
+            skillBars[i].children[0].style.width = width + "%";
+            console.log(skillBars[i].children[0].style.width);
+        }
+    }
     function getCountdown() {
         var data = "model=ArmyCamp" + "&method=getCountdown";
         ajaxJS(data, function(response) {
@@ -237,7 +278,6 @@
         var p = document.getElementsByClassName("countdown");
         p[id].innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
         if (distance < 0 && report === "1"){
-            console.log(intervalID['warrior' + id]);
             clearInterval(intervalID['warrior' + id]);
             var btn = document.createElement("BUTTON");
             var t = document.createTextNode("Get training report");
@@ -255,7 +295,6 @@
         }
     }  
     function updateTraining(id) {
-        console.log(id);
         var data = "model=UpdateTraining" + "&method=updateTraining" + "&warrior_id=" + id;
         ajaxP(data, function(response) {
             if(response[0] !== false) {
@@ -287,14 +326,14 @@
                 quantity = healing[item];
             }
         }
-        var data = "model=ArmyCamp" + "&method=healWarrior" + "&item=" + item + "&quantity=" + quantity;
+        var data = "model=ArmyCamp" + "&method=healWarrior" + "&item=" + item + "&quantity=" + quantity + "&warriors" + warriors;
         ajaxP(data, function(response) {
             if(response[0] !== false) {
                 gameLog(response[1]);
             }       
         });
     }
-    function offRest(warriors) {
+    function offRest() {
         var data = "model=ArmyCamp" + "&method=offRest" + "&warriors=" + warriors;
         ajaxP(data, function(response) {
             if(response[0] !== false) {
@@ -317,7 +356,7 @@
                 // Get correct div for the warrior
                 var warriorsD = document.getElementsByClassName("warrior");
                 var div = warriorsD[warriorsI[0]];
-                div.querySelectorAll("TR").children[2].children[1].innerHTML = "Training";
+                div.querySelectorAll("tr").children[2].children[1].innerHTML = "Training";
                 // Call getCountdown with data from ajaxP and set intervalID to be cleared later
                 var interval_id = setInterval(getCountdown(rT['1'] * 1000, 0, warriorsI[0]), 1000);
                 intervalID['warrior_' + warriorsI[0]] = interval_id;

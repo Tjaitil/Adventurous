@@ -61,8 +61,12 @@
         public function getOffers() {
             
         }
-        public function newOffer($post_data) {
-            //AJAX function
+        public function newOffer($POST) {
+            // $POST variable holds the post data
+            // This function is called from an AJAX request from stockpile.js
+            // Function to create new offer from player input in market.php
+            
+            $post_data = json_decode($POST['JSON_data'], true);
             $post_data['item'] = strtolower($post_data['item']);
             
             $sql  ="SELECT item FROM offers WHERE offeror=:offeror";
@@ -71,7 +75,7 @@
             $param_username = $this->username;
             $stmt->execute();
             if($stmt->rowCount() + 1 > 6) {
-                $this->gameMessage("ERROR: You can only have 6 errors");
+                $this->gameMessage("ERROR: You can only have 6 offers");
                 return false;
             }
             
@@ -163,15 +167,18 @@
                 $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->db->conn->rollBack();
-                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
-                $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
+                $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
             $this->db->closeConn();
         }
-        public function trade($id, $amount) {
-            //AJAX function
+        public function trade($POST) {
+            // $POST variable holds the post data
+            // This function is called from an AJAX request from stockpile.js
+            // Function to trade items with other players
+            $id = $POST['id'];
+            $amount = $POST['amount'];
+            
             $sql = "SELECT offeror, id, type, item, price_ea, amount_left, progress, box_amount FROM offers WHERE id=:id";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":id", $param_id, PDO::PARAM_STR);
@@ -223,7 +230,7 @@
                     return false;
                 }
                 $inventory = $stmt->fetch(PDO::FETCH_ASSOC);
-                if($inventory['amount'] < ($row['price_ea'] * $row['amount_left'])) {
+                if($inventory['amount'] < ($row['price_ea'] * $amount)) {
                     $this->gameMessage("ERROR: You don't have enough gold to buy this item", true);
                     return false;
                 }
@@ -342,12 +349,11 @@
                 $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->db->conn->rollBack();
-                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
-                $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
+                $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
             $this->db->closeConn();
+            echo "finished trade";
         }
         private function update_records($username, $offer_info, $type) {
             $sql = "SELECT (SELECT COUNT(amount) FROM offer_records WHERE username=:username) as count, username, amount
@@ -397,8 +403,12 @@
                 $stmt->execute();
             }
         }
-        public function cancelOffer($id) {
-            // AJAX function, cancels market offer
+        public function cancelOffer($POST) {
+            // $POST variable holds the post data
+            // This function is called from an AJAX request from stockpile.js
+            // Function to cancel offer from market
+            $id = $POST['id'];
+            
             $sql = "SELECT type, item, amount, price_ea FROM offers WHERE id=:id AND offeror=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":id", $param_id, PDO::PARAM_STR);
@@ -445,15 +455,17 @@
                 $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->db->conn->rollBack();
-                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
-                $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
+                $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
             $this->db->closeConn();
         }
-        public function fetchItem($id) {
-            // AJAX function
+        public function fetchItem($POST) {
+            // $POST variable holds the post data
+            // This function is called from an AJAX request from stockpile.js
+            // Function to fetch item from a completed offer into inventory
+            $id = $POST['id'];
+            
             $sql = "SELECT id, amount_left, box_item, box_amount FROM offers WHERE id=:id AND offeror=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":id", $param_id, PDO::PARAM_INT);
@@ -494,9 +506,7 @@
                 $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->db->conn->rollBack();
-                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
-                $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
+                $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
         }

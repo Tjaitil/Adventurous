@@ -25,4 +25,5 @@
                 warrior_check.push(warror_id);
             }
         }
+        return warrior_check;
     }

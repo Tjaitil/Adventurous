@@ -68,7 +68,6 @@
                     $this->battle_statistics['result'] = "Daqloons wins!";   
                 }
             }
-
             $role = array_search($this->username, $this->adventure_data);
             if($role === false) {
                 return false;
@@ -486,9 +485,7 @@
                 $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->db->conn->rollBack();
-                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
-                $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
+                $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
         }

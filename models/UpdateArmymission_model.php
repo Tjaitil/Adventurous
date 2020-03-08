@@ -29,7 +29,7 @@
                 
                 $sql = "UPDATE warrior SET mission=0 WHERE username=:username";
                 $stmt = $this->db->conn->prepare($sql);
-                $stmt->bindParam(":username", $param_username, PDO::PARAM_INT);
+                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_username = $this->username;
                 $stmt->execute();
                 
@@ -43,13 +43,10 @@
                 $this->UpdateGamedata->updateInventory('gold', $row2['reward']);
                 // Update xp
                 $this->UpdateGamedata->updateXP('warrior', 100);
-                
                 $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->db->conn->rollBack();
-                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
-                $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
+                $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
             $this->db->closeConn();
@@ -60,7 +57,12 @@
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
-            $stmt->fetch(PDO::FETCH_ASSOC);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if($row['mission'] == 0) {
+                $this->gameMessage("ERROR: Your warriors are not on a mission", true);
+                return false;
+            }
             
             try {
                 
@@ -84,9 +86,7 @@
                 $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->db->conn->rollBack();
-                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
-                $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
+                $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
             $this->db->closeConn();

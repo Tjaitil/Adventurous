@@ -4,13 +4,14 @@
     });
     
     function getCountdown() {
-        var data = "model=armymissions" + "&method=getCountdown";
-        ajaxJS(data, function(response) {
+        var data = "model=ArmyMissions" + "&method=getCountdown";
+        ajaxG(data, function(response) {
             if(response[0] != false) {
                 var data = response[1].split("|");
                 var time = data[0] * 1000;
                 var mission = data[1];
                 console.log(data);
+                var canc_button = document.getElementById("current_mission").querySelectorAll("button")[0];
                 var x = setInterval (function() {
                     var now = new Date().getTime();
                     var distance = time - now;
@@ -27,10 +28,15 @@
                         btn.addEventListener("click", updateMission);
                         document.getElementById('current_mission').appendChild(btn);
                         document.getElementById("time").innerHTML = "Finished";
+                        canc_button.style.display = "none";
                     }
                     else if (distance < 0) {
                         clearInterval(x);
                         document.getElementById("time").innerHTML = "None";
+                        canc_button.style.display = "none";
+                    }
+                    else {
+                        canc_button.style.display = "block";
                     }
                 }, 1000);
             }
@@ -48,7 +54,7 @@
         var ele = document.getElementById("mission_enabled");
         ele.style.visibility = "visible";
         document.getElementById("mission_table").appendChild(clone);
-        var data = "model=armymissions" + "&method=getWarriors";
+        var data = "model=ArmyMissions" + "&method=getWarriors";
         ajaxJS(data, function(response) {
             console.log(response[1]);
             if(response[0] != false) {
@@ -72,12 +78,14 @@
     function doMission() {
         // warriorSelect.js
         var warrior_check = warriorsCheck();
+        console.log(warrior_check);
         // Send array with warriors id and mission id to model
         if(warrior_check.length == 0) {
-                gameLog("Please select warriors");
-                return false;
-            }
-        var mission_id = document.getElementById("missison_table").children[0].id;
+            gameLog("Please select warriors");
+            return false;
+        }
+        var mission_id = document.getElementById("mission_table").querySelectorAll("tr")[0].id;
+        console.log(document.getElementById("mission_table").querySelectorAll("tr")[0]);
         var data = "model=SetArmymission" + "&method=setMission" + "&mission_id=" + mission_id + "&warrior_check=" + warrior_check;
         ajaxP(data, function(response) {
             console.log(response);
@@ -98,7 +106,7 @@
         });
     }
     function updateMission() {
-        var data = "model=UpdateArmymission" + "&model=updateMission";
+        var data = "model=UpdateArmymission" + "&method=updateMission";
         ajaxP(data, function (response) {
             if(response[0] !== false) {
                 document.getElementById('current_mission').innerHTML = "";

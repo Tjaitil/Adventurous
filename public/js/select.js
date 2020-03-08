@@ -1,6 +1,5 @@
-// Module file
-
-function showSelect() {
+    // Module file
+    function showSelect() {
         var element = event.target;
         var clone = element.cloneNode(true);
         clone.removeAttribute("onclick");
@@ -24,4 +23,11 @@ function showSelect() {
         else {
             clone.src = this[item].src;
         }
+    }
+    function getData(site) {
+        
+        var data = "model=" + "&method=" + "&site=" + site;
+        ajaxG(data, function(response) {
+            i    
+        });
     }

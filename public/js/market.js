@@ -198,6 +198,7 @@
         ajaxG(data, function(response) {
             if(response[0] != false) {
                 var data = response[1].split("#");
+                console.log(data);
                 switch(part) {
                     case 1:
                         document.getElementById("offers").getElementsByTagName("TABLE")[0].children[2].innerHTML = data[0];

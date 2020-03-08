@@ -4,6 +4,7 @@
         <title><?php echo $title;?></title>
         <?php include(constant("ROUTE_VIEW") . 'head.php');?>
         <link rel="stylesheet" type="text/css" href="<?php echo constant("ROUTE_CSS") . $name; ?>.css" />
+        <link rel="stylesheet" type="text/css" href="<?php echo constant("ROUTE_CSS") . 'game'; ?>.css" />
         <meta charset="utf-8"/>
     </head>
     <body>
@@ -25,6 +26,13 @@
                 } 
                 require($this->cityfile);?>
             </div>
+            <p>Frames per second: <span id="frames"></span></p>
+            <canvas id="game_canvas" width="700" height="400"></canvas>
+            <button type="button" onkeydown="" onkeyup=""> Left </button>
+            <button type="button" onkeydown="" onkeyup=""> Up </button>
+            <button type="button" onkeydown="" onkeyup=""> Down </button>
+            <button type="button" onkeydown="" onkeyup=""> Right </button>
+            <script src="<?php echo constant('ROUTE_JS') .'game.js';?>"></script>
         </section>
         <aside>
             <?php require(constant('ROUTE_VIEW') . 'aside.php');?>

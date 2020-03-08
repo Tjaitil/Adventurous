@@ -4,10 +4,11 @@
     width: 90%;
     overflow: hidden;
     margin-bottom: 10px;
+    position: relative;
 }
 #chat  {
     border: 1px solid black;
-    height: 87%;
+    height: 85%;
     width: 100%;
     overflow-x: hidden;
     overflow-y: scroll;
@@ -24,11 +25,17 @@
 }
 #public_chat input[type="text"] {
     float: left;
-    width: 92%;
+    width: 91%;
+    /*margin-right: 5px;*/
+    padding-right: 20%;
+    margin: 0px 0px 0px 0px;
 }
 #public_chat button {
-    float: left;
-    margin-top: 4px;
+    position: absolute;
+    margin-top:-2px;
+    padding: 6px 8px 6px 8px;
+    right: 0%;
+    top: 216px;
 }
 #world_map {
     display:none;
@@ -107,4 +114,7 @@
     float: left;    
     width: 50%;
     margin-top: 10px;
+}
+@media all and (max-width: 830px) {
+    #public_chat input[type="text"] {width: 85%;}
 }

@@ -76,7 +76,6 @@
             }
         });
     }
-    
     function destroyCrops() {
         var conf = confirm("You will lose seeds used to plant crops, proceed?");
         if(conf != true) {
@@ -101,7 +100,6 @@
         img.style = "display:block";
         img.src = "public/images/" + name;
     }
-    
     function seedGenerator() {
         var itemData = selectedCheck();
         if(itemData === false) {

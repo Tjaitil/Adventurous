@@ -65,7 +65,7 @@
                 </div>
             </div>
             <div id="overview">
-                <?php get_template('warrior_levels', $this->data['warrior_data']);?>
+                <?php get_template('warrior_levels', array($this->data['warrior_data'], $this->data['levels_data']));?>
             </div>
             <div id="actions">
                 <label for="action"> Select action </label>

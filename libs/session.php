@@ -17,9 +17,7 @@
             }
         }
         public function destroy() {
-            unset($_SESSION['username']);
-            unset($_SESSION['loggedin']);
-            unset($_SESSION['profiency']);
+            session_unset();
             session_destroy();
             header("Location: /login");
             exit;

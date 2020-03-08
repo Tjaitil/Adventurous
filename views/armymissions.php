@@ -15,10 +15,10 @@
             <div>
                 <a href="/armycamp"> << Back to army camp</a>
             </div>
-            <h3 id="page_title"> Army Missions </h3>
+            <h3 class="page_title"> Army Missions </h3>
             <div id="current_mission">
-            <p> Mission:</p><p id="time"></p>
-            <button> Cancel mission </button>
+                <p> Mission:</p><p id="time"></p>
+                <button> Cancel mission </button>
             </div>
             <table>
                 <thead>
@@ -54,7 +54,7 @@
                 <button id="mission_button" onclick="doMission();"> Do Mission </button>
             </div>
             <script src="<?php echo constant('ROUTE_JS') . $name . '.js';?>"></script>
-            <script src="<?php echo constant('ROUTE_JS') . 'warriorSelect' . '.js';?>"></script>
+            <script src="<?php echo constant('ROUTE_JS') . 'warriorSelect.js';?>"></script>
         </section>
         <aside>
             <?php require(constant('ROUTE_VIEW') . '/aside.php'); ?>

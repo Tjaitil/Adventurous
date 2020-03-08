@@ -1,11 +1,10 @@
-
     window.onload = levelUP();
     function levelUP() {
         var data = "model=LevelUp" + "&method=updateData";
         ajaxP(data, function(response) {
             if(response[0] !== false) {
-                console.log(response[1]);
-                data = response[1].split("|");
+                var responseText = response[1];
+                /*data = response[1].split("|");
                 var pos = data.indexOf("unlocked");
                 var unlocked = data.slice(0, pos);
                 console.log(data);
@@ -26,8 +25,9 @@
                     var element = document.createElement("p");
                     element.innerHTML = "Nothing new at this level";
                     div.appendChild(element);
-                }
-                openNews(div);
+                }*/
+                
+                openNews(responseText);
             }       
         });
     }

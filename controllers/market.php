@@ -8,7 +8,7 @@
         }
         
         public function index() {
-            $this->loadModel('market', true);
+            $this->loadModel('Market', true);
             $this->data = $this->model->getData();
             $this->render('market', 'Market', $this->data);
         }

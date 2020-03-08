@@ -23,6 +23,16 @@
                         <option value="Buy"> Buy </option>
                         <option value="Sell"> Sell </option></br>
                     </select>
+                    <div id="offer_types">
+                        <button>
+                            Buy
+                        </button>
+                        <div></div>
+                        <button>
+                            Sell
+                        </button>
+                        <div></div>
+                    </div>
                     <div id="form_cont">
                         <label for="type"> Offer type: </label>
                         <input type="text" name="type" readonly />

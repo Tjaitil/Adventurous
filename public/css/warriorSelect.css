@@ -1,13 +1,12 @@
 #warriors_container {
     overflow-x: scroll;
+    overflow-y: hidden;
+    margin: 3px;
     white-space: nowrap;
 }
 #warriors_container img {
     width: 30px;
     height: 30px;
-}
-#warriors_container {
-    
 }
 #warriors_container figure figure {
     display: inline-block;
@@ -37,6 +36,5 @@
 }
 .warriors input[type="checkbox"] {
     position: relative;
-    right: 40%;
-    top: 28%;
+    top: -10%;
 }

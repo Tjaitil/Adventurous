@@ -11,7 +11,7 @@
           function __construct ($session) {
                $this->session = $session;
           }
-            function init () {
+        function init () {
                 $this->getURL();
                 
                 if($this->url[0] != 'gameguide' && count($this->url) > 1) {
@@ -23,10 +23,10 @@
                }
                 if(strpos($this->url[0], '-')) {
                     $this->url[0] = implode(explode('-', $this->url[0]));
-                    var_dump($this->url);
                 }
                 $this->session->validatelogin();
                 if($this->session->status == false && $this->url[0] != 'registration') {
+                    session_unset();
                     $this->controller = 'login';
                     $file = $this->controllerPath . $this->controller . '.php';
                     require $file;

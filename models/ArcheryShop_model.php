@@ -118,14 +118,7 @@
                 $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->db->conn->rollBack();
-                if(strpos($e->getMessage, 'inv_amount') !== false) {
-                    $this->gameMessage("Your inventory is full!", true);
-                }
-                else{
-                    $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
-                    $this->gameMessage("ERROR: Something unexpected happened, please try again", true);    
-                }
+                $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
             $this->db->closeConn();

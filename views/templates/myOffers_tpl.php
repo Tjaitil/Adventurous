@@ -4,11 +4,13 @@
         <tr>
                 
                 <td><?php echo $data[$i]['type'];?><input type="hidden" value="<?php echo $data[$i]['id'];?>" /></td>
-                <td><?php echo ucwords($data[$i]['item']);?></td>
+                <td>
+                    <img class="item_img" src="<?php echo constant('ROUTE_IMG') . $data[$i]['item'] . '.png';?>" />
+                </td>
                 <td><?php echo $data[$i]['price_ea'];?><img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.jpg';?>" /></td>
                 <td><?php echo $data[$i]['progress'] , '/' , $data[$i]['amount'];?> </td>
                 <td><?php if($data[$i]['box_amount'] > 0): ?>
-                     <div class="inventory_item">
+                     <div class="item">
                         <figure>
                             <img src="<?php echo constant('ROUTE_IMG') . $data[$i]['box_item'] . '.png';?>" />
                             <figcaption class="tooltip"><?php echo ucwords($data[$i]['box_item']); ?></figcaption>

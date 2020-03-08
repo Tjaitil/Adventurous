@@ -31,7 +31,6 @@
         public function updateInventory($insert, $item, $quantity) {
             //$insert, 1 = insert, 0 = widthdraw
             
-            
             $sql = "SELECT amount FROM stockpile WHERE item=:item AND username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);

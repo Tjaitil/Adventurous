@@ -98,6 +98,14 @@ header {
     .top_bar {
         font-size: 8px;
     }
+    #nav_2 {
+        font-size: 13px;
+    }
+}
+@media all and (max-width: 1040px) {
+    #nav_but {display: block};
+}
+@media all and (max-width: 1240px) {
     .top_a {
         display: none;
     }
@@ -109,8 +117,5 @@ header {
     .top_but a {
         bottom: 0px;
         margin: 0px;
-    }
-    #nav_2 {
-        font-size: 13px;
     }
 }

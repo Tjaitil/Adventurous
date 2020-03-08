@@ -13,7 +13,7 @@
         }
         else  {
             switch($modelname) {
-                case "adventures":
+                case "Adventures":
                     if($methodname === "getAdventure") {
                         $model->$methodname($_GET['id']);    
                     }
@@ -24,7 +24,7 @@
                 case "Main":
                     $model->$methodname($_GET['clock']);
                     break;
-                case "market":
+                case "Market":
                     if(isset($_GET['part'])) {
                         // Method getData()
                         $model->$methodname($_GET['part']);
@@ -35,7 +35,7 @@
                     }
                     
                     break;
-                case "messages":
+                case "Messages":
                     switch($methodname) {
                         case 'showMessage':
                             $model->$methodname($_GET['message_id']);
@@ -52,7 +52,7 @@
                 case "Item":
                     $model->$methodname($_GET['query']);
                     break;
-                case 'talk':
+                case 'Talk':
                     //method talk()
                     $model->$methodname($_GET['person'], $_GET['part']);
                     break;

@@ -32,7 +32,9 @@
                console.log("scroll");
                document.getElementById("item_tooltip").style.visibility = "hidden";
             });
-            addShowTitle();
+            if(window.location.href.indexOf("stockpile") == -1) {
+                addShowTitle();    
+            }
         }
         clock();
         checkMessages();
@@ -96,7 +98,6 @@
         document.getElementById("news").style.visibility = "visible";
         document.getElementById("news_content").style.visibility = "visible";
         if(typeof content == 'object') {
-            
             if(Object.keys(content).length > 1) {
                 for(var i = 0; i < Object.keys(content).length; i++) {
                     document.getElementById("news_content").appendChild(content[i]);
@@ -108,8 +109,11 @@
         }
     }
     function closeNews() {
-        var news = document.getElementById("news");
-        news.innerHTML = "";
+        var newsDiv = document.getElementById("news_content");
+        
+        for(var i = 1; i < newsDiv.children.length; i++) {
+            newsDiv.removeChild(newsDiv.children[i]);
+        }
         news.style = "visibility: hidden;";
         document.getElementById("news_content").style.visibility = "hidden";
     }
@@ -138,15 +142,16 @@
                 p.appendChild(link);
                 p.innerHTML += '</br>' + message3;
                 content[0] = p;
+                document.getElementById("alert_submit").addEventListener("click", function() {
+                    changeProfiency();
+                    closeNews();
+                });
                 break;
         }
         content[1] = subButton;
         content[2] = cancButton;
         openNews(content);
-        document.getElementById("alert_submit").addEventListener("click", function() {
-            changeProfiency();
-            closeNews();
-        });
+        
         document.getElementById("alert_cancel").addEventListener("click", closeNews);
         document.getElementById("cont_exit").addEventListener("click", closeNews);
     }
@@ -218,17 +223,36 @@
         menu.children[0].children[0].innerHTML = item;
         menu.style.visibility = "visible";
         // Declare menu top by measuring the positon from top of parent and also if inventory/stockpile is scrolled
-        var menuTop = element.offsetTop - element.parentNode.scrollTop + 50;
-        menu.children[0].style.top = menuTop + "px";
-        if(item.length < 8) {
+        console.log(element.parentNode);
+        
+        var menuTop;
+        // If element is inside inventory or stockpile
+        console.log(element.parentNode.id);
+        if(["stockpile", "inventory"].indexOf(element.parentNode.id) != -1) {
+            menuTop = element.offsetTop - element.parentNode.scrollTop + 50;
+            menu.children[0].style.top = menuTop + "px";
+            if(item.length < 8) {
             menu.children[0].style.left = element.offsetLeft +  20 + "px";
             menu.children[0].children[0].style.width = "50px";
             menu.children[0].children[0].style.textAlign = "center";
-            
+            }
+            else {
+                menu.children[0].style.left = element.offsetLeft + 10 + "px";
+                menu.children[0].children[0].style.width = "auto";
+            }
         }
         else {
+            var elementPos = element.getBoundingClientRect();
+            menuTop = document.documentElement.scrollTop + elementPos.y - 164;
+            console.log("element.offsetTop: " + element.offsetTop);
+            console.log("element.parentNode.scrollTop" + element.parentNode.scrollTop);
+            console.log("html srollTop:" + document.documentElement.scrollTop);
+            console.log(menuTop);
+            console.log(document.documentElement);
+            console.log(element.getBoundingClientRect());
+            menu.children[0].style.top = menuTop + "px";
             menu.children[0].style.left = element.offsetLeft + 10 + "px";
-            menu.children[0].children[0].style.width = "auto";
+            console.log(menu);
         }
         
         setTimeout(hide_title, 4000, data);

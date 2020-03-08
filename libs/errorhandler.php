@@ -23,6 +23,13 @@
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);    
             }
         }
-           
+        protected function reportError($file, $line, $error_message, $ajax = true,  $title = false) {
+            $message = "Error on: " . $file . ' Line ' . $line . ' ' . $error_message . ' ' . ' ajax= ' . $ajax;
+            var_dump($error_message);
+            if($title === false) {
+                $title = 'FROM: <system@adventurous.no';
+            }
+            $test = mail('miner123@hotmail.no', 'ERROR', $message, 'FROM: <system@adventurous.no');
+        }  
     }
 ?>

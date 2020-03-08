@@ -44,9 +44,7 @@
                 $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->db->conn->rollBack();
-                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
-                $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
+                $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
             $this->db->closeConn();
@@ -98,7 +96,8 @@
                 $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->db->conn->rollBack();
+                $this->errorHandler->catchAJAX($this->db, $e);
+                return false;
             }
             if($skill == 'warrior') {
                 $this->gameMessage("You have upgraded your armycamp to level {$new_level}", true);

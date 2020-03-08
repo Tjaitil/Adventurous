@@ -23,7 +23,7 @@
             $stmt->execute();
             $count = $stmt->rowCount();
             if(!$count > 0) {
-                echo "ERROR!";
+                $this->gameMessage("ERROR: Your soldier is not currently under training", true);
                 return false;
             }
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -93,7 +93,7 @@
             $sql = "SELECT experience FROM training_type_data WHERE training_type=:training_type";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":training_type", $param_training_type, PDO::PARAM_STR);
-            $param_training_type = $type;
+            $param_training_type = $training_type;
             $stmt->execute();
             $warrior_experience = $stmt->fetch(PDO::FETCH_OBJ)->experience;
         
@@ -115,12 +115,20 @@
                 $stmt4->execute($values);
 
                 $this->db->conn->commit();
-                $this->gameMessage("You have trained your soldier", true);
+                if($training_type === 'general') {
+                    $this->gameMessage("You have trained your soldier and gotten
+                                       {$parameters['stamina_xp']} stamina xp,
+                                       {$parameters['technique_xp']} technique xp,
+                                       {$parameters['precision_xp']} precision xp and
+                                       {$parameters['strength_xp']} strength xp", true);    
+                }
+                else {
+                    $this->gameMessage("You have trained your soldier and gotten {$parameters[$training_type]} .
+                                       {$training_type} xp", true);    
+                }
             }
             catch (Exception $e) {
-                $this->db->conn->rollBack();
-                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
-                $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
+                $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
             $this->db->closeConn();
