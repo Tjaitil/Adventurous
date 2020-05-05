@@ -116,6 +116,11 @@
         }
         news.style = "visibility: hidden;";
         document.getElementById("news_content").style.visibility = "hidden";
+        if(typeof inBuilding !== 'undefined') {
+            // Render the player outside building
+            renderPlayer(0, 40);
+            inBuilding = false;
+        }
     }
     function alertMessage(page, pIdentifier = false) {
         // pIdentifer is used to identify which content to append if this function is used multiple times on the same page

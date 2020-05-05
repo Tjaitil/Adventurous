@@ -1,9 +1,0 @@
-section table {
-    border-collapse: collapse;
-}
-section table td, table th {
-    padding:5px;
-    border: 1px solid black;
-    border-collapse: collapse;
-    background-color: #f2e6d9;
-}

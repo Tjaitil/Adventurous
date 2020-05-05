@@ -7,7 +7,6 @@
             });
         });
     };
-    
     function fletch() {
         var amount = event.target.parentElement.children[0].value;
         var item = event.target.closest("tr").querySelectorAll("figcaption")[0].innerHTML.toLowerCase();
@@ -18,4 +17,8 @@
                 updateInventory('ArhceryShop');
             }       
         });
+    }
+    
+    function hello() {
+        console.log('external js');
     }

@@ -96,7 +96,6 @@
         }
         var data = "model=Stockpile" + "&method=updateInventory" + "&item=" + item + "&insert=" + '1' + "&quantity=" + quantity;
         ajaxP(data, function(response) {
-            console.log(response[1]);
             if(response[0] !== false) {
                 updatePage();
             }

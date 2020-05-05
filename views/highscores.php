@@ -67,7 +67,7 @@
                             <td> Experience </td>
                         </tr>
                     </thead>
-                    <?php for($i = 0; $i < 15; $i++): ?>
+                    <?php for($i = 0; $i < 10; $i++): ?>
                         <?php if(empty($this->data['miner_highscores'][$i])): ?>
                             <tr>
                                 <td> - </td>

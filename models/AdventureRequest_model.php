@@ -119,12 +119,12 @@
             require('../' . constant('ROUTE_HELPER') . 'message_templates.php');
             switch($route) {
                 case 'request':
-                    $title = "Adventure request:";
+                    $title = "Adventure request";
                     $text = $message_templates['adventure_request'];
                     $receiver = $row['adventure_leader'];
                     break;
                 case 'invite':
-                    $title = "Adventure invite:";
+                    $title = "Adventure invite";
                     $text = $message_templates['adventure_invite'];
                     $receiver = $invitee;
                     break;

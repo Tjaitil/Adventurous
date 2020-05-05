@@ -16,6 +16,9 @@
         </ul>
     </div>
     </div>
+    <?php if($data['stockpile_insert'] === 'true'): ?>
+        <p> NOTE: One or more of your rewards are inserted directly into your stockpile </p>
+    <?php endif;?>
         <table id="adventure_stats"s>
             <thead>
                 <tr>

@@ -77,9 +77,9 @@
             }
         }
           private function error() {
-              require_once($this->controllerPath . $this->errorFile);
+              /*require_once($this->controllerPath . $this->errorFile);
               $this->controller = new notfound();
-              $this->controller->index();
+              $this->controller->index();*/
           }
        }
 ?>

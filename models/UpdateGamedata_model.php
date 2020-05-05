@@ -21,7 +21,7 @@
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $count = $stmt->rowCount();
             
-            if(count($this->session['inventory']) === 19 && $count === 0) {
+            if(count($this->session['inventory']) === 18 && $count === 0) {
                 throw new Exception("This is an error! inv_amount");
             }
             

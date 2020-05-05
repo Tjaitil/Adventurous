@@ -3,7 +3,8 @@
     padding:0;
 }
 body {
-    margin: 10px 8% 0px 8%;
+    padding: 10px 8% 0px 8%;
+    background-color: #120e07;
     /*font-family: 'Source Sans Pro', 'bold';*/
     font-family: 'Martel', serif;
     /*background-color: #000033;*/
@@ -36,7 +37,7 @@ section table {
     border-collapse: collapse;
     border: 3px ridge #5f4121;
 }
-section table td {
+section table td, th {
     padding: 8px;
     background-color: #f2e6d9;
 }
@@ -174,29 +175,32 @@ button:focus {outline:0;}
     border: 2px solid black;
 }
 #hunger {
-    width: 49%;
-    margin-bottom: 3px;
+    width: 162px;
+    height: 40px;
+    margin-bottom: 6px;
+    background-color: #f2e6d9;
+    padding: 10px 0px 0px 5px;
 }
 .hunger_state {
-    width: 10px;
-    height: 10px;
-    border: 1px solid blue;
+    width: 15px;
+    height: 15px;
+    border: 1px solid #e68a00;
     margin: 1px;
     float: left;
 }
 #announcement {
-    width:300px;
-    height:500px;
+    width: 300px;
+    height: 500px;
     box-shadow: 3px 3px 12px 18px black;
     background-color: #CCCCCC;
-    border:1px solid black;
+    border: 1px solid black;
     visibility: hidden;
     z-index: 2;
     position: absolute;
-    top:100px;
-    right:0;
-    bottom:0;
-    left:0;
+    top: 100px;
+    right: 0;
+    bottom: 0;
+    left: 0;
     margin: auto;
 }
 #announcement button {
@@ -431,7 +435,7 @@ button:focus {outline:0;}
     border-top-right-radius: 25px 50%;
     border-bottom-right-radius: 25px 50%;
     width: 55%;
-    margin: 0 auto 10px auto;
+    margin: 10px auto 10px auto;
 }
 /*width*/
 ::-webkit-scrollbar {

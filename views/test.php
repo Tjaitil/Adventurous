@@ -1,20 +1,23 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title><?php echo $title;?></title>
-        <?php require(constant('ROUTE_VIEW') . 'head.php');?>
-        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name ?>.css" />
-    </head>
-    <body>
-        <header>
-            <?php require(constant('ROUTE_VIEW') . 'header.php'); ?>
-        </header>
-        <section>
-            <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
-            <h3 class="page_title"> Townhall </h3>
-            <p> Current diplomacy relation: <?php echo $_SESSION['gamedata']['location'], ', ' , 
-            $this->data['diplomacy'][0]; ?></p>
-            <div id="favor">
+
+            <h3 class="page_title"><?php echo $title;?></h3>
+            <div id="trades">
+                <div>
+                </div>
+                <div id="do_trade">
+                    <div id="selected_trade">
+                    
+                    </div>
+                    <label for="amount"> Amount </label><br>
+                    <input type="number" id="amount" name="amount" /><br>
+                    <label for="bond"> Use bond? </label><br>
+                    <input type="checkbox" id="bond" name="bond" /><br>
+                    <button> Trade </button>
+                </div>
+            </div>
+            <div id="inventory">
+                    <?php require('../' . constant('ROUTE_VIEW') . 'inventory.php'); url();?>
+            </div>
+            <div id="trader">
                 <table>
                     <thead>
                         <tr>
@@ -28,7 +31,6 @@
                         </tr>
                     </thead>
                     <tr>
-                        <?php get_template('assignment', $this->data['favor_assignments']);?>
                     </tr>
                 </table>
                 <div id="assignment">
@@ -42,11 +44,3 @@
                     </div>
                 </div>
             </div>
-            <script src="<?php echo constant('ROUTE_JS') . $name . '.js';?>"></script>
-            <script src="<?php echo constant('ROUTE_JS') . 'trader.js';?>"></script>
-        </section>
-        <aside>
-            <?php require(constant('ROUTE_VIEW') . '/aside.php'); ?>
-        </aside>
-    </body>
-</html>

@@ -51,7 +51,7 @@
             </div>
             <div id="countdowns">
                 <table>
-                    <caption> Countdowns: </caption>
+                    <caption> Countdowns </caption>
                     <thead>
                         <tr>
                             <td> Profiency </td>
@@ -85,11 +85,11 @@
             </div>
             <div id="diplomacy">
                 <table>
-                    <caption> Diplomacy: </caption>
+                    <caption> Diplomacy </caption>
                     <thead>
                         <tr>
-                            <td> Location: </td>
-                            <td> Diplomacy: </td>
+                            <td> Location </td>
+                            <td> Diplomacy </td>
                         </tr>
                     </thead>
                     <tr>

@@ -97,8 +97,32 @@
                  "visible":true,
                  "width":64,
                  "x":512,
-                 "y":1760
-                }, 
+                 "y":2000
+                },
+                {
+                 "gid":19,
+                 "height":64,
+                 "id":113,
+                 "name":"",
+                 "rotation":0,
+                 "type":"tree_pix2",
+                 "visible":true,
+                 "width":64,
+                 "x":450,
+                 "y":2000
+                },
+                {
+                 "gid":19,
+                 "height":64,
+                 "id":113,
+                 "name":"",
+                 "rotation":0,
+                 "type":"tree_pix2",
+                 "visible":true,
+                 "width":64,
+                 "x":512,
+                 "y":2050
+                },
                 {
                  "gid":19,
                  "height":64,

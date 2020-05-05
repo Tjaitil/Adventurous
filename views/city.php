@@ -32,6 +32,13 @@
             <button type="button" onkeydown="" onkeyup=""> Up </button>
             <button type="button" onkeydown="" onkeyup=""> Down </button>
             <button type="button" onkeydown="" onkeyup=""> Right </button>
+            <button type="button" onclick="fetch();"> saop </button>
+            <div id="demo">
+                
+            </div>
+            <div id="demo2" style="width:50px;height:50px;border:1px solid black;">
+                
+            </div>
             <script src="<?php echo constant('ROUTE_JS') .'game.js';?>"></script>
         </section>
         <aside>

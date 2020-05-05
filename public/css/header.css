@@ -44,6 +44,7 @@ header {
 }
 .top_bar {
     width: 15%;
+    min-width: 80px;
     margin:0px 0px 10px 0px;
     position: relative;
     display: inline-block;
@@ -106,6 +107,9 @@ header {
     #nav_but {display: block};
 }
 @media all and (max-width: 1240px) {
+    .top_bar {
+        margin: 5px 0px 0px 0px;
+    }
     .top_a {
         display: none;
     }

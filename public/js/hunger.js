@@ -9,7 +9,7 @@ function calculateHunger() {
             var spans = document.getElementById("hunger").querySelectorAll("span");
             for(var i = 0; i < 8; i++) {
                 if(sum < responseText) {
-                    spans[i].style.backgroundColor = "blue";
+                    spans[i].style.backgroundColor = "#e68a00";
                 }
                 else {
                     spans[i].style.backgroundColor = "transparent";

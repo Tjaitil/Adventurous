@@ -210,10 +210,22 @@
         
             try {
                 $this->db->conn->beginTransaction();
+                
+                
+                // If the new count after transaction is above 18 include Stockpile_model to directly insert items into stockpile
+                if(count($this->session['inventory']) + count($rewards) > 18) {
+                    $Stockpile_model = $this->loadModel('Stockpile', true);
+                }
+                
                 /*
                 foreach($rewards as $key) {
                     // Update inventory
-                    $this->UpdateGamedata->updateInventory($key['item'], $key['amount'], true);
+                    if(count($_SESSION['gamedata']['inventory']) + 1 > 18) {
+                        $Stockpile_model->updateStockpile($key['item'], $key['amount']);  
+                    }
+                    else {
+                        $this->UpdateGamedata->updateInventory($key['item'], $key['amount'], true);    
+                    }
                 }
                 
                 if($crystal_chance ===x 1) {
@@ -273,11 +285,13 @@
             }
             $this->adventure_data['user_xp'] = $xp_data['user_xp'];
             $this->adventure_data['role'] = $role;
+            
             // get_template to show user
             get_template('adventure_rewards', array('adventure_data' => $this->adventure_data,
                                                     'rewards' => $rewards,
                                                     'statistics' => $this->battle_statistics,
-                                                    'warrior_xp' => $warrior_xp), true);
+                                                    'warrior_xp' => $warrior_xp, 'stockpile_insert' =>
+                                                    (isset($Stockpile_model)) ? 'true' : 'false'), true);
             
             $this->db->closeConn();
         }
