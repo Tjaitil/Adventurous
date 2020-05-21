@@ -1,0 +1,20 @@
+{
+    "objects": [
+                {
+                 "gid":134,
+                 "height":24,
+                 "id":239,
+                 "name":"",
+                 "diameterTop": 273,
+                 "diameterRight": 832,
+                 "diameterDown": 297,
+                 "diameterLeft": 800,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":800,
+                 "y":265
+                }
+    ]
+}

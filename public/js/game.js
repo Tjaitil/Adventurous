@@ -44,7 +44,7 @@ function move() {
     }
     var inBuilding = false;
     var world = new Image(2000, 1000);
-    world.src = "public/img/pixela 3.png";
+    world.src = "public/img/pixelat.png";
     console.log(world);
     var player_img = new Image(32, 32);
     player_img.src = "public/img/character test3.png";
@@ -52,6 +52,8 @@ function move() {
     tree_img.src = "public/img/tree_pix2.png";
     var smithy_img = new Image(128, 128);
     smithy_img.src = "public/img/smithy pix.png";
+    var character = new Image(96, 128);
+    character.src = "public/img/character sprite.png";
     var player;
     var obstaclesPos = [];
     var obstaclesSize = [];
@@ -78,14 +80,24 @@ function move() {
     var fps;
     var keys = [];
     var interval = false;
-    var xpos = xbase;
-    var ypos = ybase;
+    // xpos and ypos is the position of the player in the world
+    var xpos = xbase + xMovement;
+    var ypos = ybase + yMovement;
     var animationEnd = true;
     // Scale is a variable which compensates for the canvas being zoomed in so that objects drawn on canvas will follow the background.
     // 1 is normal then the picture will be painted in 1024 width and height.
     var scale = 1;
     var render = 0;
-    
+    var gamePause = false;
+    var loopIndex = 0;
+    var counter = 0;
+    var direction = 'none';
+    var colors = ['#4d4dff', '#0000b3', '#000033'];
+    var loopArray = [0, 1, 0, 2];
+    var indexX = 32;
+    var indexY = 0;
+    var oldXbase;
+    var oldYbase;
         
     function draw(mx, my, sx, sy) {
         var ctx = game.properties.context;
@@ -96,6 +108,8 @@ function move() {
     
     game = {};
     document.addEventListener('DOMContentLoaded', function() {
+        game.properties.canvasHeight = document.getElementById("game_canvas").height;
+        game.properties.canvasWidth = document.getElementById("game_canvas").width;
         game.loadWorld();
         inactivityTime();
     });
@@ -110,9 +124,15 @@ function move() {
         ajaxG(data, function(response) {
             var responseText = response[1];
             if(response[0] != false) {
-                /*var obj = JSON.parse(responseText);*/
-                var objLayers = [];
-                console.log(responseText);
+                var obj = JSON.parse(responseText);
+                gamePieces.links = obj['links'];
+                gamePieces.objects = obj['objects'];
+                console.log(gamePieces.objects);
+                for(var i = 0; i < gamePieces.objects.length; i++) {
+                    gamePieces.objects[i].img = new Image(gamePieces.objects[i].width, gamePieces.objects[i].height);
+                    gamePieces.objects[i].img.src = "public/img/" + gamePieces.objects[i].src;
+                }
+                console.log(gamePieces.objects);
                 /* gamePieces.objects = responseText['objects'];
                  * gamePieces.buildings = responseText['buildings'];
                 /*for(var i = 0; i < obj.layers.length; i++) {
@@ -145,6 +165,8 @@ function move() {
     };
     game.properties = {
         context: document.getElementById("game_canvas").getContext("2d"),
+        canvasWidth: document.getElementById("game_canvas").width,
+        canvasHeight: document.getElementById("game_canvas").height,
         requestId: null
     };
     game.controls = {
@@ -153,6 +175,7 @@ function move() {
         right: false,
         down: false
     };
+    console.log(document.getElementById("game_canvas").width);
     game.loadChunk = function(x, y, xpos, ypos) {
         /*var data = "model=worldLoader" + "&method=loadChunks" + "&xMapMin=" + xMapMin + "&yMapMin=" + yMapMin + "&xbase=" + xpos +  "&ybase=" + ypos;
         ajaxG(data, function(response) {
@@ -185,30 +208,30 @@ function move() {
         game.properties.context.drawImage(world, 0 + xMovement, 0 + yMovement, 1024 * scale, 1024 * scale, 0, 0, 1024, 1024);
         game.loadGamePieces();
         gamePieces.player.first();
+        player = gamePieces.player;
         game.properties.requestId = window.requestAnimationFrame(game.update);
         if(world.complete) {
             console.log("loaded");
+            game.updateGamePiece();
         }
-        console.log(player_img);
     };
     console.log(gamePieces.objects);
     game.loadGamePieces = function() {
-        var list = [];
+        /*var list = [];
         list.push(["obstc1", 240, 0, 20, 20, "red"]);
         list.push(["obstc1", 0, 192, 64, 512, "none"]);
         /*list.push(["obstc1", 0, 256, 64, 64, "yellow"]);
         list.push(["obstc1", 0, 320, 64, 64, "yellow"]);
         list.push(["obstc1", 0, 384, 64, 64, "none"]);
         list.push(["obstc1", 0, 448, 64, 64, "yellow"]);*/
-        /*list.push(["obstc1", 500, 448, 3, 64, "orange"]);*/
+        /*list.push(["obstc1", 500, 448, 3, 64, "orange"]);
         list.push(["obstc1", 192, 320, 64, 32, "red"]);
-        /*list.push(["obstc1", 288, 288, 32, 320, "purple"]);*/
+        list.push(["obstc1", 288, 288, 32, 320, "purple"]);
         list.push(["obstc1", 640, 640, 64, 64, "pink"]);
         list.push(["obstc1", 1024, 294, 112, 90, "blue"]);
         list.push(["obstc1", 1104, 384, 48, 32, "red"]);
         list.push(["obstc1", 1024, 384, 32, 32, "orange"]);
         
-        console.log(list);
         var links = [];
         links.push(["link2", 624, 240, 32, 48, "orange", "towhar"]);
         links.push(["link3", 1065, 368, 32, 48, "pink", "towhar"]);
@@ -223,31 +246,61 @@ function move() {
         for(var x = 0; x < links.length; x++) {
             gamePieces.links[x] = new gameLinks(links[x][0], links[x][1], links[x][2], links[x][3],
                                                                           links[x][4], links[x][5], links[x][6]);
-        }
-        console.log(gamePieces.links);
+        }*/
     };
     var inactivityTime = function () {
-        console.log('hello');
         var time;
-        document.onkeypress = resetTimer;
+        document.onkeydown = resetTimer;
 
         function pauseGame() {
-            console.log('pauseGame');
+            if(game.controls.down == false && game.controls.left == false &&
+               game.controls.right == false && game.controls.up == false) {
+                return false;
+            }
             ctx = game.properties.context;
             ctx.font = "30px Comic Sans MS";
-            ctx.fillStyle = "red";
+            ctx.fillStyle = "pink";
             ctx.textAlign = "center";
-            ctx.fillText("Game Paused", 500 / 2, 250);
+            ctx.fillText("Game Paused", game.properties.canvasWidth / 2, game.properties.canvasHeight / 2);
+            ctx.font = "20px Comic Sans MS";
+            ctx.fillText("Press any key to continue", game.properties.canvasWidth / 2, game.properties.canvasHeight / 2 + 35);
             window.cancelAnimationFrame(game.properties.requestId);
+            gamePause = true;
         }
-
         function resetTimer() {
-            console.log('reset');
             clearTimeout(time);
-            time = setTimeout(pauseGame, 30000)
+            time = setTimeout(pauseGame, 10000);
             // 1000 milliseconds = 1 second
         }
     };
+    function gameText(text) {
+        let canvas = document.getElementById("game_canvas");
+        let game_text = document.getElementById("game_text");
+        game_text.style.top = canvas.offsetTop + 125 + "px";
+        game_text.style.visibility = "visible";
+        console.log(game_text.style.top);
+        game_text.innerHTML = text;
+        let opa = 0.2;
+        const x = setInterval(opacity, 100);
+        function opacity () {
+            console.log(x);
+            opa = game_text.style.opacity = opa + 0.1;
+            if(opa > 1) {
+                clearInterval(x);
+            }
+        }
+        setTimeout(hideText, 3000);
+    }
+    function hideText() {
+        let game_text = document.getElementById("game_text");
+        game_text.innerHTML = "";
+        game_text.style.visibility = "hidden";
+    }
+    function resumeGame() {
+        inactivityTime();
+        gamePause = false;
+        game.properties.requestId = window.requestAnimationFrame(game.update);
+    }
     function gameObstacle (name, x, y, width, height, style) {
         this.name = name;
         this.x = x;
@@ -314,11 +367,16 @@ function move() {
             player.diameterRight = xbase + (xMovement / scale) + width;
             player.diameterDown = ybase + (yMovement / scale) + height;
             player.diameterLeft = xbase + (xMovement / scale);
+            
+            
             ctx = game.properties.context;
             ctx.drawImage(player_img, charX, charY);
         };
     }
     window.addEventListener('keydown', function (e) {
+        if(gamePause == true) {
+            resumeGame();
+        }
         switch(e.keyCode) {
             case 37:
                 game.controls.left = true;
@@ -353,9 +411,9 @@ function move() {
     }, false);
     game.updateGamePiece = function() {
             /*console.log("objects :" + gamePieces.objects.length);*/
-            var visibleObjects = gamePieces.objects.filter(function(object) {
+            /*var visibleObjects = gamePieces.objects.filter(function(object) {
                 return (Math.abs(ybase + object.y) < 360) && (Math.abs(object.x - xpos) > 100);
-            });
+            });*/
             
             /* obstaclesPos indexes
                 0 = default x position
@@ -367,29 +425,39 @@ function move() {
                 6 = width of obstacle
                 7 = height of obstacle
             */
-            for(var i = 0; i < obstaclesPos.length; i++) {
+            
+            
+            // IMPORTANT!
+            // Using fillRect, canvas will render element from top down. Meaning y = 0 is top of y
+            // Using drawImage, canvas will render element from bottom down.
+            
+            ctx.fillStyle = "red";
+            ctx.fillRect(1440 - (xMovement / scale), 608- (yMovement / scale),
+                             128, 128);
+            ctx.fillStyle = "blue";
+            ctx.fillRect(802 - (xMovement / scale), 273 - (yMovement / scale),
+                             32, 24);
+            for(var i = 0; i < gamePieces.objects.length; i++) {
                 ctx = game.properties.context;
-                if(gamePieces.obstacles[i].style != 'none') {
-                    ctx.fillStyle = gamePieces.obstacles[i].style;
-                    /*ctx.fillRect(obstaclesPos[i][0] - xMovement, obstaclesPos[i][1] - yMovement,
-                             obstaclesSize[i][0], obstaclesSize[i][1]);*/
-                    ctx.fillRect(obstaclesPos[i][0] - (xMovement / scale), obstaclesPos[i][1] - (yMovement / scale),
-                             obstaclesPos[i][6], obstaclesPos[i][7]);    
+                if(typeof gamePieces.objects[i].src === 'undefined') {
+                    ctx.fillStyle = "red";
+                    ctx.fillRect(gamePieces.objects[i].x - (xMovement / scale), gamePieces.objects[i].y - (yMovement / scale),
+                             gamePieces.objects[i].width, gamePieces.objects[i].height);    
                 }
+                else {
+                    ctx.drawImage(gamePieces.objects[i].img, gamePieces.objects[i].x - (xMovement / scale),
+                                  gamePieces.objects[i].y - 128 - (yMovement / scale));
+                }
+                
             }
-            ctx = game.properties.context;
-            /*console.log("tree x: " + (192 - xMovement / scale));
-            console.log("tree y: " + (288 - yMovement / scale));*/
-            ctx.drawImage(tree_img, 192 - xMovement, 288 - yMovement);
-            ctx.drawImage(smithy_img, 1024 - xMovement, 288 - yMovement);
-            for(var x = 0; x < linksPos.length; x++) {
+            /*for(var x = 0; x < linksPos.length; x++) {
                 //Change xpos and ypos for links
                 ctx = game.properties.context;
                 /*ctx.drawImage(gamePieces.links[x].img, linksPos[x][0] - xMovement, linksPos[x][1] - yMovement, 400, 400);*/
                 /*ctx.translate(linksPos[x][0] - xMovement, linksPos[x][1] - yMovement);*/
-                ctx.fillStyle = gamePieces.links[x].style;
+                /*ctx.fillStyle = "none";
                 ctx.fillRect(linksPos[x][0] - xMovement, linksPos[x][1] - yMovement, linksPos[x][6], linksPos[x][7]);
-            }
+            }*/
     };
     game.viewport = {
         counter: 0,
@@ -397,20 +465,13 @@ function move() {
             ctx = game.properties.context;
             ctx.clearRect(-xMovement, -yMovement, 500, 300);
             ctx.save();
-            
             //Draw world and translate the image according to players movement
             ctx.drawImage(world, 0 + xMovement, 0 + yMovement, 1024 * scale, 1024 * scale, 0, 0, 1024, 1024);
             /*ctx.translate(xbase - xMovement, ybase - yMovement);*/
             ctx.restore();
             xpos = xbase + (xMovement / scale);
             ypos = ybase + (yMovement / scale);
-            /*ctx.fillStyle = gamePieces.obstacles[0].style;
-            ctx.fillRect(obstaclesPos[0][0] - xMovement, obstaclesPos[0][1] - yMovement,
-                             obstaclesSize[0][0], obstaclesSize[0][1]);*/
-            /*console.log(xpos + " : " + ypos);*/
             ctx.drawImage(player_img, charX, charY);
-            /*game.properties.context.fillStyle = "#0000A0";
-            game.properties.context.fillRect(xbase, ybase, player.width, player.height);*/
         },
     };
     game.calculateDistance = function() {
@@ -424,37 +485,46 @@ function move() {
                             fetch();    
                         }
                         return;
-                }
+                    }
             }
         }
-        
+        /* obstaclesPos indexes
+                0 = default x position
+                1 = default y position
+                2 = diameter top
+                3 = diameter right
+                4 = diameter bottom
+                5 = diameter left
+                6 = width of obstacle
+                7 = height of obstacle
+            */
         // Collision detection, if user is less than 3px from object prevent movement
-        for(i = 0; i < obstaclesPos.length; i++) {
-           if(Math.abs(player.diameterDown - obstaclesPos[i][2]) <= 1 &&
-              player.diameterRight >= obstaclesPos[i][5] && 
-              player.diameterLeft <= obstaclesPos[i][3]) {
+        for(i = 0; i < gamePieces.objects.length; i++) {
+           if(Math.abs(player.diameterDown - gamePieces.objects[i].diameterTop) <= 1 &&
+              player.diameterRight >= gamePieces.objects[i].diameterLeft && 
+              player.diameterLeft <= gamePieces.objects[i].diameterRight) {
                 player.down = "blocked";
            }
-           if(Math.abs(player.diameterRight - obstaclesPos[i][5]) <= 1 &&
-              player.diameterTop <= obstaclesPos[i][4] &&
-              player.diameterDown >= obstaclesPos[i][2]) {
+           if(Math.abs(player.diameterRight - gamePieces.objects[i].diameterLeft) <= 1 &&
+              player.diameterTop <= gamePieces.objects[i].diameterDown &&
+              player.diameterDown >= gamePieces.objects[i].diameterTop) {
                 player.right = "blocked";
            }
-           if(Math.abs(player.diameterTop - obstaclesPos[i][4]) <= 1 &&
-              player.diameterRight >= obstaclesPos[i][5] &&
-              player.diameterLeft <= obstaclesPos[i][3]) {
+           if(Math.abs(player.diameterTop - gamePieces.objects[i].diameterDown) <= 1 &&
+              player.diameterRight >= gamePieces.objects[i].diameterLeft &&
+              player.diameterLeft <= gamePieces.objects[i].diameterRight) {
                 player.top = "blocked";
            }
-           if(Math.abs(player.diameterLeft - obstaclesPos[i][3]) <= 1 &&
-              player.diameterTop <= obstaclesPos[i][4] &&
-              player.diameterDown >= obstaclesPos[i][2]) {
+           if(Math.abs(player.diameterLeft - gamePieces.objects[i].diameterRight) <= 1 &&
+              player.diameterTop <= gamePieces.objects[i].diameterDown &&
+              player.diameterDown >= gamePieces.objects[i].diameterTop) {
                 player.left = "blocked";
            }
         }
             if(game.controls.left && player.left == "blocked") {
                 player.speedX = 0;
             }
-            if (game.controls.right && player.right == "blocked") {
+            if(game.controls.right && player.right == "blocked") {
                 player.speedX = 0;
             }
             if(game.controls.down && player.down == "blocked") {
@@ -468,7 +538,6 @@ function move() {
             yMovement += player.speedY;
     };
     game.update = function () {
-        player = gamePieces.player;
         player.speedX = 0;
         player.speedY = 0;
         if(game.controls.left == true) {
@@ -488,21 +557,13 @@ function move() {
             game.viewport.draw();
             player.newPos();
             game.updateGamePiece(xbase, ybase);
-            characterAnimation();    
+            characterAnimation();      
         }
         else if(animationEnd != true) {
-            console.log('false');
             characterAnimation();
         }
         game.properties.requestId = window.requestAnimationFrame(game.update);
     };
-    var loopIndex = 0;
-    var counter = 0;
-    var direction = 'none';
-    var colors = ['#4d4dff', '#0000b3', '#000033'];
-    var oldXbase;
-    var oldYbase;
-
 
     function trst12() {
         // Scale ?
@@ -524,25 +585,39 @@ function move() {
     }
     
     function characterAnimation() {
-        var div = document.getElementById("demo");
-        var newDirection = 'none';
+        let div = document.getElementById("demo");
+        var newdirection = 'none';
         if(game.controls.left == true && game.controls.down == true) {
             div.innerHTML = newdirection = 'left, down';
         }
-        if(game.controls.left == true && game.controls.up == true) {
+        /*if(game.controls.left == true && game.controls.up == true) {
             div.innerHTML = newdirection = 'left, up';
+            indexY = 96;
+        }*/
+        if(game.controls.right == true && game.controls.up == false && game.controls.down == false) {
+            div.innerHTML = newdirection = 'right';
+            ctx = game.properties.context;
+            indexY = 32;
+            console.log('character');
         }
         if(game.controls.left == true && game.controls.up == false && game.controls.down == false) {
             div.innerHTML = newdirection = 'left';
+            indexY = 64;
         }
         if(game.controls.right == true && game.controls.down == true) {
             div.innerHTML = newdirection = 'right, down';
+            indexY = 0;
         }
         if(game.controls.right == true && game.controls.up == true) {
             div.innerHTML = newdirection = 'right, top';
+            indexY = 96;
         }
         if(game.controls.right == true && game.controls.up == false && game.controls.down == false) {
             div.innerHTML = newdirection = 'right';
+            ctx = game.properties.context;
+            indexY = 32;
+            console.log('character');
+            
         }
         if(game.controls.down == true && game.controls.left == false && game.controls.right == false) {
             div.innerHTML = newdirection = 'down';
@@ -550,23 +625,31 @@ function move() {
         if(game.controls.up == true && game.controls.left == false && game.controls.right == false) {
             div.innerHTML = newdirection = 'top';
         }
+        
         if(game.controls.up == false && game.controls.left == false && game.controls.right == false && game.controls.down == false) {
             div.innerHTML = newdirection = 'none';
         }
-        if(newdirection != 'none' && ((oldYbase != (ybase + yMovement)) || (oldXbase != (xbase + xMovement)))) {
-            if(direction != newDirection && counter % 20 == 0) {
+        ctx2 = document.getElementById("game_canvas2").getContext("2d");
+        if(newdirection != 'none' && ((oldYbase != ypos) || (oldXbase != xpos))) {
+            if(newdirection != 'none' && counter % 25 == 0) {
+                ctx2.clearRect(0, 0, 700, 700);
                 loopIndex = 0;
                 div.innerHTML += loopIndex;
                 document.getElementById("demo2").style.backgroundColor = colors[loopIndex];
+                ctx2.drawImage(character, indexX * loopArray[loopIndex], indexY, 32, 32, 32, 32, 32, 32);
                 loopIndex++;
             }
-            else if(counter % 20 == 0) {
+            else if(newdirection != direction) {
+                ctx2.clearRect(0, 0, 700, 300);
+                console.log(loopIndex);
                 div.innerHTML += loopIndex;
                 document.getElementById("demo2").style.backgroundColor = colors[loopIndex];
+                ctx2.drawImage(character, indexX * loopIndex, indexY, 32, 32, 32, 32, 32, 32);
+                console.log(indexX * loopIndex);
                 loopIndex++;
             }
             if(loopIndex == 3 && newdirection != 'none') {
-                loopIndex = 0;
+                loopIndex = 1;
             }
             counter++;
             animationEnd = false;
@@ -575,8 +658,9 @@ function move() {
             document.getElementById("demo2").style.backgroundColor = "#FFFFFF";
             animationEnd = true;
         }
-        oldYbase = ybase + yMovement;
-        oldXbase = xbase + xMovement;
+        oldYbase = ypos;
+        oldXbase = xpos;
+        div.appendChild(character);
      }
     // Render player at specific locations
     function renderPlayer(x, y) {
@@ -594,7 +678,3 @@ function move() {
             game.updateGamePiece(xbase, ybase);
         }
     }
-
-    /*
-    console.log("Objects rendered: " + visibleObjects.length);
-    console.log(visibleObjects);*/

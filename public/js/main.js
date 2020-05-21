@@ -60,3 +60,32 @@
             }
         }); 
     }
+    
+
+
+    var data = [];
+    
+    function add() {
+      console.log('ADD');
+      data.push(number1);
+      data.push(number2);
+      console.log(data);
+    }
+    
+    
+    function callFunction() {
+        for(let i = 0; i < data.length; i++) {
+            console.log(data[i]);
+            data[i]();
+        }
+    }
+    
+    function number1() {
+      console.log(1);
+    }
+    function number2() {
+      console.log(2);
+    }
+    function number3() {
+      console.log(3);
+    }

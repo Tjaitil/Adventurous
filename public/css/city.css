@@ -4,10 +4,21 @@
     display: inline-block;
     border: 1px solid black;
 }
-
 .building_link img {
     text-align: right;
     line-height: 50%;
     width: 100%;
     height: 100%;
+}
+#game_text {
+    background-color: transparent;
+    border-bottom: 2px solid white;
+    border-top: 2px solid white;
+    color: white;
+    width: 700px;
+    padding: 5px 0px 5px 0px;
+    margin:  auto;
+    position: absolute;
+    visibility: hidden;
+    opacity: 0;
 }

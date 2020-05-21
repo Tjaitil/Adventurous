@@ -28,6 +28,10 @@
             </div>
             <p>Frames per second: <span id="frames"></span></p>
             <canvas id="game_canvas" width="700" height="400"></canvas>
+            <canvas id="game_canvas2" width="700" height="400"></canvas>
+            <div id="game_text">
+
+            </div>
             <button type="button" onkeydown="" onkeyup=""> Left </button>
             <button type="button" onkeydown="" onkeyup=""> Up </button>
             <button type="button" onkeydown="" onkeyup=""> Down </button>
