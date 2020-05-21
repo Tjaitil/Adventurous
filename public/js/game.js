@@ -65,10 +65,10 @@ function move() {
     var yMovement2 = 0;
     //
     var xbase = 320;
-    var ybase = 320;
+    var ybase = 150;
     // charX and charY where the character is drawn on canvas (middle);
     var charX = 320;
-    var charY = 320;
+    var charY = 150;
     // MapMin/MapMax variables holds the coordinates of furtherst loaded chunks
     var xMapMin = xbase - 320;
     var xMapMax = xbase + 320;
@@ -215,7 +215,6 @@ function move() {
             game.updateGamePiece();
         }
     };
-    console.log(gamePieces.objects);
     game.loadGamePieces = function() {
         /*var list = [];
         list.push(["obstc1", 240, 0, 20, 20, "red"]);
@@ -273,6 +272,8 @@ function move() {
             // 1000 milliseconds = 1 second
         }
     };
+    console.log(document.getElementById("game_canvas"));
+    
     function gameText(text) {
         let canvas = document.getElementById("game_canvas");
         let game_text = document.getElementById("game_text");
@@ -370,7 +371,7 @@ function move() {
             
             
             ctx = game.properties.context;
-            ctx.drawImage(player_img, charX, charY);
+            /*ctx.drawImage(player_img, charX, charY);*/
         };
     }
     window.addEventListener('keydown', function (e) {
@@ -471,7 +472,7 @@ function move() {
             ctx.restore();
             xpos = xbase + (xMovement / scale);
             ypos = ybase + (yMovement / scale);
-            ctx.drawImage(player_img, charX, charY);
+            /*ctx.drawImage(player_img, charX, charY);*/
         },
     };
     game.calculateDistance = function() {
@@ -596,9 +597,7 @@ function move() {
         }*/
         if(game.controls.right == true && game.controls.up == false && game.controls.down == false) {
             div.innerHTML = newdirection = 'right';
-            ctx = game.properties.context;
             indexY = 32;
-            console.log('character');
         }
         if(game.controls.left == true && game.controls.up == false && game.controls.down == false) {
             div.innerHTML = newdirection = 'left';
@@ -614,15 +613,14 @@ function move() {
         }
         if(game.controls.right == true && game.controls.up == false && game.controls.down == false) {
             div.innerHTML = newdirection = 'right';
-            ctx = game.properties.context;
             indexY = 32;
-            console.log('character');
-            
         }
-        if(game.controls.down == true && game.controls.left == false && game.controls.right == false) {
+        if(game.controls.down == true) {
+            indexY = 0;
             div.innerHTML = newdirection = 'down';
         }
-        if(game.controls.up == true && game.controls.left == false && game.controls.right == false) {
+        if(game.controls.up == true) {
+            indexY = 96;
             div.innerHTML = newdirection = 'top';
         }
         
@@ -631,31 +629,35 @@ function move() {
         }
         ctx2 = document.getElementById("game_canvas2").getContext("2d");
         if(newdirection != 'none' && ((oldYbase != ypos) || (oldXbase != xpos))) {
-            if(newdirection != 'none' && counter % 25 == 0) {
+            if(newdirection != 'none' && counter % 15 == 0) {
                 ctx2.clearRect(0, 0, 700, 700);
-                loopIndex = 0;
-                div.innerHTML += loopIndex;
-                document.getElementById("demo2").style.backgroundColor = colors[loopIndex];
-                ctx2.drawImage(character, indexX * loopArray[loopIndex], indexY, 32, 32, 32, 32, 32, 32);
-                loopIndex++;
-            }
-            else if(newdirection != direction) {
-                ctx2.clearRect(0, 0, 700, 300);
                 console.log(loopIndex);
                 div.innerHTML += loopIndex;
                 document.getElementById("demo2").style.backgroundColor = colors[loopIndex];
-                ctx2.drawImage(character, indexX * loopIndex, indexY, 32, 32, 32, 32, 32, 32);
-                console.log(indexX * loopIndex);
+                ctx2.drawImage(character, indexX * loopArray[loopIndex], indexY, 32, 32, 320, 150, 32, 32);
                 loopIndex++;
             }
-            if(loopIndex == 3 && newdirection != 'none') {
-                loopIndex = 1;
+            else if(newdirection != direction) {
+                loopIndex = 0;
+                direction = newdirection;
+                ctx2.clearRect(0, 0, 700, 700);
+                div.innerHTML += loopIndex;
+                document.getElementById("demo2").style.backgroundColor = colors[loopIndex];
+                ctx2.drawImage(character, indexX * loopIndex, indexY, 32, 32, 320, 150, 32, 32);
+                console.log(indexX * loopIndex);
+                console.log("indexY" + indexY);
+                loopIndex++;
+            }
+            if(loopIndex == 4 && newdirection != 'none') {
+                loopIndex = 0;
             }
             counter++;
             animationEnd = false;
         }
         else {
             document.getElementById("demo2").style.backgroundColor = "#FFFFFF";
+            ctx2.clearRect(0, 0, 700, 700);
+            ctx2.drawImage(character, 0, indexY, 32, 32, 320, 150, 32, 32);
             animationEnd = true;
         }
         oldYbase = ypos;
