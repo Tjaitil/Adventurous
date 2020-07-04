@@ -1,22 +1,31 @@
 
-    document.getElementById("actions").children[1].addEventListener("change", toogleActions);
-    document.getElementById("actions").getElementsByTagName("button")[0].addEventListener("click", actions);
-    window.addEventListener("load", function() {
+    var warriorsIndex;
+    var warriors;
+    
+    
+    if(document.getElementById("news_content").children[3] != null) {
+        document.getElementById("actions").children[1].addEventListener("change", toogleActions);
+        document.getElementById("actions").getElementsByTagName("button")[0].addEventListener("click", actions);
         var warriors = document.getElementsByClassName("warrior");
         if(warriors.length > 0) {
             warriors = document.querySelectorAll(".warrior");
+            console.log(warriors);
             warriors.forEach(function(element) {
-            // ... code code code for this one element
-            element.addEventListener('click', function() {
-                selectWarrior();
+                // Add event to each .warrior class
+                console.log(element);
+                element.addEventListener('click', selectWarrior);
             });
-        });
         }
         getCountdown();
         calculateSkillbar();
-    });
-    var warriorsIndex;
-    var warriors;
+        let buttons = document.getElementById("news_content").querySelectorAll("button");
+        buttons[1].addEventListener("click", function() {
+            game.fetchBuilding('ArmyMissions'); 
+        });
+        buttons[2].addEventListener("click", function() {
+            game.fetchBuilding('Armory');
+        }); 
+    }
     function show(element) {
         var divs = ["overview", "calculator"];
         
@@ -183,7 +192,7 @@
                 offRest();
                 break;
             case 'training':
-                training(warriors, warriorsI);
+                training(warriors, warriorsIndex);
                 break;
             case 'changeType':
                 changeType(warriors);
@@ -352,13 +361,14 @@
         ajaxP(data, function(response) {
             if(response[0] !== false) {
                 console.log(response[1]);
-                var rT = response[1].split("|");
+                var responseText = response[1].split("|");
                 // Get correct div for the warrior
                 var warriorsD = document.getElementsByClassName("warrior");
                 var div = warriorsD[warriorsI[0]];
+                console.log("div");
                 div.querySelectorAll("tr").children[2].children[1].innerHTML = "Training";
                 // Call getCountdown with data from ajaxP and set intervalID to be cleared later
-                var interval_id = setInterval(getCountdown(rT['1'] * 1000, 0, warriorsI[0]), 1000);
+                var interval_id = setInterval(getCountdown(responseText['1'] * 1000, 0, warriorsI[0]), 1000);
                 intervalID['warrior_' + warriorsI[0]] = interval_id;
             }
         });

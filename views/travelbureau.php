@@ -1,19 +1,5 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title><?php echo $title;?></title>
-        <?php require(constant('ROUTE_VIEW') . 'head.php');?>
-        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name ?>.css" />
-    </head>
-    <body>
-        <header>
-            <?php require(constant('ROUTE_VIEW') . 'header.php');?>
-        </header>
-        <section>
-            <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
-            <div id="inventory">
-                <?php require(constant('ROUTE_VIEW') . 'inventory.php'); url();?>
-            </div>
+            travelbureau.css|travelbureau.js|
+            <h3 class="page_title"><?php echo $title;?></h3>
             <table id="horse_shop">
                 <thead><tr>
                     <td>Horse type</td>
@@ -21,7 +7,7 @@
                     <td>Stock</td>
                     <td></td>
                 </tr></thead>
-                <?php get_template('horseShop', $this->data); ?>
+                <?php get_template('horseShop', $data); ?>
             </table>
             <table id="cart_shop">
                 <thead>
@@ -36,12 +22,4 @@
                         <td></td>
                     </tr>
                 </thead>
-                <?php get_template('cartShop', $this->data); ?>
-            </table>
-            <script src="<?php echo constant('ROUTE_JS') . $name . '.js';?>"></script>
-        </section>
-        <aside>
-            <?php require(constant('ROUTE_VIEW') . 'aside.php');?>
-        </aside>
-    </body>
-</html>
+                <?php get_template('cartShop', $data); ?>

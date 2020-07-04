@@ -1,16 +1,4 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title><?php echo $title;?></title>
-        <?php require(constant('ROUTE_VIEW') . 'head.php');?>
-        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name ?>.css" />
-    </head>
-    <body>
-        <header>
-            <?php require(constant('ROUTE_VIEW') . 'header.php');?>
-        </header>
-        <section>
-            <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
+            workforcelodge.css||
             <h3 id="page_title">Workforce Lodge</h3></br>
             <div id="farmer_workers">
                 <p>Current efficiency level: <?php echo $this->data['farmer_workers']['efficiency_level'];?></p>
@@ -56,9 +44,3 @@
             </div>
             <a href="/tavern"> Hire more workers </a>
             <a href="/laboratory"> Upgrade workers </a>
-        </section>
-        <aside>
-            <?php require(constant('ROUTE_VIEW') . '/aside.php');?>
-        </aside>
-    </body>
-</html>

@@ -1,18 +1,14 @@
-    
-    window.addEventListener("load", function () {
+    if(document.getElementById("news_content").children[3] != null) {
         getCountdown();
         var img = document.getElementById("select").querySelectorAll("img");
         img.forEach(function(element) {
               // ... code code code for this one element
-                element.addEventListener('click', function() {
-                    showSelect();
-                });
+                element.addEventListener('click', showSelect);
             });
         document.getElementById("cancel").addEventListener("click", cancelMining);
         /*document.getElementById("mineral_select").getElementsByTagName("img").addEventListener("click", showMineral);*/
         document.getElementById("data_form").querySelectorAll("button")[0].addEventListener("click", setMine);
-    });
-    
+    }
     var intervals = [];
     function getCountdown() {
         document.getElementById("mining").innerHTML = "No miners at work";

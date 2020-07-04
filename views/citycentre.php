@@ -1,16 +1,4 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title><?php echo $title;?></title>
-        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name ?>.css" />
-        <?php require(constant('ROUTE_VIEW') . 'head.php');?>
-    </head>
-    <body>
-        <header>
-            <?php require(constant('ROUTE_VIEW') . 'header.php');?>
-        </header>
-        <section>
-            <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
+            citycentre.css|citycentre.js|
             <h3 class="page_title"> City Centre </h3>
             <button onclick="show('profiency');"> Profiency </button>
             <button onclick="show('keep');"> Keep </button>
@@ -34,11 +22,11 @@
             </div>
             <div id="keep">
                 <div id="artefact">
-                    <p> Current artefact: <?php echo ucfirst($this->data['artefact_data']['artefact']);?>
-                    <?php if($this->data['artefact_data']['artefact'] === 'none'): ?>
+                    <p> Current artefact: <?php echo ucfirst($data['artefact_data']['artefact']);?>
+                    <?php if($data['artefact_data']['artefact'] === 'none'): ?>
                         <img style="background-color:white;" />
                     <?php else: ?>
-                        <img src="<?php echo constant('ROUTE_IMG') . $this->data['artefact_data']['artefact'] . '.png';?>" />
+                        <img src="<?php echo constant('ROUTE_IMG') . $data['artefact_data']['artefact'] . '.png';?>" />
                     <?php endif;?>
                     </p>
                 </div>
@@ -96,26 +84,15 @@
                     </thead>
                     <tr>
                         <td> Farmer </td>
-                        <td><?php echo $this->data['effiency']['farmer'];?></td>
-                        <td><?php echo $this->data['effiency']['farmer'] * 150;?></td>
+                        <td><?php echo $data['effiency']['farmer'];?></td>
+                        <td><?php echo $data['effiency']['farmer'] * 150;?></td>
                         <td><button> Upgrade </button></td>
                     </tr>
                     <tr>
                         <td> Miner </td>
-                        <td><?php echo $this->data['effiency']['miner'];?></td>
-                        <td><?php echo $this->data['effiency']['miner'] * 150;?></td>
+                        <td><?php echo $data['effiency']['miner'];?></td>
+                        <td><?php echo $data['effiency']['miner'] * 150;?></td>
                         <td><button> Upgrade </button></td>
                     </tr>
                 </table>
             </div>
-            <div id="inventory">
-                <?php require(constant('ROUTE_VIEW') . 'inventory.php'); url();?>
-            </div>
-            <script src="<?php echo constant('ROUTE_JS') . $name . '.js';?>"></script>
-            <script src="<?php echo constant('ROUTE_JS') .'selectitem.js';?>"></script>
-        </section>
-        <aside>
-            <?php require(constant('ROUTE_VIEW') . 'aside.php');?>
-        </aside>
-    </body>
-</html>

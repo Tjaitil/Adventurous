@@ -9,7 +9,8 @@
                 break;
         }
     } ?>
-    <p> Stockpile: </p>
+    <p> Stockpile: </p><p><?php echo count($data['stockpile']), " / 60"?></p>
+
     <?php
     foreach($data['stockpile'] as $key): ?>
         <div class="stockpile_item" onpointerdown="show_menu();">
@@ -20,5 +21,4 @@
             <span class="item_amount"><?php echo amounts($key['amount']);?></span>
         </div>
     <?php endforeach; ?>
-    <p><?php echo count($data['stockpile']), " / 60"?></p>
 

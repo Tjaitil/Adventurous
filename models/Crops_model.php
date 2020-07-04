@@ -9,7 +9,6 @@
             $this->session = $session;
             $this->commonModels(true, false);
         }
-            
         public function getData() {
                 $data = array();
                 $sql = "SELECT fields_avail FROM farmer WHERE location=:location AND username=:username";

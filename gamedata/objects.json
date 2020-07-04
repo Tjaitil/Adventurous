@@ -1,4 +1,8 @@
 {
+    "name": "towhar",
+    "location": 0.1,
+    "xbase": 320,
+    "ybase": 150,
     "objects": [
         {
             "height": 32,

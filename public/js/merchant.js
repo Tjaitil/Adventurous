@@ -1,5 +1,5 @@
-    
-    window.onload = function () {
+
+    if(document.getElementById("news_content").children[3] != null) {
         var trades = document.getElementById("trades").querySelectorAll(".store_trade");
         trades.forEach(function(element) {
             // Add eventListener to each node
@@ -10,9 +10,7 @@
         var button = document.getElementById("do_trade").querySelectorAll("button")[0];
         button.addEventListener("click", buyItem);
         button.disabled = true;
-    };
-    
-    
+    }
     function selectTrade() {
         console.log(event.target.tagName);
         if(event.target.tagName == 'IMG') {

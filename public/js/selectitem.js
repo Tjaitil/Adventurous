@@ -1,6 +1,6 @@
-    if(document.getElementById("inventory") != null) {
+    /*if(document.getElementById("inventory") != null) {
         addSelectEvent(false);
-    }
+    }*/
     function select(element) {
         var img = element.cloneNode(true);
         /*img.removeAttribute("onclick");*/

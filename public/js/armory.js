@@ -1,8 +1,6 @@
-    
-    document.getElementById("selected").addEventListener("change", function() {
-        console.log("hello");
-    });
-    
+    function init() {
+        return;
+    }
     function toggleOption() {
         var element = document.getElementById("selected").children[0].children[1].innerHTML;
         if(element.search("Sword") != -1 || element.search("Dagger") != -1) {

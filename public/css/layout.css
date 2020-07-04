@@ -3,7 +3,7 @@
     padding:0;
 }
 body {
-    padding: 10px 8% 0px 8%;
+    padding: 10px 8%;
     background-color: #120e07;
     /*font-family: 'Source Sans Pro', 'bold';*/
     font-family: 'Martel', serif;
@@ -16,7 +16,7 @@ section {
     background: radial-gradient(#c99b69 70%, #4b341b);
     box-sizing: content-box;
     width: 82.8%;
-    min-height: 400px;
+    min-height: 700px;
     border: inset 2px;
     float: right;
     text-align: center;
@@ -26,6 +26,7 @@ section {
     overflow-x: hidden;
     overflow-y: hidden;
     position: relative;
+    margin-bottom: 10px;
 }
 section input {
     background-color: #e5cdb3;
@@ -227,17 +228,43 @@ button:focus {outline:0;}
 }
 #news_content {
     visibility: hidden;
-    height: 300px;
+    height: 500px;
     position: absolute;
-    margin: 2% 0% 2% 16%;
+    margin: 2% 0% 2% 0%;
     background-color: #d1a77a;
     z-index: 2;
-    width: 60%;
+    width: 68%;
     padding: 2%;
     overflow-y: scroll;
 }
 #news_content table {
     margin: 0 auto;
+}
+#sidebar {
+    background-color: blue;
+    float: left;
+    width: 200px;
+    height: 400px;
+    position: absolute;
+    transition: all 2s;
+}
+.sidebar_button {
+    
+}
+.sidebar_tab {
+    
+}
+#tab_1 {
+    position: absolute;
+    visibility: hidden;
+}
+#tab_2 {
+    position: absolute;
+    visibility: hidden;
+}
+#tab_3 {
+    position: absolute;
+    visibility: hidden;
 }
 #cont_exit {
     float: right;
@@ -248,7 +275,7 @@ button:focus {outline:0;}
 #inventory {
     box-sizing: border-box;
     float: right;
-    width: 30%;
+    width: 29%;
     height: 400px;
     border: 3px double black;
     overflow-y: scroll;
@@ -257,6 +284,8 @@ button:focus {outline:0;}
     /*background-color: #724e27;*/
     background-color: #4c341a;
     color: white;
+    position: relative;
+    z-index: 1;
 }
 /*#layer {
     background-color: #262626;

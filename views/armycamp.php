@@ -1,24 +1,12 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title><?php echo $title; ?></title>
-        <?php include(constant('ROUTE_VIEW') . 'head.php');?>
-        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name ?>.css" />
-    </head>
-    <body>
-        <header>
-            <?php require(constant('ROUTE_VIEW') . 'header.php');?>
-        </header>
+        armycamp.css|armycamp.js|
         <?php if(count($this->data['warrior_level_up']) > 0): ?>
-            <?php $_SESSION['gamedata']['level_up_data'] = $this->data['warrior_level_up'];?>
+            <?php $_SESSION['gamedata']['level_up_data'] = $data['warrior_level_up'];?>
                 <script src="<?php echo constant("ROUTE_JS") . 'warriorLevelUp.js'?>"></script>
             <?php endif?>
         <div id="announcement"><button onclick="exit();">Exit</button></div>
-        <section>
-            <?php require(constant("ROUTE_VIEW") . 'layout.php');?>
             <h3 class="page_title"> Army camp </h3>
-            <a href="/army-missions"> Missions</a>
-            <a href="/armory"> Armory </a>
+            <button type="button"> Army Missions </button>
+            <button type="button"> Armory </button>
             <button type="button" onclick="show('overview');"> Training Overview </button>
             <button type="button" onclick="show('calculator');"> Combat Calculator </button>
             <div id="calculator">
@@ -78,37 +66,26 @@
                     <option value="offRest"> Off rest </option>
                     <option value="changeType"> Change Type </option>
                 </select>
-                <div>
-                    <div id="heal">
-                        <p> Select item to heal: </p>
-                        <div id="selected">
-                            
-                        </div>
-                        <div id="selected_t"></div>
-                        <input type="number" id="quantity" min="0" />
-                        <div id="inventory">
-                            <?php require(constant('ROUTE_VIEW') . "inventory.php"); url();?>
-                        </div>
+                <div id="heal">
+                    <p> Select item to heal: </p>
+                    <div id="selected">
+                        
                     </div>
-                    <div id="training">
-                        <label for="type"> Select type of training</label>
-                        <select name="type">
-                            <option></option>
-                            <option value="general"> General </option>
-                            <option value="stamina"> Stamina </option>
-                            <option value="technique"> Technique </option>
-                            <option value="precision"> Precision </option>
-                            <option value="strength"> Strength </option>
-                        </select></br>
+                    <div id="selected_t"></div>
+                    <input type="number" id="quantity" min="0" />
+                    <div id="inventory">
                     </div>
-                    <button> Do Action </button>
                 </div>
-                <script src="<?php echo constant('ROUTE_JS') . $name . '.js';?>"></script>
-                <script src="<?php echo constant('ROUTE_JS') . 'selectitem.js';?>"></script>
+                <div id="training">
+                    <label for="type"> Select type of training</label>
+                    <select name="type">
+                        <option></option>
+                        <option value="general"> General </option>
+                        <option value="stamina"> Stamina </option>
+                        <option value="technique"> Technique </option>
+                        <option value="precision"> Precision </option>
+                        <option value="strength"> Strength </option>
+                    </select></br>
+                </div>
+                <button> Do Action </button>
             </div>
-        </section>
-        <aside>
-            <?php require(constant('ROUTE_VIEW') . '/aside.php');?>
-        </aside>
-    </body>
-</html>

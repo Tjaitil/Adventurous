@@ -15,7 +15,7 @@
 #stockpile {
     box-sizing: border-box;
     padding: 5px;
-    width: 69.5%;
+    width: 100%;
     border: 3px double black;
     background-color: #724e27;
     color: white;
@@ -29,6 +29,10 @@
 }
 #stockpile figcaption {
     visibility: hidden;
+    position: absolute;
+}
+#stockpile p {
+    float: right;
     position: absolute;
 }
 #stck_menu {

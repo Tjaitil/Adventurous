@@ -7,7 +7,6 @@
         function __construct() {
             parent::__construct();
         }
-        
         public function index() {
             $this->loadModel('ArmyCamp', true);
             $this->data = $this->model->getData();
@@ -33,7 +32,7 @@
                     $this->data['warrior_data'][$i]['status'] = "Nothing special";
                 }
             }
-            $this->renderWE('armycamp', 'Army Camp', $this->data, $data = 5);
+            $this->render('armycamp', 'Army Camp', $this->data, true);
         }
     }
 ?>

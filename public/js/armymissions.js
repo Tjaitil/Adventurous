@@ -1,8 +1,7 @@
-    window.addEventListener("load", function () {
-      getCountdown();
-      document.getElementById("current_mission").querySelectorAll("button")[0].addEventListener("click", cancelMission);
-    });
-    
+    if(document.getElementById("news_content").children[3] != null) {
+        getCountdown();
+        document.getElementById("current_mission").querySelectorAll("button")[0].addEventListener("click", cancelMission);    
+    }
     function getCountdown() {
         var data = "model=ArmyMissions" + "&method=getCountdown";
         ajaxG(data, function(response) {

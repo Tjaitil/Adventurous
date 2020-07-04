@@ -1,4 +1,4 @@
-    window.onload = function () {
+    if(document.getElementById("news_content").children[3] != null) {
         document.getElementById("eat").querySelectorAll("button")[0].addEventListener("click", eat);
     };
     

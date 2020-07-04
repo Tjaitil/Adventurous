@@ -13,13 +13,35 @@
         if (i < 10) {i = "0" + i;}
         return i;
     }
+    
+    var itemTitle = {
+        status : true,
+        addTitleEvent : function() {
+            let figures = document.getElementById("inventory").querySelectorAll("figure");
+            figures.forEach(function(element) {
+                // ... code code code for this one element
+                element.addEventListener('click', show_title);
+            });
+            this.status = true;
+        },
+        removeTitleEvent: function() {
+            console.log('removeTitle');
+            let figures = document.getElementById("inventory").querySelectorAll("figure");
+            figures.forEach(function(element) {
+                // ... code code code for this one element
+                  element.removeEventListener('click', show_title);
+            });
+            this.status = false;
+        }
+    };
+    function eventTest() {
+        show_title();
+    }
     function addShowTitle() {
         var figures = document.getElementById("inventory").querySelectorAll("figure");
         figures.forEach(function(element) {
             // ... code code code for this one element
-              element.addEventListener('click', function() {
-                  show_title();
-              });
+              element.addEventListener('click', show_title);
         });   
     }
     window.addEventListener("load", function() {
@@ -38,7 +60,9 @@
         }
         clock();
         checkMessages();
-    });
+        sidebar.addClickEvent();
+        sidebar.addAdventure();
+    }); 
     function checkMessages() {
         var data = "model=Messages" + "&method=checkMessages";
         ajaxG(data, function(response) {
@@ -95,6 +119,10 @@
     }
     /*window.addEventListener("load", getgMessage, false);*/
     function openNews(content) {
+        var newsDiv = document.getElementById("news_content");
+        while(newsDiv.childNodes.length > 2) {
+            newsDiv.removeChild(newsDiv.lastChild);
+        }
         document.getElementById("news").style.visibility = "visible";
         document.getElementById("news_content").style.visibility = "visible";
         if(typeof content == 'object') {
@@ -111,15 +139,19 @@
     function closeNews() {
         var newsDiv = document.getElementById("news_content");
         
-        for(var i = 1; i < newsDiv.children.length; i++) {
-            newsDiv.removeChild(newsDiv.children[i]);
+        while(newsDiv.childNodes.length > 2) {
+            newsDiv.removeChild(newsDiv.lastChild);
         }
+        console.log(newsDiv);
         news.style = "visibility: hidden;";
         document.getElementById("news_content").style.visibility = "hidden";
         if(typeof inBuilding !== 'undefined') {
             // Render the player outside building
             renderPlayer(0, 40);
             inBuilding = false;
+        }
+        if(itemTitle.status === false) {
+            itemTitle.addTitleEvent();
         }
     }
     function alertMessage(page, pIdentifier = false) {
@@ -228,18 +260,17 @@
         menu.children[0].children[0].innerHTML = item;
         menu.style.visibility = "visible";
         // Declare menu top by measuring the positon from top of parent and also if inventory/stockpile is scrolled
-        console.log(element.parentNode);
-        
         var menuTop;
         // If element is inside inventory or stockpile
-        console.log(element.parentNode.id);
         if(["stockpile", "inventory"].indexOf(element.parentNode.id) != -1) {
-            menuTop = element.offsetTop - element.parentNode.scrollTop + 50;
+            /*menuTop = element.offsetTop + element.parentNode.scrollTop + 50;*/
+            menuTop = element.offsetTop + 30;
+            console.log(menuTop);
             menu.children[0].style.top = menuTop + "px";
             if(item.length < 8) {
-            menu.children[0].style.left = element.offsetLeft +  20 + "px";
-            menu.children[0].children[0].style.width = "50px";
-            menu.children[0].children[0].style.textAlign = "center";
+                menu.children[0].style.left = element.offsetLeft +  20 + "px";
+                menu.children[0].children[0].style.width = "50px";
+                menu.children[0].children[0].style.textAlign = "center";
             }
             else {
                 menu.children[0].style.left = element.offsetLeft + 10 + "px";
@@ -331,6 +362,52 @@
             }
         }
         return JSON.stringify(form_data);
+    }
+    
+    var sidebar = {
+        sidebarElement: document.getElementById("sidebar"),
+        addClickEvent: function() {
+            var sidebarTabs = document.getElementById("sidebar").querySelectorAll("button");
+            sidebarTabs.forEach(function(element) {
+                // ... code code code for this one element
+                  element.addEventListener('click', sidebar.showTab);
+            });
+            this.sidebarElement = document.getElementById("sidebar");
+        },
+        toggleSidebar : function() {
+            if(this.sidebarElement.style.width === "500px") {
+                this.sidebarElement.style.width = "200px";
+            }
+            else {
+                this.sidebarElement.style.width = "500px";
+            }
+        },
+        showTab: function() {
+            let newActiveTab = event.target.innerText;
+            let tabs = document.getElementById("sidebar").getElementsByTagName("div");
+            let tabNames = ["Adventure"];
+            for(var i = 0; i < tabNames.length; i++) {
+                if(tabNames[i] === newActiveTab) {
+                    tabs[i].style.visibility = "visible"; 
+                }
+                else {
+                    tabs[i].style.visibility = "hidden";
+                }
+            }
+        }
+    };
+    function getAdventure() {
+        let building = "Adventures";
+        ajaxRequest = new XMLHttpRequest();
+        ajaxRequest.onload = function () {
+            if(this.readyState == 4 && this.status == 200) {
+                let responseText = this.responseText;
+                console.log(responseText);
+                document.getElementById("sidebar").getElementsByTagName("div")[0].innerHTML = responseText[1];
+            }
+        };
+        ajaxRequest.open('GET', "handlers/handler_v.php?" + "&building=" + building);
+        ajaxRequest.send();
     }
     function responseRet(response) {
         console.log("responseRet");

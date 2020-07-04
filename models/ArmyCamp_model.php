@@ -17,17 +17,17 @@
                         b.stamina_level, b.stamina_xp, b.technique_level, b.technique_xp,
                         b.precision_level, b.precision_xp, b.strength_level, b.strength_xp
                         FROM warriors AS a INNER JOIN warrior_levels AS b ON b.username = a.username AND b.warrior_id = a.warrior_id
-                        WHERE a.location=:location AND a.username=:username GROUP BY a.warrior_id;";
+                        WHERE a.username=:username GROUP BY a.warrior_id;";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
+                /*$stmt->bindParam(":location", $param_location, PDO::PARAM_STR);*/
                 $param_username = $this->username;
-                $param_location = $this->session['location'];
+                /*$param_location = $this->session['location'];*/
                 $stmt->execute();
             }
             else {
                 $queryArray = explode(",", $GET['warriors']);
-                $queryArray[] = $this->session['location'];
+                /*$queryArray[] = $this->session['location'];*/
                 $queryArray[] = $this->username;
                 $in  = str_repeat('?,', count($queryArray) - 3) . '?';
                 
@@ -35,7 +35,9 @@
                         b.stamina_level, b.stamina_xp, b.technique_level, b.technique_xp,
                         b.precision_level, b.precision_xp, b.strength_level, b.strength_xp
                         FROM warriors AS a INNER JOIN warrior_levels AS b ON b.username = a.username AND b.warrior_id = a.warrior_id
-                        WHERE a.warrior_id IN ($in) a.location= ? AND a.username= ? GROUP BY a.warrior_id;";
+                        WHERE a.warrior_id IN ($in) a.username= ? GROUP BY a.warrior_id;";
+                        
+                        // a.location= ? AND
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->execute();
             }
@@ -45,12 +47,10 @@
                                 array_column($data['warrior_data'], 'technique_level'),
                                 array_column($data['warrior_data'], 'precision_level'),
                                 array_column($data['warrior_data'], 'strength_level')));
-            
             $in  = str_repeat('?,', count($levels) - 1) . '?';
-            
             $sql = "SELECT skill_level, next_level FROM warriors_level_data WHERE skill_level IN ($in)";
             $stmt = $this->db->conn->prepare($sql);
-            $stmt->execute($levels);
+            $stmt->execute(array_values($levels));
             $data['levels_data'] = array();
             while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 $data['levels_data'][$row['skill_level']] = $row['next_level'];

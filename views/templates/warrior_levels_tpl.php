@@ -33,7 +33,7 @@
                     <li>
                         <figure>
                             <img class="warrior_skill" src="<?php echo constant('ROUTE_IMG') . 'stamina icon.png';?>" />
-                            <figcaption><?php echo $key['technique_level'];?></figcaption>
+                            <figcaption><?php echo $key['stamina_level'];?></figcaption>
                         </figure>
                         <div class="skill_bar">
                             <div class="skill_bar2">
@@ -42,7 +42,9 @@
                             <div class="skill_bar_progress">
                                 <span class="progress_value1"><?php echo $key['stamina_xp'];?></span>
                                 &nbsp/&nbsp
-                                <span class="progress_value2"><?php echo $data[1][$key['stamina_level']];?></span>
+                                <span class="progress_value2"><?php
+                                // Get the next level xp by accessing array with the current skill level
+                                echo $data[1][$key['stamina_level']];?></span>
                             </div>
                         </div>
                     </li>

@@ -1,16 +1,4 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title><?php echo $title;?></title>
-        <?php include(constant('ROUTE_VIEW') . 'head.php');?>
-        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name ?>.css" />
-    </head>
-    <body>
-        <header>
-            <?php require(constant('ROUTE_VIEW') . 'header.php'); ?>
-        </header>
-        <section>
-            <?php require(constant('ROUTE_VIEW') . 'layout.php'); ?>
+            market.css|market.js|
             <h3 class="page_title"> Market </h3>
             <button onclick="show('offers');"> Offers </button>
             <button onclick="show('my_offers');"> My Offers </button>
@@ -60,9 +48,6 @@
                     </div>
                 </form>
             </div>
-            <div id="inventory">
-                <?php require(constant('ROUTE_VIEW') . 'inventory.php'); url();?>
-            </div>
             <div id="my_offers">
                 <table>
                     <caption> My offers </caption>
@@ -76,7 +61,7 @@
                             <td></td>
                         </tr>
                     </thead>
-                    <?php get_template('myOffers', $this->data['my_offers']);?>
+                    <?php get_template('myOffers', $data['my_offers']);?>
                 </table>
             </div>
             <div id="offers">
@@ -95,7 +80,7 @@
                             <td> </td>
                         </tr>
                     </thead>
-                    <?php get_template('offers', $this->data['offers']);?>
+                    <?php get_template('offers', $data['offers']);?>
                     <tfoot>
                         <tr>
                             <td colspan="5"><button class="previous"> < Prev </button><button class="next"> Next > </button></td>
@@ -113,14 +98,6 @@
                             <td> Price each: </td>
                         </tr>
                     </thead>
-                <?php get_template('history', $this->data['history']);?>
+                <?php get_template('history', $data['history']);?>
                 </table>
             </div>
-            <script src="<?php echo constant('ROUTE_JS') . $name . '.js';?>"></script>
-            <script src="<?php echo constant('ROUTE_JS') . 'selectitem.js';?> "></script>
-        </section>
-        <aside>
-            <?php require(constant('ROUTE_VIEW') . '/aside.php'); ?>
-        </aside>
-    </body>
-</html>

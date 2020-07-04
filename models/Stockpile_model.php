@@ -11,8 +11,7 @@
             $this->session = $session;
             $this->commonModels(true, false);
         }
-        
-        public function getStockpile($js = false) {
+        public function getData($js = false) {
             $sql = "SELECT amount, item FROM stockpile WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
@@ -113,7 +112,6 @@
                 $param_item = $item;
                 $param_amount = $quantity;
                 $stmt->execute();
-    
             }
             $new_amount = $row['amount'] + $quantity;
             

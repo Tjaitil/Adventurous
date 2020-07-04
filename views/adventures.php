@@ -1,16 +1,4 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title><?php echo $title;?></title>
-        <?php require(constant('ROUTE_VIEW') . 'head.php');?>
-        <link rel="stylesheet" type="text/css" href="public/css/<?php echo $name ?>.css" />
-        <link rel="stylesheet" type="text/css" href="public/css/<?php echo 'warriorSelect'?>.css" />
-    </head>
-    <body>
-        <header>
-            <?php require(constant('ROUTE_VIEW') . 'header.php'); ?>
-        </header>
-        <section>
+
             <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
             <h3 class="page_title">Adventures</h3>
              <div id="requests">
@@ -250,12 +238,3 @@
                     </tfoot>
                 </table>
             </div>
-            <script src="<?php echo constant('ROUTE_JS') . 'selectitem.js';?>"></script>
-            <script src="<?php echo constant('ROUTE_JS') . 'warriorSelect.js';?>"></script>
-            <script src="<?php echo constant('ROUTE_JS') . $name . '.js';?>"></script>
-        </section>
-        <aside>
-            <?php require(constant('ROUTE_VIEW') . 'aside.php'); ?>
-        </aside>
-    </body>
-</html>

@@ -1,12 +1,11 @@
-    window.onload = function () {
+    if(document.getElementById("news_content").children[3] != null) {
         var buttons = document.getElementById("fletch").querySelectorAll("button");
+        console.log(buttons);
         buttons.forEach(function(element) {
-            // ... code code code for this one element
-            element.addEventListener('click', function() {
-                fletch();
-            });
+            // Add event for each element
+            element.addEventListener('click', fletch);
         });
-    };
+    }
     function fletch() {
         var amount = event.target.parentElement.children[0].value;
         var item = event.target.closest("tr").querySelectorAll("figcaption")[0].innerHTML.toLowerCase();
@@ -17,8 +16,4 @@
                 updateInventory('ArhceryShop');
             }       
         });
-    }
-    
-    function hello() {
-        console.log('external js');
     }

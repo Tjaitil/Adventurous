@@ -31,10 +31,10 @@
         switch($url):
         case 'stockpile':
         foreach($_SESSION['gamedata']['inventory'] as $key): ?>
-            <div class="inventory_item" onpointerdown="show_menu();">
+            <div class="inventory_item">
                 <figure>
-                <img src="<?php echo constant('ROUTE_IMG') . $key['item'] . '.png';?>" />
-                <figcaption class="tooltip"><?php echo ucwords($key['item']); ?></figcaption>
+                    <img src="<?php echo constant('ROUTE_IMG') . $key['item'] . '.png';?>" />
+                    <figcaption class="tooltip"><?php echo ucwords($key['item']); ?></figcaption>
                 </figure>
                 <span class="item_amount"><?php echo amount($key['amount']);?></span>
             </div>

@@ -1,12 +1,10 @@
-    window.onload = function () {
+    if(document.getElementById("news_content").children[3] != null) {
         var buttons = document.getElementById("smith").querySelectorAll("button");
         buttons.forEach(function(element) {
-            // ... code code code for this one element
-            element.addEventListener('click', function() {
-                smith();
-            });
+            // Add event for each element
+            element.addEventListener('click', smith);
         });
-    };
+    }
     function select(element) {
         var parent = element.parentNode;
         var img = parent.getElementsByTagName("IMG");
@@ -32,4 +30,26 @@
                 minerals[i].style = "border: none"; 
             }   
         }
+    }
+    function smith() {
+        var amount = event.target.parentElement.children[0].value;
+        var item = event.target.closest("tr").querySelectorAll("figcaption")[0].innerHTML.toLowerCase();
+        var minerals = document.getElementsByClassName("minerals");
+        for(var i = 0; i < minerals.length; i++) {
+            if(minerals[i].style.borderStyle == "solid") {
+                this.mineral = minerals[i].getAttribute("title");
+                break;
+            }
+        } 
+        if(this.mineral.length < 1){
+            gameLog("Please select a mineral");
+            return false;
+        }
+        event.target.parentElement.children[0].value = "";
+        var data = "model=Smithy" + "&method=smith" + "&item=" + item  + "&amount=" + amount + "&mineral=" + this.mineral;
+        ajaxP(data, function(response) {
+            if(response[0] !== false) {
+                updateInventory('smithy');
+            }       
+        });
     }

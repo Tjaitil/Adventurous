@@ -1,4 +1,4 @@
-    
+    <!--   
     <div id="side_menu">
         <h5> Categories</h5>
         <ul>
@@ -13,4 +13,4 @@
         
         
     </div>
-
+    -->

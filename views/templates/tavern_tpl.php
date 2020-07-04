@@ -1,9 +1,9 @@
            <div id="workers">
                 <ul>
-                    <?php if(!count($data['tavern']['workers']) > 0): ?>
+                    <?php if(!count($data) > 0): ?>
                         <li> No workers available </li>
                     <?php endif; ?>
-                    <?php foreach($data['tavern']['workers'] as $key):?>
+                    <?php foreach($data as $key): var_dump($data);?>
                     <li>
                         <figure>
                             <img src="<?php echo constant("ROUTE_IMG"). $key['type'] . '.jpg'?>" style="length:50px; width:50px" />

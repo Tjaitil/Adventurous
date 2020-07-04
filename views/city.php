@@ -13,37 +13,28 @@
         </header>
         <section>
             <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
-            <div id="city">
-                <?php function buildingGenerator($city_data) {
-                    
-                    foreach($city_data as $key):
-                        $key_merged = str_replace(" ", "", $key);
-                        ?>
-                        <a href="/<?php echo $key_merged;?>" id="city_<?php echo $key_merged;?>_link" class="building_link">
-                            <img src="<?php echo constant('ROUTE_IMG') . $key_merged . ".png";?>" alt="<?php echo ucwords($key);?>" />
-                        </a>
-                    <?php endforeach;
-                } 
-                require($this->cityfile);?>
-            </div>
             <p>Frames per second: <span id="frames"></span></p>
             <canvas id="game_canvas" width="700" height="400"></canvas>
             <canvas id="game_canvas2" width="700" height="400"></canvas>
+            <canvas id="game_canvas3" width="700" height="400"></canvas>
+            <!--<canvas id="test_canvas" width="700" height="400"></canvas>-->
             <div id="game_text">
 
             </div>
-            <button type="button" onkeydown="" onkeyup=""> Left </button>
-            <button type="button" onkeydown="" onkeyup=""> Up </button>
-            <button type="button" onkeydown="" onkeyup=""> Down </button>
-            <button type="button" onkeydown="" onkeyup=""> Right </button>
-            <button type="button" onclick="fetch();"> saop </button>
+            <div id="inventory">
+                <?php require(constant('ROUTE_VIEW') . '/inventory.php'); url();?>    
+            </div>
             <div id="demo">
                 
             </div>
             <div id="demo2" style="width:50px;height:50px;border:1px solid black;">
                 
             </div>
+            <img src="public/img/1.2.png" height="500" width="500"/>
             <script src="<?php echo constant('ROUTE_JS') .'game.js';?>"></script>
+            <script src="<?php echo constant("ROUTE_JS") . 'selectitem.js';?>"></script>
+            <script src="<?php echo constant('ROUTE_JS') . 'select.js';?>"></script>
+            <script src="<?php echo constant('ROUTE_JS') . 'warriorSelect.js';?>"></script>
         </section>
         <aside>
             <?php require(constant('ROUTE_VIEW') . 'aside.php');?>

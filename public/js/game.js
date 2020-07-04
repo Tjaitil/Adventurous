@@ -7,20 +7,6 @@ window.addEventListener("keydown", function(e) {
     }
 }, false);
 
-
-function fetch() {
-    inBuilding = true;
-    ajaxRequest = new XMLHttpRequest();
-    ajaxRequest.onload = function () {
-        if(this.readyState == 4 && this.status == 200) {
-            console.log(this.responseText);
-            openNews(this.responseText);
-        }
-    };
-    ajaxRequest.open('GET', "handlers/handler_v.php");
-    ajaxRequest.send();
-}
-
 function move() {
         console.log(event);
         var button = document.getElementById("control_button");
@@ -43,9 +29,7 @@ function move() {
         button.style.left = "44%";
     }
     var inBuilding = false;
-    var world = new Image(2000, 1000);
-    world.src = "public/img/pixelat.png";
-    console.log(world);
+    var world = new Image(3200, 3200);
     var player_img = new Image(32, 32);
     player_img.src = "public/img/character test3.png";
     var tree_img = new Image(64, 64);
@@ -54,6 +38,9 @@ function move() {
     smithy_img.src = "public/img/smithy pix.png";
     var character = new Image(96, 128);
     character.src = "public/img/character sprite.png";
+    var images = [];
+    var eastImg = new Image(2000, 1000);
+    eastImg.src = "public/img/1.2.png";
     var player;
     var obstaclesPos = [];
     var obstaclesSize = [];
@@ -61,14 +48,12 @@ function move() {
     var linksSize = [];
     var xMovement = 0;
     var yMovement = 0;
-    var xMovement2 = 0;
-    var yMovement2 = 0;
     //
-    var xbase = 320;
+    var xbase = 1280;
     var ybase = 150;
     // charX and charY where the character is drawn on canvas (middle);
     var charX = 320;
-    var charY = 150;
+    var charY = 200;
     // MapMin/MapMax variables holds the coordinates of furtherst loaded chunks
     var xMapMin = xbase - 320;
     var xMapMax = xbase + 320;
@@ -92,21 +77,80 @@ function move() {
     var loopIndex = 0;
     var counter = 0;
     var direction = 'none';
-    var colors = ['#4d4dff', '#0000b3', '#000033'];
     var loopArray = [0, 1, 0, 2];
     var indexX = 32;
     var indexY = 0;
     var oldXbase;
     var oldYbase;
-        
+    game = {};
+    game.fetchBuilding =  function(building = false) {
+        inBuilding = true;
+        if(building == false) {
+            building = 'test';
+        }
+        console.log(building);
+        ajaxRequest = new XMLHttpRequest();
+        ajaxRequest.onload = function () {
+            if(this.readyState == 4 && this.status == 200) {
+                var responseText = this.responseText.split("|");
+                console.log(responseText);
+                var link;
+                if(document.getElementById("fetch_stylesheet") === null) {
+                    console.log('create link');
+                    link = document.createElement("link");
+                    link.type = "text/css";
+                    link.rel = "stylesheet";
+                    link.setAttribute("id", "fetch_stylesheet");
+                    link.href = "public/css/" + responseText[0].trim();
+                }
+                else {
+                    link = document.getElementById("fetch_stylesheet");
+                    link.href = "public/css/" + responseText[0].trim();    
+                }
+                console.log(responseText[0]);
+                document.getElementsByTagName("head")[0].appendChild(link);
+                var script;
+                var script2;
+                var scripts = responseText[1].split("%");
+                openNews(responseText[2]);
+                if(document.getElementById("fetch_script") === null) {
+                    script = document.createElement("script");
+                    script.src = "public/js/" + scripts[0].trim();
+                    script.id = "fetch_script";
+                    document.getElementsByTagName("section")[0].appendChild(script);
+                }
+                else {
+                    script = document.createElement("script");
+                    document.getElementById("fetch_script");
+                    script.src = "public/js/" + scripts[0].trim();
+                    script.id = "fetch_script";
+                    document.getElementsByTagName("section")[0].replaceChild(script, document.querySelector("#fetch_script"));
+                }
+                if(document.getElementById("fetch_script2") === null && scripts.length > 1) {
+                    script2 = document.createElement("script");
+                    script2.src = "public/js/" + scripts[1].trim();
+                    script2.id = "fetch_script2";
+                }
+                else if(scripts.length > 1) {
+                    script2 = document.getElementById("fetch_script2");
+                    script2.src = "public/js/" + scripts[1].trim();
+                }
+                if(script2 !== undefined) {
+                    document.getElementsByTagName("section")[0].appendChild(script2);    
+                }
+                /*script.onload = function() {
+                };*/    
+            }
+        };
+        ajaxRequest.open('GET', "handlers/handler_v.php?" + "&building=" + building);
+        ajaxRequest.send();
+    };
     function draw(mx, my, sx, sy) {
         var ctx = game.properties.context;
         ctx.moveTo(mx, my);
         ctx.lineTo(sx, sy);
         ctx.stroke();
     }
-    
-    game = {};
     document.addEventListener('DOMContentLoaded', function() {
         game.properties.canvasHeight = document.getElementById("game_canvas").height;
         game.properties.canvasWidth = document.getElementById("game_canvas").width;
@@ -127,44 +171,44 @@ function move() {
                 var obj = JSON.parse(responseText);
                 gamePieces.links = obj['links'];
                 gamePieces.objects = obj['objects'];
-                console.log(gamePieces.objects);
+                console.log(gamePieces.objects[31]);
                 for(var i = 0; i < gamePieces.objects.length; i++) {
                     gamePieces.objects[i].img = new Image(gamePieces.objects[i].width, gamePieces.objects[i].height);
                     gamePieces.objects[i].img.src = "public/img/" + gamePieces.objects[i].src;
+                    gamePieces.objects[i].x -= xbase;
+                    // The diameters of the object is based on player starting on 320,
+                    // to compensate for the player starting in another position you must subtract (xbase - 320);
+                    gamePieces.objects[i].diameterRight -= (xbase - 960);
+                    gamePieces.objects[i].diameterLeft -= (xbase - 960);
+                    /*
+                     *
+                     *gamePieces.objects[i].diameterRight -= (xbase - (xbase - 320));
+                    gamePieces.objects[i].diameterLeft -= (xbase - (xbase - 320));
+                    gamePieces.objects[i].diameterTop -= (ybase - (ybase - 150));
+                    gamePieces.objects[i].diameterDown -= (ybase - (ybase - 150));*/
                 }
-                console.log(gamePieces.objects);
-                /* gamePieces.objects = responseText['objects'];
-                 * gamePieces.buildings = responseText['buildings'];
-                /*for(var i = 0; i < obj.layers.length; i++) {
-                    if(obj.layers[i].name.indexOf("Objekt") != -1) {
-                        objLayers.push(obj.layers[i]);
-                        for(var x = 0; x < obj.layers[i].objects.length; x++) {
-                            obj.layers[i].objects[x].src = obj.layers[i].objects[x].type + ".png";
-                            /*var keys = obj.layers[i][x].properties.keys();
-                            if(keys.length > 1) {
-                                var objectProperties = obj.layers[i].objects[x].properties;
-                                for(var y = 0; y < keys.length; y++) {
-                                    obj.layers[i].objects[x][y] = obj.layers[i].objects[x][objectProperties + [y]];
-                                }    
-                            }
-                            gamePieces.objects.push(obj.layers[i].objects[x]);
-                        }
-                    }
-                }*/
+                console.log(gamePieces.objects[31]);
             }
             else {
-                console.log(JSON.parse(responseText));
                 // Load game picture
                 world.src = false;
                 //responseText[1];
                 // Load obstacles and pieces
                 
             }
-            game.startGame();
+            world = new Image(2000, 1000);
+            world.src = "public/img/pixela.png";
+            console.log(world);
+            world.onload = function() {
+                game.startGame();    
+            };
         });
     };
     game.properties = {
         context: document.getElementById("game_canvas").getContext("2d"),
+        context2: document.getElementById("game_canvas2").getContext("2d"),
+        context3: document.getElementById("game_canvas3").getContext("2d"),
+        /*context4: document.getElementById("test_canvas").getContext("2d"),*/
         canvasWidth: document.getElementById("game_canvas").width,
         canvasHeight: document.getElementById("game_canvas").height,
         requestId: null
@@ -177,83 +221,52 @@ function move() {
     };
     console.log(document.getElementById("game_canvas").width);
     game.loadChunk = function(x, y, xpos, ypos) {
-        /*var data = "model=worldLoader" + "&method=loadChunks" + "&xMapMin=" + xMapMin + "&yMapMin=" + yMapMin + "&xbase=" + xpos +  "&ybase=" + ypos;
+        var data = "model=worldLoader" + "&method=loadChunks" +
+                    "&xMapMin=" + xMapMin + "&yMapMin=" + yMapMin + "&xbase=" + xpos +  "&ybase=" + ypos;
         ajaxG(data, function(response) {
-            console.log(response[1]);
             var responseText = JSON.parse(response[1]);
-            gamePieces.obstacles = gamePieces.obstacles.concat(responseText);
-        });*/
-    };
-    game.deleteChunk = function () {
-        for(var i = 0; i < objects.length; i++) {
-            var index = gamePieces.obstacles.indexOf(objects[i]['id']);
-            if(index != -1) {
-                gamePieces.obstacles.splice(index, 1);
+            for(var i = 0; i < gamePieces.objects.length; i++) {
+                let object = gamePieces.objects[i];
+                if(object.y > yMapMax + 400 || object.y < yMapMin - 400 || object.x > xMapMax + 400 || object.x < xMapMin - 400) {
+                    console.log('helasaslo');
+                    gamePieces.objects.splice(i, 1);
+                }
             }
-        }
+            gamePieces.objects = gamePieces.objects.concat(responseText);
+            console.log(gamePieces.objects.length);
+            console.log(gamePieces.objects);
+        });
     };
-    /*var lastLoop = new Date();
-    game.fps = function() { 
-        var thisLoop = new Date();
-        var fps = 1000 / (thisLoop - lastLoop);
-        lastLoop = thisLoop;
-        document.getElementById("frames").innerHTML = fps;
-    };*/
-    
-    
-    /*if() {
-        
-    }*/
     game.startGame = function () {
-        game.properties.context.drawImage(world, 0 + xMovement, 0 + yMovement, 1024 * scale, 1024 * scale, 0, 0, 1024, 1024);
-        game.loadGamePieces();
+        /*game.properties.context.drawImage(world, xbase + xMovement, 0 + yMovement, 1024 * scale, 1024 * scale, 0, 0, 1024, 1024);*/
+        /*game.loadGamePieces();*/
+        game.viewport.draw();
         gamePieces.player.first();
         player = gamePieces.player;
         game.properties.requestId = window.requestAnimationFrame(game.update);
-        if(world.complete) {
-            console.log("loaded");
-            game.updateGamePiece();
-        }
+        game.updateGamePiece();
     };
     game.loadGamePieces = function() {
-        /*var list = [];
-        list.push(["obstc1", 240, 0, 20, 20, "red"]);
-        list.push(["obstc1", 0, 192, 64, 512, "none"]);
-        /*list.push(["obstc1", 0, 256, 64, 64, "yellow"]);
-        list.push(["obstc1", 0, 320, 64, 64, "yellow"]);
-        list.push(["obstc1", 0, 384, 64, 64, "none"]);
-        list.push(["obstc1", 0, 448, 64, 64, "yellow"]);*/
-        /*list.push(["obstc1", 500, 448, 3, 64, "orange"]);
-        list.push(["obstc1", 192, 320, 64, 32, "red"]);
-        list.push(["obstc1", 288, 288, 32, 320, "purple"]);
-        list.push(["obstc1", 640, 640, 64, 64, "pink"]);
-        list.push(["obstc1", 1024, 294, 112, 90, "blue"]);
-        list.push(["obstc1", 1104, 384, 48, 32, "red"]);
-        list.push(["obstc1", 1024, 384, 32, 32, "orange"]);
-        
         var links = [];
-        links.push(["link2", 624, 240, 32, 48, "orange", "towhar"]);
-        links.push(["link3", 1065, 368, 32, 48, "pink", "towhar"]);
         
         
-        // push game obstacles objects into array
+        /*// push game obstacles objects into array
         for(var i = 0; i < list.length; i++) {
             gamePieces.obstacles[i] = new gameObstacle(list[i][0], list[i][1], list[i][2], list[i][3],
                                                                           list[i][4], list[i][5]);
-        }
+        }*/
         // push game links objects into array
         for(var x = 0; x < links.length; x++) {
             gamePieces.links[x] = new gameLinks(links[x][0], links[x][1], links[x][2], links[x][3],
                                                                           links[x][4], links[x][5], links[x][6]);
-        }*/
+        }
     };
     var inactivityTime = function () {
         var time;
         document.onkeydown = resetTimer;
-
         function pauseGame() {
-            if(game.controls.down == false && game.controls.left == false &&
-               game.controls.right == false && game.controls.up == false) {
+            if(game.controls.up !== false || game.controls.right !== false || game.controls.down !== false || game.controls.left !== false) {
+                resetTimer();
                 return false;
             }
             ctx = game.properties.context;
@@ -354,24 +367,75 @@ function move() {
         this.diameterLeft = x;
         this.first = function() {
             ctx = game.properties.context;
-            ctx.drawImage(player_img, charX, charY);
-            /*ctx.fillStyle = "#0000A0";
-            ctx.fillRect(xbase, ybase, this.width, this.height);*/
+            ctx.drawImage(character, indexX * 0, indexY, 32, 32, 320, 150, 32, 32);
         };
-        this.newPos = function() {
+        this.newPos = function(newPos = true) {
+            ctx2 = game.properties.context2;
             this.top = "open";
             this.left = "open";
             this.down = "open";
             this.right = "open";
             //drawing starts at x (diameterLeft) and y (diameterTop) line
-            player.diameterTop = ybase + (yMovement / scale);
-            player.diameterRight = xbase + (xMovement / scale) + width;
-            player.diameterDown = ybase + (yMovement / scale) + height;
-            player.diameterLeft = xbase + (xMovement / scale);
-            
-            
-            ctx = game.properties.context;
-            /*ctx.drawImage(player_img, charX, charY);*/
+            if(newPos !== false) {
+                player.diameterTop = ybase + (yMovement / scale);
+                player.diameterRight = xbase + (xMovement / scale) + width;
+                player.diameterDown = ybase + (yMovement / scale) + height;
+                player.diameterLeft = xbase + (xMovement / scale);    
+            }
+            var newdirection = 'none';
+            if(game.controls.left == true && game.controls.down == true) {
+                newdirection = 'left, down';
+            }
+            if(game.controls.right == true && game.controls.up == false && game.controls.down == false) {
+                newdirection = 'right';
+                indexY = 32;
+            }
+            if(game.controls.left == true && game.controls.up == false && game.controls.down == false) {
+                newdirection = 'left';
+                indexY = 64;
+            }
+            if(game.controls.down == true) {
+                newdirection = 'right, down';
+                indexY = 0;
+            }
+            if(game.controls.up == true) {
+                newdirection = 'right, top';
+                indexY = 96;
+            }
+            if(game.controls.right == true && game.controls.up == false && game.controls.down == false) {
+                newdirection = 'right';
+                indexY = 32;
+            }
+            if(game.controls.up == false && game.controls.left == false && game.controls.right == false && game.controls.down == false) {
+                newdirection = 'none';
+            }
+            if(newdirection != 'none' && ((oldYbase != ypos) || (oldXbase != xpos))) {
+                if(newdirection != 'none' && counter % 15 == 0) {
+                    ctx2.clearRect(0, 0, 700, 700);
+                    ctx2.drawImage(character, indexX * loopArray[loopIndex], indexY, 32, 32, 320, 150, 32, 32);
+                    loopIndex++;
+                }
+                else if(newdirection != direction) {
+                    ctx2.clearRect(0, 0, 700, 700);
+                    loopIndex = 0;
+                    direction = newdirection;
+                    ctx2.drawImage(character, indexX * loopIndex, indexY, 32, 32, 320, 150, 32, 32);
+                    loopIndex++;
+                }
+                if(loopIndex == 4 && newdirection != 'none') {
+                    loopIndex = 0;
+                }
+                counter++;
+                animationEnd = false;
+            }
+            else {
+                ctx2.clearRect(0, 0, 700, 700);
+                ctx2.drawImage(character, 0, indexY, 32, 32, 320, 150, 32, 32);
+                animationEnd = true;
+            }
+            oldYbase = ypos;
+            oldXbase = xpos;
+                
         };
     }
     window.addEventListener('keydown', function (e) {
@@ -411,10 +475,6 @@ function move() {
         }
     }, false);
     game.updateGamePiece = function() {
-            /*console.log("objects :" + gamePieces.objects.length);*/
-            /*var visibleObjects = gamePieces.objects.filter(function(object) {
-                return (Math.abs(ybase + object.y) < 360) && (Math.abs(object.x - xpos) > 100);
-            });*/
             
             /* obstaclesPos indexes
                 0 = default x position
@@ -427,19 +487,33 @@ function move() {
                 7 = height of obstacle
             */
             
-            
             // IMPORTANT!
-            // Using fillRect, canvas will render element from top down. Meaning y = 0 is top of y
-            // Using drawImage, canvas will render element from bottom down.
+            // Using fillRect, canvas will render element from top down. Meaning y = 0 is top of element
+            // Using drawImage, canvas will render element from bottom down, meaning y = 0 is bottom of element
             
-            ctx.fillStyle = "red";
+           /* ctx.fillStyle = "red";
             ctx.fillRect(1440 - (xMovement / scale), 608- (yMovement / scale),
                              128, 128);
             ctx.fillStyle = "blue";
             ctx.fillRect(802 - (xMovement / scale), 273 - (yMovement / scale),
-                             32, 24);
+                             32, 24);*/
             for(var i = 0; i < gamePieces.objects.length; i++) {
+                let object = gamePieces.objects[i];
+                    /*console.log('id: ' + object.id);
+                    console.log('object.y: ' + object.y);
+                    console.log('yMapMax: ' + yMapMax);
+                    console.log('yMapMin: ' + yMapMin);
+                    console.log('object.x: ' + object.x);
+                    console.log('xMapMax: ' + xMapMax);
+                    console.log('xMapMin: ' + xMapMin);
+                    console.log(object.y > yMapMax);
+                    console.log(object.y < yMapMin);
+                    console.log(object.x > xMapMax + 400);
+                    console.log(object.x < xMapMin - 400);*/
                 ctx = game.properties.context;
+                /*if(object.y > yMapMax + 400 || object.y < yMapMin - 400  || object.x > xMapMax + 400 || object.x < xMapMin - 400) {
+                    continue;
+                }*/
                 if(typeof gamePieces.objects[i].src === 'undefined') {
                     ctx.fillStyle = "red";
                     ctx.fillRect(gamePieces.objects[i].x - (xMovement / scale), gamePieces.objects[i].y - (yMovement / scale),
@@ -451,6 +525,7 @@ function move() {
                 }
                 
             }
+            /*game.properties.context3.drawImage(tree_img, 2 - (xMovement / scale), 2 - (yMovement / scale), 64, 64);*/
             /*for(var x = 0; x < linksPos.length; x++) {
                 //Change xpos and ypos for links
                 ctx = game.properties.context;
@@ -464,14 +539,39 @@ function move() {
         counter: 0,
         draw: function() {
             ctx = game.properties.context;
-            ctx.clearRect(-xMovement, -yMovement, 500, 300);
+            ctx.clearRect(-xMovement, -yMovement, 700, 700);
+            game.properties.context3.clearRect(-xMovement, -yMovement, 700, 700);
             ctx.save();
             //Draw world and translate the image according to players movement
-            ctx.drawImage(world, 0 + xMovement, 0 + yMovement, 1024 * scale, 1024 * scale, 0, 0, 1024, 1024);
-            /*ctx.translate(xbase - xMovement, ybase - yMovement);*/
+            ctx.drawImage(world, xbase + xMovement, 0 + yMovement, 1024 * scale, 1024 * scale, 0, 0, 1024, 1024);
+            /*if(xbase + xMovement < 0) {
+                let width = xbase + xMovement;
+                let widthP = (xbase + xMovement) * -1;
+                console.log(widthP);
+                game.properties.context4.clearRect(0, 0, 700, 700);
+                game.properties.context4.drawImage(eastImg, 3200 + width, 0, widthP, 700, 0, 0, widthP, 700);
+            }*/
+            
+            if(xbase + xMovement < 1) {
+                ctx.fillStyle = "black";
+                ctx.fillRect(0, 0, (xbase + xMovement) * -1, 600);
+            }
+            if(yMovement - ybase < 150) {
+                ctx.fillStyle = "black";
+                ctx.fillRect(0, 0, 800, (ybase - yMovement) - 149);
+            }
+            /*if(xMovement + xbase > 2242) {
+                ctx.fillStyle = "black";
+                ctx.fillRect(700, 0, (xbase + xMovement) - 2242, 600);
+            }*/
+            
             ctx.restore();
             xpos = xbase + (xMovement / scale);
             ypos = ybase + (yMovement / scale);
+            xMapMin = xpos - 320;
+            xMapMax = xpos + 320;
+            yMapMin = ypos - 320;
+            yMapMax = ypos + 320;
             /*ctx.drawImage(player_img, charX, charY);*/
         },
     };
@@ -483,7 +583,7 @@ function move() {
                    player.diameterDown <= linksPos[i][4] &&
                    player.diameterLeft >= linksPos[i][5]) {
                         if(inBuilding == false) {
-                            fetch();    
+                            game.fetchBuilding();   
                         }
                         return;
                     }
@@ -519,6 +619,7 @@ function move() {
            if(Math.abs(player.diameterLeft - gamePieces.objects[i].diameterRight) <= 1 &&
               player.diameterTop <= gamePieces.objects[i].diameterDown &&
               player.diameterDown >= gamePieces.objects[i].diameterTop) {
+                console.log('left blocked');
                 player.left = "blocked";
            }
         }
@@ -558,112 +659,34 @@ function move() {
             game.viewport.draw();
             player.newPos();
             game.updateGamePiece(xbase, ybase);
-            characterAnimation();      
+            /*checkChunk();*/
         }
         else if(animationEnd != true) {
-            characterAnimation();
+            player.newPos(false);
         }
         game.properties.requestId = window.requestAnimationFrame(game.update);
     };
 
-    function trst12() {
+    function checkChunk() {
         // Scale ?
         var xDifference = Math.abs((xbase + xMovement - 320) - xMapMin);
         var yDifference = Math.abs((ybase + yMovement - 320) - yMapMin); 
         if(xDifference > 160 || yDifference > 160) {
-            console.log(xMapMin);
-            console.log(yMapMin);
-            game.loadChunk(xMapMin, yMapMin, xbase + xMovement, ybase + yMovement);
+            /*console.log(xMapMin);
+            console.log(yMapMin);*/
+            /*game.loadChunk(xMapMin, yMapMin, xbase + xMovement, ybase + yMovement);*/
             if(xDifference > 160) {
-                xMapMin = xbase + xMovement - 320;    
+                xMapMin = xbase + xMovement - 320;
+                xMapMax = xbase + xMovement + 320;
             }
             else {
-                yMapMin = ybase + yMovement - 320;    
+                yMapMin = ybase + yMovement - 320;
+                yMapMax = ybase + yMovement + 320;
             }
-            console.log(xMapMin);
-            console.log(yMapMin);
+            /*console.log(xMapMin);
+            console.log(yMapMin);*/
         }
     }
-    
-    function characterAnimation() {
-        let div = document.getElementById("demo");
-        var newdirection = 'none';
-        if(game.controls.left == true && game.controls.down == true) {
-            div.innerHTML = newdirection = 'left, down';
-        }
-        /*if(game.controls.left == true && game.controls.up == true) {
-            div.innerHTML = newdirection = 'left, up';
-            indexY = 96;
-        }*/
-        if(game.controls.right == true && game.controls.up == false && game.controls.down == false) {
-            div.innerHTML = newdirection = 'right';
-            indexY = 32;
-        }
-        if(game.controls.left == true && game.controls.up == false && game.controls.down == false) {
-            div.innerHTML = newdirection = 'left';
-            indexY = 64;
-        }
-        if(game.controls.right == true && game.controls.down == true) {
-            div.innerHTML = newdirection = 'right, down';
-            indexY = 0;
-        }
-        if(game.controls.right == true && game.controls.up == true) {
-            div.innerHTML = newdirection = 'right, top';
-            indexY = 96;
-        }
-        if(game.controls.right == true && game.controls.up == false && game.controls.down == false) {
-            div.innerHTML = newdirection = 'right';
-            indexY = 32;
-        }
-        if(game.controls.down == true) {
-            indexY = 0;
-            div.innerHTML = newdirection = 'down';
-        }
-        if(game.controls.up == true) {
-            indexY = 96;
-            div.innerHTML = newdirection = 'top';
-        }
-        
-        if(game.controls.up == false && game.controls.left == false && game.controls.right == false && game.controls.down == false) {
-            div.innerHTML = newdirection = 'none';
-        }
-        ctx2 = document.getElementById("game_canvas2").getContext("2d");
-        if(newdirection != 'none' && ((oldYbase != ypos) || (oldXbase != xpos))) {
-            if(newdirection != 'none' && counter % 15 == 0) {
-                ctx2.clearRect(0, 0, 700, 700);
-                console.log(loopIndex);
-                div.innerHTML += loopIndex;
-                document.getElementById("demo2").style.backgroundColor = colors[loopIndex];
-                ctx2.drawImage(character, indexX * loopArray[loopIndex], indexY, 32, 32, 320, 150, 32, 32);
-                loopIndex++;
-            }
-            else if(newdirection != direction) {
-                loopIndex = 0;
-                direction = newdirection;
-                ctx2.clearRect(0, 0, 700, 700);
-                div.innerHTML += loopIndex;
-                document.getElementById("demo2").style.backgroundColor = colors[loopIndex];
-                ctx2.drawImage(character, indexX * loopIndex, indexY, 32, 32, 320, 150, 32, 32);
-                console.log(indexX * loopIndex);
-                console.log("indexY" + indexY);
-                loopIndex++;
-            }
-            if(loopIndex == 4 && newdirection != 'none') {
-                loopIndex = 0;
-            }
-            counter++;
-            animationEnd = false;
-        }
-        else {
-            document.getElementById("demo2").style.backgroundColor = "#FFFFFF";
-            ctx2.clearRect(0, 0, 700, 700);
-            ctx2.drawImage(character, 0, indexY, 32, 32, 320, 150, 32, 32);
-            animationEnd = true;
-        }
-        oldYbase = ypos;
-        oldXbase = xpos;
-        div.appendChild(character);
-     }
     // Render player at specific locations
     function renderPlayer(x, y) {
         player = gamePieces.player;
@@ -680,3 +703,22 @@ function move() {
             game.updateGamePiece(xbase, ybase);
         }
     }
+    /*let coordinatesArray = map.split(",");
+    var x = coordinatesArray[0];
+    var y = coordinatesArray[1];
+    var newMapCoordinates; 
+    if(ypos > 3150) {
+        y += 1;
+    }
+    else if(ypos < 3000) {
+        y -= 1;
+    }
+    if(xpos > 3150) {
+        x -= 1;
+    }
+    else if(xpos < 3000) {
+        x += 1;
+    }
+    newMapCoordinates.join(",");
+    
+    fetchNewMap(newMapCoordinates);*/

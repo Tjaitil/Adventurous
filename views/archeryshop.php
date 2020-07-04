@@ -1,16 +1,4 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title><?php echo $title;?></title>
-        <?php require(constant('ROUTE_VIEW') . 'head.php');?>
-        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name ?>.css" />
-    </head>
-    <body>
-        <header>
-            <?php require(constant('ROUTE_VIEW') . 'header.php');?>
-        </header>
-        <section>
-            <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
+            archeryshop.css|archeryshop.js|
             <h3 class="page_title"><?php echo $title;?></h3>
             <div id="fletch">
                 <table>
@@ -38,13 +26,3 @@
                     </thead>
                 </table>
             </div>
-            <div id="inventory">
-                <?php require(constant('ROUTE_VIEW') . 'inventory.php'); url();?>    
-            </div>
-            <script src="<?php echo constant('ROUTE_JS') . 'archeryshop.js';?>"></script>
-        </section>
-        <aside>
-            <?php require(constant('ROUTE_VIEW') . '/aside.php'); ?>
-        </aside>
-    </body>
-</html>

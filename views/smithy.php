@@ -1,17 +1,6 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title><?php echo $title;?></title>
-        <?php require(constant('ROUTE_VIEW') . 'head.php');?>
-        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name ?>.css" />
-    </head>
-    <body>
-        <header>
-            <?php require(constant('ROUTE_VIEW') . 'header.php');?>
-        </header>
-        <section>
-            <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
+            smithy.css|smithy.js|
             <h3 class="page_title"> Smithy </h3>
+            <h5>Choose your mineral</h5>
             <div id="smith">
                 <div id="minerals">
                     <img src="<?php echo constant('ROUTE_IMG') . 'iron ore.png';?>"
@@ -47,7 +36,7 @@
                                 <img class="item_img" src="<?php echo constant('ROUTE_IMG') . $key['item']. '.png';?>" />
                                 <figcaption><?php echo ucwords($key['item']);?></figcaption>
                             </figure></td>
-                            <td><?php echo $key['amount_required'];?></td>
+                            <td><?php echo $key['mineral_required'];?></td>
                             <td><?php echo $key['cost'];?><img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.png';?>" /></td>
                             <td><input type="number" min="0" />
                             <button> Make</button></td>
@@ -87,13 +76,3 @@
                     <?php generateTable($this->data['frajrite']);?>
                 </table>
             </div>
-            <div id="inventory">
-                <?php require(constant('ROUTE_VIEW') . 'inventory.php'); url();?>    
-            </div>
-            <script src="<?php echo constant('ROUTE_JS') . 'smithy.js';?>"></script>
-        </section>
-        <aside>
-            <?php require(constant('ROUTE_VIEW') . '/aside.php'); ?>
-        </aside>
-    </body>
-</html>

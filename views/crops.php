@@ -1,22 +1,9 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title><?php echo $title;?></title>
-        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name;?>.css" />
-        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS');?>select.css" />
-        <?php require(constant('ROUTE_VIEW') . 'head.php');?>
-        <meta charset="utf-8"/>
-    </head>
-    <body>
-        <header>
-            <?php require(constant('ROUTE_VIEW') . '/header.php');?>
-        </header>
-        <section>
-            <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
+            crops.css|crops.js%select.js|
+            <h3 class="page_title"><?php echo $title;?></h3>
             <div id="action_div">
                 <div id="actions">
                     <p id="growing"> </p></br>
-                    <p id="time"></p>>
+                    <p id="time"></p>
                     <button onmousedown="destroyCrops();"> Destroy crops </button>
                 </div>
                 <div id="select">
@@ -65,7 +52,7 @@
                     </select><img src="#" id="type_img" height="50px" width="50px"/></br>
                     <label for="quantitiy"> Select amount of fields: </label>
                     <input name="quantity" id="crop_quantity" type="number" min="0" required />
-                    <span>(<?php echo $this->data['fields']['fields_avail']; ?>)</span></br>
+                    <span>(<?php echo $data['fields']['fields_avail']; ?>)</span></br>
                     <label for="workfore"> Select amount of workers:</label>
                     <input name="workforce" id="crop_workforce" type="number" min="0" required />
                     (<?php echo $this->data['workforce_data']['avail_workforce'];?>)</br>
@@ -74,10 +61,6 @@
                     <button type="button" id="plant_button"> Grow </button>
                 </form>
             </div>
-            
-        <div id="inventory">
-            <?php require(constant('ROUTE_VIEW') . 'inventory.php'); url();?>
-        </div>
             <div id="seed_g">
                 <p>Select a item to get seeds from:</p>
                 <div id="selected">
@@ -86,12 +69,4 @@
                 <input type="number" id="amount" min="0" />
                 <button> Generate </button>
             </div>
-        <script src="<?php echo constant('ROUTE_JS') . $name . '.js';?>"></script>
-        <script src="<?php echo constant('ROUTE_JS') . 'selectitem.js';?>"></script>
-        <script src="<?php echo constant('ROUTE_JS') . 'select.js';?>"></script>  
-        </section>
-        <aside>
-            <?php require(constant('ROUTE_VIEW') . 'aside.php');?>
-        </aside>
-    </body>            
-</html>
+        

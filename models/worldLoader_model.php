@@ -14,7 +14,7 @@
         public function JSONfiles() {
             $string = file_get_contents('../gamedata/pixela.json');
             /*$this->loadObjects();*/
-            echo file_get_contents('../gamedata/objects3.json');
+            echo file_get_contents('../gamedata/objects2.json');
         }
         public function loadObjects() {
             $string = json_decode(file_get_contents('../gamedata/pixela.json'), true);
@@ -66,7 +66,6 @@
         }
         public function loadChunks($POST) {
             // Load the next 2 tiles
-            
             $y_difference = $POST['ybase'] - 320 - $POST['yMapMin'];
             $x_difference = $POST['xbase'] - 320 - $POST['xMapMin'];
             
@@ -77,39 +76,43 @@
             $POST['yMapMax'] = $POST['yMapMin'] + 640;
             
             $file = restore_file('objects', true);
-            $string = json_decode(file_get_contents('../gamedata/objects.json'), true);
+            $string = json_decode(file_get_contents('../gamedata/objects2.json'), true);
             $objects = array();
+            $string = $string['objects'];
             for($i = 0; $i < count($string); $i++) {
-                echo $string[$i]['id'];
-                
-                /*var_dump($string[$i]['y'] > $POST['yMapMax']);
-                var_dump($string[$i]['y'] < $POST['ybase'] + 320);
-                var_dump($y_difference > 0);
-                var_dump($string[$i]['x'] <= $POST['xMapMax'] && $string[$i]['x'] > $POST['xMapMin']);*/
-                
-                // Arguments
-                // #1 checks if string x is greater than xMapMax and less than the new xMapMax and if direction is correct
-                // #2 check if string y is inside the loaded map area
-                if(
 
-                        ((($string[$i]['x'] > $POST['xMapMax'] && $string[$i]['x'] < $POST['xbase'] + 320 && $x_difference > 0)
-                             ||
-                             ($string[$i]['x'] <= $POST['xMapMin'] && $string[$i]['x'] >= $POST['xbase'] - 320 && $x_difference < 0))
-                         &&
-                         $string[$i]['y'] < $POST['yMapMax'] && $string[$i]['y'] > $POST['yMapMin'])
-                    ||
-                   
-                        (
-                            (($string[$i]['y'] > $POST['yMapMax'] && $string[$i]['y'] < $POST['ybase'] + 320 && $y_difference > 0)
-                            ||
-                             ($string[$i]['y'] < $POST['yMapMin'] && $string[$i]['y'] > $POST['ybase'] - 320 && $y_difference < 0)
-                        )
-                        &&
-                        $string[$i]['x'] <= $POST['xMapMax'] && $string[$i]['x'] > $POST['xMapMin']))
-                {
-                    $objects[] = $string[$i];
-                }
-            
+               /*var_dump($string[$i]['y'] > $POST['yMapMax']);
+                    var_dump($string[$i]['y'] < $POST['ybase'] + 320);
+                    var_dump($y_difference > 0);
+                    var_dump($string[$i]['x'] <= $POST['xMapMax'] && $string[$i]['x'] > $POST['xMapMin']);*/
+                    
+                    // Arguments
+                    // #1 checks if string x is greater than xMapMax and less than the new xMapMax ($POST['xbase'] + 320)
+                    // and if direction is correct
+                    // #2 check if string y is inside the loaded map area
+                    // $string[$i]['x'] > $POST['xMapMax'] && $string[$i]['x'] checks wether the string is outside of the set map parameter
+                    // $string[$i]['x'] < $POST['xbase'] + 320 checks wether the string is less than the new xbase - 320;
+                    // $x_difference > 0 checks wether the 
+                    if(
+    
+                            ((($string[$i]['x'] > $POST['xMapMax'] && $string[$i]['x'] < $POST['xbase'] + 320 && $x_difference > 0)
+                                 ||
+                                 ($string[$i]['x'] <= $POST['xMapMin'] && $string[$i]['x'] >= $POST['xbase'] - 320 &&
+                                  $x_difference < 0))
+                             &&
+                             $string[$i]['y'] < $POST['yMapMax'] && $string[$i]['y'] > $POST['yMapMin'])
+                        ||
+                       
+                            (
+                                (($string[$i]['y'] > $POST['yMapMax'] && $string[$i]['y'] < $POST['ybase'] + 320 && $y_difference > 0)
+                                ||
+                                 ($string[$i]['y'] < $POST['yMapMin'] && $string[$i]['y'] > $POST['ybase'] - 320 && $y_difference < 0)
+                            )
+                            &&
+                            $string[$i]['x'] <= $POST['xMapMax'] && $string[$i]['x'] > $POST['xMapMin']))
+                    {
+                        $objects[] = $string[$i];
+                    }
             }
             
             echo json_encode($objects);

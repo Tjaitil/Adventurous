@@ -1,16 +1,5 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title><?php echo $title; ?></title>
-        <?php include(constant('ROUTE_VIEW') . 'head.php');?>
-        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name ?>.css" />
-    </head>
-    <body>
-        <header>
-            <?php require(constant('ROUTE_VIEW') . 'header.php'); ?>
-        </header>
-        <section>
-            <?php require(constant("ROUTE_VIEW") . 'layout.php');?>
+            armory.css|armory.js|
+            <h3 class="page_title"> Army camp </h3>
             <div>
                 <a href="/armycamp"> << Back to army camp</a>
             </div>
@@ -36,14 +25,3 @@
                 </div>
                 <button onclick="wearArmor();"> Put on </button>
             </div>
-            <div id="inventory">
-                <?php require(constant('ROUTE_VIEW') . "inventory.php"); url();?>
-            </div>
-            <script src="<?php echo constant('ROUTE_JS'). 'selectitem.js';?>"></script>
-            <script src="<?php echo constant('ROUTE_JS') . $name . '.js';?>"></script>
-        </section>
-        <aside>
-            <?php require(constant('ROUTE_VIEW') . '/aside.php'); ?>
-        </aside>
-    </body>
-</html>

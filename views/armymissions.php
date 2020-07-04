@@ -1,20 +1,4 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title><?php echo $title; ?></title>
-        <?php require(constant('ROUTE_VIEW') . 'head.php');?>
-        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name ?>.css" />
-        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . 'warriorSelect';?>.css" />
-    </head>
-    <body>
-        <header>
-            <?php require(constant('ROUTE_VIEW') . 'header.php'); ?>
-        </header>
-        <section>
-            <?php require(constant("ROUTE_VIEW") . 'layout.php');?>
-            <div>
-                <a href="/armycamp"> << Back to army camp</a>
-            </div>
+            armymissions.css|armymissions.js|
             <h3 class="page_title"> Army Missions </h3>
             <div id="current_mission">
                 <p> Mission:</p><p id="time"></p>
@@ -53,11 +37,3 @@
                 <p>Select Warriors:</p>
                 <button id="mission_button" onclick="doMission();"> Do Mission </button>
             </div>
-            <script src="<?php echo constant('ROUTE_JS') . $name . '.js';?>"></script>
-            <script src="<?php echo constant('ROUTE_JS') . 'warriorSelect.js';?>"></script>
-        </section>
-        <aside>
-            <?php require(constant('ROUTE_VIEW') . '/aside.php'); ?>
-        </aside>
-    </body>
-</html>

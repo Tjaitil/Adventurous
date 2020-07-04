@@ -1,33 +1,44 @@
 canvas {
-        border:1px solid #d3d3d3;
-    }
-    #control {
-        background-color: red;
-        width: 200px;
-        height: 200px;
-        border-radius: 100px;
-        position: relative;
-    }
-    #control_button {
-        background-color: black;
-        padding: 10px;
-        border-radius: 10px;
-        position: absolute;
-        left: 44%;
-        top: 41%;
-        width: 30px;
-        height: 30px;
-    }
-    button {
-        background-color: #f2e6d9;
-        border-radius: 5px;
-        border: 1px outset;
-        box-shadow: 1px 1px 1px 1px #372715;
-        padding: 3px 6px 3px 7px;
-        color: black;
-        font-weight: bold;
-    }
-    button:active {
-        background-color: #ebd9c6
-    }
-    button:focus {outline:0;
+    border:1px solid #d3d3d3;
+}
+#control {
+    background-color: red;
+    width: 200px;
+    height: 200px;
+    border-radius: 100px;
+    position: relative;
+}
+#control_button {
+    background-color: black;
+    padding: 10px;
+    border-radius: 10px;
+    position: absolute;
+    left: 44%;
+    top: 41%;
+    width: 30px;
+    height: 30px;
+}
+button {
+    background-color: #f2e6d9;
+    border-radius: 5px;
+    border: 1px outset;
+    box-shadow: 1px 1px 1px 1px #372715;
+    padding: 3px 6px 3px 7px;
+    color: black;
+    font-weight: bold;
+}
+button:active {
+    background-color: #ebd9c6
+}
+button:focus {outline:0;}
+#game_canvas {
+    float: left;
+}
+#game_canvas2, #game_canvas3 {
+    position: absolute;
+    top: 190px;
+    left: 12px;
+}
+#test_canvas {
+    border: 1px solid black;
+}

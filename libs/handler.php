@@ -8,6 +8,7 @@
             $autoloader = new autoloader();
             spl_autoload_register(array($autoloader, 'libsLoader'));
             spl_autoload_register(array($autoloader, 'modelLoader'));
+            spl_autoload_register(array($autoloader, 'controllerLoader'));
             require_once($this->parent_dir . constant('ROUTE_HELPER') . 'general_helpers.php');
             
             // If ajax call is to get a file or session data
@@ -25,7 +26,7 @@
             $model = $modelname . '_model';
             if(class_exists($model)) {
                 $session['username'] = $_SESSION['username'];
-                return new $model($session, new database());
+                return new $model($session);
             }
             else {
                 // Report if user tries to access a model that doesn't exists
@@ -43,6 +44,18 @@
         }
         private function errorReport($message) {
             mail('miner123@hotmail.no', 'ERROR', $message, 'FROM: <system@adventurous.no');
+        }
+        public function loadController($controllerName) {
+            $controllerName  = strtolower($controllerName);
+            $controllerFile = $controllerName . '.php';
+            if(class_exists($controllerName)) {
+                /*$session['username'] = $_SESSION['username'];*/
+                return new $controllerName();
+            }
+            else {
+                // Report if user tries to access a model that doesn't exists
+                $this->errorReport($controllerFile . "doesn't exists");
+            }
         }
     }
 ?>

@@ -1,21 +1,9 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title><?php echo $title;?></title>
-        <?php require(constant('ROUTE_VIEW') . 'head.php');?>
-        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name ?>.css" />
-    </head>
-    <body>
-        <header>
-            <?php require(constant('ROUTE_VIEW') . 'header.php');?>
-        </header>
-        <section>
-            <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
-            <h3 id="page_title"> Stockpile </h3>
+            stockpile.css|stockpile.js|
+            <h3 class="page_title"> Stockpile </h3>
             <div id="stockpile">
-                <?php get_template('stockpile', $this->data); ?>
+                <?php get_template('stockpile', $this->data);?>
             </div>
-            <div id="inventory">
+            <!--<div id="inventory">
                 <div id="hidden">
                         <div class="inventory_buttons">
                             <button onclick="insert(this, 1);"> 1 </button>
@@ -28,9 +16,7 @@
                         </figure>
                                     
                     </div>
-                <?php require(constant('ROUTE_VIEW') . 'inventory.php'); url();?>
-            </div>
-            <script src="<?php echo constant('ROUTE_JS') . $name . '.js';?>"></script>
+            </div>-->
             <div id="stck_menu">
                 <ul>
                     <li></li>
@@ -40,9 +26,3 @@
                     <li ontouchstart="touchMove(this);">Insert all</li>
                 </ul>
             </div>
-        </section>
-        <aside>
-            <?php require(constant('ROUTE_VIEW') . '/aside.php'); ?>
-        </aside>
-    </body>
-</html>

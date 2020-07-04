@@ -37,7 +37,7 @@
                 $this->gameMessage("ERROR: You are not allowed to smith from that mineral", true);
                 return false;
             }
-            
+            // Check if player has the required ore and gold in inventory
             $sql = "SELECT item, amount FROM inventory WHERE (item=:item OR item='gold') AND username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
@@ -49,6 +49,14 @@
             if(!$stmt->rowCount() > 1) {
                 $this->gameMessage("ERROR: You missing one or more items in your inventory", true);
                 return false;
+            }
+            if($row[0]['item'] === 'gold') {
+                $row['gold'] = $row[0];
+                $row['item'] = $row[1];
+            }
+            else {
+                $row['gold'] = $row[1];
+                $row['item'] = $row[0];
             }
             
             $sql = "SELECT mineral_required, level, cost FROM armory_items_data WHERE item=:item";
@@ -75,12 +83,14 @@
             }
             
             $minerals_needed = $row2['mineral_required'] * $amount;
-            if($row2['mineral_required'] * $amount > $row[0]['amount']) {
+            if($row2['mineral_required'] * $amount > $row['item']['amount']) {
                 $this->gameMessage("ERROR! You dont have enough ores", true);
                 return false;
             }
             $cost = $row2['cost'] * $amount;
-            if($row[1]['amount'] < $cost) {
+            var_dump($row[1]['amount']);
+            var_dump($cost);
+            if($row['gold']['amount'] < $cost) {
                 $this->gameMessage("ERROR! You don't have enough gold", true);
                 return false;
             }

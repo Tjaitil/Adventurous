@@ -9,7 +9,7 @@
         public function index() {
             $this->loadModel('Crops', true);
             $this->data = $this->model->getData();
-            $this->render('crops', 'Crops', $this->data);
+            $this->render('crops', 'Crops', $this->data, true);
         }
     }
 ?>

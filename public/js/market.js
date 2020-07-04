@@ -1,7 +1,8 @@
-    window.onload = function () {
-        var div = document.getElementById("offers");
-        var inputs = div.getElementsByTagName("input");
-        var buttons = div.children[0].children[2].querySelectorAll("button");
+    
+    if(document.getElementById("news_content").children[3] != null) {
+        let div = document.getElementById("offers");
+        let inputs = div.getElementsByTagName("input");
+        let buttons = div.children[0].children[2].querySelectorAll("button");
         for(var i = 0; i < inputs.length; i++) {
             if(inputs[i].getAttribute("type") == 'hidden') {
                 offers[inputs[i].parentElement.parentElement.nodeName + i] = inputs[i].value;
@@ -28,7 +29,7 @@
         /*setInterval(intervalUpdate, 10000);*/
         document.getElementById("item_srch").addEventListener('keyup', chk_me);
         document.getElementById("s_item").addEventListener('keyup', chk_me);
-    };
+    }
     function intervalUpdate() {
         updatePage(2);
     }

@@ -8,20 +8,8 @@
             $this->username = $session['username'];
             $this->session = $session;
         }
-        public function getPersons() {
-            $sql = "SELECT name from persons WHERE location=:location";
-            $stmt = $this->db->conn->prepare($sql);
-            $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
-            $param_location = $this->session['location'];
-            $stmt->execute();
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            if($row == false) {
-                return array();
-            }
-            $this->db->closeConn();
-            return $row;
-        }
         public function getData() {
+            $data = array();
             $cities = array("towhar", "golbak", "snerpiir", "krasnur", "tasnobil", "cruendo", "fagna");
             if (array_search($this->session['location'], $cities) === false) {
                 $this->gameMessage("ERROR: Something unexpected happened, please try again!", true);
@@ -32,8 +20,17 @@
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            return $row;
+            $data['workers'] = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            $sql = "SELECT name from persons WHERE location=:location";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
+            $param_location = $this->session['location'];
+            $stmt->execute();
+            $data['persons'] = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            $this->db->closeConn();
+            return $data;
         }
         
         public function getWorkers() { 

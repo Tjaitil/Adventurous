@@ -6,6 +6,9 @@
     $modelname = $_POST['model'];
     $methodname = $_POST['method'];
     $model = $handler->includeModel($_POST['model'], $_SESSION['gamedata']);
+    if(!is_object($model)) {
+        echo "ERROR";
+    }
     $method = $handler->checkMethod($model, $_POST['method']);
     if($method === true) {
         switch($modelname) {

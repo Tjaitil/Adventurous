@@ -8,8 +8,7 @@
         public function index() {
             $this->loadModel('ArcheryShop', true);
             $this->data = $this->model->getData();
-            $this->render('archeryshop', 'Archery Shop', $this->data);
-        }
-        
+            $this->render('archeryshop', 'Archery Shop', $this->data, true);
+        }   
     }
 ?>

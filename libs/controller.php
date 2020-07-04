@@ -7,13 +7,22 @@
             }
         }
         // Render site
-        public function render($name, $title, $gamedata) {
-            require(constant('ROUTE_VIEW') . $name . '.php');
+        public function render($name, $title, $gamedata, $up = false) {
+            if($up !== false) {
+                require('../' . constant('ROUTE_VIEW') . $name . '.php');    
+            }
+            else {
+                require(constant('ROUTE_VIEW') . $name . '.php');
+            }
         }
         //Render site with error Array   
-        public function renderWE($name, $title, $gamedata, $data) {
-            $title = $title;
-            require(constant('ROUTE_VIEW') . $name . '.php');
+        public function renderWE($name, $title, $gamedata, $data, $up = false) {
+            if($up !== false) {
+                require('../' . constant('ROUTE_VIEW') . $name . '.php');    
+            }
+            else {
+                require(constant('ROUTE_VIEW') . $name . '.php');
+            }
         }
         public function checkLevel() {
             $profiencies = array('farmer', 'miner', 'trader', 'warrior');
@@ -32,16 +41,19 @@
             }
         }
         public function loadModel($name, $db) {
-            $modelPath = constant("ROUTE_MODEL");
-            $path = $modelPath . $name.'_model.php';
-            if(file_exists($path)) {
+            $path = $name.'_model';
+            if(class_exists($path)) {
                 $modelName = $name . '_model';
-                $db = new database();
+                /*$db = new database();*/
                 if(in_array($modelName, array('newuser_model', 'gamedata_model')) == true) {
+                    
                     $this->model = new $modelName($_SESSION['username'], $db);
                 }
                 else {
-                    switch($db) {
+                    $session = $_SESSION['gamedata'];
+                    $session['username'] = $_SESSION['username'];
+                    $this->model = new $modelName($session);
+                    /*switch($db) {
                         case true:
                             $session = $_SESSION['gamedata'];
                             $session['username'] = $_SESSION['username'];
@@ -50,7 +62,7 @@
                         case false:
                             $this->model = new $modelName($db);
                             break;
-                    }
+                    }*/
                 }
             }
             else {

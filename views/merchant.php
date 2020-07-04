@@ -1,20 +1,8 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title><?php echo $title;?></title>
-        <?php require(constant('ROUTE_VIEW') . '/head.php');?>
-        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name ?>.css" />
-    </head>
-    <body>
-        <header>
-            <?php require(constant('ROUTE_VIEW') . 'header.php');?>
-        </header>
-        <section>
-            <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
+            merchant.css|merchant.js%trader.js|
             <h3 class="page_title"><?php echo $title;?></h3>
             <div id="trades">
                 <div>
-                <?php get_template('merchantStock', $this->data); ?>
+                <?php get_template('merchantStock', $data); ?>
                 </div>
                 <div id="do_trade">
                     <div id="selected_trade">
@@ -26,9 +14,6 @@
                     <input type="checkbox" id="bond" name="bond" /></br>
                     <button> Trade </button>
                 </div>
-            </div>
-            <div id="inventory">
-                    <?php require(constant('ROUTE_VIEW') . 'inventory.php'); url();?>
             </div>
             <div id="trader">
                 <table>
@@ -44,12 +29,12 @@
                         </tr>
                     </thead>
                     <tr>
-                        <?php get_template('assignment', $this->data['trader_assignments']);?>
+                        <?php get_template('assignment', $data['trader_assignments']);?>
                     </tr>
                 </table>
                 <div id="assignment">
-                    <p>Cart Capasity: <?php echo $this->data['trader_data']['cart_amount'] , '/', $this->data['trader_data']['capasity'];?></p>
-                    <p>Current assignment: <?php echo $this->data['trader_data']['assignment'];?></p>
+                    <p>Cart Capasity: <?php echo $data['trader_data']['cart_amount'] , '/', $data['trader_data']['capasity'];?></p>
+                    <p>Current assignment: <?php echo $data['trader_data']['assignment'];?></p>
                     <div id="pick_up">
                         <button onclick="pickUp();">Pick up items</button>
                     </div>
@@ -57,12 +42,3 @@
                         <button onclick="deliver();">Deliver</button>
                     </div>
                 </div>
-                <script src="<?php echo constant('ROUTE_JS') . $name . '.js';?>"></script>
-                <script src="<?php echo constant('ROUTE_JS') . 'trader.js';?>"></script>
-            </div>
-        </section>
-        <aside>
-            <?php require(constant('ROUTE_VIEW') . '/aside.php');?>
-        </aside>
-    </body>
-</html>

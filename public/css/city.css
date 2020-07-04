@@ -22,8 +22,3 @@
     visibility: hidden;
     opacity: 0;
 }
-#game_canvas2 {
-    position: absolute;
-    top: 666px;
-    left: 42px;
-}

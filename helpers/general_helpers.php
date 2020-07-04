@@ -22,7 +22,7 @@
     }
     function get_template($name, $data, $up = false) {
         $filename = $name . '_tpl.php';
-        $path = constant('ROUTE_TEMPLATE') . $filename;
+        $path = '../' . constant('ROUTE_TEMPLATE') . $filename;
         if($up != false) {
             $path = '../' . constant('ROUTE_TEMPLATE') . $filename;   
         }
