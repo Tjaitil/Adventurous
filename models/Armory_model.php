@@ -21,6 +21,15 @@
             $param_username = $this->username;
             $stmt->execute();
             $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $sql = "SELECT type FROM warriors WHERE username=:username";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $stmt->execute();
+            $row2 = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            for($i = 0; $i < count($row); $i++) {
+                $row[$i]['type'] = $row2[$i]['type'];  
+            }
             $this->db->closeConn();
             
             return $row;

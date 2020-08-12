@@ -1,8 +1,6 @@
             armory.css|armory.js|
-            <h3 class="page_title"> Army camp </h3>
-            <div>
+            <h3 class="page_title"> Armory </h3>
                 <a href="/armycamp"> << Back to army camp</a>
-            </div>
             <div id="warriors">
                 <?php get_template('armory', $this->data['warrior_armory']) ;?>
             </div>

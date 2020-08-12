@@ -7,7 +7,7 @@
     
     $model = $handler->includeModel($_GET['model'], $_SESSION['gamedata']);
     $method = $handler->checkMethod($model, $_GET['method']);
-    if ($method === true) {
+    if($method === true) {
         if(count($_GET) < 3) {
             $model->$methodname(); //If there is less than 3 parameters, the only parameter is model and method
         }

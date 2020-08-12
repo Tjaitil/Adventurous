@@ -42,3 +42,35 @@ button:focus {outline:0;}
 #test_canvas {
     border: 1px solid black;
 }
+#control {
+    background-color: #a08b54;
+    width: 100px;
+    height: 100px;
+    border-radius: 100px;
+    position: relative;
+    touch-action: none;
+    top: 30px;
+}
+#control_button {
+    background-color: black;
+    padding: 10px;
+    border-radius: 40px;
+    position: absolute;
+    left: 25%;
+    top: 25%;
+    width: 50px;
+    height: 50px;
+}
+button {
+    background-color: #f2e6d9;
+    border-radius: 5px;
+    border: 1px outset;
+    box-shadow: 1px 1px 1px 1px #372715;
+    padding: 3px 6px 3px 7px;
+    color: black;
+    font-weight: bold;
+}
+button:active {
+    background-color: #ebd9c6
+}
+button:focus {outline:0;}

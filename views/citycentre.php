@@ -1,8 +1,8 @@
             citycentre.css|citycentre.js|
             <h3 class="page_title"> City Centre </h3>
-            <button onclick="show('profiency');"> Profiency </button>
+            <!--<button onclick="show('profiency');"> Profiency </button>
             <button onclick="show('keep');"> Keep </button>
-            <button onclick="show('permits');"> Permits</button>
+            <button onclick="show('permits');"> Permits</button>-->
             <div id="profiency">
                 <p> Current profiency: <span id="profiency"><?php echo $_SESSION['gamedata']['profiency'];?></span></p>
                     <label for="profiency_select"> Change profiency</label></br>
@@ -22,11 +22,11 @@
             </div>
             <div id="keep">
                 <div id="artefact">
-                    <p> Current artefact: <?php echo ucfirst($data['artefact_data']['artefact']);?>
-                    <?php if($data['artefact_data']['artefact'] === 'none'): ?>
+                    <p> Current artefact: <?php echo ucfirst($this->data['artefact_data']['artefact']);?>
+                    <?php if($this->data['artefact_data']['artefact'] === 'none'): ?>
                         <img style="background-color:white;" />
                     <?php else: ?>
-                        <img src="<?php echo constant('ROUTE_IMG') . $data['artefact_data']['artefact'] . '.png';?>" />
+                        <img src="<?php echo constant('ROUTE_IMG') . $this->data['artefact_data']['artefact'] . '.png';?>" />
                     <?php endif;?>
                     </p>
                 </div>
@@ -84,14 +84,14 @@
                     </thead>
                     <tr>
                         <td> Farmer </td>
-                        <td><?php echo $data['effiency']['farmer'];?></td>
-                        <td><?php echo $data['effiency']['farmer'] * 150;?></td>
+                        <td><?php echo $this->data['effiency']['farmer'];?></td>
+                        <td><?php echo $this->data['effiency']['farmer'] * 150;?></td>
                         <td><button> Upgrade </button></td>
                     </tr>
                     <tr>
                         <td> Miner </td>
-                        <td><?php echo $data['effiency']['miner'];?></td>
-                        <td><?php echo $data['effiency']['miner'] * 150;?></td>
+                        <td><?php echo $this->data['effiency']['miner'];?></td>
+                        <td><?php echo $this->data['effiency']['miner'] * 150;?></td>
                         <td><button> Upgrade </button></td>
                     </tr>
                 </table>

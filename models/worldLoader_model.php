@@ -4,26 +4,80 @@
         public $session;
         private $file;
         private $object_file = "../gamedata/objects.json";
+        private $map;
         
         function __construct ($session) {
             parent::__construct();
             $this->username = $session['username'];
             $this->session = $session;
-            
         }
-        public function JSONfiles() {
-            $string = file_get_contents('../gamedata/pixela.json');
-            /*$this->loadObjects();*/
-            echo file_get_contents('../gamedata/objects2.json');
+        private function updateMap() {
+            $sql = "UPDATE user_data SET map_location=:map_location WHERE username=:username";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->bindParam(":map_location", $param_map_location, PDO::PARAM_STR);
+            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_map_location = $this->map;
+            $param_username = $this->username;
+            $stmt->execute();
+            $_SESSION['gamedata']['map_location'] = $this->map;
+            $this->session['map_location'] = $this->map;
+        }
+        private function getMap() {
+            $maps = array();
+            
+            if($this->session['map_location'] == "null") {
+                $map_location;
+                switch($this->session['profiency']) {
+                    case 'farmer':
+                        $map_location = 'towhar';
+                        break;
+                    case 'miner':
+                        $map_location = 'golbak';
+                        break;
+                    case 'trader':
+                        $map_location = 'Parf';
+                        break;
+                    case 'warrior':
+                        $map_location = 'tasnobil';
+                        break;
+                }
+                $this->updateMap();
+            }
+            else {
+                $this->map = $this->session['map_location'];
+            }
+        }
+        public function changeMap($GET) {
+            $newMap = json_decode($GET['newMap'], true);
+            if((abs($newMap['new_y']) > 1 || abs($newMap['new_x']) > 1) /*|| ($newMap['new_y'] === 0 && $newMap['new_x'] === 0)*/) {
+                // Throw error
+                return false;
+            }
+            $split_array = explode('.', $this->session['map_location']);
+            if($newMap['new_x'] != 0) {
+                $split_array[0] += $newMap['new_x'];
+            }
+            elseif($newMap['new_y'] != 0) {
+                $split_array[1] += $newMap['new_y'];
+            }
+            $this->session['map_location'] = $this->map = implode('.', $split_array);
+            $this->updateMap();
+            $this->loadWorld();
+        }
+        public function loadWorld() {
+            $this->getMap();
+            $string = file_get_contents('../gamedata/' . $this->map . '.json');
+            $this->loadObjects();
+            echo $this->map . '|' . file_get_contents($this->object_file);
+            /*$_SESSION['gamedata']['map_location'];*/
         }
         public function loadObjects() {
-            $string = json_decode(file_get_contents('../gamedata/pixela.json'), true);
-            
+            $string = json_decode(file_get_contents('../gamedata/' . $this->map . '.json'), true);
             $objects = array();
             $objects['objects'] = array();
             $objects['links'] = array();
             for($i = 0; $i < count($string['layers']); $i++) {
-                if(strpos($string['layers'][$i]['name'], "Rutelag") === false) {
+                if(strpos($string['layers'][$i]['name'], "Tile Layer") === false) {
                         $object_array = $string['layers'][$i]['objects'];
                         for($x = 0; $x < count($object_array); $x++) {
                             unset($object_array[$x]['gid']);
@@ -31,7 +85,7 @@
                             unset($object_array[$x]['rotation']);
                             
                             $object_array[$x]['x'] = round($object_array[$x]['x'], 2);
-                            $object_array[$x]['y'] = round($object_array[$x]['y'], 2);
+                            $object_array[$x]['y'] = round($object_array[$x]['y'], 2) - $object_array[$x]['height'];
                             
                             // If the object has any objects, move the data up in the array
                             if(isset($object_array[$x]['properties'])) {
@@ -60,9 +114,8 @@
             }
             // open and edit objects;
             /*$handle = fopen("../gamedata/objects2.json", "w");*/
-            file_put_contents($this->object_file, "");
+            $test = file_put_contents($this->object_file, "123");
             $handle = file_put_contents($this->object_file, json_encode($objects, JSON_PRETTY_PRINT));
-            echo file_get_contents($this->object_file);
         }
         public function loadChunks($POST) {
             // Load the next 2 tiles

@@ -1,5 +1,4 @@
 
-            <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
             <h3 class="page_title">Adventures</h3>
              <div id="requests">
                 <table>

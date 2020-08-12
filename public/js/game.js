@@ -6,28 +6,139 @@ window.addEventListener("keydown", function(e) {
         e.preventDefault();
     }
 }, false);
+document.getElementById("control").addEventListener("touchmove", move);
+document.getElementById("control").addEventListener("touchend", endMove);
 
-function move() {
-        console.log(event);
+    /*document.getElementById("control").addEventListener("mousemove", move);*/
+    
+    var click = false;
+    
+    function move() {
         var button = document.getElementById("control_button");
         var element = event.target.closest("#control");
         var elementPos = element.getBoundingClientRect();
-        console.log(elementPos);
-        console.log(element.scrollTop);
-        var button_top = (event.clientY - elementPos.top - 12.5);
-        var button_left = (event.clientX - elementPos.left - 13);
-        if((event.clientY + 35) > elementPos.bottom || (event.clientY - 35) < elementPos.top ||
-           (event.clientX + 35) > elementPos.right || (event.clientX - 35) < elementPos.left) {
+        var buttonPos = button.getBoundingClientRect();
+        var eventY = event.targetTouches[0].clientY - elementPos.y;
+        var eventX = event.targetTouches[0].clientX - elementPos.x; 
+        
+        // a is the distance from eventY to diameter
+        // b is the distance from eventX to diaemter
+        var a = Math.abs(eventY - (elementPos.height / 2));
+        var b = Math.abs(eventX - (elementPos.width / 2));
+        
+        button.style.top = (event.targetTouches[0].clientY + 50 - elementPos.y - (elementPos.height / 2)) + "px";
+        button.style.left = (event.targetTouches[0].clientX - 50) + "px";
+        
+        if(a < 5 && b < 5) {
+            game.controls.left = false;
+            game.controls.up = false;
+            game.controls.right = false;
+            game.controls.down = false;
+            return false;    
+        }
+        if(a > 110 || b > 110) {
+            game.controls.left = false;
+            game.controls.up = false;
+            game.controls.right = false;
+            game.controls.down = false;
+            endMove();
             return false;
         }
-        button.style.top = button_top + "px";
-        button.style.left = button_left + "px";
+        /*console.log(elementPos);
+        console.log("eventY: " + eventY);
+        console.log("a:" + a);
+        console.log("b:" + b);*/
+        
+        var angle;
+        if(eventX > 100 && eventY < 100) {
+            console.log('++');
+            console.log((Math.atan(a/b) / (2 * 3.14)) * 360);
+            angle = (Math.atan(a/b) / (2 * 3.14)) * 360;
+        }
+        if(eventX < 100 && eventY < 100) {
+            console.log('-+');
+            console.log((Math.atan(b/a) / (2 * 3.14)) * 360 + 90);
+            angle = (Math.atan(b/a) / (2 * 3.14)) * 360 + 90;
+        }
+        if(eventX < 100 && eventY > 100) {
+            console.log('--');
+            console.log((Math.atan(a/b) / (2 * 3.14)) * 360 + 180);
+            angle = (Math.atan(a/b) / (2 * 3.14)) * 360 + 180;
+        }
+        if(eventX > 100 && eventY > 100) {
+            console.log('+-');
+            console.log((Math.atan(b/a) / (2 * 3.14)) * 360 + 270);
+            angle = (Math.atan(b/a) / (2 * 3.14)) * 360 + 270;
+        }
+        console.log(angle);
+        if(337.5 < angle || angle < 22.5) {
+            console.log('going east');
+            game.controls.left = false;
+            game.controls.up = false;
+            game.controls.right = true;
+            game.controls.down = false;
+        }
+        if(22.5 < angle && angle < 67.5) {
+            console.log('going north-east');
+            game.controls.left = false;
+            game.controls.up = true;
+            game.controls.right = true;
+            game.controls.down = false;
+        }
+        if(67.5 < angle && angle < 112.5) {
+            console.log('going north');
+            game.controls.left = false;
+            game.controls.up = true;
+            game.controls.right = false;
+            game.controls.down = false;
+        }   
+        if(112.5 < angle && angle < 157.5) {
+            console.log('going north-west');
+            game.controls.left = true;
+            game.controls.up = true;
+            game.controls.right = false;
+            game.controls.down = false;
+        }
+        if(157.5 < angle && angle < 202.5) {
+            console.log('going west');
+            game.controls.left = true;
+            game.controls.up = false;
+            game.controls.right = false;
+            game.controls.down = false;
+        }
+        if(202.5 < angle && angle < 247.5) {
+            console.log('going south-west');
+            game.controls.left = true;
+            game.controls.up = false;
+            game.controls.right = false;
+            game.controls.down = true;
+        }
+        if(247.5 < angle && angle < 292.5) {
+            console.log('going south');
+            game.controls.left = false;
+            game.controls.up = false;
+            game.controls.right = false;
+            game.controls.down = true;
+        }
+        if(292.5 < angle && angle < 337.5) {
+            console.log('going south-east');
+            game.controls.left = false;
+            game.controls.up = false;
+            game.controls.right = true;
+            game.controls.down = true;
+        }
     }
     function endMove() {
         var button = document.getElementById("control_button");
-        button.style.top = "41%";
-        button.style.left = "44%";
+        button.style.top = "25%";
+        button.style.left = "25%";
+        game.controls.left = false;
+        game.controls.up = false;
+        game.controls.right = false;
+        game.controls.down = false;
     }
+    
+    
     var inBuilding = false;
     var world = new Image(3200, 3200);
     var player_img = new Image(32, 32);
@@ -46,32 +157,13 @@ function move() {
     var obstaclesSize = [];
     var linksPos = [];
     var linksSize = [];
-    var xMovement = 0;
-    var yMovement = 0;
-    //
-    var xbase = 1280;
-    var ybase = 150;
-    // charX and charY where the character is drawn on canvas (middle);
-    var charX = 320;
-    var charY = 200;
-    // MapMin/MapMax variables holds the coordinates of furtherst loaded chunks
-    var xMapMin = xbase - 320;
-    var xMapMax = xbase + 320;
-    var yMapMin = ybase - 320;
-    var yMapMax = ybase + 320;
-    var xcamMove = 0;
-    var ycamMove = 0;
     var lastCalledTime;
     var fps;
     var keys = [];
     var interval = false;
-    // xpos and ypos is the position of the player in the world
-    var xpos = xbase + xMovement;
-    var ypos = ybase + yMovement;
     var animationEnd = true;
     // Scale is a variable which compensates for the canvas being zoomed in so that objects drawn on canvas will follow the background.
     // 1 is normal then the picture will be painted in 1024 width and height.
-    var scale = 1;
     var render = 0;
     var gamePause = false;
     var loopIndex = 0;
@@ -88,6 +180,7 @@ function move() {
         if(building == false) {
             building = 'test';
         }
+        // Legge til at man sjekker om man er i nærheten av en by
         console.log(building);
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
@@ -107,12 +200,11 @@ function move() {
                     link = document.getElementById("fetch_stylesheet");
                     link.href = "public/css/" + responseText[0].trim();    
                 }
-                console.log(responseText[0]);
                 document.getElementsByTagName("head")[0].appendChild(link);
                 var script;
                 var script2;
                 var scripts = responseText[1].split("%");
-                openNews(responseText[2]);
+                openNews(responseText[2], true);
                 if(document.getElementById("fetch_script") === null) {
                     script = document.createElement("script");
                     script.src = "public/js/" + scripts[0].trim();
@@ -151,43 +243,127 @@ function move() {
         ctx.lineTo(sx, sy);
         ctx.stroke();
     }
-    document.addEventListener('DOMContentLoaded', function() {
+    game.setCanvasDimensions = function() {
+        let newWidth = document.getElementsByTagName("section")[0].offsetWidth * 0.68;
+        /*let newWidth = 700;*/
+        let newHeight = 300;
+        game.properties.canvasWidth = newWidth;
+        document.getElementById("game_canvas").width = newWidth;
+        document.getElementById("game_canvas").height = newHeight;
+        game.properties.scale = newWidth / 700;
+        game.properties.charX = Math.floor((newWidth / 2) - 32);
+        game.properties.charY = Math.floor((newHeight / 2) - 32);
+        console.log(game.properties.scale);
         game.properties.canvasHeight = document.getElementById("game_canvas").height;
-        game.properties.canvasWidth = document.getElementById("game_canvas").width;
+        
+    };
+    game.properties = {
+        context: document.getElementById("game_canvas").getContext("2d"),
+        fillStyle1: "red",
+        fillstyle2: "black",
+        context2: document.getElementById("game_canvas2").getContext("2d"),
+        context3: document.getElementById("game_canvas3").getContext("2d"),
+        /*context4: document.getElementById("test_canvas").getContext("2d"),*/
+        canvasWidth: document.getElementById("game_canvas").width,
+        canvasHeight: document.getElementById("game_canvas").height,
+        requestId: null,
+        nagivateNext: false,
+        xbase: 320,
+        ybase: 200,
+        // charX and charY where the character is drawn on canvas (middle);
+        /*charX: 320,
+        charY: 200,*/
+        charX: 320,
+        charY: 200,
+        // MapMin/MapMax variables holds the coordinates of furtherst loaded chunks
+        xMapMin: this.xbase - 320,
+        xMapMax: this.xbase + 320,
+        yMapMin: this.ybase - 320,
+        yMapMax: this.ybase + 320,
+        // xcamMove/ycamMove is the variables that holds how much the picture is moved. It is - 320 because the player is drawn is the middle on
+        // x axis and - 200 on the y axis.
+        xcamMove: null,
+        ycamMove: null,
+        loading: false,
+        scale: null
+    };
+    window.addEventListener("load", function() {
+        game.setCanvasDimensions();
         game.loadWorld();
-        inactivityTime();
+        game.inactivityTime();
     });
     gamePieces = {
         obstacles : [],
         links: [],
         objects: [],
-        player: new newPlayer(30, 30, "#0000A0", xbase, ybase)
+        player: null
     };
-    game.loadWorld = function() {
-        var data = "model=worldLoader" + "&method=JSONfiles";
+    game.loadWorld = function(newxBase = false, newyBase = false, method = false, newMap = false)  {
+        game.loadingScreen();
+        let data;
+        let map;
+        if(method !== false) {
+            method = method;
+            data = "model=worldLoader" + "&method=changeMap" + "&newMap=" + JSON.stringify(newMap);
+        }
+        else {
+            method = "loadWorld";
+            data = "model=worldLoader" + "&method=loadWorld";
+        }
         ajaxG(data, function(response) {
             var responseText = response[1];
             if(response[0] != false) {
-                var obj = JSON.parse(responseText);
+                responseText = responseText.split("|");
+                console.log(responseText);
+                map = responseText[0];
+                var obj = JSON.parse(responseText[1]);
                 gamePieces.links = obj['links'];
                 gamePieces.objects = obj['objects'];
-                console.log(gamePieces.objects[31]);
+                if(newxBase === false) {
+                    // Legge til xbase i JSON map filene
+                    game.properties.xbase = 2500;    
+                }
+                else {
+                    game.properties.xbase = newxBase;
+                }
+                if(newyBase === false) {
+                    // Legge til ybase i JSON map filene
+                    game.properties.ybase = 2500;    
+                }
+                else {
+                    game.properties.ybase = newyBase;
+                }
+                game.properties.xcamMove = game.properties.xbase - game.properties.charX;
+                game.properties.ycamMove = game.properties.ybase - game.properties.charY;
                 for(var i = 0; i < gamePieces.objects.length; i++) {
                     gamePieces.objects[i].img = new Image(gamePieces.objects[i].width, gamePieces.objects[i].height);
                     gamePieces.objects[i].img.src = "public/img/" + gamePieces.objects[i].src;
-                    gamePieces.objects[i].x -= xbase;
                     // The diameters of the object is based on player starting on 320,
-                    // to compensate for the player starting in another position you must subtract (xbase - 320);
-                    gamePieces.objects[i].diameterRight -= (xbase - 960);
-                    gamePieces.objects[i].diameterLeft -= (xbase - 960);
-                    /*
-                     *
+                    //gamePieces.objects[i].x -= xcamMove;
+                    // to compensate for the player starting in another position you must subtract  (xbase - (xbase -320));
+                    //gamePieces.objects[i].diameterRight -= xcamMove;
+                    //gamePieces.objects[i].diameterLeft -= xcamMove;
+                    
+                    /* drawX is the position of object on canvas and where it is drawn.
+                     * The is in the same place the only change is where it
+                        is drawn*/
+                    gamePieces.objects[i].drawX = (gamePieces.objects[i].x - game.properties.xcamMove);
+                    gamePieces.objects[i].drawY = (gamePieces.objects[i].y - game.properties.ycamMove);
+                    
+                    if(game.properties.scale < 1) {
+                        gamePieces.objects[i].diameterTop -= 10;
+                        gamePieces.objects[i].diameterDown -= 10;
+                        gamePieces.objects[i].diameterRight -= 8;
+                        gamePieces.objects[i].diameterLeft -= 6;
+                    }
+                
+                     /*
                      *gamePieces.objects[i].diameterRight -= (xbase - (xbase - 320));
                     gamePieces.objects[i].diameterLeft -= (xbase - (xbase - 320));
                     gamePieces.objects[i].diameterTop -= (ybase - (ybase - 150));
                     gamePieces.objects[i].diameterDown -= (ybase - (ybase - 150));*/
                 }
-                console.log(gamePieces.objects[31]);
+                console.log(game.properties.scale);
             }
             else {
                 // Load game picture
@@ -196,22 +372,18 @@ function move() {
                 // Load obstacles and pieces
                 
             }
-            world = new Image(2000, 1000);
-            world.src = "public/img/pixela.png";
+            xMapMin = game.properties.xbase - 320;
+            xMapMax = game.properties.xbase + 320;
+            yMapMin = game.properties.ybase - 320;
+            yMapMax = game.properties.ybase + 320;
+            world = new Image(3201, 3201);
+            world.src = "public/img/" + map + ".png";
             console.log(world);
             world.onload = function() {
+                gamePieces.player = new newPlayer(30, 30, "#0000A0", game.properties.xbase, game.properties.ybase);
                 game.startGame();    
             };
         });
-    };
-    game.properties = {
-        context: document.getElementById("game_canvas").getContext("2d"),
-        context2: document.getElementById("game_canvas2").getContext("2d"),
-        context3: document.getElementById("game_canvas3").getContext("2d"),
-        /*context4: document.getElementById("test_canvas").getContext("2d"),*/
-        canvasWidth: document.getElementById("game_canvas").width,
-        canvasHeight: document.getElementById("game_canvas").height,
-        requestId: null
     };
     game.controls = {
         left: false,
@@ -219,7 +391,63 @@ function move() {
         right: false,
         down: false
     };
-    console.log(document.getElementById("game_canvas").width);
+    game.viewport = {
+        counter: 0,
+        scale: game.properties.canvasWidth / 700,
+        draw: function() {
+            ctx = game.properties.context;
+            ctx.clearRect( - gamePieces.player.xMovement, - gamePieces.player.yMovement, 700, 700);
+            game.properties.context3.clearRect( - gamePieces.player.xMovement, - gamePieces.player.yMovement, 700, 700);
+            ctx.save();
+            //Draw world and translate the image according to players movement
+            ctx.drawImage(world, game.properties.xcamMove + gamePieces.player.xMovement,
+                          game.properties.ycamMove + gamePieces.player.yMovement, 1024 * this.scale, 1024 * this.scale, 0, 0,
+                          1024 * this.scale, 1024 * this.scale);
+            /*if(xbase + xMovement < 0) {
+                let width = xbase + xMovement;
+                let widthP = (xbase + xMovement) * -1;
+                console.log(widthP);
+                game.properties.context4.clearRect(0, 0, 700, 700);
+                game.properties.context4.drawImage(eastImg, 3200 + width, 0, widthP, 700, 0, 0, widthP, 700);
+            }*/
+            ctx.restore();
+        },
+        drawEdge: function() {
+            ctx = game.properties.context;
+            if(game.properties.xbase + gamePieces.player.xMovement < game.properties.charX) {
+                    ctx.fillStyle = "black";
+                    ctx.fillRect(0, 0, (game.properties.xbase + gamePieces.player.xMovement - game.properties.charX) * -1, 600);
+            }
+            if(game.properties.ybase + gamePieces.player.yMovement < 200) {
+                ctx.fillStyle = "black";
+                ctx.fillRect(0, 0, game.properties.canvasWidth, (game.properties.ybase + gamePieces.player.yMovement - 200) * -1);
+            }
+            if(gamePieces.player.xMovement + game.properties.xbase > 3201 - game.properties.charX - 100) {
+                console.log(game.properties.xbase + gamePieces.player.xMovement -
+                                                              (3201 - game.properties.charX));
+                ctx.fillStyle = "black";
+                ctx.fillRect(game.properties.canvasWidth, 0, - (game.properties.xbase + gamePieces.player.xMovement -
+                                                              (3201 - game.properties.charX - 64)), 600);
+            }
+            if(gamePieces.player.yMovement + game.properties.ybase > 3201 - game.properties.charY) {
+                ctx.fillStyle = "black";
+                console.log(game.properties.ybase + gamePieces.player.yMovement - 3001);
+                ctx.fillRect(0, 400 - (game.properties.ybase + gamePieces.player.yMovement - 3001), game.properties.canvasWidth,
+                             (game.properties.ybase + gamePieces.player.yMovement - 3001));
+            }
+            if(gamePieces.player.ypos > 3150 || 
+               (gamePieces.player.ypos < 3000 && gamePieces.player.ypos < 200) ||
+               gamePieces.player.xpos > 3150 ||
+               (gamePieces.player.xpos < 3000 && gamePieces.player.xpos < 320)){
+                game.canvasText.showText('Press x to go to next map', false);
+            }
+            else {
+                game.properties.nagivateNext = false;
+                game.canvasText.hideText();
+            }
+            
+        }
+    };
     game.loadChunk = function(x, y, xpos, ypos) {
         var data = "model=worldLoader" + "&method=loadChunks" +
                     "&xMapMin=" + xMapMin + "&yMapMin=" + yMapMin + "&xbase=" + xpos +  "&ybase=" + ypos;
@@ -238,17 +466,26 @@ function move() {
         });
     };
     game.startGame = function () {
-        /*game.properties.context.drawImage(world, xbase + xMovement, 0 + yMovement, 1024 * scale, 1024 * scale, 0, 0, 1024, 1024);*/
-        /*game.loadGamePieces();*/
         game.viewport.draw();
-        gamePieces.player.first();
+        game.viewport.drawEdge();
         player = gamePieces.player;
+        gamePieces.player.newPos();
         game.properties.requestId = window.requestAnimationFrame(game.update);
         game.updateGamePiece();
+        game.properties.loading = false;
+    };
+    game.loadingScreen = function() {
+        game.properties.loading = true;
+        let ctx = game.properties.context;
+        ctx.fillStyle = "black";
+        ctx.fillRect(0, 0, 700, 700);
+        ctx.font = "30px Comic Sans MS";
+        ctx.fillStyle = "white";
+        ctx.textAlign = "center";
+        ctx.fillText("Loading ...", game.properties.canvasWidth / 2, game.properties.canvasHeight / 2);
     };
     game.loadGamePieces = function() {
         var links = [];
-        
         
         /*// push game obstacles objects into array
         for(var i = 0; i < list.length; i++) {
@@ -261,7 +498,7 @@ function move() {
                                                                           links[x][4], links[x][5], links[x][6]);
         }
     };
-    var inactivityTime = function () {
+    game.inactivityTime = function () {
         var time;
         document.onkeydown = resetTimer;
         function pauseGame() {
@@ -273,9 +510,9 @@ function move() {
             ctx.font = "30px Comic Sans MS";
             ctx.fillStyle = "pink";
             ctx.textAlign = "center";
-            ctx.fillText("Game Paused", game.properties.canvasWidth / 2, game.properties.canvasHeight / 2);
+            ctx.fillText("Game Paused", game.properties.canvasWidth / 2 - 50, game.properties.canvasHeight / 2);
             ctx.font = "20px Comic Sans MS";
-            ctx.fillText("Press any key to continue", game.properties.canvasWidth / 2, game.properties.canvasHeight / 2 + 35);
+            ctx.fillText("Press any key to continue", game.properties.canvasWidth / 2 - 50, game.properties.canvasHeight / 2 + 35);
             window.cancelAnimationFrame(game.properties.requestId);
             gamePause = true;
         }
@@ -285,33 +522,36 @@ function move() {
             // 1000 milliseconds = 1 second
         }
     };
-    console.log(document.getElementById("game_canvas"));
-    
-    function gameText(text) {
-        let canvas = document.getElementById("game_canvas");
-        let game_text = document.getElementById("game_text");
-        game_text.style.top = canvas.offsetTop + 125 + "px";
-        game_text.style.visibility = "visible";
-        console.log(game_text.style.top);
-        game_text.innerHTML = text;
-        let opa = 0.2;
-        const x = setInterval(opacity, 100);
-        function opacity () {
-            console.log(x);
-            opa = game_text.style.opacity = opa + 0.1;
-            if(opa > 1) {
-                clearInterval(x);
+    game.canvasText = {
+        textDrawn: false,
+        intervalID: 0,
+        gameText: document.getElementById("game_text"),
+        showText(text, timer = true, textDrawn = false) {
+            if(textDrawn === false) {
+                let canvas = document.getElementById("game_canvas");
+                this.gameText.style.top = canvas.offsetTop + 125 + "px";
+                this.gameText.style.visibility = "visible";
+                this.gameText.innerHTML = text;
+                this.intervalID = setInterval(this.changeTextOpactiy, 100);
+            }
+            if(timer == true) {
+                setTimeout(this.hideText, 3000);    
+            }
+        },
+        hideText() {
+            game.canvasText.gameText.innerHTML = "";
+            game.canvasText.gameText.style.visibility = "hidden";
+            game.canvasText.gameText.style.opacity = "0.2";
+        },
+        changeTextOpactiy() {
+            let opacity = game.canvasText.gameText.style.opacity = Number(game.canvasText.gameText.style.opacity) + 0.1;
+            if(opacity > 1) {
+                clearInterval(game.canvasText.intervalID);
             }
         }
-        setTimeout(hideText, 3000);
-    }
-    function hideText() {
-        let game_text = document.getElementById("game_text");
-        game_text.innerHTML = "";
-        game_text.style.visibility = "hidden";
-    }
+    };
     function resumeGame() {
-        inactivityTime();
+        game.inactivityTime();
         gamePause = false;
         game.properties.requestId = window.requestAnimationFrame(game.update);
     }
@@ -319,8 +559,8 @@ function move() {
         this.name = name;
         this.x = x;
         this.y = y;
-        this.width = width / scale;
-        this.height = height / scale;
+        this.width = width / game.viewport.scale;
+        this.height = height / game.viewport.scale;
         this.diameterTop = y;
         this.diameterRight = x + width;
         this.diameterDown = y + height;
@@ -348,15 +588,18 @@ function move() {
         ctx = game.properties.context;
         ctx.fillStyle = style;
         ctx.fillRect(x, y, width, height);
-        linksPos.push([x, y, this.diameterTop, this.diameterRight, this.diameterDown, this.diameterLeft, width, height]);
+        /*linksPos.push([x, y, this.diameterTop, this.diameterRight, this.diameterDown, this.diameterLeft, width, height]);*/
     }
     function newPlayer(width, height, color, x, y) {
         this.width = width;
         this.height = height;
         this.speedX = 0;
-        this.speedY = 0;    
+        this.speedY = 0;
+        this.speed = 2;
         this.x = x;
         this.y = y;
+        this.xMovement = 0;
+        this.yMovement = 0;
         this.top = "open";
         this.left = "open";
         this.down = "open";
@@ -365,9 +608,12 @@ function move() {
         this.diameteRight = x + width;
         this.diameterDown = y + height;
         this.diameterLeft = x;
+        // xpos and ypos is the position of the player in the world
+        this.xpos = game.properties.xbase + this.xMovement;
+        this.ypos = game.properties.ybase + this.yMovement;
         this.first = function() {
             ctx = game.properties.context;
-            ctx.drawImage(character, indexX * 0, indexY, 32, 32, 320, 150, 32, 32);
+            ctx.drawImage(character, indexX * 0, indexY, 32, 32, game.properties.charX, game.properties.charY, 32, 32);
         };
         this.newPos = function(newPos = true) {
             ctx2 = game.properties.context2;
@@ -377,10 +623,16 @@ function move() {
             this.right = "open";
             //drawing starts at x (diameterLeft) and y (diameterTop) line
             if(newPos !== false) {
-                player.diameterTop = ybase + (yMovement / scale);
-                player.diameterRight = xbase + (xMovement / scale) + width;
-                player.diameterDown = ybase + (yMovement / scale) + height;
-                player.diameterLeft = xbase + (xMovement / scale);    
+                this.xpos = game.properties.xbase + gamePieces.player.xMovement; /*(gamePieces.player.xMovement / game.viewport.scale)*/
+                this.ypos = game.properties.ybase + gamePieces.player.yMovement; /*(gamePieces.player.yMovement / game.viewport.scale)*/
+                game.properties.xMapMin = this.xpos - 320;
+                game.properties.xMapMax = this.xpos + 320;
+                game.properties.yMapMin = this.ypos - 320;
+                game.properties.yMapMax = this.ypos + 320;
+                player.diameterTop = this.ypos;
+                player.diameterRight = this.xpos + width;
+                player.diameterDown = this.ypos + height;
+                player.diameterLeft = this.xpos;
             }
             var newdirection = 'none';
             if(game.controls.left == true && game.controls.down == true) {
@@ -409,17 +661,20 @@ function move() {
             if(game.controls.up == false && game.controls.left == false && game.controls.right == false && game.controls.down == false) {
                 newdirection = 'none';
             }
-            if(newdirection != 'none' && ((oldYbase != ypos) || (oldXbase != xpos))) {
+            if(newdirection != 'none' && ((oldYbase != this.ypos) || (oldXbase != this.xpos))) {
                 if(newdirection != 'none' && counter % 15 == 0) {
                     ctx2.clearRect(0, 0, 700, 700);
-                    ctx2.drawImage(character, indexX * loopArray[loopIndex], indexY, 32, 32, 320, 150, 32, 32);
+                    ctx2.drawImage(character, indexX * loopArray[loopIndex],
+                                   indexY, 32 * game.viewport.scale, 32 * game.viewport.scale, game.properties.charX,
+                                   game.properties.charY, 32, 32);
                     loopIndex++;
                 }
                 else if(newdirection != direction) {
                     ctx2.clearRect(0, 0, 700, 700);
                     loopIndex = 0;
                     direction = newdirection;
-                    ctx2.drawImage(character, indexX * loopIndex, indexY, 32, 32, 320, 150, 32, 32);
+                    ctx2.drawImage(character, indexX * loopIndex, indexY, 32 * game.viewport.scale, 32 * game.viewport.scale,
+                                   game.properties.charX, game.properties.charY, 32, 32);
                     loopIndex++;
                 }
                 if(loopIndex == 4 && newdirection != 'none') {
@@ -430,12 +685,12 @@ function move() {
             }
             else {
                 ctx2.clearRect(0, 0, 700, 700);
-                ctx2.drawImage(character, 0, indexY, 32, 32, 320, 150, 32, 32);
+                ctx2.drawImage(character, 0, indexY, 32 * game.viewport.scale, 32 * game.viewport.scale, game.properties.charX,
+                               game.properties.charY, 32, 32);
                 animationEnd = true;
             }
-            oldYbase = ypos;
-            oldXbase = xpos;
-                
+            oldYbase = gamePieces.player.ypos;
+            oldXbase = gamePieces.player.xpos;
         };
     }
     window.addEventListener('keydown', function (e) {
@@ -454,6 +709,12 @@ function move() {
                 break;
             case 40:
                 game.controls.down = true;
+                break;
+            case 88:
+                game.getNextMap();
+                break;
+            case 69:
+                console.log('enter');
                 break;
         }
         
@@ -475,7 +736,7 @@ function move() {
         }
     }, false);
     game.updateGamePiece = function() {
-            
+            ctx = game.properties.context;
             /* obstaclesPos indexes
                 0 = default x position
                 1 = default y position
@@ -490,39 +751,29 @@ function move() {
             // IMPORTANT!
             // Using fillRect, canvas will render element from top down. Meaning y = 0 is top of element
             // Using drawImage, canvas will render element from bottom down, meaning y = 0 is bottom of element
-            
-           /* ctx.fillStyle = "red";
-            ctx.fillRect(1440 - (xMovement / scale), 608- (yMovement / scale),
-                             128, 128);
-            ctx.fillStyle = "blue";
-            ctx.fillRect(802 - (xMovement / scale), 273 - (yMovement / scale),
-                             32, 24);*/
+            let draw = false;
             for(var i = 0; i < gamePieces.objects.length; i++) {
                 let object = gamePieces.objects[i];
-                    /*console.log('id: ' + object.id);
-                    console.log('object.y: ' + object.y);
-                    console.log('yMapMax: ' + yMapMax);
-                    console.log('yMapMin: ' + yMapMin);
-                    console.log('object.x: ' + object.x);
-                    console.log('xMapMax: ' + xMapMax);
-                    console.log('xMapMin: ' + xMapMin);
-                    console.log(object.y > yMapMax);
-                    console.log(object.y < yMapMin);
-                    console.log(object.x > xMapMax + 400);
-                    console.log(object.x < xMapMin - 400);*/
-                ctx = game.properties.context;
                 /*if(object.y > yMapMax + 400 || object.y < yMapMin - 400  || object.x > xMapMax + 400 || object.x < xMapMin - 400) {
                     continue;
                 }*/
-                if(typeof gamePieces.objects[i].src === 'undefined') {
+                if(/*typeof gamePieces.objects[i].src === 'undefined' &&*/ draw === true) {
                     ctx.fillStyle = "red";
-                    ctx.fillRect(gamePieces.objects[i].x - (xMovement / scale), gamePieces.objects[i].y - (yMovement / scale),
-                             gamePieces.objects[i].width, gamePieces.objects[i].height);    
+                    ctx.fillRect(gamePieces.objects[i].drawX - (player.xMovement / game.viewport.scale),
+                                 gamePieces.objects[i].drawY - (player.yMovement / game.viewport.scale),
+                                 gamePieces.objects[i].width, gamePieces.objects[i].height);
+                    ctx.font = "10px Comic Sans MS";
+                    ctx.fillStyle = "white";
+                    ctx.fillText(i + ' | ' + gamePieces.objects[i].id,
+                                 gamePieces.objects[i].drawX - (player.xMovement / game.viewport.scale) +
+                                 (gamePieces.objects[i].width / 2),
+                                 gamePieces.objects[i].drawY + (gamePieces.objects[i].height / 2) -
+                                 (player.yMovement / game.viewport.scale));
                 }
-                else {
-                    ctx.drawImage(gamePieces.objects[i].img, gamePieces.objects[i].x - (xMovement / scale),
-                                  gamePieces.objects[i].y - 128 - (yMovement / scale));
-                }
+                /*else {
+                    ctx.drawImage(gamePieces.objects[i].img, gamePieces.objects[i].drawX - (xMovement * game.viewport.scale),
+                                  gamePieces.objects[i].drawY - 128 - (yMovement * game.viewport.scale));
+                }*/
                 
             }
             /*game.properties.context3.drawImage(tree_img, 2 - (xMovement / scale), 2 - (yMovement / scale), 64, 64);*/
@@ -534,46 +785,6 @@ function move() {
                 /*ctx.fillStyle = "none";
                 ctx.fillRect(linksPos[x][0] - xMovement, linksPos[x][1] - yMovement, linksPos[x][6], linksPos[x][7]);
             }*/
-    };
-    game.viewport = {
-        counter: 0,
-        draw: function() {
-            ctx = game.properties.context;
-            ctx.clearRect(-xMovement, -yMovement, 700, 700);
-            game.properties.context3.clearRect(-xMovement, -yMovement, 700, 700);
-            ctx.save();
-            //Draw world and translate the image according to players movement
-            ctx.drawImage(world, xbase + xMovement, 0 + yMovement, 1024 * scale, 1024 * scale, 0, 0, 1024, 1024);
-            /*if(xbase + xMovement < 0) {
-                let width = xbase + xMovement;
-                let widthP = (xbase + xMovement) * -1;
-                console.log(widthP);
-                game.properties.context4.clearRect(0, 0, 700, 700);
-                game.properties.context4.drawImage(eastImg, 3200 + width, 0, widthP, 700, 0, 0, widthP, 700);
-            }*/
-            
-            if(xbase + xMovement < 1) {
-                ctx.fillStyle = "black";
-                ctx.fillRect(0, 0, (xbase + xMovement) * -1, 600);
-            }
-            if(yMovement - ybase < 150) {
-                ctx.fillStyle = "black";
-                ctx.fillRect(0, 0, 800, (ybase - yMovement) - 149);
-            }
-            /*if(xMovement + xbase > 2242) {
-                ctx.fillStyle = "black";
-                ctx.fillRect(700, 0, (xbase + xMovement) - 2242, 600);
-            }*/
-            
-            ctx.restore();
-            xpos = xbase + (xMovement / scale);
-            ypos = ybase + (yMovement / scale);
-            xMapMin = xpos - 320;
-            xMapMax = xpos + 320;
-            yMapMin = ypos - 320;
-            yMapMax = ypos + 320;
-            /*ctx.drawImage(player_img, charX, charY);*/
-        },
     };
     game.calculateDistance = function() {
         if(inBuilding != true) {
@@ -601,6 +812,13 @@ function move() {
             */
         // Collision detection, if user is less than 3px from object prevent movement
         for(i = 0; i < gamePieces.objects.length; i++) {
+            /*if(i === 31) {
+                console.log(gamePieces.objects[31]);
+                console.log(player);
+                /*console.log(Math.abs(player.diameterDown - gamePieces.objects[i].diameterTop) <= 1);*/
+                /*console.log(player.diameterRight >= gamePieces.objects[i].diameterLeft);
+                console.log(player.diameterLeft <= gamePieces.objects[i].diameterRight);
+            }*/
            if(Math.abs(player.diameterDown - gamePieces.objects[i].diameterTop) <= 1 &&
               player.diameterRight >= gamePieces.objects[i].diameterLeft && 
               player.diameterLeft <= gamePieces.objects[i].diameterRight) {
@@ -610,16 +828,19 @@ function move() {
               player.diameterTop <= gamePieces.objects[i].diameterDown &&
               player.diameterDown >= gamePieces.objects[i].diameterTop) {
                 player.right = "blocked";
+                console.log('right blocked');
            }
            if(Math.abs(player.diameterTop - gamePieces.objects[i].diameterDown) <= 1 &&
               player.diameterRight >= gamePieces.objects[i].diameterLeft &&
               player.diameterLeft <= gamePieces.objects[i].diameterRight) {
                 player.top = "blocked";
+                console.log('top blocked');
            }
            if(Math.abs(player.diameterLeft - gamePieces.objects[i].diameterRight) <= 1 &&
               player.diameterTop <= gamePieces.objects[i].diameterDown &&
               player.diameterDown >= gamePieces.objects[i].diameterTop) {
                 console.log('left blocked');
+                console.log(gamePieces.objects[i]);
                 player.left = "blocked";
            }
         }
@@ -636,37 +857,68 @@ function move() {
                 player.speedY = 0;
             }
             
-            xMovement += player.speedX;
-            yMovement += player.speedY;
+            gamePieces.player.xMovement += player.speedX;
+            gamePieces.player.yMovement += player.speedY;
     };
     game.update = function () {
         player.speedX = 0;
         player.speedY = 0;
         if(game.controls.left == true) {
-            player.speedX = -2;
+            player.speedX = - player.speed;
         }
         if(game.controls.right == true) {
-            player.speedX = 2;
+            player.speedX = player.speed;
         }
         if(game.controls.up == true) {
-            player.speedY = -2;
+            player.speedY = - player.speed;
         }
         if(game.controls.down == true) {
-            player.speedY = 2;
+            player.speedY = player.speed;
         }
         if(player.speedX != 0 || player.speedY != 0 && inBuilding == false) {
+            console.log(player.xpos);
             game.calculateDistance();
             game.viewport.draw();
+            game.viewport.drawEdge();
             player.newPos();
-            game.updateGamePiece(xbase, ybase);
-            /*checkChunk();*/
+            game.updateGamePiece(game.properties.xbase, game.properties.ybase);
         }
         else if(animationEnd != true) {
             player.newPos(false);
         }
         game.properties.requestId = window.requestAnimationFrame(game.update);
     };
-
+    game.getNextMap = function() {
+        /*let coordinatesArray = map.split(",");
+        let x = coordinatesArray[0];
+        let y = coordinatesArray[1];*/
+        let newX = 0;
+        let newY = 0;
+        let newxBase = gamePieces.player.xpos;
+        let newyBase = gamePieces.player.ypos;
+        console.log(gamePieces.player.ypos);
+        if(gamePieces.player.ypos > 3150) {
+            newY += 1;
+            newyBase = 0;
+        }
+        else if(gamePieces.player.ypos < 3000 && gamePieces.player.ypos < 200) {
+            newY -= 1;
+            newyBase = 3169;
+        }
+        if(gamePieces.player.xpos > 3150) {
+            newX += 1;
+            newxBase = 0;
+        }
+        else if(gamePieces.player.xpos < 3000 && gamePieces.player.xpos < 320) {
+            newX -= 1;
+            newxBase = 3169; 
+        }
+        console.log(newY);
+        console.log(newX + ' : ' + newY);
+        window.cancelAnimationFrame(game.properties.requestId);
+        game.loadingScreen();
+        game.loadWorld(newxBase, newyBase, "changeMap", {"new_x": newX, "new_y": newY});
+    };
     function checkChunk() {
         // Scale ?
         var xDifference = Math.abs((xbase + xMovement - 320) - xMapMin);
@@ -692,33 +944,15 @@ function move() {
         player = gamePieces.player;
         player.speedX = x;
         player.speedY = y;
-        if(game.controls.left == true) { player.speedX = -2; }
-        if(game.controls.right == true) { player.speedX = 2; }
-        if(game.controls.up == true) { player.speedY = -2; }
-        if(game.controls.down == true) { player.speedY = 2; }
+        if(game.controls.left == true) { player.speedX = - player.speed; }
+        if(game.controls.right == true) { player.speedX = player.speed; }
+        if(game.controls.up == true) { player.speedY = - player.speed; }
+        if(game.controls.down == true) { player.speedY = player.speed; }
         if(player.speedX != 0 || player.speedY != 0) {
             game.calculateDistance();
             game.viewport.draw();
+            game.viewport.drawEdge();
             player.newPos();
-            game.updateGamePiece(xbase, ybase);
+            game.updateGamePiece(game.properties.xbase, game.properties.ybase);
         }
     }
-    /*let coordinatesArray = map.split(",");
-    var x = coordinatesArray[0];
-    var y = coordinatesArray[1];
-    var newMapCoordinates; 
-    if(ypos > 3150) {
-        y += 1;
-    }
-    else if(ypos < 3000) {
-        y -= 1;
-    }
-    if(xpos > 3150) {
-        x -= 1;
-    }
-    else if(xpos < 3000) {
-        x += 1;
-    }
-    newMapCoordinates.join(",");
-    
-    fetchNewMap(newMapCoordinates);*/

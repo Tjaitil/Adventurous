@@ -10,7 +10,7 @@
         public function index() {
             $this->loadModel('Market', true);
             $this->data = $this->model->getData();
-            $this->render('market', 'Market', $this->data);
+            $this->render('market', 'Market', $this->data, true);
         }
     }
 ?>

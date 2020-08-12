@@ -1,8 +1,10 @@
     /*if(document.getElementById("inventory") != null) {
         addSelectEvent(false);
     }*/
-    function select(element) {
+    function select() {
+        let element = event.target.closest("figure");
         var img = element.cloneNode(true);
+        console.log(img);
         /*img.removeAttribute("onclick");*/
         img.children[0].style.height = "50px";
         img.children[0].style.width = "50px";
@@ -10,7 +12,7 @@
         var parent = document.getElementById("selected");
         parent.innerHTML = "";
         parent.appendChild(img);
-        if(window.location.href.search("armory") != -1) {
+        if(document.getElementsByClassName("page_title")[0].innerText == "armory") {
             toggleOption();
         }
     }
@@ -31,16 +33,14 @@
         parent.appendChild(img);
     }
     function addSelectEvent() {
-        var figures = document.getElementById("inventory").querySelectorAll('figure');
+        console.log('addSelectEvent');
+        let figures = document.getElementById("inventory").querySelectorAll('figure');
         figures.forEach(function(element) {
-            element.addEventListener('click', function() {
-                var location = window.location.toString();
-                if(location.indexOf("market") == -1) {
-                    select(element);
-                }
-                else {
-                    select_i();
-                }
-            });
+            if(document.getElementsByClassName("page_title")[0].innerText !== "market") {
+                element.addEventListener('click', select);
+            }
+            else {
+                element.addEventListener('click', select_i);
+            }
         });
     }

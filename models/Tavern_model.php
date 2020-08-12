@@ -29,7 +29,6 @@
             $stmt->execute();
             $data['persons'] = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            $this->db->closeConn();
             return $data;
         }
         

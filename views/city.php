@@ -22,7 +22,11 @@
 
             </div>
             <div id="inventory">
+                <button id="inv_toggle_button"> INV </button>
                 <?php require(constant('ROUTE_VIEW') . '/inventory.php'); url();?>    
+            </div>
+            <div id="control">
+                <button id="control_button"></button>
             </div>
             <div id="demo">
                 

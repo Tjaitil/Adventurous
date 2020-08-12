@@ -9,7 +9,7 @@
             $this->username = $username;
         }
         public function fetchData() {
-            $sql = "SELECT username, location, destination, profiency, hunger, artefact FROM user_data
+            $sql = "SELECT username, location, map_location, destination, profiency, hunger, artefact FROM user_data
                     WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);

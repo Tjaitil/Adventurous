@@ -1,8 +1,5 @@
             market.css|market.js|
             <h3 class="page_title"> Market </h3>
-            <button onclick="show('offers');"> Offers </button>
-            <button onclick="show('my_offers');"> My Offers </button>
-            <button onclick="show('history');"> History </button>
             <div id="new_off">
                 <form id="offer_form">
                     <label for="type"> Buy/Sell: </label>
@@ -61,7 +58,7 @@
                             <td></td>
                         </tr>
                     </thead>
-                    <?php get_template('myOffers', $data['my_offers']);?>
+                    <?php get_template('myOffers', $this->data['my_offers']);?>
                 </table>
             </div>
             <div id="offers">
@@ -80,7 +77,7 @@
                             <td> </td>
                         </tr>
                     </thead>
-                    <?php get_template('offers', $data['offers']);?>
+                    <?php get_template('offers', $this->data['offers']);?>
                     <tfoot>
                         <tr>
                             <td colspan="5"><button class="previous"> < Prev </button><button class="next"> Next > </button></td>
@@ -98,6 +95,6 @@
                             <td> Price each: </td>
                         </tr>
                     </thead>
-                <?php get_template('history', $data['history']);?>
+                <?php get_template('history', $this->data['history']);?>
                 </table>
             </div>

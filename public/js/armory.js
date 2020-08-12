@@ -1,5 +1,5 @@
-    function init() {
-        return;
+    if(document.getElementById("news_content").children[2] != null) {
+        addSelectEvent();
     }
     function toggleOption() {
         var element = document.getElementById("selected").children[0].children[1].innerHTML;

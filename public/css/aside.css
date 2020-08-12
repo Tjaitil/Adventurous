@@ -2,7 +2,7 @@ aside {
     width: 12%;
     height: 500px;
     float: left;
-    padding: 5px 0px 0px 3px;
+    /*padding: 5px 0px 0px 3px;*/
     margin: 0px 0px 0px 0px;
     background: radial-gradient(#f2e6d9 80%, #986834);
     border: inset 2px;
@@ -53,8 +53,42 @@ aside a:visited {
     text-decoration: none;
     font-size: 14px;
 }
+#sidebar {
+    background-color: blue;
+    float: left;
+    width: 100%;
+    height: 400px;
+    position: absolute;
+    transition: all 1s;
+}
+.sidebar_button {
+    
+}
+.sidebar_tab {
+    
+}
+#sidebar_button_toggle {
+    float: right;
+    visibility: hidden;
+}
+#tab_1 {
+    position: absolute;
+    visibility: hidden;
+}
+#tab_2 {
+    position: absolute;
+    visibility: hidden;
+}
+#tab_3 {
+    position: absolute;
+    visibility: hidden;
+}
 @media all and (max-width: 1040px) {
     aside {
-        display: none;
+        /*display: none;*/
+        position: absolute;
     }
+}
+@media all and (max-width: 830px) {
+    
 }

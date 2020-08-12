@@ -73,8 +73,6 @@
                     </div>
                     <div id="selected_t"></div>
                     <input type="number" id="quantity" min="0" />
-                    <div id="inventory">
-                    </div>
                 </div>
                 <div id="training">
                     <label for="type"> Select type of training</label>

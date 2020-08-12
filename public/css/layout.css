@@ -98,6 +98,8 @@ button:focus {outline:0;}
 #skills img {
     width: 50px;
     height: 50px;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
 }
 #skills figure {
     position: relative;
@@ -232,42 +234,46 @@ button:focus {outline:0;}
     position: absolute;
     margin: 2% 0% 2% 0%;
     background-color: #d1a77a;
-    z-index: 2;
+    z-index: 1;
     width: 68%;
-    padding: 2%;
+    padding: 1%;
     overflow-y: scroll;
 }
 #news_content table {
     margin: 0 auto;
 }
-#sidebar {
-    background-color: blue;
-    float: left;
-    width: 200px;
-    height: 400px;
-    position: absolute;
-    transition: all 2s;
+#news_content_side_panel {
+  width: 25%;
+  height: auto;
+  float: left;
+  box-sizing: border-box;
 }
-.sidebar_button {
-    
+#news_content_side_panel button {
+  background-color: #333300;
+  width: 100%;
+  height: 50px;
+  display: block;
+  color: white;
+  border: none;
+  border-bottom: 1px solid #1a1a00;
+  margin-bottom: 0px;
 }
-.sidebar_tab {
-    
+#side_panel button:active {
+  background-color: #999999;
 }
-#tab_1 {
-    position: absolute;
-    visibility: hidden;
-}
-#tab_2 {
-    position: absolute;
-    visibility: hidden;
-}
-#tab_3 {
-    position: absolute;
-    visibility: hidden;
+#news_content_main_content {
+  width: 72%;
+  float: right;
+  padding: 5px;
+  box-sizing: border-box;
+  position: relative;
 }
 #cont_exit {
     float: right;
+    position: sticky;
+    right: 5px;
+    top: 5px;
+    z-index: 2;
 }
 #level_up p {
     margin: 15px 0px 0px 0px;
@@ -286,6 +292,12 @@ button:focus {outline:0;}
     color: white;
     position: relative;
     z-index: 1;
+}
+#inv_toggle_button {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    visibility: hidden;
 }
 /*#layer {
     background-color: #262626;
@@ -389,6 +401,8 @@ button:focus {outline:0;}
     width: 50px;
     height: 50px;
     cursor: pointer;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
 }
 .item_img {
     width: 50px;
@@ -487,12 +501,25 @@ button:focus {outline:0;}
 @media all and (max-width: 1040px)  {
     section {width: 97.4%; font-size: 14px;};
 }
-
 @media all and (max-width: 830px) {
-    body {margin: 10px 2% 0px 2%;};
+    body {
+        margin: 10px 0% 0px 0%;
+        padding: 10px 3%;
+    };
     #skills div {font-size: 14px;}
     section {width: 97.4%; font-size: 14px;}
-    #inventory .inventory_item {width: 50%;}
+    /*#inventory .inventory_item {width: 50%;}*/
+    #inventory {
+        /* Style added in general.js*/
+        right: 5px;
+        position: absolute;
+    }
+    #news_content {
+        width: 98%;
+    }
+    #inv_toggle_button {
+        visibility: visible;
+    }
     /*.inventory_buttons {
         margin-left: 6px;
     }*/

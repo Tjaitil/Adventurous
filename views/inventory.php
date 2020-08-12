@@ -21,7 +21,7 @@
         else {
             $url = $url;
         } ?>
-        <p> Inventory: </p>
+        <p> Inventory <?php echo '(' . count($_SESSION['gamedata']['inventory']) . '/' . '18' . ')';?></p>
         <div id="item_tooltip">
             <ul>
                 <li></li>

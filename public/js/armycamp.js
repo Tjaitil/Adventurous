@@ -2,8 +2,7 @@
     var warriorsIndex;
     var warriors;
     
-    
-    if(document.getElementById("news_content").children[3] != null) {
+    if(document.getElementById("news_content").children[2] != null) {
         document.getElementById("actions").children[1].addEventListener("change", toogleActions);
         document.getElementById("actions").getElementsByTagName("button")[0].addEventListener("click", actions);
         var warriors = document.getElementsByClassName("warrior");
@@ -18,13 +17,13 @@
         }
         getCountdown();
         calculateSkillbar();
-        let buttons = document.getElementById("news_content").querySelectorAll("button");
+        let buttons = document.getElementById("news_content_main_content").querySelectorAll("button");
         buttons[1].addEventListener("click", function() {
             game.fetchBuilding('ArmyMissions'); 
         });
         buttons[2].addEventListener("click", function() {
             game.fetchBuilding('Armory');
-        }); 
+        });
     }
     function show(element) {
         var divs = ["overview", "calculator"];

@@ -3,7 +3,8 @@ foreach($data as $key):
     if(!isset($key['check'])):?>
         <div class="armory_view">
     <?php endif;?>
-        <p><?php echo $key['warrior_id'];?></p>
+        <img class="type_icon" src="<?php echo constant('ROUTE_IMG') . $key['type'] . ' icon.png';?>" />
+        <p> Warrior id <?php echo $key['warrior_id'];?></p>
         <p> Attack: <?php echo $key['attack'] + 10;?></p>
         <p> Defence: <?php echo $key['defence'] + 15;?></p>
         <img onclick="removeArmor(this);"

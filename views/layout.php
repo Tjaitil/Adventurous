@@ -79,21 +79,10 @@
 </div>
 <div id="news_content">
     <img id="cont_exit" src="#"  width="20px" height="20px" onclick="closeNews();" />
-</div>
-<div id="sidebar">
-        <img id="cont_exit" src="#"  width="20px" height="20px" onclick="closeNews();" />
-        <button onclick="sidebar.toggleSidebar();"> Click</button>
-        <img id="cont_exit" src="#" />
-        <button class="sidebar_button">Adventure</button>
-        <button class="sidebar_button">2</button>
-        <button class="sidebar_button">3</button>
-        <div class="sidebar_tab" id="tab_1">
-            1
-        </div>
-        <div class="sidebar_tab" id="tab_2">
-            2
-        </div>
-        <div class="sidebar_tab" id="tab_3">
-            3
-        </div>
+    <div id="news_content_side_panel">
+        
     </div>
+    <div id="news_content_main_content">
+        
+    </div>
+</div>

@@ -12,6 +12,7 @@
     float: left;
     border: 1px solid black;
     padding: 1%;
+    min-width: 156px;
 }
 .info {
     width: 100%;

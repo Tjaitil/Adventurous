@@ -58,6 +58,15 @@
                 addShowTitle();    
             }
         }
+        console.log(document.getElementById("inv_toggle_button").style.visibility);
+        if(window.screen.width < 830) {
+            console.log('loAD');
+            let inventory = document.getElementById("inventory");
+            inventory.style.visibility = "hidden";
+            inventory.style.transition = "width 0.5s";
+            inventory.style.transitionTimingFunction = "ease-out";
+            document.getElementById("inv_toggle_button").addEventListener("click", inventorySidebarMob.toggleInventory);
+        }
         clock();
         checkMessages();
         sidebar.addClickEvent();
@@ -118,41 +127,122 @@
         ajaxRequest.send();
     }
     /*window.addEventListener("load", getgMessage, false);*/
-    function openNews(content) {
+    function openNews(content, sidebar = false) {
+        document.getElementById("news_content_main_content").innerHTML = "";
         var newsDiv = document.getElementById("news_content");
-        while(newsDiv.childNodes.length > 2) {
+        /*while(newsDiv.childNodes.length > 2) {
             newsDiv.removeChild(newsDiv.lastChild);
-        }
+        }*/
         document.getElementById("news").style.visibility = "visible";
         document.getElementById("news_content").style.visibility = "visible";
         if(typeof content == 'object') {
             if(Object.keys(content).length > 1) {
                 for(var i = 0; i < Object.keys(content).length; i++) {
-                    document.getElementById("news_content").appendChild(content[i]);
+                    document.getElementById("news_content_main_content").appendChild(content[i]);
                 }
             }
         }
         else {
-            document.getElementById("news_content").innerHTML += content;
+            document.getElementById("news_content_main_content").innerHTML += content;
+        }
+        let siteNoSidebar = ["Stockpile"];
+        if(sidebar == true && siteNoSidebar.indexOf(document.getElementsByClassName("page_title")[0].innerText) === -1) {
+            newsContentSidebar.adjustSidebar();
+        }
+        else {
+            console.log('style width');
+            document.getElementById("news_content_main_content").style.width = "94%";
         }
     }
     function closeNews() {
-        var newsDiv = document.getElementById("news_content");
+        var newsDiv = document.getElementById("news_content_main_content");
         
-        while(newsDiv.childNodes.length > 2) {
+        newsDiv.innerHTML = "";
+        /*while(newsDiv.childNodes.length > 2) {
             newsDiv.removeChild(newsDiv.lastChild);
-        }
+        }*/
         console.log(newsDiv);
         news.style = "visibility: hidden;";
         document.getElementById("news_content").style.visibility = "hidden";
         if(typeof inBuilding !== 'undefined') {
             // Render the player outside building
-            renderPlayer(0, 40);
+            /*renderPlayer(0, 40);*/
             inBuilding = false;
         }
         if(itemTitle.status === false) {
             itemTitle.addTitleEvent();
         }
+    }
+    var inventorySidebarMob = {
+        toggleInventory() {
+            console.log('toggleInventory');
+            let inventory = document.getElementById("inventory");
+            console.log(inventory);
+            if(inventory.style.visibility === "hidden") {
+                console.log('hlelo');
+                inventory.style.width = "50%";
+                inventory.style.visibility = "visible";
+                console.log(inventory);
+            }
+            else {
+                inventory.style.width = "10%";
+                inventory.style.visibility = "hidden";
+                console.log(inventory);
+            }
+        }
+    };
+    var newsContentSidebar = {
+        adjustSidebar() {
+            document.getElementById("news_content_side_panel").innerHTML = "";
+            var divChildren = document.getElementById("news_content_main_content").children;
+            console.log(divChildren);
+            for(var i = 0; i < divChildren.length; i++) {
+                if(divChildren[i].tagName === 'DIV') {
+                    console.log(divChildren[i]);
+                    let button = document.createElement("button");
+                        // Get text from div id and remove underscore and Uppercase character of each word;
+                    let text = document.createTextNode(jsUcWords(divChildren[i].id));
+                    button.appendChild(text);
+                    document.getElementById("news_content_side_panel").appendChild(button);
+                    divChildren[i].style.position = "absolute";
+                    divChildren[i].style.visibility = "hidden";
+                    divChildren[i].style.width = "100%";
+                }
+            }
+            this.addEvent();
+        },
+        showContent() {
+            let activeButton = event.target.innerText;
+            let buttons = document.getElementById("news_content_side_panel").querySelectorAll("button");
+            for(var i = 0; i < buttons.length; i++) {
+                if(buttons[i].innerText == activeButton) {
+                    console.log(activeButton.toLowerCase());
+                    document.getElementById(activeButton.toLowerCase()).style.visibility = "visible";
+                }
+                else {
+                    console.log(buttons[i].innerText.toLowerCase());
+                    document.getElementById(buttons[i].innerText.toLowerCase()).style.visibility = "hidden";
+                }
+            }
+        },
+        addEvent() {
+            let buttons = document.getElementById("news_content_side_panel").querySelectorAll("button");
+            buttons.forEach(function(element) {
+                // Add eventListener to each node
+                element.addEventListener('click', newsContentSidebar.showContent);
+            });
+        }
+    };
+    function underscoreTreatment(string, addUnderscore) {
+        let result = string.search("_");
+        let editedString;
+        if(result != -1 && addUnderscore === false) {
+            editedString = string.replace("_", " ");
+        }
+        else if(result == -1 && addUnderscore === true) {
+            editedString = string.replace(" ", "_");
+        }
+        return editedString;
     }
     function alertMessage(page, pIdentifier = false) {
         // pIdentifer is used to identify which content to append if this function is used multiple times on the same page
@@ -366,26 +456,42 @@
     
     var sidebar = {
         sidebarElement: document.getElementById("sidebar"),
-        addClickEvent: function() {
-            var sidebarTabs = document.getElementById("sidebar").querySelectorAll("button");
+        sidebarToggled: false,
+        addClickEvent() {
+            let sidebarTabs = document.getElementById("sidebar").querySelectorAll("button");
             sidebarTabs.forEach(function(element) {
                 // ... code code code for this one element
-                  element.addEventListener('click', sidebar.showTab);
+                if(element.previousElementSibling == null) {
+                    return;
+                }
+                element.addEventListener('click', function() {
+                        sidebar.showTab(sidebarCheck = true);
+                });
             });
             this.sidebarElement = document.getElementById("sidebar");
         },
-        toggleSidebar : function() {
-            if(this.sidebarElement.style.width === "500px") {
-                this.sidebarElement.style.width = "200px";
+        toggleSidebar() {
+            console.log('hello');
+            if(this.sidebarToggled === false) {
+                this.sidebarElement.style.width = "500px";
+                this.sidebarToggled = true;
+                document.getElementById("sidebar_button_toggle").style.visibility = "visible";
             }
             else {
-                this.sidebarElement.style.width = "500px";
+                sidebar.showTab(sidebarCheck = false);
+                this.sidebarElement.style.width = "200px";
+                this.sidebarToggled = false;
+                document.getElementById("sidebar_button_toggle").style.visibility = "hidden";
             }
         },
-        showTab: function() {
+        showTab(sidebarCheck) {
+            console.log(sidebarCheck);
+            if(sidebar.sidebarToggled === false && sidebarCheck === true) {
+                sidebar.toggleSidebar();    
+            }
             let newActiveTab = event.target.innerText;
             let tabs = document.getElementById("sidebar").getElementsByTagName("div");
-            let tabNames = ["Adventure"];
+            let tabNames = ["Adventure", "Countdowns", "Diplomacy"];
             for(var i = 0; i < tabNames.length; i++) {
                 if(tabNames[i] === newActiveTab) {
                     tabs[i].style.visibility = "visible"; 
@@ -403,7 +509,7 @@
             if(this.readyState == 4 && this.status == 200) {
                 let responseText = this.responseText;
                 console.log(responseText);
-                document.getElementById("sidebar").getElementsByTagName("div")[0].innerHTML = responseText[1];
+                document.getElementById("sidebar").getElementsByTagName("div")[0].innerHTML = responseText;
             }
         };
         ajaxRequest.open('GET', "handlers/handler_v.php?" + "&building=" + building);

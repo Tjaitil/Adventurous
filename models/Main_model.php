@@ -9,7 +9,7 @@
             $this->session = $session;
         }
         
-        public function getData() {
+        public function getData($js = false) {
             $data = array();
             $sql = "SELECT hirtam, pvitul, khanz, ter, fansalplains FROM diplomacy WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);
@@ -55,7 +55,12 @@
             $stmt->execute();
             $data['warriors_countdowns'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
                
-            return $data;
+            if($js === true) {
+                
+            }
+            else {
+                return $data;    
+            }
         }
         public function getChat($clock = false) {
             $sql = "SELECT id, clock, username, message FROM public_chat ORDER BY time ASC LIMIT 30";
