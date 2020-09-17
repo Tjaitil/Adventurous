@@ -1,20 +1,18 @@
-section ul {
+#workers ul {
     list-style-type: none;
 }
-section li {
+#workers li {
     box-sizing: border-box;
     display: inline-block;
     float: left;
     width: 50%;
-}
-section li img {
-    float:left;
+    height: 135px;
 }
 #workers {
     float:left;
     width: 69%;
 }
-
+/*
 #container {
     position: absolute;
 }
@@ -53,3 +51,4 @@ section li img {
 #conversation a {
     color: red;
 }
+*/

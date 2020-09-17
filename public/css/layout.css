@@ -10,6 +10,10 @@ body {
     /*background-color: #000033;*/
     overflow-x: hidden;
 }
+body img {
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+}
 section {
     /*background: radial-gradient(#f2e6d9 50%, #986834);*/
     /*background: radial-gradient(#a9753d 75%, #4b341b);*/
@@ -23,6 +27,7 @@ section {
     padding: 1% 1% 5% 1%;
     color: #392714;
     font-weight: 200;
+    font-size: 13px;
     overflow-x: hidden;
     overflow-y: hidden;
     position: relative;
@@ -94,6 +99,7 @@ button:focus {outline:0;}
     font-size: 100%;
     box-sizing: border-box;
     background-color: #f2e6d9;
+    transition: background-color 0.8s;
 }
 #skills img {
     width: 50px;
@@ -176,6 +182,20 @@ button:focus {outline:0;}
     width: 100%;
     height: 78px;
     border: 2px solid black;
+}
+#log_2 {    
+    background-color: rgb(242, 230, 217);
+    width: 100%;
+    height: 50px;
+    border-radius: 3px;
+    border-top: 2px solid rgb(95, 65, 33);
+    z-index: 2;
+    position: absolute;
+    margin-left: -1%;
+    border-bottom: 2px solid rgb(95, 65, 33);
+    top: 0px;
+    transition: opacity 0.5s ease-out;
+    opacity: 0;
 }
 #hunger {
     width: 162px;
@@ -262,7 +282,7 @@ button:focus {outline:0;}
   background-color: #999999;
 }
 #news_content_main_content {
-  width: 72%;
+  width: 75%;
   float: right;
   padding: 5px;
   box-sizing: border-box;
@@ -282,7 +302,7 @@ button:focus {outline:0;}
     box-sizing: border-box;
     float: right;
     width: 29%;
-    height: 400px;
+    height: 600px;
     border: 3px double black;
     overflow-y: scroll;
     overflow-x: visible;
@@ -294,9 +314,10 @@ button:focus {outline:0;}
     z-index: 1;
 }
 #inv_toggle_button {
-    position: absolute;
-    right: 5px;
-    top: 5px;
+    position: sticky;
+    /*right: 5px;*/
+    top: 0px;
+    float: right;
     visibility: hidden;
 }
 /*#layer {
@@ -398,15 +419,15 @@ button:focus {outline:0;}
     position: relative;
 }
 .stockpile_item img, .inventory_item img, .item img {
-    width: 50px;
-    height: 50px;
+    width: 48px;
+    height: 48px;
     cursor: pointer;
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edges;
 }
 .item_img {
-    width: 50px;
-    height: 50px;
+    width: 48px;
+    height: 48px;
     vertical-align: middle;
 }
 .inventory_item figure, .item figure {
@@ -443,7 +464,7 @@ button:focus {outline:0;}
     float: none;
 }
 .item .item_amount {
-    top: -54%;
+    top: -58%;
     left: 30%;
     color: black;
 }
@@ -458,6 +479,7 @@ button:focus {outline:0;}
     height: 56px;
     width: 56px;
     border: 2px outset #724e27;
+    margin: 0 auto;
 }
 #selected_t {
     height: 50px;
@@ -468,7 +490,6 @@ button:focus {outline:0;}
     position: relative;
     width: 50px;
     height: 50px;
-    margin: 3px 0px 0px 3px;
 }
 .page_title {
     padding: 1%;
@@ -505,9 +526,12 @@ button:focus {outline:0;}
     body {
         margin: 10px 0% 0px 0%;
         padding: 10px 3%;
-    };
+    }
+    .item .item_amount {
+        top: -54%;
+    }
     #skills div {font-size: 14px;}
-    section {width: 97.4%; font-size: 14px;}
+    section {width: 97.4%; font-size: 11px;}
     /*#inventory .inventory_item {width: 50%;}*/
     #inventory {
         /* Style added in general.js*/

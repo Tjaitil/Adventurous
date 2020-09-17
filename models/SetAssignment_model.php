@@ -10,19 +10,22 @@
             parent::__construct();
             $this->username = $session['username'];
             $this->session = $session;
-            // Assign the database class to db property
-            $this->destination = $this->session['favor']['destination'];
-            $this->favor = $this->session['favor'];
+            if(isset($this->session['favor'])) {
+                $this->destination = $this->session['favor']['destination'];
+                $this->favor = $this->session['favor'];    
+            }
             $this->assignment_type = restore_file('trader_assignment_types', true);
             $this->commonModels(true, false);
         }
-        public function newAssignment($assignment_id, $favor = false) {
-            
+        public function newAssignment($POST, $favor = false) {
+            // $POST variable holds the post data
+            // This function is called from an AJAX request
+            // Function to set a new trader assignment
+            $assignment_id = $POST['assignment_id'];
             if($this->session['hunger'] < 10) {
                 $this->gameMessage("ERROR: Your hunger is too high, please eat!", true);
                 return false;
             }
-            
             /*$assignment_amount = str_replace(" ", "+", $assignment_amount);*/
             $sql = "SELECT assignment_id, cart FROM trader WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);
@@ -77,8 +80,8 @@
                 $param_username = $this->username;
                 $stmt->execute();
                 
-                // Update xp
-                if($assignment_XP > 0) {
+                // Only gain xp when warrior level is below 30 or if profiency is trader and assignment_xp is greater than 0
+                if($assignment_XP > 0 && ($this->session['trader']['level'] < 30 || $this->session['profiency'] == 'trader')) {
                     $this->UpdateGamedata->updateXP('trader', $assignment_XP);    
                 }
                 

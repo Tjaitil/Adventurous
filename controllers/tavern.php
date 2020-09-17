@@ -9,6 +9,10 @@
         public function index() {
             $this->loadModel('Tavern', true);
             $this->data['user_tavern_data'] = $this->model->getData();
+            if(date_timestamp_get(new DateTime(date("Y-m-d"))) >
+               date_timestamp_get(new DateTime($this->data['user_tavern_data']['workers']['new_workers']))) {
+                $this->model->resetData();
+            }
             $this->workers();
             $this->render('tavern', 'Tavern', $this->data, true);
         }
@@ -35,7 +39,6 @@
                         break;
                 }
                 $warrior_types = array('melee', 'ranged');
-                var_dump($farmer_amount + $miner_amount + $warrior_amount);
                 for($i = 0; $i < ($farmer_amount + $miner_amount + $warrior_amount); $i++) {
                     if($i < $farmer_amount) {
                         $this->data['workers'][$i]['type'] = 'farmer';
@@ -52,12 +55,12 @@
                     }
                 }
                 $this->data['tavern']['workers'] = $this->data['workers'];
-                var_dump($this->data);
-                /*$this->model->updateWorkers($this->data['workers']);*/
+                $this->model->updateWorkers($this->data['workers']);
             }
             else if($date === $this->data['user_tavern_data']['workers']['new_workers']) {
                 $this->data['tavern']['workers'] = $this->model->getWorkers();
             }
+            
         }
     }
 ?>

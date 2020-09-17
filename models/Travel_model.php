@@ -94,11 +94,11 @@
             $this->time = $distance / $speed * 50;
        }
         public function travel() {
-            $this->time = intval($this->time);
+            /*$this->time = intval($this->time);
             $date = date("Y-m-d H:i:s");
             $new_date = new DateTime($date);
             $new_date->modify("+{$this->time}seconds");
-            $this->arrive_time = date_format($new_date, "Y-m-d H:i:s");
+            $this->arrive_time = date_format($new_date, "Y-m-d H:i:s");*/
             $sql = "UPDATE user_data SET location=:location, destination=:destination, arrive_time=:arrive_time WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(':location', $param_location, PDO::PARAM_STR);
@@ -126,15 +126,6 @@
             $stmt->execute();
             $_SESSION['gamedata']['location'] = $destination;
             $this->db->closeConn();
-            
-            $file = '../' . constant('ROUTE_VIEW') . $destination . '.php';
-            var_dump($file);
-            if(file_exists($file)) {
-                require($file);
-            }
-            else {
-                echo "ERROR!";
-            }
        }
     }
 ?>

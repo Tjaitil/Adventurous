@@ -1,7 +1,7 @@
 <?php $i = 0;
     if(!count($data) > 0):?>
     <tr>
-        <td colspan="8"> None </td>
+        <td colspan="8"> No assignments available </td>
     </tr>
     <?php endif;
     foreach($data as $key): ?>

@@ -94,6 +94,13 @@
             $stmt->execute();
             $_SESSION['gamedata'][$profiency]['xp'] = $this->session[$profiency]['xp'] + $xp;
             // $conn is unset by the model that is instantiating this class
+            
+            // Check if the profiency has leveled up
+            if($this->session[$profiency]['xp'] > $this->session[$profiency]['next_level']) {
+                $_SESSION['gamedata']['level_up'][] = $profiency;
+                $levelUp_model = $this->loadModel('LevelUp', true);
+                $levelUp_model->updateData();
+            }
         }
     }
 ?>

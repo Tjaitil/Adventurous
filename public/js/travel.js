@@ -1,4 +1,4 @@
-    window.addEventListener("load", countdown());
+    /*window.addEventListener("load", countdown());
     function countdown() {
         document.getElementById("travel").innerHTML = "Travelling done";
         var data = "model=Travel" + "&method=checkCountdown";
@@ -23,15 +23,42 @@
                     }
                 }, 1000);
         });
-    }
-    function travel(destination) {
-        var data = "model=Travel" + "&method=getData" + "&destination=" + destination;
+    }*/
+    var gameTravel = {
+        seconds: 3, // Countdown for the countdown function
+        intervalID: null, // intervalID to clear interval when countdown is finished;
+        newDestination: function(destination) {
+            
+            /*if(conversation.index === null) {
+                return;
+            }*/
+            gameTravel.intervalID = setInterval(
+                function() {
+                    if(gameTravel.seconds <= 0) {
+                        clearInterval(gameTravel.intervalID);
+                        gameTravel.seconds = 15;
+                        game.canvasText.hideText();
+                        game.loadWorld(false, false, "changeMap", [destination.toLowerCase()]);
+                    }
+                    else {
+                        game.canvasText.showText('Travelling in ' + gameTravel.seconds, false, false);
+                        gameTravel.seconds--;    
+                    }
+                }, 1000);
+            
+        }
+    };
+    /*function travel(destination) {
+        /*var data = "model=Travel" + "&method=getData" + "&destination=" + destination;
         ajaxP(data, function(response) {
            if(response[0] != false) {
                 countdown();
            }
         });
-    }
+        if(conversation.index === null) {
+            return;
+        }
+    }*/
     function updateLocation(destination) {
         var data = "model=Travel" + "&method=updateLocation" + "&destination=" + destination;
         ajaxP(data, function(response) {

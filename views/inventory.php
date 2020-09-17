@@ -21,6 +21,7 @@
         else {
             $url = $url;
         } ?>
+        <button id="inv_toggle_button"> INV </button>
         <p> Inventory <?php echo '(' . count($_SESSION['gamedata']['inventory']) . '/' . '18' . ')';?></p>
         <div id="item_tooltip">
             <ul>

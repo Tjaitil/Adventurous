@@ -1,5 +1,7 @@
 <?php
     class controller {
+        protected $model;
+        protected $controller;
         
         function __construct($check = true) {
             if($check === true) {
@@ -46,7 +48,6 @@
                 $modelName = $name . '_model';
                 /*$db = new database();*/
                 if(in_array($modelName, array('newuser_model', 'gamedata_model')) == true) {
-                    
                     $this->model = new $modelName($_SESSION['username'], $db);
                 }
                 else {
@@ -67,6 +68,18 @@
             }
             else {
                 header("Location: /maintenance");
+            }
+        }
+        public function loadController($controllerName) {
+            $controllerName  = strtolower($controllerName);
+            $controllerFile = $controllerName . '.php';
+            if(class_exists($controllerName)) {
+                /*$session['username'] = $_SESSION['username'];*/
+                $this->controller = new $controllerName();
+            }
+            else {
+                // Report if user tries to access a model that doesn't exists
+                $this->errorReport($controllerFile . "doesn't exists");
             }
         }
         public function profiencyCheck($profiency) {

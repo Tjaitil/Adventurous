@@ -6,6 +6,48 @@ window.addEventListener("keydown", function(e) {
         e.preventDefault();
     }
 }, false);
+    window.addEventListener('keydown', function (e) {
+        if(gamePause == true) {
+            resumeGame();
+        }
+        switch(e.keyCode) {
+            case 37:
+                game.controls.left = true;
+                break;
+            case 38:
+                game.controls.up = true;
+                break;
+            case 39:
+                game.controls.right = true;
+                break;
+            case 40:
+                game.controls.down = true;
+                break;
+            case 88:
+                game.getNextMap();
+                break;
+            case 69:
+                game.checkBuilding();
+                break;
+        }
+        
+    }, false);
+    window.addEventListener('keyup', function (e) {
+        switch(e.keyCode) {
+            case 37:
+                game.controls.left = false;
+                break;
+            case 38:
+                game.controls.up = false;
+                break;
+            case 39:
+                game.controls.right = false;
+                break;
+            case 40:
+                game.controls.down = false;
+                break;
+        }
+    }, false);
 document.getElementById("control").addEventListener("touchmove", move);
 document.getElementById("control").addEventListener("touchend", endMove);
 
@@ -20,12 +62,13 @@ document.getElementById("control").addEventListener("touchend", endMove);
         var buttonPos = button.getBoundingClientRect();
         var eventY = event.targetTouches[0].clientY - elementPos.y;
         var eventX = event.targetTouches[0].clientX - elementPos.x; 
-        
+        // eventYTrigger/eventXTrigger is the minimum width the button gets moved before movement happens;
+        let eventYTrigger = 50;
+        let eventXTrigger = 50;
         // a is the distance from eventY to diameter
         // b is the distance from eventX to diaemter
         var a = Math.abs(eventY - (elementPos.height / 2));
         var b = Math.abs(eventX - (elementPos.width / 2));
-        
         button.style.top = (event.targetTouches[0].clientY + 50 - elementPos.y - (elementPos.height / 2)) + "px";
         button.style.left = (event.targetTouches[0].clientX - 50) + "px";
         
@@ -50,22 +93,22 @@ document.getElementById("control").addEventListener("touchend", endMove);
         console.log("b:" + b);*/
         
         var angle;
-        if(eventX > 100 && eventY < 100) {
+        if(eventX > eventXTrigger && eventY < eventYTrigger) {
             console.log('++');
             console.log((Math.atan(a/b) / (2 * 3.14)) * 360);
             angle = (Math.atan(a/b) / (2 * 3.14)) * 360;
         }
-        if(eventX < 100 && eventY < 100) {
+        if(eventX < eventXTrigger && eventY < eventYTrigger) {
             console.log('-+');
             console.log((Math.atan(b/a) / (2 * 3.14)) * 360 + 90);
             angle = (Math.atan(b/a) / (2 * 3.14)) * 360 + 90;
         }
-        if(eventX < 100 && eventY > 100) {
+        if(eventX < eventXTrigger && eventY > eventYTrigger) {
             console.log('--');
             console.log((Math.atan(a/b) / (2 * 3.14)) * 360 + 180);
             angle = (Math.atan(a/b) / (2 * 3.14)) * 360 + 180;
         }
-        if(eventX > 100 && eventY > 100) {
+        if(eventX > eventXTrigger && eventY > eventYTrigger) {
             console.log('+-');
             console.log((Math.atan(b/a) / (2 * 3.14)) * 360 + 270);
             angle = (Math.atan(b/a) / (2 * 3.14)) * 360 + 270;
@@ -138,7 +181,7 @@ document.getElementById("control").addEventListener("touchend", endMove);
         game.controls.down = false;
     }
     
-    
+    var timeCount = 0;
     var inBuilding = false;
     var world = new Image(3200, 3200);
     var player_img = new Image(32, 32);
@@ -174,6 +217,56 @@ document.getElementById("control").addEventListener("touchend", endMove);
     var indexY = 0;
     var oldXbase;
     var oldYbase;
+    CookieTicket = {
+        checkCookieTicket(cookieNoob = "getOut") {
+            var today = new Date();
+            var cookieTicket;
+            if(CookieTicket.sweetCookie === null) {
+                cookieTicket = today.getMonth() + today.getDate() + "|";
+                for(var i = 0; i < 10; i++) {
+                    cookieTicket += Math.floor(Math.random() * (10 - 1) + 1);
+                }
+                CookieTicket.sweetCookie = cookieTicket;
+            }
+            else {
+                cookieTicket = CookieTicket.sweetCookie;
+            }
+            let data = "model=cookieMaker" + "&method=yummyCookies" + "&cookieTicket=" + cookieTicket + "&cookieNoob=" + cookieNoob;
+            ajaxP(data, function(response) {
+                console.log(response);
+                console.log(response[1]);
+                if(response[1] === "false") {
+                    location.reload();
+                }
+                else {
+                    return;
+                }
+            });
+        },
+        disposeGarbage() {
+            let ego = event.target.innerText;
+            if(ego === "") {
+                checkCookieTicket();
+            }
+            else {
+                burntCookie();
+            }
+        },
+        burntCookie() {
+            let data = "model=cookieMaker" + "&method=delicCookies" + "&cookieTicket=" + CookieTicket.sweetCookie;
+            ajaxP(data, function(response) {
+                console.log(response);
+                if(response[1] == false) {
+                    window.cancelAnimationFrame(game.properties.requestId);
+                    game.loadWorld();
+                }
+                else {
+                    return;
+                }
+            });    
+        },
+        sweetCookie: null,
+    };
     game = {};
     game.fetchBuilding =  function(building = false) {
         inBuilding = true;
@@ -246,16 +339,18 @@ document.getElementById("control").addEventListener("touchend", endMove);
     game.setCanvasDimensions = function() {
         let newWidth = document.getElementsByTagName("section")[0].offsetWidth * 0.68;
         /*let newWidth = 700;*/
-        let newHeight = 300;
+        let newHeight = screen.height - 10;
+        if(newHeight > 400) {
+            newHeight = 400;
+        }
         game.properties.canvasWidth = newWidth;
+        game.properties.canvasHeight = newHeight;
         document.getElementById("game_canvas").width = newWidth;
         document.getElementById("game_canvas").height = newHeight;
         game.properties.scale = newWidth / 700;
         game.properties.charX = Math.floor((newWidth / 2) - 32);
         game.properties.charY = Math.floor((newHeight / 2) - 32);
-        console.log(game.properties.scale);
-        game.properties.canvasHeight = document.getElementById("game_canvas").height;
-        
+        /*game.properties.canvasHeight = document.getElementById("game_canvas").height;*/
     };
     game.properties = {
         context: document.getElementById("game_canvas").getContext("2d"),
@@ -291,6 +386,10 @@ document.getElementById("control").addEventListener("touchend", endMove);
         game.setCanvasDimensions();
         game.loadWorld();
         game.inactivityTime();
+        CookieTicket.checkCookieTicket('checkMeOut');
+        if(window.screen.width > 830) {
+            document.getElementById("control").style.display = "none";
+        }
     });
     gamePieces = {
         obstacles : [],
@@ -321,23 +420,24 @@ document.getElementById("control").addEventListener("touchend", endMove);
                 gamePieces.objects = obj['objects'];
                 if(newxBase === false) {
                     // Legge til xbase i JSON map filene
-                    game.properties.xbase = 2500;    
+                    game.properties.xbase = 1500;    
                 }
                 else {
                     game.properties.xbase = newxBase;
                 }
                 if(newyBase === false) {
                     // Legge til ybase i JSON map filene
-                    game.properties.ybase = 2500;    
+                    game.properties.ybase = 2800;    
                 }
                 else {
                     game.properties.ybase = newyBase;
                 }
+                /*stateModule.load(game.properties.xbase, game.properties.ybase);*/
                 game.properties.xcamMove = game.properties.xbase - game.properties.charX;
                 game.properties.ycamMove = game.properties.ybase - game.properties.charY;
                 for(var i = 0; i < gamePieces.objects.length; i++) {
                     gamePieces.objects[i].img = new Image(gamePieces.objects[i].width, gamePieces.objects[i].height);
-                    gamePieces.objects[i].img.src = "public/img/" + gamePieces.objects[i].src;
+                    gamePieces.objects[i].img.src = "public/images/" + gamePieces.objects[i].src;
                     // The diameters of the object is based on player starting on 320,
                     //gamePieces.objects[i].x -= xcamMove;
                     // to compensate for the player starting in another position you must subtract  (xbase - (xbase -320));
@@ -349,7 +449,7 @@ document.getElementById("control").addEventListener("touchend", endMove);
                         is drawn*/
                     gamePieces.objects[i].drawX = (gamePieces.objects[i].x - game.properties.xcamMove);
                     gamePieces.objects[i].drawY = (gamePieces.objects[i].y - game.properties.ycamMove);
-                    
+                    /*gamePieces.objects[i].diameterDown += 28;*/
                     if(game.properties.scale < 1) {
                         gamePieces.objects[i].diameterTop -= 10;
                         gamePieces.objects[i].diameterDown -= 10;
@@ -370,6 +470,7 @@ document.getElementById("control").addEventListener("touchend", endMove);
                 world.src = false;
                 //responseText[1];
                 // Load obstacles and pieces
+                console.log(response[0]);
                 
             }
             xMapMin = game.properties.xbase - 320;
@@ -377,7 +478,7 @@ document.getElementById("control").addEventListener("touchend", endMove);
             yMapMin = game.properties.ybase - 320;
             yMapMax = game.properties.ybase + 320;
             world = new Image(3201, 3201);
-            world.src = "public/img/" + map + ".png";
+            world.src = "public/images/" + map + ".png";
             console.log(world);
             world.onload = function() {
                 gamePieces.player = new newPlayer(30, 30, "#0000A0", game.properties.xbase, game.properties.ybase);
@@ -530,18 +631,19 @@ document.getElementById("control").addEventListener("touchend", endMove);
             if(textDrawn === false) {
                 let canvas = document.getElementById("game_canvas");
                 this.gameText.style.top = canvas.offsetTop + 125 + "px";
-                this.gameText.style.visibility = "visible";
                 this.gameText.innerHTML = text;
-                this.intervalID = setInterval(this.changeTextOpactiy, 100);
+                this.gameText.style.opacity = 1;
+                /*this.intervalID = setInterval(this.changeTextOpactiy, 100);*/
             }
             if(timer == true) {
                 setTimeout(this.hideText, 3000);    
             }
         },
         hideText() {
-            game.canvasText.gameText.innerHTML = "";
-            game.canvasText.gameText.style.visibility = "hidden";
-            game.canvasText.gameText.style.opacity = "0.2";
+            game.canvasText.gameText.style.opacity = 0;
+            setTimeout(function() {
+                
+            game.canvasText.gameText.innerHTML = "";}, 500);
         },
         changeTextOpactiy() {
             let opacity = game.canvasText.gameText.style.opacity = Number(game.canvasText.gameText.style.opacity) + 0.1;
@@ -604,7 +706,7 @@ document.getElementById("control").addEventListener("touchend", endMove);
         this.left = "open";
         this.down = "open";
         this.right = "open";
-        this.diameterTop = y;
+        this.diameterTop = y + 20;
         this.diameteRight = x + width;
         this.diameterDown = y + height;
         this.diameterLeft = x;
@@ -629,7 +731,7 @@ document.getElementById("control").addEventListener("touchend", endMove);
                 game.properties.xMapMax = this.xpos + 320;
                 game.properties.yMapMin = this.ypos - 320;
                 game.properties.yMapMax = this.ypos + 320;
-                player.diameterTop = this.ypos;
+                player.diameterTop = this.ypos + 20;
                 player.diameterRight = this.xpos + width;
                 player.diameterDown = this.ypos + height;
                 player.diameterLeft = this.xpos;
@@ -693,60 +795,8 @@ document.getElementById("control").addEventListener("touchend", endMove);
             oldXbase = gamePieces.player.xpos;
         };
     }
-    window.addEventListener('keydown', function (e) {
-        if(gamePause == true) {
-            resumeGame();
-        }
-        switch(e.keyCode) {
-            case 37:
-                game.controls.left = true;
-                break;
-            case 38:
-                game.controls.up = true;
-                break;
-            case 39:
-                game.controls.right = true;
-                break;
-            case 40:
-                game.controls.down = true;
-                break;
-            case 88:
-                game.getNextMap();
-                break;
-            case 69:
-                console.log('enter');
-                break;
-        }
-        
-    }, false);
-    window.addEventListener('keyup', function (e) {
-        switch(e.keyCode) {
-            case 37:
-                game.controls.left = false;
-                break;
-            case 38:
-                game.controls.up = false;
-                break;
-            case 39:
-                game.controls.right = false;
-                break;
-            case 40:
-                game.controls.down = false;
-                break;
-        }
-    }, false);
     game.updateGamePiece = function() {
             ctx = game.properties.context;
-            /* obstaclesPos indexes
-                0 = default x position
-                1 = default y position
-                2 = diameter top
-                3 = diameter right
-                4 = diameter bottom
-                5 = diameter left
-                6 = width of obstacle
-                7 = height of obstacle
-            */
             
             // IMPORTANT!
             // Using fillRect, canvas will render element from top down. Meaning y = 0 is top of element
@@ -757,7 +807,7 @@ document.getElementById("control").addEventListener("touchend", endMove);
                 /*if(object.y > yMapMax + 400 || object.y < yMapMin - 400  || object.x > xMapMax + 400 || object.x < xMapMin - 400) {
                     continue;
                 }*/
-                if(/*typeof gamePieces.objects[i].src === 'undefined' &&*/ draw === true) {
+                if(draw == true) {
                     ctx.fillStyle = "red";
                     ctx.fillRect(gamePieces.objects[i].drawX - (player.xMovement / game.viewport.scale),
                                  gamePieces.objects[i].drawY - (player.yMovement / game.viewport.scale),
@@ -770,12 +820,38 @@ document.getElementById("control").addEventListener("touchend", endMove);
                                  gamePieces.objects[i].drawY + (gamePieces.objects[i].height / 2) -
                                  (player.yMovement / game.viewport.scale));
                 }
+                /*if(typeof gamePieces.objects[i].src === 'undefined' && draw === true) {
+                    ctx.fillStyle = "red";
+                    ctx.fillRect(gamePieces.objects[i].drawX - (player.xMovement / game.viewport.scale),
+                                 gamePieces.objects[i].drawY - (player.yMovement / game.viewport.scale),
+                                 gamePieces.objects[i].width, gamePieces.objects[i].height);
+                    ctx.font = "10px Comic Sans MS";
+                    ctx.fillStyle = "white";
+                    ctx.fillText(i + ' | ' + gamePieces.objects[i].id,
+                                 gamePieces.objects[i].drawX - (player.xMovement / game.viewport.scale) +
+                                 (gamePieces.objects[i].width / 2),
+                                 gamePieces.objects[i].drawY + (gamePieces.objects[i].height / 2) -
+                                 (player.yMovement / game.viewport.scale));
+                }*/
                 /*else {
-                    ctx.drawImage(gamePieces.objects[i].img, gamePieces.objects[i].drawX - (xMovement * game.viewport.scale),
-                                  gamePieces.objects[i].drawY - 128 - (yMovement * game.viewport.scale));
+                    console.log(gamePieces.objects[i]);
+                    console.log(i);
+                    ctx.drawImage(gamePieces.objects[i].img, gamePieces.objects[i].drawX - (player.xMovement * game.viewport.scale),
+                                  gamePieces.objects[i].drawY - 128 - (player.yMovement * game.viewport.scale));
                 }*/
                 
             }
+            /*if(player.y < gamePieces.objects[4].drawY) {
+                game.properties.context3.clearRect(0, 0, 700, 700);
+                 game.properties.context3.drawImage(gamePieces.objects[4].img,
+                                                    gamePieces.objects[4].drawX - 64 - (player.xMovement * game.viewport.scale),
+                                  gamePieces.objects[4].drawY - 128 - (player.yMovement * game.viewport.scale));
+            }
+            else {
+                ctx.drawImage(gamePieces.objects[4].img,
+                                                    gamePieces.objects[4].drawX - 64 - (player.xMovement * game.viewport.scale),
+                                  gamePieces.objects[4].drawY - 128 - (player.yMovement * game.viewport.scale));
+            }*/
             /*game.properties.context3.drawImage(tree_img, 2 - (xMovement / scale), 2 - (yMovement / scale), 64, 64);*/
             /*for(var x = 0; x < linksPos.length; x++) {
                 //Change xpos and ypos for links
@@ -786,7 +862,8 @@ document.getElementById("control").addEventListener("touchend", endMove);
                 ctx.fillRect(linksPos[x][0] - xMovement, linksPos[x][1] - yMovement, linksPos[x][6], linksPos[x][7]);
             }*/
     };
-    game.calculateDistance = function() {
+    game.checkBuilding = function() {
+        console.log(event.target);
         if(inBuilding != true) {
             for(i = 0; i < linksPos.length; i++) {
                 if(player.diameterTop >= linksPos[i][2] &&
@@ -794,23 +871,35 @@ document.getElementById("control").addEventListener("touchend", endMove);
                    player.diameterDown <= linksPos[i][4] &&
                    player.diameterLeft >= linksPos[i][5]) {
                         if(inBuilding == false) {
-                            game.fetchBuilding();   
+                            game.fetchBuilding(linksPos[i].src.split(".png")[0]);
                         }
                         return;
                     }
             }
+        }  
+    };
+    game.calculateDistance = function() {
+        // Collision detection, if user is less than 1px from object prevent movement
+    
+        
+        /*let nearObjects = [];
+        let width = game.properties.canvasWidth / 2 - 16;
+        let height = game.properties.canvasHeight / 2 - 16;
+        let objectIndexX = xpos;
+        let objectIndexY = ypos;
+        if(Math.abs(objectIndexX - xpos) >= 400 && Math.abs(objectIndexY - ypos) >= 400) {
+            
         }
-        /* obstaclesPos indexes
-                0 = default x position
-                1 = default y position
-                2 = diameter top
-                3 = diameter right
-                4 = diameter bottom
-                5 = diameter left
-                6 = width of obstacle
-                7 = height of obstacle
-            */
-        // Collision detection, if user is less than 3px from object prevent movement
+        for(i = 0; i < gamePieces.objects.length; i++) {
+            if(Math.abs(gamePieces.objects[i][x] - player.x) <= width && Math.abs(gamePieces.objects[i][y] - player.y) <= height) {
+                nearObjects.push(gamePieces.objects[i]);    
+            }
+        }*/
+        /*function checkPos(object) {
+             return (Math.abs(object.x - player.xpos) <= 400 && Math.abs(object.y - player.ypos) <= 400);
+        }
+        */
+        
         for(i = 0; i < gamePieces.objects.length; i++) {
             /*if(i === 31) {
                 console.log(gamePieces.objects[31]);
@@ -844,6 +933,11 @@ document.getElementById("control").addEventListener("touchend", endMove);
                 player.left = "blocked";
            }
         }
+        // Triangle collision detection
+        /*if(xtmax > player.diameterLeft && ytmin < player.diameterDown && (hYPos + 1 >= player.diameterLeft || )) {
+            
+        }*/
+        
             if(game.controls.left && player.left == "blocked") {
                 player.speedX = 0;
             }
@@ -861,6 +955,8 @@ document.getElementById("control").addEventListener("touchend", endMove);
             gamePieces.player.yMovement += player.speedY;
     };
     game.update = function () {
+        /*timeCount++;
+        console.log(timeCount);*/
         player.speedX = 0;
         player.speedY = 0;
         if(game.controls.left == true) {
@@ -876,7 +972,6 @@ document.getElementById("control").addEventListener("touchend", endMove);
             player.speedY = player.speed;
         }
         if(player.speedX != 0 || player.speedY != 0 && inBuilding == false) {
-            console.log(player.xpos);
             game.calculateDistance();
             game.viewport.draw();
             game.viewport.drawEdge();
@@ -956,3 +1051,74 @@ document.getElementById("control").addEventListener("touchend", endMove);
             game.updateGamePiece(game.properties.xbase, game.properties.ybase);
         }
     }
+    
+    function getObjectPoints(object) {
+        if(object.type === "triangle") {
+            let slope = object.width / object.height;
+            object.slope = slope;
+        }
+        checkCollision(object);
+    }
+    function checkCollision(object) {
+        let objectPositionX;
+        let objectPositionY;
+        for(var i = 0; i < object.width; i++) {
+            objectPositionX = objectPositionX * (i * object.slope);
+            objectPositionY = objectPositionY * (i * object.slope);
+            if(player.x < object.x) {
+                if(objectPositionX === player.diameterRight && (player.diameterDown == objectPositionY || 
+                                                                player.diameterTop == objectPositionY)) {
+                    console.log("player.right = blocked");    
+                }
+            }
+            else {
+                
+            }
+            if(player.y < object.y) {
+                if(objectPositionY === player.diameterDown && (player.diameteRight == objectPositionX ||
+                                                               player.diameterLeft == objectPositionX)) {
+                    console.log("player.left = blocked");
+                }
+            }
+            else {
+                
+            }
+        }
+    }
+    var santaClaus = "santa";
+    var stateModule = (function () {
+        var state = "DC"// Private Variable
+        let humour = null;
+        let load = false;
+        let xbase = null;
+        let ybase = null;
+        
+        var pub = {};// public object - returned at end of module
+
+        pub.changeState = function (newstate) {
+            state = newstate;
+        };
+
+        pub.getState = function() {
+            return state;
+        };
+        const loadHumour = function(x, y) {
+            if(load === true) {
+                console.log('Function already set!');
+                return;
+            }
+            xbase = x;
+            ybase = y;
+            load = true;
+        };
+        const getHumour = function() {
+            return [xbase, ybase];
+        };
+        const setHumour = function(mood) {
+            humour = mood;
+        };
+        return {
+            getHumour: getHumour,
+            loadHumour: loadHumour
+        };
+    }());

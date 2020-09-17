@@ -295,6 +295,7 @@
             if(response[0] !== false) {
                 openNews(response[1]);
                 getCountdown();
+                newLevel.searchString(response[1]);
             }
         });
     }

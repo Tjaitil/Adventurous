@@ -3,7 +3,7 @@
                 <ul>
                     <li><a href="/gameguide/profiences">Profiencies</a></li>
                     <li><a href="/gameguide/farmer">Farmer</a></li>
-                    <li><a href="#">Miner</a></li>
+                    <li><a href="/gameguide/miner">Miner</a></li>
                     <li><a href="#">Adventurer</a></li>
                     <li><a href="#">Warrior</a></li>
                     <li><a href="#">Trader</a></li>

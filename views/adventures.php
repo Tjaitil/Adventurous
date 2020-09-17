@@ -1,4 +1,4 @@
-
+            adventures.css|adventures.js|
             <h3 class="page_title">Adventures</h3>
              <div id="requests">
                 <table>
@@ -188,7 +188,7 @@
                                 <div id="selected"></div>
                             </div>
                             <label for="quantity"> Select how many </label>
-                            <input id="quantity" name="quantity" type="number" min="0"/>
+                            <input id="selected_amount" name="quantity" type="number" min="0"/>
                             <button> Provide </button>
                     </div>
                     <div id="inventory">

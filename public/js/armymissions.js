@@ -1,4 +1,4 @@
-    if(document.getElementById("news_content").children[3] != null) {
+    if(document.getElementById("news_content").children[2] != null) {
         getCountdown();
         document.getElementById("current_mission").querySelectorAll("button")[0].addEventListener("click", cancelMission);    
     }
@@ -9,8 +9,6 @@
                 var data = response[1].split("|");
                 var time = data[0] * 1000;
                 var mission = data[1];
-                console.log(data);
-                var canc_button = document.getElementById("current_mission").querySelectorAll("button")[0];
                 var x = setInterval (function() {
                     var now = new Date().getTime();
                     var distance = time - now;
@@ -19,23 +17,20 @@
                     var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                     var seconds = Math.floor((distance % (1000 * 60)) / 1000);
                     document.getElementById("time").innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
-                    if (distance < 0 && mission != 0){
+                    if(distance < 0 && mission != 0){
                         clearInterval(x);
                         var btn = document.createElement("BUTTON");
                         var t = document.createTextNode("Mission report");
                         btn.appendChild(t);
                         btn.addEventListener("click", updateMission);
                         document.getElementById('current_mission').appendChild(btn);
+                        document.getElementById("current_mission").querySelectorAll("button")[0].display = "none";
                         document.getElementById("time").innerHTML = "Finished";
-                        canc_button.style.display = "none";
                     }
                     else if (distance < 0) {
                         clearInterval(x);
                         document.getElementById("time").innerHTML = "None";
-                        canc_button.style.display = "none";
-                    }
-                    else {
-                        canc_button.style.display = "block";
+                        document.getElementById("current_mission").querySelectorAll("button")[0].display = "none";
                     }
                 }, 1000);
             }
@@ -93,6 +88,7 @@
                 document.getElementById("mission_table").innerHTML = "";
                 document.getElementById("warriors_container").innerHTML = "";
                 document.getElementById("mission_enabled").style.visibility = "hidden";
+                newLevel.searchString(response[1]);
             }
         });
     }
@@ -108,8 +104,9 @@
         var data = "model=UpdateArmymission" + "&method=updateMission";
         ajaxP(data, function (response) {
             if(response[0] !== false) {
-                document.getElementById('current_mission').innerHTML = "";
+                document.getElementById("current_mission").querySelectorAll("button")[1].display = "none";
                 document.getElementById("time").innerHTML = "None";
+                newLevel.searchString(response[1]);
             }
         });
     }

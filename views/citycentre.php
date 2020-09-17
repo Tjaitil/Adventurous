@@ -1,8 +1,5 @@
             citycentre.css|citycentre.js|
             <h3 class="page_title"> City Centre </h3>
-            <!--<button onclick="show('profiency');"> Profiency </button>
-            <button onclick="show('keep');"> Keep </button>
-            <button onclick="show('permits');"> Permits</button>-->
             <div id="profiency">
                 <p> Current profiency: <span id="profiency"><?php echo $_SESSION['gamedata']['profiency'];?></span></p>
                     <label for="profiency_select"> Change profiency</label></br>
@@ -17,7 +14,7 @@
                         <?php endforeach;?>
                     </select>
                     <p> The cost of changing profiency is charged 500
-                    <img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.jpg';?>" /></p>
+                    <img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.png';?>" /></p>
                     <button> Change profiency</button> 
             </div>
             <div id="keep">
@@ -26,7 +23,8 @@
                     <?php if($this->data['artefact_data']['artefact'] === 'none'): ?>
                         <img style="background-color:white;" />
                     <?php else: ?>
-                        <img src="<?php echo constant('ROUTE_IMG') . $this->data['artefact_data']['artefact'] . '.png';?>" />
+                        <img src="<?php echo constant('ROUTE_IMG') . trim(explode("(", $this->data['artefact_data']['artefact'])[0])
+                                  . '.png';?>" />
                     <?php endif;?>
                     </p>
                 </div>
@@ -37,6 +35,7 @@
                 <button> Create new artefact </button>
             </div>
             <div id="permits">
+                <p>Current permits: <?php echo $this->data['permits'];?></p>
                 <table>
                     <caption> Buy Permits: </caption>
                     <thead>
@@ -48,7 +47,7 @@
                     </thead>
                     <tr>
                         <td> 50 </td>
-                        <td> 100 <img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.jpg';?>"/></td>
+                        <td> 50 <img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.png';?>"/></td>
                         <td><button> Buy </button></td>
                     </tr>
                 </table>
@@ -85,13 +84,15 @@
                     <tr>
                         <td> Farmer </td>
                         <td><?php echo $this->data['effiency']['farmer'];?></td>
-                        <td><?php echo $this->data['effiency']['farmer'] * 150;?></td>
+                        <td><?php echo $this->data['effiency']['farmer'] * 150;?>
+                        <img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.png';?>"/></td>
                         <td><button> Upgrade </button></td>
                     </tr>
                     <tr>
                         <td> Miner </td>
                         <td><?php echo $this->data['effiency']['miner'];?></td>
-                        <td><?php echo $this->data['effiency']['miner'] * 150;?></td>
+                        <td><?php echo $this->data['effiency']['miner'] * 150;?>
+                        <img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.png';?>"/></td>
                         <td><button> Upgrade </button></td>
                     </tr>
                 </table>

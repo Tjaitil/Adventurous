@@ -6,7 +6,7 @@
         }
         
         public function index() {
-            $this->render('bakery', 'Bakery', false);
+            $this->render('bakery', 'Bakery', false, true);
         }
     }
 ?>

@@ -49,22 +49,27 @@
             <thead>
                 <tr>
                     <td> Level </td>
-                    <td> What </td>
+                    <td> Seed image </td>
+                    <td> Full grown image </td>
                 </tr>
             </thead>
             <?php $list_info = array();
-            $list_info[] = array("1", "Potato");
-            $list_info[] = array("3", "Tomato");
-            $list_info[] = array("5", "Corn");
-            $list_info[] = array("10", "Carrots");
-            $list_info[] = array("20", "Cabbage");
-            $list_info[] = array("50", "Wheat");
+            $list_info[] = array("1", "potato");
+            $list_info[] = array("3", "tomato");
+            $list_info[] = array("5", "corn");
+            $list_info[] = array("10", "carrots");
+            $list_info[] = array("20", "cabbage");
+            $list_info[] = array("50", "wheat");
             for($i = 0; $i < count($list_info); $i++): ?>
             <tr>
                 <td><?php echo $list_info[$i][0];?></td>
                 <td><figure>
-                    <img src="<?php echo constant('ROUTE_IMG') . $list_info[$i][1];?>" />
-                    <figcaption><?php echo $list_info[$i][1];?></figcaption>
+                    <img src="<?php echo '../' . constant('ROUTE_IMG') . $list_info[$i][1] . ' seed.png';?>" />
+                    <figcaption><?php echo ucwords($list_info[$i][1]) . ' seed';?></figcaption>
+                </figure></td>
+                <td><figure>
+                    <img src="<?php echo '../' . constant('ROUTE_IMG') . $list_info[$i][1] . '.png';?>" />
+                    <figcaption><?php echo ucwords($list_info[$i][1]);?></figcaption>
                 </figure></td>
             </tr>
             <?php endfor;?>
@@ -74,21 +79,26 @@
             <thead>
                 <tr>
                     <td> Level </td>
-                    <td> What </td>
+                    <td> Seed Img </td>
+                    <td> Full grown </td>
                 </tr>
             </thead>
             <?php $list_info = array();
-            $list_info[] = array("15", "Sugar");
-            $list_info[] = array("25", "Spices");
-            $list_info[] = array("30", "Apples");
-            $list_info[] = array("35", "Oranges");
-            $list_info[] = array("40", "Watermelon");
+            $list_info[] = array("15", "sugar cane");
+            $list_info[] = array("25", "spices");
+            $list_info[] = array("30", "apple");
+            $list_info[] = array("35", "orange");
+            $list_info[] = array("40", "watermelon");
             for($i = 0; $i < count($list_info); $i++): ?>
             <tr>
                 <td><?php echo $list_info[$i][0];?></td>
                 <td><figure>
-                    <img src="<?php echo constant('ROUTE_IMG') . $list_info[$i][1];?>" />
-                    <figcaption><?php echo $list_info[$i][1];?></figcaption>
+                    <img src="<?php echo '../' . constant('ROUTE_IMG') . $list_info[$i][1] . ' seed.png';?>" />
+                    <figcaption><?php echo ucwords($list_info[$i][1]) . ' seed';?></figcaption>
+                </figure></td>
+                <td><figure>
+                    <img src="<?php echo '../' . constant('ROUTE_IMG') . $list_info[$i][1] . '.png';?>" />
+                    <figcaption><?php echo ucwords($list_info[$i][1]);?></figcaption>
                 </figure></td>
             </tr>
             <?php endfor;?>

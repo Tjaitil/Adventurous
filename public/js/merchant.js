@@ -1,5 +1,5 @@
 
-    if(document.getElementById("news_content").children[3] != null) {
+    if(document.getElementById("news_content").children[2] != null) {
         var trades = document.getElementById("trades").querySelectorAll(".store_trade");
         trades.forEach(function(element) {
             // Add eventListener to each node
@@ -19,8 +19,8 @@
         document.getElementById("do_trade").querySelectorAll("button")[0].disabled = false;
         var trade = event.target.closest(".store_trade");
         document.getElementById("selected_trade").innerHTML = trade.innerHTML;
+        console.log(trade.innerHTML);
     }
-    
     function buyItem() {
         if(document.getElementById("selected_trade").children[0] == undefined) {
             gameLog("ERROR: Select a trade!");
@@ -40,7 +40,6 @@
             }
         });
     }
-    
     function updateStock() {
         var data = "model=Merchant" + "&method=getData";
         ajaxJS(data, function(response) {

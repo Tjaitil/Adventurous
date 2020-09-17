@@ -10,11 +10,34 @@
             return $health + $health_gained;
         }
     }
-
+    function warriorStatus($warrior) {
+        // Check the data for if the what the current status for the warrior is
+        // If mission is 0 it is not active, it will be 1 if it is active
+        if($warrior['mission'] !== '0') {
+            return "On Mission " . $warrior['mission'];
+        }
+        else if($warrior['mission'] == 1) {
+            return "On Adventure";
+            
+        }
+        // If fetch_report is 1 training is active, depending on the training countdown it may be done
+        if($warrior['fetch_report'] == 1) {
+            return "Training";
+        }
+        // If rest is 1 the warrior is resting
+        if($warrior['rest'] == 1) {
+            return "Resting";
+        }
+        else {
+            return "Nothing special";
+        }
+    }
     foreach($data[0] as $key): ?>
         <div id="warrior_<?php echo $key['warrior_id'];?>" class="warrior">
             <div class="info">
-                <img src="#" alt="<?php echo $key['warrior_id'];?>"/>
+                <img src="<?php echo constant('ROUTE_IMG') . $key['type'] . ' icon.png';?>" alt="<?php echo $key['warrior_id'];?>"/>
+                <p><?php echo '#',$key['warrior_id'];?></p>
+                <p>Location: <?php echo $key['location'];?></p>
                 <table>
                     <tr>
                         <td> Health: </td>
@@ -23,12 +46,12 @@
                     </tr>
                     <tr>
                         <td> Status: </td>
-                        <td><?php echo $key['status'];?></td>
+                        <td><?php echo warriorStatus($key);?>
+                            <p class="countdown"></p></td>
                     </tr>
                 </table>
             </div>
             <div class="levels">
-                <p class="countdown"></p>
                 <ul>
                     <li>
                         <figure>

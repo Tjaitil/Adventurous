@@ -41,7 +41,7 @@
     <div onclick="get_xp('warrior', this);">
         <figure>
             <img src="<?php echo constant('ROUTE_IMG') . 'warrior icon.png';?>" />
-            <figcaption class="skill_level"><?php echo $_SESSION['gamedata']['farmer']['level'];?></figcaption>
+            <figcaption class="skill_level"><?php echo $_SESSION['gamedata']['warrior']['level'];?></figcaption>
         </figure>
         <span class="skill_tooltip"></span>
         <!-- Span to display xp when gained -->
@@ -58,6 +58,7 @@
         };?>
     </table>
 </div>
+<div id="log_2"></div>
 <div id="hunger">
     <span class="hunger_state"></span>
     <span class="hunger_state"></span>

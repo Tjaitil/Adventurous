@@ -10,9 +10,9 @@
             $this->username = $session['username'];
             $this->session = $session;
         }
-        
-        public function updateData() {
-            //Update levels
+        public function updateData($js = true) {
+            // Update levels
+            // If js is true, the request is coming from city.js
             $profiencies = array('farmer'. 'miner', 'warrior', 'trader', 'adventurer');
             $new_level = array();
             if(in_array($this->session['level_up'], $profiencies) != false) {
@@ -21,12 +21,23 @@
             $sql = "SELECT level, next_level FROM level_data WHERE next_level > :xp ORDER BY next_level ASC LIMIT 1";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":xp", $param_xp);
+            $this->session['level_up'] = array_unique($this->session['level_up']);
             foreach($this->session['level_up'] as $key => $value) {
+                // $value is the profiency name, because key is the index in the array
                 $param_xp = $this->session[$value]['xp'];
                 $stmt->execute();
-                $level = $stmt->fetch(PDO::FETCH_OBJ)->level;
+                
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                $level = $row['level'];
                 // $value is the profiency
                 $this->new_levels[] = array($value, $level);
+                $this->profiency = $value;
+                $_SESSION['gamedata'][$value]['level'] = $level;
+                $_SESSION['gamedata'][$value]['next_level'] = $row['next_level'];
+                if($key == $this->session['profiency']) {
+                    $_SESSION['gamedata']['profiency_xp'] = $this->session[$value]['xp'];
+                    $_SESSION['gamedata']['profiency_xp_nextlevel'] = $row['next_level'];
+                }
             }
             try {
                 $this->db->conn->beginTransaction();
@@ -45,23 +56,21 @@
                 $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
-
-            /*foreach($this->session['level_up'] as $key) {
+            // Select next_level for leveled up profiencies which prevents the message from repeating
+            foreach($this->session['level_up'] as $key) {
                 $sql = "SELECT next_level FROM level_data WHERE level=:level"; 
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":level", $param_level, PDO::PARAM_STR);
                 $param_level = $new_level[$key];
                 $stmt->execute();
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                echo sprintf($format, $key, $new_level[$key]);
-                $_SESSION['gamedata'][$key]['level'] = $new_level[$key];
-                $_SESSION['gamedata'][$key]['next_level'] = $row['next_level'];
-                if($key == $this->session['profiency']) {
-                    $_SESSION['gamedata']['profiency_xp'] = $this->session[$key]['xp'];
-                    $_SESSION['gamedata']['profiency_xp_nextlevel'] = $row['next_level'];
-                }
-            }*/
-            $this->levelupData();
+                /*echo sprintf($format, $key, $new_level[$key]);*/
+            }
+            $_SESSION['gamedata']['level_up'] = array();
+            if($js === true) {
+                echo "|" . "levelup" . "|" . $this->profiency . "|" . $this->new_levels[0][1] . "|";
+            }
+            /*$this->levelupData();*/
         }
         public function levelupData() {
             //Get data for the level that you have unlocked

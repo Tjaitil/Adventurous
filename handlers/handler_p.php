@@ -5,9 +5,15 @@
     $errorHandler = new errorhandler();
     $modelname = $_POST['model'];
     $methodname = $_POST['method'];
-    $model = $handler->includeModel($_POST['model'], $_SESSION['gamedata']);
-    if(!is_object($model)) {
-        echo "ERROR";
+    if($modelname === "cookieMaker") {
+        $model = $handler->includeModel('CanvasGameID', $_SESSION['gamedata']);
+        $model->checkGameID($_POST);
+    }
+    else {
+        $model = $handler->includeModel($_POST['model'], $_SESSION['gamedata']);
+        if(!is_object($model)) {
+            echo "ERROR";
+        }    
     }
     $method = $handler->checkMethod($model, $_POST['method']);
     if($method === true) {
@@ -50,8 +56,12 @@
                         $model->$methodname($favor = true);
                     }
                     else {
+                        echo "trader_handler";
                         $model->$methodname();
                     }
+                }
+                else {
+                    $model->$methodname();
                 }
                 break;
             case "Setassignment":

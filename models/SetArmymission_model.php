@@ -30,7 +30,6 @@
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":mission_id", $param_mission_id, PDO::PARAM_STR);
             $param_mission_id = $mission_id;
-            var_dump($mission_id);
             $stmt->execute();
             $mission_data = $stmt->fetch(PDO::FETCH_ASSOC);
             

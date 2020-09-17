@@ -1,4 +1,4 @@
-    window.addEventListener("load", function() {
+    if(document.getElementById("news_content").children[2] != null) {
        // Add events to buttons
        document.getElementById("profiency").querySelectorAll("button")[0].addEventListener("click", function () {
             alertMessage('citycentre');
@@ -9,9 +9,7 @@
        document.getElementById("permits").querySelectorAll("button")[0].addEventListener("click", buyPermits);
        document.getElementById("efficiency").querySelectorAll("button")[0].addEventListener("click", upgradeEffiency);
 
-    });
-    
-    
+    }
     function show(element) {
         var divs = ["profiency", "keep", "permits"];
         
@@ -66,10 +64,13 @@
     }
     function buyPermits() {
         var amount = 50;
-        var data = "model=citycentreA" + "&method=buyPermits" + "&amount=" + amount;
+        let permit_div = document.getElementById("permits").querySelectorAll("p")[0];
+        var permits = Number(permit_div.innerHTML.split(":")[1].trim()) + 50;
+        var data = "model=CityCentreA" + "&method=buyPermits" + "&amount=" + amount;
         ajaxP(data, function(response) {
             if(response[0] !== false) {
                 gameLog(response[1]);
+                permit_div.innerHTML = "Current permits: " + permits;
                 updateInventory();
             }       
         });

@@ -330,7 +330,7 @@
             if($route === 'warrior') {
                 $sql = "SELECT w.warrior_id, w.type, wl.stamina_level, wl.technique_level, wl.precision_level, wl.strength_level
                         FROM warriors as w
-                        INNER JOIN warrior_levels as wl ON wl.warrior_id = w.warrior_id AND wl.username = w.username
+                        INNER JOIN warriors_levels as wl ON wl.warrior_id = w.warrior_id AND wl.username = w.username
                         WHERE w.mission=0 AND w.training_type='none' AND w.username=:username";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);

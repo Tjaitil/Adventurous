@@ -169,25 +169,25 @@
                         $rewards[] = $row;
                     }
                     
-                    $sql = "SELECT stamina_xp, technique_xp, precision_xp, strength_xp, warrior_id, username FROM warrior_levels
+                    $sql = "SELECT stamina_xp, technique_xp, precision_xp, strength_xp, warrior_id, username FROM warriors_levels
                             WHERE warrior_id IN (SELECT warrior_id FROM warriors WHERE mission=1 AND username=:username)
                                   AND username=:username";
                     $stmt = $this->db->conn->prepare($sql);
                     $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                     $param_username = $this->username;
                     $stmt->execute();
-                    $warrior_levels = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    $warriors_levels = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     $warrior_xp;
-                    for($i = 0; $i < count($warrior_levels); $i++) {
-                        $warrior_xp[$i]['warrior_id'] = $warrior_levels[$i]['warrior_id'];
+                    for($i = 0; $i < count($warriors_levels); $i++) {
+                        $warrior_xp[$i]['warrior_id'] = $warriors_levels[$i]['warrior_id'];
                         $warrior_xp[$i]['stamina_xp'] = rand($xp_data['warrior_xp_min'], $xp_data['warrior_xp_max']);
-                        $warrior_levels[$i]['stamina_xp'] += $warrior_xp[$i]['stamina_xp'];
+                        $warriors_levels[$i]['stamina_xp'] += $warrior_xp[$i]['stamina_xp'];
                         $warrior_xp[$i]['technique_xp'] = rand($xp_data['warrior_xp_min'], $xp_data['warrior_xp_max']);
-                        $warrior_levels[$i]['technique_xp'] += $warrior_xp[$i]['technique_xp'];
+                        $warriors_levels[$i]['technique_xp'] += $warrior_xp[$i]['technique_xp'];
                         $warrior_xp[$i]['precision_xp'] = rand($xp_data['warrior_xp_min'], $xp_data['warrior_xp_max']);
-                        $warrior_levels[$i]['precision_xp'] += $warrior_xp[$i]['precision_xp'];
+                        $warriors_levels[$i]['precision_xp'] += $warrior_xp[$i]['precision_xp'];
                         $warrior_xp[$i]['strength_xp'] = rand($xp_data['warrior_xp_min'], $xp_data['warrior_xp_max']);
-                        $warrior_levels[$i]['strength_xp'] += $warrior_xp[$i]['strength_xp'];
+                        $warriors_levels[$i]['strength_xp'] += $warrior_xp[$i]['strength_xp'];
                     }
             }
             $roles = array("farmer", "miner", "trader", "warrior");
@@ -261,10 +261,10 @@
                 }
                 
                 if($role === 'warrior') {
-                    $sql = "UPDATE warrior_levels SET stamina_xp=?, technique_xp=?, precision_xp=?, strength_xp=?
+                    $sql = "UPDATE warriors_levels SET stamina_xp=?, technique_xp=?, precision_xp=?, strength_xp=?
                             WHERE warrior_id=? AND username=?";
                     $stmt = $this->db->conn->prepare($sql);
-                    foreach($warrior_levels as $key) {
+                    foreach($warriors_levels as $key) {
                         $stmt->execute(array_values($key));
                     }
                     $sql2 = "UPDATE warriors SET mission=0 WHERE mission=1 AND username=:usernae";
@@ -315,11 +315,11 @@
             $stmt->execute($query_array);
             $warrior_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
-            $sql = "SELECT stamina_level, technique_level, precision_level, strength_level FROM warrior_levels
+            $sql = "SELECT stamina_level, technique_level, precision_level, strength_level FROM warriors_levels
                     WHERE warrior_id IN ($in) AND username=?";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->execute($query_array);
-            $warrior_levels = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $warriors_levels = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
             $sql = "SELECT attack, defence FROM warrior_armory WHERE warrior_id IN ($in) AND username=?";
             $stmt = $this->db->conn->prepare($sql);
@@ -328,7 +328,7 @@
             
             $this->warriors = array();
             for($q = 0; $q < count($warrior_data); $q++) {
-                $this->warriors[$q] = array_merge($warrior_data[$q], $warrior_levels[$q], $stats[$q]);
+                $this->warriors[$q] = array_merge($warrior_data[$q], $warriors_levels[$q], $stats[$q]);
             }
             
             //Get the strength of daqloon

@@ -13,7 +13,7 @@
             // $POST variable holds the post data
             // This function is called from an AJAX request
             // Function to set crops
-            $POST = json_decode($POST, true);
+            $POST = json_decode($POST['JSON_data'], true);
             
             if($this->session['hunger'] < 10) {
                 $this->gameMessage("ERROR: Your hunger is too high, please eat!", true);
@@ -105,8 +105,10 @@
                 
                 // Update inventory
                 $this->UpdateGamedata->updateInventory($POST['type'] . ' seed', -$row2['seed_required'], true);
-                // Update xp
-                $this->UpdateGamedata->updateXP('farmer', $row2['experience']);
+                // Only gain xp when warrior level is below 30 or if profiency is farmer
+                if($this->session['farmer']['level'] < 30 || $this->session['profiency'] == 'farmer') { 
+                    $this->UpdateGamedata->updateXP('farmer', $row2['experience']);
+                }
                 
                 $this->db->conn->commit();
             }

@@ -2,7 +2,6 @@
     width: 51%;
     max-width: 407px;
     border: 5px double #251a0e;
-    float: left;
     background-color: #f2e6d9;
     margin-left: 10%;
 }
@@ -27,10 +26,9 @@
     width: 70px;
     height: 70px;
     float: left;
-    border: 2px solid black;
     font-size: 12px;
     box-sizing: border-box;
-    margin: 3px;
+    margin: 1px;
 }
 #data_container {
     width: 42%;

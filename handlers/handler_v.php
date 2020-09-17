@@ -8,7 +8,6 @@
         $data = $model->getData();
     }*/
     /*$method = $handler->checkMethod($model, $_POST['method']);*/
-    $controllerArray = array('armyCamp');
     /*if(in_array($_GET['building'], $controllerArray)) {
         $controller = $handler->loadController($_GET['building']);
         if(is_object($controller)) {

@@ -8,7 +8,7 @@
         public function index () {
             $this->loadModel('TravelBureau', true);
             $this->data = $this->model->getData($_SESSION['gamedata']['location']);
-            $this->render('travelbureau', 'Travel Bureau', $this->data);
+            $this->render('travelbureau', 'Travel Bureau', $this->data, true);
         }
     }
 ?>

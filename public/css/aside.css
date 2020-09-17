@@ -8,6 +8,7 @@ aside {
     border: inset 2px;
     position: fixed;
     display: block;
+    z-index: 2;
     /*border-top-style: ridge;
     border-top-color: black;
     border-top-width: 2px;
@@ -54,12 +55,13 @@ aside a:visited {
     font-size: 14px;
 }
 #sidebar {
-    background-color: blue;
+    background-color: #4c341a;
     float: left;
     width: 100%;
     height: 400px;
     position: absolute;
-    transition: all 1s;
+    transition: width 0.5s ease-out;
+    z-index: 2;
 }
 .sidebar_button {
     
@@ -83,6 +85,10 @@ aside a:visited {
     position: absolute;
     visibility: hidden;
 }
+#tab_4 {
+    position: absolute;
+    visibility: hidden;
+}
 @media all and (max-width: 1040px) {
     aside {
         /*display: none;*/
@@ -90,5 +96,15 @@ aside a:visited {
     }
 }
 @media all and (max-width: 830px) {
-    
+    #sidebar {
+        visibility: hidden;
+    }
+    #sidebar_button_toggle {
+        visibility: visible;
+        float: left;
+    }
+    aside {
+        visibility: hidden;
+        font-size: 12px;
+    }
 }

@@ -11,7 +11,7 @@
         function __construct ($session) {
              $this->session = $session;
         }
-        function init () {
+        function init() {
             $this->getURL();
               
             if($this->url[0] != 'gameguide' && count($this->url) > 1) {
@@ -26,6 +26,7 @@
             }
             $this->session->validatelogin();
             if($this->session->status == false && $this->url[0] != 'registration') {
+                
                 session_unset();
                 $this->controller = 'login';
                 $file = $this->controllerPath . $this->controller . '.php';
@@ -39,9 +40,9 @@
             
             // If the user hasn't chosen a profiency yet, check if the user is trying to access a page that requires profiency,
             // if yes send the user to the location of the new user.
-            if(in_array($_SESSION['gamedata']['profiency'], $array) != false && in_array($this->url[0], $allowed) == false) {
+            /*if(in_array($_SESSION['profiency'], $array) != false && in_array($this->url[0], $allowed) == false) {
                 header("Location: /newuser");
-            }
+            }*/
             
             
            if(empty($this->url[0])) {

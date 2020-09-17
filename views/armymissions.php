@@ -11,8 +11,8 @@
                         <td> Warriors required </td>
                         <td> Mission </td>
                         <td> Reward </td>
-                        <td> Time </td>
-                        <td> Time </td>
+                        <td> Minutes </td>
+                        <td> </td>
                     </tr>
                     <?php foreach($this->data['armyMissions'] as $key):?>
                     <tr>

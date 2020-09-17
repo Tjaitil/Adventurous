@@ -1,7 +1,7 @@
             tavern.css|tavern.js|
             <h3 class="page_title"> Tavern </h3>
             <div id="persons">
-                <?php var_dump($this->data['user_tavern_data']);?>
+                <?php var_dump($this->data);?>
                 <?php if(empty($this->data['user_tavern_data']['persons'])):?>
                 <div> No persons of relevance to talk to in tavern </div>
                 <?php endif; ?>
@@ -11,20 +11,11 @@
                 <?php endforeach;?>
             </div>
             </br>
-            <?php get_template('tavern', $this->data['user_tavern_data']['workers']); ?>
+            <?php get_template('tavern', $this->data['tavern']['workers']); ?>
             <div id="eat">
                 <div id="selected">
                     
                 </div>
                 <input type="number" min="0" />
                 <button> Eat </button>
-            </div>
-            <div id="curtain">
-                <div id="conversation">
-                <img id="" src="#"  width="20px" height="20px" onclick="close();" />
-                <img id="conv_a" src="#" />
-                <p id="conv"></p>
-                <button id="conv_button" onclick="talk(0, '1');"> Click here to continue </button>
-                <img id="conv_b" src="#" />
-                </div>
             </div>

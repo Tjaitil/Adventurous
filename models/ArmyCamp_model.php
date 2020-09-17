@@ -12,11 +12,10 @@
         public function getData($GET = false) {
             $data = array();
             if($GET === false) {
-                $querArray = array();
-                $sql = "SELECT a.warrior_id, a.type, a.mission, a.fetch_report, a.health, a.rest, a.rest_start,
+                $sql = "SELECT a.warrior_id, a.type, a.location, a.mission, a.fetch_report, a.health, a.rest, a.rest_start,
                         b.stamina_level, b.stamina_xp, b.technique_level, b.technique_xp,
                         b.precision_level, b.precision_xp, b.strength_level, b.strength_xp
-                        FROM warriors AS a INNER JOIN warrior_levels AS b ON b.username = a.username AND b.warrior_id = a.warrior_id
+                        FROM warriors AS a INNER JOIN warriors_levels AS b ON b.username = a.username AND b.warrior_id = a.warrior_id
                         WHERE a.username=:username GROUP BY a.warrior_id;";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
@@ -26,20 +25,20 @@
                 $stmt->execute();
             }
             else {
+                $queryArray = array();
                 $queryArray = explode(",", $GET['warriors']);
-                /*$queryArray[] = $this->session['location'];*/
                 $queryArray[] = $this->username;
-                $in  = str_repeat('?,', count($queryArray) - 3) . '?';
+                $in  = str_repeat('?,', count($queryArray) - 2) . '?';
                 
-                $sql = "SELECT a.warrior_id, a.type, a.mission, a.fetch_report, a.health, a.rest, a.rest_start,
+                $sql = "SELECT a.warrior_id, a.type, a.location, a.mission, a.fetch_report, a.health, a.rest, a.rest_start,
                         b.stamina_level, b.stamina_xp, b.technique_level, b.technique_xp,
                         b.precision_level, b.precision_xp, b.strength_level, b.strength_xp
-                        FROM warriors AS a INNER JOIN warrior_levels AS b ON b.username = a.username AND b.warrior_id = a.warrior_id
-                        WHERE a.warrior_id IN ($in) a.username= ? GROUP BY a.warrior_id;";
+                        FROM warriors AS a INNER JOIN warriors_levels AS b ON b.username = a.username AND b.warrior_id = a.warrior_id
+                        WHERE a.warrior_id IN ($in) AND a.username= ? GROUP BY a.warrior_id;";
                         
                         // a.location= ? AND
                 $stmt = $this->db->conn->prepare($sql);
-                $stmt->execute();
+                $stmt->execute($queryArray);
             }
             $data['warrior_data'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $levels = array_unique(array_merge(
@@ -56,21 +55,33 @@
                 $data['levels_data'][$row['skill_level']] = $row['next_level'];
             }
             if($GET !== false) {
-                get_template('warrior_levels', array($data['warrior_data'], $levels_data), true);
+                get_template('warriors_levels', array($data['warrior_data'], $data['levels_data']), true);
             }
             else {
                 return $data;
             }
         }
-        public function getCountdown() {
+        public function getCountdown($GET) {
             // Function to echo date for ajax request
-            $sql = "SELECT training_countdown, fetch_report FROM warriors WHERE location=:location AND username=:username";
-            $stmt = $this->db->conn->prepare($sql);
-            $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
-            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-            $param_location = $this->session['location'];
-            $param_username = $this->username;
-            $stmt->execute();
+            if(explode(",", $GET['warriors'])[0] === "") {
+                $sql = "SELECT training_countdown, fetch_report FROM warriors WHERE username=:username";
+                $stmt = $this->db->conn->prepare($sql);
+                /*$stmt->bindParam(":location", $param_location, PDO::PARAM_STR);*/
+                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                $param_location = $this->session['location'];
+                $param_username = $this->username;
+                $stmt->execute();   
+            }
+            else {
+                $queryArray = array();
+                $queryArray = explode(",", $GET['warriors']);
+                $queryArray[] = $this->username;
+                $in  = str_repeat('?,', count($queryArray) - 2) . '?';
+                
+                $sql = "SELECT training_countdown, fetch_report FROM warriors WHERE warrior_id IN ($in) AND username=?";
+                $stmt = $this->db->conn->prepare($sql);
+                $stmt->execute($queryArray);
+            }
             $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $this->db->closeConn();
             $data = array();
@@ -80,42 +91,51 @@
                 echo $date . "|" . $key['fetch_report'] . "||";
             }
         }
-        public function checkWarriorLevel($warrior_levels) {
-            $level_up = array();
-            if(count($warrior_levels) === 0) {
-                return $level_up;
+        public function checkWarriorLevel($POST) {
+            // $POST variable holds the post data
+            // This function is called from an AJAX request from armycamp.js
+            // Function to transfer warriors between Tasnobil and Cruendo
+            
+            $sql = "SELECT warrior_id, stamina_level, stamina_xp, technique_level, technique_xp, precision_level, precision_xp,
+                    strength_level, strength_xp FROM warriors_levels
+                        WHERE warrior_id=:warrior_id AND username=:username";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);
+            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_warrior_id = explode(",", $POST['warriors'])[0];
+            $param_username = $this->username;
+            $stmt->execute();
+            // If rowcount is less than 1 then the warrior id may have been changed
+            if($stmt->rowCount() < 1) {
+                $this->gameMessage("ERROR: Warrior not found, please try again", true);
+                return false;
             }
-            $values = array();
-            // The foreach gets every unique level from the soldier, it then returns the values and pushes it unto the $values array
-            foreach($warrior_levels as $key) {
-                
-                unset($key['warrior_id'], $key['type'], $key['stamina_xp'], $key['technique_xp'], $key['precision_xp'], $key['strength_xp']);
-                $unique = array_unique($key);
-                $value = array_values($unique);
-                array_push($values, $value);
-            }
-            // $combined merges everything that is inside $values to make 1 array and check for last time for unique items
-            $combined = array_values(array_unique(array_merge(...$values)));
+            
+            $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $uniqe_levels = array_values(array_unique(array($row[0]['stamina_level'],
+                                                            $row[0]['technique_level'],
+                                                            $row[0]['precision_level'],
+                                                            $row[0]['strength_level'])));
             // $in makes a prepared statement string by replacing the value with a ? to get multiple values;
-            $in  = str_repeat('?,', count($combined) - 1) . '?';
+            $in  = str_repeat('?,', count($uniqe_levels) - 1) . '?';
             $sql = "SELECT skill_level, next_level FROM warriors_level_data WHERE skill_level IN ($in)";
             $stmt = $this->db->conn->prepare($sql);
-            $stmt->execute($combined);
-            $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
+            $stmt->execute($uniqe_levels);
+            $row2 = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $level_info = array();
-            foreach($row as $key) {
+            foreach($row2 as $key) {
                 $level_info[$key['skill_level']] = $key['next_level'];
             }
             
             $statements = array();
             $skills = array('stamina', 'technique', 'precision', 'strength');
+            $level_up = array();
             //Check if xp of one or more of the levels for each warrior is above next_level
-            foreach($warrior_levels as $key) {
+            foreach($warriors_leves = $row as $key) {
                 for($i = 0; $i < count($skills); $i++) {
                     if($level_info[$key[$skills[$i] . '_level']] <= $key[$skills[$i].'_xp']) {
                         if($i === 0 ) {
-                            $level_up[$key['warrior_id']]['update'] = "UPDATE warrior_levels SET";
+                            $level_up[$key['warrior_id']]['update'] = "UPDATE warriors_levels SET ";
                         }
                         $new_level = $key[$skills[$i] . '_level'] + 1;
                         $level_up[$key['warrior_id']]['update'] .= $skills[$i] . '_level' . '='. $new_level .',';
@@ -129,7 +149,6 @@
                         unset($level_up[$key['warrior_id']]['update']);
                     }
             }
-    
             if(count($level_up) > 0) {
                 try {
                     $this->db->conn->beginTransaction();
@@ -141,8 +160,9 @@
                         $stmt->execute();
                     }
                     
-                    // Update xp
-                    $this->UpdateGamedata->updateXP('warrior', 20);
+                    if($this->session['warrior']['level'] < 30 || $this->session['profiency'] == 'warrior') { 
+                        $this->UpdateGamedata->updateXP('warrior', 20 * count($level_up));
+                    }
                     
                     $this->db->conn->commit();
                 }
@@ -151,12 +171,12 @@
                     return false;
                 }
                 unset($stmt, $stmt2, $stmt3);
-                $this->db->closeConn();
-                return $level_up;
             }
             else {
-                return $level_up;
+                $this->gameMessage("ERROR: None of your warriors is leveling up", true);
+                return false;
             }
+            $this->db->closeConn();
         }
         public function transfer($POST) {
             // $POST variable holds the post data
@@ -207,7 +227,7 @@
                 $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
-            $this->getData($js = true);
+            $this->db->closeConn();
         }
         public function healWarrior($POST) {
             // $POST variable holds the post data
@@ -307,6 +327,7 @@
             else {
                 $this->gameMessage("Warrior(s) on rest!", true);
             }
+            $this->db->closeConn();
         }
         public function offRest($POST) {
             // $POST variable holds the post data
@@ -363,7 +384,6 @@
                 $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
-                $this->gameMessage("Warriors off rest!", true);
         }
         public function changeType($POST) {
             // $POST variable holds the post data
@@ -391,8 +411,7 @@
             if($prices[$type] > $this->session['gold']) {
                 $this->gameMessage("ERROR: Not enough gold in inventory", true);
                 return false;
-            }
-            
+            }  
             try {
                 $this->db->conn->beginTransaction();
                 

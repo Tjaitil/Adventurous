@@ -1,5 +1,6 @@
     if(document.getElementById("news_content").children[2] != null) {
-        addSelectEvent();
+        // selectitem.js
+        selectItemEvent.addSelectEvent();
     }
     function toggleOption() {
         var element = document.getElementById("selected").children[0].children[1].innerHTML;
@@ -67,7 +68,7 @@
     
     function removeArmor(element) {
         var parent = element.parentNode;
-        var warrior_id = parent.children[0].innerHTML;
+        var warrior_id = parent.querySelectorAll("p")[0].innerHTML.split("#")[1].trim();
         var item = element.title;
         var part = element.className;
         if(item === 'none') {
@@ -78,7 +79,6 @@
             if(response[0] != false) {
                 document.getElementsByClassName("armory_view")[warrior_id - 1].innerHTML = response[1];
                 updateInventory('armory', true);
-                addSelectEvent();
             }
         });
     }

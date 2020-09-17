@@ -147,14 +147,14 @@
                 //$param_username already defined in $stmt1;
                 $stmt18->execute();*/
                 
-                $sql19 = "INSERT INTO warrior_levels (username, warrior_id) VALUES(?, ?)";
+                $sql19 = "INSERT INTO warriors_levels (username, warrior_id) VALUES(?, ?)";
                 $stmt19 = $this->db->conn->prepare($sql19);
                 foreach ($data as $row){
                     $stmt19->execute($row);
                 }
                 
                 /*
-                $sql20 = "INSERT INTO warrior_levels (username, warrior_id) VALUES(:username, 2)";
+                $sql20 = "INSERT INTO warriors_levels (username, warrior_id) VALUES(:username, 2)";
                 $stmt20 = $this->db->conn->prepare($sql20);
                 $stmt20->bindParam(":username", $param_username, PDO::PARAM_STR);
                 //$param_username already defined in $stmt1;

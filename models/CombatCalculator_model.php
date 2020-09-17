@@ -298,7 +298,7 @@
             $sql = "SELECT w.warrior_id, w.type, w.health, wl.stamina_level, wl.technique_level, wl.precision_level,
                     wl.strength_level
                     FROM warriors as w 
-                    INNER JOIN warrior_levels as wl ON w.warrior_id = wl.warrior_id
+                    INNER JOIN warriors_levels as wl ON w.warrior_id = wl.warrior_id
                     WHERE w.warrior_id IN (1,2) AND w.username= 'tjaitil' GROUP BY w.warrior_id ";
             $stmt = $this->db->conn->prepare($sql);
             $param_username = $this->username;

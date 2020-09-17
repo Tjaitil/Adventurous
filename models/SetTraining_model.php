@@ -20,6 +20,7 @@
             // Function to set training
             $warrior = $POST['warrior'];
             $type = $POST['type'];
+           
             
             $sql = "SELECT warrior_id FROM warriors WHERE warrior_id=:warrior_id AND location=:location AND username=:username";
             $stmt = $this->db->conn->prepare($sql);
@@ -31,7 +32,7 @@
             $param_username = $this->username;
             $stmt->execute();
             if(!$stmt->rowCount() > 0) {
-                $this->gameMessage("ERROR: You are in the wrong city to train this soldier!");
+                $this->gameMessage("ERROR: You are in the wrong city to train this soldier!", true);
                 return false;
             }
             
@@ -64,8 +65,10 @@
                 $param_username = $this->username;
                 $stmt2->execute();
                 
-                // Update xp
-                $this->UpdateGamedata->updateXP('warrior', $row2['experience']);
+                // Only gain xp when warrior level is below 30 or if profiency is warrior
+                if($this->session['warrior']['level'] < 30 || $this->session['profiency'] == 'warrior') { 
+                    $this->UpdateGamedata->updateXP('warrior', $row2['experience']);
+                }
                 
                 $this->db->conn->commit();
                 }

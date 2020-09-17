@@ -12,8 +12,8 @@
     display: inline-block;
     float: left;
     background-color: #322c10;
-    color: white;
     box-sizing: border-box;
+    color: white;
 }
 .armory_view img {
     width: 50px;
@@ -34,6 +34,14 @@
 .ammunition {
     top: 80px;
     left: 130px;
+}
+#armory_view_div {
+    top: 80px;
+    left: 130px;
+}
+#armory_view_span {
+    top: -91%;
+    left: 24%;
 }
 .left_hand {
     top: 135px;
@@ -62,9 +70,7 @@
     visibility: hidden;
 }
 #put_on {
-    width: 100px;
-    border: 1px solid red;
-    float: left;
+    width: 100%;
 }
 #selected {
     margin: 0 auto;

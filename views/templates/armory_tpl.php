@@ -4,7 +4,7 @@ foreach($data as $key):
         <div class="armory_view">
     <?php endif;?>
         <img class="type_icon" src="<?php echo constant('ROUTE_IMG') . $key['type'] . ' icon.png';?>" />
-        <p> Warrior id <?php echo $key['warrior_id'];?></p>
+        <p> Warrior #<?php echo $key['warrior_id'];?></p>
         <p> Attack: <?php echo $key['attack'] + 10;?></p>
         <p> Defence: <?php echo $key['defence'] + 15;?></p>
         <img onclick="removeArmor(this);"
@@ -13,8 +13,12 @@ foreach($data as $key):
         <img onclick="removeArmor(this);"
              title="<?php echo $key['ammunition'];?>"
              class="ammunition" src="<?php echo constant("ROUTE_IMG") . $key['ammunition'] . '.png'?>"/>
-             <div class="inventory_item">
-                <span class="item_amount"><?php echo ($key['ammunition_amount'] > 0) ? $key['ammunition_amount'] : "";?></span>
+             <div class="inventory_item" id="armory_view_div">
+                <figure>
+                    
+                </figure>
+                <span id="armory_view_span" class="item_amount">
+                <?php echo ($key['ammunition_amount'] > 0) ? $key['ammunition_amount'] : "";?></span>
              </div>
         <img onclick="removeArmor(this);"        
              title="<?php echo $key['right_hand'];?>"

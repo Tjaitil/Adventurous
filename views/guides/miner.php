@@ -29,23 +29,33 @@
                 <tr>
                     <td> Level </td>
                     <td> Mineral </td>
+                    <td> Bar </td>
                 </tr>
             </thead>
             <?php $list_info = array();
-            $list_info[] = array("1", "iron ore");
-            $list_info[] = array("5", "steel ore");
-            $list_info[] = array("10", "clay ore");
-            $list_info[] = array("15", "adron ore");
-            $list_info[] = array("40", "gargonite ore");
-            $list_info[] = array("40", "yeqdon ore");
-            $list_info[] = array("40", "frajrite ore");
-            $list_info[] = array("40", "wujkin ore ");
+            $list_info[] = array("1", "iron");
+            $list_info[] = array("5", "steel");
+            $list_info[] = array("10", "clay");
+            $list_info[] = array("15", "adron");
+            $list_info[] = array("40", "gargonite");
+            $list_info[] = array("40", "yeqdon");
+            $list_info[] = array("40", "frajrite");
+            $list_info[] = array("40", "wujkin");
             for($i = 0; $i < count($list_info); $i++): ?>
             <tr>
                 <td><?php echo $list_info[$i][0];?></td>
                 <td><figure>
-                    <img src="<?php echo constant('ROUTE_IMG') . $list_info[$i][1] . '.png';?>" />
-                    <figcaption><?php echo ucfirst($list_info[$i][1]);?></figcaption>
+                    <img src="<?php echo '../' . constant('ROUTE_IMG') . $list_info[$i][1] . ' ore.png';?>" />
+                    <figcaption><?php echo ucfirst($list_info[$i][1]) . ' ore';?></figcaption>
+                </figure></td>
+                <td><figure>
+                    <?php if($i === 2): ?>
+                        <img src="<?php echo '../' . constant('ROUTE_IMG') . 'brick.png';?>" />
+                        <figcaption><?php echo 'Brick';?></figcaption>
+                    <?php else:?>
+                        <img src="<?php echo '../' . constant('ROUTE_IMG') . $list_info[$i][1] . ' bar.png';?>" />
+                        <figcaption><?php echo ucfirst($list_info[$i][1]) . ' bar';?></figcaption>
+                    <?php endif;?>
                 </figure></td>
             </tr>
             <?php endfor;?>

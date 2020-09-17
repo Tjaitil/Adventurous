@@ -1,4 +1,4 @@
-    if(document.getElementById("news_content").children[3] != null) {
+    if(document.getElementById("news_content").children[2] != null) {
         getCountdown();
         var img = document.getElementById("select").querySelectorAll("img");
         img.forEach(function(element) {
@@ -86,6 +86,7 @@
                     document.getElementById("data_form").querySelectorAll("span")[0].innerHTML = "(" + responseText[1] + ")";
                     document.getElementById("data_container").children[0].innerHTML = "Total permits:" + responseText[0];
                     document.getElementById("data_form").style.visibility = "hidden";
+                    newLevel.searchString(response[1]);
                 }
             });
         }
@@ -140,11 +141,12 @@
         this.permits = permits;
         this.time = time;
     }
-    var iron =  new newMineral('iron', null, null);
-    var steel =  new newMineral('steel', null, null);
-    var clay =  new newMineral('clay', 10, 200);
-    var gargonite =  new newMineral('gargonite', 10, 200);
-    var adron =  new newMineral('adron', 10, 200);
-    var yeqdon =  new newMineral('yeqdon', null, null);
-    var frajrite =  new newMineral('frajrite', 10, 200);
-    
+    var typeData = {
+        iron: new newMineral('iron', null, null),
+        steel: new newMineral('steel', null, null),
+        clay: new newMineral('clay', 10, 200),
+        gargonite: new newMineral('gargonite', 10, 200),
+        adron: new newMineral('adron', 10, 200),
+        yeqdon: new newMineral('yeqdon', null, null),
+        frajrite: new newMineral('frajrite', 10, 200)
+    };

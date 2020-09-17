@@ -13,7 +13,10 @@
         if (i < 10) {i = "0" + i;}
         return i;
     }
-    
+    var generalProperties = {
+        screenWidth: 830,
+        deviceType: null
+    };
     var itemTitle = {
         status : true,
         addTitleEvent : function() {
@@ -97,6 +100,7 @@
         return i;
     }
     function gameLog(message) {
+        secondLog(message);
         if(message.search("\\[") == -1) {
             var d = new Date();
             var time = "[" + addZero(d.getHours()) + ":" + addZero(d.getMinutes()) + ":" + addZero(d.getSeconds()) + "] ";
@@ -114,7 +118,21 @@
         if(isScrolledToBottom) {
           log.scrollTop = log.scrollHeight - log.clientHeight;
         }
-    } 
+    }
+    function secondLog(message) {
+        let div = document.getElementById("log_2");
+        div.innerHTML = message;
+        div.style.opacity = 1;
+        div.style.top = window.pageYOffset + 50  + "px";
+        
+        
+        setTimeout(function() {
+            console.log('settimeout');
+            let div = document.getElementById("log_2");
+            div.style.opacity = 0;
+            div.style.top = "0px";
+        }, 2000);
+    }
     function getgMessage() {
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
@@ -156,7 +174,6 @@
     }
     function closeNews() {
         var newsDiv = document.getElementById("news_content_main_content");
-        
         newsDiv.innerHTML = "";
         /*while(newsDiv.childNodes.length > 2) {
             newsDiv.removeChild(newsDiv.lastChild);
@@ -168,6 +185,12 @@
             // Render the player outside building
             /*renderPlayer(0, 40);*/
             inBuilding = false;
+        }
+        if(selectItemEvent.selectItemStatus === true) {
+            selectItemEvent.removeSelectEvent();
+        }
+        if(typeof menubarToggle != undefined) {
+            menubarToggle.removeEvent();
         }
         if(itemTitle.status === false) {
             itemTitle.addTitleEvent();
@@ -193,21 +216,32 @@
     };
     var newsContentSidebar = {
         adjustSidebar() {
+            if(document.getElementById("news_content_main_content").style.width === "100%") {
+                document.getElementById("news_content_main_content").style.width = "75%";
+                document.getElementById("news_content_side_panel").style.width = "25%";
+            }
             document.getElementById("news_content_side_panel").innerHTML = "";
             var divChildren = document.getElementById("news_content_main_content").children;
-            console.log(divChildren);
+            let exceptions = ["put_on", "mission_enabled", "current_mission"];
+            let buttonCount = 0;
             for(var i = 0; i < divChildren.length; i++) {
-                if(divChildren[i].tagName === 'DIV') {
-                    console.log(divChildren[i]);
+                if(divChildren[i].tagName === 'DIV' && exceptions.indexOf(divChildren[i].id) == -1) {
                     let button = document.createElement("button");
-                        // Get text from div id and remove underscore and Uppercase character of each word;
-                    let text = document.createTextNode(jsUcWords(divChildren[i].id));
+                    // Get text from div id and remove underscore and Uppercase character of each word;
+                    console.log(divChildren[i].id);
+                    let text = document.createTextNode(jsUcWords(underscoreTreatment(divChildren[i].id, false)));
                     button.appendChild(text);
                     document.getElementById("news_content_side_panel").appendChild(button);
                     divChildren[i].style.position = "absolute";
                     divChildren[i].style.visibility = "hidden";
                     divChildren[i].style.width = "100%";
+                    buttonCount++;
                 }
+            }
+            if(buttonCount == 1) {
+                document.getElementById("news_content_main_content").querySelectorAll("div")[0].style.visibility = "visible";
+                document.getElementById("news_content_main_content").style.width = "100%";
+                document.getElementById("news_content_side_panel").style.display = "none";
             }
             this.addEvent();
         },
@@ -216,12 +250,10 @@
             let buttons = document.getElementById("news_content_side_panel").querySelectorAll("button");
             for(var i = 0; i < buttons.length; i++) {
                 if(buttons[i].innerText == activeButton) {
-                    console.log(activeButton.toLowerCase());
-                    document.getElementById(activeButton.toLowerCase()).style.visibility = "visible";
+                    document.getElementById(underscoreTreatment(activeButton, true).toLowerCase()).style.visibility = "visible";
                 }
                 else {
-                    console.log(buttons[i].innerText.toLowerCase());
-                    document.getElementById(buttons[i].innerText.toLowerCase()).style.visibility = "hidden";
+                    document.getElementById(underscoreTreatment(buttons[i].innerText, true).toLowerCase()).style.visibility = "hidden";
                 }
             }
         },
@@ -241,6 +273,9 @@
         }
         else if(result == -1 && addUnderscore === true) {
             editedString = string.replace(" ", "_");
+        }
+        else {
+            return string;
         }
         return editedString;
     }
@@ -331,10 +366,21 @@
         ajaxRequest.onload = function () {
             if(this.readyState == 4 && this.status == 200) {
                 document.getElementById("inventory").innerHTML = this.responseText;
-                if(addSelect !== false) {
-                    addSelectEvent();
+                if(document.getElementsByClassName("page_title")[0].innerText == "Stockpile") {
+                    var buttons = document.getElementById("inventory").querySelectorAll("div");
+                    buttons.forEach(function(element) {
+                    // ... code code code for this one element
+                    element.addEventListener('click', show_menu);
+                    });
+                    itemTitle.removeTitleEvent();
                 }
-                addShowTitle();
+                else {
+                    addShowTitle();
+                }
+                if(selectItemEvent.selectItemStatus == true) {
+                    selectItemEvent.addSelectEvent();
+                }
+                document.getElementById("inv_toggle_button").addEventListener("click", inventorySidebarMob.toggleInventory);
             }
         };
         ajaxRequest.open('GET', "handlers/handlerf.php?file=inventory" + "&page=" + page);
@@ -352,8 +398,21 @@
         // Declare menu top by measuring the positon from top of parent and also if inventory/stockpile is scrolled
         var menuTop;
         // If element is inside inventory or stockpile
-        if(["stockpile", "inventory"].indexOf(element.parentNode.id) != -1) {
-            /*menuTop = element.offsetTop + element.parentNode.scrollTop + 50;*/
+        menuTop = element.offsetTop + 30;
+        console.log(menuTop);
+        menu.children[0].style.top = menuTop + "px";
+        if(item.length < 8) {
+            menu.children[0].style.left = element.offsetLeft +  20 + "px";
+            menu.children[0].children[0].style.width = "50px";
+            menu.children[0].children[0].style.textAlign = "center";
+        }
+        else {
+            menu.children[0].style.left = element.offsetLeft + 10 + "px";
+            menu.children[0].children[0].style.width = "auto";
+        }
+        console.log(element.parentNode);
+        /*if(["stockpile", "inventory"].indexOf(element.parentNode.id) != -1) {
+            //menuTop = element.offsetTop + element.parentNode.scrollTop + 50;
             menuTop = element.offsetTop + 30;
             console.log(menuTop);
             menu.children[0].style.top = menuTop + "px";
@@ -379,46 +438,34 @@
             menu.children[0].style.top = menuTop + "px";
             menu.children[0].style.left = element.offsetLeft + 10 + "px";
             console.log(menu);
-        }
+        }*/
         
-        setTimeout(hide_title, 4000, data);
+        setTimeout(hide_title, 4000, element);
     }  
-    function hide_title(data) {
-        data[0].style.visibility = "hidden";
+    function hide_title(element) {
+        /*element.style.visibility = "hidden";*/
         if(data[1] == true) {
             var div_button = data[2].parentElement.children[0];
             div_button.style = "visibility: hidden";
         }
     }
+    function getCountdown() {
+        var data = "model=countdown" + "&method=getCountdown";    
+        ajaxG(data, function(response) {
+            if(response[0] != false) {
+                
+                document.getElementById("tab_2").innerHTML = "";        
+            }
+        });
+    }
     function jsUcfirst(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
     function jsUcWords(str) {
+        console.log(str);
         return str.replace(/\w\S*/g, function(txt){
             return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
         });
-    }
-    function selectedCheck(quantity_r = true) {
-        if(document.getElementById("selected").getElementsByTagName("figure").length == 0) {
-            gameLog("Please select a valid item");
-            return false;
-        }
-        var div = document.getElementById("selected");
-        var figure = div.querySelectorAll("figure")[0];
-        var item = figure.children[1].innerHTML.toLowerCase();
-        
-        // amount_r is variable that opens up for checking only item or item and amount
-        if(quantity_r === true) {
-            var quantity = document.getElementById("quantity").value;
-            if(quantity == 0) {
-                gameLog("Please select a valid amount");
-                return false;
-            }
-            return [item, amount];
-        }
-        else {
-            return [item];
-        }
     }
     function JSONForm(form) {
         var form_data = {};
@@ -453,7 +500,6 @@
         }
         return JSON.stringify(form_data);
     }
-    
     var sidebar = {
         sidebarElement: document.getElementById("sidebar"),
         sidebarToggled: false,
@@ -471,17 +517,23 @@
             this.sidebarElement = document.getElementById("sidebar");
         },
         toggleSidebar() {
-            console.log('hello');
             if(this.sidebarToggled === false) {
-                this.sidebarElement.style.width = "500px";
+                this.sidebarElement.style.visibility  = "visible";
+                this.sidebarElement.style.width = document.getElementsByTagName("section")[0].clientWidth * 0.40 + "px";
                 this.sidebarToggled = true;
                 document.getElementById("sidebar_button_toggle").style.visibility = "visible";
             }
             else {
                 sidebar.showTab(sidebarCheck = false);
-                this.sidebarElement.style.width = "200px";
+                this.sidebarElement.style.width = document.getElementsByTagName("section")[0].clientWidth * 0.12 + "px";
                 this.sidebarToggled = false;
-                document.getElementById("sidebar_button_toggle").style.visibility = "hidden";
+                if(window.screen.width > 830) {
+                    document.getElementById("sidebar_button_toggle").style.visibility = "hidden";
+                }
+                else {
+                    setTimeout(function() {
+                        document.getElementById("sidebar").style.visibility = "hidden";}, 600);
+                }
             }
         },
         showTab(sidebarCheck) {
@@ -490,8 +542,9 @@
                 sidebar.toggleSidebar();    
             }
             let newActiveTab = event.target.innerText;
-            let tabs = document.getElementById("sidebar").getElementsByTagName("div");
-            let tabNames = ["Adventure", "Countdowns", "Diplomacy"];
+            console.log(newActiveTab);
+            let tabs = document.getElementById("sidebar").querySelectorAll(".sidebar_tab");
+            let tabNames = ["Adventure", "Countdowns", "Diplomacy", "Skills"];
             for(var i = 0; i < tabNames.length; i++) {
                 if(tabNames[i] === newActiveTab) {
                     tabs[i].style.visibility = "visible"; 
@@ -501,6 +554,51 @@
                 }
             }
         }
+    };
+    newLevel = {
+        skillElement: null,
+        skillData: null,
+        highLightIndex: 0,  
+        updateNewLevel: function(skillData) {
+            newLevel.skillData = skillData;
+            document.getElementById("skills").querySelectorAll(".skill_level")[newLevel.elementIndex[skillData[0]] - 1].innerHTML =
+                    skillData[1];
+            gameLog(skillData[0] + "leveled up to " + skillData[1]);
+            
+        },
+        searchString: function(responseText) {
+            if(responseText.search("levelup") != -1) {
+                let index = response[1].search("levelup");
+                newLevel.findSkill(responseText.slice(index));
+            }
+        },
+        findSkill: function(string) {
+            let skillData = string.split("|");
+            let skills = ["farmer", "miner", "trader", "warrior"];
+            if(skills.indexOf(skillData[1]) == -1) {
+                return;
+            }
+            else {
+                newLevel.updateNewLevel([skillData[1], skillData[2]]);
+            }
+        },
+        elementIndex: {
+            adventurer: 0,
+            farmer: 1,
+            miner: 2,
+            trader: 3,
+            warriors: 4
+        },
+        skillHighlight: function(element) {
+            console.log(element.style.backgroundColor);
+            if(element.style.backgroundColor === "" || element.style.backgroundColor == "rgb(242, 230, 217)") {
+                element.style.backgroundColor = "#f8f2ec";
+            }
+            else {
+                element.style.backgroundColor = "#f2e6d9";
+            }
+        }
+        
     };
     function getAdventure() {
         let building = "Adventures";

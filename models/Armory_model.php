@@ -262,7 +262,6 @@
                 $this->gameMessage("ERROR: The soldier you are trying to remove armor from doesn't exist", true);
                 return false;
             }
-            
             try {
                 $this->db->conn->beginTransaction();
                 

@@ -18,9 +18,6 @@
             $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
             return $data;
         }
-        public function hello() {
-            echo "hello function";
-        }
         public function fletch($POST) {
             // $POST variable holds the post data
             // This function is called from an AJAX request from smithy.js

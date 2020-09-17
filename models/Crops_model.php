@@ -37,10 +37,9 @@
                 $data['workforce_data'] = $stmt3->fetch(PDO::FETCH_ASSOC);
                 
                 return $data;
-            }
-            
+        }
         public function checkCountdown($check = false) {
-            $sql = "SELECT grow_countdown, plot1_harvest, crop_type FROM farmer WHERE username=:username AND location=:location";
+            $sql = "SELECT crop_countdown, plot1_harvest, crop_type FROM farmer WHERE username=:username AND location=:location";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
@@ -48,9 +47,10 @@
             $param_location = $this->session['location'];
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $date = date_timestamp_get(new DateTime($row['grow_countdown']));
+            $date = date_timestamp_get(new DateTime($row['crop_countdown']));
             
-            if($check == true) {
+            /*if($check == true) {
+                echo "tskdaosko";
                 $now = date_timestamp_get(new DateTime(date("Y-m-d H:i:s")));
                 if($now > $date) {
                     return true;
@@ -58,18 +58,17 @@
                 else if($now < $date) {
                     return false;
                 }
-            }
+            }*/
             $this->db->closeConn();
             js_echo(array($date, $row['plot1_harvest'], $row['crop_type']));
         }
-        
         public function destroyCrops() {
             if(in_array($this->session['location'], array('towhar', 'krasnur')) != true) {
                 return false;   
             }
             $workforce = $this->session['location'] . '_workforce';
             
-            $sql = "SELECT f.grow_countdown, f.grow_quant, f.fields_avail, f.plot1_harvest, fw.avail_workforce, fw.$workforce
+            $sql = "SELECT f.crop_countdown, f.crop_quant, f.fields_avail, f.plot1_harvest, fw.avail_workforce, fw.$workforce
                     FROM farmer as f INNER JOIN farmer_workforce as fw ON f.username = fw.username
                     WHERE f.location=:location AND f.username=:username";
             $stmt = $this->db->conn->prepare($sql);
@@ -82,7 +81,7 @@
             
             $date = date("Y-m-d H:i:s");
             $date_timestamp = date_timestamp_get(new DateTime($date));
-            $countdown_timestamp = date_timestamp_get(new DateTime($row['grow_countdown']));
+            $countdown_timestamp = date_timestamp_get(new DateTime($row['crop_countdown']));
             if($date_timestamp > $countdown_timestamp  && $row['plot1_harvest'] === 'false') {
                 $this->gameMessage("ERROR: You currently have no crops growing", true);
                 return false;
@@ -94,17 +93,17 @@
             try {
                 $this->db->conn->beginTransaction();
                 $sql = "UPDATE farmer as f INNER JOIN farmer_workforce as fw ON f.username = fw.username
-                        SET f.grow_type='none', f.grow_quant=0, f.fields_avail=:fields_avail, f.grow_countdown=:grow_countdown
+                        SET f.crop_type='none', f.crop_quant=0, f.fields_avail=:fields_avail, f.crop_countdown=:crop_countdown
                         f.plot1_harvest='false', fw.avail_workforce=:avail_workforce, fw.$workforce=0
                         WHERE f.location=:location AND f.username=:username";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":fields_avail", $param_fields_avail, PDO::PARAM_STR);
-                $stmt->bindParam(":grow_countdown", $param_grow_countdown, PDO::PARAM_STR);
+                $stmt->bindParam(":crop_countdown", $param_crop_countdown, PDO::PARAM_STR);
                 $stmt->bindParam(":avail_workforce", $param_avail_workforce, PDO::PARAM_INT);
                 $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                $param_fields_avail = $row['fields_avail'] + $row['grow_quant'];
-                $param_grow_countdown = date("Y-m-d H:i:s");
+                $param_fields_avail = $row['fields_avail'] + $row['crop_quant'];
+                $param_crop_countdown = date("Y-m-d H:i:s");
                 $param_avail_workforce = $row['avail_workforce'] + $row[$workforce];
                 $param_location = $this->session['location'];
                 $param_username = $this->username;

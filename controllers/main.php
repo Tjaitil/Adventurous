@@ -9,14 +9,17 @@
         function index() {
             if(!isset($_SESSION['gamedata'])) {
                 $this->fetchData();
+                $this->loadModel('CanvasGameID', true);
+                $this->model->updateSessionID();
             }
+            // checkLevel in controller
             $this->checkLevel();
             $this->loadModel('Main', true);
             $this->data = $this->model->getData();
             $this->calculateCountdowns();
             $this->render('main', 'Main', false);
         }
-        function fetchData() {
+        public function fetchData() {
             $this->loadModel('gamedata', true);
             $_SESSION['gamedata'] = $this->model->fetchData();
             $_SESSION['gamedata']['travelling'] = false;
@@ -29,10 +32,13 @@
             $_SESSION['log'][] = "Welcome to Adventurous!";
             $this->model->checkMarket();
         }
-        function calculateCountdowns() {
+        public function calculateCountdowns($data = false) {
+            if($data !== false) {
+                $this->data = $data;
+            }
             $date_now = date_timestamp_get(new DateTime(date("Y-m-d H:i:s")));
             foreach($this->data['farmer_countdowns'] as $key) {
-                $countdown = date_timestamp_get(new DateTime($key['grow_countdown']));
+                $countdown = date_timestamp_get(new DateTime($key['crop_countdown']));
                 if($countdown < $date_now && $key['plot1_harvest'] == 1) {
                     $this->data['countdowns']['farmer'][] = "Finished";
                 }
@@ -63,6 +69,7 @@
             }
             $this->data['countdowns']['warrior']['training'] = 0;
             $this->data['countdowns']['warrior']['finished'] = 0;
+            $this->data['countdowns']['warrior']['mission'] = 0;
             $this->data['countdowns']['warrior']['idle'] = 0;
             foreach($this->data['warriors_countdowns'] as $key) {
                 $countdown = date_timestamp_get(new DateTime($key['training_countdown']));
@@ -72,14 +79,21 @@
                 else if($countdown > $date_now && $key['fetch_report'] == 1) {
                     $this->data['countdowns']['warrior']['training']+= 1;
                 }
+                if($key['mission'] == 1) {
+                    $this->data['countdowns']['warrior']['mission']+= 1;
+                }
                 else {
                     $this->data['countdowns']['warrior']['idle']+= 1;
                 }
             }
+            $this->data['countdowns']['warrior']['mission_countdown'] = explode(" ",$this->data['army_mission']['mission_countdown'])[1]; 
             $this->data['countdowns']['trader'] = ($this->data['trader_countdown']['assignment_id'] == 0) ?
             "None" : $this->data['trader_countdown']['assignment_id'];
-            $this->data['countdowns']['warrior']['mission'] = ($this->data['army_mission'] == 0) ?
-            "None" : $this->data['army_mission'];
+            /*$this->data['countdowns']['warrior']['mission'] = ($this->data['army_mission'] == 0) ?
+            "None" : $this->data['army_mission'];*/
+            if($data !== false) {
+                return $this->data;
+            }
         }
     }
 ?>

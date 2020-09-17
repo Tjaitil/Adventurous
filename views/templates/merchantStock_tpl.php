@@ -1,6 +1,6 @@
     <?php if(!count($data['shop']) > 0): ?>
         <div>
-            <span>None trades available!</span>
+            <span>No trades available!</span>
         </div>                    
     <?php endif; ?>
     <?php foreach($data['shop'] as $key): ?>   
@@ -11,7 +11,7 @@
                         <img src="<?php echo constant('ROUTE_IMG') . $key['item'] . '.png';?>"/>
                         <figcaption class="tooltip"><?php echo ucwords($key['item']); ?></figcaption>
                     </figure>
-                    <span>x1</span>
+                    <span class="item_amount">x1</span>
                 </div>
                 <div id="trade_sign"> <=> </br>
                 </div>
@@ -20,7 +20,7 @@
                         <img src="<?php echo constant('ROUTE_IMG') . $key['want'] . '.png';?>"/>
                         <figcaption class="tooltip"><?php echo ucwords($key['want']); ?></figcaption>
                     </figure>
-                    <span><?php echo 'x',$key['want_amount'];?></span>
+                    <span class="item_amount"><?php echo 'x',$key['want_amount'];?></span>
                 </div>
             </div>
     <?php endforeach;?>

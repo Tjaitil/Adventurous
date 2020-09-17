@@ -61,7 +61,7 @@
         </tr>
     </table>
     <?php if(count($data['warrior_xp']) > 0): ?>
-        <table id="warrior_levels">
+        <table id="warriors_levels">
             <thead>
                 <tr>
                     <td> Warrior_id </td>

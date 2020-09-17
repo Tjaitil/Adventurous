@@ -3,7 +3,7 @@
         public $username;
         public $session;
         
-        function __construct ($session, $db) {
+        function __construct ($session) {
             parent::__construct();
             $this->username = $session['username'];
             $this->session = $session;
@@ -33,7 +33,7 @@
             $parameters = array();
             switch($training_type) {
                 case 'general':
-                    $select_SQL = "SELECT stamina_xp, technique_xp, precision_xp, strength_xp FROM warrior_levels WHERE warrior_id=:warrior_id
+                    $select_SQL = "SELECT stamina_xp, technique_xp, precision_xp, strength_xp FROM warriors_levels WHERE warrior_id=:warrior_id
                                     AND username=:username";
                     $update_SQL = "UPDATE warriors_level SET stamina_xp=:stamina_xp, technique_xp=:technique_xp, precision_xp=:precision_xp,
                                   strength_xp=:strength_xp WHERE warrior_id=:warrior_id AND username=:username";
@@ -44,25 +44,25 @@
                     break;
                 
                  case 'stamina':
-                    $select_SQL = "SELECT stamina_xp FROM warrior_levels WHERE warrior_id=:warrior_id AND username=:username";
+                    $select_SQL = "SELECT stamina_xp FROM warriors_levels WHERE warrior_id=:warrior_id AND username=:username";
                     $update_SQL = "UPDATE warriors_level SET stamina_xp=:stamina_xp WHERE warrior_id=:warrior_id AND username=:username";
                     $parameters['stamina_xp'] = rand(25,35);
                     break;
                 
                 case 'technique':
-                    $select_SQL = "SELECT technique_xp FROM warrior_levels WHERE warrior_id=:warrior_id AND username=:username";
+                    $select_SQL = "SELECT technique_xp FROM warriors_levels WHERE warrior_id=:warrior_id AND username=:username";
                     $update_SQL ="UPDATE warriors_level SET technique_xp=:technique_xp WHERE warrior_id=:warrior_id AND username=:username";
                     $parameters['technique_xp'] = $experience = rand(25,35);
                     break;
                 
                 case 'precision':
-                    $select_SQL= "SELECT precision_xp FROM warrior_levels WHERE warrior_id=:warrior_id AND username=:username";
+                    $select_SQL= "SELECT precision_xp FROM warriors_levels WHERE warrior_id=:warrior_id AND username=:username";
                     $sql ="UPDATE warriors_level SET precision_xp=:precision_xp WHERE warrior_id=:warrior_id AND username=:username";
                     $parameters['precision_xp'] = rand(25,35);
                     break;
                     
                 case 'strength':
-                    $select_SQL = "SELECT strength_xp FROM warrior_levels WHERE warrior_id=:warrior_id AND username=:username";
+                    $select_SQL = "SELECT strength_xp FROM warriors_levels WHERE warrior_id=:warrior_id AND username=:username";
                     $update_SQL ="UPDATE warrior_level SET strength_xp=:strength_xp WHERE warrior_id=:warrior_id AND username=:username";
                     $parameters['strength_xp'] = rand(25,35);
                     break;
@@ -79,7 +79,7 @@
             
             
             //Make the statement
-            $sql_update = "UPDATE warrior_levels SET";
+            $sql_update = "UPDATE warriors_levels SET";
                 foreach ($parameters as $key => $value) {
                     $sql_update .= ' ' . $key .  '=:' . $key . ',';
                     $values[':'.$key] = $value + $warrior_DBXP[$key];
@@ -108,8 +108,10 @@
                 $param_username = $this->username;
                 $stmt2->execute();
                 
-                // Update xp
-                $this->UpdateGamedata->updateXP('warrior', $warrior_experience);
+                // Only gain xp when warrior level is below 30 or if profiency is warrior
+                if($this->session['warrior']['level'] < 30 || $this->session['profiency'] == 'warrior') { 
+                    $this->UpdateGamedata->updateXP('warrior', $warrior_experience);
+                }
                 
                 $stmt4 = $this->db->conn->prepare($sql4);
                 $stmt4->execute($values);

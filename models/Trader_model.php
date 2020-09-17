@@ -83,7 +83,6 @@
         }   
         public function deliver() {
             //AJAX function
-            
             if($this->session['hunger'] < 10) {
                 $this->gameMessage("ERROR: Your hunger is too high, please eat!", true);
                 return false;
@@ -121,14 +120,14 @@
             
             try {
                 $this->db->conn->beginTransaction();
-                $sql =  "UPDATE trader SET delivered=:delivered, cart_amount=0 WHERE username=:username";
+                $sql = "UPDATE trader SET delivered=:delivered, cart_amount=0 WHERE username=:username";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":delivered", $param_delivered, PDO::PARAM_STR);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_delivered = $delivered;
                 $param_username = $this->username;
                 $stmt->execute();
-                
+                $param_delivered = $delivered;
                 // Update xp
                 $this->UpdateGamedata->updateXP('trader', $xp);
                 

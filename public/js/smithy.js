@@ -1,4 +1,5 @@
-    if(document.getElementById("news_content").children[3] != null) {
+    if(document.getElementById("news_content").children[2] != null) {
+        console.log('smith');
         var buttons = document.getElementById("smith").querySelectorAll("button");
         buttons.forEach(function(element) {
             // Add event for each element

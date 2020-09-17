@@ -48,7 +48,7 @@
                 return false;
             }
             $this->db->closeConn();
-            $this->gameMessage("You bought 50 permits for the price of 100 gold", true);
+            $this->gameMessage("You bought 50 permits for the price of 50 gold", true);
         }
         public function upgradeLodge($skill) {
             if(!in_array($skill, array('farmer', 'miner', 'warrior'))) {

@@ -8,8 +8,7 @@
             $this->username = $session['username'];
             $this->session = $session;
         }
-        
-        public function getData($js = false) {
+        public function getData($js = false, $chat = true) {
             $data = array();
             $sql = "SELECT hirtam, pvitul, khanz, ter, fansalplains FROM diplomacy WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);
@@ -18,9 +17,11 @@
             $stmt->execute();
             $data['diplomacy'] = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            $data['chat'] = $this->getChat();
+            if($chat === true) {
+                $data['chat'] = $this->getChat();    
+            }
             
-            $sql = "SELECT grow_countdown, location, plot1_harvest FROM farmer WHERE username=:username";
+            $sql = "SELECT crop_countdown, location, plot1_harvest FROM farmer WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
@@ -41,14 +42,14 @@
             $stmt->execute();
             $data['trader_countdown'] = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            $sql = "SELECT mission FROM warrior WHERE username=:username";
+            $sql = "SELECT mission, mission_countdown FROM warrior WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
-            $data['army_mission'] = $stmt->fetch(PDO::FETCH_OBJ)->mission;
+            $data['army_mission'] = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            $sql = "SELECT training_countdown, fetch_report FROM warriors WHERE username=:username";
+            $sql = "SELECT training_countdown, fetch_report, mission FROM warriors WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;

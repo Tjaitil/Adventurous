@@ -31,7 +31,29 @@
             
             return $data;
         }
-        
+        public function resetData() {
+            // Function to reset the tavern times when there is a new day
+            try {
+                $this->db->conn->beginTransaction();
+                $sql = "DELETE FROM tavern_workers WHERE username=:username";
+                $stmt = $this->db->conn->prepare($sql);
+                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                $param_username = $this->username;
+                $stmt->execute();
+                
+                $sql = "UPDATE tavern_times SET towhar=0, krasnur=0, snerpiir=0, golbak=0, tasnobil=0, parth=0 WHERE username=:username";
+                $stmt = $this->db->conn->prepare($sql);
+                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                $param_username = $this->username;
+                $stmt->execute();
+
+                $this->db->conn->commit();
+            }
+            catch(Exception $e) {
+                $this->errorHandler->catchAJAX($this->db, $e);
+                return false;
+            }
+        }
         public function getWorkers() { 
             $sql = "SELECT type, level FROM tavern_workers WHERE city=:city AND username=:username";
             $stmt = $this->db->conn->prepare($sql);

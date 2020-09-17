@@ -1,6 +1,8 @@
-    if(document.getElementById("news_content").children[3] != null) {
+    // Check if news_content_main_content -> children[2] has gotten content from game.js -> game.fetchBuilding()
+    if(document.getElementById("news_content").children[2] != null) {
         document.getElementById("eat").querySelectorAll("button")[0].addEventListener("click", eat);
-    };
+        selectItemEvent.addSelectEvent();
+    }
     
     function recruitWorker(type, level = false) {
         var element = event.target.parentNode;
@@ -55,6 +57,7 @@
                 calculateHunger();
                 updateInventory();
                 document.getElementById("selected").innerHTML = "";
+                document.getElementById("eat").querySelectorAll("input")[0].value = "";
             }
         });
     }

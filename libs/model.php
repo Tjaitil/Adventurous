@@ -30,16 +30,22 @@
         protected function commonModels($UpdateGamedata = false, $ArtefactModel = false) {
             // Load common models
             if($UpdateGamedata === true) {
-                $this->UpdateGamedata = $this->loadModel('UpdateGamedata', true);
+                $this->UpdateGamedata = $this->loadModel('UpdateGamedata', true, true);
             }
             if($ArtefactModel === true) {
                 $this->ArtefactModel = $this->loadModel('Artefact', true);
             }
         }
-        protected function loadModel($model, $directoryUP = true) {
+        protected function loadModel($model, $directoryUP = true, $db = false) {
             $model = $model . '_model';
             if(class_exists($model)) {
-                return new $model($this->session, $this->db);
+                // $db variable is a check, if it is true the oaded model needs the db class and not the constructor
+                if($db === false) {
+                    return new $model($_SESSION['gamedata']);    
+                }
+                else {
+                    return new $model($_SESSION['gamedata'], $this->db);    
+                }
             }
             else {
                 $this->reportError('model', false, 'model not found' . $model, false);

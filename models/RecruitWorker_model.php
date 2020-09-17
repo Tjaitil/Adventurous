@@ -37,7 +37,6 @@
                     $param_level = $this->session['warrior']['level'];
                     break;
             }
-            
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":level", $param_level, PDO::PARAM_STR);
             $stmt->execute();
@@ -49,8 +48,7 @@
             $stmt2->execute();
             $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
             
-            
-            if($row[$column] == $row2[$column2]) {
+            if($row[$column] >= $row2[$column2]) {
                 $this->gameMessage("ERROR: You need to level up before recruiting more", true);
                 return false;
             }
@@ -95,7 +93,7 @@
             $param_username = $this->username;
             $stmt->execute();
             if(!$stmt->rowCount() > 0) {
-                $this->gameMessage("ERROR: The worker you are trying to buy does not exists!", true);
+                $this->gameMessage("ERROR: The worker you are trying to recruit does not exists!", true);
                 return false;
             }
             $row4 = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -103,7 +101,7 @@
             try {
                 $this->db->conn->beginTransaction();
                 
-                if(in_array($type, array('farmer'. 'miner')) == true) {
+                if(in_array($type, array('farmer', 'miner')) == true) {
                     $sql = "UPDATE {$type}_workforce SET workforce_total=:workforce_total, avail_workforce=:avail_workforce
                             WHERE username=:username";
                     $stmt = $this->db->conn->prepare($sql);
@@ -135,7 +133,7 @@
                     $param_type = $type;
                     $stmt2->execute();
                     
-                    $sql3 = "INSERT INTO warrior_levels (username, warrior_id, stamina_level,  stamina_xp, technique_level, technique_xp.
+                    $sql3 = "INSERT INTO warriors_levels (username, warrior_id, stamina_level,  stamina_xp, technique_level, technique_xp.
                              precision_level, precision_xp, strength_level, strength_xp)
                              VALUES(:username, :warrior_id, :stamina_level, :stamina_xp, :technique_level, :technique_xp, :precision_level,
                              precision_xp, :strength_level, :strength_xp)";

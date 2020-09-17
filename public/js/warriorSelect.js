@@ -7,10 +7,12 @@
         var div = event.target.closest(".warriors");
         var checkbox = div.querySelectorAll("input[type=checkbox]")[0];
         if(checkbox.checked) {
-            document.getElementById(div.id).style = "border: 1px solid red";
+            document.getElementById(div.id).style = "border: 1px solid black";
+            document.getElementById(div.id).querySelectorAll("input[type=checkbox]")[0].checked = false;
         }
         else {
-            document.getElementById(div.id).style = "border: 1px solid black";
+            document.getElementById(div.id).style = "border: 3px ridge #5f4121";
+            document.getElementById(div.id).querySelectorAll("input[type=checkbox]")[0].checked = true;
         }
     }
     function warriorsCheck() {

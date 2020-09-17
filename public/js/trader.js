@@ -8,7 +8,7 @@
     }
     function pickUp() {
         var data;
-        if(window.location.href.indexOf("townhall") != -1) {
+        if(document.getElementsByClassName("page_title")[0].innerText == "Townhall" != -1) {
             data = "model=Trader" + "&method=pickUp" + "&favor=true";
         }
         data = "model=Trader" + "&method=pickUp";
@@ -24,7 +24,7 @@
     }
     function deliver() {
         var data;
-        if(window.location.href.indexOf("townhall") != -1) {
+        if(document.getElementsByClassName("page_title")[0].innerText == "Townhall" != -1) {
             data = "model=Trader" + "&method=deliver" + "&favor=true";
         }
         data = "model=Trader" + "&method=deliver";
@@ -36,8 +36,8 @@
                 var assignmentDiv = document.getElementById("assignment");
                 var substrings;
                 if(response[1].indexOf("finished") == -1) {
-                    gameLog(responseText[0]);
-                    show_xp('trader', responseText[1]);
+                    gameLog(responseText[4]);
+                    /*show_xp('trader', responseText[3]);*/
                     // Change the paragraphs in assignment div
                     substrings = assignmentDiv.children[0].innerHTML.split(" ");
                     substrings[2] = "0" + substrings[2].slice(substrings[2].indexOf("/"));
@@ -58,6 +58,10 @@
                     document.getElementById("assignment").children[0].innerHTML = substrings.join(" ");
                     assignmentDiv.children[1].innerHTML = "Current Assignment: none";
                 }
-            }
+                if(response[1].search("levelup") != -1) {
+                    let index = response[1].search("levelup");
+                    newLevel.findSkill(response[1].slice(index));
+                }
+             }
         });
     }

@@ -1,5 +1,5 @@
 #trades {
-    display: inline-block;
+    /*display: inline-block;*/
     float: left;
     width: 69%;
     margin: 0px 5px 5px 0px;
@@ -29,7 +29,8 @@
     line-height: 5
 }
 #do_trade {
-    width: 151px;
+    width: 155px;
+    min-width: 155px;
     border: 1px solid black;
     float: right;
     background-color: #724e27;
@@ -44,8 +45,7 @@
     width: 25px;
 }
 #trader {
-    margin: 3px 3px 3px 3px;
-    float: left;
+    font-size: 12px;
 }
 #assignment {
 }

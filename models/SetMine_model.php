@@ -94,8 +94,10 @@
                 $param_username = $this->username;
                 $stmt2->execute();
                 
-                // Update xp
-                $this->UpdateGamedata->updateXP('miner', $experience);
+                // Only gain xp when miner level is below 30 or if profiency is miner
+                if($this->session['miner']['level'] < 30 || $this->session['profiency'] == 'miner') { 
+                    $this->UpdateGamedata->updateXP('miner', $experience);
+                }
                 
                 $this->db->conn->commit();
                 }

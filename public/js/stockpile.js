@@ -1,19 +1,35 @@
     var timeID = [];
     
-    var method = false;    
-    if(document.getElementById("news_content").children[3] != null) {
-        var buttons = document.getElementById("inventory").querySelectorAll("div");
-        buttons.forEach(function(element) {
-            // ... code code code for this one element
-            element.addEventListener('click', show_menu);
-        });
-        itemTitle.removeTitleEvent();
+    var method = false;
+    // Check if news_content_main_content -> children[2] has gotten content from game.js -> game.fetchBuilding()
+    if(document.getElementById("news_content").children[2] != null) {
+        menubarToggle.addEvent();
         /*let figures = document.getElementById("inventory").querySelectorAll("figure");
         figures.forEach(function(element) {
             // ... code code code for this one element
             element.addEventListener('click', show_menu());
         });*/ 
     }
+    menubarToggle = {
+        toggled: false,
+        addEvent: function() {
+            menubarToggle.toggled = true;
+            var buttons = document.getElementById("inventory").querySelectorAll("div");
+            buttons.forEach(function(element) {
+                // ... code code code for this one element
+                element.addEventListener('click', show_menu);
+            });
+            itemTitle.removeTitleEvent();
+        },
+        removeEvent: function() {
+            menubarToggle.toggled = false;
+            var buttons = document.getElementById("inventory").querySelectorAll("div");
+            buttons.forEach(function(element) {
+                // ... code code code for this one element
+                element.removeEventListener('click', show_menu);
+            });
+        }
+    };
     function show_menu() {
         console.log("show_menu");
         // Show menu above the item;
@@ -83,7 +99,7 @@
         }
         menu.children[0].style.top = menuTop + "px";
         menu.children[0].style.left = element.offsetLeft + "px";
-        timeID.push(setTimeout(hideMenu, 4000));
+        /*timeID.push(setTimeout(hideMenu, 4000));*/
     }  
     function hideMenu() {
         let menu = document.getElementById("stck_menu");

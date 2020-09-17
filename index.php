@@ -5,6 +5,7 @@
     $autoloader = new autoloader();
     spl_autoload_register(array($autoloader, 'libsLoader'));
     spl_autoload_register(array($autoloader, 'modelLoader'));
+    spl_autoload_register(array($autoloader, 'controllerLoader'));
     /*require(constant('ROUTE_BASE') . 'session.php');
     require(constant('ROUTE_BASE') . 'controller.php');*/
     $session = new session();
