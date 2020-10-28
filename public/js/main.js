@@ -79,6 +79,24 @@
             data[i]();
         }
     }
+    function zoom() {
+        let images = document.getElementById("map").querySelectorAll(".map_img");
+        console.log(images);
+        for(var i = 0; i < images.length; i++) {
+            console.log(images[i].style.width);
+            if(images[i].style.width === "") {
+                images[i].style.width = "400px";
+                images[i].style.height = "400px";
+            }
+            else {
+                images[i].style.width = 400;
+                images[i].style.height = 400; 
+            }
+            console.log(images[i].style.width);
+        }
+        document.getElementById("map").style.width = 9 * 400 + "px";
+    }
+    
     
     function number1() {
       console.log(1);

@@ -35,8 +35,9 @@
             $param_id = $message_id;
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            /*$row['message'] = nl2br($row['message']);*/
             
-            if($row['message_read'] == 0) {
+            if($row['message_read'] == 0 && 'sender' != $this->username) {
                 $sql = "UPDATE messages SET message_read=1 WHERE id=:id";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":id", $param_id, PDO::PARAM_STR);

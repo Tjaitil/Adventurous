@@ -1,10 +1,9 @@
 #show_adventure {
-    display: none;
+    
 }
 
 #pending_adventure {
     float: left;
-    display: none;
 }
 #current_adventure {
 }
@@ -12,7 +11,6 @@
     margin: 5px 0px 0px 0px;
 }
 #new_adventure {
-    display: none;
 }
 #people figure {
     display: inline-block;
@@ -33,17 +31,11 @@
     margin: 5px 0px 5px 0px;
     position: absolute;   
 }
-.warriors {
-    border:1px solid black;
-    float:left;
-    height:200px;
-    width:150px;
-    margin:2px;
-}
 #requirements {
     float: left;
 }
 #provide {
+    width: 100%;
     float: left;
 }
 #adventure_rewards {

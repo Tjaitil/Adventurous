@@ -8,7 +8,7 @@
         figure.children[0].style.height = "50px";
         figure.children[0].style.width = "50px";
         figure.children[1].style.visibility = "hidden";
-        figure.className = "item";
+        /*figure.className = "item";*/
         var parent = document.getElementById("selected");
         parent.innerHTML = "";
         parent.appendChild(figure);
@@ -40,11 +40,14 @@
             let figures = document.getElementById("inventory").querySelectorAll('figure');
             figures.forEach(function(element) {
                 selectItemEvent.page = document.getElementsByClassName("page_title")[0].innerText;
-                if(selectItemEvent.page !== "Market") {
-                    element.addEventListener('click', select);
+                if(selectItemEvent.page === "Market") {
+                    element.addEventListener('click', select_i);
+                }
+                else if(selectItemEvent.page === "Merchant") {
+                    element.addEventListener('click', selectTrade);
                 }
                 else {
-                    element.addEventListener('click', select_i);
+                    element.addEventListener('click', select);
                 }
             });
         },
@@ -52,13 +55,43 @@
             selectItemEvent.selectItemStatus = false;
             let figures = document.getElementById("inventory").querySelectorAll('figure');
             figures.forEach(function(element) {
-                if(selectItemEvent.page !== "Market") {
-                    element.removeEventListener('click', select);
-                }
-                else {
+                if(selectItemEvent.page === "Market") {
                     element.removeEventListener('click', select_i);
                 }
+                else if(selectItemEvent.page === "Merchant") {
+                    element.addEventListener('click', selectTrade);
+                }
+                else {
+                    element.removeEventListener('click', select);
+                }
             });
+        }
+    };
+    selectItemConv = {
+        eventStatus: false,
+        addEvent() {
+            /*if(document.getElementById("conversation_container").style.visibility !== "visible") {
+                return false;
+            }*/
+            eventStatus = true;
+            let figures = document.getElementById("inventory").querySelectorAll('figure');
+            figures.forEach(function(element) {
+                element.addEventListener('click', selectItemConv.selectItem);
+            });
+            highlightInventory.set();
+        },
+        removeEvent() {
+            eventStatus = false;
+            let figures = document.getElementById("inventory").querySelectorAll('figure');
+            figures.forEach(function(element) {
+                element.removeEventListener('click', selectItemConv.selectItem);
+            });
+            highlightInventory.clear();
+        },
+        selectItem() {
+            let figure = event.target.closest("figure");
+            let item = figure.children[1].innerHTML.toLowerCase();
+            conversation.getNextLine(item);
         }
     };
     function selectedCheck(amount_r = true) {
@@ -67,8 +100,6 @@
             return false;
         }
         var div = document.getElementById("selected");
-        var figure = div.querySelectorAll("figure")[0];
-        var item = figure.children[1].innerHTML.toLowerCase();
         
         // amount_r is variable that opens up for checking only item or item and amount
         if(amount_r === true) {

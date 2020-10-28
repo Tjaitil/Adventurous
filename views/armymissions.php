@@ -1,5 +1,6 @@
             armymissions.css|armymissions.js|
             <h3 class="page_title"> Army Missions </h3>
+            <button class="button_link"> << Back to army camp</button>
             <div id="current_mission">
                 <p> Mission:</p><p id="time"></p>
                 <button> Cancel mission </button>

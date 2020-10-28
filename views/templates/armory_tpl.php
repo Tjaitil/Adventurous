@@ -13,7 +13,7 @@ foreach($data as $key):
         <img onclick="removeArmor(this);"
              title="<?php echo $key['ammunition'];?>"
              class="ammunition" src="<?php echo constant("ROUTE_IMG") . $key['ammunition'] . '.png'?>"/>
-             <div class="inventory_item" id="armory_view_div">
+             <div class="item" id="armory_view_div">
                 <figure>
                     
                 </figure>

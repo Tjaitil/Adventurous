@@ -1,3 +1,4 @@
 [{"type":"small trade","xp":"3","per_cargo_xp":1},
  {"type":"medium trade","xp":"5","per_cargo_xp":3},
+ {"type":"long trade","xp":"15","per_cargo_xp":4},
  {"type":"favor","xp":"4","per_cargo_xp":2}]

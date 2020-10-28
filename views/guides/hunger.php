@@ -1,4 +1,5 @@
-<h3 class="guide_title"> Profiencies </h3>
+<a href="/gameguide"> Back to main page</a>
+<h3 class="guide_title"> Hunger </h3>
 <div id="content_table">
     <ol>
     <?php $contents = array();
@@ -8,7 +9,8 @@
     </ol>
 </div>
 <div id="content">
-    <h5 class="p_header"> About </h5>
-    Hunger is a feature in the game which will limit miner, farmer and traders ability to do task. When the hunger is too low you are not
+    <h5 class="p_header"> Hunger </h5>
+    To do farmer, miner or trader task you have to have hunger bar above 10. When the hunger is too low you are not
     able to grow crops, mine minerals or do a new assigment. However it will not affect the ability to gather crops or minerals.
+    
 </div>

@@ -58,7 +58,7 @@
                             <td></td>
                         </tr>
                     </thead>
-                    <?php get_template('myOffers', $this->data['my_offers']);?>
+                    <?php get_template('myOffers', $this->data['my_offers'], true);?>
                 </table>
             </div>
             <div id="offers">
@@ -77,7 +77,7 @@
                             <td> </td>
                         </tr>
                     </thead>
-                    <?php get_template('offers', $this->data['offers']);?>
+                    <?php get_template('offers', $this->data['offers'], true);?>
                     <tfoot>
                         <tr>
                             <td colspan="5"><button class="previous"> < Prev </button><button class="next"> Next > </button></td>
@@ -95,6 +95,6 @@
                             <td> Price each: </td>
                         </tr>
                     </thead>
-                <?php get_template('history', $this->data['history']);?>
+                <?php get_template('history', $this->data['history'], true);?>
                 </table>
             </div>

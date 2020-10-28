@@ -1,7 +1,7 @@
             stockpile.css|stockpile.js|
             <h3 class="page_title"> Stockpile </h3>
             <div id="stockpile">
-                <?php get_template('stockpile', $this->data);?>
+                <?php get_template('stockpile', $this->data, true);?>
             </div>
             <!--<div id="inventory">
                 <div id="hidden">

@@ -9,7 +9,7 @@
                 break;
         }
     } ?>
-    <p> Stockpile: </p><p><?php echo count($data['stockpile']), " / 60"?></p>
+    <p><?php echo count($data['stockpile']), " / 60"?></p>
 
     <?php
     foreach($data['stockpile'] as $key): ?>

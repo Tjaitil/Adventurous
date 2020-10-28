@@ -26,6 +26,16 @@
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $data['permits'] = $row['permits'];
             
+            if(in_array($this->session['location'], array("fansal-plains", "hirtam", "khanz", "pvitul", "ter"))) {
+                $sql = "SELECT " . $this->session['location'] ." FROM diplomacy WHERE username=:username";
+                $stmt = $this->db->conn->prepare($sql);
+                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                //$param_username already defined in statement 1
+                $stmt->execute();
+                $row = $stmt->fetch(PDO::FETCH_NUM);
+                $data['diplomacy'] = $row[0];
+            }
+            
             $sql = "SELECT fw.efficiency_level as farmer, mw.efficiency_level as miner
                     FROM miner_workforce as mw INNER JOIN farmer_workforce as fw ON fw.username=mw.username
                     WHERE mw.username=:username";

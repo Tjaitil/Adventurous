@@ -1,6 +1,8 @@
+<a href="/gameguide"> Back to main page</a>
+<h3 class="guide_title"> Profiencies </h3>
 <div id="content_table">
     <ol>
-    <?php $contents = array("general", "level_overview", "crops", "seeds", "effiency");
+    <?php $contents = array("general", "profiency_advantage","level_overview", "crops", "seeds", "effiency");
     for($i = 0; $i < count($contents); $i++): ?>
         <li><a href="#<?php echo $contents[$i];?>"><?php echo ucwords($contents[$i]);?></a></li>
     <?php endfor;?>
@@ -9,7 +11,10 @@
 <div id="content">
     <h5 class="p_header"> About </h5>
     <p> Farmer is a profiency about producing food</p>
-    
+    <h5 class="p_header"> About </h5>
+    <p id="profiency_advantage">
+        Check out <a href="/gameguide/profiencies"> profiencies</a> for advantages.
+    </p>
     <h5 class="p_header"> Level Overview </h5>
     <p id="level_overview">
         <table>
@@ -20,23 +25,23 @@
                 </tr>
             </thead>
             <?php $list_info = array();
-            $list_info[] = array("1", "Potato");
-            $list_info[] = array("3", "Tomato");
-            $list_info[] = array("5", "Corn");
-            $list_info[] = array("10", "Carrots");
-            $list_info[] = array("15", "Sugar");
-            $list_info[] = array("20", "Cabbage");
-            $list_info[] = array("25", "Spices");
-            $list_info[] = array("30", "Apples");
-            $list_info[] = array("35", "Oranges");
-            $list_info[] = array("40", "Watermelon");
-            $list_info[] = array("50", "Wheat");
+            $list_info[] = array("1", "potato");
+            $list_info[] = array("3", "tomato");
+            $list_info[] = array("5", "corn");
+            $list_info[] = array("10", "carrots");
+            $list_info[] = array("15", "sugar");
+            $list_info[] = array("20", "cabbage");
+            $list_info[] = array("25", "spices");
+            $list_info[] = array("30", "apples");
+            $list_info[] = array("35", "oranges");
+            $list_info[] = array("40", "watermelon");
+            $list_info[] = array("50", "wheat");
             for($i = 0; $i < count($list_info); $i++): ?>
             <tr>
                 <td><?php echo $list_info[$i][0];?></td>
                 <td><figure>
-                    <img src="<?php echo constant('ROUTE_IMG') . $list_info[$i][1];?>" />
-                    <figcaption><?php echo $list_info[$i][1];?></figcaption>
+                    <img src="<?php echo '../' . constant('ROUTE_IMG') . $list_info[$i][1] . '.png';?>" />
+                    <figcaption><?php echo ucfirst($list_info[$i][1]);?></figcaption>
                 </figure></td>
             </tr>
             <?php endfor;?>

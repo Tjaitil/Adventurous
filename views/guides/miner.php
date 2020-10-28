@@ -1,3 +1,4 @@
+<a href="/gameguide"> Back to main page</a>
 <h3 class="guide_title"> Profiencies </h3>
 <div id="content_table">
     <ol>
@@ -13,14 +14,8 @@
         Miner profiency is about mining minerals from mines and/or smithing items from minerals.
     </p>
     <h5 class="p_header" id="profiency_advantage"> Profiency Advantage </h5>
-    <p>
-        The advantages of having miner as profiency is as follows:
-        <ul>
-            <li> Getting above level 30 </li>
-            <li> Acess to mining/smithing frajrite and yeqdon </li>
-            <li> Reduced prices at smithy </li>
-            <li> Chance to get Wujkin minerals from adventures </li>
-        </ul>
+    <p id="profiency_advantage">
+        Check out <a href="/gameguide/profiencies"> profiencies</a> for advantages.
     </p>
     <h5 class="p_header" id="minerals"> Minerals </h5>
         <p>

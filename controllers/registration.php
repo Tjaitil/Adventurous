@@ -10,8 +10,10 @@
         }
         
         public function index() {
-            $this->loadModel('Registration', false);
-            $this->post();
+            if($_SERVER['REQUEST_METHOD'] === "POST") {
+                $this->loadModel('Registration', false);
+                $this->post();
+            }
             $this->renderWE('registration', 'Registration', false, $this->error);
         }
         

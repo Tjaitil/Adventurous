@@ -79,6 +79,10 @@
         }
     }
     else {
-        return false;
+        // errorHandler;
+        if($modelname !== "cookieMaker") {
+            echo "ERROR: method doesnt exists!";
+            return false;
+        }
     }
 ?>

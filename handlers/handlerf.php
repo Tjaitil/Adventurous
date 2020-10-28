@@ -9,6 +9,12 @@
             require('../' . constant('ROUTE_VIEW') . 'inventory.php');
             url($_GET['page']);
             break;
-        
+        case 'conversation':
+            $controller = $handler->loadController('conversation');
+            $controller->getConversation($_GET['page']);
+            break;
+        default:
+            // Log error message
+            break;
     }
 ?>

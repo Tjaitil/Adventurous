@@ -1,6 +1,18 @@
-    var provide_div = document.getElementById("provide");
-    if(provide_div != null && provide_div.children.length > 0) {
-        document.getElementById("provide").getElementsByTagName("button")[0].addEventListener('click', provide);
+
+    if(document.getElementById("provide") != null && document.getElementById("provide").children.length > 0) {
+        document.getElementById("provide").querySelectorAll(":scope > button")[0].addEventListener('click', provide);
+        var divs = document.querySelectorAll(".warriors");
+        if(divs.length > 0) {
+            divs.forEach(function(element) {
+                element.addEventListener('click', function() {
+                    check();
+                });
+                element.querySelectorAll("button")[0].addEventListener('click', flipWarriorCard);
+            });
+        }
+        else {
+            selectItemEvent.addSelectEvent();
+        }
     }
     if(document.getElementById("time") != null) {
         document.getElementById("time").addEventListener("load", getCountdown());
@@ -139,26 +151,6 @@
                 getCountdown();
             }
         });
-    }  
-    function show(element) {
-        id = element.id;
-        switch(element) {
-            case 'pending_adventure':
-                document.getElementById("pending_adventure").style = "display: inline;";
-                document.getElementById("current_adventure").style = "display: none;";
-                document.getElementById("new_adventure").style = "display: none;";
-                break;
-            case 'current_adventure':
-                document.getElementById("pending_adventure").style = "display: none;"; 
-                document.getElementById("current_adventure").style = "display: inline;";
-                document.getElementById("new_adventure").style = "display: none;";
-                break;
-            case 'new_adventure':
-                document.getElementById("pending_adventure").style = "display: none;";
-                document.getElementById("current_adventure").style = "display: none;";
-                document.getElementById("new_adventure").style = "display: inline;";
-                break;
-        }
     }
     function showAdventure(id) {
         var data = "model=Adventures" + "&method=getAdventure" + "&id=" + id;
@@ -181,7 +173,7 @@
         ajaxP(data, function(response) {
             if(response[0] != false) {
                 gameLog(response[1]);
-                window.location.replace("/adventures");
+                game.fetchBuilding("adventures");
             }
         });
     }
@@ -219,21 +211,20 @@
         });
     }
     function provide() {
-        var data;
+        var data = "model=SetAdventure" + "&method=provide";
         var item;
         if(document.getElementsByClassName("warriors").length == 0) {
             if(document.getElementById("selected").children.length == 0) {
                 gameLog("Please select a item");
                 return false;
             }
-            item = document.getElementById("selected").children[0].children[1].innerHTML;
-            var quantity = document.getElementById("quantity").value;
+            item = document.getElementById("selected").querySelectorAll("figure")[0].children[1].innerHTML.toLowerCase();
+            var quantity = document.getElementById("selected_amount").value;
             if(quantity == 0) {
                 gameLog("Please select a valid amount");
                 return false;
             }
-            input.value = 0;
-            data = "model=setadventure" + "&method=provide" + "&item=" + item + "&quantity=" + quantity;
+            data+= "&item=" + item + "&quantity=" + quantity;
         }
         else {
             var warrior_check = warriorsCheck();
@@ -241,31 +232,23 @@
                 gameLog("Please select warriors");
                 return false;
             }
-            data = "model=setadventure" + "&method=provide" + "&warrior_check=" + warrior_check;    
+            data += "&warrior_check=" + warrior_check;    
         }
         ajaxP(data, function(response) {
             if(response[0] !== false) {
                 var responseText = response[1].split("|");
                 gameLog(responseText[0]);
                 document.getElementById("requirements").getElementsByTagName("tbody")[0].innerHTML = responseText[1];
-                if(typeof warrior_check !== undefined) {
+                if(typeof(warrior_check) !== 'undefined') {
                     document.getElementById("provide").innerHTML = responseText[2];
                 }
                 else {
                     document.getElementById("selected").innerHTML = "";
                     updateInventory('adventures');
+                    document.getElementById("provide").querySelectorAll("input")[0].value = "";
                 }
             }       
         });
-    }
-    function check(checkbox) {
-        var parent = checkbox.parentNode;
-        if(checkbox.checked) {
-            document.getElementById(parent.id).style = "border: 1px solid red";
-        }
-        else {
-            document.getElementById(parent.id).style = "border: 1px solid black";
-        }
     }
     function updateInfo(info) {
         var table = document.getElementById("requirements").children[0];
@@ -293,9 +276,12 @@
         var data = "model=UpdateAdventure" + "&method=updateAdventure";
         ajaxP(data, function (response) {
             if(response[0] !== false) {
-                openNews(response[1]);
-                getCountdown();
+                console.log(response[1]);
+                openNews(response[1], true);
                 newLevel.searchString(response[1]);
+                document.getElementById("news_content_main_content").querySelectorAll("button")[0].addEventListener("click", function() {
+                    game.fetchBuilding('adventures');
+                });
             }
         });
     }
@@ -304,7 +290,7 @@
         ajaxP(data, function(response) {
             if(response[0] !== false) {
                 gameLog(response[1]);
-                window.location.replace("/adventures");
+                game.fetchBuilding('adventures'); 
             }
         });
     }

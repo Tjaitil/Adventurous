@@ -28,8 +28,6 @@ section {
     color: #392714;
     font-weight: 200;
     font-size: 13px;
-    overflow-x: hidden;
-    overflow-y: hidden;
     position: relative;
     margin-bottom: 10px;
 }
@@ -64,6 +62,11 @@ section table, section div, section button {
 section a:visited {
     text-decoration: none;
 }
+section img {
+    width: 48px;
+    height: 48px;
+    box-sizing: border-box;
+}
 table button {
     margin-top: 5px;
 }
@@ -76,64 +79,16 @@ button {
     color: black;
     font-weight: bold;
     font-size: 13px;
+    cursor: pointer;
 }
 button:active {
     background-color: #ebd9c6
 }
 button:focus {outline:0;}
-#skills {
-    width: 50%;
-    height: 86px;
-    float: left;
-    margin-bottom: 5px;
-}
-#skills div {
-    position: relative;
-    display: inline-block;
-    border: 1px ridge black;
-    float: left;
-    width: 19%;
-    max-width: 70px;
-    min-width: 55px;
-    padding: 3px 0px 3px 0px;
-    font-size: 100%;
-    box-sizing: border-box;
-    background-color: #f2e6d9;
-    transition: background-color 0.8s;
-}
-#skills img {
-    width: 50px;
-    height: 50px;
-    image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;
-}
-#skills figure {
-    position: relative;
-}
-#ad_tooltip {
-    left: 16px;
-    position: absolute;
-    bottom: -3px;
-}
-.skill_level {
-    position: absolute;
-    bottom: -3px;
-    left: 44%;
-}
-.skill_tooltip {
-    position: absolute;
-    right: 20%;
-    border-radius: 1px;
-    background-color: #f2e6d9;
-    visibility: hidden;
-    color: black;
-    font-size: 12px;
-    z-index: 2;
-    padding: 1px 3px 1px 3px;
-    text-align: center;
-    width: auto;
-    display: inline-block;
-    float: right;
+.button_link {
+    border: none;
+    background-color: transparent;
+    box-shadow: none;
 }
 #log {
     width: 49%;
@@ -174,15 +129,6 @@ button:focus {outline:0;}
     top: 2px;
     background-color: #f2e6d9;
 }
-#log_pseudo_parent:after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    top: 2px;
-    width: 100%;
-    height: 78px;
-    border: 2px solid black;
-}
 #log_2 {    
     background-color: rgb(242, 230, 217);
     width: 100%;
@@ -196,20 +142,6 @@ button:focus {outline:0;}
     top: 0px;
     transition: opacity 0.5s ease-out;
     opacity: 0;
-}
-#hunger {
-    width: 162px;
-    height: 40px;
-    margin-bottom: 6px;
-    background-color: #f2e6d9;
-    padding: 10px 0px 0px 5px;
-}
-.hunger_state {
-    width: 15px;
-    height: 15px;
-    border: 1px solid #e68a00;
-    margin: 1px;
-    float: left;
 }
 #announcement {
     width: 300px;
@@ -250,14 +182,12 @@ button:focus {outline:0;}
 }
 #news_content {
     visibility: hidden;
-    height: 500px;
     position: absolute;
     margin: 2% 0% 2% 0%;
     background-color: #d1a77a;
     z-index: 1;
     width: 68%;
     padding: 1%;
-    overflow-y: scroll;
 }
 #news_content table {
     margin: 0 auto;
@@ -287,6 +217,7 @@ button:focus {outline:0;}
   padding: 5px;
   box-sizing: border-box;
   position: relative;
+  top: -20px;
 }
 #cont_exit {
     float: right;
@@ -294,9 +225,34 @@ button:focus {outline:0;}
     right: 5px;
     top: 5px;
     z-index: 2;
+    width: 20px;
+    height: 20px;
 }
 #level_up p {
     margin: 15px 0px 0px 0px;
+}
+.skill_bar, #hunger_bar {
+    height: 25px;
+    width: 50%;
+    border: 1px solid black;
+    background-color: #995c00;
+    float:right;
+    position: relative;
+}
+.skill_bar2, #hunger_bar2 {
+    width: 0%;
+    height:100%;
+    background-color: #ff9900;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+.skill_bar_progress, #hunger_bar_progress {
+    width: 100%;
+    display: block;
+    text-align: center;
+    position: relative;
+    /*line-height: 25px;*/
 }
 #inventory {
     box-sizing: border-box;
@@ -304,21 +260,20 @@ button:focus {outline:0;}
     width: 29%;
     height: 600px;
     border: 3px double black;
-    overflow-y: scroll;
-    overflow-x: visible;
     /*background-color: #a6a6a6;*/
     /*background-color: #724e27;*/
     background-color: #4c341a;
     color: white;
     position: relative;
     z-index: 1;
+    transition: background-color 0.8s ease-out;
 }
 #inv_toggle_button {
     position: sticky;
-    /*right: 5px;*/
-    top: 0px;
+    right: 5px;
+    top: 25px;
     float: right;
-    visibility: hidden;
+    display: none;
 }
 /*#layer {
     background-color: #262626;
@@ -340,15 +295,14 @@ button:focus {outline:0;}
     top: 14%;
     padding-top: 3px;
     background-color: #724e27;
-    overflow: scroll;
     color: #FFFFFF;
     font-size: 12px;
 }
 #item_tooltip ul li {
     background-color: #724e27;
-    padding: 2px;
+    width: 70px;
     cursor: pointer;
-    width: auto;
+    padding: 2px;
 }
 #item_tooltip ul li:nth-child(1) {
     cursor: default;
@@ -362,8 +316,7 @@ button:focus {outline:0;}
 .tooltip {
     visibility: hidden;
     position: absolute;
-    /*position: absolute;
-    right: 20%;
+    /*right: 20%;
     bottom: -25%;
     border-radius: 1px;
     background-color: #f2e6d9;
@@ -425,7 +378,7 @@ button:focus {outline:0;}
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edges;
 }
-.item_img {
+.item_img .gold {
     width: 48px;
     height: 48px;
     vertical-align: middle;
@@ -518,7 +471,11 @@ button:focus {outline:0;}
 ::-webkit-scrollbar-thumb:hover {
   /*background: #737373; */
 }
-
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    padding: 10px;
+    width: 10px;
+}
 @media all and (max-width: 1040px)  {
     section {width: 97.4%; font-size: 14px;};
 }
@@ -542,7 +499,8 @@ button:focus {outline:0;}
         width: 98%;
     }
     #inv_toggle_button {
-        visibility: visible;
+        display: block;
+        z-index: 2;
     }
     /*.inventory_buttons {
         margin-left: 6px;

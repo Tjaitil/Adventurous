@@ -3,6 +3,7 @@
     overflow-y: hidden;
     margin: 3px;
     white-space: nowrap;
+    height: 210px;
 }
 #warriors_container img {
     width: 30px;
@@ -38,4 +39,20 @@
 .warriors input[type="checkbox"] {
     position: relative;
     top: -10%;
+}
+.warrior_front {
+    
+}
+.warrior_front button {
+    position: relative;
+    left: 40px;
+}
+.warrior_back {
+    position: relative;
+    top: -200px;
+    transform: rotateY(180deg);
+    visibility: hidden;
+}
+.warrior_back ul {
+    list-style-type: none;
 }

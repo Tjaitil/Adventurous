@@ -26,8 +26,7 @@
             echo "false";
             return;
         }
-        
-        if(!strlen($db_id) > 0 || ($onLoad_ID == true && isset($_SESSION['gameID'][$live_id]) !== true)) {
+        if(strlen($db_id) <= 0 || ($onLoad_ID == true && isset($_SESSION['gameID'][$live_id]) !== true)) {
             echo "truesession";
             $this->updateGameID($live_id);
             // If it is the first time load, remember that so that when the ID gets

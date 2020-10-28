@@ -1,60 +1,46 @@
-    addEventListener('load', function() {
-        let test = "QerlaQakskkfQ"
-        var hello = "qert";
-        console.log(test.split("Q"));
-      
+    addEventListener('load', function() {      
         conversation.conversationDiv = document.getElementById("conversation").querySelectorAll("ul")[0];
         /*conversation.toggleButton();*/
     });
-    
-    /*
-     Last letter in the index determines what type the last interaction was. For example "hfrq2" is answer to question 2
-     
-     Q - main questions
-     q - question
-     r - response
-     rr - random response
-     1-9 - number of response/question
-     
-     person|conversation|nextIndex|Funcname/other/end
-    
-    
-    */
-    
-    
-    
-    
-    var dialogues = [];
-    dialogues['hfQ'] = "a|Hello, I am Harfen. Who are you?|r";
-    dialogues['hfQr'] = ["b|My name is ...|Q1|wertyd()","b|None of your business|r1"];
-    dialogues['hfQrQ1'] = "a|What can i do for you?|r";
-    dialogues['hfQrQ1r'] = [
-        "b|Tell me about yourself|r",
-        "b|I'd like to look at your merchant|FuncName|End"
-    ];
-    dialogues['hfQrr1'] = "a|Well stranger, then we don't have more to talk about.|end"
-    dialogues['ps'] = "a|Hello, what can i do you for sir?|r";
-    dialogues['psr'] = ["b|I would like to travel with your cart|r", "b|Bye|end"];
-    dialogues['psrr'] = ["b|Fansal Plains|end|travel",
-                         "b|Golbak|end|gameTravel.newDestination",
-                         "b|Hirtam|end|gameTravel.newDestination",
-                         "b|Khanz|end|gameTravel.newDestination",
-                         "b|Krasnur|end|gameTravel.newDestination",
-                         "b|Tasnobil|end|gameTravel.newDestination",
-                         "b|Towhar|end|gameTravel.newDestination"];
     
     var conversation = {
         index: null,
         conversationDiv: null,
         button: null,
         buttonToggle: false,
+        selectItem: false,
         activeDialogues: [],
-        startConversation() {
-            this.toggleButton();
-            this.index = "ps";
-            this.makeLinks();
-            document.getElementById("conversation_container").style.visibility = "visible";
-            document.getElementById("conversation_container").style.top = window.pageYOffset + 100 + "px";
+        convAJAX(data, callback) {
+            ajaxRequest = new XMLHttpRequest();
+            ajaxRequest.onload = function () {
+                if(this.readyState == 4 && this.status == 200) {
+                    callback([false, this.responseText]);
+                }
+            };
+            ajaxRequest.open('POST', "handlers/handler_con.php");
+            ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            ajaxRequest.send(data);
+        },
+        loadConversation(person) {
+            if(person.length <= 2) {
+                return false;
+            }
+            /*if(event == null) {
+                return false;
+            }*/
+            data = "person=" + person.toLowerCase() + "&index=" + false;
+            conversation.convAJAX(data, function(response) {
+                console.log(response);
+                conversation.activeDialogues = JSON.parse(response[1]);
+                console.log(conversation.activeDialogues);
+                if(conversation.buttonToggle == false) {
+                    conversation.toggleButton();
+                }
+                conversation.makeLinks();
+                document.getElementById("conversation_container").style.visibility = "visible";
+                document.getElementById("conversation_container").style.top =
+                    document.getElementById("game_canvas").offsetTop + 250 + "px";
+            });
         },
         endConversation() {
             this.index = "none";
@@ -62,42 +48,112 @@
             document.getElementById("conversation_container").style.visibility = "hidden";
         },
         toggleButton() {
-            if(this.button == null) {
+            if(this.button === null) {
                 this.button = document.createElement("button");
                 this.button.appendChild(document.createTextNode("Click here to continue"));
-                this.button.addEventListener("click", conversation.getNextLine);    
-            }
-            if(this.buttonToggle === false) {
+                this.button.addEventListener("click", conversation.getNextLine);
                 document.getElementById("conversation").appendChild(this.button);
+            }
+            else if(this.buttonToggle === false) {
+                document.getElementById("conversation").querySelectorAll("button")[0].style.visibility = "visible";
+                document.getElementById("conversation_container").querySelectorAll("h3")[0].innerText = "";
                 this.buttonToggle = true;
             }
             else {
-                document.getElementById("conversation").removeChild(this.button);
+                document.getElementById("conversation").querySelectorAll("button")[0].style.visibility = "hidden";
+                document.getElementById("conversation_container").querySelectorAll("h3")[0].innerText = "Select an answer";
                 this.buttonToggle = false;
             }
         },
-        checkLine() {
-            let text = event.target.innerText;
-            let textIndex = dialogues.indexOf(test);
-        },
-        getNextLine() {
-            let text;
-            console.log(event.target);
+        getNextLine(info = false) {
+            var text;
+            
+            if(event === null && info == false) {
+                return;
+            }
             if(event.target.tagName === "BUTTON") {
                 text = document.getElementById("conversation").querySelectorAll("li")[0].innerText;
             }
+            else if(event.target.tagName !== "LI" && info !== false) {
+                text = info + '|';
+            }
             else {
-                text = event.target.innerText;    
+                text = event.target.innerText;
             }
             console.log(text);
-            let nextIndex;
+            data = "person=" + null +  "&index=" + text;
+            conversation.convAJAX(data, function(response) {
+                console.log(response[1]);
+                if(response[1] === "end") {
+                    conversation.endConversation();
+                    return false;
+                }
+                conversation.activeDialogues = [];
+                conversation.activeDialogues = JSON.parse(response[1]);
+                if(conversation.activeDialogues.length == 1) {
+                    let split = conversation.activeDialogues[0].split("|");
+                    if(typeof(split[3]) !== "undefined") {
+                        if(split[3].indexOf(".") != -1) {
+                            let objArray = split[3].split(".");
+                            let objName = objArray[0];
+                            let funcName = objArray[1];
+                            window[objName][funcName]();
+                        }
+                        else {
+                            window[split[3]]();    
+                        }
+                    }
+                }
+                if(conversation.activeDialogues.length > 1) {
+                    conversation.buttonToggle = true;
+                    conversation.toggleButton();
+                    conversation.makeLinks();
+                }
+                else {
+                    /*if(conversation.activeDialogues[0][1] === "selectItem") {
+                        console.log('Choose inventory');
+                        conversation.buttonToggle = true;
+                        conversation.toggleButton();
+                    }*/
+                    if(conversation.buttonToggle !== true) {
+                        conversation.toggleButton();
+                    }
+                    switch(conversation.activeDialogues[0].split("|")[2]) {
+                        case "Q":
+                            conversation.makeLinks();
+                            break;
+                        case "q":
+                            conversation.makeLinks();
+                            break;
+                        case "r":
+                            conversation.makeLinks();
+                            break;
+                        case "end":
+                            conversation.makeLinks();
+                            document.getElementById("conversation").querySelectorAll("button")[0].removeEventListener("click", getNextLine);
+                            document.getElementById("conversation").querySelectorAll("button")[0].addEventListener("click",
+                                                                                                  conversation.endConversation);
+                            break;
+            
+                    }
+                }
+            });
+            /*let nextIndex;
             for(var i = 0; i < conversation.activeDialogues.length; i++) {
                 if(conversation.activeDialogues[i].indexOf(text) != -1) {
                     if(conversation.activeDialogues[i][2] === "end") {
                         conversation.endConversation();
                     }
                     if(typeof conversation.activeDialogues[i][3] !== "undefined") {
-                        window[conversation.activeDialogues[i][3]]();
+                        if(conversation.activeDialogues[i][3].indexOf(".") != -1) {
+                            let objArray = conversation.activeDialogues[i][3].split(".");
+                            let objName = objArray[0];
+                            let funcName = objArray[1];
+                            window[objName][funcName]();
+                        }
+                        else {
+                            window[conversation.activeDialogues[i][3]]();    
+                        }
                     }
                     console.log(conversation.activeDialogues);
                     nextIndex = conversation.activeDialogues[i][2];
@@ -105,35 +161,23 @@
                 }
             }
             console.log(nextIndex);
-            if(nextIndex === undefined) {
+            if(nextIndex === null) {
                 conversation.index =  conversation.index.slice(0, conversation.index.lastIndexOf("Q"));
             }
             console.log(conversation.index + "+" + nextIndex);
             conversation.index = conversation.index + nextIndex;
-            console.log(conversation.index);
-            if(Array.isArray(dialogues[conversation.index]) === true) {
-               conversation.makeLinks();
-                if(this.buttonToggle === false) {
-                    this.toggleButton();
-                }
-            }
-            else {
-                switch(nextIndex.slice(0,1)) {
-                    case "Q":
-                        conversation.makeLinks();
-                        break;
-                    case "q":
-                        break;
-                    case "r":
-                        conversation.makeLinks();
-                    break;
-            
-               }
-            }
+            console.log(conversation.index);*/
+    
         },
         togglePerson(person) {
+            console.log(person);
+            console.log(person.indexOf("#"));
             if(person ==="a") {
-                document.getElementById("conversation_a").visibility = "none";
+                document.getElementById("conversation_a").visibility = "hidden";
+            }
+            else if(person.indexOf("#") != -1) {
+                console.log(person.split("#")[1].trim());
+                document.getElementById("conversation_container").querySelectorAll("h3")[0].innerText = person.split("#")[1].trim();
             }
             else {
                 document.getElementById("conversation_a").visibility = "visible";
@@ -141,37 +185,50 @@
             
         },
         makeLinks() {
-            let str = dialogues[conversation.index];
+            let str = conversation.activeDialogues;
+            console.log(str);
             conversation.conversationDiv.innerHTML = "";
-            if(Array.isArray(str) === true) {
+            if(str.length > 1 === true) {
                 for(var i = 0; i < str.length; i++) {
                     let strProperties = str[i].split("|");
                     this.togglePerson(strProperties[0]);
-                    conversation.activeDialogues[i] = str[i].split("|");
-                    console.log(str[i].split("|"));
                     let li = document.createElement("li"); 
                     li.innerHTML = strProperties[1];
                     li.className = "conv_link";
+                    li.style.cursor = "pointer";
                     li.addEventListener("click", conversation.getNextLine);
                     conversation.conversationDiv.appendChild(li);
                 }
             }
             else {
-                let strProperties = str.split("|");
+                let strProperties = str[0].split("|");
                 this.togglePerson(strProperties[0]);
-                conversation.activeDialogues.push(str.split("|"));
                 let li = document.createElement("li"); 
                 li.innerHTML = strProperties[1];
                 li.className = "conv_link";
-                li.addEventListener("click", conversation.getNextLine);
+                li.style.cursor = "auto";
                 conversation.conversationDiv.appendChild(li);
-                console.log(conversation.activeDialogues);
             }
         }
     };
-    function end() {
-        console.log("end");
+    function selectItem() {
+        document.getElementById("conversation_container").querySelectorAll("h3")[0].innerText = "Select an answer";
     }
-    function travel() {
-        console.log("travel");
-    }
+    highlightInventory = {
+        intervalID: null,    
+        set() {
+            this.intervalID = setInterval(function() {
+                let inventory = document.getElementById("inventory");
+                if(inventory.style.backgroundColor === "" || inventory.style.backgroundColor == "rgb(76, 52, 26)") {
+                    inventory.style.backgroundColor = "#986834";
+                }
+                else {
+                    inventory.style.backgroundColor = "#4c341a";
+                } 
+            }, 1500);
+        },
+        clear() {
+            document.getElementById("inventory").style.backgroundColor = "#4c341a";
+            clearInterval(this.intervalID);
+        }
+    };

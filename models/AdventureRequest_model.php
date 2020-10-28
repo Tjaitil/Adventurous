@@ -45,13 +45,13 @@
                 }
             }
             else if($route == 'invite') {
-                $sql = "SELECT adventure_leader, difficulty, invite_only FROM adventures WHERE adventure_leader=:username";
+                $sql = "SELECT adventure_leader, difficulty, other_invite FROM adventures WHERE adventure_leader=:username";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_username = $this->username;
                 $stmt->execute();
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                if($row['invite_only'] == 0 && $row['adventure_leader'] != $this->username) {
+                if($row['other_invite'] == 0 && $row['adventure_leader'] != $this->username) {
                     $this->gameMessage("ERROR: Invite only is on for this adventure", true);
                     return false;
                 }

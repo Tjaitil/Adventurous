@@ -93,27 +93,44 @@
             $stmt2->execute();
             $xp_data = $stmt2->fetch(PDO::FETCH_ASSOC);
             
-            $crystal_chance = $this->calculateCrystal();
+            $sql = "SELECT COUNT(item) as item_count FROM inventory WHERE username=:username";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_username = $this->username;
+            $stmt->execute();
+            $item_count = $stmt->fetch(PDO::FETCH_OBJ)->item_count;
             
             switch($this->adventure_data['difficulty']) {
                 case 'easy':
                     $count = 2;
+                    $xp_data['adventurer_xp'] = 0.5;
                     break;
                 
                 case 'medium':
                     $count = 3;
+                    $xp_data['adventurer_xp'] = 0.3;
                     break;
                 
                 case 'hard':
                     $count = 5;
+                    if($role === 'warrior') {
+                        $count -= 1;
+                    }
+                    $xp_data['adventurer_xp'] = 0.25;
                     break;
             }
+            if($item_count + $count > 18) {
+                $this->gameMessage("ERROR: You need to have at least {$count} empty spaces in your inventory", true);
+                return false;
+            }
+            
             $rewards = array();
             $warrior_xp = array();
             switch($role) {
                 case 'farmer':
                 case 'miner':
                 case 'trader':
+                    // Do it is so there is a high chance of getting a high reward
                     $sql = "SELECT item, min_amount, max_amount FROM adventure_rewards
                             WHERE role=:role AND difficulty=:difficulty
                             ORDER BY RAND() LIMIT 1";
@@ -124,7 +141,7 @@
                     $param_difficulty = $this->adventure_data['difficulty'];
                     $stmt->execute();
                     $rewards[] = $stmt->fetch(PDO::FETCH_ASSOC);
-                    
+                    $count--;
                     $sql2 = "SELECT item, min_amount, max_amount FROM adventure_rewards
                             WHERE role=:role AND difficulty <= :difficulty AND item !=:name
                             ORDER BY RAND() LIMIT {$count}";
@@ -142,7 +159,6 @@
                     break;
                 
                 case 'warrior':
-                    $count -= 1;
                     $sql = "SELECT item, min_amount, max_amount FROM adventure_rewards
                             WHERE role=:role AND difficulty=:difficulty
                             ORDER BY RAND() LIMIT 1";
@@ -190,6 +206,7 @@
                         $warriors_levels[$i]['strength_xp'] += $warrior_xp[$i]['strength_xp'];
                     }
             }
+            $crystal_chance = $this->calculateCrystal();
             $roles = array("farmer", "miner", "trader", "warrior");
             unset($roles[$role]);
             
@@ -228,14 +245,18 @@
                     }
                 }
                 
-                if($crystal_chance ===x 1) {
+                if($crystal_chance === 1) {
                     $rewards[] = array("item" => $this->adventure_data['location'] . 'crystal', "amount" => 1);
                     // Update inventory
                     $this->UpdateGamedata->updateInventory($this->adventure_data['location'] . 'crystal', 1, true);
                 }
                 
-                // Update xp
-                $this->UpdateGamedata->updateXP($role, $xp_data['user_xp']);
+                // Only gain xp when farmer level is below 30 or if profiency is farmer
+                if($this->session[$role]['level'] < 30 || $this->session['profiency'] == $role) { 
+                    $this->UpdateGamedata->updateXP($role, $xp_data['user_xp']);    
+                }
+                $this->UpdateGamedata->updateXP('adventurer', $xp_data['adventure_xp']);
+                
                 
                 $sql = "UPDATE adventure SET adventure_id=0, adventure_status=0 WHERE username=:username";
                 $stmt = $this->db->conn->prepare($sql);
@@ -563,6 +584,16 @@
                           'daqloon_damage' => array_sum($this->daqloon_damage), 'warrior_damage' => array_sum($this->warrior_damage),
                           'warrior_wounded' => count($this->warrior_status), 'daqloon_wounded' => count($this->daqloon_status),
                           'warrior_combo' => $this->combo_attack['warrior'], 'daqloon_combo' => $this->combo_attack['daqloon']);
+        }
+        
+        
+        private function calculateItemDamage() {
+            
+            $item_data  = array("iron" => "", "steel" => "", "gargonite" => "", "adron" => "", "yeqdon" => "", "frajrite" => "",
+                                "wujkin" => "");
+            
+            
+            
         }
     }
 ?>

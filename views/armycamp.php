@@ -3,7 +3,6 @@
             <?php $_SESSION['gamedata']['level_up_data'] = $data['warrior_level_up'];?>
                 <script src="<?php echo constant("ROUTE_JS") . 'warriorLevelUp.js'?>"></script>
             <?php endif?>
-        <div id="announcement"><button onclick="exit();">Exit</button></div>
             <h3 class="page_title"> Army camp </h3>
             <button type="button"> Army Missions </button>
             <button type="button"> Armory </button>
@@ -86,6 +85,6 @@
                     <button> Do Action </button>
                 </div>
                 <div id="warriors">
-                    <?php get_template('warriors_levels', array($this->data['warrior_data'], $this->data['levels_data']));?>
+                    <?php get_template('warriors_levels', array($this->data['warrior_data'], $this->data['levels_data']), true);?>
                 </div>
             </div>

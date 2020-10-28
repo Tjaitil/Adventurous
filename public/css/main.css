@@ -115,6 +115,20 @@
     width: 50%;
     margin-top: 10px;
 }
+#map_container {
+    width: 800px;
+    overflow: scroll;
+    height: 800px;
+    border: 2px double black;
+}
+#map {
+    width: 1800px;
+}
+.map_img {
+    width: 200px;
+    height: 200px;
+    float:left;
+}
 @media all and (max-width: 830px) {
     #public_chat input[type="text"] {width: 85%;}
 }

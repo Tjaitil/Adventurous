@@ -48,28 +48,75 @@ window.addEventListener("keydown", function(e) {
                 break;
         }
     }, false);
+    /*if(game.properties.device !== "pc") {
+        window.addEventListener('click', function() {
+            console.log('hello');    
+        });
+    }*/
+document.getElementById("game_canvas3").addEventListener("click",
+                                                         function() {
+                                                            let element = document.getElementById("game_canvas3");
+                                                            let ElementPos = element.getBoundingClientRect();
+                                                            let mouseY = event.clientY - ElementPos.top;
+                                                            let mouseX = event.clientX - ElementPos.left;
+                                                            let x = mouseX + (player.xpos - (game.properties.canvasWidth / 2) + 32);
+                                                            let y = mouseY + (player.ypos - (game.properties.canvasHeight / 2));
+                                                            /*console.log('xLeft:' + x);
+                                                            console.log('yTop:' + y);
+                                                            console.log('mouseX: ' + mouseX);
+                                                            console.log('mouseY: ' + mouseY);*/
+                                                            let object = gamePieces.objects[356];
+                                                            /*console.log(object.drawY);
+                                                            console.log(object.drawX);*/
+                                                            if (y > object.diameterTop && y < object.diameterDown &&
+                                                                x > object.diameterLeft && x < object.diameterRight &&
+                                                                Math.abs(player.ypos - object.diameterDown) < 32)
+                                                            {
+                                                                game.fetchBuilding(object.src.split(".png")[0]);
+                                                            }
+
+                                                         });
+
 document.getElementById("control").addEventListener("touchmove", move);
 document.getElementById("control").addEventListener("touchend", endMove);
-
-    /*document.getElementById("control").addEventListener("mousemove", move);*/
-    
-    var click = false;
-    
+var click = 0;
+function doubleClickDetect() {
+    click++;
+    if(click == 2) {
+        click = 0;
+        console.log('doubleclick');
+    }
+    else {
+        setTimeout(function() {
+            click = 0;  
+        }, 1000);
+    }
+}
+/*window.addEventListener("scroll", function() {
+    let element = document.getElementById("hunger");
+    let hungerPos = element.getBoundingClientRect();
+    console.log(hungerPos.top);
+    if(hungerPos.top < 0) {
+        console.log(window.screenY);
+        element
+    }
+});*/
+    var click = false;   
     function move() {
-        var button = document.getElementById("control_button");
-        var element = event.target.closest("#control");
-        var elementPos = element.getBoundingClientRect();
-        var buttonPos = button.getBoundingClientRect();
-        var eventY = event.targetTouches[0].clientY - elementPos.y;
-        var eventX = event.targetTouches[0].clientX - elementPos.x; 
+        let button = document.getElementById("control_button");
+        let element = event.target.closest("#control");
+        let elementPos = element.getBoundingClientRect();
+        let buttonPos = button.getBoundingClientRect();
+        let eventY = event.targetTouches[0].clientY - elementPos.y;
+        let eventX = event.targetTouches[0].clientX - elementPos.x; 
         // eventYTrigger/eventXTrigger is the minimum width the button gets moved before movement happens;
         let eventYTrigger = 50;
         let eventXTrigger = 50;
         // a is the distance from eventY to diameter
         // b is the distance from eventX to diaemter
-        var a = Math.abs(eventY - (elementPos.height / 2));
-        var b = Math.abs(eventX - (elementPos.width / 2));
-        button.style.top = (event.targetTouches[0].clientY + 50 - elementPos.y - (elementPos.height / 2)) + "px";
+        let a = Math.abs(eventY - (elementPos.height / 2));
+        let b = Math.abs(eventX - (elementPos.width / 2));
+        button.style.top = (event.targetTouches[0].clientY - elementPos.y - 25) + "px";
         button.style.left = (event.targetTouches[0].clientX - 50) + "px";
         
         if(a < 5 && b < 5) {
@@ -92,79 +139,62 @@ document.getElementById("control").addEventListener("touchend", endMove);
         console.log("a:" + a);
         console.log("b:" + b);*/
         
-        var angle;
+        let angle;
         if(eventX > eventXTrigger && eventY < eventYTrigger) {
-            console.log('++');
-            console.log((Math.atan(a/b) / (2 * 3.14)) * 360);
             angle = (Math.atan(a/b) / (2 * 3.14)) * 360;
         }
         if(eventX < eventXTrigger && eventY < eventYTrigger) {
-            console.log('-+');
-            console.log((Math.atan(b/a) / (2 * 3.14)) * 360 + 90);
             angle = (Math.atan(b/a) / (2 * 3.14)) * 360 + 90;
         }
         if(eventX < eventXTrigger && eventY > eventYTrigger) {
-            console.log('--');
-            console.log((Math.atan(a/b) / (2 * 3.14)) * 360 + 180);
             angle = (Math.atan(a/b) / (2 * 3.14)) * 360 + 180;
         }
         if(eventX > eventXTrigger && eventY > eventYTrigger) {
-            console.log('+-');
-            console.log((Math.atan(b/a) / (2 * 3.14)) * 360 + 270);
             angle = (Math.atan(b/a) / (2 * 3.14)) * 360 + 270;
         }
-        console.log(angle);
         if(337.5 < angle || angle < 22.5) {
-            console.log('going east');
             game.controls.left = false;
             game.controls.up = false;
             game.controls.right = true;
             game.controls.down = false;
         }
         if(22.5 < angle && angle < 67.5) {
-            console.log('going north-east');
             game.controls.left = false;
             game.controls.up = true;
             game.controls.right = true;
             game.controls.down = false;
         }
         if(67.5 < angle && angle < 112.5) {
-            console.log('going north');
             game.controls.left = false;
             game.controls.up = true;
             game.controls.right = false;
             game.controls.down = false;
         }   
         if(112.5 < angle && angle < 157.5) {
-            console.log('going north-west');
             game.controls.left = true;
             game.controls.up = true;
             game.controls.right = false;
             game.controls.down = false;
         }
         if(157.5 < angle && angle < 202.5) {
-            console.log('going west');
             game.controls.left = true;
             game.controls.up = false;
             game.controls.right = false;
             game.controls.down = false;
         }
         if(202.5 < angle && angle < 247.5) {
-            console.log('going south-west');
             game.controls.left = true;
             game.controls.up = false;
             game.controls.right = false;
             game.controls.down = true;
         }
         if(247.5 < angle && angle < 292.5) {
-            console.log('going south');
             game.controls.left = false;
             game.controls.up = false;
             game.controls.right = false;
             game.controls.down = true;
         }
         if(292.5 < angle && angle < 337.5) {
-            console.log('going south-east');
             game.controls.left = false;
             game.controls.up = false;
             game.controls.right = true;
@@ -179,8 +209,7 @@ document.getElementById("control").addEventListener("touchend", endMove);
         game.controls.up = false;
         game.controls.right = false;
         game.controls.down = false;
-    }
-    
+    }   
     var timeCount = 0;
     var inBuilding = false;
     var world = new Image(3200, 3200);
@@ -223,6 +252,8 @@ document.getElementById("control").addEventListener("touchend", endMove);
             var cookieTicket;
             if(CookieTicket.sweetCookie === null) {
                 cookieTicket = today.getMonth() + today.getDate() + "|";
+                console.log(today.getMonth());
+                console.log(today.getDate());
                 for(var i = 0; i < 10; i++) {
                     cookieTicket += Math.floor(Math.random() * (10 - 1) + 1);
                 }
@@ -337,21 +368,77 @@ document.getElementById("control").addEventListener("touchend", endMove);
         ctx.stroke();
     }
     game.setCanvasDimensions = function() {
-        let newWidth = document.getElementsByTagName("section")[0].offsetWidth * 0.68;
-        /*let newWidth = 700;*/
-        let newHeight = screen.height - 10;
+        let newWidth;
+        if(screen.width < 830) {
+            newWidth = document.getElementsByTagName("section")[0].offsetWidth * 0.97;
+        }
+        else {
+            newWidth = document.getElementsByTagName("section")[0].offsetWidth * 0.68;
+        }
+        let newHeight = screen.height - 20;
         if(newHeight > 400) {
             newHeight = 400;
         }
         game.properties.canvasWidth = newWidth;
         game.properties.canvasHeight = newHeight;
-        document.getElementById("game_canvas").width = newWidth;
-        document.getElementById("game_canvas").height = newHeight;
+        // Align all canvases
+        let gameCanvas = document.querySelectorAll("canvas");
+        for(var i = 0; i < gameCanvas.length; i++) {
+            gameCanvas[i].width = newWidth;
+            gameCanvas[i].height = newHeight;
+            if(i > 0) {
+                gameCanvas[i].style.top = gameCanvas[0].offsetTop + "px";
+                gameCanvas[i].style.left = gameCanvas[0].offsetLeft + "px";
+            }
+        }
         game.properties.scale = newWidth / 700;
         game.properties.charX = Math.floor((newWidth / 2) - 32);
         game.properties.charY = Math.floor((newHeight / 2) - 32);
-        /*game.properties.canvasHeight = document.getElementById("game_canvas").height;*/
+        console.log(document.getElementById("control"));
+        if(document.getElementById("control").style.display !== "none") {
+            let control = document.getElementById("control");
+            control.style.top = gameCanvas[0].offsetTop + game.properties.canvasHeight - 125 +  "px";
+            control.style.left = "10px";
+            document.getElementById("inventory").style.top = gameCanvas[0].offsetTop + "px";
+        }
+        document.getElementById("game_text").style.maxWidth = game.properties.canvasWidth + "px";
     };
+    var stateModule = (function () {
+        var state = "DC"// Private Variable
+        let humour = null;
+        let load = false;
+        let xbase = null;
+        let ybase = null;
+        
+        var pub = {};// public object - returned at end of module
+
+        pub.changeState = function (newstate) {
+            state = newstate;
+        };
+
+        pub.getState = function() {
+            return state;
+        };
+        const loadHumour = function(x, y) {
+            if(load === true) {
+                console.log('Function already set!');
+                return;
+            }
+            xbase = x;
+            ybase = y;
+            load = true;
+        };
+        const getHumour = function() {
+            return [xbase, ybase];
+        };
+        const setHumour = function(mood) {
+            humour = mood;
+        };
+        return {
+            getHumour: getHumour,
+            loadHumour: loadHumour
+        };
+    }());
     game.properties = {
         context: document.getElementById("game_canvas").getContext("2d"),
         fillStyle1: "red",
@@ -380,16 +467,27 @@ document.getElementById("control").addEventListener("touchend", endMove);
         xcamMove: null,
         ycamMove: null,
         loading: false,
-        scale: null
+        scale: null,
+        device: "pc"
     };
     window.addEventListener("load", function() {
+        // Check if there is phone
+        if(window.screen.width > 830 ||
+           (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) == false)) {
+            document.getElementById("control").style.display = "none";
+            game.properties.actionText = "Press x";
+            game.properties.device = "pc";
+        }
+        else {
+            game.properties.actionText = "Tap to";
+            game.properties.device = "mobile";
+        }
+        calculateHunger();
         game.setCanvasDimensions();
         game.loadWorld();
-        game.inactivityTime();
+        game.inactivityTime(true);
+        game.properties.startTime = new Date().getTime();
         CookieTicket.checkCookieTicket('checkMeOut');
-        if(window.screen.width > 830) {
-            document.getElementById("control").style.display = "none";
-        }
     });
     gamePieces = {
         obstacles : [],
@@ -398,7 +496,7 @@ document.getElementById("control").addEventListener("touchend", endMove);
         player: null
     };
     game.loadWorld = function(newxBase = false, newyBase = false, method = false, newMap = false)  {
-        game.loadingScreen();
+        window.cancelAnimationFrame(game.properties.requestId);
         let data;
         let map;
         if(method !== false) {
@@ -415,46 +513,47 @@ document.getElementById("control").addEventListener("touchend", endMove);
                 responseText = responseText.split("|");
                 console.log(responseText);
                 map = responseText[0];
-                var obj = JSON.parse(responseText[1]);
-                gamePieces.links = obj['links'];
+                if(responseText[1].length > 1) {
+                    document.title = jsUcWords(responseText[1]);
+                }
+                var obj = JSON.parse(responseText[2]);
+                gamePieces.buildings = [];
                 gamePieces.objects = obj['objects'];
                 if(newxBase === false) {
                     // Legge til xbase i JSON map filene
-                    game.properties.xbase = 1500;    
+                    game.properties.xbase = 1000;    
                 }
                 else {
                     game.properties.xbase = newxBase;
                 }
                 if(newyBase === false) {
                     // Legge til ybase i JSON map filene
-                    game.properties.ybase = 2800;    
+                    game.properties.ybase = 1500;    
                 }
                 else {
                     game.properties.ybase = newyBase;
                 }
                 /*stateModule.load(game.properties.xbase, game.properties.ybase);*/
+                //
+                // to compensate for the player starting in another position you must subtract  (xbase - (xbase -320));
                 game.properties.xcamMove = game.properties.xbase - game.properties.charX;
                 game.properties.ycamMove = game.properties.ybase - game.properties.charY;
                 for(var i = 0; i < gamePieces.objects.length; i++) {
                     gamePieces.objects[i].img = new Image(gamePieces.objects[i].width, gamePieces.objects[i].height);
                     gamePieces.objects[i].img.src = "public/images/" + gamePieces.objects[i].src;
                     // The diameters of the object is based on player starting on 320,
-                    //gamePieces.objects[i].x -= xcamMove;
-                    // to compensate for the player starting in another position you must subtract  (xbase - (xbase -320));
-                    //gamePieces.objects[i].diameterRight -= xcamMove;
-                    //gamePieces.objects[i].diameterLeft -= xcamMove;
                     
-                    /* drawX is the position of object on canvas and where it is drawn.
+                    /* drawX/drawY is the position of object on canvas and where it is drawn.
                      * The is in the same place the only change is where it
                         is drawn*/
                     gamePieces.objects[i].drawX = (gamePieces.objects[i].x - game.properties.xcamMove);
                     gamePieces.objects[i].drawY = (gamePieces.objects[i].y - game.properties.ycamMove);
-                    /*gamePieces.objects[i].diameterDown += 28;*/
+                    console.log(game.properties.ycamMove);
                     if(game.properties.scale < 1) {
-                        gamePieces.objects[i].diameterTop -= 10;
+                        /*gamePieces.objects[i].diameterTop -= 10;
                         gamePieces.objects[i].diameterDown -= 10;
                         gamePieces.objects[i].diameterRight -= 8;
-                        gamePieces.objects[i].diameterLeft -= 6;
+                        gamePieces.objects[i].diameterLeft -= 6;*/
                     }
                 
                      /*
@@ -462,8 +561,12 @@ document.getElementById("control").addEventListener("touchend", endMove);
                     gamePieces.objects[i].diameterLeft -= (xbase - (xbase - 320));
                     gamePieces.objects[i].diameterTop -= (ybase - (ybase - 150));
                     gamePieces.objects[i].diameterDown -= (ybase - (ybase - 150));*/
+                    if(gamePieces.objects[i].type == "building") {
+                        gamePieces.buildings.push(gamePieces.objects[i]);
+                    }
                 }
                 console.log(game.properties.scale);
+                
             }
             else {
                 // Load game picture
@@ -498,7 +601,7 @@ document.getElementById("control").addEventListener("touchend", endMove);
         draw: function() {
             ctx = game.properties.context;
             ctx.clearRect( - gamePieces.player.xMovement, - gamePieces.player.yMovement, 700, 700);
-            game.properties.context3.clearRect( - gamePieces.player.xMovement, - gamePieces.player.yMovement, 700, 700);
+            game.properties.context3.clearRect(0, 0, 700, 700);
             ctx.save();
             //Draw world and translate the image according to players movement
             ctx.drawImage(world, game.properties.xcamMove + gamePieces.player.xMovement,
@@ -515,34 +618,34 @@ document.getElementById("control").addEventListener("touchend", endMove);
         },
         drawEdge: function() {
             ctx = game.properties.context;
+            /*ctx.fillRect(x, y, width, height)*/
             if(game.properties.xbase + gamePieces.player.xMovement < game.properties.charX) {
                     ctx.fillStyle = "black";
                     ctx.fillRect(0, 0, (game.properties.xbase + gamePieces.player.xMovement - game.properties.charX) * -1, 600);
             }
             if(game.properties.ybase + gamePieces.player.yMovement < 200) {
                 ctx.fillStyle = "black";
-                ctx.fillRect(0, 0, game.properties.canvasWidth, (game.properties.ybase + gamePieces.player.yMovement - 200) * -1);
+                ctx.fillRect(0, 0, game.properties.canvasWidth, (game.properties.ybase + gamePieces.player.yMovement - 168) * -1);
             }
-            if(gamePieces.player.xMovement + game.properties.xbase > 3201 - game.properties.charX - 100) {
-                console.log(game.properties.xbase + gamePieces.player.xMovement -
-                                                              (3201 - game.properties.charX));
+            if(gamePieces.player.xMovement + game.properties.xbase > 3200 - game.properties.charX - 100) {
                 ctx.fillStyle = "black";
                 ctx.fillRect(game.properties.canvasWidth, 0, - (game.properties.xbase + gamePieces.player.xMovement -
-                                                              (3201 - game.properties.charX - 64)), 600);
+                                                              (3200 - game.properties.charX - 64)), 600);
             }
-            if(gamePieces.player.yMovement + game.properties.ybase > 3201 - game.properties.charY) {
+            if(gamePieces.player.yMovement + game.properties.ybase > 3200 - game.properties.charY - 100) {
                 ctx.fillStyle = "black";
-                console.log(game.properties.ybase + gamePieces.player.yMovement - 3001);
-                ctx.fillRect(0, 400 - (game.properties.ybase + gamePieces.player.yMovement - 3001), game.properties.canvasWidth,
-                             (game.properties.ybase + gamePieces.player.yMovement - 3001));
+                // Compensate for height difference, 0.511 per height difference;
+                let heightDiff = (400 - game.properties.canvasHeight) * 0.511;
+                ctx.fillRect(0, game.properties.canvasHeight - (game.properties.ybase + gamePieces.player.yMovement -  (2968 + heightDiff)),
+                             game.properties.canvasWidth, (game.properties.ybase + gamePieces.player.yMovement - (2968 + heightDiff)));
             }
-            if(gamePieces.player.ypos > 3150 || 
-               (gamePieces.player.ypos < 3000 && gamePieces.player.ypos < 200) ||
-               gamePieces.player.xpos > 3150 ||
-               (gamePieces.player.xpos < 3000 && gamePieces.player.xpos < 320)){
-                game.canvasText.showText('Press x to go to next map', false);
+            if(gamePieces.player.ypos > 3160 || 
+               (gamePieces.player.ypos < 3100 && gamePieces.player.ypos < 32) ||
+               gamePieces.player.xpos > 3160 ||
+               (gamePieces.player.xpos < 3100 && gamePieces.player.xpos < 32)){
+                game.canvasText.showText(game.properties.actionText + ' to go to next map', false);
             }
-            else {
+            else if(game.canvasText.textDrawn !== false) {
                 game.properties.nagivateNext = false;
                 game.canvasText.hideText();
             }
@@ -599,14 +702,26 @@ document.getElementById("control").addEventListener("touchend", endMove);
                                                                           links[x][4], links[x][5], links[x][6]);
         }
     };
-    game.inactivityTime = function () {
+    game.inactivityTime = function (pause) {
         var time;
         document.onkeydown = resetTimer;
+        document.ontouchmove = resetTimer;
+        if(pause == true) {
+            resetTimer();
+        }
         function pauseGame() {
-            if(game.controls.up !== false || game.controls.right !== false || game.controls.down !== false || game.controls.left !== false) {
+            console.log(game.controls.up + " " + game.controls.right + " " + game.controls.down + " " + game.controls.left);
+            if((game.controls.up !== false || game.controls.right !== false ||
+                game.controls.down !== false || game.controls.left !== false) && game.properties.device == "pc") {
                 resetTimer();
                 return false;
             }
+            else if((document.getElementById("control_button").style.top !== "25%" &&
+                document.getElementById("control_button").style.display != "none") && game.properties.device == "mobile") {
+                resetTimer();
+                return false;
+            }
+            updateHunger();
             ctx = game.properties.context;
             ctx.font = "30px Comic Sans MS";
             ctx.fillStyle = "pink";
@@ -630,16 +745,22 @@ document.getElementById("control").addEventListener("touchend", endMove);
         showText(text, timer = true, textDrawn = false) {
             if(textDrawn === false) {
                 let canvas = document.getElementById("game_canvas");
-                this.gameText.style.top = canvas.offsetTop + 125 + "px";
+                this.gameText.style.top = canvas.offsetTop + 50 + "px";
                 this.gameText.innerHTML = text;
                 this.gameText.style.opacity = 1;
                 /*this.intervalID = setInterval(this.changeTextOpactiy, 100);*/
+                // Set textDrawn status to true so it can be cleared
+                this.textDrawn = true;
             }
             if(timer == true) {
+                // Set textDrawn to false, so that hideText wont be called from viewport.drawEdge
+                this.textDrawn = false;
                 setTimeout(this.hideText, 3000);    
             }
         },
         hideText() {
+            this.textDrawn = false;
+            console.log('hideText');
             game.canvasText.gameText.style.opacity = 0;
             setTimeout(function() {
                 
@@ -656,6 +777,7 @@ document.getElementById("control").addEventListener("touchend", endMove);
         game.inactivityTime();
         gamePause = false;
         game.properties.requestId = window.requestAnimationFrame(game.update);
+        game.properties.startTime = new Date().getTime();
     }
     function gameObstacle (name, x, y, width, height, style) {
         this.name = name;
@@ -764,6 +886,7 @@ document.getElementById("control").addEventListener("touchend", endMove);
                 newdirection = 'none';
             }
             if(newdirection != 'none' && ((oldYbase != this.ypos) || (oldXbase != this.xpos))) {
+                // Change image when counter is past every 15
                 if(newdirection != 'none' && counter % 15 == 0) {
                     ctx2.clearRect(0, 0, 700, 700);
                     ctx2.drawImage(character, indexX * loopArray[loopIndex],
@@ -797,29 +920,48 @@ document.getElementById("control").addEventListener("touchend", endMove);
     }
     game.updateGamePiece = function() {
             ctx = game.properties.context;
-            
+            function checkPos(object) {
+                return ((Math.abs(object.diameterRight - player.xpos) <= game.properties.canvasWidth || 
+                         Math.abs(object.diameterLeft - player.xpos) <= game.properties.canvasWidth) &&
+                            (Math.abs(object.y - player.ypos) <= game.properties.canvasHeight ||
+                             Math.abs(object.diameterTop - player.ypos) <= game.properties.canvasHeight));
+            }
             // IMPORTANT!
             // Using fillRect, canvas will render element from top down. Meaning y = 0 is top of element
             // Using drawImage, canvas will render element from bottom down, meaning y = 0 is bottom of element
             let draw = false;
-            for(var i = 0; i < gamePieces.objects.length; i++) {
-                let object = gamePieces.objects[i];
+            /*let visibleObjects = gamePieces.objects.filter(checkPos);*/
+            let visibleObjects = gamePieces.objects;
+            for(var i = 0; i < visibleObjects.length; i++) {
                 /*if(object.y > yMapMax + 400 || object.y < yMapMin - 400  || object.x > xMapMax + 400 || object.x < xMapMin - 400) {
                     continue;
                 }*/
                 if(draw == true) {
                     ctx.fillStyle = "red";
-                    ctx.fillRect(gamePieces.objects[i].drawX - (player.xMovement / game.viewport.scale),
-                                 gamePieces.objects[i].drawY - (player.yMovement / game.viewport.scale),
-                                 gamePieces.objects[i].width, gamePieces.objects[i].height);
+                    ctx.fillRect(visibleObjects[i].drawX - (player.xMovement / game.viewport.scale),
+                                 visibleObjects[i].drawY - (player.yMovement / game.viewport.scale),
+                                 visibleObjects[i].width, visibleObjects[i].height);
                     ctx.font = "10px Comic Sans MS";
                     ctx.fillStyle = "white";
-                    ctx.fillText(i + ' | ' + gamePieces.objects[i].id,
-                                 gamePieces.objects[i].drawX - (player.xMovement / game.viewport.scale) +
-                                 (gamePieces.objects[i].width / 2),
-                                 gamePieces.objects[i].drawY + (gamePieces.objects[i].height / 2) -
+                    ctx.fillText(i + ' | ' + visibleObjects[i].id,
+                                 visibleObjects[i].drawX - (player.xMovement / game.viewport.scale) +
+                                 (visibleObjects[i].width / 2),
+                                 visibleObjects[i].drawY + (visibleObjects[i].height / 2) -
                                  (player.yMovement / game.viewport.scale));
                 }
+                /*if(visibleObjects[i].id == 157) {
+                    let drawContext;
+                    // If building is behind player, then draw on the first canvas instead of the third
+                    if(visibleObjects[i].diameterTop < player.ypos) {
+                        drawContext = ctx;
+                    }
+                    else{
+                        drawContext = game.properties.context3;  
+                    }
+                    drawContext.drawImage(visibleObjects[i].img,
+                                                        visibleObjects[i].drawX - (player.xMovement * game.viewport.scale),
+                                  visibleObjects[i].drawY - (player.yMovement * game.viewport.scale));
+                }*/
                 /*if(typeof gamePieces.objects[i].src === 'undefined' && draw === true) {
                     ctx.fillStyle = "red";
                     ctx.fillRect(gamePieces.objects[i].drawX - (player.xMovement / game.viewport.scale),
@@ -832,12 +974,6 @@ document.getElementById("control").addEventListener("touchend", endMove);
                                  (gamePieces.objects[i].width / 2),
                                  gamePieces.objects[i].drawY + (gamePieces.objects[i].height / 2) -
                                  (player.yMovement / game.viewport.scale));
-                }*/
-                /*else {
-                    console.log(gamePieces.objects[i]);
-                    console.log(i);
-                    ctx.drawImage(gamePieces.objects[i].img, gamePieces.objects[i].drawX - (player.xMovement * game.viewport.scale),
-                                  gamePieces.objects[i].drawY - 128 - (player.yMovement * game.viewport.scale));
                 }*/
                 
             }
@@ -863,17 +999,16 @@ document.getElementById("control").addEventListener("touchend", endMove);
             }*/
     };
     game.checkBuilding = function() {
-        console.log(event.target);
         if(inBuilding != true) {
-            for(i = 0; i < linksPos.length; i++) {
-                if(player.diameterTop >= linksPos[i][2] &&
-                   player.diameterRight <= linksPos[i][3] &&
-                   player.diameterDown <= linksPos[i][4] &&
-                   player.diameterLeft >= linksPos[i][5]) {
+            for(i = 0; i < gamePieces.buildings.length; i++) {
+                let object = gamePieces.buildings[i];
+                if(player.ypos > object.diameterTop && player.ypos < object.diameterDown &&
+                   player.xpos > object.diameterLeft && player.xpos < object.diameterRight &&
+                   Math.abs(player.ypos - object.diameterDown) < 32) {
                         if(inBuilding == false) {
-                            game.fetchBuilding(linksPos[i].src.split(".png")[0]);
+                            game.fetchBuilding(object.src.split(".png")[0]);
                         }
-                        return;
+                        break;
                     }
             }
         }  
@@ -901,13 +1036,6 @@ document.getElementById("control").addEventListener("touchend", endMove);
         */
         
         for(i = 0; i < gamePieces.objects.length; i++) {
-            /*if(i === 31) {
-                console.log(gamePieces.objects[31]);
-                console.log(player);
-                /*console.log(Math.abs(player.diameterDown - gamePieces.objects[i].diameterTop) <= 1);*/
-                /*console.log(player.diameterRight >= gamePieces.objects[i].diameterLeft);
-                console.log(player.diameterLeft <= gamePieces.objects[i].diameterRight);
-            }*/
            if(Math.abs(player.diameterDown - gamePieces.objects[i].diameterTop) <= 1 &&
               player.diameterRight >= gamePieces.objects[i].diameterLeft && 
               player.diameterLeft <= gamePieces.objects[i].diameterRight) {
@@ -917,19 +1045,15 @@ document.getElementById("control").addEventListener("touchend", endMove);
               player.diameterTop <= gamePieces.objects[i].diameterDown &&
               player.diameterDown >= gamePieces.objects[i].diameterTop) {
                 player.right = "blocked";
-                console.log('right blocked');
            }
            if(Math.abs(player.diameterTop - gamePieces.objects[i].diameterDown) <= 1 &&
               player.diameterRight >= gamePieces.objects[i].diameterLeft &&
               player.diameterLeft <= gamePieces.objects[i].diameterRight) {
                 player.top = "blocked";
-                console.log('top blocked');
            }
            if(Math.abs(player.diameterLeft - gamePieces.objects[i].diameterRight) <= 1 &&
               player.diameterTop <= gamePieces.objects[i].diameterDown &&
               player.diameterDown >= gamePieces.objects[i].diameterTop) {
-                console.log('left blocked');
-                console.log(gamePieces.objects[i]);
                 player.left = "blocked";
            }
         }
@@ -976,7 +1100,7 @@ document.getElementById("control").addEventListener("touchend", endMove);
             game.viewport.draw();
             game.viewport.drawEdge();
             player.newPos();
-            game.updateGamePiece(game.properties.xbase, game.properties.ybase);
+            game.updateGamePiece();
         }
         else if(animationEnd != true) {
             player.newPos(false);
@@ -991,28 +1115,34 @@ document.getElementById("control").addEventListener("touchend", endMove);
         let newY = 0;
         let newxBase = gamePieces.player.xpos;
         let newyBase = gamePieces.player.ypos;
-        console.log(gamePieces.player.ypos);
-        if(gamePieces.player.ypos > 3150) {
+        let match = false;
+        if(gamePieces.player.ypos > 3160) {
             newY += 1;
             newyBase = 0;
+            match = true;
         }
-        else if(gamePieces.player.ypos < 3000 && gamePieces.player.ypos < 200) {
+        else if(gamePieces.player.ypos < 3160 && gamePieces.player.ypos < 32) {
             newY -= 1;
-            newyBase = 3169;
+            newyBase = 3160;
+            match = true;
         }
         if(gamePieces.player.xpos > 3150) {
             newX += 1;
             newxBase = 0;
+            match = true;
         }
-        else if(gamePieces.player.xpos < 3000 && gamePieces.player.xpos < 320) {
+        else if(gamePieces.player.xpos < 3160 && gamePieces.player.xpos < 32) {
             newX -= 1;
-            newxBase = 3169; 
+            newxBase = 3160;
+            match = true;
         }
-        console.log(newY);
-        console.log(newX + ' : ' + newY);
-        window.cancelAnimationFrame(game.properties.requestId);
-        game.loadingScreen();
-        game.loadWorld(newxBase, newyBase, "changeMap", {"new_x": newX, "new_y": newY});
+        console.log(match);
+        if(match !== true) {
+            return false;
+        }
+        else {
+            game.loadWorld(newxBase, newyBase, "changeMap", {"new_x": newX, "new_y": newY});    
+        }
     };
     function checkChunk() {
         // Scale ?
@@ -1034,7 +1164,6 @@ document.getElementById("control").addEventListener("touchend", endMove);
             console.log(yMapMin);*/
         }
     }
-    // Render player at specific locations
     function renderPlayer(x, y) {
         player = gamePieces.player;
         player.speedX = x;
@@ -1051,7 +1180,6 @@ document.getElementById("control").addEventListener("touchend", endMove);
             game.updateGamePiece(game.properties.xbase, game.properties.ybase);
         }
     }
-    
     function getObjectPoints(object) {
         if(object.type === "triangle") {
             let slope = object.width / object.height;
@@ -1086,39 +1214,3 @@ document.getElementById("control").addEventListener("touchend", endMove);
         }
     }
     var santaClaus = "santa";
-    var stateModule = (function () {
-        var state = "DC"// Private Variable
-        let humour = null;
-        let load = false;
-        let xbase = null;
-        let ybase = null;
-        
-        var pub = {};// public object - returned at end of module
-
-        pub.changeState = function (newstate) {
-            state = newstate;
-        };
-
-        pub.getState = function() {
-            return state;
-        };
-        const loadHumour = function(x, y) {
-            if(load === true) {
-                console.log('Function already set!');
-                return;
-            }
-            xbase = x;
-            ybase = y;
-            load = true;
-        };
-        const getHumour = function() {
-            return [xbase, ybase];
-        };
-        const setHumour = function(mood) {
-            humour = mood;
-        };
-        return {
-            getHumour: getHumour,
-            loadHumour: loadHumour
-        };
-    }());

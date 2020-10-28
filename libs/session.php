@@ -20,7 +20,7 @@
         private function generateID() {
             $id = null;
             for($i = 0; $i < 6; $i++) {
-                $id .= rand(0,9);
+                $id .= rand(1,9);
             }
             return $id;
         }

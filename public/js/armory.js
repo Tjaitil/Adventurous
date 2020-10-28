@@ -1,6 +1,16 @@
     if(document.getElementById("news_content").children[2] != null) {
         // selectitem.js
         selectItemEvent.addSelectEvent();
+        document.getElementById("news_content_main_content").querySelectorAll("button")[0].addEventListener("click", function() {
+           game.fetchBuilding('armycamp'); 
+        });
+        if(/Safari|Chrome/i.test(navigator.userAgent)) {
+            let span = document.getElementsByClassName("armory_view_span");
+            for(var i = 0; i < span.length; i++) {
+                span[i].style.left = "-10%";
+                span[i].style.display = "block";
+            }
+        }
     }
     function toggleOption() {
         var element = document.getElementById("selected").children[0].children[1].innerHTML;
@@ -62,6 +72,9 @@
                 document.getElementById("ranged_alt").children[1].value = 1;
                 document.querySelectorAll(".armory_view")[warrior_id -1].innerHTML = response[1];
                 updateInventory('armory', true);
+            }
+            else {
+                gameLog(response[1]);
             }
         }, false);
     }

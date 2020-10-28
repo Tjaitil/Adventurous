@@ -1,6 +1,9 @@
     if(document.getElementById("news_content").children[2] != null) {
         getCountdown();
-        document.getElementById("current_mission").querySelectorAll("button")[0].addEventListener("click", cancelMission);    
+        document.getElementById("current_mission").querySelectorAll("button")[0].addEventListener("click", cancelMission);
+        document.getElementById("news_content_main_content").querySelectorAll("button")[0].addEventListener("click", function() {
+           game.fetchBuilding('armycamp'); 
+        });
     }
     function getCountdown() {
         var data = "model=ArmyMissions" + "&method=getCountdown";
@@ -55,11 +58,10 @@
                 document.getElementById("mission_enabled").innerHTML += response[1];
                 var divs = document.querySelectorAll(".warriors");
                 divs.forEach(function(element) {
-                    // ... code code code for this one element
                     element.addEventListener('click', function() {
-                        // warriorSelect.js
                         check();
                     });
+                    element.querySelectorAll("button")[0].addEventListener('click', flipWarriorCard);
                 });
             }
         });

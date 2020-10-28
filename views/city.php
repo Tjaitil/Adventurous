@@ -15,6 +15,7 @@
         <section>
             <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
             <div id="conversation_container">
+                <img id="cont_exit" src="#"  width="20px" height="20px" onclick="closeNews();" />
                 <h3></h3>
                   <img src="#" id="conversation_a" />
                   <div id="conversation">
@@ -24,7 +25,7 @@
                   </div>
                   <img src="#" id="conversation_b" />
             </div>
-            <p>Frames per second: <span id="frames"></span></p>
+            <button id="inv_toggle_button"> INV </button>
             <canvas id="game_canvas" width="700" height="400"></canvas>
             <canvas id="game_canvas2" width="700" height="400"></canvas>
             <canvas id="game_canvas3" width="700" height="400"></canvas>
@@ -48,8 +49,8 @@
             <script src="<?php echo constant("ROUTE_JS") . 'selectitem.js';?>"></script>
             <script src="<?php echo constant('ROUTE_JS') . 'select.js';?>"></script>
             <script src="<?php echo constant('ROUTE_JS') . 'warriorSelect.js';?>"></script>
-            <script src="<?php echo constant('ROUTE_JS') . 'travel.js';?>"></script>
             <script src="<?php echo constant('ROUTE_JS') . 'conversation.js';?>"></script>
+            <script src="<?php echo constant('ROUTE_JS') . 'travel.js';?>"></script>
         </section>
         <aside>
             <?php require(constant('ROUTE_VIEW') . 'aside.php');?>

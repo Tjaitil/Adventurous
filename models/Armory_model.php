@@ -9,7 +9,6 @@
             $this->session = $session;
             $this->commonModels(true, false);
         }
-        
         public function getData() {
             $sql = "SELECT warrior_id, helm, ammunition, ammunition_amount, left_hand, body, right_hand, legs, boots,
                     (SELECT SUM(attack) FROM armory_items_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS attack,
@@ -45,9 +44,9 @@
             $minerals = array("iron", "steel", "gargonite", "adron", "yeqdon", "frajrite", "oak", "beech", "yew");
             $items = array("sword", "dagger", "shield", "platebody", "platelegs", "helm", "arrows", "bow", "knives");
             // $melee_items containing sword, dagger, shield
-            $type_items['melee'] = array_slice($items, 0, 4);
+            $type_items['melee'] = array_slice($items, 0, 6);
             // $ranged_items containing arrows, bow, knives
-            $type_items['ranged'] = array_slice($items, 6, 8); 
+            $type_items['ranged'] = array_slice($items, 2);
             // Check out if the $item matches $mineral and $item
             $item_array = explode(" ", $item);
             if(array_search($item_array[0], $minerals) === false) {
@@ -109,13 +108,15 @@
             $param_item = $item;
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            
             if(empty($row['type'])) {
                 $this->gameMessage("ERROR: Type of armor doesn't exists", true);
                 return false;
             }
             
-            $ranged_test = in_array($item_array[1], array("knives", "bow"));
+            // Check if the warrior is wearing either knives or bow
+            $ranged_test = in_array($item_array[1], array("bow"));
+            $melee_test = in_array($item_array[1], array("dagger", "sword"));
+        
             if($row['type'] == 'hand' || $row['type'] == 'left_hand') {
                 if($ranged_test !== false) {
                     $row['type'] = 'right_hand';
@@ -195,7 +196,6 @@
                     $stmt->execute();   
                 }
                 if($row2[$row['type']] != 'none' && $row['type'] != 'ammunition') {
-                    
                     // Update inventory
                     $this->UpdateGamedata->updateInventory($row2[$row['type']], 1);
                 }
@@ -206,8 +206,11 @@
                 if($ranged_test2 !== false && $row['type'] === 'left_hand') {
                     $this->UpdateGamedata->updateInventory($row2['right_hand'], 1);
                 }
-                if($row2['left_hand'] != 'none' && $ranged_test !== false) {
-                    $this->UpdateGamedata->updateInventory($row2['left_hand'], 1);
+                // If ranged test is not false then remove the piece
+                if(isset($row2['left_hand']) && $ranged_test !== false) {
+                    if($row2['left_hand'] != 'none') {
+                        $this->UpdateGamedata->updateInventory($row2['left_hand'], 1);
+                    }
                 }
                 if($row['type'] === 'ammunition') {
                     // Update inventory
@@ -300,7 +303,7 @@
         }
         public function getWarriorstats() {
             // Perform a query with two subqueries which retrieves the sum of attack and the sum of defence as well as armor
-            $sql = "SELECT warrior_id, helm, ammunition, ammunition_amount, left_hand, body, right_hand, legs, boots,
+            $sql = "SELECT warrior_id, type, helm, ammunition, ammunition_amount, left_hand, body, right_hand, legs, boots,
                     (SELECT SUM(attack) FROM armory_items_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS attack,
                     (SELECT SUM(defence) FROM armory_items_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS defence
                     FROM warrior_armory WHERE warrior_id=:warrior_id AND username=:username";

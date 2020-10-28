@@ -4,7 +4,7 @@
 }
 
 #login {
-    background-color: #f2f2f2;
+    background-color: #d1a77a;
     width:700px;
     height:200px;
     position: relative;
@@ -15,6 +15,7 @@
     font-family: sans-serif;
     box-shadow: 1px 1px 1px;
     border-radius: 8px;
+    color: white;
 }
 #login h3 {
     margin: 5px 0px 0px 0px;

@@ -73,7 +73,6 @@
                 $this->gameMessage("ERROR: Your level is too low", true);
                 return false;
             }
-            
             if(strpos($item, 'arrows') !== false) {
                 $item_data = get_item($this->session, 'unfinished arrow');
                 if(!$item_data['amount'] < 5 || $item_data['amount'] < $amount) {
@@ -88,8 +87,10 @@
                 return false;
             }
             $cost = $row2['cost'] * $amount;
-            var_dump($row[1]['amount']);
-            var_dump($cost);
+            // If profiency is farmer pay 10 % less
+            if($this->session['profiency'] === 'miner') {
+                $cost*= 0.90;
+            }
             if($row['gold']['amount'] < $cost) {
                 $this->gameMessage("ERROR! You don't have enough gold", true);
                 return false;

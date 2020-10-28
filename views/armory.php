@@ -1,6 +1,6 @@
             armory.css|armory.js|
             <h3 class="page_title"> Armory </h3>
-                <a href="/armycamp"> << Back to army camp</a>
+            <button class="button_link"> << Back to army camp</button>
             <div id="warriors">
                 <div id="put_on">
                     <div id="selected">
@@ -21,5 +21,6 @@
                     </div>
                     <button onclick="wearArmor();"> Put on </button>
                 </div>
-                <?php get_template('armory', $this->data['warrior_armory']) ;?>
+                <?php get_template('armory', $this->data['warrior_armory'], true) ;?>
             </div>
+            </br>

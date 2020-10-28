@@ -6,7 +6,10 @@
         private $object_file = "../gamedata/objects.json";
         private $map;
         protected $maps = array("tasnobil" => 2.6,
-                                "golbak" => 3.5, "krasnur" => 3.6,);
+                                "golbak" => 3.5, "krasnur" => 3.6, "towhar" => 5.7, "fagna" => 7.5, "cruendo" => 6.6,
+                                "ter" => 6.3, "snerpiir" => 5.5, "pvitul" => 2.9, "hirtam" => 4.9, "khanz" => 8.2);
+        private $changed_location;
+        
         
         function __construct ($session) {
             parent::__construct();
@@ -37,6 +40,7 @@
             // If the $new_location is not false update the session location to new location
             if($new_location !== false) {
                 $_SESSION['gamedata']['location'] = $new_location;
+                $this->changed_location = $new_location;
             }
             $this->session['map_location'] = $this->map;
         }
@@ -90,23 +94,41 @@
                 }
                 $this->updateMap($newMap[0]);
             }
-            else {
-                $current_map = explode('.', $this->session['map_location']);
+            else {                
                 // Check wether or not the difference is greater than 1. There should not be possible in normal game state to travel more..
                 // ... than 1 difference without interference
-                if(abs($newMap['new_x'] - $current_map[0]) > 1 || abs($newMap['new_y'] - $current_map[1]) > 1) {
+                if((abs($newMap['new_x']) > 1 || abs($newMap['new_y']) > 1)) {
+                    // Throw error
+                    return false;
+                }
+                // If both new_x and new_y is 0 then the player is trying to access the same place they are.
+                else if((abs($newMap['new_x']) === 0 && abs($newMap['new_y']) === 0)) {
                     // Throw error
                     return false;
                 }
                 $split_array = explode('.', $this->session['map_location']);
+                $split_array[0] = intval($split_array[0]);
+                $split_array[1] = intval($split_array[1]);
                 if($newMap['new_x'] != 0) {
                     $split_array[0] += $newMap['new_x'];
                 }
                 elseif($newMap['new_y'] != 0) {
                     $split_array[1] += $newMap['new_y'];
                 }
-                $this->session['map_location'] = $this->map = implode('.', $split_array);
-                $this->updateMap();
+                $this->map = implode('.', $split_array);
+                // If there is amatch in $this->maps it means the player has reached a new destination
+                if(in_array($this->map, $this->maps)) {
+                    foreach($this->maps as $key => $value) {
+                        if($value == $this->map) {
+                            $new_location = $key;
+                          break;
+                        }
+                    }
+                    $this->updateMap($new_location);
+                }
+                else {
+                    $this->updateMap();    
+                }
             }
             $this->loadWorld();
         }
@@ -114,14 +136,14 @@
             $this->getMap();
             $string = file_get_contents('../gamedata/' . $this->map . '.json');
             $this->loadObjects();
-            echo $this->map . '|' . file_get_contents($this->object_file);
+            echo $this->map . '|' . $this->changed_location . '|' . file_get_contents($this->object_file);
             /*$_SESSION['gamedata']['map_location'];*/
         }
         public function loadObjects() {
             $string = json_decode(file_get_contents('../gamedata/' . $this->map . '.json'), true);
             $objects = array();
             $objects['objects'] = array();
-            $objects['links'] = array();
+            $objects['buildings'] = array();
             for($i = 0; $i < count($string['layers']); $i++) {
                 if(in_array($string['layers'][$i]['name'], array("Objects", "Buildings")) === true) {
                         $object_array = $string['layers'][$i]['objects'];
@@ -139,7 +161,7 @@
                                 }
                             }
                             // If the diameter variables is not set, set them.
-                            if($object_array[$x]['type'] === "figure") {
+                            if($object_array[$x]['type'] === "figure" || $object_array[$x]['type'] === 'object') {
                                 $object_array[$x]['y'] = round($object_array[$x]['y'], 2);
                             }
                             else {
@@ -147,17 +169,16 @@
                             }
                             $object_array[$x]['x'] = round($object_array[$x]['x'], 2);
                             if(!isset($object_array[$x]['diameterTop'])) {
-                                $object_array[$x]['diameterTop'] = $object_array[$x]['y'];
-                                $object_array[$x]['diameterRight'] = $object_array[$x]['x'] + $object_array[$x]['width'];
-                                $object_array[$x]['diameterDown'] = $object_array[$x]['y'] + $object_array[$x]['height'];
-                                $object_array[$x]['diameterLeft'] = $object_array[$x]['x'];
+                                $object_array[$x]['diameterTop'] = 0;
+                                $object_array[$x]['diameterRight'] = 0;
+                                $object_array[$x]['diameterDown'] = 0;
+                                $object_array[$x]['diameterLeft'] = 0;
                             }
-                            if($object_array[$x]['type'] == "link") {
-                                $objects['links'][] = $object_array[$x];
-                            }
-                            else {
-                                $objects['objects'][] = $object_array[$x];
-                            }
+                            $object_array[$x]['diameterTop'] += $object_array[$x]['y'];
+                            $object_array[$x]['diameterRight'] += $object_array[$x]['x'] + $object_array[$x]['width'];
+                            $object_array[$x]['diameterDown'] += $object_array[$x]['y'] + $object_array[$x]['height'];
+                            $object_array[$x]['diameterLeft'] += $object_array[$x]['x'];
+                            $objects['objects'][] = $object_array[$x];
                             unset($object_array[$x]['type']);
                         }
                 }
@@ -167,6 +188,7 @@
             $test = file_put_contents($this->object_file, "123");
             $handle = file_put_contents($this->object_file, json_encode($objects, JSON_PRETTY_PRINT));
         }
+        
         public function loadChunks($POST) {
             // Load the next 2 tiles
             $y_difference = $POST['ybase'] - 320 - $POST['yMapMin'];
@@ -220,13 +242,5 @@
             
             echo json_encode($objects);
         }
-        /*private function loadObjects() {
-            
-            $string = json_decode(file_get_contents('../gamedata/pixela.json'), true);
-            
-            if($version != $string['version']) {
-                
-            }
-        }*/
     }
 ?>

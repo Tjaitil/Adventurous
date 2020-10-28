@@ -10,7 +10,7 @@ button:focus {outline:0;}
 }
 #game_canvas2, #game_canvas3 {
     position: absolute;
-    top: 186px;
+    top: 215px;
     left: 12px;
 }
 #test_canvas {
@@ -21,9 +21,9 @@ button:focus {outline:0;}
     width: 100px;
     height: 100px;
     border-radius: 100px;
-    position: relative;
+    position: absolute;
     touch-action: none;
-    top: 300px;
+    top: 210px;
 }
 #control_button {
     background-color: black;

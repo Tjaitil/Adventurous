@@ -16,6 +16,16 @@
     -->
     <div id="sidebar">
         <button onclick="sidebar.toggleSidebar();" id="sidebar_button_toggle"> << </button>
+        <div id="hunger_bar">
+            <div id="hunger_bar2">
+        
+            </div>
+            <div id="hunger_bar_progress">
+                <span class="progress_value1">0</span>
+                &nbsp/&nbsp
+                <span class="progress_value2">100</span>
+            </div>
+        </div>
         <button class="sidebar_button">Adventure</button>
         <button class="sidebar_button">Countdowns</button>
         <button class="sidebar_button">Diplomacy</button>

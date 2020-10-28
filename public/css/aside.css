@@ -60,14 +60,18 @@ aside a:visited {
     width: 100%;
     height: 400px;
     position: absolute;
-    transition: width 0.5s ease-out;
+    transition: width 0.2s ease-out;
     z-index: 2;
+    color: white;
 }
 .sidebar_button {
     
 }
 .sidebar_tab {
-    
+    left: 10px;
+}
+#sidebar table {
+    text-align: center;
 }
 #sidebar_button_toggle {
     float: right;
@@ -88,6 +92,63 @@ aside a:visited {
 #tab_4 {
     position: absolute;
     visibility: hidden;
+    width: 100%;
+    left: 0px;
+    color: black;
+}
+#skills {
+    height: 86px;
+    margin-bottom: 5px;
+}
+#skills div {
+    position: relative;
+    display: inline-block;
+    border: 1px ridge black;
+    float: left;
+    width: 19%;
+    height: 70px;
+    max-width: 70px;
+    min-width: 55px;
+    padding: 3px 0px 3px 0px;
+    font-size: 100%;
+    box-sizing: border-box;
+    background-color: #f2e6d9;
+    text-align: center;
+    transition: background-color 0.8s;
+}
+#skills img {
+    width: 48px;
+    height: 48px;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+}
+#skills figure {
+    position: relative;
+}
+#ad_tooltip {
+    left: 18px;
+    position: absolute;
+    bottom: -10px;
+}
+.skill_level {
+    position: absolute;
+    bottom: -10px;
+    left: 44%;
+}
+.skill_tooltip {
+    position: absolute;
+    right: 20%;
+    border-radius: 1px;
+    background-color: #f2e6d9;
+    visibility: hidden;
+    color: black;
+    font-size: 12px;
+    z-index: 2;
+    padding: 1px 3px 1px 3px;
+    text-align: center;
+    width: auto;
+    display: inline-block;
+    float: right;
 }
 @media all and (max-width: 1040px) {
     aside {
@@ -98,13 +159,18 @@ aside a:visited {
 @media all and (max-width: 830px) {
     #sidebar {
         visibility: hidden;
+        position: absolute;
+        top: 185px;
     }
     #sidebar_button_toggle {
         visibility: visible;
         float: left;
+        position: sticky;
+        top: 25px;
     }
     aside {
         visibility: hidden;
         font-size: 12px;
+        height: 800px;
     }
 }

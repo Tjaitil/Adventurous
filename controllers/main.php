@@ -29,7 +29,7 @@
             $_SESSION['gamedata']['profiency_xp_nextlevel'] = $_SESSION['gamedata'][$profiency]['next_level'];
             $_SESSION['gamedata']['conversation']['progress'] = '';
             $_SESSION['log'] = array();
-            $_SESSION['log'][] = "Welcome to Adventurous!";
+            $_SESSION['log'][] = "Welcome to Adventurous, " . $_SESSION['gamedata']['username'] . "!";
             $this->model->checkMarket();
         }
         public function calculateCountdowns($data = false) {

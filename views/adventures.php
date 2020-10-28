@@ -59,11 +59,6 @@
                     </tr>
                 </table>
             </div>
-            <div id="tabs">
-                <button onclick="show('current_adventure');"> Current Adventure: </button>
-                <button onclick="show('pending_adventure');"> Pending Adventure: </button>
-                <button onclick="show('new_adventure');"> New Adventure: </button>
-            </div>
             <div id="new_adventure">
                 <form method="post" action="/adventures">
                     <label for="difficulty"> Select difficulty: </label>
@@ -171,33 +166,29 @@
                                     <td> Provided: </td>
                                 </tr>
                             </thead>
-                            <?php get_template('requirements', $this->data['current_adventure']['requirements']); ?>
+                            <?php get_template('requirements', $this->data['current_adventure']['requirements'], true); ?>
                         </table>
                     </div>
                     <div id="provide">
                         <?php if($this->data['current_adventure']['info']['adventure_status'] == 0):
-                              switch($this->data['profiency']):
-                              case 'warrior': ?>
-                                <?php get_template('warrior_select', $this->data['current_adventure']['warriors']);?>
-                            <button> Provide </button>
-                        <?php break; ?>
-                        <?php
-                            case 'miner':
-                            case 'farmer':?>
-                            <div id="item">
-                                <div id="selected"></div>
-                            </div>
-                            <label for="quantity"> Select how many </label>
-                            <input id="selected_amount" name="quantity" type="number" min="0"/>
-                            <button> Provide </button>
+                                switch($this->data['profiency']):
+                                case 'warrior': ?>
+                                  <?php get_template('warrior_select', $this->data['current_adventure']['warriors'], true);?>
+                              <button> Provide </button>
+                          <?php break; ?>
+                          <?php
+                              case 'miner':
+                              case 'farmer':?>
+                              <div id="item">
+                                  <div id="selected"></div>
+                              </div>
+                              <label for="quantity"> Select how many </label>
+                              <input id="selected_amount" name="quantity" type="number" min="0"/>
+                              <button> Provide </button>
+                          <?php break; ?>
+                          <?php endswitch;?>
+                        <?php endif;?>
                     </div>
-                    <div id="inventory">
-                        <?php require(constant("ROUTE_VIEW") . "inventory.php"); url();?>
-                    </div>
-                    <?php break; ?>
-                    <?php endswitch;?>
-                    <?php endif;?>
-                    
                 <?php endif; ?>
             </div>
             <div id="pending_adventure">

@@ -42,10 +42,17 @@
             
             $data['current_adventure'] = $this->currentAdventure();
             
-            $sql2 = "SELECT adventure_id, difficulty, location, farmer, miner, trader, warrior FROM adventures
+            if($data['current_adventure']['current'] != 0) {
+                $sql2 = "SELECT adventure_id, difficulty, location, farmer, miner, trader, warrior FROM adventures
+                     WHERE adventure_status=0 AND adventure_id=:adventure_id";
+                $stmt2 = $this->db->conn->prepare($sql2);
+                $stmt2->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_INT);
+            }
+            else {
+                $sql2 = "SELECT adventure_id, difficulty, location, farmer, miner, trader, warrior FROM adventures
                      WHERE adventure_status=0";
-            $stmt2 = $this->db->conn->prepare($sql2);
-            $param_profiency = $_SESSION['gamedata']['profiency'];
+                $stmt2 = $this->db->conn->prepare($sql2);
+            }
             $stmt2->execute();
             $data['pending_adventures'] = $stmt2->fetchAll(PDO::FETCH_ASSOC);
             
@@ -156,7 +163,8 @@
                     
                     $sql = "SELECT
                         (SELECT SUM(attack) FROM armory_items_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS attack,
-                        (SELECT SUM(defence) FROM armory_items_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS defence
+                        (SELECT SUM(defence) FROM armory_items_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS defence,
+                        helm, ammunition, ammunition_amount, body, right_hand, left_hand, legs, boots
                         FROM warrior_armory
                         WHERE username= ? AND warrior_id IN ($in)";
                         $stmt = $this->db->conn->prepare($sql);

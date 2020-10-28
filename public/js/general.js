@@ -58,7 +58,14 @@
                document.getElementById("item_tooltip").style.visibility = "hidden";
             });
             if(window.location.href.indexOf("stockpile") == -1) {
-                addShowTitle();    
+                addShowTitle();   
+            }
+            if(/Safari|Chrome/i.test(navigator.userAgent)) {
+                let span = document.getElementsByClassName("item_amount");
+                for(var i = 0; i < span.length; i++) {
+                    span[i].style.left = "-20%";
+                    span[i].style.display = "block";
+                }
             }
         }
         console.log(document.getElementById("inv_toggle_button").style.visibility);
@@ -80,7 +87,7 @@
         ajaxG(data, function(response) {
            console.log(response[1]);
             if(response[1] > 0) {
-                document.getElementById("nav").querySelectorAll(".top_but")[5].children[0].innerHTML += ' ' + '(' + response[1] + ')';
+                document.getElementById("nav").querySelectorAll(".top_but")[4].children[0].innerHTML += ' ' + '(' + response[1] + ')';
             }
         });
     }
@@ -148,9 +155,6 @@
     function openNews(content, sidebar = false) {
         document.getElementById("news_content_main_content").innerHTML = "";
         var newsDiv = document.getElementById("news_content");
-        /*while(newsDiv.childNodes.length > 2) {
-            newsDiv.removeChild(newsDiv.lastChild);
-        }*/
         document.getElementById("news").style.visibility = "visible";
         document.getElementById("news_content").style.visibility = "visible";
         if(typeof content == 'object') {
@@ -161,24 +165,22 @@
             }
         }
         else {
-            document.getElementById("news_content_main_content").innerHTML += content;
+            document.getElementById("news_content_main_content").innerHTML = content;
         }
-        let siteNoSidebar = ["Stockpile"];
-        if(sidebar == true && siteNoSidebar.indexOf(document.getElementsByClassName("page_title")[0].innerText) === -1) {
+        if(sidebar == true) {
             newsContentSidebar.adjustSidebar();
+            hello();
         }
-        else {
-            console.log('style width');
-            document.getElementById("news_content_main_content").style.width = "94%";
-        }
+    }
+    function hello() {
+        console.log(document.getElementById("news_content_main_content").querySelectorAll("div")[0].clientHeight);
     }
     function closeNews() {
         var newsDiv = document.getElementById("news_content_main_content");
+        if(document.getElementsByClassName("page_title")[0].innerText == 'merchant') {
+            updateStockCountdown('end');
+        }
         newsDiv.innerHTML = "";
-        /*while(newsDiv.childNodes.length > 2) {
-            newsDiv.removeChild(newsDiv.lastChild);
-        }*/
-        console.log(newsDiv);
         news.style = "visibility: hidden;";
         document.getElementById("news_content").style.visibility = "hidden";
         if(typeof inBuilding !== 'undefined') {
@@ -189,7 +191,7 @@
         if(selectItemEvent.selectItemStatus === true) {
             selectItemEvent.removeSelectEvent();
         }
-        if(typeof menubarToggle != undefined) {
+        if(typeof(menubarToggle) !== 'undefined') {
             menubarToggle.removeEvent();
         }
         if(itemTitle.status === false) {
@@ -216,19 +218,22 @@
     };
     var newsContentSidebar = {
         adjustSidebar() {
-            if(document.getElementById("news_content_main_content").style.width === "100%") {
-                document.getElementById("news_content_main_content").style.width = "75%";
+            let news_content_main = document.getElementById("news_content_main_content");
+            if(news_content_main.style.width === "100%") {
+                news_content_main.style.width = "75%";
                 document.getElementById("news_content_side_panel").style.width = "25%";
+                document.getElementById("news_content_side_panel").style.display = "";
             }
             document.getElementById("news_content_side_panel").innerHTML = "";
-            var divChildren = document.getElementById("news_content_main_content").children;
-            let exceptions = ["put_on", "mission_enabled", "current_mission"];
+            var divChildren = news_content_main.children;
+            let exceptions = ["put_on", "mission_enabled", "current_mission", "persons", "stck_menu"];
             let buttonCount = 0;
             for(var i = 0; i < divChildren.length; i++) {
                 if(divChildren[i].tagName === 'DIV' && exceptions.indexOf(divChildren[i].id) == -1) {
+                    console.log(divChildren[i]);
+                    console.log(divChildren[i].clientHeight);
                     let button = document.createElement("button");
                     // Get text from div id and remove underscore and Uppercase character of each word;
-                    console.log(divChildren[i].id);
                     let text = document.createTextNode(jsUcWords(underscoreTreatment(divChildren[i].id, false)));
                     button.appendChild(text);
                     document.getElementById("news_content_side_panel").appendChild(button);
@@ -239,10 +244,18 @@
                 }
             }
             if(buttonCount == 1) {
-                document.getElementById("news_content_main_content").querySelectorAll("div")[0].style.visibility = "visible";
-                document.getElementById("news_content_main_content").style.width = "100%";
+                news_content_main.querySelectorAll("div")[0].style.visibility = "visible";
+                console.log(document.getElementById("news_content_main_content").querySelectorAll("div")[0].clientHeight);
+                console.log(news_content_main.querySelectorAll("div")[0].clientHeight);
+                if(news_content_main.querySelectorAll("div")[0].id == "persons") {
+                    news_content_main.children[2].style.visibility = "visible";    
+                }
+                news_content_main.style.width = "100%";
                 document.getElementById("news_content_side_panel").style.display = "none";
+                document.getElementById("news_content").style.height =
+                    document.getElementById("news_content_main_content").querySelectorAll("div")[0].clientHeight + 93 + "px";
             }
+            
             this.addEvent();
         },
         showContent() {
@@ -317,7 +330,20 @@
         document.getElementById("alert_cancel").addEventListener("click", closeNews);
         document.getElementById("cont_exit").addEventListener("click", closeNews);
     }
-    function get_xp(skill, element) {
+    function get_xp(skill) {
+        if(event === null) {
+            return false;    
+        }
+        let element = event.target.closest("div");
+        console.log(element);
+        let divs = document.getElementById("skills").querySelectorAll("div");
+        let selectedIndex = newLevel.elementIndex[skill];
+        for(let i = 0; i < divs.length; i++) {
+            if(selectedIndex != i) {
+                divs[i].children[1].style.visibility = "hidden";
+            }
+        }
+        
         var tooltip = element.children[1];
         tooltip.style.right = "-30%";
         if(tooltip.style.visibility == "visible") {
@@ -392,6 +418,10 @@
         console.log(element);
         var item = element.getElementsByTagName("figcaption")[0].innerHTML;
         var menu = document.getElementById("item_tooltip");
+        if(menu.style.visibility == "visible") {
+            menu.style.visibility = "hidden";
+            return false;
+        }
         // Insert item name at the first li
         menu.children[0].children[0].innerHTML = item;
         menu.style.visibility = "visible";
@@ -401,14 +431,12 @@
         menuTop = element.offsetTop + 30;
         console.log(menuTop);
         menu.children[0].style.top = menuTop + "px";
+        menu.children[0].children[0].style.textAlign = "center";
         if(item.length < 8) {
             menu.children[0].style.left = element.offsetLeft +  20 + "px";
-            menu.children[0].children[0].style.width = "50px";
-            menu.children[0].children[0].style.textAlign = "center";
         }
         else {
             menu.children[0].style.left = element.offsetLeft + 10 + "px";
-            menu.children[0].children[0].style.width = "auto";
         }
         console.log(element.parentNode);
         /*if(["stockpile", "inventory"].indexOf(element.parentNode.id) != -1) {
@@ -462,7 +490,6 @@
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
     function jsUcWords(str) {
-        console.log(str);
         return str.replace(/\w\S*/g, function(txt){
             return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
         });
@@ -504,9 +531,10 @@
         sidebarElement: document.getElementById("sidebar"),
         sidebarToggled: false,
         addClickEvent() {
+            // Get every button and add event;
             let sidebarTabs = document.getElementById("sidebar").querySelectorAll("button");
             sidebarTabs.forEach(function(element) {
-                // ... code code code for this one element
+                // Find first button and not append event to it
                 if(element.previousElementSibling == null) {
                     return;
                 }
@@ -525,21 +553,26 @@
             }
             else {
                 sidebar.showTab(sidebarCheck = false);
-                this.sidebarElement.style.width = document.getElementsByTagName("section")[0].clientWidth * 0.12 + "px";
+                if(generalProperties.screenWidth < 830) {
+                    this.sidebarElement.style.width = document.getElementsByTagName("section")[0].clientWidth * 0.12 + "px";    
+                }
+                else {
+                    this.sidebarElement.style.width = "100%";
+                }
                 this.sidebarToggled = false;
                 if(window.screen.width > 830) {
                     document.getElementById("sidebar_button_toggle").style.visibility = "hidden";
                 }
                 else {
                     setTimeout(function() {
-                        document.getElementById("sidebar").style.visibility = "hidden";}, 600);
+                        document.getElementById("sidebar").style.visibility = "hidden";}, 200);
                 }
             }
         },
         showTab(sidebarCheck) {
             console.log(sidebarCheck);
-            if(sidebar.sidebarToggled === false && sidebarCheck === true) {
-                sidebar.toggleSidebar();    
+            if(this.sidebarToggled === false && sidebarCheck === true) {
+                this.toggleSidebar();    
             }
             let newActiveTab = event.target.innerText;
             console.log(newActiveTab);

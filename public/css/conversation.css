@@ -2,16 +2,22 @@
     color: gray;  
 }
 #conversation_container {
-    width: 300px;
-    height: 200px;
-    background-color: orange;
+    width: 68%;
+    height: 150px;
+    background-color: #f2e6d9;
     position: absolute;
     z-index: 3;
     visibility: hidden;
 }
+#conversation_container h3 {
+    width: 100%;
+    height: 27px;
+}
 #conversation_container img {
     display: block;
     border: 1px solid black;
+    height: 48px;
+    width: 48px;
 }
 #conversation {
     width: 79%;

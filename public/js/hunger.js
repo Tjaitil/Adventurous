@@ -2,22 +2,27 @@ function calculateHunger() {
     var data = "model=Hunger" + "&method=checkHunger";
     ajaxG(data, function(response) {
         if(response[0] != false) {
-            var responseText = response[1];
-            console.log(Number(responseText));
-            console.log("hunger");
-            var sum = 12.5;
-            var spans = document.getElementById("hunger").querySelectorAll("span");
-            for(var i = 0; i < 8; i++) {
-                if(sum < responseText) {
-                    spans[i].style.backgroundColor = "#e68a00";
-                }
-                else {
-                    spans[i].style.backgroundColor = "transparent";
-                }
-                sum+= 12.5;
-            }
+            let responseText = response[1];
+            document.getElementById("hunger_bar").querySelectorAll(".progress_value1")[0].innerText = responseText;
+            let count = 0;
+            /*var x = setInterval(function() {
+                console.log(count++); 
+            }, 1000);*/
+            let width = (responseText / 100) * 100;
+            document.getElementById("hunger_bar2").style.width = width + "%";
+            console.log('hunger');
         }
     });
 }
-
-setTimeout(calculateHunger, 3000);
+function updateHunger() {
+    let time = Math.floor((new Date().getTime() - game.properties.startTime) / 1000);
+    var data = "model=Hunger" + "&method=updateHunger" + "&time=" + time;
+    ajaxP(data, function(response) {
+        if(response[0] !== false) {
+            let responseText = response[1];
+            document.getElementById("hunger_bar").querySelectorAll(".progress_value1")[0].innerText = responseText;
+            let width = (responseText / 100) * 100;
+            document.getElementById("hunger_bar2").style.width = width + "%";
+        }
+    });
+}

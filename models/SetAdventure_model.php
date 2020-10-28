@@ -301,7 +301,6 @@
                 $this->gameMessage(sprintf($string, $quantity), true);
             }
             echo "|";
-            get_inventory($this->db->conn, $this->username);
             $sql = "SELECT role, required, amount, provided, status FROM adventure_requirements WHERE adventure_id=:adventure_id AND
             role IN ('farmer', 'miner', 'trader', 'warrior')
                     ORDER BY role ASC";
@@ -310,6 +309,9 @@
             $param_adventure_id = $row['adventure_id'];
             $stmt->execute();
             $requirements = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $trader_requirement = array_filter($requirements, function ($key) {
+                        return ($key['role'] === 'trader');
+                    });
             if(count($trader_requirement) > 0) {
                 $location = $data['info']['location'];
                 $sql = "SELECT {$location} FROM diplomacy WHERE username=:username";

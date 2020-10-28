@@ -1,5 +1,10 @@
             citycentre.css|citycentre.js|
             <h3 class="page_title"> City Centre </h3>
+            <?php if(in_array($_SESSION['gamedata']['location'], array("fansal-plains", "hirtam", "khanz", "pvitul", "ter"))): ?>
+                <p> Current diplomacy relation: <?php echo $_SESSION['gamedata']['location'], ', ' , 
+                $this->data['diplomacy'][0]; ?>
+                </p>
+            <?php endif;?>
             <div id="profiency">
                 <p> Current profiency: <span id="profiency"><?php echo $_SESSION['gamedata']['profiency'];?></span></p>
                     <label for="profiency_select"> Change profiency</label></br>

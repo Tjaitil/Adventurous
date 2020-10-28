@@ -1,7 +1,16 @@
             smithy.css|smithy.js|
             <h3 class="page_title"> Smithy </h3>
-            <h5>Choose your mineral</h5>
+            <div id="persons">
+                <div class="person">
+                    <figure>
+                        <img src="<?php echo constant('ROUTE_IMG') . 'yvonus';?>" />
+                        <figcaption>Yvonus</figcaption>
+                    </figure>
+                    <button> Talk </button>
+                </div>
+            </div>
             <div id="smith">
+                <h5>Choose your mineral</h5>
                 <div id="minerals">
                     <img src="<?php echo constant('ROUTE_IMG') . 'iron ore.png';?>"
                     class="minerals" title="iron" onclick="showMineral('iron', this);" />
@@ -33,13 +42,13 @@
                         if(strpos($key['item'], 'arrows') === false): ?>
                         <tr>
                             <td><figure>
-                                <img class="item_img" src="<?php echo constant('ROUTE_IMG') . $key['item']. '.png';?>" />
+                                <img class="item_img" src="<?php echo constant('ROUTE_IMG') . $key['item'] . '.png';?>" />
                                 <figcaption><?php echo ucwords($key['item']);?></figcaption>
                             </figure></td>
                             <td><?php echo $key['mineral_required'];?></td>
                             <td><?php echo $key['cost'];?><img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.png';?>" /></td>
                             <td><input type="number" min="0" />
-                            <button> Make</button></td>
+                            <button> Smith </button></td>
                         </tr>
                         <?php else:
                         $mineral = explode(" ", $key['item'])[0];
@@ -49,7 +58,7 @@
                                 <img class="item_img" src="<?php echo constant('ROUTE_IMG') . $key['item']. '.png';?>" />
                                 <figcaption><?php echo ucwords($key['item']);?></figcaption>
                             </figure></td>
-                            <td> 1 <img src="<?php echo constant('ROUTE_IMG') . $mineral . 'png';?>" /> =
+                            <td> 1 <img src="<?php echo constant('ROUTE_IMG') . $mineral . ' bar.png';?>" /> =
                                 15 <img src="<?php echo constant('ROUTE_IMG') . $key['item']. '.png';?>" /></td>
                             <td><?php echo $key['cost'];?><img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.png';?>" /></td>
                             <td> <input type="number" min="0" />

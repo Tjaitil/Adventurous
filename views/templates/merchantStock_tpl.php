@@ -6,7 +6,7 @@
     <?php foreach($data['shop'] as $key): ?>   
             <div class="store_trade">
                 <p><?php echo $key['amount'];?></p>
-                <div class="inventory_item">
+                <div class="item">
                     <figure onclick="show_title(this);">
                         <img src="<?php echo constant('ROUTE_IMG') . $key['item'] . '.png';?>"/>
                         <figcaption class="tooltip"><?php echo ucwords($key['item']); ?></figcaption>
@@ -15,7 +15,7 @@
                 </div>
                 <div id="trade_sign"> <=> </br>
                 </div>
-                <div class="inventory_item">
+                <div class="item">
                     <figure onclick="show_title(this);">
                         <img src="<?php echo constant('ROUTE_IMG') . $key['want'] . '.png';?>"/>
                         <figcaption class="tooltip"><?php echo ucwords($key['want']); ?></figcaption>

@@ -1,0 +1,7 @@
+{"index": "hf",
+"hf":"a|Hello, I am Harfen. Who are you?|r",
+"hfr":["b|My name is ...|Q1","b|None of your business|r1"],
+"hfrQ1":"a|What can i do for you?|r",
+"hfrQ1r":["b|Tell me about yourself|r",
+"b|I'd like to look at your merchant|FuncName|End"],
+"hfrr1":"a|Well stranger, then we don't have more to talk about.|end"}

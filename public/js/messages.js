@@ -57,7 +57,7 @@
         for(var i = 0; i < divs.length; i++) {
             var div = divs[i].replace(" ", "_").toLowerCase();
             if(divs[i] == element) {
-                document.getElementById(div).style.display = "inline";
+                document.getElementById(div).style.display = "inline-block";
             }
             else {
                 document.getElementById(div).style.display = "none";
@@ -132,6 +132,7 @@
                 document.getElementById("message_info").children[0].children[1].children[1].innerHTML = responseText [2];
                 document.getElementById("message_info").children[0].children[2].children[1].innerHTML = responseText [3];
                 document.getElementById("message").children[2].innerHTML = responseText[4];
+                console.log(responseText[4]);
                 if(data[0] == 0) {
                     var parent = element.parentNode.parentNode;
                     var img = parent.children[4].children[0];

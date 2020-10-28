@@ -29,10 +29,6 @@
     visibility: hidden;
     position: absolute;
 }
-#stockpile p {
-    float: right;
-    position: absolute;
-}
 #stck_menu {
     visibility: hidden;
 }

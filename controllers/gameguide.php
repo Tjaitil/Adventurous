@@ -16,7 +16,7 @@
                     $this->guidefile = $this->defaultfile;
                 }
             }
-            else {
+            else { 
                 $this->guidefile = $this->defaultfile;
             }
         }

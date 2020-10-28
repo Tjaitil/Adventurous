@@ -48,17 +48,7 @@
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $date = date_timestamp_get(new DateTime($row['crop_countdown']));
-            
-            /*if($check == true) {
-                echo "tskdaosko";
-                $now = date_timestamp_get(new DateTime(date("Y-m-d H:i:s")));
-                if($now > $date) {
-                    return true;
-                }
-                else if($now < $date) {
-                    return false;
-                }
-            }*/
+        
             $this->db->closeConn();
             js_echo(array($date, $row['plot1_harvest'], $row['crop_type']));
         }

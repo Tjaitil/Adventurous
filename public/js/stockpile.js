@@ -1,16 +1,8 @@
+    
     var timeID = [];
     
     var method = false;
-    // Check if news_content_main_content -> children[2] has gotten content from game.js -> game.fetchBuilding()
-    if(document.getElementById("news_content").children[2] != null) {
-        menubarToggle.addEvent();
-        /*let figures = document.getElementById("inventory").querySelectorAll("figure");
-        figures.forEach(function(element) {
-            // ... code code code for this one element
-            element.addEventListener('click', show_menu());
-        });*/ 
-    }
-    menubarToggle = {
+    var menubarToggle = {
         toggled: false,
         addEvent: function() {
             menubarToggle.toggled = true;
@@ -30,6 +22,18 @@
             });
         }
     };
+    // Check if news_content_main_content -> children[2] has gotten content from game.js -> game.fetchBuilding()
+    if(document.getElementById("news_content").children[2] != null) {
+        console.log(show_menu);
+        menubarToggle.addEvent();
+        if(/Safari|Chrome/i.test(navigator.userAgent)) {
+            let span = document.getElementsByClassName("item_amount");
+            for(var i = 0; i < span.length; i++) {
+                span[i].style.left = "-20%";
+                span[i].style.display = "block";
+            }
+        }
+    }
     function show_menu() {
         console.log("show_menu");
         // Show menu above the item;
@@ -38,10 +42,10 @@
         var menu = document.getElementById("stck_menu");
         console.log(menu);
         if(element.className == 'inventory_item') {
-            document.getElementById("inventory").appendChild(menu);            
+            document.getElementById("inventory").appendChild(menu);         
         }
         else {
-            document.getElementById("stockpile").appendChild(menu);
+            document.getElementById("news_content").appendChild(menu); 
         }
         var item = element.getElementsByTagName("figcaption")[0].innerHTML;
         // Insert item name at the first li
@@ -54,11 +58,12 @@
         var lis = menu.children[0].children;
         // Variable for holding the querySelectorAll("LI");
         var liN;
+        let elementPos;
         if(element.className == 'inventory_item') {
-            menuTop = element.offsetTop + 15;
             for(var i = 1; i < (lis.length - 1); i++) {
                 lis[i].innerHTML = "Insert " + lis[i].innerHTML.split(" ")[1];
             }
+            lis[lis.length - 1].innerHTML = "Insert all";
             if(method == 'withdraw' || method == false) {
                 //Change addEventListener function
                 method = "insert";
@@ -74,12 +79,32 @@
                     element.addEventListener('click', insert);
                 });
             }
+            elementPos = element.getBoundingClientRect();
+            console.log(element.offsetTop);
+            console.log(elementPos);
+            console.log(screen.height);
+            console.log(elementPos.top + 145);
+            if(element.offsetTop + 150 > document.getElementById("stockpile").offsetHeight) {
+                console.log('1');
+                menuTop = element.offsetTop - 70;
+            }
+            /*else if(screen.height < elementPos.top + 145) {
+                console.log('menudown');
+                menuTop = elementPos.top - 70;
+                console.log(menuTop);
+            }*/
+            else {
+                console.log('3');
+                menuTop = element.offsetTop + 15;
+            }
+            menu.children[0].style.left = element.offsetLeft + "px";
         }
         else {
-            menuTop = element.offsetTop - element.parentNode.scrollTop + 15;
+            let newsContent = document.getElementById("news_content");
             for(var x = 1; x < (lis.length - 1); x++) {
                 lis[x].innerHTML = "Withdraw " + lis[x].innerHTML.split(" ")[1]; 
             }
+            lis[lis.length - 1].innerHTML = "Widthdraw all";
             if(method == 'insert' || method == false) {
                 //Change addEventListener function
                 method = "withdraw";
@@ -96,9 +121,27 @@
                     element.addEventListener('click', withdraw);
                 });
             }
+            elementPos = element.getBoundingClientRect();
+            console.log(element.offsetTop);
+            console.log(elementPos);
+            console.log(screen.height);
+            console.log(elementPos.top + 145);
+            if(element.offsetTop + 150 > document.getElementById("stockpile").offsetHeight) {
+                console.log('1');
+                menuTop = element.offsetTop - 70;
+            }
+            /*else if(screen.height < elementPos.top + 145) {
+                console.log('menudown');
+                menuTop = elementPos.top - 70;
+                console.log(menuTop);
+            }*/
+            else {
+                console.log('3');
+                menuTop = element.offsetTop + 85;
+            }
+            menu.children[0].style.left = element.offsetLeft + "px";
         }
         menu.children[0].style.top = menuTop + "px";
-        menu.children[0].style.left = element.offsetLeft + "px";
         /*timeID.push(setTimeout(hideMenu, 4000));*/
     }  
     function hideMenu() {

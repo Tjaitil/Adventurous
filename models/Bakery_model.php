@@ -23,6 +23,10 @@
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             
+            // If profiency is farmer cut the cost by 75%
+            if($this->session['profiency'] === 'farmer') {
+                $row['cost'] *= 0.25; 
+            }
             if(!$stmt->rowCount() > 0) {
                 $this->gameMessage("ERROR: The product you are trying to make doesnt exists!", true);
                 return false;
