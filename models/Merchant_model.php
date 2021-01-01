@@ -12,31 +12,26 @@
             $this->commonModels(true, false);
         }
         public function getData($js = false) {
-            if($this->session['location'] === 'travelling') {
-                header("Location: /city");
-                exit();
-            }
-
             $data = array();
             $data['city'] = $this->session['location'];
             
+            $param_username = $this->username;
             $sql2 = "SELECT assignment_id, cart, cart_amount, delivered,
                     (SELECT capasity FROM travelbureau_carts WHERE wheel= cart) as capasity FROM trader
                      WHERE username=:username";
             $stmt2 = $this->db->conn->prepare($sql2);
             $stmt2->bindParam(":username", $param_username, PDO::PARAM_STR);
-            $param_username = $this->username;
             $stmt2->execute();
             $data['trader_data'] = $stmt2->fetch(PDO::FETCH_ASSOC);
-            
+
             // If trader assignment is not 0 then the player has a trading assignment
             if($data['trader_data']['assignment_id'] != 0 ) {
+                $param_assignment_id = $data['trader_data']['assignment_id'];
                 $sql4 = "SELECT base, destination, cargo, assignment_amount, assignment_type
                          FROM trader_assignments
                          WHERE assignment_id=:assignment_id";
                 $stmt4 = $this->db->conn->prepare($sql4);
                 $stmt4->bindParam(":assignment_id", $param_assignment_id, PDO::PARAM_INT);
-                $param_assignment_id = $data['trader_data']['assignment_id'];
                 $stmt4->execute();
                 $row4 = $stmt4->fetch(PDO::FETCH_ASSOC);
                 $data['trader_data']['base'] = $row4['base'];
@@ -51,20 +46,20 @@
             $stmt->execute();
             $data['merchantTimes'] = $stmt->fetch(PDO::FETCH_ASSOC);
             
+
             // If it has been 4 hours, make new trades
-            if(date_timestamp_get(new DateTime($data['merchantTimes']['date_inserted'])) + 14400
-               < date_timestamp_get(new DateTime(date("Y-m-d h:i:s")))) {
+            if(date_timestamp_get(new DateTime($data['merchantTimes']['date_inserted'])) + 14400 <
+                date_timestamp_get(new DateTime(date("Y-m-d H:i:s")))) {
                 $this->makeTrades();
-            }
-            
+            }            
             // Get trader offers
-            $data['merchant_offers'] = $this->getOffers();
+            $data['offers'] = $this->getOffers();
             
+            $param_city = $this->session['location'];
             $sql5 = "SELECT assignment_id, base, destination, cargo, assignment_amount, time, assignment_type FROM trader_assignments
                      WHERE base=:base";
             $stmt5 = $this->db->conn->prepare($sql5);
             $stmt5->bindParam(":base", $param_city, PDO::PARAM_STR);
-            $param_city = $this->session['location'];
             $stmt5->execute();
             $data['trader_assignments'] = $stmt5->fetchAll(PDO::FETCH_ASSOC);
             
@@ -72,7 +67,9 @@
             $this->db->closeConn();
             // if statement to check if ajax request is being called
             if($js === true) {
+                ob_start();
                 get_template('merchantStock', $data, true);
+                $this->response->addTo("html", ob_get_clean());
             }
             else {
                 return $data;
@@ -138,11 +135,11 @@
                         return ($var != $base);
                     });
                     $assignment['destination'] = $destinations[array_rand($destinations)];
+                    $param_assignment_type = $assignment['assignment_type'];
                     $sql = "SELECT name FROM items WHERE in_game = 1 AND store_value > 0 AND trader_assignment_type=:assignment_type
                             ORDER BY RAND() LIMIT 1";
                     $stmt = $this->db->conn->prepare($sql);
                     $stmt->bindParam(":assignment_type", $param_assignment_type, PDO::PARAM_STR);
-                    $param_assignment_type = $assignment['assignment_type'];
                 }
                 $stmt->execute();
                 $assignment['cargo'] = $stmt->fetch(PDO::FETCH_OBJ)->name;
@@ -158,6 +155,12 @@
                 if($stmt->rowCount() === 0) {
                     throw new Exception("No rows deleted from delete query" . __METHOD__);
                 }
+                $param_base = "";
+                $param_destination = "";
+                $param_cargo = "";
+                $param_assignment_amount = "";
+                $param_time = "";
+                $param_assignment_type = "";
                 // Insert new trades
                 $sql = "INSERT INTO trader_assignments (base, destination, cargo, assignment_amount, time, assignment_type)
                         VALUES(:base, :destination, :cargo, :assignment_amount, :time, :assignment_type)";
@@ -195,20 +198,23 @@
                 $db_table_name = str_replace("-", "_", $db_table_name);
                 
                 // Select 4 items which has store_rate of 1 in the specified location
-                $sql = "SELECT name, store_value, {$db_table_name} FROM items WHERE {$db_table_name} = 1 AND in_game = 1
+                $sql = "SELECT name, store_value, {$db_table_name} FROM items 
+                        WHERE {$db_table_name} = 1 AND in_game = 1 AND store_value > 0
                         ORDER BY RAND() LIMIT 7";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->execute();
                 $row1 = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 
                 // Select 4 items which has store_rate of 3 in the specified location
-                $sql = "SELECT name, store_value, {$db_table_name} FROM items WHERE NOT {$db_table_name} = 2 AND in_game = 1
+                $sql = "SELECT name, store_value, {$db_table_name} FROM items 
+                        WHERE {$db_table_name} = 2 AND in_game = 1 AND store_value > 0
                         ORDER BY RAND() LIMIT 3";
                 $stmt = $this->db->conn->prepare($sql);
                 $row2 = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 // Select 4 items which has store_rate of 3 in the specified location
-                $sql = "SELECT name, store_value, {$db_table_name} FROM items WHERE NOT {$db_table_name} = 3 AND in_game = 1
+                $sql = "SELECT name, store_value, {$db_table_name} FROM items 
+                        WHERE {$db_table_name} = 3 AND in_game = 1 AND store_value > 0
                         ORDER BY RAND() LIMIT 2";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->execute();
@@ -258,6 +264,11 @@
                 }
                 
                 // Insert new trades
+                $param_location = "";
+                $param_item = "";
+                $param_user_buy_price = "";
+                $param_user_sell_price = "";
+                $param_amount = "";
                 $sql = "INSERT INTO merchant_offers (location, item, user_buy_price, user_sell_price, amount)
                         VALUES(:location, :item, :user_buy_price, :user_sell_price, :amount)";
                 $stmt = $this->db->conn->prepare($sql);
@@ -290,71 +301,96 @@
             $stmt = $this->db->conn->prepare($sql);
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            echo $date = date_timestamp_get(new DateTime($row['date_inserted']));
+            $date = date_timestamp_get(new DateTime($row['date_inserted']));
+            $this->response->addTo("data", $date, array("index" => "date"));
             $this->db->closeConn();
         }
         public function getOffers($js = false) {
+            $param_location = $this->session['location'];
             $sql = "SELECT item, user_buy_price, user_sell_price, amount FROM merchant_offers WHERE location=:location";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
-            $param_location = $this->session['location'];
             $stmt->execute();
-            $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if($js === true) {
-                get_template('merchantOffers', $row, true);
-                $this->db->closeConn();
+            $data['offers'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $data['diplomacy'] = array();
+            $locations = array("hirtam", "pvitul", "khanz", "ter", "fansal-plains");
+            if(in_array($this->session['location'], $locations)) {
+                $param_username = $this->username;
+                $sql = "SELECT hirtam, pvitul, khanz, ter, fansalplains FROM diplomacy WHERE username=:username";
+                $stmt = $this->db->conn->prepare($sql);
+                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                $stmt->execute();
+                $data['diplomacy'] = $stmt->fetch(PDO::FETCH_ASSOC);
             }
+            if($js === true) {
+                ob_start();
+                get_template('merchantOffers', $data, true);
+                $this->response->addTo("html", ob_get_clean());
+            }  
             else {
-                return $row;
+                return $data;
             }
         }
         public function tradeItem($POST) {
             // $POST variable holds the post data
             // This function is called from an AJAX request from merchant.js
             // Function to trade item with merchant
+
             $item = strtolower($POST['item']);
             $amount = $POST['amount'];
             $mode = $POST['mode'];
-            $cities = array("towhar", "golbak", "snerpiir", "krasnur", "tasnobil", "cruendo", "fagna");
-            if (array_search($this->session['location'], $cities) === false) {
-                $this->gameMessage("ERROR: Something unexpected happened, please try again later!", true);
-                return false;
-            }
             if($this->session['location'] !== 'fagna') {
+                $param_location = $this->session['location'];
+                $param_item = $item;
                 $sql = "SELECT item, user_buy_price, user_sell_price, amount 
                         FROM merchant_offers WHERE location=:location AND item=:item";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
                 $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
-                $param_location = $this->session['location'];
-                $param_item = $item;
                 $stmt->execute();
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
                 // If the item doesn't exists and the method is sell
                 if($stmt->rowCount() == 0) {
                     if($mode == 'sell') {
-                        $this->gameMessage("ERROR: The merchant isn't interested in what you are trying to sell", true);
+                        $this->response->addTo("errorGameMessage", "The merchant isn't interested in what you are trying to sell");
                         return false;
                     }
                     else {
-                        $this->gameMessage("ERROR: The merchant isn't selling what you are trying to buy", true); 
+                        $this->response->addTo("errorGameMessage", "The merchant isn't selling what you are trying to buy");
                         return false;
                     }
                 }
                 if($mode == 'buy' && $row['amount'] < $amount) {
-                    $this->gameMessage("ERROR: The merchant isn't selling the amount you are trying to buy", true);
+                    $this->response->addTo("errorGameMessage", "The merchant isn't selling the amount you are trying to buy");
                     return false;
                 }
+            }
+            $locations = array("hirtam", "pvitul", "khanz", "ter", "fansalplains");
+            if(in_array($this->session['location'], $locations)) {
+                $param_username = $this->username;
+                $sql = "SELECT hirtam, pvitul, khanz, ter, fansalplains FROM diplomacy WHERE username=:username";
+                $stmt = $this->db->conn->prepare($sql);
+                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                $stmt->execute();
+                $diplomacy = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                $param_city = $this->session['location'];
+                $sql = "SELECT hirtam, pvitul, khanz, ter, fansalplains FROM city_relations WHERE city=:city";
+                $stmt = $this->db->conn->prepare($sql);
+                $stmt->bindParam(":city", $param_city, PDO::PARAM_STR);
+                $stmt->execute();
+                $city_relations = $stmt->fetch(PDO::FETCH_ASSOC);
             }
             // User is selling items
             if($mode == 'sell') {
                // Check if city is fagna
                 if($this->session['location'] == "fagna") {
+                    $param_name = $item;
                     // Find price for fagna;
                     $sql = "SELECT store_value FROM items WHERE name=:name";
                     $stmt = $this->db->conn->prepare($sql);
                     $stmt->bindParam(":name", $param_name, PDO::PARAM_STR);
-                    $param_name = $item;
                     $stmt->execute();
                     $row = $stmt->fetch(PDO::FETCH_ASSOC);
                     $total_sell_price = $amount * $row['store_value'];
@@ -381,14 +417,34 @@
                 $stmt->execute();
                 $row2 = $stmt->fetch(PDO::FETCH_ASSOC);
                 if(!$stmt->rowCount() > 0) {
-                    $this->gameMessage("ERROR: You don't have item you are trying to selll", true);
+                    $this->response->addTo("errorGameMessage", "You don't have item you are trying to sell");
                     return false;
                 }
-                $new_amount = $amount + $row['amount'];
+                $new_amount = $amount + $row2['amount'];
             }
             else {
                 // $mode == 'buy'
-                $buy_price = $row['user_buy_price'];
+                if(in_array($this->session['location'], $locations)) {
+                    $diplomacy_price_adjust = 1;
+                    $location = str_replace("-", "", $this->session['location']);
+                    $diplomacy_price_ratio = $diplomacy[$location];
+                    // Check diplomacy_price_ratio
+                    if($diplomacy_price_ratio > 1.2) {
+                        $diplomacy_price_adjust = 0.1;
+                    }
+                    else if($diplomacy_price_ratio > 1) {
+                        $diplomacy_price_adjust = ($diplomacy_price_ratio - 1) / 2;
+                    }
+                    else {
+                        $diplomacy_price_adjust = (1 - $diplomacy_price_ratio) / 2;
+                    }
+                    $buy_price = round(($diplomacy_price_ratio < 1) ?  $row['user_buy_price'] * (1.0 + $diplomacy_price_adjust): 
+                                $row['user_buy_price'] * (1.0 - $diplomacy_price_adjust));
+                    $buy_price = round(($buy_price > $row['user_sell_price']) ? $buy_price : $row['user_sell_price']);
+                }
+                else {
+                    $buy_price = $row['user_buy_price'];
+                }
                 $new_amount = $row['amount'] - $amount;
                 $total_price = $row['user_buy_price'] * $amount;
                 $new_merchant_buy_price = $row['user_buy_price'];
@@ -405,6 +461,10 @@
                     $this->UpdateGamedata->updateInventory($item, -$amount);
                     $this->UpdateGamedata->updateInventory('gold', $total_sell_price, true);
                     if($this->session['location'] !== "fagna") {
+                        $param_user_buy_price = $new_merchant_buy_price;
+                        $param_amount = $new_amount;
+                        $param_location = $this->session['location'];
+                        $param_item = $item;
                         $sql = "UPDATE merchant_offers SET user_buy_price=:user_buy_price, amount=:amount
                             WHERE location=:location AND item=:item";
                         $stmt = $this->db->conn->prepare($sql);
@@ -412,10 +472,6 @@
                         $stmt->bindParam(":amount", $param_amount, PDO::PARAM_INT);
                         $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
                         $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
-                        $param_user_buy_price = $new_merchant_buy_price;
-                        $param_amount = $new_amount;
-                        $param_location = $this->session['location'];
-                        $param_item = $item;
                         $stmt->execute();
                     }
                 }
@@ -425,6 +481,10 @@
                     $this->UpdateGamedata->updateInventory($item, $amount);
                     $this->UpdateGamedata->updateInventory('gold', - $total_price, true);
                     
+                    $param_user_buy_price = $new_merchant_buy_price;
+                    $param_amount = $new_amount;
+                    $param_location = $this->session['location'];
+                    $param_item = $item;
                     $sql = "UPDATE merchant_offers SET user_buy_price=:user_buy_price, amount=:amount
                             WHERE location=:location AND item=:item";
                     $stmt = $this->db->conn->prepare($sql);
@@ -432,32 +492,69 @@
                     $stmt->bindParam(":amount", $param_amount, PDO::PARAM_INT);
                     $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
                     $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
-                    $param_user_buy_price = $new_merchant_buy_price;
-                    $param_amount = $new_amount;
-                    $param_location = $this->session['location'];
-                    $param_item = $item;
                     $stmt->execute();
                 }
-            
+                $locations = array("hirtam", "pvitul", "khanz", "ter", "fansalplains");
+                if(in_array($this->session['location'], $locations)) {
+                    $new_diplomacy = array();
+                    for($i = 0; $i < count($diplomacy); $i++) {
+                        // Change city relations if it is not 1. If it is 1 it will be the same anyways
+                        // Calculate a increase or decrease by measuring b
+                        // Example 1.50 -> $oldDiplomacy + ((1.50 - 1 ) - 0,6);
+                        if($city_relations[$locations[$i]] !== 1) {
+                            if($city_relations[$locations[$i]] > 1) {
+                                $new_diplomacy[$locations[$i]] = 
+                                floatval($diplomacy[$locations[$i]]) +
+                                    (($city_relations[$locations[$i]] - 1) - (($city_relations[$locations[$i]] -1) * 0.90));
+                            } else {
+                                $new_diplomacy[$locations[$i]] = 
+                                floatval($diplomacy[$locations[$i]]) -
+                                    ((1 - $city_relations[$locations[$i]]) - ((1 - $city_relations[$locations[$i]]) * 0.90));
+                            }
+                        }
+                    }
+                    $param_Hirtam = $new_diplomacy['hirtam'];
+                    $param_Pvitul = $new_diplomacy['pvitul'];
+                    $param_Khanz = $new_diplomacy['khanz'];
+                    $param_Ter = $new_diplomacy['ter'];
+                    $param_FansalPlains = $new_diplomacy['fansalplains'];
+                    $param_username = $this->username;
+                    $sql2 = "UPDATE diplomacy 
+                            SET hirtam=:hirtam, pvitul=:pvitul, khanz=:khanz, ter=:ter, fansalplains=:fansalplains
+                            WHERE username=:username";
+                    $stmt2 = $this->db->conn->prepare($sql2);
+                    $stmt2->bindParam(":hirtam", $param_Hirtam, PDO::PARAM_STR);
+                    $stmt2->bindParam(":pvitul", $param_Pvitul, PDO::PARAM_STR);
+                    $stmt2->bindParam(":khanz", $param_Khanz, PDO::PARAM_STR);
+                    $stmt2->bindParam(":ter", $param_Ter, PDO::PARAM_STR);
+                    $stmt2->bindParam(":fansalplains", $param_FansalPlains, PDO::PARAM_STR);
+                    $stmt2->bindParam(":username", $param_username, PDO::PARAM_STR);
+                    $stmt2->execute();
+                    $this->response->addTo("gameMessage", "Diplomacy relations have been updated! See diplomacy tab");
+                }
+
                 $this->db->conn->commit();
             }
             catch (Exception $e) {
-                $this->errorHandler->catchAJAX($this->db, $e);
+                $this->response->addTo("errorGameMessage", $this->errorHandler->catchAJAX($this->db, $e));
                 return false;
             }
-            $this->getOffers(true);
+            
+            ob_start();
+            get_template('merchantOffers', $this->getOffers(), true);
+            $this->response->addTo("html", ob_get_clean());
             $this->db->closeConn();
         }
         public function getPrice($GET) {
             // Function to return sell price from database
             // Called from merchant.js
+            $param_name = $GET['itemName'];
             $sql = "SELECT store_value FROM items WHERE name=:name";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":name", $param_name, PDO::PARAM_STR);
-            $param_name = $GET['itemName'];
             $stmt->execute();
             $store_value = $stmt->fetch(PDO::FETCH_OBJ)->store_value;
-            echo $store_value;
+            $this->response->addTo("data", $store_value, array("index" => "price"));
         }
     }
 ?>
