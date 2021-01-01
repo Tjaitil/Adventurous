@@ -6,6 +6,7 @@ const merchantModule = {
     init() {
         this.updateStockCountdown(true);
         this.getMerchantCountdown();
+        this.addMerchantEvents();
         selectItemEvent.addSelectEvent(this.selectTrade);
         if(traderModule.init) traderModule.init();
         document.getElementById("trade_button").addEventListener("click", () => this.tradeItem());
@@ -61,6 +62,7 @@ const merchantModule = {
     },
     addMerchantEvents() {
         let trades = document.getElementById("trades").querySelectorAll(".merchant-offer");
+        console.log(trades.length);
         if(trades.length > 0) {
             trades.forEach(element => 
                 element.addEventListener('click', event => this.selectTrade(event))
@@ -106,6 +108,7 @@ const merchantModule = {
         else {
             elementDiv = event.target.closest(".merchant-offer");
             price = elementDiv.querySelectorAll(".item_buy_price")[0].innerHTML.trim();
+            item = elementDiv.querySelectorAll("figcaption")[0].innerHTML.trim();
             let amount = elementDiv.querySelectorAll(".merchant-offer-amount")[0].innerHTML;
             document.getElementById("do_trade").querySelectorAll("#amount")[0].max = amount;
         }
