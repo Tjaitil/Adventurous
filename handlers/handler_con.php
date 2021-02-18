@@ -23,7 +23,9 @@
                 $method = $handler->checkMethod($model, $response[1][1]);
                 $methodname = $response[1][1];
                 if($method == true) {
-                    if($controller->POST === null) {
+                    
+                    // $POST data can hold information provided by earlier dialgoue. If it is isset give that information to model
+                    if($controller->POST === null && isset($_SESSION['conversation']['information'])) {
                         $controller->POST = $_SESSION['conversation']['information'];
                     }
                     $method_response = $model->$methodname($controller->POST);
@@ -33,7 +35,7 @@
                          * message inside the function
                         */
                         if($method_response[1] == false) {
-                            $controller->echoConversation(true);    
+                            $controller->echoConversation();    
                         }
                         else {
                             echo json_encode($method_response[1]);
@@ -46,9 +48,15 @@
             }
             else {
                 $_SESSION['conversation']['conv_index'] = $controller->index;
-                $controller->echoConversation(true);
+                $controller->echoConversation();
             }
             
+        }
+        else if($_POST['index'] !== "false") {
+            var_dump($_POST['index']);
+            // If index is false there is a specific index specified in loadConversation
+            $controller->index = $_SESSION['conversation']['conv_index'] = $_POST['index'];
+            $controller->setPerson($_POST, true);
         }
         else {
             $controller->setPerson($_POST);
