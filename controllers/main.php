@@ -44,12 +44,11 @@
                 }
                 else if($countdown > $date_now && $key['plot1_harvest'] == 1) {
                     $time_left = $countdown - $date_now;
-                    $h = round($time_left / 60 / 24);
                     $m = round($time_left / 60);
-                    $this->data['countdowns']['farmer'][] = "Done in " . $h .'h : ' . $m . 'm';
+                    $this->data['countdowns']['farmer'][] = "done in " . $m . 'm';
                 }
                 else {
-                    $this->data['countdowns']['farmer'][] = "Nothing happening";
+                    $this->data['countdowns']['farmer'][] = "nothing happening";
                 }
             }
             foreach($this->data['miner_countdowns'] as $key) {
@@ -86,7 +85,7 @@
                     $this->data['countdowns']['warrior']['idle']+= 1;
                 }
             }
-            $this->data['countdowns']['warrior']['mission_countdown'] = explode(" ",$this->data['army_mission']['mission_countdown'])[1]; 
+            $this->data['countdowns']['warrior']['mission_countdown'] = $this->data['army_mission']['mission_countdown']; 
             $this->data['countdowns']['trader'] = ($this->data['trader_countdown']['assignment_id'] == 0) ?
             "None" : $this->data['trader_countdown']['assignment_id'];
             /*$this->data['countdowns']['warrior']['mission'] = ($this->data['army_mission'] == 0) ?

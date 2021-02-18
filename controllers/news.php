@@ -1,12 +1,12 @@
 <?php
-    class test extends controller {
+    class news extends controller {
     
         function __construct() {
             parent::__construct();
         }
         
         public function index() {
-            $this->render('test', 'Test', false);
+            $this->render('news', 'News', false);
         }
     }
 ?>

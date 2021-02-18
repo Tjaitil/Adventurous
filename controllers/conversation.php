@@ -29,11 +29,17 @@
                 return false;
             }
         }
-        public function setPerson($POST) {
+        public function setPerson($POST, $index = false) {
             // Set new person
             $person = $POST['person'];
             $_SESSION['conversation']['person'] = $person;
-            $this->echoConversation();
+            // If the index is false the conversation will begin at the start. If else the conversation will start at specified index
+            if($index == false) {
+                $this->echoConversation(true);
+            }
+            else {
+                $this->echoConversation();
+            }
         }
         public function getNextLine($POST) {
             // Loop through the active_dialogues for the match for text clicked on and make next index
@@ -75,6 +81,7 @@
             for($i = 0; $i < count($active_dialogues); $i++) {
                 if(strpos($active_dialogues[$i], $this->text)) {
                     $dialogue_match = explode("|", $active_dialogues[$i]);
+                    /*var_dump($dialogue_match);*/
                     if($dialogue_match[2] === "end") {
                         $end = true;
                         break;
@@ -84,6 +91,7 @@
                     }
                     else {
                         $this->index = $_SESSION['conversation']['conv_index'] . $dialogue_match[2];
+                        /*var_dump($this->index);*/
                     }
                     break;
                 }
@@ -98,14 +106,15 @@
                 return 'next';
             }
         }
-        public function echoConversation($index = false) {
-            // Echo the conversation
+        public function echoConversation($getIndex = false) {
+            // Echo the conversation;
+            // Get the file containing the conversations with a person
             $conversation = json_decode($this->getConversation($_SESSION['conversation']['person']), true);
             if($conversation == false) {
                 return false;
             }
             // If the index is false, it means the index is not set by getNextLine() and setPerson() is called
-            if($index === false) {
+            if($getIndex === true) {
                 $_SESSION['conversation']['conv_index'] = $conversation['index'];
             }
             if(!isset($conversation[$_SESSION['conversation']['conv_index']])) {
@@ -113,7 +122,7 @@
                 $strpos = strrpos($_SESSION['conversation']['conv_index'], "Q");
                 $_SESSION['conversation']['conv_index'] = substr($_SESSION['conversation']['conv_index'], 0, $strpos +1);
             }
-            // Check if if the index in $conversation is string, if true make it into array before echoing
+            // Check if the index in $conversation is string, if true make it into array before echoing
             if(is_string($conversation[$_SESSION['conversation']['conv_index']])) {
                 $active_conversation = $_SESSION['conversation']['active_dialogues'] =
                     array($conversation[$_SESSION['conversation']['conv_index']]);

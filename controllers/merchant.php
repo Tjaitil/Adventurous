@@ -5,41 +5,17 @@
         function __construct() {
             parent::__construct();    
         }
-        
         public function index() {
             $this->loadModel('Merchant', true);
+            /*$this->model->makeTraderAssignments();*/
             $this->data = $this->model->getData();
-            $this->determineAssignment();
             /*if(new DateTime($data['merchantTimes']) < date("Y-m-d")) {
-                /*$this->makeTrades();
+                /*
             }*/
             
             $this->render('merchant', 'Merchant', $this->data, true);
         }
-        private function determineAssignment() {
-            // Check if there a trader assignment and if it is then format the string
-            if($this->data['trader_data']['assignment_id'] != 0) {
-                $format = "Carrying %s from %s to %s, delivered %d/%d (%s)";
-                
-                $this->data['trader_data']['assignment'] = sprintf($format, ucwords($this->data['trader_data'][0]['cargo']),
-                                                                            ucwords($this->data['trader_data'][0]['base']),
-                                                                            ucwords($this->data['trader_data'][0]['destination']),
-                                                                            $this->data['trader_data']['delivered'],
-                                                                            $this->data['trader_data'][0]['assignment_amount'],
-                                                                            ucwords($this->data['trader_data'][0]['assignment_type']));
-            }
-            else {
-                $this->data['trader_data']['assignment'] = "none";
-            }
-        }
         private function makeTrades() {
-            $items = array();
-            
-            
-            
-            
-        }
-        private function makeAssignments() {
             $small_trades_amount;
             $small_trades = array();
             $medium_trades_amount;
@@ -49,8 +25,8 @@
             $favor_amount;
             $favors = array();
             
-            $locations = array("cruendo", "golbak", "pvitul", "khanz", "ter", "hirtam", "fansal-plains", "tasnobil");
-            $items[] = array("item" => "potato seed", "price" => 500,
+            $locations = array("towhar", "golbak", "pvitul", "khanz", "ter", "krasnur", "hirtam", "fansal-plains", "tasnobil", "cruendo");
+            /*$items[] = array("item" => "potato seed", "price" => 500,
                 "locations" => locationItemData(array(
                 "cruendo", "1", "1/10",
                 "golbak", "4", "1/3",
@@ -58,7 +34,7 @@
             $items[] = array("item" => "adron platebody", "price" => 4000,
                 "locations" => locationItemData(array(
                 "cruendo", "4", "1/3",
-                "golbak", "2", "1/5")));
+                "golbak", "2", "1/5")));*/
             /*$items[] = array("item" => "watermelon seed", "value" => 20,
                                "locations" => locationItemData(array()));
             $items[] = array("item" => "wheat seed", "value" => 20,
@@ -67,7 +43,7 @@
                                "locations" => locationItemData(array()));
             $items[] = array("item" => "yeqdon bar", "value" => 20,
                                "locations" => locationItemData(array()));*/
-            $items[] = array("item" => "iron ore", "value" => 20,
+            /*$items[] = array("item" => "iron ore", "value" => 20,
                                "locations" => locationItemData(array()));
             $items[] = array("item" => "iron bar", "value" => 20,
                                "locations" => locationItemData(array()));
@@ -82,7 +58,7 @@
             $items[] = array("item" => "yeqdon bar", "value" => 20,
                                "locations" => locationItemData(array()));
             $items[] = array("item" => "yeqdon bar", "value" => 20,
-                               "locations" => locationItemData(array()));
+                               "locations" => locationItemData(array()));*/
             
                 function locationItemData($array) {
                 /* $array indexes every third is new place, [0] => "location", [1] => "store_rate", [2] => "amount"
@@ -101,11 +77,55 @@
                 $location_stores = array();
                 for($i = 0; $i < 2; $i++) {
                     $location = $locations[$i];
-                    echo $location;
+                    $db_table_name = $locations[$i] . '_rate';
+                    
+                    // Select 4 items which has store_rate of 1 in the specified location
+                    $sql = "SELECT name, store_value, {$db_table_name} FROM items WHERE {$db_table_name} = 1
+                            ORDER BY RAND() LIMIT 4";
+                    $stmt = $this->db->conn->prepare($sql);   
+                    $row1 = $stmt->fetch(PDO::FETCH_ASSOC);
+                    $stmt->execute();
+                    
+                    // Select 4 items which has store_rate of 3 in the specified location
+                    $sql = "SELECT name, store_value, {$db_table_name} FROM items WHERE NOT {$db_table_name} = 1
+                            ORDER BY RAND() LIMIT 3";
+                    $stmt = $this->db->conn->prepare($sql);
+                    $stmt->execute();
+                    $row2 = $stmt->fetch(PDO::FETCH_ASSOC);
+                    $items = array_merge($row1, $row2);
+                    for($x = 0; $x < count($items); $x++) {
+                        $random_item = $items[$x];
+                        switch($db_table_name) {
+                            case 1:
+                                $random_item['amount'] = rand(4, 10);
+                                break;
+                            case 2:
+                                $random_item['amount'] = rand(2, 7);
+                                break;
+                            case 3:
+                                $random_item['amount'] = rand(1, 5);
+                                break;
+                            case 4:
+                                $random_item['amount'] = rand(1, 2);
+                                break;
+                            default:
+                                $random_item['amount'] = 0;
+                                break;
+                        }
+                        $random_item['store_rate'] = $item[$x][$db_table_name];
+                        $random_item['org_price'] = floor($random_item['price']);
+                            // First add the store_rate variable to price, decimal value
+                        $random_item['price'] = floor($random_item['price'] *
+                             (1 + ($random_item['locations'][$x]['store_rate'] / 30)));
                 
-                
-                    $random_item = $items[array_rand($items)];
-                    for($x = 0; $x < count($random_item['locations']); $x++) {
+                            // If there are few items add extra to the price
+                        $random_item['price'] = floor($random_item['price'] + 
+                                                     ($random_item['price'] / 50 * (1 - ($random_item['amount'] * 0.10)))
+                                                     + rand($random_item['locations'][$x]['store_rate'] * 0.05
+                                                     , $random_item['locations'][$x]['store_rate'] * 0.10));
+                        $location_stores[$location][] = $random_item;
+                    }
+                    /*for($x = 0; $x < count($random_item['locations']); $x++) {
                         if($random_item['locations'][$x]['location'] == $location) {
                             $random_amount_array = explode("/", $random_item['locations'][$x]['amount']);
                             $random_item['amount'] = rand($random_amount_array[0], $random_amount_array[1]);
@@ -123,9 +143,8 @@
                                                      , $random_item['locations'][$x]['store_rate'] / 150));
                             break;
                         }
-                    }
-                    unset($random_item['locations']);
-                    $location_stores[$location][] = $random_item;
+                    }*/
+                    
                     
                     // Insert
                     $sql = "INSERT INTO merchant_offers (location, item, price, amount

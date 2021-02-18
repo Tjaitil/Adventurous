@@ -43,18 +43,7 @@
         
         public function bindData() {
             $this->loadModel('SetAdventure', true);
-            $adventure_status = $this->model->checkAdventure()['adventure_id'];
-            if($adventure_status != 0) {
-                $this->gameMessage("ERROR: Finish your current adventure before starting a new one");
-            }
-            
-            $difficulties = array("easy" => 1.0, "medium" => 5.0, "hard" => 12);
-            if($difficulties[$_POST['difficulty']] > $_SESSION['gamedata']['adventurer_respect']) {
-                $this->gameMessage("ERROR: Adventurer respect too low for this difficulty");    
-            }
-            $this->adventureData['difficulty'] = $_POST['difficulty'];
-            $this->adventureData['location'] = $_POST['location'];
-            $this->adventureData['other_invite'] = (isset($_POST['other_invite'])) ? 1 : 0;
+
             
             $this->model->newAdventure($this->adventureData);
         }
