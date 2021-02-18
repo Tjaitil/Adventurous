@@ -45,25 +45,6 @@
                     $model->$methodname($item = false, $quantity = false, $_POST['warrior_check']);
                 }
                 break;
-            case "Stockpile":
-                //method updateInventory()
-                $model->$methodname($_POST['insert'], strtolower($_POST['item']), $_POST['quantity']);
-                break;
-            case "Updateassignment":
-            case "Trader":
-                if($methodname == 'pickUp') {
-                    if(isset($_POST['favor'])) {
-                        $model->$methodname($favor = true);
-                    }
-                    else {
-                        echo "trader_handler";
-                        $model->$methodname();
-                    }
-                }
-                else {
-                    $model->$methodname();
-                }
-                break;
             case "Setassignment":
                 //method newAssignment()
                 if(isset($_POST['favor'])) {

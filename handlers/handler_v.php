@@ -18,5 +18,11 @@
     if(is_object($controller)) {
         $controller->index();
     }
+    else {
+        $errorHandler = new errorhandler();
+        $errorHandler->reportError(array($_SESSION['username'], "building not found, " . $title));
+        echo "ERROR:";
+        return false;
+    }
     /*include('../views/' . strtolower($_GET['building']) . '.php');*/
 ?>
