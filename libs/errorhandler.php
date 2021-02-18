@@ -19,17 +19,32 @@
                 $this->gameMessage("ERROR: Your inventory is full!", true);
             }
             else{
-                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
+                $this->reportError(array($_SESSION['username'], $e->getFile() . $e->getLine() .$e->getMessage()));
                 $this->gameMessage("ERROR: Something unexpected happened, please try again", true);    
             }
         }
-        protected function reportError($file, $line, $error_message, $ajax = true,  $title = false) {
-            $message = "Error on: " . $file . ' Line ' . $line . ' ' . $error_message . ' ' . ' ajax= ' . $ajax;
-            var_dump($error_message);
-            if($title === false) {
-                $title = 'FROM: <system@adventurous.no';
+        public function reportError($errorArray) {
+            /*$errorarray will contain following information:
+            * [0] -> username;
+            * [1] -> writen error message which will contain the error
+            * IT call also be the $e from Exception class
+            *
+            */
+            
+            if(is_object($errorArray)) {
+                $message = $errorArray->getMessage();
             }
-            $test = mail('miner123@hotmail.no', 'ERROR', $message, 'FROM: <system@adventurous.no');
-        }  
+            else {
+                $message = "Error: " . "username " . $errorArray[0] . ' message: ' .  $errorArray[1];
+            }
+            
+            if(!isset($errorArray['title'])) {
+                $title = 'Game error';
+            }
+            $test = mail('miner123@hotmail.no', $title, $message, 'FROM: <system@adventurous.no');
+        }
+        public function hello() {
+            print "Hello world!";
+        }
     }
 ?>

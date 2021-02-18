@@ -45,12 +45,12 @@
             if(class_exists($path)) {
                 $modelName = $name . '_model';
                 /*$db = new database();*/
-                if(in_array($modelName, array('newuser_model', 'gamedata_model', 'Registration_model')) == true) {
-                    $this->model = new $modelName($_SESSION['username'], $db);
-                }
                 // If the model doesn't need the username, don't provide it
-                else if(in_array($modelName, array('Login_model', 'Registration_model'))) {
+                if(in_array($modelName, array('Login_model', 'Registration_model'))) {
                     $this->model = new $modelName();
+                }
+                else if(in_array($modelName, array('newuser_model', 'gamedata_model')) == true) {
+                    $this->model = new $modelName($_SESSION['username'], $db);
                 }
                 else {
                     $session = $_SESSION['gamedata'];
@@ -68,9 +68,6 @@
                     }*/
                 }
             }
-            /*else {
-                header("Location: /maintenance");
-            }*/
         }
         public function loadController($controllerName) {
             $controllerName  = strtolower($controllerName);

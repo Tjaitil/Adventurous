@@ -5,17 +5,19 @@
         private $controllerPath = 'controllers/';
         private $modelPath = 'models/';
         private $errorFile = 'error.php';
+        private $errorhandler;
         private $defaultFile = 'index.php';
         public $session;
         
         function __construct ($session) {
-             $this->session = $session;
+            $this->errorhandler = new errorhandler();
+            $this->session = $session;
         }
         function init() {
             $this->getURL();
               
-            if($this->url[0] != 'gameguide' && count($this->url) > 1) {
-                $this->error();
+            if(in_array($this->url[0], array('gameguide', 'client')) == false && count($this->url) > 1) {
+                require(constant('ROUTE_VIEW') . 'error.php');
                 return;
             }
             if($this->url[0] === 'logout') {
@@ -26,7 +28,6 @@
             }
             $this->session->validatelogin();
             if($this->session->status == false && $this->url[0] != 'registration') {
-                
                 session_unset();
                 $this->controller = 'login';
                 $file = $this->controllerPath . $this->controller . '.php';
@@ -43,7 +44,6 @@
             /*if(in_array($_SESSION['profiency'], $array) != false && in_array($this->url[0], $allowed) == false) {
                 header("Location: /newuser");
             }*/
-            
             
            if(empty($this->url[0])) {
                 $this->loadDefaultController();
@@ -78,13 +78,9 @@
               }
           }
           else {
-              $this->error();
+            // Report error
+            $this->errorhandler->reportError(array("None", "Controller doesn't exists " . __METHOD__));
           }
       }
-        private function error() {
-            /*require_once($this->controllerPath . $this->errorFile);
-            $this->controller = new notfound();
-            $this->controller->index();*/
-        }
-     }
+    }
 ?>
