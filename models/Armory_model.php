@@ -71,8 +71,29 @@
                 return false;
             }
             
-            if(in_array($item_array[0], array('frajrite', 'wujkin'))) { 
-                $sql = "SELECT {$item_array[0]} FROM warrior_permissions WHERE username=:username";
+            $sql = "SELECT stamina_level, technique_level, strength_level, precision_level FROM warriors_levels
+                    WHERE warrior_id=:warrior_id AND username=:username";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);
+            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_warrior_id = $this->warrior_id;
+            $param_username = $this->username;
+            $stmt->execute();
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            $total_level = intval($row['stamina_level']) + intval(['technique_level']) +
+                           intval($row['strength_level']) + intval($row['precision_level']);
+            $level_required = array("iron" => 3, "steel" => 9, "gargonite" => 15, "adron" => 25, "yeqdon" =>32,
+                                    "frajrite" => 40, "wujkin" => 42);
+            if($level_required[$item_array[0]] > $total_level) {
+                $this->gameMessage("ERROR: The warriors level is not high enough to wear equipment of this mineral", true);
+                return false;
+            }
+            
+            // If mineral is frajrite or wujkin check if it has been unlocked
+            if(in_array($item_array[0], array('frajrite', 'wujkin'))) {
+                $table_name = $item_array[0] . '_items';
+                $sql = "SELECT {$table_name} FROM user_data WHERE username=:username";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_username = $this->username;
@@ -206,7 +227,7 @@
                 if($ranged_test2 !== false && $row['type'] === 'left_hand') {
                     $this->UpdateGamedata->updateInventory($row2['right_hand'], 1);
                 }
-                // If ranged test is not false then remove the piece
+                // If ranged test is not false then remove the weapon in left hand
                 if(isset($row2['left_hand']) && $ranged_test !== false) {
                     if($row2['left_hand'] != 'none') {
                         $this->UpdateGamedata->updateInventory($row2['left_hand'], 1);

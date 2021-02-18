@@ -47,7 +47,7 @@
             $row2['miner'] = array("level" => $row5['miner_level'], "xp" => $row5['miner_xp']);
             $row2['warrior'] = array("level" => $row5['warrior_level'], "xp" => $row5['warrior_xp']);
             $row2['trader'] = array("level" => $row5['trader_level'], "xp" => $row5['trader_xp']);
-            $row2['adventurer_respect'] = $row5['adventurer_respect']; 
+            $row2['adventurer'] = $row5['adventurer_respect']; 
             
             $sql6 = "SELECT item, amount FROM inventory WHERE username=:username";
             $stmt6 = $this->db->conn->prepare($sql6);

@@ -78,8 +78,15 @@
                 return false;
             }
             $this->db->closeConn();
+            /* Echo order, split by "|"
+             * [0] -> gameMessage
+             * [1] -> $echo_data with updated game data
+             */
+            $echo_data = array();
             $this->gameMessage("You have picked up " . $cart_space . " items", true);
-            echo "|{$param_cart_amount}/{$row3['capasity']}";
+            $echo_data['delivered'] = $param_cart_amount;
+            echo "|";
+            echo json_encode($echo_data);
         }   
         public function deliver() {
             //AJAX function
@@ -88,7 +95,8 @@
                 return false;
             }
             
-            $sql = "SELECT t.assignment_id, t.cart_amount, t.delivered, ta.assignment_amount, ta.cargo, ta.assignment_type, ta.destination
+            $sql = "SELECT t.assignment_id, t.cart_amount, t.delivered, ta.assignment_amount, ta.cargo, ta.assignment_type,
+                            ta.destination, ta.base
                     FROM trader AS t INNER JOIN trader_assignments AS ta ON ta.assignment_id = t.assignment_id
                     WHERE t.username=:username"; 
             $stmt = $this->db->conn->prepare($sql);
@@ -115,83 +123,12 @@
                    return ($key['type'] == $type);  
                 }));
             
-            $xp = $assignment_type[0]['xp'] * $row['cart_amount'];
-            $delivered = $row['delivered'] + $row['cart_amount']; 
+            $experience = $assignment_type[0]['xp'] * $row['cart_amount'];
+            $delivered = $row['delivered'] + $row['cart_amount'];
+            $assignment_finished = false;
             
-            try {
-                $this->db->conn->beginTransaction();
-                $sql = "UPDATE trader SET delivered=:delivered, cart_amount=0 WHERE username=:username";
-                $stmt = $this->db->conn->prepare($sql);
-                $stmt->bindParam(":delivered", $param_delivered, PDO::PARAM_STR);
-                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                $param_delivered = $delivered;
-                $param_username = $this->username;
-                $stmt->execute();
-                $param_delivered = $delivered;
-                // Update xp
-                $this->UpdateGamedata->updateXP('trader', $xp);
-                
-                $this->db->conn->commit();
-            }
-            catch (Exception $e) {
-                $this->errorHandler->catchAJAX($this->db, $e);
-                return false;
-            }
-            //Echo to prevent getting the timestamp from gameMessage()
-            $this->gameMessage("You have delivered: {$row['cart_amount']}, Total: {$param_delivered}", true);
-            echo "|";
-            jsecho(array($xp, $row['cart_amount'],"{$delivered}/{$row['assignment_amount']}"));
             if($row['assignment_amount'] == $delivered) {
-                $this->assignment_type = $row['assignment_type'];
-                $this->assignment_amount = $row['assignment_amount'];
-                $this->cargo = $row['cargo'];
-                $this->assignment_base = $row['base'];
-                $this->updateAssignment();
-            }
-            else {
-                $this->db->closeConn();
-            }
-        }
-        private function updateAssignment() {
-            if($this->favor != true) {
-                $sql = "SELECT cart_amount, trading_countdown FROM trader WHERE username=:username";
-                $stmt = $this->db->conn->prepare($sql);
-                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                $param_username = $this->username;
-                $stmt->execute();
-                $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                $trading_countdown = new DateTime($row['trading_countdown']);
-            }
-            else {
-                $date = date("Y-m-d H:i:s");
-                $trading_countdown = new DateTime($date);
-            }
-            
-            $datetime = date_create();
-            $date_now = date_timestamp_get($datetime);
-            $date_assignment = date_timestamp_get($trading_countdown);
-            
-            switch($this->assignment_type) {
-                case 'small trade':
-                    $xp = 50;
-                    break;
-                case 'medium trade':
-                    $xp = 100;
-                    break;
-                case 'favor':
-                    $xp = 90;
-                    break;
-                case 'long trade':
-                    $xp = 150;
-                    break;
-            }
-            
-            if($date_assignment > $date_now && $this->favor == false) {
-                $time_left = $date_assignment - $date_now;
-                // Calculate the time that is left, 0.2xp for every minute
-                $xp += $xp_bonus = round($time_left * 0.1);
-            }
-            if($this->favor === true) {
+                $assignment_finished = true;
                 $locations = array("hirtam", "pvitul", "khanz", "ter", "fansalplains");
                 $sql = "SELECT hirtam, pvitul, khanz, ter, fansalplains FROM diplomacy WHERE username=:username";
                 $stmt = $this->db->conn->prepare($sql);
@@ -203,75 +140,122 @@
                 $sql = "SELECT hirtam, pvitul, khanz, ter, fansalplains FROM city_relations WHERE city=:city";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":city", $param_city, PDO::PARAM_STR);
-                $param_city = $this->assignment_base;
+                $param_city = $row['base'];
                 $stmt->execute();
                 $city_relations = $stmt->fetch(PDO::FETCH_ASSOC);
-                
                 $new_diplomacy = array();
-                for($i = 0; $i < count($diplomacy); $i++) {
-                    $new_diplomacy[$locations[$i]] = intval($diplomacy[$locations[$i]]) * $city_relations[$locations[$i]];
+                if($assignment_type === "favor") {
+                    for($i = 0; $i < count($diplomacy); $i++) {
+                        $new_diplomacy[$locations[$i]] = intval($diplomacy[$locations[$i]]) * $city_relations[$locations[$i]];
+                    }
                 }
             }
-            $reward_amount =  round($this->assignment_amount / 5);
-            
+            switch($this->assignment_type) {
+                case 'small trade':
+                    $experience += 50;
+                    break;
+                case 'medium trade':
+                    $experience += 100;
+                    break;
+                case 'favor':
+                    $experience += 90;
+                    break;
+                case 'long trade':
+                    $experience += 250;
+                    break;
+            }
             try {
                 $this->db->conn->beginTransaction();
-                
-                $sql = "UPDATE trader SET assignment_id=0, delivered=0
+                if($assignment_finished === true) {
+                    $sql = "UPDATE trader SET assignment_id=0, delivered=0, cart_amount=0
                         WHERE username=:username";
-                $stmt = $this->db->conn->prepare($sql);
-                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                $param_trader_xp = $xp + $this->session['trader']['xp'];
-                $param_username = $this->username;
-                $stmt->execute();
-                
-                // Update xp
-                $this->UpdateGamedata->updateXP('trader', $xp);
-                
-                if($this->favor != true) {
-                    // Update inventory
-                    $this->UpdateGamedata->updateInventory($this->cargo , $reward_amount, true);
+                    $stmt = $this->db->conn->prepare($sql);
+                    $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                    $param_username = $this->username;
+                    $stmt->execute();
+                    if($assignment_type === "favor") {
+                        $sql2 = "UPDATE diplomacy SET hirtam=:hirtam, pvitul=:pvitul, khanz=:khanz, ter=:ter, fansalplains=:fansalplains
+                        WHERE username=:username";
+                        $stmt2 = $this->db->conn->prepare($sql2);
+                        $stmt2->bindParam(":hirtam", $param_Hirtam, PDO::PARAM_STR);
+                        $stmt2->bindParam(":pvitul", $param_Pvitul, PDO::PARAM_STR);
+                        $stmt2->bindParam(":khanz", $param_Khanz, PDO::PARAM_STR);
+                        $stmt2->bindParam(":ter", $param_Ter, PDO::PARAM_STR);
+                        $stmt2->bindParam(":fansalplains", $param_FansalPlains, PDO::PARAM_STR);
+                        $stmt2->bindParam(":username", $param_username, PDO::PARAM_STR);
+                        $param_Hirtam = $new_diplomacy['hirtam'];
+                        $param_Pvitul = $new_diplomacy['pvitul'];
+                        $param_Khanz = $new_diplomacy['khanz'];
+                        $param_Ter = $new_diplomacy['ter'];
+                        $param_FansalPlains = $new_diplomacy['fansalplains'];
+                        $param_username = $this->username;
+                        $stmt2->execute();
+                    }
+                    else {
+                        $reward_amount =  round($row['assignment_amount'] / 12);
+                        // If profiency is trader get goods
+                        if($this->session['profiency'] == "trader") {
+                            // Update inventory
+                            $this->UpdateGamedata->updateInventory($row['cargo'] , $reward_amount, true);    
+                        }
+                        else {
+                            // Update inventory
+                            $this->UpdateGamedata->updateInventory($row['cargo'] , $reward_amount, true);            
+                        }
+                    }
                 }
                 else {
-                    $sql2 = "UPDATE diplomacy SET hirtam=:hirtam, pvitul=:pvitul, khanz=:khanz, ter=:ter, fansalplains=:fansalplains
-                        WHERE username=:username";
-                    $stmt2 = $this->db->conn->prepare($sql2);
-                    $stmt2->bindParam(":hirtam", $param_Hirtam, PDO::PARAM_STR);
-                    $stmt2->bindParam(":pvitul", $param_Pvitul, PDO::PARAM_STR);
-                    $stmt2->bindParam(":khanz", $param_Khanz, PDO::PARAM_STR);
-                    $stmt2->bindParam(":ter", $param_Ter, PDO::PARAM_STR);
-                    $stmt2->bindParam(":fansalplains", $param_FansalPlains, PDO::PARAM_STR);
-                    $stmt2->bindParam(":username", $param_username, PDO::PARAM_STR);
-                    $param_Hirtam = $new_diplomacy['hirtam'];
-                    $param_Pvitul = $new_diplomacy['pvitul'];
-                    $param_Khanz = $new_diplomacy['khanz'];
-                    $param_Ter = $new_diplomacy['ter'];
-                    $param_FansalPlains = $new_diplomacy['fansalplains'];
+                    $sql = "UPDATE trader SET delivered=:delivered, cart_amount=0 WHERE username=:username";
+                    $stmt = $this->db->conn->prepare($sql);
+                    $stmt->bindParam(":delivered", $param_delivered, PDO::PARAM_STR);
+                    $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                    $param_delivered = $delivered;
                     $param_username = $this->username;
-                    $stmt2->execute();
+                    $stmt->execute();
+                    $param_delivered = $delivered;
                 }
+                // Only gain xp when warrior level is below 30 or if profiency is trader and assignment_xp is greater than 0
+                if($this->session['trader']['level'] < 30 || $this->session['profiency'] == 'trader') {
+                    $this->UpdateGamedata->updateXP('trader', $experience);
+                    $xpUpdate = true;
+                }
+                
                 $this->db->conn->commit();
             }
-            catch(Exception $e) {
+            catch (Exception $e) {
                 $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
-            
             $this->db->closeConn();
-            echo "|finished!|";
-            if($this->favor != true) {
-                echo "|{$xp}";
-                if(isset($xp_bonus)) {
-                    $this->gameMessage("You received {$xp_bonus} for finishing before deadline!", true);
+            /* Echo order, split by "|"
+             * [0] -> possible level up message;
+             * [1] -> assignment finished / gameMessage delivered
+             * [2] -> gameMessage if delivered, or new deliverd number
+             * [3] -> traderAssignment get_template if assignment is completed / delivered amount
+             */
+            //Echo to prevent getting the timestamp from gameMessage()
+            echo "|";
+            $echo_data = array();
+            if(isset($xpUpdate)) {
+                if($row['assignment_amount'] == $delivered) {
+                    $echo_data['assignment_finished'] = true;
+                    $this->gameMessage("You finished assignment and received {$reward_amount} of {$this->cargo}", true);
                     echo "|";
                 }
-                $this->gameMessage("You finished assignment and received {$reward_amount} of {$this->cargo}", true);
+                else {
+                    $echo_data['delivered'] = $delivered;
+                    $echo_data['assignment_finished'] = false;
+                    $this->gameMessage("You have delivered: {$row['cart_amount']}, Total: {$param_delivered}. Gained
+                                        {$experience} trader experience", true);
+                    echo "|";
+                }
             }
-            else {
-                echo "|{$xp}";
-                $this->gameMessage("You have finsihed your favor assignment", true);
+            echo json_encode($echo_data);
+            if($assignment_finished === true) {
                 echo "|";
-                $this->gameMessage("Diplomacy relations have been updated!", true);
+                $this->gameMessage("Diplomacy relations have been updated! See diplomacy tab", true);
+                echo "|";
+                get_template('traderAssignment', array("assignment_id" => 0), true);
             }
         }
     }

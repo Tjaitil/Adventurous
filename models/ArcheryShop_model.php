@@ -40,7 +40,6 @@
                 }
                 $log = $material . ' log';
             }
-            
     
             $sql = "SELECT item, amount FROM inventory WHERE item=:item AND username=:username";
             $stmt = $this->db->conn->prepare($sql);

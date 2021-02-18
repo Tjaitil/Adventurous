@@ -42,13 +42,15 @@
             $quantity = rand($rand_min, $rand_max);
             $artefact_bonus = $this->ArtefactModel->artefactCheck('prospector');
             $quantity = round($quantity * $artefact_bonus);
-        
+            
+            $experience = $row2['experience'];
             try {
                 $this->db->conn->beginTransaction();
                 
                 if($artefact_bonus > 1) {
                     $this->ArtefactModel->updateArtefact();
                 }
+                echo "|";
                 
                 $sql = "UPDATE miner SET mining_type='none',
                         fetch_minerals=0 WHERE username =:username";
@@ -70,18 +72,34 @@
                 
                 // Update inventory
                 $this->UpdateGamedata->updateInventory($mining_type . ' ore', $quantity, true);
-                // Update xp
-                $this->UpdateGamedata->updateXP('miner', $row2['experience']);
+                // Only gain xp when miner level is below 30 or if profiency is miner
+                if($this->session['miner']['level'] < 30 || $this->session['profiency'] == 'miner') { 
+                    $this->UpdateGamedata->updateXP('miner', $experience);
+                    $xpUpdate = true;    
+                }
                 $this->db->conn->commit();
             }
             catch (Exception $e) {
                 $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
-            $this->gameMessage("You received {$quantity} of " . ucfirst($mining_type . ' ore'), true);
-            echo "|";
-            js_echo(array($row2['experience'], $param_avail_workforce));
             $this->db->closeConn();
+            /* Echo order, split by "|"
+             * [0] -> possible artefact use
+             * [1] -> possible level up message;
+             * [2] -> gameMessage
+             * [3] -> $echo_data with updated game data
+             */
+            echo "|";
+            $echo_data = array();
+            if(isset($xpUpdate)) {
+                $experience = $row2['experience'];
+                $this->gameMessage("You received {$quantity} of ".ucfirst($mining_type.' ore') .",
+                                   gaining a total of {$experience} mining xp", true);
+            }
+            echo "|";
+            $echo_data['avail_workforce'] = $param_avail_workforce;
+            echo json_encode($echo_data);
         }
     }
 ?>

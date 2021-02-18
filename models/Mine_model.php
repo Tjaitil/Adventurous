@@ -107,7 +107,12 @@
                 $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
+            // $echo_data holds game data to update data in the client in form of JSON for easier accessibility
+            $echo_data = array();
             $this->gameMessage("You have canceled your mining", true);
+            echo "|";
+            $echo_data['avail_workforce'] = $param_avail_workforce;
+            echo json_encode($echo_data);
         }
     }
 ?>

@@ -159,11 +159,10 @@
                         $param_username = $this->username;
                         $stmt->execute();
                     }
-                    
+    
                     if($this->session['warrior']['level'] < 30 || $this->session['profiency'] == 'warrior') { 
                         $this->UpdateGamedata->updateXP('warrior', 20 * count($level_up));
-                    }
-                    
+                    }                
                     $this->db->conn->commit();
                 }
                 catch(Exception $e) {
@@ -171,6 +170,12 @@
                     return false;
                 }
                 unset($stmt, $stmt2, $stmt3);
+                /* Echo order, split by "|"
+                * [0] -> possibly level up message;
+                * [1] -> gameMessage
+                */
+               echo "|";
+               $this->gameMessage("Warrior {$param_warrior_id} leveled up", true);
             }
             else {
                 $this->gameMessage("ERROR: None of your warriors is leveling up", true);
@@ -183,6 +188,7 @@
             // This function is called from an AJAX request from armycamp.js
             // Function to transfer warriors between Tasnobil and Cruendo
             $query_array = explode(",", $POST['warriors']);
+            $warrior_amount = count($query_array);
             $query_array[] = $this->username;
             $in  = str_repeat('?,', count($query_array) - 2) . '?';
             $sql = "SELECT location FROM warriors WHERE warrior_id IN ($in) AND username= ?";
@@ -228,6 +234,7 @@
                 return false;
             }
             $this->db->closeConn();
+            $this->gameMessage("{$warrior_amount} transferred to {$city}", true);
         }
         public function healWarrior($POST) {
             // $POST variable holds the post data
@@ -384,6 +391,8 @@
                 $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
+            $this->db->closeConn();
+            $this->gameMessage("");
         }
         public function changeType($POST) {
             // $POST variable holds the post data

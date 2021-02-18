@@ -12,6 +12,7 @@
             $data = array();
             $cities = array("towhar", "golbak", "snerpiir", "krasnur", "tasnobil", "cruendo", "fagna");
             if (array_search($this->session['location'], $cities) === false) {
+                $this->errorHandler->reportError(array($this->username, "Not valid location: " . $this->session['location'] . __METHOD__));
                 $this->gameMessage("ERROR: Something unexpected happened, please try again!", true);
                 return false;
             }            

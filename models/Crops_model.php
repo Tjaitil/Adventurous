@@ -20,7 +20,7 @@
                 $stmt->execute();
                 $data['fields'] = $stmt->fetch(PDO::FETCH_ASSOC);
                 
-                $sql2 = "SELECT crop_type FROM crops_data WHERE farmer_level <=:farmlevel AND location=:location";
+                $sql2 = "SELECT crop_type FROM crops_data WHERE farmer_level <=:farmlevel AND location=:location ORDER BY farmer_level ASC";
                 $stmt2 = $this->db->conn->prepare($sql2);
                 $stmt2->bindParam(":farmlevel", $param_farm_level, PDO::PARAM_STR);
                 $stmt2->bindParam(":location", $param_location, PDO::PARAM_STR);
@@ -48,12 +48,13 @@
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $date = date_timestamp_get(new DateTime($row['crop_countdown']));
-        
             $this->db->closeConn();
             js_echo(array($date, $row['plot1_harvest'], $row['crop_type']));
         }
         public function destroyCrops() {
             if(in_array($this->session['location'], array('towhar', 'krasnur')) != true) {
+                $this->errorHandler->reportError(array($this->username, "User in wrong location but still called " . __METHOD__));
+                $this->gameMessage("ERROR: Something unexpected happened! Please try again", true);
                 return false;   
             }
             $workforce = $this->session['location'] . '_workforce';
@@ -105,7 +106,13 @@
                 $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
+            // $echo_data holds game data to update data in the client in form of JSON for easier accessibility
+            $echo_data = array();
             $this->gameMessage("You have destroyed your crops", true);
+            echo "|";
+            $echo_data['avail_workforce'] = $param_avail_workforce;
+            
+            echo json_encode($echo_data);
         }
         public function getSeeds($POST) {
             // $POST variable holds the post data

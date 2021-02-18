@@ -4,9 +4,9 @@
         public $session;
         public $query;
         
-        function __construct ($username, $session) {
+        function __construct ($session) {
             parent::__construct();
-            $this->username = $username;
+            $this->username = $session['username'];
             $this->session = $session;
         }
         
@@ -22,14 +22,25 @@
                 return(strpos($items, $needle) !== false); // or stripos() if you want case-insensitive searching.
             }*/
             /*$matches = array_filter($items, 'my_search');*/
-            $matches = array();
+            $query .= '%';
+            $sql = "SELECT name FROM items WHERE name LIKE ?";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->execute(array($query));
+            $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            for($i = 0; $i < count($row); $i++) {
+                echo $row[$i]['name'];
+                if($i !== count($row) - 1) {
+                    echo '|';
+                }
+            }
+            /*$matches = array();
             foreach($items as $key) {
                 if(strpos($key, $query) !== false) {
                     array_push($matches, $key);
                 }
-            }
+            }*/
             /*$matches = preg_grep($query, $items);*/
-            js_echo($matches);
+            /*js_echo($matches);*/
         }
     }
 ?>

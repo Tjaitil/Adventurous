@@ -10,15 +10,6 @@
             $this->session = $session;
             $this->commonModels(true, false);
         }
-        public function checkAdventure() {
-            // Check if user has an already existing adventure
-            $sql = "SELECT adventure_id FROM adventure WHERE username=:username";
-            $stmt = $this->db->conn->prepare($sql);
-            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-            $param_username = $this->username;
-            $stmt->execute();
-            return $stmt->fetch(PDO::FETCH_ASSOC);
-        }
         public function toggleInvite() {
             $sql = "SELECT invite_only FROM adventures WHERE adventure_leader=:adventure_leader";
             $stmt = $this->db->conn->prepare($sql);
@@ -27,6 +18,7 @@
             $stmt->execute();
             if(!$stmt->rowCount() > 1) {
                 $this->gameMessage("ERROR: You are currently not in an adventure", true);
+                return false;
             }
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             
@@ -39,13 +31,42 @@
             $stmt->execute();
             echo ($param_invite_only == 1) ? 'on' : 'off';
         }
-        public function newAdventure($adventure_data) {
-            $this->adventure_data = $adventure_data;
-            $categories = array();
+        public function newAdventure($POST) {
+            // $POST variable holds the post data
+            // This function is called from an AJAX request
+            // Function to set new adventure
+            $POST = json_decode($POST['JSON_data'], true);
+            $difficulty = $POST['difficulty'];
+            $location = $POST['location'];
+            $other_invite = $POST['other_invite'];
             
+            if(strlen($difficulty) < 1 || strlen($location) < 1) {
+                $this->gameMessage("ERROR: Please fill out all required inputs in the form");
+                return false;
+            }
+            
+            $sql = "SELECT adventure_id FROM adventure WHERE username=:username";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_username = $this->username;
+            $stmt->execute();
+            $adventure_id = $stmt->fetch(PDO::FETCH_ASSOC)->adventure_id;
+            // Check if there is player is part of another adventure
+            if($adventure_id != 0) {
+                $this->gameMessage("ERROR: Finish your current adventure before starting a new one", true);
+                return false;
+            }
+            
+            $difficulties = array("easy" => 1.0, "medium" => 5.0, "hard" => 12);
+            if($difficulties[$_POST['difficulty']] > $_SESSION['gamedata']['adventurer_respect']) {
+                $this->gameMessage("ERROR: Adventurer respect too low for this difficulty", true);
+                return false;
+            }
+                        
             $profiences = array('farmer', 'miner', 'trader', 'warrior');
             if(array_search($this->session['profiency'], $profiences) === false) {
-                print "ERROR";
+                $this->errorHandler->reportError(array($this->username, "Not valid profiency: " . $this->session['profiency'] . __METHOD__));
+                $this->gameMessage("ERROR: Something unexpected happened, please try again!", true);
                 return false;
             }
             try {
@@ -59,10 +80,10 @@
                 $stmt->bindParam(":profiency", $param_profiency, PDO::PARAM_STR);
                 $stmt->bindParam(":other_invite", $param_other_invite, PDO::PARAM_INT);
                 $param_adventure_leader = $this->username;
-                $param_difficulty = $this->adventure_data['difficulty'];
-                $param_location = $this->adventure_data['location'];
+                $param_difficulty = $difficulty;
+                $param_location = $location;
                 $param_profiency = $this->username;
-                $param_other_invite = $this->adventure_data['other_invite'];
+                $param_other_invite = $other_invite;
                 $stmt->execute();
                 $this->adventure_data['adventure_id'] = $this->db->conn->lastInsertId();
                 
@@ -83,6 +104,7 @@
                 return false;
             }
             $this->db->closeConn();
+            $this->gameMessage("Adventure started", true);
         }   
         private function advRequirements() {
             $role = $this->session['profiency'];

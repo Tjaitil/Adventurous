@@ -27,7 +27,11 @@
                 return $data;
             }
         }
-        public function updateInventory($insert, $item, $quantity) {
+        public function updateInventory($POST) {
+            // $POST variable holds the post data
+            $insert = $POST['insert'];
+            $item = strtolower($POST['item']);
+            $quantity = $POST['quantity'];
             //$insert, 1 = insert, 0 = widthdraw
             $sql = "SELECT amount FROM stockpile WHERE item=:item AND username=:username";
             $stmt = $this->db->conn->prepare($sql);
@@ -68,6 +72,7 @@
                 $this->gameMessage("ERROR: You don't have that amount to insert", true);
                 return false;
             }
+            
             try {
                 $this->db->conn->beginTransaction();
                 if($insert === "0") {

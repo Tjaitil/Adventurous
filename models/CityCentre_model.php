@@ -26,6 +26,13 @@
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $data['permits'] = $row['permits'];
             
+            $sql = "SELECT frajrite_items, wujkin_items FROM user_data WHERE username=:username";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_username = $this->username;
+            $stmt->execute();
+            $data['unlock_items'] = $stmt->fetch(PDO::FETCH_ASSOC);
+            
             if(in_array($this->session['location'], array("fansal-plains", "hirtam", "khanz", "pvitul", "ter"))) {
                 $sql = "SELECT " . $this->session['location'] ." FROM diplomacy WHERE username=:username";
                 $stmt = $this->db->conn->prepare($sql);

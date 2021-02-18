@@ -40,7 +40,7 @@
             else if($POST['route'] == 'db') {
                 $this->dbStats(); 
             }
-            
+            var_dump($this->warriors);
             $battle_result;
             $this->duration = 1;
             do {
@@ -173,7 +173,7 @@
             $this->getStatistics();
         }       
         protected function daqloonHit($daqloon, $warrior , $number = false) {
-            if(rand(1,100) <= round(($warrior['technique_level'] * 0.25) + $warrior['block_ratio'])
+            if(rand(1,100) <= round(($warrior['technique_level'] * (0.75 + ($warrior['block_ratio'] * 0.4))))
                && $warrior['type'] != 'ranged'
                && $warrior['block_ratio'] > 0.9) {
                     $this->battle_progress[] = "Blocked attack from daqloon " . $daqloon['id'];
@@ -188,7 +188,7 @@
                 
                 if($warrior['health'] < 10) {
                     $this->battle_progress[] = "Warrior " . $warrior['warrior_id'] . " wounded";
-                    $warrior['health'] = 10;
+                    $warrior['health'] = 9.5;
                     unset($this->warriors[$this->warrior_i]);
                     $this->warrior_amount -= 1;
                 }
@@ -233,7 +233,7 @@
                 unset($this->warriors[$this->daqloon_i]);
                 $this->daqloon_amount -= 1;
             }
-
+            // $number is the index of the daqloon because of uneven numbers of daqloons vs warriors
             if($number !== false) {
                 $this->warriors[$number] = $warrior;
             }
@@ -243,7 +243,7 @@
             $this->daqloons[$this->daqloon_i] = $daqloon;    
             
             
-            // If the attack_speed is above 1 means that the warrior is carrying dagger og throwing knives
+            // If the attack_speed is above 1 means that the warrior is carrying dagger or throwing knives
             if($daqloon['health'] > 10  && $warrior['attack_speed'] > 1 && $second !== false) {
                 $this->warriorHit($daqloon, $warrior, $second = true, $number);
             }
@@ -293,18 +293,19 @@
             
             $query_array = $this->data['warriors'];
             $query_array[] = $this->username;
+            var_dump($this->username);
             $in  = str_repeat('?,', count($query_array) - 2) . '?';
             
             $sql = "SELECT w.warrior_id, w.type, w.health, wl.stamina_level, wl.technique_level, wl.precision_level,
                     wl.strength_level
                     FROM warriors as w 
                     INNER JOIN warriors_levels as wl ON w.warrior_id = wl.warrior_id
-                    WHERE w.warrior_id IN (1,2) AND w.username= 'tjaitil' GROUP BY w.warrior_id ";
+                    WHERE w.warrior_id IN ($in) AND w.username=? GROUP BY w.warrior_id ";
             $stmt = $this->db->conn->prepare($sql);
             $param_username = $this->username;
             $stmt->execute($query_array);
             $warriors = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
+            var_dump($warriors);
             $sql = "SELECT warrior_id, helm, ammunition, left_hand, body, right_hand, legs, boots,
                     (SELECT SUM(attack) FROM armory_items_data WHERE item IN (helm, left_hand, body, right_hand, boots) AND item)
                     AS attack,
@@ -318,6 +319,8 @@
                 $stats[$i]['attack'] += 10;
                 $stats[$i]['defence'] += 12;
             }
+            
+            
             
             $this->warriors = array();
             

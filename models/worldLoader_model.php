@@ -63,6 +63,9 @@
                     case 'warrior':
                         $map_location = 'tasnobil';
                         break;
+                    case 'none':
+                        $map_location = "6.4";
+                        break;
                 }
                 $this->updateMap();
             }
@@ -136,14 +139,38 @@
             $this->getMap();
             $string = file_get_contents('../gamedata/' . $this->map . '.json');
             $this->loadObjects();
-            echo $this->map . '|' . $this->changed_location . '|' . file_get_contents($this->object_file);
+            $this->model = $this->loadModel('eventLoader', true);
+            $events = $this->model->loadEventPositions($this->map);
+            echo $this->map . '|' . $this->changed_location . '|' . file_get_contents($this->object_file) . '|' . $events;
             /*$_SESSION['gamedata']['map_location'];*/
         }
         public function loadObjects() {
             $string = json_decode(file_get_contents('../gamedata/' . $this->map . '.json'), true);
             $objects = array();
             $objects['objects'] = array();
+            
+            switch($this->map) {
+                case '4.5':
+                    $object = true;
+                    $x = 0;
+                    $y = 2376;
+                case '5.5':
+                    $object = true;
+                    $x = 330;
+                    $y = 1452;
+                default:
+                    
+                    break;
+            }
+            if(isset($object)) {
+                $starting_point = array();
+                $starting_point['x'] = $x;
+                $starting_point['y'] = $y;
+                $starting_point['type'] = "start_point";
+                $objects['objects'][] = $starting_point;
+            }
             $objects['buildings'] = array();
+            
             for($i = 0; $i < count($string['layers']); $i++) {
                 if(in_array($string['layers'][$i]['name'], array("Objects", "Buildings")) === true) {
                         $object_array = $string['layers'][$i]['objects'];
@@ -174,10 +201,10 @@
                                 $object_array[$x]['diameterDown'] = 0;
                                 $object_array[$x]['diameterLeft'] = 0;
                             }
-                            $object_array[$x]['diameterTop'] += $object_array[$x]['y'];
-                            $object_array[$x]['diameterRight'] += $object_array[$x]['x'] + $object_array[$x]['width'];
-                            $object_array[$x]['diameterDown'] += $object_array[$x]['y'] + $object_array[$x]['height'];
-                            $object_array[$x]['diameterLeft'] += $object_array[$x]['x'];
+                            $object_array[$x]['diameterTop'] = $object_array[$x]['y'];
+                            $object_array[$x]['diameterRight'] = $object_array[$x]['x'] + $object_array[$x]['width'];
+                            $object_array[$x]['diameterDown'] = $object_array[$x]['y'] + $object_array[$x]['height'];
+                            $object_array[$x]['diameterLeft'] = $object_array[$x]['x'];
                             $objects['objects'][] = $object_array[$x];
                             unset($object_array[$x]['type']);
                         }
@@ -188,7 +215,6 @@
             $test = file_put_contents($this->object_file, "123");
             $handle = file_put_contents($this->object_file, json_encode($objects, JSON_PRETTY_PRINT));
         }
-        
         public function loadChunks($POST) {
             // Load the next 2 tiles
             $y_difference = $POST['ybase'] - 320 - $POST['yMapMin'];
@@ -205,7 +231,6 @@
             $objects = array();
             $string = $string['objects'];
             for($i = 0; $i < count($string); $i++) {
-
                /*var_dump($string[$i]['y'] > $POST['yMapMax']);
                     var_dump($string[$i]['y'] < $POST['ybase'] + 320);
                     var_dump($y_difference > 0);

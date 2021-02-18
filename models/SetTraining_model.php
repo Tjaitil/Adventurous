@@ -77,8 +77,12 @@
                 return false;
             }
             $this->db->closeConn();
-            $date = date_timestamp_get(new DateTime($param_training_countdown));
-            js_echo(array($date, $type));
+            /* Echo order, split by "|"
+             * [0] -> possible level up message;
+             * [1] -> gameMessage
+             */
+            echo "|";
+            $this->gameMessage("Warrior {$training_type} training started", true);
         }
     }
 ?>

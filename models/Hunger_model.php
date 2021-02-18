@@ -102,7 +102,7 @@
             $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
             $param_item = $item;
             $stmt->execute();
-            if(!$stmt->rowCount() < 0) {
+            if(!$stmt->rowCount() > 0) {
                 $this->gameMessage("ERROR: This item wouldn't taste good!", true);
                 return false;
             }   

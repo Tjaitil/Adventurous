@@ -20,8 +20,7 @@
             
             $profiencies = array('Farmer', 'Miner', 'Warrior');
             if (array_search($profiency, $profiencies) === false) {
-                header("Location: /maintenance");
-                exit();
+                
                 return false;
             }
             

@@ -16,10 +16,10 @@
             $mineral = $POST['mineral'];
             $workforce = $POST['workforce'];
             
-            if($this->session['hunger'] < 10) {
+            /*if($this->session['hunger'] < 10) {
                 $this->gameMessage("ERROR: Your hunger is too high, please eat!", true);
                 return false;
-            }
+            }*/
             $sql = "SELECT m.mining_type, m.permits, mw.avail_workforce, mw.efficiency_level
                     FROM miner AS m INNER JOIN miner_workforce AS mw ON mw.username = m.username
                     WHERE location=:location AND m.username=:username";
@@ -97,6 +97,7 @@
                 // Only gain xp when miner level is below 30 or if profiency is miner
                 if($this->session['miner']['level'] < 30 || $this->session['profiency'] == 'miner') { 
                     $this->UpdateGamedata->updateXP('miner', $experience);
+                    $xpUpdate = true;
                 }
                 
                 $this->db->conn->commit();
@@ -106,7 +107,22 @@
                 return false;
             }
             $this->db->closeConn();
-            jsecho(array($param_permits, $param_avail_workforce));
+            /* Echo order, split by "|"
+             * [1] -> possible level up message;
+             * [2] -> gameMessage
+             * [3] -> $echo_data with updated game data
+             */
+            echo "|";
+            $echo_data = array();
+            if(isset($xpUpdate)) {
+                $echo_data['xp_gained'] = $experience;
+                $this->gameMessage("Mining started, {$experience} miner xp gained", true);
+            }
+            echo "|";
+            $echo_data['avail_workforce'] = $param_avail_workforce;
+            $echo_data['permits'] = $param_permits;
+            
+            echo json_encode($echo_data);
         }
     }
 ?>

@@ -13,7 +13,7 @@
             // Function to reset crops, free up workforce and give player the amount of crops they have grown
             // This function is called from an AJAX request from crops.js
             
-            $sql = "SELECT grow_type, grow_quant, fields_avail FROM farmer WHERE username=:username AND location=:location";
+            $sql = "SELECT crop_type, crop_quant, fields_avail FROM farmer WHERE username=:username AND location=:location";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
@@ -21,7 +21,7 @@
             $param_location = $this->session['location'];
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $crop_type = $row['grow_type'];
+            $crop_type = $row['crop_type'];
             
             $sql2 = "SELECT experience, min_crop_count, max_crop_count FROM crops_data WHERE crop_type=:crop_type";
             $stmt2 = $this->db->conn->prepare($sql2);
@@ -31,12 +31,18 @@
             $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
             
             
-            $experience = $row2['experience'] * $row['grow_quant'];
-            $total_xp = $experience + $this->session['farmer']['xp'];
-            $rand_min = ($row['grow_quant'] * 0.3) + $row2['min_crop_count'];;
-            $rand_max = ($row['grow_quant'] * 0.3) + $row2['max_crop_count'];
+            $experience = $row2['experience'] * $row['crop_quant'];
+            $rand_min = ($row['crop_quant'] * 0.3) + $row2['min_crop_count'];;
+            $rand_max = ($row['crop_quant'] * 0.3) + $row2['max_crop_count'];
             $quantity = round(rand($rand_min, $rand_max));
-            $artefact_bonus = $this->Artefact_model->artefactCheck('harvester');
+            
+            // If the player has harvester artefact equipped, get harvester bonus
+            if(strpos($this->session['artefact'], 'harvester') !== false) {
+                $artefact_bonus = $this->ArtefactModel->artefactCheck('harvester');
+            }
+            else {
+                $artefact_bonus = 1;
+            }
             $quantity = round($quantity * $artefact_bonus);
             
             if(in_array($this->session['location'], array('towhar', 'krasnur')) != true) {
@@ -56,18 +62,19 @@
                 if($artefact_bonus > 1) {
                     $this->ArtefactModel->updateArtefact();
                 }
+                echo "|";
                 
-                $sql = "UPDATE farmer SET fields_avail=:fields_avail, grow_type=:grow_type,
-                        grow_quant=:grow_quant, plot1_harvest='false' WHERE username=:username AND location=:location";
+                $sql = "UPDATE farmer SET fields_avail=:fields_avail, crop_type=:crop_type,
+                        crop_quant=:crop_quant, plot1_harvest=0 WHERE username=:username AND location=:location";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":fields_avail", $param_fields_avail, PDO::PARAM_STR);
-                $stmt->bindParam(":grow_type", $param_grow_type, PDO::PARAM_STR);
-                $stmt->bindParam(":grow_quant", $param_grow_quant, PDO::PARAM_STR);
+                $stmt->bindParam(":crop_type", $param_crop_type, PDO::PARAM_STR);
+                $stmt->bindParam(":crop_quant", $param_crop_quant, PDO::PARAM_STR);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
-                $param_fields_avail = $row['fields_avail'] + $row['grow_quant'];
-                $param_grow_type = 'none';
-                $param_grow_quant = 0;
+                $param_fields_avail = $row['fields_avail'] + $row['crop_quant'];
+                $param_crop_type = 'none';
+                $param_crop_quant = 0;
                 $param_username = $this->username;
                 $param_loation = $this->session['location'];
                 $stmt->execute();
@@ -80,10 +87,10 @@
                 $param_avail_workforce = $row3['avail_workforce'] + $row3[$workforce];
                 $param_username = $this->username;
                 $stmt2->execute();
-                
                 // Only gain xp when farmer level is below 30 or if profiency is farmer
                 if($this->session['farmer']['level'] < 30 || $this->session['profiency'] == 'farmer') { 
-                    $this->UpdateGamedata->updateXP('farmer', $total_xp);
+                    $this->UpdateGamedata->updateXP('farmer', $experience);
+                    $xpUpdate = true;
                 }
     
                 $this->UpdateGamedata->updateInventory($crop_type, $quantity, true);
@@ -95,6 +102,22 @@
                 return false;
             }
             $this->db->closeConn();
+            /* Echo order, split by "|"
+             * [0] -> possible artefact use
+             * [1] -> possible level up message;
+             * [2] -> gameMessage
+             * [3] -> $echo_data with updated game data
+             */
+            echo "|";
+            $echo_data = array();
+            if(isset($xpUpdate)) {
+                $echo_data['xp_gained'] = $experience;
+                $this->gameMessage("Harvested crops, {$xpUpdate} famer xp gained", true);
+            }
+            echo "|";
+            $echo_data['avail_workforce'] = $param_avail_workforce;
+            
+            echo json_encode($echo_data);
         }
     }
 ?>

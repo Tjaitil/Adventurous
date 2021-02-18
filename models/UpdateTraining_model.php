@@ -117,23 +117,29 @@
                 $stmt4->execute($values);
 
                 $this->db->conn->commit();
-                if($training_type === 'general') {
-                    $this->gameMessage("You have trained your soldier and gotten
-                                       {$parameters['stamina_xp']} stamina xp,
-                                       {$parameters['technique_xp']} technique xp,
-                                       {$parameters['precision_xp']} precision xp and
-                                       {$parameters['strength_xp']} strength xp", true);    
-                }
-                else {
-                    $this->gameMessage("You have trained your soldier and gotten {$parameters[$training_type]} .
-                                       {$training_type} xp", true);    
-                }
             }
             catch (Exception $e) {
                 $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
             $this->db->closeConn();
+            /* Echo order, split by "|"
+             * [0] -> possible level up message;
+             * [1] -> gameMessage
+             */
+            echo "|"; 
+            if($training_type === 'general') {
+                $this->gameMessage("Warrior training finished. Gained
+                                   {$parameters['stamina_xp']} stamina xp,
+                                   {$parameters['technique_xp']} technique xp,
+                                   {$parameters['precision_xp']} precision xp and
+                                   {$parameters['strength_xp']} strength xp. You received {$warrior_experience} warrior xp", true);    
+            }
+            else {
+                $type = $parameters[$training_type] . '_xp';
+                $this->gameMessage("Warrior training finished. Gained {$type} . {$training_type} xp. You received {$warrior_experience}
+                                   warrior xp", true);    
+            }
         }
     }
 ?>

@@ -10,8 +10,8 @@
             $this->session = $session;
             $this->commonModels(true, false);
         }
-        public function newArtefact() {
-            $crystals = array('hirtam crystal', 'pvitul crystal', 'khanz crystal', 'ter crystal', 'fansal crystal');
+        public function checkCrystals() {
+            $crystals = array('hirtam crystal', 'pvitul crystal', 'khanz crystal', 'ter crystal', 'fansal-plains crystal');
             $queryArray = $crystals;
             $queryArray[] = $this->username;
             $in  = str_repeat('?,', count($crystals) - 1) . '?';
@@ -22,21 +22,24 @@
             $stmt = $this->db->conn->prepare($sql);
             $stmt->execute($queryArray);
             if($stmt->rowCount() < 5) {
-                $this->gameMessage("ERROR: You are missing on ore more crystals!", true);
-                return false;
+                $_SESSION['conversation']['conv_index'] = "hfrQ1rQrr1Qr2r1";
+                return array(true, false);
             }
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-            
+            else {
+                $_SESSION['conversation']['conv_index'] = "hfrQ1rQrr1Qr2r2";
+                return array(true, false);
+            }
+        }
+        public function newArtefact() {            
             $new_artefact = $this->artefacts[array_rand($this->artefacts)];
-            
+            $crystals = array('hirtam crystal', 'pvitul crystal', 'khanz crystal', 'ter crystal', 'fansal-plains crystal');
             try {
                 $this->db->conn->beginTransaction();
                 
-                for($i = 0; $i < count($crystals); $i++) {
-                    $this->updateGamedata->updateInventory($crystals[$i], -1);
-                }
-                $this->updateGamedata->updateInventory($new_artefact . ' (10)', 1, true);
+                /*for($i = 0; $i < count($crystals); $i++) {
+                    $this->UpdateGamedata->updateInventory($crystals[$i], -1);
+                }*/
+                $this->UpdateGamedata->updateInventory($new_artefact . ' (10)', 1, true);
                 
                 $this->db->conn->commit();
             }
@@ -44,8 +47,12 @@
                 $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
-            // Date should not be included in this message so $this->gameMessage() is not used, check citycentre.js
-            js_echo(array("You received a new artefact: ", ucfirst($new_artefact)));
+            // Set conversation index
+            $_SESSION['conversation']['conv_index'] = "hfrQ1rQrr1Qr2r2rr";
+            $active_conversation = $_SESSION['conversation']['active_dialogues'] =
+                array("b|After assembling the pieces, I got an " . $new_artefact . " artefact, here you go. Come back later if you have more
+                        crystals|r");
+            return array(true, $active_conversation);
         }
         public function changeArtefact($POST) {
             // $POST variable holds the post data
@@ -168,7 +175,6 @@
             
             $_SESSION['gamedata']['artefact'] = $param_artefact;
             $this->gameMessage($this->session['artefact'] . " artefact used, charges left: {$charges}", true);
-            echo "|";
         }
     }
 ?>

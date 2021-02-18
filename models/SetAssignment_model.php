@@ -38,7 +38,7 @@
                 return false;
             }
             if($row['cart'] == 'none') {
-                $this->gameMsssage("ERROR! You don't have a cart", true);
+                $this->gameMesssage("ERROR! You don't have a cart. Go buy one at a travel bureau", true);
                 return false;
             }
             $sql = "SELECT destination, assignment_amount, time, assignment_type FROM trader_assignments WHERE assignment_id=:assignment_id";
@@ -54,7 +54,7 @@
                 $param_type = $assignment_data['assignment_type'];
                 $stmt2->execute();
                 $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
-                $assignment_XP = $row2['xp'];
+                $experience = $row2['xp'];
                 //countdown;
                 $add_time = $assignment_data['time'];
                 $date = date("Y-m-d H:i:s");
@@ -62,7 +62,7 @@
                 $new_date->modify("+{$add_time} seconds");
             }
             else {
-                $assignment_XP = 0;
+                $experience = 20;
                 $date = date("Y-m-d H:i:s");
                 $new_date = new DateTime($date);
             }
@@ -81,8 +81,9 @@
                 $stmt->execute();
                 
                 // Only gain xp when warrior level is below 30 or if profiency is trader and assignment_xp is greater than 0
-                if($assignment_XP > 0 && ($this->session['trader']['level'] < 30 || $this->session['profiency'] == 'trader')) {
-                    $this->UpdateGamedata->updateXP('trader', $assignment_XP);    
+                if($this->session['trader']['level'] < 30 || $this->session['profiency'] == 'trader') {
+                    $this->UpdateGamedata->updateXP('trader', $experience);
+                    $xpUpdate = true;
                 }
                 
                 $this->db->conn->commit();
@@ -91,8 +92,44 @@
                 $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
+            $data = array();
+            $sql2 = "SELECT assignment_id, cart, cart_amount, delivered,
+                    (SELECT capasity FROM travelbureau_carts WHERE wheel= cart) as capasity FROM trader
+                     WHERE username=:username";
+            $stmt2 = $this->db->conn->prepare($sql2);
+            $stmt2->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_username = $this->username;
+            $stmt2->execute();
+            $data['trader_data'] = $stmt2->fetch(PDO::FETCH_ASSOC);
+            
+            $sql4 = "SELECT base, destination, cargo, assignment_amount, assignment_type
+                         FROM trader_assignments
+                         WHERE assignment_id=:assignment_id";
+            $stmt4 = $this->db->conn->prepare($sql4);
+            $stmt4->bindParam(":assignment_id", $param_assignment_id, PDO::PARAM_INT);
+            $param_assignment_id = $assignment_id;
+            $stmt4->execute();
+            $row4 = $stmt4->fetch(PDO::FETCH_ASSOC);
+            $data['trader_data']['base'] = $row4['base'];
+            $data['trader_data']['destination'] = $row4['destination'];
+            $data['trader_data']['cargo'] = $row4['cargo'];
+            $data['trader_data']['assignment_amount'] = $row4['assignment_amount'];
+            $data['trader_data']['assignment_type'] = $row4['assignment_type'];
+            
+    
             $this->db->closeConn();
-            $this->gameMessage("New assignment taken", true);
+            /* Echo order, split by "|"
+             * [0] -> possible level up message;
+             * [1] -> gameMessage
+             * [2] -> traderAssignment get_template
+             */
+            echo "|";
+            $echo_data = array();
+            if(isset($xpUpdate)) {
+                $this->gameMessage("New assignment taken, {$xpUpdate} trader xp gained", true);
+            }
+            echo "|";
+            $echo_data['assignmentHTML'] = get_template('traderAssignment', $data['trader_data'], true);
         }
     }
 ?>

@@ -10,6 +10,7 @@
             $this->session = $session;
         }
         public function updateInventory($item, $quantity, $update = false, $unset = false) {
+            $item = strtolower($item);
             // Function to update the players inventory in database and also session
             $sql = "SELECT amount FROM inventory WHERE item=:item AND username=:username";  
             $stmt = $this->db->conn->prepare($sql);
@@ -21,8 +22,9 @@
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $count = $stmt->rowCount();
             
-            if($count === 18 && $count === 0) {
-                throw new Exception("This is an error! inv_amount");
+            // If there is 18 inventory items throw error
+            if($count == 0 && count($this->session['inventory']) == 18) {
+                throw new Exception("ERROR: inv_amount", true);
             }
             
             if($count === 0 && $quantity > 0) {
@@ -38,7 +40,7 @@
                 $stmt->execute();
             }
             $new_amount = $row['amount'] + $quantity;
-            if($count > 0 && $new_amount > 0) {
+            if($row['amount'] > 0 && $new_amount > 0) {
                 // If items already exists in bank
                 $sql2 = "UPDATE inventory SET amount=:amount WHERE username=:username AND item=:item";
                 $stmt2 = $this->db->conn->prepare($sql2);
@@ -76,7 +78,6 @@
         }
         public function updateXP($profiency, $xp) {
             // Update the players experience in on of the profiences in database
-            
             if($this->session[$profiency]['level'] >= 30 && $this->session['profiency'] != $profiency) {
                 return false;    
             }
@@ -96,7 +97,7 @@
             // $conn is unset by the model that is instantiating this class
             
             // Check if the profiency has leveled up
-            if($this->session[$profiency]['xp'] > $this->session[$profiency]['next_level']) {
+            if($_SESSION['gamedata'][$profiency]['xp'] > $this->session[$profiency]['next_level']) {
                 $_SESSION['gamedata']['level_up'][] = $profiency;
                 $levelUp_model = $this->loadModel('LevelUp', true);
                 $levelUp_model->updateData();

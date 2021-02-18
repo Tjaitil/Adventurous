@@ -29,7 +29,7 @@
             $adventure_id = $row['adventure_id'];
             
             if(!$adventure_id > 0) {
-                $this->gameMessage("You don't have any adventures!", true);
+                $this->gameMessage("ERROR: You don't have any adventures!", true);
                 return false;
             }
             
@@ -42,7 +42,7 @@
             $this->adventure_data = $stmt->fetch(PDO::FETCH_ASSOC);
             $time = date("Y-m-d H:i:s");
             if($time < $this->adventure_data['adventure_countdown']) {
-                $this->gameMessage("The adventure is not yet finished!", true);
+                $this->gameMessage("ERROR: The adventure is not yet finished!", true);
                 return false;
             }
             $this->adventure_data['adventure_id'] = $adventure_id;
@@ -70,6 +70,8 @@
             }
             $role = array_search($this->username, $this->adventure_data);
             if($role === false) {
+                $this->errorHandler->reportError(array($this->username, "player has no role " . __METHOD__), true);
+                $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
             else {
@@ -119,6 +121,7 @@
                     $xp_data['adventurer_xp'] = 0.25;
                     break;
             }
+            // If player doesn't have enough inventory spaces, echo error message and return
             if($item_count + $count > 18) {
                 $this->gameMessage("ERROR: You need to have at least {$count} empty spaces in your inventory", true);
                 return false;
@@ -228,35 +231,45 @@
             try {
                 $this->db->conn->beginTransaction();
                 
-                
                 // If the new count after transaction is above 18 include Stockpile_model to directly insert items into stockpile
                 if(count($this->session['inventory']) + count($rewards) > 18) {
                     $Stockpile_model = $this->loadModel('Stockpile', true);
                 }
                 
-                /*
                 foreach($rewards as $key) {
+                    $this->UpdateGamedata->updateInventory($key['item'], $key['amount'], true);    
                     // Update inventory
-                    if(count($_SESSION['gamedata']['inventory']) + 1 > 18) {
+                    /*if(count($_SESSION['gamedata']['inventory']) + 1 > 18) {
                         $Stockpile_model->updateStockpile($key['item'], $key['amount']);  
                     }
                     else {
                         $this->UpdateGamedata->updateInventory($key['item'], $key['amount'], true);    
-                    }
+                    }*/
                 }
                 
                 if($crystal_chance === 1) {
-                    $rewards[] = array("item" => $this->adventure_data['location'] . 'crystal', "amount" => 1);
+                    $rewards[] = array("item" => $this->adventure_data['location'] . ' crystal', "amount" => 1);
                     // Update inventory
-                    $this->UpdateGamedata->updateInventory($this->adventure_data['location'] . 'crystal', 1, true);
+                    $this->UpdateGamedata->updateInventory(strtolower($this->adventure_data['location']) . ' crystal', 1, true);
                 }
                 
                 // Only gain xp when farmer level is below 30 or if profiency is farmer
                 if($this->session[$role]['level'] < 30 || $this->session['profiency'] == $role) { 
                     $this->UpdateGamedata->updateXP($role, $xp_data['user_xp']);    
                 }
-                $this->UpdateGamedata->updateXP('adventurer', $xp_data['adventure_xp']);
+                $sql = "UPDATE user_levels SET adventurer_respect=:respect WHERE username=:username";
+                $stmt = $this->db->conn->prepare($sql);
+                $stmt->bindParam(":respect", $param_adventurer_respect, PDO::PARAM_INT);
+                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                $param_adventurer_respect = $xp_data['adventurer_xp'] + $this->session['adventurer'];
+                $param_username = $this->username;
+                $stmt->execute();
                 
+                $sql = "DELETE FROM adventure_requirements WHERE username=:username";
+                $stmt = $this->db->conn->prepare($sql);
+                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                $param_username = $this->username;
+                $stmt->execute();
                 
                 $sql = "UPDATE adventure SET adventure_id=0, adventure_status=0 WHERE username=:username";
                 $stmt = $this->db->conn->prepare($sql);
@@ -294,16 +307,16 @@
                     $stmt2->bindParam(":username", $param_username, PDO::PARAM_STR);
                     $param_username = $this->username;
                     $stmt2->execute();
-                }*/
+                }
         
                 $this->db->conn->commit();
             }
             catch(Exception $e) {
                 $this->db->conn->rollBack();
-                $this->reportError($e->getFile(), $e->getLine(), $e->getMessage());
-                $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
+                $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
+            $_SESSION['gamedata']['adventurer'] = $param_adventurer_respect;
             $this->adventure_data['user_xp'] = $xp_data['user_xp'];
             $this->adventure_data['role'] = $role;
             

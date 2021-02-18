@@ -68,7 +68,7 @@
             
             $post_data = json_decode($POST['JSON_data'], true);
             $post_data['item'] = strtolower($post_data['item']);
-            
+            var_dump($post_data);
             $sql  ="SELECT item FROM offers WHERE offeror=:offeror";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":offeror", $param_username, PDO::PARAM_STR);
@@ -79,7 +79,7 @@
                 return false;
             }
             
-            if($post_data['type'] == 'Sell') {
+            if($post_data['offerType'] == 'Sell') {
                 $item = get_item($this->session['inventory'], $post_data['item']);
                 if($item == null) {
                     $this->gameMessage("ERROR: You don't have the item you are currently trying to sell");
@@ -100,7 +100,7 @@
             
                 }*/
             }
-            else if($post_data['type'] == 'Buy') {
+            else if($post_data['offerType'] == 'Buy') {
                 $sql = "SELECT amount FROM inventory WHERE item='gold' AND username=:username";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
@@ -129,7 +129,7 @@
                 $stmt->bindParam(":price_ea", $param_price_ea, PDO::PARAM_STR);
                 $stmt->bindParam(":amount_left", $param_amount_left, PDO::PARAM_STR);
                 $param_username = $this->username;
-                $param_type = $post_data['type'];
+                $param_type = $post_data['offerType'];
                 $param_item = $post_data['item'];
                 $param_amount = $post_data['amount'];
                 $param_price_ea = $post_data['price'];
@@ -145,21 +145,22 @@
                 $stmt2->bindParam(":amount", $param_amount, PDO::PARAM_STR);
                 $param_id = $this->db->conn->lastInsertId();
                 
-                if($post_data['type'] === 'Sell') {
+                if($post_data['offerType'] === 'Sell') {
                     $param_item = $post_data['item'];
+                    var_dump($param_item);
                     $param_amount = $post_data['amount'];
                 }
-                else if($post_data['type'] === 'Buy') {
+                else if($post_data['offerType'] === 'Buy') {
                     $param_item = 'gold';
                     $param_amount = $post_data['price'] * $post_data['amount'];
                 }
                 $stmt2->execute();
                 
-                if($post_data['type'] == 'Sell') {
+                if($post_data['offerType'] == 'Sell') {
                     // Update inventory
                     $this->UpdateGamedata->updateInventory($param_item, -$param_amount, true);
                 }
-                else if($post_data['type'] == 'Buy') {
+                else if($post_data['offerType'] == 'Buy') {
                     // Update inventory
                     $this->UpdateGamedata->updateInventory('gold', -$param_amount * $param_price_ea, true);
                 }
@@ -264,6 +265,8 @@
             
                 //Update this->username
                 if($row['type'] === 'Buy') {
+                    // Send message    
+                    
                     // Update inventory
                     $this->UpdateGamedata->updateInventory($row['item'], -$amount);
                     $this->UpdateGamedata->updateInventory('gold', $cost, true);

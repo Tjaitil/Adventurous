@@ -9,7 +9,7 @@
             $this->session = $session;
         }
         public function getData() {
-            $sql = "SELECT password FROM users WHERE username=:username";
+            $sql = "SELECT email, country, password, time_created FROM users WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;

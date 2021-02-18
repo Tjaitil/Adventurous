@@ -10,25 +10,34 @@
             $this->commonModels(true, false);
         }
         public function getData($js = false) {
-            $city = $_SESSION['gamedata']['location'];
+            /*$city = $_SESSION['gamedata']['location'];
             if($_SESSION['gamedata']['location'] === 'travelling') {
                 header("Location: /city");
                 exit();
             }
             $cities = array("towhar", "golbak", "snerpiir", "krasnur", "tasnobil", "cruendo", "fagna");
-            if (array_search($this->session['location'], $cities) === false) {
+            if(array_search($this->session['location'], $cities) === false) {
+                $this->errorHandler->reportError(array($this->username, "Not valid location: " . $this->session['location'] . __METHOD__));
+                $this->gameMessage("ERROR: Something unexpected happened, please try again!", true);
                 return false;
-            }
-            $sql = "SELECT type, $city, value FROM travelbureau_horses";
+            }*/
+            /*$sql = "SELECT type, $city, value FROM travelbureau_horses";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":amount", $param_amount, PDO::PARAM_STR);
             $param_amount = 0;
             $stmt->execute();
             $data = array();
             $data['horse_shop'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $data['city'] = $city;
+            $data['city'] = $city;*/
             
-            $sql = "SELECT wheel, wood, value, capasity, $city, mineral_amount, wood_amount FROM travelbureau_carts"; 
+            $sql = "SELECT cart FROM trader WHERE username=:username";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_username = $this->username;
+            $stmt->execute();
+            $data['cart'] = $stmt->fetch(PDO::FETCH_OBJ)->cart;
+            
+            $sql = "SELECT wheel, wood, value, capasity, mineral_amount, wood_amount FROM travelbureau_carts"; 
             $stmt = $this->db->conn->prepare($sql);
             $stmt->execute();
             $data['cart_shop'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -43,8 +52,8 @@
                 foreach($data['cartShop'] as $key) {
                     echo $key['wheel'] . '|' . $key['wood']. '|' . $key['value'] . '|' . $key['capasity'] . '|' . $key[$data['city']] . '||';
                 }*/
-                get_template('horseShop', $data, true);
-                echo "#";
+                /*get_template('horseShop', $data, true);
+                echo "#";*/
                 get_template('cartShop', $data, true);
             }
             else {
