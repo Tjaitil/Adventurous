@@ -7,6 +7,7 @@ function backgroundImageSlider() {
     let duration = 0;
     
     function animate() {
+        // If 2 frames have gone by, animate
         if(duration % 2 === 0) {
             // Image is 3200 x 3200
             let imageElement = document.getElementById("background_image");

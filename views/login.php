@@ -31,8 +31,5 @@
                 <source src="../public/img/adventurous video test.mov" type="video/mp4">
             </video>
         </div>-->
-        <div id="div">
-            
-        </div>
     </body>
 </html>
