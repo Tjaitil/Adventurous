@@ -1,0 +1,37 @@
+    {
+        "index": "hssn0",
+        "hssn0": "a|Hello! Welcome to adventurous, I´m ... and I will guide you through this tutorial on how to play adventurous.|r",
+        "hssn0r": "a|If you need any help and assistance later you can check out the gameguide found in the menu above or at adventurous.no/gameguide. All information provided in this tutorial can be found on the gameguide pages|r",
+        "hssn0rr": "a|To start off; what can you do in adventurous?|r",
+        "hssn0rrr": "a|The short answer is that it is up to you. You can chose between leveling up your skills, play minigames, go on adventures, complete quest or go around the world exploring.|r",
+        "hssn0rrrr": "a|As you can imagine from the name of the game going on adventures is a big part of the game. The tutorial will descirbe adventures further in the adventure section|r",
+        "hssn0rrrrr": "a|Remember that if you wish to replay the tutorial you can simply press the '?' button over the game screen.|end",
+        
+        "hssn1": "a|Lets continue with controls|r",
+        "hssn1r": "a|You use the arrow keys to move around the character. Further you will be using e to enter building and w to talk to persons. You will see down in the left corner when you are able to do any of these actions|r",
+        "hssn1rr": "a|Try using the controls and notice the changes in the action indicator located in the right bottom corner as you get close to buildings or characters. Come see me when you want to move further|end",
+        "hssn11rr": "a|Good job, you know how to move around and interact with both buildings and characters. Remember that when the action indicator isn't showing any actions then the building cannot be entered or the character isn't interested in talking at the moment|end",
+        
+        "hssn2": "a|Next step is to learn about the hud on the page|r",
+        "hssn2rr": "a|First up we have the inventory to your right. This is where you will se which items you have. Clicking on the picture shows you the item name|r",
+        "hssn2rrr": "a|Next up we have the game log. Here you will receive messages if for example you aren't able to do a action or if one of your items at market has been sold. Keep attention to the log when playing|r",
+        "hssn2rrr": "a|On your left side you have the sidebar. This holds much information and you will use this a lot. Go on and open it and press continue|r",
+        "hssn2rrrr": "a|At the top you will notice the hunger bar. This is a bar that shows you the hunger your character has from 0 - 100. When playing or doing actions your hunger will deplete. When hunger is at 0 you won't be able to do actions in the game or travel. Visit a tavern to eat which replenish your hunger bar. For more information about what you can eat visit tavern page at the gameguide page.|r",
+        "hssn2rrrrr": "a|Under the hunger bar you will see your current profiency. Your profiency is the main skill you have specialized in. You can level up the other skill as well but only to level 30. Only profincy skill can be leveled up over level 30 up to max level 44. We will come back to talking about profiency in a later step of the tutorial|r",
+        "hssn2rrrrrr": "a|Next you have four different tabs contaning different information. Read through each tab and try clicking on the tab. First up we have the adventures tab. This tab includes all the information about your current adventures from the adventures status and who is participating to item requirements and the contribution of the different players.|r",
+        "hssn2rrrrrrr": "a|The second tab shows all the countdowns and what is going in the different cities and what skill is involved. This is updating throughout the game so you don't need to refresh the page to see the changes. Try and doing actions later in game and see the changes|r",
+        "hssn2rrrrrrrr": "a|The third tab is the diplomacy tab. Adventurous contains different regions who isn't so fond of each other. Doing actions will reduce or increase your diplomacy relations depending on the city relations to other cities. We will go more in detail in a later step in the tutorial|r",
+        "hssn2rrrrrrrrr": "a|The last tab is the skill tab. Here you can view your levels. If you click on each of the skills you will get a box which tells you how much experience you have in that skill and also how much exprience you need to level up|r",
+        "hssn2rrrrrrrrrr": "a|That is all you need to know about the hud, lets move on to next step|end",
+        
+        "hssn3": "a|Next step we will talk about profiency|r",
+        "hssn3r": "a|Adventurous contains 4 different skills; farmer, miner, trader and warrior you can level up. You also have an adventurer skill which you can increase your respect rather than leveling up.|r",
+        "hssn3rr": "a|From one of these skill not including adventurer you can chose to specialize in as your profiency. Note that trader isn't available before farmer, miner and warrior skill have reached level 5|r",
+        "hssn3rrr": "a|Further your profiency will gain you specific advantages when doing skill actions. Press continue to see the different advantages|r",
+        "hssn3rrrr": "a|Players with farmer profiency will have prices reduced in bakery by 75%. Players with miner profiency will have blacksmith prices reduced by 20% and have the ability to gain wujkin ore from adventures. Players with trader profiency will have the ability to select wether they want gold or goods from trader assignemnts. Players with warrior profiency will have the chance of getting weapons tokens from adventures. These tokens are used to unlock frajrite and wujkin armor and weapons.|r",
+        "hssn3rrrrr": "a|You can at any time change your profiency in the citycentre at an expense of 500 gold. If the profiency level is above 30 the player will be demoted back to level 30 in skill they change profiency from. This also includes warriors as armor and weapons from a mineral type requiring higher than level 30 will be taken of and inserted into inventory|end", 
+        
+        
+        "hsssn5rrrrrr": "a|This is all the basic you need to knwo about the game! Enjoy your time!|end",
+        "hssnEx": "a|You have now finsihed the tutorial. To exit this island and enter the main world seek out Pesr at the harbour to the east|end"
+    }

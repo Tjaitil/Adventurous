@@ -1,7 +1,20 @@
-{"index": "hf",
-"hf":"a|Hello, I am Harfen. Who are you?|r",
-"hfr":["b|My name is ...|Q1","b|None of your business|r1"],
-"hfrQ1":"a|What can i do for you?|r",
-"hfrQ1r":["b|Tell me about yourself|r",
-"b|I'd like to look at your merchant|FuncName|End"],
-"hfrr1":"a|Well stranger, then we don't have more to talk about.|end"}
+{
+    "index": "hf",
+    "hf":"a|Hello, I am Harfen. Who are you?|r",
+    "hfr":["b|My name is ...|Q1",
+           "b|None of your business|r1"],
+    "hfrQ1": "a|What can i do for you?|r",
+    "hfrr1": "a|Well stranger, then we don't have more to talk about.|end",
+    "hfrQ1r": "a|I hear you are the guy to talk to about getting artefacts|Q",
+    "hfrQ1rQ": "b|That might be right. Do you have the required crystals?|r",
+    "hfrQ1rQr": ["b|Yes, I have them|r1",
+                "b|What crystal do you need?|r2"],
+    "hfrQ1rQrr1": "b|Well then hand them over and I will get you an artefact|Q",
+    "hfrQ1rQrr2": "a|Fansal-plains crystal, Hirtam crystal, Pvitul crystal, Khanz crystal and Ter crystal. Come back when you got them|r",
+    "hfrQ1rQrr1Q": ["b|Can I select the type of artefact I get?|r1",
+                    "b|Here you go!|r2||Artefact#checkCrystals"],
+    "hfrQ1rQr1qr": "b|Nope.|end",
+    "hfrQ1rQrr1Qr2r1": "a| You don't have all 5 crystals. Come back when you have them|end",
+    "hfrQ1rQrr1Qr2r2": "a| Wait here for a minute i will come back|r|updateInventory|Artefact#newArtefact",
+    "hfrQ1rQrr1Qr2r2rr": "b|Thank you!|end"
+}

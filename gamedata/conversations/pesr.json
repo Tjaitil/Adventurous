@@ -1,6 +1,6 @@
     {
         "index": "pr",
-        "pr":"a|Hello, what can i do you for sir?|r",
+        "pr":"a,pesr|Hello, what can i do you for sir?|r",
         "prr":["b|I would like to travel with your cart|r",
                "b|Bye|end"],
         "prrr":["b|Fansal Plains|end|travel",
@@ -9,5 +9,6 @@
                "b|Khanz|end|gameTravel.newDestination",
                "b|Krasnur|end|gameTravel.newDestination",
                "b|Tasnobil|end|gameTravel.newDestination",
+               "b|Fagna|end|gameTravel.newDestination",
                "b|Towhar|end|gameTravel.newDestination"]
     }
