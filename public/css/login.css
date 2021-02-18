@@ -2,15 +2,19 @@
     margin:0px;
     padding:0px;
 }
-
+body {
+    background-image: url('../img/7.5m.png');
+    background-position: center;
+    background-size: top;
+}
 #login {
     background-color: #d1a77a;
-    width:700px;
-    height:200px;
+    width: 700px;
+    height: 260px;
     position: relative;
-    top:50px;
-    left:350px;
-    padding:5px;
+    top: 50px;
+    left: 350px;
+    padding: 5px;
     text-align: center;
     font-family: sans-serif;
     box-shadow: 1px 1px 1px;
@@ -22,6 +26,7 @@
 }
 #login input {
     margin: 1px 0px 1px 0px;
+    font-size: 16px;
 }
 #login button {
     background-color:#002b80;

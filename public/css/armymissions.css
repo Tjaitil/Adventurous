@@ -3,8 +3,8 @@
 }
 #mission_enabled {
     position: absolute;
-    margin: auto;
-    top: 300px;
+    margin: 0 auto;
+    top: 0px;
     left: 0px;
     right: 0px;
     bottom: 0px;
@@ -14,12 +14,7 @@
     height: 415px;
     visibility: hidden;
     padding: 10px;
-}
-#mission_enabled button {
-    position: relative;
-    top: 0px;
-    right:5px;
-    
+    z-index: 2;
 }
 #mission_enabled td { 
     padding: 5px;
@@ -29,9 +24,9 @@
 #mission_enabled button {
     background-color: #8B4513;
     color: white;
-    position: relative;
-    left: 5px;
-    top: 5px;
     border-radius: 5px;
     border: 0.5px solid black;
+}
+#mission_table img {
+    vertical-align: middle;
 }

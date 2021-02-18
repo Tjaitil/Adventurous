@@ -1,0 +1,21 @@
+.progressBarContainer {
+    height: 25px;
+    width: 50%;
+    border: 1px solid black;
+    background-color: #995c00;
+    position: relative;    
+}
+.progressBarOverlay {
+    width: 0%;
+    height:100%;
+    background-color: #ff9900;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+.progressBar {
+    width: 100%;
+    display: block;
+    text-align: center;
+    position: relative;
+}

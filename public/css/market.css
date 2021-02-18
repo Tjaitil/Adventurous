@@ -7,48 +7,52 @@
 }
 #offer_types button{
     padding-right: 40px;
+    position: relative;
 }
-#offer_types :nth-child(2) {
+#offer_types button:nth-of-type(1):after {
     width: 0px;
     height: 0px;
-    border-right: 15px solid transparent;
-    border-left: 15px solid transparent;
-    border-top: 20px solid green;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-bottom: 15px solid #333300;
     position: absolute;
-    top: 26%;
-    left: 41%;
+    top: 18%;
+    left: 52%;
+    content: '';
 }
-#offer_types :nth-child(4) {
+#offer_types button:nth-of-type(2):after {
     width: 0px;
     height: 0px;
-    border-left: 15px solid transparent;
-    border-right: 15px solid transparent;
-    border-bottom: 20px solid red;
+    border-right: 12px solid transparent;
+    border-left: 12px solid transparent;
+    border-top: 15px solid #333300;
     position: absolute;
-    top: 26%;
-    left: 61%;
+    top: 18%;
+    left: 52%;
+    content: '';
 }
 #offer_form input[type="text"] {
     text-align: center;
 }
 #form_cont {
     display: none;
-    height: 250px;
+    height: 150px;
 }
-#form_cont input {
+#form_cont input, #form_cont select {
     width: 100%;
 }
 #form_cont input:nth-child(2) {
     max-width: 92px;
 }
-#form_cont input[type="number"] {
+#form_cont input[type="number"], #form_cont select {
     max-width: 70px;
 }
 #item {
     float: left;
     height: 100%;
-    width: 50%;
+    width: 55%;
     padding: 5px;
+    min-width: 150px;
 }
 #selected {
     margin: 0 auto;
@@ -61,8 +65,19 @@
     width: 100%;
 }
 #form_inputs {
-    width: 42%;
+    width: 45%;
     float: right;
+}
+#form_inputs * {
+    float: left;
+}
+#form_inputs p {
+    height: 5px;
+    width: 100%;
+}
+#form_inputs label {
+    width: 100%;
+    text-align: left;
 }
 #item_b {
     visibility: hidden;
@@ -70,14 +85,6 @@
 }
 #item_srch {
     max-width: 50px;
-}
-#offers {
-    float: left;
-    width: 60%;
-    border: 9px inset #604706;
-}
-#offers table {
-    width: 100%;
 }
 #offers input {
     width: 92px;
@@ -93,9 +100,7 @@
     display: none;
 }
 #my_offers {
-    margin: 5px;
-    float: left;
-    width: 50%;
+    margin: 1px;
 }
 #my_offers td {
     border: none;
@@ -106,15 +111,4 @@
 #my_offers td:nth-child(6) {
     max-width: 92px;
     padding-right: 8px;
-}
-#history {
-    width: 50%;
-    float: left;
-}
-caption {
-    background-color: #f2e6d9;
-    padding: 5px 0px 5px 0px;
-    border-top: 3px solid #5f4121;
-    border-left: 3px solid #5f4121;
-    border-right: 3px solid #5f4121;
 }

@@ -3,37 +3,39 @@
 }
 #conversation_container {
     width: 68%;
-    height: 150px;
+    height: 170px;
     background-color: #f2e6d9;
     position: absolute;
     z-index: 3;
     visibility: hidden;
+    border: 3px double black;
+    padding: 3px 3px 0px 3px;
 }
 #conversation_container h3 {
     width: 100%;
     height: 27px;
 }
-#conversation_container img {
+#conversation_container img:not(.cont_exit) {
     display: block;
-    border: 1px solid black;
     height: 48px;
     width: 48px;
 }
 #conversation {
     width: 79%;
     border: 1px solid black;
-    height: 175px;
+    height: 138px;
     float: left;
+    overflow-y: scroll;
+    padding: 5px 10px;
 }
 #conversation ul {
     list-style-type: none;
 }
 #conversation_a {
-    width: 5%;
     float: left;
 }   
 #conversation_b {
-    width: 5%;
+    float: right;
 }
 .conv_link {
     cursor: pointer;

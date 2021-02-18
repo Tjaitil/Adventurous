@@ -1,9 +1,5 @@
 #action_div {
-    width: 51%;
-    max-width: 407px;
-    border: 5px double #251a0e;
     background-color: #f2e6d9;
-    margin-left: 10%;
 }
 #action_div::after {
   content: "";
@@ -22,6 +18,11 @@
     float: left;
     padding: 1.5px;
 }
+#action_div label {
+    width: 120px;
+    text-align: right;
+    display: inline-block;
+}
 .crop, .mineral {
     width: 70px;
     height: 70px;
@@ -31,12 +32,11 @@
     margin: 1px;
 }
 #data_container {
-    width: 42%;
     box-sizing: border-box;
     float: left;
     border-left: 3px solid black;
     height: 100%;
-    padding: 2%;
+    padding: 3%;
 }
 #data {
     visibility: hidden;

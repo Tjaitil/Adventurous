@@ -4,6 +4,10 @@ header {
     display: block;
     background: radial-gradient(#f2e6d9 60%, #986834);
 }
+header button a {
+    text-decoration: none;
+    color: black;
+}
 #nav_2 {
     list-style-type: none;
     width: 19%;

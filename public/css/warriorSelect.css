@@ -31,7 +31,7 @@
     width: 140px;
     margin: 2px;
     cursor: pointer;
-    display: inline-block;
+    display: inline-grid;
     background-color: #f2e6d9;
     padding: 5px 0px 0px 0px;
     box-sizing: border-box;

@@ -20,7 +20,10 @@
     background-color: #724e27;
     color: white;
     overflow-x: visible;
-    float: left;
+    min-height: 250px;
+}
+#stockpile p {
+    margin: 0px 0px 8px 0px;
 }
 #stockpile figure {
     position: relative;

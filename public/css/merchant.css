@@ -43,9 +43,9 @@
 }
 #do_trade {
     width: 155px;
+    height: 213px;
     min-width: 155px;
-    border: 1px solid black;
-    float: right;
+    float: left;
     background-color: #724e27;
     color: white;
 }
@@ -57,17 +57,14 @@
 #do_trade input[type="number"] {
     width: 25px;
 }
-#trader {
-    font-size: 12px;
-}
 #assignment {
 }
-section table {
-    border-collapse: collapse;
+#trader_assignment table {
+    margin-bottom: 10px;
 }
-section table td, table th {
-    padding:5px;
-    border: 1px solid black;
-    border-collapse: collapse;
-    background-color: #f2e6d9;
+#trader_assignment .item {
+    float: none;
+}
+#traderAssignment_progressBar {
+    float: right;
 }

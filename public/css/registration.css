@@ -3,13 +3,11 @@
     padding:0px;
 }
 body {
-    margin: 0px 100px 5px 100px;
     font-family: sans-serif;
 }
 section {
-    margin:50px 5px 0px 5px;
-    width:999px;
-    float:right;
+    margin: 50px auto;
+    width: 999px;
     text-align: center;
     position: relative;
 }

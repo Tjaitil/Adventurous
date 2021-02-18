@@ -8,7 +8,8 @@ aside {
     border: inset 2px;
     position: fixed;
     display: block;
-    z-index: 2;
+    z-index: 3;
+    font-size: 13px;
     /*border-top-style: ridge;
     border-top-color: black;
     border-top-width: 2px;
@@ -23,6 +24,14 @@ aside a {
 }
 aside a:visited {
     color: #003cb3;
+}
+aside img {
+    vertical-align: middle;
+    width: 48px;
+    height: 48px;
+}
+aside caption {
+    background-color: none;
 }
 #side_menu {
     margin: 0px 0px 0px 0px;
@@ -65,7 +74,14 @@ aside a:visited {
     color: white;
 }
 .sidebar_button {
-    
+    background-color: #f2e6d9;
+    border-radius: 5px;
+    border: 1px outset;
+    box-shadow: 1px 1px 1px 1px #372715;
+    padding: 3px 6px 3px 7px;
+    color: black;
+    font-weight: bold;
+    font-size: 11px;
 }
 .sidebar_tab {
     left: 10px;
@@ -95,6 +111,9 @@ aside a:visited {
     width: 100%;
     left: 0px;
     color: black;
+}
+#people figure {
+    display: inline-block;
 }
 #skills {
     height: 86px;

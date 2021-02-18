@@ -1,0 +1,17 @@
+.news_container {
+    width: 50%;
+    float: left;
+    background-color: #f2e6d9;
+}
+
+.news_element {
+    width: 100%;
+    border: 1px solid black;
+}
+.news_element img {
+    float: left;
+    width: 64px;
+    height: 64px;
+}
+#news_title {
+}

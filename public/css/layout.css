@@ -3,7 +3,7 @@
     padding:0;
 }
 body {
-    padding: 10px 8%;
+    /*padding: 10px 8%;*/
     background-color: #120e07;
     /*font-family: 'Source Sans Pro', 'bold';*/
     font-family: 'Martel', serif;
@@ -31,29 +31,42 @@ section {
     position: relative;
     margin-bottom: 10px;
 }
+.section_wide {
+    width: 98%;
+}
 section input {
     background-color: #e5cdb3;
     padding: 2px 2px 2px 8px;
     margin: 3px;
+    width: 40px;
 }
-section table {
+section table:not(#game_messages) {
+    margin: 10px 0px 0px 0px;
     position: relative;
     border-collapse: collapse;
-    border: 3px ridge #5f4121;
+    display: inline-block;
 }
-section table td, th {
+section table td, th, section caption {
     padding: 8px;
     background-color: #f2e6d9;
 }
 section table tr {
 }
-section tbody tr:after {
+section tbody tr:not(.sectionTableNoPseudo):after {
     content: "";
     position: absolute;
     left: 10%;
     width: 80%;
     height: 2px;
     background-color: #5f4121;
+}
+section table:not(#game_messages), .div_content, #inventory {
+    border: 5px ridge #5f4121;
+    border-radius: 5px;
+}
+.div_content_dark {
+    border: 5px ridge #330;
+    border-radius: 5px;
 }
 section table, section div, section button {
     margin-bottom: 5px;
@@ -66,6 +79,7 @@ section img {
     width: 48px;
     height: 48px;
     box-sizing: border-box;
+    vertical-align: middle;
 }
 table button {
     margin-top: 5px;
@@ -80,6 +94,10 @@ button {
     font-weight: bold;
     font-size: 13px;
     cursor: pointer;
+}
+.button_disabled {
+    background-color: transparent;
+    color: #999;
 }
 button:active {
     background-color: #ebd9c6
@@ -108,7 +126,7 @@ button:focus {outline:0;}
     background-color: transparent;
 }
 #game_messages {
-    border: none;
+    outline: none;
 }
 #game_messages tr {
     border: none;
@@ -190,7 +208,8 @@ button:focus {outline:0;}
     padding: 1%;
 }
 #news_content table {
-    margin: 0 auto;
+    margin: 0px auto;
+    margin-bottom: 15px;
 }
 #news_content_side_panel {
   width: 25%;
@@ -214,12 +233,12 @@ button:focus {outline:0;}
 #news_content_main_content {
   width: 75%;
   float: right;
-  padding: 5px;
   box-sizing: border-box;
   position: relative;
   top: -20px;
+  padding: 0px 2px 0px 8px;
 }
-#cont_exit {
+#cont_exit, .cont_exit {
     float: right;
     position: sticky;
     right: 5px;
@@ -231,15 +250,14 @@ button:focus {outline:0;}
 #level_up p {
     margin: 15px 0px 0px 0px;
 }
-.skill_bar, #hunger_bar {
+.skill_bar {
     height: 25px;
     width: 50%;
     border: 1px solid black;
     background-color: #995c00;
-    float:right;
     position: relative;
 }
-.skill_bar2, #hunger_bar2 {
+.skill_bar2 {
     width: 0%;
     height:100%;
     background-color: #ff9900;
@@ -247,7 +265,7 @@ button:focus {outline:0;}
     top: 0px;
     left: 0px;
 }
-.skill_bar_progress, #hunger_bar_progress {
+.skill_bar_progress {
     width: 100%;
     display: block;
     text-align: center;
@@ -267,6 +285,12 @@ button:focus {outline:0;}
     position: relative;
     z-index: 1;
     transition: background-color 0.8s ease-out;
+}
+#inv_toggle_button_container {
+    position: absolute;
+    right: 5px;
+    height: 100%;
+    top: 120px;
 }
 #inv_toggle_button {
     position: sticky;
@@ -306,6 +330,7 @@ button:focus {outline:0;}
 }
 #item_tooltip ul li:nth-child(1) {
     cursor: default;
+    text-align: center;
 }
 #item_tooltip ul li:nth-child(1):hover {
     background-color: #724e27;
@@ -417,7 +442,7 @@ button:focus {outline:0;}
     float: none;
 }
 .item .item_amount {
-    top: -58%;
+    top: -48%;
     left: 30%;
     color: black;
 }
@@ -477,7 +502,7 @@ input::-webkit-inner-spin-button {
     width: 10px;
 }
 @media all and (max-width: 1040px)  {
-    section {width: 97.4%; font-size: 14px;};
+    section {width: 97.4%; font-size: 14px;}
 }
 @media all and (max-width: 830px) {
     body {
@@ -488,24 +513,26 @@ input::-webkit-inner-spin-button {
         top: -54%;
     }
     #skills div {font-size: 14px;}
-    section {width: 97.4%; font-size: 11px;}
-    /*#inventory .inventory_item {width: 50%;}*/
-    #inventory {
-        /* Style added in general.js*/
-        right: 5px;
-        position: absolute;
-    }
-    #news_content {
-        width: 98%;
-    }
-    #inv_toggle_button {
-        display: block;
-        z-index: 2;
+    section {
+        min-height: unset;
+        width: 97.4%;
+        font-size: 11px;
     }
     /*.inventory_buttons {
         margin-left: 6px;
     }*/
-    #skills div {min-width: 53px;};
+    #skills div {min-width: 53px;}
+    
+    #inv_toggle_button {
+        background-color: #f2e6d9;
+        border-radius: 5px;
+        border: 1px outset;
+        box-shadow: 1px 1px 1px 1px #372715;
+        padding: 3px 6px 3px 7px;
+        color: black;
+        font-weight: bold;
+        font-size: 11px;
+    }
 }
 html, body {
   height: 100%;
