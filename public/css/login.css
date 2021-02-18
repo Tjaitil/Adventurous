@@ -8,13 +8,13 @@
     height: 260px;
     position: relative;
     top: 50px;
-    left: 350px;
     padding: 5px;
     text-align: center;
     font-family: sans-serif;
-    box-shadow: 1px 1px 1px;
+    box-shadow: 4px 4px 8px black;
     border-radius: 8px;
     color: white;
+    margin: 0 auto;
 }
 #login h3 {
     margin: 5px 0px 0px 0px;
