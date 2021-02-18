@@ -15,17 +15,18 @@
     </div>
     -->
     <div id="sidebar">
-        <button onclick="sidebar.toggleSidebar();" id="sidebar_button_toggle"> << </button>
-        <div id="hunger_bar">
-            <div id="hunger_bar2">
+        <button onclick="sidebar.toggleSidebar();" id="sidebar_button_toggle" class="sidebar_button"> << </button>
+        <div id="hunger_progressBar" class="progressBarContainer">
+            <div class="progressBarOverlay">
         
             </div>
-            <div id="hunger_bar_progress">
-                <span class="progress_value1">0</span>
+            <div class="progressBar">
+                <span class="progressBar_currentValue">0</span>
                 &nbsp/&nbsp
-                <span class="progress_value2">100</span>
+                <span class="progressBar_maxValue">100</span>
             </div>
         </div>
+        <p>Current profiency: <?php echo $_SESSION['gamedata']['profiency'];?></p>
         <button class="sidebar_button">Adventure</button>
         <button class="sidebar_button">Countdowns</button>
         <button class="sidebar_button">Diplomacy</button>
@@ -71,44 +72,23 @@
                             <p> Adventure status: underway! </p>
                             <?php endif;?>
                         </div>
+                        <div id="requirements">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <td> Role: </td>
+                                    <td> Requirement: </td>
+                                    <td> Provided: </td>
+                                </tr>
+                            </thead>
+                            <?php get_template('requirements', $this->data['adventure']['current_adventure']['requirements']); ?>
+                        </table>
+                    </div>
                 </div>
             <?php endif;?>
         </div>
         <div class="sidebar_tab" id="tab_2">
-            <table>
-                <caption> Countdowns </caption>
-                <thead>
-                    <tr>
-                        <td> Profiency </td>
-                        <td> What </td>
-                    </tr>
-                </thead>
-                <tr>
-                    <td> Farmer </td>
-                    <td><p>Towhar: <?php echo $this->data['countdowns']['farmer'][0];?></p>
-                        <p>Cruendo: <?php echo $this->data['countdowns']['farmer'][1];?></p>
-                    </td>
-                </tr>
-                <tr>
-                    <td> Miner </td>
-                    <td><p>Golbak: <?php echo $this->data['countdowns']['miner'][0];?></p>
-                        <p>Snerpiir: <?php echo $this->data['countdowns']['miner'][1];?></p>
-                    </td>
-                </tr>
-                <tr>
-                    <td> Trader </td>
-                    <td><?php echo 'Assignment: ' , $this->data['countdowns']['trader'];?></td>
-                </tr>
-                <tr>
-                    <td> Warrior </td>
-                    <td><p><?php echo 'Armymission: ' , $this->data['countdowns']['warrior']['mission_countdown'];?></p>
-                        <p><?php echo 'Warrior(s) finished: ' , $this->data['countdowns']['warrior']['finished'];?></p>
-                        <p><?php echo 'Warrior(s) training: ' , $this->data['countdowns']['warrior']['training'];?></p>
-                        <p><?php echo 'Warrior(s) on mission: ' , $this->data['countdowns']['warrior']['mission'];?></p>
-                        <p><?php echo 'Warrior(s) idle: ' , $this->data['countdowns']['warrior']['idle'];?></p>
-                    </td>
-                </tr>
-            </table>
+            <?php get_template('countdown', $this->data['countdowns']);?>
         </div>
         <div class="sidebar_tab" id="tab_3">
             <table>
@@ -147,7 +127,7 @@
                 <div onclick="get_xp('adventurer', this);">
                     <figure>
                         <img src="<?php echo constant('ROUTE_IMG') . 'adventurer icon.png';?>" />
-                        <figcaption id="ad_tooltip"><?php echo $_SESSION['gamedata']['adventurer_respect'];?></figcaption>
+                        <figcaption id="ad_tooltip"><?php echo $_SESSION['gamedata']['adventurer'];?></figcaption>
                     </figure>
                     <span class="skill_tooltip"></span>
                     <span></span>

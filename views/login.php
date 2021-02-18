@@ -12,18 +12,23 @@
                 <h3>Login to continue:</h3>
                 </br>
                 <label for="username">Username:</label> 
-                <input id="username" type="text" name="username" /><span class="login_error"><?php echo $this->error['userErr'];?></span></br>
+                <input id="username" type="text" name="username" minlength="4"/>
+                <span class="login_error"><?php echo $this->error['userErr'];?></span></br>
                 <label for="password">Password:</label>
-                <input id="password" type="password" name="password"/><span class="login_error"><?php echo $this->error['passErr'];?></span></br></br>
+                <input id="password" type="password" name="password" minlength="4"/>
+                <span class="login_error"><?php echo $this->error['passErr'];?></span></br></br>
                 <button type="submit">Login</button>
             </form>
             <span class="login_error"><?php echo $this->error['loginfail'];?></span></br>
             <a id="regi_link" href="/registration"> Dont have a account? Click here!</a>
         </div>
-        <div>
+        <!--<div>
             <video autoplay>
                 <source src="../public/img/adventurous video test.mov" type="video/mp4">
             </video>
+        </div>-->
+        <div id="div">
+            
         </div>
     </body>
 </html>

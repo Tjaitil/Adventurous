@@ -10,7 +10,9 @@
            <div id="choose">
             <?php var_dump($this->error);
             var_dump($_SESSION);?>
-            Welcome to the game! </br>
+                Welcome to the game! </br>
+                You can either start </br>
+            <?php endif;?>
             To get started you must choose a profiency </br>
             <form method="post" action="/newuser">
                 <label for="profiency"> Select your profiency! </label>

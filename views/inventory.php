@@ -11,6 +11,11 @@
                 break;
         }
     }
+    function removePar($item_name) {
+        $item_name = trim(explode("(", $item_name)[0]);
+        
+        return $item_name;
+    }
     function url($url = false) {
         if($url == false) {
             $url = $_SERVER['REQUEST_URI'];
@@ -43,7 +48,8 @@
         <?php foreach($_SESSION['gamedata']['inventory'] as $key): ?>
             <div class="inventory_item">
                 <figure>
-                    <img src="<?php echo constant('ROUTE_IMG') . $key['item'] . '.png';?>" />
+                    <?php $src = removePar($key['item']);?>
+                    <img src="<?php echo constant('ROUTE_IMG') . $src . '.png';?>" />
                     <figcaption class="tooltip"><?php echo ucwords($key['item']); ?></figcaption>
                 </figure>
                 <span class="item_amount"><?php echo amount($key['amount']);?></span>

@@ -60,16 +60,16 @@
                 </table>
             </div>
             <div id="new_adventure">
-                <form method="post" action="/adventures">
+                <form id="data_form">
                     <label for="difficulty"> Select difficulty: </label>
-                    <select name="difficulty" onchange="checkLevel();" id="diff_select">
+                    <select name="difficulty" onchange="checkLevel();" id="diff_select" required>
                         <option>  </option>
                         <option value="easy"> Easy </option>
                         <option value="medium"> Medium </option>
                         <option value="hard"> Hard </option>
                     </select></br>
                     <label for="location"> Select location: </label>
-                    <select name="location">
+                    <select name="location" required>
                         <option value="">  </option>
                         <option value="hirtam"> Hirtam </option>
                         <option value="pvitul"> Pvitul </option>
@@ -80,7 +80,7 @@
                     <label for="other_invite"> Can other players invite? </label>
                     <input type="checkbox" name="invite_only"/></br>
                     <p> Note that certain adventures demand that the trader has a certain diplomacy relation! </p>
-                    <button> Go on adventure </button>
+                    <button type="button"> Go on adventure </button>
                 </form>
                 <?php if(!empty($this->error['adventureErr'])):?>
                     <script>alert('Finish your adventure before taking a new one!');</script>

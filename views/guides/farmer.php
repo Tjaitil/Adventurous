@@ -28,11 +28,11 @@
             $list_info[] = array("1", "potato");
             $list_info[] = array("3", "tomato");
             $list_info[] = array("5", "corn");
-            $list_info[] = array("10", "carrots");
+            $list_info[] = array("10", "carrot");
             $list_info[] = array("15", "sugar");
             $list_info[] = array("20", "cabbage");
             $list_info[] = array("25", "spices");
-            $list_info[] = array("30", "apples");
+            $list_info[] = array("30", "apple");
             $list_info[] = array("35", "oranges");
             $list_info[] = array("40", "watermelon");
             $list_info[] = array("50", "wheat");
@@ -62,7 +62,7 @@
             $list_info[] = array("1", "potato");
             $list_info[] = array("3", "tomato");
             $list_info[] = array("5", "corn");
-            $list_info[] = array("10", "carrots");
+            $list_info[] = array("10", "carrot");
             $list_info[] = array("20", "cabbage");
             $list_info[] = array("50", "wheat");
             for($i = 0; $i < count($list_info); $i++): ?>
@@ -92,7 +92,7 @@
             $list_info[] = array("15", "sugar cane");
             $list_info[] = array("25", "spices");
             $list_info[] = array("30", "apple");
-            $list_info[] = array("35", "orange");
+            $list_info[] = array("35", "oranges");
             $list_info[] = array("40", "watermelon");
             for($i = 0; $i < count($list_info); $i++): ?>
             <tr>

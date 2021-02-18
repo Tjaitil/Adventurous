@@ -9,8 +9,7 @@
         <header>
             <?php require(constant('ROUTE_VIEW') . 'header.php'); ?>
         </header>
-        <section>
-            <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
+        <section class="section_wide">
             <div id="adventurer">
                 <table class="highscores">
                     <caption> Adventurer <img src="<?php echo constant('ROUTE_IMG') . 'adventurer icon.png';?>"/></caption>
@@ -162,8 +161,5 @@
                 </table>
             </div>
         </section>
-        <aside>
-            <?php require(constant('ROUTE_VIEW') . 'aside.php');?>
-        </aside>
     </body>
 </html>

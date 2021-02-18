@@ -9,11 +9,11 @@
                 break;
         }
     } ?>
-    <p><?php echo count($data['stockpile']), " / 60"?></p>
+    <p>Item slots: <?php echo count($data['stockpile']), " / 60"?></p>
 
     <?php
     foreach($data['stockpile'] as $key): ?>
-        <div class="stockpile_item" onpointerdown="show_menu();">
+        <div class="stockpile_item">
             <figure>
                 <img src="<?php echo constant('ROUTE_IMG') . trim(explode('(', $key['item'])[0]). '.png';?>"/>
                 <figcaption class="tooltip"><?php echo ucwords($key['item']); ?></figcaption>

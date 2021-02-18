@@ -5,12 +5,18 @@
                 
                 <td><?php echo $data[$i]['type'];?><input type="hidden" value="<?php echo $data[$i]['id'];?>" /></td>
                 <td>
-                    <img class="item_img" src="<?php echo constant('ROUTE_IMG') . $data[$i]['item'] . '.png';?>" />
+                    <div class="item" class="escrow_item">
+                        <figure>
+                            <img src="<?php echo constant('ROUTE_IMG') . $data[$i]['item'] . '.png';?>" />
+                            <figcaption class="tooltip"><?php echo ucwords($data[$i]['item']); ?></figcaption>
+                        </figure>
+                        <span class="item_amount"></span>
+                    </div>
                 </td>
-                <td><?php echo $data[$i]['price_ea'];?><img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.jpg';?>" /></td>
-                <td><?php echo $data[$i]['progress'] , '/' , $data[$i]['amount'];?> </td>
+                <td><?php echo $data[$i]['price_ea'];?><img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.png';?>" /></td>
+                <td><?php echo $data[$i]['progress'] , ' / ' , $data[$i]['amount'];?> </td>
                 <td><?php if($data[$i]['box_amount'] > 0): ?>
-                     <div class="item">
+                     <div class="item box_item">
                         <figure>
                             <img src="<?php echo constant('ROUTE_IMG') . $data[$i]['box_item'] . '.png';?>" />
                             <figcaption class="tooltip"><?php echo ucwords($data[$i]['box_item']); ?></figcaption>

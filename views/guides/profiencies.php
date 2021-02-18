@@ -36,7 +36,7 @@ get different rewards from adventures!</p>
     </tr>
     <tr>
         <td>Miner</td>
-        <td>Blacksmith prices down 10%, and kepys prices down 30 %</td>
+        <td>Smithy prices down 10%, and kepys repair prices down 30 %</td>
         <td>Get wujkin ore from adventures</td>
     </tr>
     <tr>
@@ -46,7 +46,7 @@ get different rewards from adventures!</p>
     </tr>
     <tr>
         <td>Warrior</td>
-        <td>Access to wujkin armor</td>
+        <td>Access to wujkin armor and frajrite armor</td>
         <td>Chance to get weapon tokens from adventures</td>
     </tr>
 </table>

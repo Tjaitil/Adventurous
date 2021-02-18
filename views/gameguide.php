@@ -10,7 +10,7 @@
         <header>
             <?php require(constant('ROUTE_VIEW') . 'header.php');?>
         </header>
-        <section>
+        <section class="section_wide">
             
             <div id="welcome_butt">
             </div>
@@ -18,8 +18,5 @@
                 <?php require($this->guidefile);?>
             </div>
         </section>
-        <aside>
-            <?php require(constant('ROUTE_VIEW') . 'aside.php');?>
-        </aside>
     </body>            
 </html>

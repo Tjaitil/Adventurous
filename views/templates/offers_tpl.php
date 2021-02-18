@@ -5,14 +5,14 @@
 <?php endif;
     foreach($data as $key): ?>
         <tr>
-            <td><div class="item" onclick="show_title(this, false);">
+            <td><div class="item">
                 <figure>
                 <img src="<?php echo constant('ROUTE_IMG') . $key['item'] . '.png';?>" />
                 <figcaption class="tooltip"><?php echo ucwords($key['item']);?></figcaption>
             </figure>
             </div></td>
             <td><?php echo $key['amount_left'];?></td>
-            <td><?php echo $key['price_ea'];?><img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.png';?>" /></td>
+            <td><?php echo $key['price_ea'];?><img class="gold" src="<?php echo '../' . constant('ROUTE_IMG') . 'gold.png';?>" /></td>
             <td><?php echo ucfirst($key['offeror']);?></td>
             <td><span>Amount</span>
             <input type="number" name="amount" id="amount" min="0"/>

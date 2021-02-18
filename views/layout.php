@@ -12,7 +12,7 @@
         };?>
     </table>
 </div>
-<div id="log_2"></div>g
+<div id="log_2"></div>
 <?php
     if(count($_SESSION['gamedata']['level_up']) > 0): ?>
     <script src="<?php echo constant("ROUTE_JS") . 'levelup.js'?>"></script>

@@ -3,20 +3,72 @@
     <head>
         <title>Registration</title>
         <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS'). $name;?>.css" />
+        <link rel='shortcut icon' type='image/x-icon' href='<?php echo constant('ROUTE_IMG') . 'favicon.ico';?>' />
     </head>
     <body onload="standardterms();">
-            <script src="js/registration.js"></script>
         <section>
-            <?php var_dump($this->error);?>
             <div id="terms">
                 <img id="exit" src="pictures/exit.png" onclick="hideterms();" />
                 </br>
                 <h3> TJ portals terms and agreement!</h3>
                 <div id="in_terms">
-                    <p>
-                        Some text
+                        <h4> 1.0 Declarations </h3>
+                        <p>
+                            This is terms and agreement for adventurous. By agreeing to these terms you are considered to be informed about
+                            the rules that apply in this game and you are also bound to follow them.
+                            Further adventurous will be refered to as "game" or "the game". You as a user will be referred as "customer",
+                            "player" or "the player".
+                        </p>
                         </br>
-                    </p>
+                        <h3> 2 Rules </h3>
+                        <h3> 2.1 Malicious content</h3>
+                        <p>
+                            Players are not allowed to use malicious software or in any way, shape or form. This will result in a direct
+                            permanent ban.
+                        </p>
+                        <h3> 2.2 Attempt at hacking </h3>
+                        <p>
+                            It is illegal to change source code. Any attempt at this will result in a direct ban.
+                            For appeal please see appeal.
+                        </p>
+                        </br>
+                        <h3> 2.3 Real world trading </h3>
+                        <p>
+                            Trading real world items such as money of any kind or other items is not allowed.
+                            If found guilty the player will result in a direct ban without any strikes.
+                            This decision can generally not be appealed. See appeal section for more.
+                        </p>
+                        </br>
+                        <h3> 3 User responsibility </h3>
+                        <h3> User information </h3>
+                        <p>
+                            Baks development will presume that the information you provide in this registration form is correct. If not you
+                            can always let us know of the wrong information by contacting us.
+                            You as a user have the sole responsibility of remembering your password. Baks development take no responsible for
+                            the consequences of lost password such as not being able to access the account. If lost password you can ask for
+                            a request to reset your password.
+                            </br>
+                            Baks development moderator or any employee will never ask you to give your personal information out.
+                            If you are being approached with message about Baks development moderator or employees needing information
+                            please let us know by sending us a screenshot of the email to support@adventurous.no
+                        </p>
+                        <h3> 4 Ban system </h3>
+                        <h3> Introudciton to ban system</h3>
+                        <p>
+                            Adventurous operates with a 3 strike system. If you receive 3 strikes you will receive a temporary ban.
+                            Depending on the severity of the strikes you can receive a minimum of 3 days to 3 months temporary ban.
+                            When you have received temporary banned you are locked out of your account for a period of time. When the
+                            period is over you will be on a trial for 3 weeks. If you get a strike in the trial period your temporary ban
+                            will be extended.
+                            
+                            Some actions baks development consider to be of such a high severity that the player will skip the strikes and
+                            temporary ban and will receive a permament banned (often referred to as perma banned). The player is locked out
+                            of the account indefinitely. To gain access to account again the player needs to appeal the decision, see
+                            appeal section for more information. If an account is permabanned any purchases done in the regards of the
+                            account will not be refunded.
+                        </p>
+                        <h3> 5 Appeal</h3>
+                    
                 </div>
             </div
             <h3 id="sect_head"> Welcome to the registration page! To become a member please submit the information below:</h3>
@@ -29,11 +81,14 @@
                 <h4> Required information: </h4>
                 <span id="field">
                     <label for="username">Username:</label>
-                    <input id="username" type="text" name="username" /></span><span class="error"><?php echo $this->error['usernameErr']; ?>
+                    <input id="username" type="text" name="username" minlength="4" />
+                    </span><span class="error"><?php echo $this->error['usernameErr']; ?>
                     </span></br>
-                <span id="field"><label for="email">Email:</label><input id="email" type="email" name="email" /></span>
+                <span id="field"><label for="email">Email:</label>
+                <input id="email" type="email" name="email" minlength="5" /></span>
                 <span class="error"><?php echo $this->error['emailErr']; ?></span></br>
-                <span id="field"><label for="password">Password:</label> <input id="password" type="password" name="password" /></span>
+                <span id="field"><label for="password">Password: (At least 7 characters long)</label>
+                <input id="password" type="password" name="password" minlength="7" /></span>
                 <span class="error"><?php echo $this->error['passwordErr']; ?></span></br>
                 <span id="field"><label for="confirm_password">Confirm Password:</label><input id="confirm_password"
                 type="password" name="confirm_password" /></span>
@@ -302,11 +357,10 @@
                 <input id="" type="checkbox" name="checkbox" /><span class="error"><?php echo $this->error['checkboxErr']; ?></span></br>
                 <!--><button type="submit"> Register </button>-->
             </form>
-    
-             
+            <script src="<?php echo constant('ROUTE_JS') .'registration.js';?>"></script>
         </section>
         <footer>
-            <div id="info">&#169; 2018 TJ Portals. All right reserved.</div>
+            <div id="info">&#169; 2020 Baks Development. All right reserved.</div>
         </footer>
     </body>
 </html>

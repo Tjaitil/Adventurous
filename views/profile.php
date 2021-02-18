@@ -10,8 +10,19 @@
             <?php require(constant('ROUTE_VIEW') . 'header.php'); ?>
         </header>
         <section>
-            <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
-
+            <h2 class="page_title"> Profile </h2>
+            <div id="user_info">
+                <form>
+                    <label for="username"> Username </label>
+                    <input value="<?php echo $_SESSION['username']?>" readonly/></br>
+                    <label for="email"> Email </label>
+                    <input value="<?php echo $this->data['email'];?>" readonly/></br>
+                    <label for="country"> Country </label>
+                    <input value="<?php echo $this->data['country'];?>" readonly/></br>
+                    <label> Account created </label>
+                    <input value="<?php echo $this->data['time_created'];?>" readonly/>
+                </form>
+            </div>
             <button onclick="show('password');"> Change Password </button>
             <div id="password">
                 <form method="post" action="/profile">

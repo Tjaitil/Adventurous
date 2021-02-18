@@ -1,6 +1,6 @@
             mine.css|mine.js|
             <h3 class="page_title"> Mine </h3>
-            <div id="action_div">
+            <div id="action_div" class="div_content">
                 <div id="actions">
                     <p id="mining"></p>
                     <p id="time"></p>
@@ -14,7 +14,7 @@
                     <?php endforeach;?>
                 </div>
                 <div id="data_container">
-                    <p>Total permits: <?php echo $this->data['minerData']['permits'];?></p>
+                    <p> Your total permits: <?php echo $this->data['minerData']['permits'];?></p>
                     <div id="data">
                         <form id="data_form">
                             <figure></figure>
@@ -26,9 +26,9 @@
                             <input type="text" name="time" readonly /></br>
                             <label for="permit"> Permit: </label>
                             <input type="text" name="permit" readonly /></br>
-                            <label for="workforce"> Workforce:</label>
+                            <label for="workforce"> Select number of workers:</label>
                             <input name="workforce" type="number" min="0" required />
-                            <span>(<?php echo $this->data['workforceData']['avail_workforce']?>)</span>
+                            <span>(<?php echo $this->data['workforceData']['avail_workforce']?>)</span></br>
                             <button type="button"> Mine </button>
                         </form>
                     </div>

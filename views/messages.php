@@ -84,7 +84,12 @@
                 </div>
                 <button onclick="answer();"> Answer </button>
             </div>
+            <input type="text" />
+            <canvas width="320" height="320" style="border: 2px solid black" id="test_canvas">
+                
+            </canvas>
             <script src="<?php echo constant('ROUTE_JS') . $name . ".js"; ?>"></script>
+            <script src="<?php echo constant('ROUTE_JS') . 'test.js';?>"></script>
         </section>
         <aside>
             <?php require(constant('ROUTE_VIEW') . '/aside.php');?>

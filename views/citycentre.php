@@ -56,32 +56,48 @@
                         <td><button> Buy </button></td>
                     </tr>
                 </table>
-                <table>
-                    <thead>
-                        <tr>
-                            <td> Item: </td>
-                            <td> Cost: </td>
-                            <td><button> Buy </button></td>
-                        </tr>
-                    </thead>
-                    <tr>
-                        <td> Frajrite items </td>
-                        <td> </td>
-                        <td><button> Buy </button></td>
-                    </tr>
-                    <tr>
-                        <td> Wujkin items </td>
-                        <td>  </td>
-                        <td><button> Buy </button></td>
-                    </tr>
-                </table>
             </div>
+            <div id="unlock_items">
+                    <table>
+                        <caption> Unlock highest tier items with using weapon tokens from adventures </caption>
+                        <thead>
+                            <tr>
+                                <td> Item: </td>
+                                <td> Cost: </td>
+                                <td></td>
+                            </tr>
+                        </thead>
+                        <tr>
+                            <td> Frajrite items <img src="<?php echo constant('ROUTE_IMG') . 'frajrite platebody.png';?>" /></td>
+                            <td> 125 <img src="<?php echo constant('ROUTE_IMG') . 'weapon tokens.png';?>" /></td>
+                            <td><button
+                                <?php if(intval($this->data['unlock_items']['frajrite_items']) === 1): ?>
+                                class="button_disabled" disabled> Unlocked
+                                <?php else:?>
+                                >Buy
+                                <?php endif;?>
+                                </button></td>
+                        </tr>
+                        <tr>
+                            <td> Wujkin items <img src="<?php echo constant('ROUTE_IMG') . 'wujkin platebody.png';?>" /></td>
+                            <td> 160 <img src="<?php echo constant('ROUTE_IMG') . 'weapon tokens.png';?>" /></td>
+                            <td><button
+                                <?php if(intval($this->data['unlock_items']['wujkin_items']) === 1): ?>
+                                class="button_disabled" disabled> Unlocked
+                                <?php else:?>
+                                >Buy
+                                <?php endif;?>
+                                </button></td>
+                        </tr>
+                    </table>
+                </div>
             <div id="efficiency">
                 <table>
+                    <caption> Upgrade efficiency level on farmer and miner workforce </caption>
                     <thead>
                         <tr>
                             <td> Profiency </td>
-                            <td> Effiency level </td>
+                            <td> Current Efficiency level </td>
                             <td> Cost </td>
                             <td></td>
                         </tr>

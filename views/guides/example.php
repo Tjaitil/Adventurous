@@ -9,8 +9,8 @@
     </ol>
 </div>
 <div id="content">
-    <h5 class="p_header"> </h5>
-    <p id="">
+    <h5 class="p_header" id="#"> </h5>
+    <p>
         <table>
             <thead>
                 <tr>

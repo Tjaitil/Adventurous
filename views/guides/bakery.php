@@ -56,7 +56,7 @@
                     <?php endforeach;?>
                     </td>
                 <td><?php echo ucfirst($list_info[$i][2]);?>
-                <img class="gold" src="<?php echo '../'. constant('ROUTE_IMG') . 'gold.png';?>" /></td></td>
+                <img class="gold" src="<?php echo '../'. constant('ROUTE_IMG') . 'gold.png';?>" /></td>
                 <td><?php echo ucfirst($list_info[$i][3]);?></td>
             </tr>
             <?php endfor;?>

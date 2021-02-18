@@ -17,4 +17,5 @@
                 </div>
                 <input type="number" min="0" />
                 <button> Eat </button>
+                <p id="item_healing_amount"></p>
             </div>
