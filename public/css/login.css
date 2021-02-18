@@ -2,11 +2,11 @@
     margin:0px;
     padding:0px;
 }
-body {
+/*body {
     background-image: url('../img/7.5m.png');
     background-position: center;
     background-size: top;
-}
+}*/
 #login {
     background-color: #d1a77a;
     width: 700px;
@@ -43,4 +43,18 @@ body {
     font-size:13px;
     margin: 5px 0px 5px 8px;
     position: absolute;
+}
+#background_image_container {
+    width: 100%;
+    height: 700px;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    /*background-image: url('7.5m.png');
+    background-size: 200% 200%;*/
+    position: absolute;
+}
+#background_image {
+  position: absolute;
+  left: -200px;
+  transition: all 0.002s linear;
 }
