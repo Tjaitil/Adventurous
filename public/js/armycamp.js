@@ -10,10 +10,11 @@
         selectItemEvent.addSelectEvent();
         warriorView(false, true);
         let buttons = document.getElementById("news_content_main_content").querySelectorAll("button");
-        buttons[1].addEventListener("click", function() {
+        console.log(buttons);
+        buttons[0].addEventListener("click", function() {
             game.fetchBuilding('ArmyMissions'); 
         });
-        buttons[2].addEventListener("click", function() {
+        buttons[1].addEventListener("click", function() {
             game.fetchBuilding('Armory');
         });
     }
@@ -212,14 +213,15 @@
             break;
         }
         function transfer() {
-            console.log('transfer');
             var data = "model=ArmyCamp" + "&method=transfer" + "&warriors=" + warriors;
-            /*ajaxP(data, function(response) {
+            ajaxP(data, function(response) {
                 if(response[0] !== false) {
                     document.getElementById("overview").children[1].innerHTML = response[1];
+                    updatePage();
                     getCountdown();
+                    gameLog(response[1]);
                 }       
-            });*/
+            });
         }
     }
     function updatePage() {
@@ -344,7 +346,8 @@
         let data = "model=ArmyCamp" + "&method=checkWarriorLevel" + "&warriors=" + warriors;
         ajaxP(data, function(response) {
             if(response[0] != false) {
-                 /*console.log(repsonse[1]);*/
+                let responseText = response[1].split("|");
+                gameLog(responseText[1]);
                 updatePage();
                 newLevel.searchString(response[1]);
             }
@@ -355,13 +358,9 @@
         ajaxP(data, function(response) {
             if(response[0] !== false) {
                 let responseText = response[1].split("|");
-                // Message is the index of level up message provided from model
-                let message = 0;
-                if(responseText.length < 1) {
-                    message = 2;
-                }
+                updateCountdownTab();
                 updatePage();
-                gameLog(responseText[message]);
+                gameLog(responseText[1]);
                 newLevel.searchString(response[1]);
             }       
         });
@@ -386,7 +385,7 @@
             };
             // Check wether the item is a valid one
             if(healing[item] == 0) {
-                gameLog("ERROR: Pick a valid item!");
+                gameLog("ERROR: Pick a valid item!", true);
                 return false;
             }
             // Check if the quantity provided is higher than the quantity you would maximum need
@@ -416,32 +415,25 @@
         var select = document.getElementById("training").children[1];
         var type = select.children[select.selectedIndex].value;
         if(type.length < 0 || type == undefined) {
-            gameLog("ERROR: Please select training type!");
+            gameLog("ERROR: Please select training type!", true);
             return false;
         }
         var data = "model=SetTraining" + "&method=setTraining" + "&warrior=" + warriors + "&type=" + type;
         ajaxP(data, function(response) {
             if(response[0] !== false) {
-                console.log(response[1]);
+                let responseText = response[1].split("|");
+                updateCountdownTab();
                 updatePage();
                 newLevel.searchString(response[1]);
-                /*var responseText = response[1].split("|");
-                // Get correct div for the warrior
-                var warriorsNodeList = document.getElementsByClassName("warrior");
-                var div = warriorsNodeList[warriorsI[0]];
-                console.log(div);
-                div.querySelectorAll("td")[3].innerHTML = "Training";
-                // Call getCountdown with data from ajaxP and set intervalID to be cleared later
-                var interval_id = setInterval(getCountdown(responseText['1'] * 1000, 0, warriorsI[0]), 1000);
-                intervalID['warrior_' + warriorsI[0]] = interval_id;*/
+                gameLog(responseText[1]);
             }
         });
     }
     function changeType() {
         var data = "model=ArmyCamp" + "&method=changeType" + "&warriors=" + warriors;
         ajaxP(data, function(response) {
-            console.log(response);
             if(response[0] !== false) {
+                updateInventory();
                 gameLog(response[1]);
                 let type = response[1].split("to ")[1].split(" for")[0].trim();
                 for(var i = 0; i < warriors.length; i++) {

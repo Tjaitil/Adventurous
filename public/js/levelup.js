@@ -26,8 +26,7 @@
                     element.innerHTML = "Nothing new at this level";
                     div.appendChild(element);
                 }*/
-                
-                openNews(responseText);
+                newLevel.searchString(response[1]);
             }       
         });
     }

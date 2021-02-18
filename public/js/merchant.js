@@ -1,7 +1,7 @@
     var updateStockCountdown = function(pause = false) {
         time = 0;
         if(pause == true) {
-            resetTimer();
+            resetStockTimer();
         }
         else if(pause == 'end') {
             clearTimeout(time);
@@ -10,40 +10,51 @@
             var data = "model=Merchant" + "&method=getOffers";
             ajaxJS(data, function(response) {
                 if(response[0] != false) {
-                    document.getElementById("trades").querySelectorAll("div")[0].innerHTML = response[1];
-                    /*addMerchantEvents();*/
-                    resetTimer();
+                    if(document.getElementById("trades") != null) {
+                        document.getElementById("trades_container").innerHTML = response[1];
+                        console.log(document.getElementById("trades_container"));
+                        addMerchantEvents();
+                        resetStockTimer();
+                    }
+                    
                 }
             });
         }
-        function resetTimer() {
+        function resetStockTimer() {
             clearTimeout(time);
             time = setTimeout(updateStock, 15000);
             // 1000 milliseconds = 1 second
         }  
     };
-    
-    
     if(document.getElementById("news_content").children[2] != null) {
         addMerchantEvents();
         updateStockCountdown(true);
-        /*getMerchantCountdown();*/
+        getMerchantCountdown();
+        if(typeof(document.getElementById("traderAssignment_progressBar")) != undefined) {
+            // Calculate progress
+            progressBar.calculateProgress(document.getElementById("traderAssignment_progressBar"), false, false, true);    
+        }
     }
     function getMerchantCountdown() {
         var data = "&model=Merchant" + "&method=getMerchantCountdown";
         ajaxG(data, function(response) {
+            console.log(response);
             if(response[0] != false) {
                 var data = response[1].split("|");
-                var time = data[0] * 1000;
+                var time = (parseInt(data[0]) + 14400) * 1000;
                 var x = setInterval (function() {
-                    intervals.push(x);
                     var now = new Date().getTime();
                     var distance = time - now;
                     var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                     var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                     var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                    document.getElementById("time").innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
-                    if(distance < 10){
+                    if(document.getElementById("time") == null) {
+                        clearInterval(x);
+                    }
+                    else {
+                        document.getElementById("time").innerHTML = hours + "h " + minutes + "m " + seconds + "s ";   
+                    }
+                    if(distance < 1) {
                         clearInterval(x);
                     }
                 }, 1000);
@@ -53,6 +64,9 @@
     
     function addMerchantEvents() {
         var trades = document.getElementById("trades").querySelectorAll(".item");
+        if(!trades.length > 0) {
+            return false;
+        }
         trades.forEach(function(element) {
             // Add eventListener to each node
             element.addEventListener('click', function() {
@@ -65,6 +79,10 @@
         button.disabled = true;
     }
     function selectTrade() {
+        // If trades div is hidden return false, because then the tab visible is trader assignment
+        if(document.getElementById("trades").visibility == "hidden") {
+            return false;
+        }
         document.getElementById("do_trade").querySelectorAll("button")[0].disabled = false;
         let item = event.target.closest("figure").children[1].innerHTML;
         if(item === "Gold") {
@@ -120,7 +138,6 @@
             document.getElementById("trade_price").replaceChild(price, firstNode);   
         }
         let mode;
-        console.log(elementDiv.parentNode.id);
         if(elementDiv.parentNode.id !== "inventory") {
             mode = "Buy";
         }

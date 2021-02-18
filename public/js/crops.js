@@ -18,10 +18,11 @@
             if(response[0] != false) {
                 console.log(response[1]);
                 var data = response[1].split("|");
+                console.log(data);
                 var time = data[0] * 1000;
                 var harvest = data[1];
-                if(data[2].indexOf("none") != -1) {
-                    document.getElementById("growing").innerHTML = "Currently growing " + jsUcfirst(data[2]);
+                if(data[2] == "") {
+                    return false;
                 }
                 var x = setInterval (function() {
                     intervals.push(x);
@@ -31,17 +32,24 @@
                     var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                     var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                     var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                    document.getElementById("time").innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
-                    if(distance < 0 && harvest === "true"){
+                    if(document.getElementById("time") == null) {
+                        clearInterval(x);
+                    }
+                    else {
+                        document.getElementById("time").innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+                        document.getElementById("growing").innerHTML = "Crops growing";    
+                    }
+                    if(distance < 0 && (harvest != "false" || harvest === 0)){
                         clearInterval(x);
                         var btn = document.createElement("BUTTON");
                         var t = document.createTextNode("Harvest");
                         btn.appendChild(t);
                         btn.addEventListener("click", updateCrop);
+                        document.getElementById("time").innerHTML = "";
                         document.getElementById('time').appendChild(btn);
                         document.getElementById("growing").innerHTML = "Finished";
                     }
-                    else if(distance < 0) {
+                    else if(distance < 0 && (harvest == "false" || harvest == 0)) {
                         clearInterval(x);
                         document.getElementById("growing").innerHTML = "No crops growing";
                         document.getElementById("time").innerHTML = "";
@@ -57,14 +65,19 @@
         }
         else {
             var JSON_data = JSONForm(form);
-            console.log(typeof(JSON_data));
             var data = "model=SetCrops" + "&method=setCrops" + "&JSON_data=" + JSON_data;
             ajaxP(data, function(response) {
                 if(response[0] !== false) {
                     getCountdown();
-                    var text = response[1].split("|");
-                    console.log(text);
+                    let responseText = response[1].split("|");
+                    let gameInfo = JSON.parse(responseText[1]);
+                    if(responseText[0].length > 0) {
+                        gameLog(responseText[0]);
+                    }
+                    let spanChild = document.getElementById("data_form").querySelectorAll("span");
+                    spanChild[spanChild.length - 1].innerText = '(' + gameInfo.avail_workforce + ')';
                     newLevel.searchString(response[1]);
+                    updateCountdownTab();
                 }
             });
         }
@@ -74,8 +87,20 @@
         ajaxP(data, function (response) {
             if(response[0] !== false) {
                 getCountdown();
+                let responseText = response[1].split("|");
+                let gameInfo = JSON.parse(responseText[3]);
+                // Check artefact message
+                if(responseText[0].length > 0) {
+                    gameLog(responseText[0]);
+                }
+                // Check xp message
+                if(responseText[2].length > 0) {
+                    gameLog(responseText[2]);
+                }
+                let spanChild = document.getElementById("data_form").querySelectorAll("span");
+                spanChild[spanChild.length - 1].innerText = '(' + gameInfo.avail_workforce + ')';
                 newLevel.searchString(response[1]);
-                console.log(response[1].split("|"));
+                updateCountdownTab();
             }
         });
     }
@@ -90,6 +115,7 @@
                 gameLog(response[1]);
                 window.clearInterval(intervals.pop());
                 getCountdown();
+                updateCountdownTab();
             }
         });
     }

@@ -25,20 +25,27 @@
         });
     }*/
     var gameTravel = {
-        seconds: 3, // Countdown for the countdown function
+        seconds: 15, // Countdown for the countdown function
         intervalID: null, // intervalID to clear interval when countdown is finished;
-        newDestination: function(destination) {
-            
-            /*if(conversation.index === null) {
-                return;
-            }*/
+        newDestination: function() {
+            if(event.target == null) {
+                return false;
+            }
+            else {
+                var destination = event.target.innerText;
+                let lis = conversation.conversationDiv.querySelectorAll("li");
+                    lis.forEach(function(element) {
+                        // ... code code code for this one element
+                        element.removeEventListener('click', gameTravel.newDestination);
+                    });
+            }
             gameTravel.intervalID = setInterval(
                 function() {
                     if(gameTravel.seconds <= 0) {
                         clearInterval(gameTravel.intervalID);
                         gameTravel.seconds = 15;
                         game.canvasText.hideText();
-                        game.loadWorld(false, false, "changeMap", [destination.toLowerCase()]);
+                        game.loadWorld(true, false, false, "changeMap", [destination.toLowerCase()]);
                     }
                     else {
                         game.canvasText.showText('Travelling in ' + gameTravel.seconds, false, false);

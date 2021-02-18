@@ -12,12 +12,13 @@
     var intervals = [];
     function getCountdown() {
         document.getElementById("mining").innerHTML = "No miners at work";
-        var data = "&model=mine" + "&method=checkCountdown";
+        var data = "&model=Mine" + "&method=checkCountdown";
         ajaxG(data, function(response) {
             if(response[0] != false) {
                 var data = response[1].split("|");
                 var time = data[0] * 1000;
                 var fetch = data[1];
+                console.log(data);
                 if(data[2] !== 'none') {
                     document.getElementById("mining").innerHTML = "Currently mining " + jsUcfirst(data[2]);    
                 }
@@ -29,7 +30,12 @@
                     var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                     var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                     var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                    document.getElementById("time").innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+                    if(document.getElementById("time") == null) {
+                        clearInterval(x);
+                    }
+                    else {
+                        document.getElementById("time").innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+                    }
                     if (distance < 0 && fetch === "1"){
                         clearInterval(x);
                         var btn = document.createElement("BUTTON");
@@ -81,11 +87,15 @@
             ajaxP(data, function(response) {
                 if(response[0] !== false) {
                     getCountdown();
-                    // RepsonseText from AJAX request
-                    var responseText = response[1].split("|");
-                    document.getElementById("data_form").querySelectorAll("span")[0].innerHTML = "(" + responseText[1] + ")";
-                    document.getElementById("data_container").children[0].innerHTML = "Total permits:" + responseText[0];
-                    document.getElementById("data_form").style.visibility = "hidden";
+                    updateCountdownTab();
+                    let responseText = response[1].split("|");
+                    let gameInfo = JSON.parse(responseText[1]);
+                    if(responseText[0].length > 0) {
+                        gameLog(responseText[0]);
+                    }
+                    let spanChild = document.getElementById("data_form").querySelectorAll("span");
+                    spanChild[spanChild.length - 1].innerText = '(' + gameInfo.avail_workforce + ')';
+                    document.getElementById("data_container").querySelectorAll("p")[0].innerHTML = "Total permits:" + gameInfo.permits;
                     newLevel.searchString(response[1]);
                 }
             });
@@ -98,33 +108,38 @@
             console.log(response);
             if(response[0] !== false) {
                 getCountdown();
-                var responseText = response[1].split("|");
-                gameLog(responseText[0]);
-                if(responseText[1].indexOf("[") != -1) {
-                    gameLog(responseText[1]);
-                    show_xp('miner', responseText[1]);
-                    document.getElementById("data_form").querySelectorAll("span")[0].innerHTML = "(" + responseText[2] + ")";
+                updateInventory();
+                updateCountdownTab();
+                let responseText = response[1].split("|");
+                let gameInfo = JSON.parse(responseText[3]);
+                // Check artefact message
+                if(responseText[0].length > 0) {
+                    gameLog(responseText[0]);
                 }
-                else {
-                    show_xp('miner', responseText[1]);
-                    document.getElementById("data_form").querySelectorAll("span")[0].innerHTML = "(" + responseText[2] + ")";   
+                // Check xp message
+                if(responseText[2].length > 0) {
+                    gameLog(responseText[2]);
                 }
-                show_xp('miner', responseText[1]);
-                updateInventory("mine");
+                let spanChild = document.getElementById("data_form").querySelectorAll("span");
+                spanChild[spanChild.length - 1].innerText = '(' + gameInfo.avail_workforce + ')';
             }       
         });
-        console.log(intervals);
     }
     function cancelMining() {
         var data = "model=Mine" + "&method=cancelMining";
         ajaxP(data, function(response) {
             if(response[0] !== false) {
+                // Clear interval started by getCountdown
                 window.clearInterval(intervals.pop());
+                updateCountdownTab();
                 getCountdown();
+                let responseText = response[1].split("|");
+                let gameInfo = JSON.parse(responseText[1]);
                 gameLog(response[1]);
+                spanChild[spanChild.length - 1].innerText = '(' + gameInfo.avail_workforce + ')';
+                updateCountdownTab();
             }       
         });
-        console.log(intervals);
     }
     function img() {
         var img = document.getElementById("type_img");
@@ -137,7 +152,7 @@
         img.src = "public/images/" + name;
     }
     function newMineral(name, permits, time) {
-        this.src = "public/img/" + name + " ore.png";
+        this.src = "public/images/" + name + " ore.png";
         this.permits = permits;
         this.time = time;
     }

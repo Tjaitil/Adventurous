@@ -14,9 +14,9 @@
     function updateStock() {
         var data = "model=TravelBureau" + "&method=getData";
         ajaxG(data, function(response) {
-            var data = response[1].split("#");
-            document.getElementById("horse_shop").children[1].innerHTML = data[0];
-            document.getElementById("cart_shop").children[1].innerHTML = data[1];
+            /*var data = response[1].split("#");
+            document.getElementById("horse_shop").children[1].innerHTML = data[0];*/
+            document.getElementById("cart_shop").children[1].innerHTML = response[1];
             updateInventory();
         });
     }

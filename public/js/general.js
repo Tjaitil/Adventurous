@@ -53,10 +53,10 @@
             log.scrollTop = log.scrollHeight - log.clientHeight;
         }
         if(document.getElementById("inventory") != null) {
-            document.getElementById("inventory").addEventListener("scroll", function() {
+            /*document.getElementById("inventory").addEventListener("scroll", function() {
                console.log("scroll");
                document.getElementById("item_tooltip").style.visibility = "hidden";
-            });
+            });*/
             if(window.location.href.indexOf("stockpile") == -1) {
                 addShowTitle();   
             }
@@ -68,7 +68,17 @@
                 }
             }
         }
-        console.log(document.getElementById("inv_toggle_button").style.visibility);
+        if(location.href.indexOf("advclient") != -1) {
+            let linksDiv = document.querySelectorAll(".top_bar");
+            linksDiv.forEach(function(element) {
+                // If the device is mobile the first a is not displayed
+                if(element.querySelectorAll("a")[0].style.display != "none") {
+                    element.querySelectorAll("a")[0].setAttribute("target", "_blank");
+                }
+                element.querySelectorAll("a")[1].setAttribute("target", "_blank");
+            });
+        }
+        // Check screen width
         if(window.screen.width < 830) {
             console.log('loAD');
             let inventory = document.getElementById("inventory");
@@ -80,8 +90,17 @@
         clock();
         checkMessages();
         sidebar.addClickEvent();
-        sidebar.addAdventure();
-    }); 
+        setTimeout(updateCountdownTab, 120000);
+    });
+    /*window.addEventListener("scroll", function(e) {
+        let element = e.target;
+        console.log(element.scrollHeight - element.scrollTop - element.clientHeight);
+        console.log(element);
+        let inv = document.getElementById("inventory");
+        if(inv.style.visibility === "visible") {
+            e.preventDefault();
+        }
+    }, true);*/
     function checkMessages() {
         var data = "model=Messages" + "&method=checkMessages";
         ajaxG(data, function(response) {
@@ -106,12 +125,22 @@
         }
         return i;
     }
-    function gameLog(message) {
+    function gameLog(message, log = false) {
         secondLog(message);
         if(message.search("\\[") == -1) {
             var d = new Date();
             var time = "[" + addZero(d.getHours()) + ":" + addZero(d.getMinutes()) + ":" + addZero(d.getSeconds()) + "] ";
             message = time + message;
+        }
+        if(log == true) {
+            ajaxRequest = new XMLHttpRequest();
+            ajaxRequest.onload = function () {
+                if(this.readyState == 4 && this.status == 200) {
+                    console.log(this.responseText);
+                }
+            };
+            ajaxRequest.open('GET', "handlers/handler_log.php?log=" + message);
+            ajaxRequest.send();    
         }
         var tr = document.createElement("TR");
         var td = document.createElement("TD");
@@ -130,15 +159,14 @@
         let div = document.getElementById("log_2");
         div.innerHTML = message;
         div.style.opacity = 1;
-        div.style.top = window.pageYOffset + 50  + "px";
-        
+        div.style.top = window.pageYOffset + 25  + "px";
         
         setTimeout(function() {
             console.log('settimeout');
             let div = document.getElementById("log_2");
             div.style.opacity = 0;
             div.style.top = "0px";
-        }, 2000);
+        }, 4000);
     }
     function getgMessage() {
         ajaxRequest = new XMLHttpRequest();
@@ -169,16 +197,24 @@
         }
         if(sidebar == true) {
             newsContentSidebar.adjustSidebar();
-            hello();
         }
-    }
-    function hello() {
-        console.log(document.getElementById("news_content_main_content").querySelectorAll("div")[0].clientHeight);
     }
     function closeNews() {
         var newsDiv = document.getElementById("news_content_main_content");
         if(document.getElementsByClassName("page_title")[0].innerText == 'merchant') {
             updateStockCountdown('end');
+        }
+        // If stock menu is visible after exiting stockpile, hide it
+        if(document.getElementsByClassName("page_title")[0].innerText == 'Stockpile' &&
+           document.getElementById("stck_menu").style.visibility !== "hidden") {
+            document.getElementById("stck_menu").style.visibility = "hidden";
+        }
+        // Remove event on inventory items after exiting tavern
+        if(document.getElementsByClassName("page_title")[0].innerText == 'tavern') {
+            let figures = document.getElementById("inventory").querySelectorAll('figure');
+            figures.forEach(function(element) {
+                element.removeEventListener('click', getHealingAmount);
+            });
         }
         newsDiv.innerHTML = "";
         news.style = "visibility: hidden;";
@@ -200,23 +236,23 @@
     }
     var inventorySidebarMob = {
         toggleInventory() {
-            console.log('toggleInventory');
             let inventory = document.getElementById("inventory");
-            console.log(inventory);
             if(inventory.style.visibility === "hidden") {
                 console.log('hlelo');
                 inventory.style.width = "50%";
                 inventory.style.visibility = "visible";
-                console.log(inventory);
             }
             else {
+                if(inventory.querySelectorAll("#stck_menu").length > 0) {
+                    inventory.querySelectorAll("#stck_menu")[0].style.visibility = "hidden"; 
+                }
                 inventory.style.width = "10%";
                 inventory.style.visibility = "hidden";
-                console.log(inventory);
             }
         }
     };
     var newsContentSidebar = {
+        activeButton: null,
         adjustSidebar() {
             let news_content_main = document.getElementById("news_content_main_content");
             if(news_content_main.style.width === "100%") {
@@ -247,28 +283,56 @@
                 news_content_main.querySelectorAll("div")[0].style.visibility = "visible";
                 console.log(document.getElementById("news_content_main_content").querySelectorAll("div")[0].clientHeight);
                 console.log(news_content_main.querySelectorAll("div")[0].clientHeight);
+                // Remove padding
+                document.getElementById("news_content_main_content").style.paddingRight = "0px";
+                // If first div is persons then show second div ([2] in the child tree, [0] is title, [1] is persons div)
                 if(news_content_main.querySelectorAll("div")[0].id == "persons") {
-                    news_content_main.children[2].style.visibility = "visible";    
+                    news_content_main.children[2].style.visibility = "visible";
+                    news_content_main.children[2].style.position = "";
+                    console.log(news_content_main.children[2]);
+                    document.getElementById("news_content_main_content").style.height =
+                    document.getElementById("news_content_main_content").querySelectorAll("div")[0].offsetHeight + 110 +
+                    news_content_main.children[2].offsetHeight + "px";
+                }
+                else {
+                    document.getElementById("news_content_main_content").style.height =
+                    document.getElementById("news_content_main_content").querySelectorAll("div")[0].offsetHeight + 40 + "px";
+                    console.log(document.getElementById("news_content_main_content").querySelectorAll("div")[0].offsetHeight);
+                    console.log(document.getElementById("news_content_main_content").querySelectorAll("div")[0]);
                 }
                 news_content_main.style.width = "100%";
                 document.getElementById("news_content_side_panel").style.display = "none";
-                document.getElementById("news_content").style.height =
-                    document.getElementById("news_content_main_content").querySelectorAll("div")[0].clientHeight + 93 + "px";
             }
-            
-            this.addEvent();
+            else {
+                this.addEvent();
+                if(document.getElementById("news_content_main_content").style.paddingRight == 0) {
+                    document.getElementById("news_content_main_content").style.paddingRight = "8px";
+                }
+            }
         },
         showContent() {
-            let activeButton = event.target.innerText;
+            this.activeButton = event.target.innerText;
+            newsContentSidebar.activeButton = event.target.innerText;
             let buttons = document.getElementById("news_content_side_panel").querySelectorAll("button");
             for(var i = 0; i < buttons.length; i++) {
-                if(buttons[i].innerText == activeButton) {
-                    document.getElementById(underscoreTreatment(activeButton, true).toLowerCase()).style.visibility = "visible";
+                if(buttons[i].innerText == this.activeButton) {
+                    document.getElementById(underscoreTreatment(buttons[i].innerText, true).toLowerCase()).style.position = "";
+                    document.getElementById(underscoreTreatment(this.activeButton, true).toLowerCase()).style.visibility = "visible";
                 }
                 else {
+                    document.getElementById(underscoreTreatment(buttons[i].innerText, true).toLowerCase()).style.position = "absolute";
                     document.getElementById(underscoreTreatment(buttons[i].innerText, true).toLowerCase()).style.visibility = "hidden";
                 }
             }
+            if(document.getElementById("form_cont") !== null && document.getElementById("form_cont").style.display == "block") {
+                document.getElementById("form_cont").style.display = "none";
+            }
+            newsContentSidebar.adjustMainContentHeight(this.activeButton);
+        },
+        adjustMainContentHeight() {
+            
+            document.getElementById("news_content_main_content").style.height =
+                document.getElementById(underscoreTreatment(this.activeButton, true).toLowerCase()).offsetHeight + 80 + "px";
         },
         addEvent() {
             let buttons = document.getElementById("news_content_side_panel").querySelectorAll("button");
@@ -331,16 +395,24 @@
         document.getElementById("cont_exit").addEventListener("click", closeNews);
     }
     function get_xp(skill) {
+        let divs = document.getElementById("skills").querySelectorAll("div");
+        // Used when player are closing sidebar and one of the skill tooltip is visible
+        if(skill == false) {
+            for(let x = 0; x < divs.length; x++) {
+                divs[x].children[1].style.visibility = "hidden";
+            }
+            return false;
+        }
         if(event === null) {
             return false;    
         }
         let element = event.target.closest("div");
-        console.log(element);
-        let divs = document.getElementById("skills").querySelectorAll("div");
+        
         let selectedIndex = newLevel.elementIndex[skill];
         for(let i = 0; i < divs.length; i++) {
             if(selectedIndex != i) {
                 divs[i].children[1].style.visibility = "hidden";
+                console.log(divs[i].children[1]);
             }
         }
         
@@ -392,13 +464,15 @@
         ajaxRequest.onload = function () {
             if(this.readyState == 4 && this.status == 200) {
                 document.getElementById("inventory").innerHTML = this.responseText;
-                if(document.getElementsByClassName("page_title")[0].innerText == "Stockpile") {
-                    var buttons = document.getElementById("inventory").querySelectorAll("div");
-                    buttons.forEach(function(element) {
-                    // ... code code code for this one element
-                    element.addEventListener('click', show_menu);
-                    });
-                    itemTitle.removeTitleEvent();
+                if(document.getElementsByClassName("page_title").length > 0) {
+                    if(document.getElementsByClassName("page_title")[0].innerText == "Stockpile") {
+                        var buttons = document.getElementById("inventory").querySelectorAll("div");
+                        buttons.forEach(function(element) {
+                        // ... code code code for this one element
+                        element.addEventListener('click', show_menu);
+                        });
+                        itemTitle.removeTitleEvent();
+                   }
                 }
                 else {
                     addShowTitle();
@@ -418,7 +492,8 @@
         console.log(element);
         var item = element.getElementsByTagName("figcaption")[0].innerHTML;
         var menu = document.getElementById("item_tooltip");
-        if(menu.style.visibility == "visible") {
+        console.log(menu);
+        if(menu.children[0].children[0].innerHTML === item) {
             menu.style.visibility = "hidden";
             return false;
         }
@@ -427,17 +502,29 @@
         menu.style.visibility = "visible";
         // Declare menu top by measuring the positon from top of parent and also if inventory/stockpile is scrolled
         var menuTop;
-        // If element is inside inventory or stockpile
-        menuTop = element.offsetTop + 30;
-        console.log(menuTop);
-        menu.children[0].style.top = menuTop + "px";
-        menu.children[0].children[0].style.textAlign = "center";
-        if(item.length < 8) {
-            menu.children[0].style.left = element.offsetLeft +  20 + "px";
+        if(element.className == "inventory_item") {
+            document.getElementById("inventory").insertBefore(menu,
+                                                              document.getElementById("inventory").querySelectorAll(".inventory_item")[0]);
+            menuTop = element.offsetTop + 30;
+            console.log(menuTop);
+            menu.children[0].style.top = menuTop + "px";
+            menu.children[0].children[0].style.textAlign = "center";
+            if(item.length < 8) {
+                menu.children[0].style.left = element.offsetLeft +  20 + "px";
+            }
+            else {
+                menu.children[0].style.left = element.offsetLeft + 10 + "px";
+            }
         }
         else {
-            menu.children[0].style.left = element.offsetLeft + 10 + "px";
+            let elementParent = element.closest("div");
+            let firstChild = elementParent.children[0];
+            console.log(firstChild);
+            elementParent.appendChild(menu);
+            menu.children[0].style.left = 10 + "px";
+            menu.children[0].style.top = 55 + "px";
         }
+        // If element is inside inventory or stockpile
         console.log(element.parentNode);
         /*if(["stockpile", "inventory"].indexOf(element.parentNode.id) != -1) {
             //menuTop = element.offsetTop + element.parentNode.scrollTop + 50;
@@ -468,7 +555,7 @@
             console.log(menu);
         }*/
         
-        setTimeout(hide_title, 4000, element);
+        /*setTimeout(hide_title, 4000, element);*/
     }  
     function hide_title(element) {
         /*element.style.visibility = "hidden";*/
@@ -477,16 +564,8 @@
             div_button.style = "visibility: hidden";
         }
     }
-    function getCountdown() {
-        var data = "model=countdown" + "&method=getCountdown";    
-        ajaxG(data, function(response) {
-            if(response[0] != false) {
-                
-                document.getElementById("tab_2").innerHTML = "";        
-            }
-        });
-    }
     function jsUcfirst(string) {
+        console.log(string);
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
     function jsUcWords(str) {
@@ -495,6 +574,7 @@
         });
     }
     function JSONForm(form) {
+        // Returns JSON object from a form
         var form_data = {};
         for(var i = 0; i < form.length; i++) {
             switch(form[i].tagName) {
@@ -550,10 +630,16 @@
                 this.sidebarElement.style.width = document.getElementsByTagName("section")[0].clientWidth * 0.40 + "px";
                 this.sidebarToggled = true;
                 document.getElementById("sidebar_button_toggle").style.visibility = "visible";
+                if(window.screen.width < 830) {
+                    document.getElementById("sidebar_button_toggle").style.cssFloat = "right";
+                    console.log(document.getElementById("sidebar_button_toggle").style.cssFloat);
+                }
             }
             else {
+                // Hide all bars
                 sidebar.showTab(sidebarCheck = false);
-                if(generalProperties.screenWidth < 830) {
+                get_xp(false);
+                if(window.screen.width < 830) {
                     this.sidebarElement.style.width = document.getElementsByTagName("section")[0].clientWidth * 0.12 + "px";    
                 }
                 else {
@@ -565,7 +651,8 @@
                 }
                 else {
                     setTimeout(function() {
-                        document.getElementById("sidebar").style.visibility = "hidden";}, 200);
+                        document.getElementById("sidebar").style.visibility = "hidden";
+                        document.getElementById("sidebar_button_toggle").style.cssFloat = "left";}, 200);
                 }
             }
         },
@@ -588,6 +675,30 @@
             }
         }
     };
+    function updateCountdownTab() {
+        let data = "model=SidebarUpdater" + "&method=calculateCountdowns";
+        ajaxJS(data, function(response) {
+            if(response[0] !== false) {
+                document.getElementById("tab_2").innerHTML = response[1];
+            }
+        });
+        /*setTimeout(updateCountdownTab, 120000);*/
+    }
+    function updateDiplomacyTab() {
+        let data = "model=SidebarUpdater" + "&method=getDiplomacy";
+        ajaxJS(data, function(response) {
+            if(response[0] !== false) {
+                let responseText = JSON.parse(response[1]);
+                console.log(responseText);
+                let trs = document.getElementById("tab_3").querySelectorAll("tbody")[0].querySelectorAll("tr");
+                for(let i = 0; i < trs.length; i++) {
+                    let tdText = trs[i].querySelectorAll("td")[1].innerHTML;
+                    let numberDifference = parseFloat(tdText) - parseFloat(responseText[i]);
+                    trs[i].querySelectorAll("td")[1].innerText = responseText[i] + " (" + numberDifference + ")";
+                }
+            }
+        });
+    }
     newLevel = {
         skillElement: null,
         skillData: null,
@@ -596,12 +707,14 @@
             newLevel.skillData = skillData;
             document.getElementById("skills").querySelectorAll(".skill_level")[newLevel.elementIndex[skillData[0]] - 1].innerHTML =
                     skillData[1];
-            gameLog(skillData[0] + "leveled up to " + skillData[1]);
+            
+            gameLog("Congratulations! You have leveled up " + jsUcfirst(skillData[0]) + " to " + skillData[1]);
             
         },
         searchString: function(responseText) {
+            // serach responseText;
+            let index = responseText.search("levelup");
             if(responseText.search("levelup") != -1) {
-                let index = response[1].search("levelup");
                 newLevel.findSkill(responseText.slice(index));
             }
         },
@@ -620,7 +733,7 @@
             farmer: 1,
             miner: 2,
             trader: 3,
-            warriors: 4
+            warrior: 4
         },
         skillHighlight: function(element) {
             console.log(element.style.backgroundColor);
@@ -650,59 +763,4 @@
         console.log("responseRet");
         return response;
     }
-    function ajaxG(data, callback, log = true) {
-        ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.onload = function () {
-            if(this.readyState == 4 && this.status == 200) {
-                if(this.responseText.indexOf("ERROR:") != -1) {
-                    if(log == true) {
-                        gameLog(this.responseText);
-                    }
-                    callback([false, this.responseText]);
-                }
-                else {
-                    callback([true, this.responseText]);
-                }
-            }
-        };
-        ajaxRequest.open('GET', "handlers/handler_g.php?" + data);
-        ajaxRequest.send();
-    }
-    function ajaxJS(data, callback, log = true) {
-        ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.onload = function () {
-            if(this.readyState == 4 && this.status == 200) {
-                if(this.responseText.indexOf("ERROR:") != -1) {
-                    if(log == true) {
-                        gameLog(this.responseText);
-                    }
-                    callback([false, this.responseText]);
-                }
-                else {
-                    callback([true, this.responseText]);
-                }
-            }
-        };
-        ajaxRequest.open('GET', "handlers/handler_js.php?" + data);
-        ajaxRequest.send();
-    }
-    function ajaxP(data, callback, log = true) {
-        ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.onload = function () {
-            if(this.readyState == 4 && this.status == 200) {
-                console.log(this.responseText);
-                if(this.responseText.indexOf("ERROR:") != -1) {
-                    if(log == true) {
-                        gameLog(this.responseText);
-                    }
-                    callback([false, this.responseText]);
-                }
-                else {
-                    callback([true, this.responseText]);
-                }
-            }
-        };
-        ajaxRequest.open('POST', "handlers/handler_p.php");
-        ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        ajaxRequest.send(data);
-    }
+    

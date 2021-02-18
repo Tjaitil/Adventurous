@@ -22,17 +22,35 @@
             });
         }
     };
-    // Check if news_content_main_content -> children[2] has gotten content from game.js -> game.fetchBuilding()
-    if(document.getElementById("news_content").children[2] != null) {
-        console.log(show_menu);
-        menubarToggle.addEvent();
+    function addStockpileActions() {
+        let listElements = document.getElementById("stck_menu").querySelectorAll("LI");
+        listElements.forEach(function(element, index) {
+            // First element is the item name
+            if(index === 0) {
+                return;   
+            }
+            element.addEventListener("click", stockpileAction);
+        });
+    }
+    function addShowMenuEvent() {
+        var figures = document.getElementById("stockpile").querySelectorAll("figure");
+        figures.forEach(function(element) {
+            // ... code code code for this one element
+            element.addEventListener('click', show_menu);
+        });
         if(/Safari|Chrome/i.test(navigator.userAgent)) {
             let span = document.getElementsByClassName("item_amount");
             for(var i = 0; i < span.length; i++) {
                 span[i].style.left = "-20%";
                 span[i].style.display = "block";
             }
-        }
+        }   
+    }
+    // Check if news_content_main_content -> children[2] has gotten content from game.js -> game.fetchBuilding()
+    if(document.getElementById("news_content").children[2] != null) {
+        menubarToggle.addEvent();
+        addShowMenuEvent();
+        addStockpileActions();
     }
     function show_menu() {
         console.log("show_menu");
@@ -53,37 +71,21 @@
         menu.style.visibility = "visible";
         // Declare menu top by measuring the positon from top of parent and also if inventory/stockpile is scrolled
         var menuTop;
-        console.log('parentNode.ScrollTop: ' + element.parentNode.scrollTop);
-        console.log('elementOffsetTop: ' + element.offsetTop);
+        /*console.log('parentNode.ScrollTop: ' + element.parentNode.scrollTop);
+        console.log('elementOffsetTop: ' + element.offsetTop);*/
         var lis = menu.children[0].children;
-        // Variable for holding the querySelectorAll("LI");
-        var liN;
+        
         let elementPos;
         if(element.className == 'inventory_item') {
             for(var i = 1; i < (lis.length - 1); i++) {
                 lis[i].innerHTML = "Insert " + lis[i].innerHTML.split(" ")[1];
             }
             lis[lis.length - 1].innerHTML = "Insert all";
-            if(method == 'withdraw' || method == false) {
-                //Change addEventListener function
-                method = "insert";
-                liN = menu.querySelectorAll("LI");
-                liN.forEach(function(element, index) {
-                    // First element is the item name
-                    if(index === 0) {
-                        return;   
-                    }
-                    // Remove event for each element
-                    element.removeEventListener('click', withdraw);
-                    // Add event for each element;
-                    element.addEventListener('click', insert);
-                });
-            }
             elementPos = element.getBoundingClientRect();
-            console.log(element.offsetTop);
+            /*console.log(element.offsetTop);
             console.log(elementPos);
             console.log(screen.height);
-            console.log(elementPos.top + 145);
+            console.log(elementPos.top + 145);*/
             if(element.offsetTop + 150 > document.getElementById("stockpile").offsetHeight) {
                 console.log('1');
                 menuTop = element.offsetTop - 70;
@@ -105,27 +107,11 @@
                 lis[x].innerHTML = "Withdraw " + lis[x].innerHTML.split(" ")[1]; 
             }
             lis[lis.length - 1].innerHTML = "Widthdraw all";
-            if(method == 'insert' || method == false) {
-                //Change addEventListener function
-                method = "withdraw";
-                liN = menu.querySelectorAll("LI");
-                liN.forEach(function(element, index) {
-                    // First element is the item name
-                    if(index === 0) {
-                        console.log(element);
-                        return;   
-                    }
-                    // Remove event for each element
-                    element.removeEventListener('click', insert);
-                    // Add event for each element;
-                    element.addEventListener('click', withdraw);
-                });
-            }
             elementPos = element.getBoundingClientRect();
-            console.log(element.offsetTop);
+            /*console.log(element.offsetTop);
             console.log(elementPos);
             console.log(screen.height);
-            console.log(elementPos.top + 145);
+            console.log(elementPos.top + 145);*/
             if(element.offsetTop + 150 > document.getElementById("stockpile").offsetHeight) {
                 console.log('1');
                 menuTop = element.offsetTop - 70;
@@ -149,37 +135,31 @@
         menu.style.visibility = "hidden";
         document.getElementById("news_content").appendChild(menu);
     }
-    function withdraw () {
+    function stockpileAction() {
         hideMenu();
-        var item = event.target.parentNode.children[0].innerHTML.toLowerCase();
-        var quantity = event.target.innerHTML.split(" ")[1];
-        if(quantity === 'x') {
-            quantity = selectAmount('widthdraw');
-        }
-        if(quantity == false) {
-            return false;
-        }
-        var data = "model=Stockpile" + "&method=updateInventory" + "&item=" + item +
-                         "&insert=" + '0' + "&quantity=" + quantity;
-        ajaxP(data, function(response) {
-            if(response[0] !== false) {
-                updatePage();
+        let element = event.target.closest("div").parentNode;
+        let item = event.target.parentNode.children[0].innerHTML.toLowerCase();
+        let quantity = event.target.innerHTML.split(" ")[1];
+        let insert;
+        console.log(document.getElementById("stck_menu").querySelectorAll("LI")[1].innerHTML);
+        console.log(document.getElementById("stck_menu").querySelectorAll("LI")[1].innerHTML.indexOf("Insert"));
+        if(document.getElementById("stck_menu").querySelectorAll("LI")[1].innerHTML.indexOf("Insert") != -1) {
+            insert = "1";
+            if(quantity === 'x') {
+                quantity = selectAmount('insert');
             }
-        });
-    }
-    function insert() {
-        hideMenu();
-        var item = event.target.parentNode.children[0].innerHTML.toLowerCase();
-        var quantity = event.target.innerHTML.split(" ")[1];
-        if(quantity === 'x') {
-            quantity = selectAmount('insert');
         }
-        if(quantity == false) {
-            return false;
+        else {
+            insert = "0";    
+            if(quantity === 'x') {
+                quantity = selectAmount('withdraw');
+            }
         }
-        var data = "model=Stockpile" + "&method=updateInventory" + "&item=" + item + "&insert=" + '1' + "&quantity=" + quantity;
+        let data = "model=Stockpile" + "&method=updateInventory" + "&item=" + item +
+                         "&insert=" + insert + "&quantity=" + quantity;
         ajaxP(data, function(response) {
             if(response[0] !== false) {
+                console.log(response[1]);
                 updatePage();
             }
         });
@@ -198,11 +178,14 @@
         }
     }
     function updatePage() {
-        updateInventory('stockpile');
         var data = "model=Stockpile" + "&method=getData";
         ajaxJS(data, function(response) {
             if(response[0] != false) {
+                console.log(response[1]);
                 document.getElementById("stockpile").innerHTML = response[1];
+                updateInventory('stockpile');
+                addShowMenuEvent();
+                document.getElementById("stck_menu").style.visibility = "hidden";
             }
         });
     }

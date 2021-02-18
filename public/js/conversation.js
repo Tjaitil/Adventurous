@@ -1,8 +1,8 @@
     addEventListener('load', function() {      
         conversation.conversationDiv = document.getElementById("conversation").querySelectorAll("ul")[0];
+        document.getElementById("conversation_container").querySelectorAll("img")[0].addEventListener("click", conversation.endConversation);
         /*conversation.toggleButton();*/
     });
-    
     var conversation = {
         index: null,
         conversationDiv: null,
@@ -21,38 +21,93 @@
             ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             ajaxRequest.send(data);
         },
-        loadConversation(person) {
+        checkConversation() {
+            if(document.getElementById("conversation_container").style.visibility == "visible") {
+                return true;
+            }
+            else {
+                return false;
+            }
+        },
+        loadConversation(person, index, callback = false) {
             if(person.length <= 2) {
                 return false;
             }
             /*if(event == null) {
                 return false;
             }*/
-            data = "person=" + person.toLowerCase() + "&index=" + false;
+            if(index == undefined) {
+                index = false;
+            }
+            data = "person=" + person.toLowerCase() + "&index=" + index;
             conversation.convAJAX(data, function(response) {
-                console.log(response);
+                conversation.index = true;
+                console.log(response[1]);
                 conversation.activeDialogues = JSON.parse(response[1]);
-                console.log(conversation.activeDialogues);
+                console.log(conversation.buttonToggle);
                 if(conversation.buttonToggle == false) {
                     conversation.toggleButton();
                 }
                 conversation.makeLinks();
-                document.getElementById("conversation_container").style.visibility = "visible";
-                document.getElementById("conversation_container").style.top =
+                let conversation_container = document.getElementById("conversation_container");
+                conversation_container.style.visibility = "visible";
+                if(game.properties.device == "mobile") {
+                    let conversationContainerHeight = game.properties.canvasHeight * 0.40;
+                    if(conversationContainerHeight > 170) {
+                        conversation_container.style.height = "170px";
+                    }
+                    else {
+                        conversation_container.style.height = conversationContainerHeight + "px";
+                    }
+                    document.getElementById("conversation").style.height = conversation_container.offsetHeight - 32 + "px";
+                    // Set offsetTop for non pc device so that the bottom of conversation container is the same as game_canvas;
+                    conversation_container.style.top =
+                        (document.getElementById("game_canvas").offsetTop + document.getElementById("game_canvas").height) -
+                        conversation_container.offsetHeight + "px";
+                }
+                else {
+                    document.getElementById("conversation_container").style.top =
                     document.getElementById("game_canvas").offsetTop + 250 + "px";
+                }
+                // Set width on conversation so it fits between images by subtracting container width by both pictures
+                document.getElementById("conversation").style.width =
+                    conversation_container.offsetWidth - (document.getElementById("conversation_a").width * 2)  - 17 + "px";
+                console.log(document.getElementById("conversation").style.width);
+                if(callback !== false) {
+                    callback();
+                }
             });
         },
         endConversation() {
-            this.index = "none";
+            conversation.index = null;
             conversation.conversationDiv.innerHTML = "";
             document.getElementById("conversation_container").style.visibility = "hidden";
+            conversation.buttonToggle = false;
+            conversation.button = null;
+            document.getElementById("conversation_a").style.visibility = "hidden";
+            document.getElementById("conversation_b").style.visibility = "hidden";
+            document.getElementById("conversation").querySelectorAll("button")[0].style.visibility = "hidden";
+            document.getElementById("conversation").querySelectorAll("button")[0].removeEventListener("click",
+                                                                                                  conversation.endConversation);
+            /*if(resume == true) {
+                game.resumeGame();    
+            }*/
         },
         toggleButton() {
             if(this.button === null) {
-                this.button = document.createElement("button");
-                this.button.appendChild(document.createTextNode("Click here to continue"));
-                this.button.addEventListener("click", conversation.getNextLine);
-                document.getElementById("conversation").appendChild(this.button);
+                if(document.getElementById("conversation").querySelectorAll("button").length > 0) {
+                    this.button = document.getElementById("conversation").querySelectorAll("button")[0];
+                    this.button.addEventListener("click", conversation.getNextLine);
+                    this.button.style.visibility = "visible";
+                    this.buttonToggle = true;
+                }
+                else {
+                    this.button = document.createElement("button");
+                    this.button.appendChild(document.createTextNode("Click here to continue"));
+                    this.button.addEventListener("click", conversation.getNextLine);
+                    document.getElementById("conversation").appendChild(this.button);
+                    this.buttonToggle = true;
+                }
             }
             else if(this.buttonToggle === false) {
                 document.getElementById("conversation").querySelectorAll("button")[0].style.visibility = "visible";
@@ -67,7 +122,7 @@
         },
         getNextLine(info = false) {
             var text;
-            
+            console.log('getNextLine');
             if(event === null && info == false) {
                 return;
             }
@@ -80,14 +135,15 @@
             else {
                 text = event.target.innerText;
             }
+            
             console.log(text);
             data = "person=" + null +  "&index=" + text;
             conversation.convAJAX(data, function(response) {
-                console.log(response[1]);
                 if(response[1] === "end") {
                     conversation.endConversation();
                     return false;
                 }
+                console.log(response[1]);
                 conversation.activeDialogues = [];
                 conversation.activeDialogues = JSON.parse(response[1]);
                 if(conversation.activeDialogues.length == 1) {
@@ -108,8 +164,16 @@
                     conversation.buttonToggle = true;
                     conversation.toggleButton();
                     conversation.makeLinks();
+                    if(response[1].indexOf("newDestination") != -1) {
+                        let lis = conversation.conversationDiv.querySelectorAll("li");
+                        lis.forEach(function(element) {
+                            // ... code code code for this one element
+                            element.addEventListener('click', gameTravel.newDestination);
+                        });
+                    }
                 }
                 else {
+                    console.log('inside hello');
                     /*if(conversation.activeDialogues[0][1] === "selectItem") {
                         console.log('Choose inventory');
                         conversation.buttonToggle = true;
@@ -130,7 +194,8 @@
                             break;
                         case "end":
                             conversation.makeLinks();
-                            document.getElementById("conversation").querySelectorAll("button")[0].removeEventListener("click", getNextLine);
+                            document.getElementById("conversation").querySelectorAll("button")[0].
+                                    removeEventListener("click",conversation.getNextLine);
                             document.getElementById("conversation").querySelectorAll("button")[0].addEventListener("click",
                                                                                                   conversation.endConversation);
                             break;
@@ -169,24 +234,24 @@
             console.log(conversation.index);*/
     
         },
-        togglePerson(person) {
-            console.log(person);
-            console.log(person.indexOf("#"));
-            if(person ==="a") {
-                document.getElementById("conversation_a").visibility = "hidden";
+        togglePerson(part) {
+            if(part.indexOf("a") != -1) {
+                let a = part.split(",")[1];
+                document.getElementById("conversation_a").src = "public/images/" + a + ".png";
+                document.getElementById("conversation_a").style.visibility = "visible";
+                document.getElementById("conversation_b").style.visibility = "hidden";
             }
-            else if(person.indexOf("#") != -1) {
+            else {
+                document.getElementById("conversation_b").style.visibility = "visible";
+                document.getElementById("conversation_a").style.visibility = "hidden";
+            }
+            if(part.indexOf("#") != -1) {
                 console.log(person.split("#")[1].trim());
                 document.getElementById("conversation_container").querySelectorAll("h3")[0].innerText = person.split("#")[1].trim();
             }
-            else {
-                document.getElementById("conversation_a").visibility = "visible";
-            }
-            
         },
         makeLinks() {
             let str = conversation.activeDialogues;
-            console.log(str);
             conversation.conversationDiv.innerHTML = "";
             if(str.length > 1 === true) {
                 for(var i = 0; i < str.length; i++) {

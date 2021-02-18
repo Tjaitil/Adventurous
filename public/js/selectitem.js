@@ -18,7 +18,7 @@
     }
     function select_i() {
         var element = event.target.closest("figure");
-        toggleType();
+        toggleOfferType();
         var item = element.children[1].innerHTML.toLowerCase().trim();
         if(item === 'gold') {
             gameLog("ERROR: You cannot sell gold!");

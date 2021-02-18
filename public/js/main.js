@@ -46,12 +46,16 @@
     window.onload = function () {
         getChat();
         getXP();
+        // Check for browser, and return error message for not optimized browser
+        if(/Safari|Chrome|Firefox/i.test(navigator.userAgent) == false) {
+            alert("WARNING! \n This game is not tested and optimized for the browser you are using." +
+                  " Recommended browsers are safari, chrome or firefox");
+        }
     };
     function getXP() {
         var data = "&model=gamedata" + "&method=getXP";
         ajaxG(data, function(response) {
             if(response[0] != false) {
-                console.log(response[1]);
                 var data = response[1].split("|");
                 var x_value1 = Number(data[0]);
                 var x_value2 = Number(data[1]);
@@ -60,9 +64,6 @@
             }
         }); 
     }
-    
-
-
     var data = [];
     
     function add() {

@@ -11,13 +11,20 @@
         var checkbox = div.querySelectorAll("input[type=checkbox]")[0];
         console.log(div);
         console.log(div.querySelectorAll("input[type=checkbox]"));
+        // If event target is not the checkbox, toggle the checked property
+        if(event.target.tagName != "INPUT") {
+            if(checkbox.checked) {
+                document.getElementById(div.id).querySelectorAll("input[type=checkbox]")[0].checked = false;
+            }
+            else {
+                document.getElementById(div.id).querySelectorAll("input[type=checkbox]")[0].checked = true;
+            }
+        }
         if(checkbox.checked) {
-            document.getElementById(div.id).style.border = "1px solid black";
-            document.getElementById(div.id).querySelectorAll("input[type=checkbox]")[0].checked = false;
+            document.getElementById(div.id).style.border = "3px ridge #5f4121";
         }
         else {
-            document.getElementById(div.id).style.border = "3px ridge #5f4121";
-            document.getElementById(div.id).querySelectorAll("input[type=checkbox]")[0].checked = true;
+            document.getElementById(div.id).style.border = "1px solid black";
         }
     }
     function warriorsCheck() {

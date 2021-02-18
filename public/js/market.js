@@ -1,21 +1,13 @@
-    
-    if(document.getElementById("news_content").children[3] != null) {
+    var offers = {};
+    if(document.getElementById("news_content").children[2] != null) {
         let div = document.getElementById("offers");
         let inputs = div.getElementsByTagName("input");
-        let buttons = div.children[0].children[2].querySelectorAll("button");
-        for(var i = 0; i < inputs.length; i++) {
+        /*for(var i = 0; i < inputs.length; i++) {
             if(inputs[i].getAttribute("type") == 'hidden') {
                 offers[inputs[i].parentElement.parentElement.nodeName + i] = inputs[i].value;
             }
-        }
-        buttons.forEach(function(element) {
-            // ... code code code for this one element
-            element.addEventListener('click', function() {
-                trade();
-            });
-        });
-        
-        
+        }*/
+        // Add event to search button to get back to offers
         document.getElementById("sch_button").addEventListener("click", function() {
             var table = document.getElementById("offers").children[0];
             table.removeChild(table.lastChild);
@@ -23,29 +15,61 @@
             document.getElementById("sch_button").style.display = "none";
             document.getElementById("s_item").value = '';
         });
+        // Add event to button in offer_types
+        document.getElementById("offer_types").querySelectorAll("button")[0].addEventListener("click", toggleOfferType);
+        document.getElementById("offer_types").querySelectorAll("button")[1].addEventListener("click", toggleOfferType);
         
-        myoffersListeners();
+        document.getElementById("select_item").addEventListener("change", selectOpt);
         
-        /*setInterval(intervalUpdate, 10000);*/
+        offersListeners();
+        
+        intervalUpdate();
         document.getElementById("item_srch").addEventListener('keyup', chk_me);
         document.getElementById("s_item").addEventListener('keyup', chk_me);
+        selectItemEvent.addSelectEvent();
     }
     function intervalUpdate() {
-        updatePage(2);
+        let x = setInterval(function() {
+            // Check if offer div is still avaliable, if not the user has moved on
+            if(document.getElementById("offers") == null) {
+                clearInterval(x);
+            }
+            else {
+                updatePage(2);
+            }
+        }, 10000);
     }
-    function myoffersListeners() {
-        var figures = document.getElementById("my_offers").querySelectorAll("figure");
-        figures.forEach(function(element) {
+    function tradeEvent() {
+        console.log(document.getElementById("offers").children[0].children[2]);
+        let buttons = document.getElementById("offers").children[0].children[2].querySelectorAll("button");
+        buttons.forEach(function(element) {
             // ... code code code for this one element
+            element.addEventListener('click', function() {
+                trade();
+            });
+        });
+    }
+    function offersListeners() {
+        tradeEvent();
+        var itemClass = document.querySelectorAll(".item");
+        itemClass.forEach(function(element) {
+            // Add event to figure inside item class
+            element.querySelectorAll("figure")[0].addEventListener('click', function() {
+                show_title();
+            });
+        });
+        // Add even to boxItem class to retrieve item
+        var boxItems = document.querySelectorAll(".box_item");
+        boxItems.forEach(function(element) {
             element.addEventListener('click', function() {
                 fetchItem();
             });
         });
         buttons = document.getElementById("my_offers").querySelectorAll("button");
         buttons.forEach(function(element) {
-            if(element.innerText != 'Cancel offer') {
+            if(element.innerText !== 'Cancel offer') {
                 element.addEventListener('click', function() {
-                    toggleType();
+                    toggleOfferType();
                 });
             }
             else {
@@ -55,36 +79,27 @@
             }
         });    
     }
-    var offers = {};
-    function toggleType() {
+    function toggleOfferType() {
+        // Toggle type of offer between sell and buy
         var div = document.getElementById("form_cont");
         div.style.display = "block";
         var select = document.getElementById("form_select");
-        var type = select.children[select.selectedIndex].innerText;
+        var type = event.target.innerText;
         var item_b  = document.getElementById("item_b");
         if(type === "Sell" || type.length == 0) {
             item_b.style.display = "none";
-            div.children[1].value = "Sell";
+            document.getElementById("offer_types").querySelectorAll("button")[0].style.backgroundColor = "";
+            document.getElementById("offer_types").querySelectorAll("button")[1].style.backgroundColor = "#e4cdb4";
         }
         else {
             document.getElementById("item_name").value = "";
             item_b.style.visibility = "visible";
             item_b.style.display = "block";
-            div.children[1].value = "Buy";
+            document.getElementById("offer_types").querySelectorAll("button")[0].style.backgroundColor = "#e4cdb4";
+            document.getElementById("offer_types").querySelectorAll("button")[1].style.backgroundColor = "";
         }
-    }
-    function show(element) {
-        var divs = ["offers", "my_offers", "history"];
-        
-        document.getElementById("form_cont").style.display = "none";
-        for(var i = 0; i < divs.length; i++) {
-            if(divs[i] == element) {
-                document.getElementById(divs[i]).style = "display: inline";
-            }
-            else {
-                document.getElementById(divs[i]).style = "display: none";
-            }
-        }
+        // Adjust the height of news_content_main_content
+        newsContentSidebar.adjustMainContentHeight();
     }
     var timer;
     function chk_me(){
@@ -98,11 +113,12 @@
         }
     }
     function checkItem() {
-        var query = document.getElementById("item_b").children[1].value;
+        console.log('check_item');
+        var query = document.getElementById("item_srch").value;
         if(query.length === 0) {
             return;
         }
-        var select = document.getElementById("items");
+        var select = document.getElementById("select_item");
         while (select.lastChild) {
             select.removeChild(select.lastChild);
         }
@@ -144,7 +160,8 @@
             }
         });
     }
-    function selectOpt(element) {
+    function selectOpt() {
+        let element = event.target;
         document.getElementById("item_srch").value = "";
         var itemName = element.options[element.selectedIndex].value;
         var div = document.getElementById("selected");
@@ -183,11 +200,20 @@
     }
     function newOffer() {
         var form = document.getElementById("offer_form");
-        var JSON_data = JSONForm(form);
+        var JSON_data = JSON.parse(JSONForm(form));
         
-        var data = "model=Market" + "&method=newOffer" + "&JSON_data=" + JSON_data;
+        if(JSON_data.length > 3) {
+            JSON_data.offerType = "Buy";
+        }
+        else {
+            JSON_data.offerType = "Sell";
+        }
+        console.log(JSON_data);
+        var data = "model=Market" + "&method=newOffer" + "&JSON_data=" + JSON.stringify(JSON_data);
         ajaxP(data, function(response) {
             if(response[0] != false) {
+                console.log(response);
+                updateInventory();
                 document.getElementById("offer_form").reset();
                 document.getElementById("form_cont").style.display = "none";
                 updatePage(1);
@@ -199,13 +225,19 @@
         ajaxG(data, function(response) {
             if(response[0] != false) {
                 var data = response[1].split("#");
-                console.log(data);
                 switch(part) {
                     case 1:
                         document.getElementById("offers").getElementsByTagName("TABLE")[0].children[2].innerHTML = data[0];
                         document.getElementById("my_offers").getElementsByTagName("TABLE")[0].children[2].innerHTML = data[1];
                         break;
                     case 2:
+                        console.log(document.getElementById("offers").querySelectorAll("#item_tooltip"));
+                        if(document.getElementById("offers").querySelectorAll("#item_tooltip").length > 0) {
+                            console.log('helloasda');
+                            document.getElementById("inventory").appendChild(document.getElementById("item_tooltip"));
+                            console.log(document.getElementById("item_tooltip"));
+                            document.getElementById("item_tooltip").style.visibility = "hidden";
+                        }
                         document.getElementById("offers").getElementsByTagName("TABLE")[0].children[2].innerHTML = data[0];
                         document.getElementById("my_offers").getElementsByTagName("TABLE")[0].children[2].innerHTML = data[1];
                         document.getElementById("history").getElementsByTagName("TABLE")[0].children[1].innerHTML = data[2];
@@ -214,7 +246,7 @@
                         document.getElementById("my_offers").getElementsByTagName("TABLE")[0].children[2].innerHTML = data[0];
                         break;
                 }
-                myoffersListeners();
+                offersListeners();
             }
         });
     }

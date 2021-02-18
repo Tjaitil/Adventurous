@@ -40,7 +40,8 @@
             div.children[0].appendChild(clone);
         }
         else {
-            div.children[0].children[0].src = typeData[item].src;    
+            div.children[0].children[0].src = typeData[item].src;
+            div.children[0].children[0].alt = item;
         }
     }
     function getData(site) {

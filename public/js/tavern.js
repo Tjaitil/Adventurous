@@ -2,11 +2,15 @@
     if(document.getElementById("news_content").children[2] != null) {
         document.getElementById("eat").querySelectorAll("button")[0].addEventListener("click", eat);
         selectItemEvent.addSelectEvent();
+        let figures = document.getElementById("inventory").querySelectorAll('figure');
+        figures.forEach(function(element) {
+            element.addEventListener('click', getHealingAmount);
+        });
     }
     
     function recruitWorker(type, level = false) {
         var element = event.target.parentNode;
-        var data ="model=RecruitWorker" + "&method=recruitWorker" + "&type=" + type;
+        let data = "model=RecruitWorker" + "&method=recruitWorker" + "&type=" + type;
         if(level != false) {
             data += "&level=" + level;
         }
@@ -38,6 +42,26 @@
         console.log("close");
         document.getElementById("curtain").style.display = "none";
         document.getElementById("conversation").style.display = "none";
+    }
+    function getHealingAmount() {
+        let newSelectedItem = event.target.closest("figure").querySelectorAll("figcaption")[0].innerText;
+        let oldSelecteditem = document.getElementById("selected").querySelectorAll("figcaption")[0].innerText;
+        if(newSelectedItem === oldSelecteditem) {
+            return false;
+        }
+        let data;
+        ajaxG(data, function(response) {
+            if(response[0] != false) {
+                let responseText = response[1];
+                if(responseText === 0) {
+                    document.getElementById("item_healing_amount").innerHTML = "No healing for this item";
+                }
+                else {
+                    document.getElementById("item_healing_amount").innerHTML = "Healing per item " + responseText;
+                }
+                
+            }
+        });
     }
     function eat() {
         var item = document.getElementById("selected").querySelectorAll("figure")[0].children[1].innerHTML.toLowerCase();

@@ -31,6 +31,8 @@
                 minerals[i].style = "border: none"; 
             }   
         }
+        newsContentSidebar.activeButton = "smith";
+        newsContentSidebar.adjustMainContentHeight();
     }
     function smith() {
         var amount = event.target.parentElement.children[0].value;

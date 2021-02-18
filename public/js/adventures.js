@@ -1,23 +1,23 @@
 
-    if(document.getElementById("provide") != null && document.getElementById("provide").children.length > 0) {
-        document.getElementById("provide").querySelectorAll(":scope > button")[0].addEventListener('click', provide);
-        var divs = document.querySelectorAll(".warriors");
-        if(divs.length > 0) {
-            divs.forEach(function(element) {
-                element.addEventListener('click', function() {
-                    check();
+    if(document.getElementById("news_content").children[2] != null) {
+        if(document.getElementById("provide") != null && document.getElementById("provide").children.length > 0) {
+            document.getElementById("provide").querySelectorAll(":scope > button")[0].addEventListener('click', provide);
+            var divs = document.querySelectorAll(".warriors");
+            if(divs.length > 0) {
+                divs.forEach(function(element) {
+                    element.addEventListener('click', function() {
+                        check();
+                    });
+                    element.querySelectorAll("button")[0].addEventListener('click', flipWarriorCard);
                 });
-                element.querySelectorAll("button")[0].addEventListener('click', flipWarriorCard);
-            });
+            }
+            else {
+                selectItemEvent.addSelectEvent();
+            }
         }
-        else {
-            selectItemEvent.addSelectEvent();
+        if(document.getElementById("time") != null) {
+            document.getElementById("time").addEventListener("load", getCountdown());
         }
-    }
-    if(document.getElementById("time") != null) {
-        document.getElementById("time").addEventListener("load", getCountdown());
-    }
-    window.onload = function () {
         if(document.getElementById("invite") != null) {
             var buttons = document.getElementById("invite").querySelectorAll("button");
             for(var i = 0; i < buttons.length; i++) {
@@ -41,7 +41,10 @@
         if(document.getElementById("people") != null) {
             document.getElementsByName("leave_adventure")[0].addEventListener("click", leaveAdventure);
         }
-    };
+        let data_form_buttons = document.getElementById("data_form").querySelectorAll("button");
+        console.log(data_form_buttons.length);
+        data_form_buttons[data_form_buttons.length].addEventListener("click", newAdventure);
+    }
     function getCountdown() {
         var data = "model=Adventures" + "&method=getCountdown";
         ajaxJS(data, function(response) {
@@ -84,6 +87,24 @@
         console.log(figures[i]);
         figures[i].addEventListener('click', handle.bind(figures[i]));
     }*/
+    function newAdventure() {
+        var form = document.getElementById("data_form");
+        if(!form.reportValidity()) {
+            gameLog("Please fill out all required inputs in the form");
+            return false;
+        }
+        var JSON_data = JSONForm(form);
+        let data = "model=SetAdventure" + "&method=newAdventure" + "&JSON_data=" + JSON_data;
+        ajaxP(data, function(response) {
+            if(response[0] !== false) {
+                let responseText = response[1].split("|");
+                newLevel.searchString(response[1]);
+                gameLog(responseText[0]);
+                game.fetchBuilding("adventures");
+            }
+        });
+        
+    }
     function handle(figure) {
         console.log(figure);
         select(figures[i]);
@@ -272,9 +293,9 @@
         }
     }
     function updateAdventure() {
-        console.log("update_adventure");
         var data = "model=UpdateAdventure" + "&method=updateAdventure";
         ajaxP(data, function (response) {
+            console.log(response);
             if(response[0] !== false) {
                 console.log(response[1]);
                 openNews(response[1], true);
@@ -282,6 +303,7 @@
                 document.getElementById("news_content_main_content").querySelectorAll("button")[0].addEventListener("click", function() {
                     game.fetchBuilding('adventures');
                 });
+                updateInventory();
             }
         });
     }

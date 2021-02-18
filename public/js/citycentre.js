@@ -3,12 +3,16 @@
        document.getElementById("profiency").querySelectorAll("button")[0].addEventListener("click", function () {
             alertMessage('citycentre');
         });
-       var keep_buttons = document.getElementById("keep").querySelectorAll("button");
-       keep_buttons[0].addEventListener("click", changeArtefact);
-       keep_buttons[1].addEventListener("click", newArtefact);
-       document.getElementById("permits").querySelectorAll("button")[0].addEventListener("click", buyPermits);
-       document.getElementById("efficiency").querySelectorAll("button")[0].addEventListener("click", upgradeEffiency);
-
+        var keep_buttons = document.getElementById("keep").querySelectorAll("button");
+        keep_buttons[0].addEventListener("click", changeArtefact);
+        keep_buttons[1].addEventListener("click", newArtefact);
+        document.getElementById("permits").querySelectorAll("button")[0].addEventListener("click", buyPermits);
+        document.getElementById("efficiency").querySelectorAll("button")[0].addEventListener("click", upgradeEffiency);
+        let unlock_items_button = document.getElementById("unlock_items").querySelectorAll("button");
+        unlock_items_button.forEach(function(element) {
+            // ... code code code for this one element
+            element.addEventListener('click', unlockArmorItems);
+        });
     }
     function show(element) {
         var divs = ["profiency", "keep", "permits"];
@@ -21,6 +25,25 @@
                 document.getElementById(divs[i]).style = "display: none";
             }
         }
+    }
+    function unlockArmorItems() {
+        let button = event.target;
+        let item = button.closest("tr").children[0].innerText.toLowerCase().trim();
+        console.log(item);
+        if(["frajrite items", "wujkin items"].indexOf(item) == -1) {
+            gameLog("This item cannot be unlocked");
+            return false;
+        }
+        let data = "model=CityCentreA" + "&method=unlockArmorItems" + "&type=" + item; 
+        ajaxP(data, function(response) {
+            if(response[0] != false) {
+                let responseText = response[1].split("|");
+                updateInventory();
+                gameLog(responseText[0]);
+                button.className = "button_disabled";
+                button.innerText = "Unlocked";
+            }
+        });
     }
     function changeProfiency() {
         console.log('hello');
