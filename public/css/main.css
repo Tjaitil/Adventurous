@@ -42,6 +42,16 @@
     display:none;
     position: relative;
 }
+#game_news {
+    width: 400px;
+    float: left;
+    padding: 0px 10px;
+    border-radius: 5px;
+    background-color: #4c341a;
+}
+#game_news h3 {
+    color: #c90;
+}
 #profile {
     width:25%;
     height:300px;

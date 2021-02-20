@@ -19,6 +19,25 @@
         });
         timer = 0;
     }
+    function getNews() {
+        ajaxRequest = new XMLHttpRequest();
+        ajaxRequest.onload = function () {
+            if(this.readyState == 4 && this.status == 200) {
+                console.log(this.responseText);
+                if(this.responseText.indexOf("ERROR:") != -1) {
+                    if(log == true) {
+                        gameLog(this.responseText);
+                    }
+                    callback([false, this.responseText]);
+                }
+                else {
+                    callback([true, this.responseText]);
+                }
+            }
+        };
+        ajaxRequest.open('GET', "views/news.php");
+        ajaxRequest.send();
+    }
     function getChat() {
         var chat = document.getElementById("chat");
         chat.scrollTop = chat.scrollHeight - chat.clientHeight;

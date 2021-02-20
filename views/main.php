@@ -4,6 +4,7 @@
         <title><?php echo $title;?></title>
         <?php include(constant("ROUTE_VIEW") . 'head.php');?>
         <link rel="stylesheet" type="text/css" href="<?php echo constant("ROUTE_CSS") . $name; ?>.css" />
+        <link rel="stylesheet" type="text/css" href="<?php echo constant("ROUTE_CSS");?>news.css" />
     </head>
     <body>
         <header>
@@ -27,6 +28,31 @@
             <?php if($_SESSION['gamedata']['profiency'] === "none"): ?>
                 <script src="public/js/tutorial.js"></script>
             <?php endif;?>
+            <div id="game_news">
+                <div id="news_header">
+                    <h3> News </h3>
+                </div>
+                <div id="news_container">
+                    <?php
+                        $arr = array();
+                        $arr[] = array("news_type" => "game update", "news_title" => "alpha test", "news_introduction"  =>
+                                       "Alpha test is soon underway. Players who want to participate...");
+                        for($i = 0; $i < count($arr); $i++): ?>
+                        <div class="news_element">
+                            <img src="<?php echo constant('ROUTE_IMG') . $arr[$i]['news_type'];?>" />
+                            <h4 class="news_title"><?php echo $arr[$i]['news_title'];?></h4>
+                            <p class="news_introduction">
+                            <?php
+                             if(strlen($arr[$i]['news_introduction']) > 40) {
+                                $arr[$i]['news_introduction'] = substr($arr[$i]['news_introduction'], 0, 40);
+                                $arr[$i]['news_introduction'] .= '...';
+                             }
+                            echo $arr[$i]['news_introduction'];?><button>read more</button></p>
+                        </div>
+                    <?php endfor;?>
+                </div>
+                <p><a href="/news">Click here for more news</a></p>
+            </div>
             <div id="profile">
                 <span id="profile_header"> Player Card</span></br>
                 <img id="profile_picture" src="" height="50%" width="74%" /></br>
@@ -44,11 +70,7 @@
                 <p id="demo"></p>
             </div>
             <div id="town_map">
-                <p id="town">Currently staying in:</p><?php echo ucfirst($_SESSION['gamedata']['location']);?></br>
-                <a id="town_map_a" href="#">
-                    <img src="" width="300" height="200" style="border:1px solid black;"/>
-                </a>
-                <!--- <script src="cityhandler.js"> --->
+                <button> Go to client </button>
                 </script>
             </div>
             <div id="countdowns">
