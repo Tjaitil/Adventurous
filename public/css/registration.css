@@ -121,9 +121,10 @@ section {
 }
 
 footer {
-    width:1000px;
-    float:right;
-    text-align:center;
+    width: 1000px;
+    margin: 0 auto;
+    float: right;
+    text-align: center;
 }
 
 #info {

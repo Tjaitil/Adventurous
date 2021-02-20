@@ -7,7 +7,7 @@
     </head>
     <body onload="standardterms();">
         <section>
-            <div id="terms">
+            <!--<div id="terms">
                 <img id="exit" src="pictures/exit.png" onclick="hideterms();" />
                 </br>
                 <h3> TJ portals terms and agreement!</h3>
@@ -70,15 +70,16 @@
                         <h3> 5 Appeal</h3>
                     
                 </div>
-            </div
+            </div-->
             <h3 id="sect_head"> Welcome to the registration page! To become a member please submit the information below:</h3>
-            <div id="show_info">
+        <!--<div id="show_info">
                     Information about <b>country of origin</b> and <b>day of birth</b> are used for us to create the best experience for you. </br>
                     For instance we use your location to provide you with the best customer service. Your age is important because the site has a age limit.</br>
                     Read more on this in the terms and agreement at the bottom of the page.
-            </div>
+            </div>-->
             <form name="registration" id="regi" method="post" action="/registration" >
-                <h4> Required information: </h4>
+                <p> Registration is currently closed </p>
+                <!--<h4> Required information: </h4>
                 <span id="field">
                     <label for="username">Username:</label>
                     <input id="username" type="text" name="username" minlength="4" />
@@ -338,11 +339,9 @@
                 </select>
                 </span>
                 <span class="error"><?php echo $this->error['countryErr']; ?></span>
-                <!--<a id="" onmouseover="showinfo();" onmouseout="hideinfo();"  href="#">Why do you need this?</a>-->
                 </br>
                 <span id="field"><label for="dob">Day of birth:</label><input id="dob" type="date" name="dob" /></span>
                 <span class="error"><?php echo $this->error['dobErr']; ?></span>
-                <!---<a id="" onmouseover="showinfo();" onmouseout="hideinfo();" href="#"> Why do you need this?</a>-->
                 </br>
                 </br>
                 
@@ -355,7 +354,7 @@
                 </br>
                 Terms and agreement: <a onclick="showterms();" href="#"> Click here</a>
                 <input id="" type="checkbox" name="checkbox" /><span class="error"><?php echo $this->error['checkboxErr']; ?></span></br>
-                <!--><button type="submit"> Register </button>-->
+                -->
             </form>
             <script src="<?php echo constant('ROUTE_JS') .'registration.js';?>"></script>
         </section>
