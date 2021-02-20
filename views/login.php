@@ -22,8 +22,8 @@
                 <span class="login_error"><?php echo $this->error['passErr'];?></span></br></br>
                 <button type="submit">Login</button>
             </form>
-            <span class="login_error"><?php echo $this->error['loginfail'];?></span></br>
-            <a id="regi_link" href="/registration"> Dont have a account? Click here!</a>
+            <span class="login_error"><?php echo $this->error['loginfail'];?></span>
+            <p>Registration is currently closed, contact kjetil@baksaas.no for access</p>
         </div>
         <script src="<?php echo constant('ROUTE_JS') . 'login.js';?>"></script>
         <!--<div>
