@@ -1077,6 +1077,7 @@ function doubleClickDetect() {
         console.log('game.startGame');
         viewport.draw();
         viewport.drawEdge();
+        canvasTextHeader.setDraw(document.title);
         player = gamePieces.player;
         gamePieces.player.newPos();
         game.updateGamePiece();

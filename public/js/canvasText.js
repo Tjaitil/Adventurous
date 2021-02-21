@@ -34,31 +34,37 @@ game.canvasText = {
         }
     }
 };
-textHeader = {
+canvasTextHeader = {
     opacity: 0.0,
     intervalID: null,
-    setDraw: function() {
-        this.intervalID = setInterval(this.draw, 500);
+    text: null,
+    setDraw: function(text) {
+        console.log(this);
+        this.text = text;
+        this.intervalID = setInterval(() => canvasTextHeader.draw(), 50);
     },
     draw: function() {
         game.properties.textContext.clearRect(0, 0, game.properties.canvasWidth, game.properties.canvasHeight);
-        let contentY = game.properties.canvasHeight * 0.25;
-        console.log(textHeader.opacity);
-        game.properties.textContext.fillStyle = "rgba(38, 38, 38," + textHeader.opacity + ")";
+        let contentY = game.properties.canvasHeight * 0.15;
+        game.properties.textContext.fillStyle = "rgba(38, 38, 38," + this.opacity + ")";
         game.properties.textContext.fillRect(0, contentY, game.properties.canvasWidth, 200);
-        game.properties.textContext.fillStyle = "rgba(255,255,255" + textHeader.opacity + ")";
+        game.properties.textContext.fillStyle = "rgba(255,255,255" + this.opacity + ")";
         game.properties.textContext.font = "35px Times New Roman";
-        game.properties.textContext.fillText("Location", game.properties.canvasWidth * 0.50 - 20, contentY + 100);
-        if(textHeader.opacity <= 0.5) {
-            textHeader.opacity += 0.1;
-            console.log(this.opacity);
-            setTimeout(textHeader.draw, 16);
+        game.properties.textContext.textAlign = "center";
+        game.properties.textContext.fillText(this.text, game.properties.canvasWidth * 0.50 - 20, contentY + 100);
+        if(this.opacity <= 0.4) {
+            this.opacity += 0.1;
         }
         else {
-            setTimeout(function() {
-                game.properties.textContext.clearRect(0, 0, game.properties.canvasWidth, game.properties.canvasHeight);
-                textHeader.opacity = 0;
-                       }, 1500);
+            this.unsetDraw();
         }
+    },
+    unsetDraw: function() {
+        clearInterval(canvasTextHeader.intervalID);
+        setTimeout(function() {
+            game.properties.textContext.clearRect(0, 0, game.properties.canvasWidth, game.properties.canvasHeight);
+            this.opacity = 0;
+        }, 1500);
+        
     }
 };
