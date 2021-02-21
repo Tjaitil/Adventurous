@@ -7,8 +7,12 @@
 #stats_individ {
     display: none;
 }
+#warriors {
+    display: flex;
+    justify-content: center;
+}
 .warrior {
-    width: 30%;
+    flex: 0 1 30%;
     float: left;
     border: 1px solid black;
     padding: 1%;

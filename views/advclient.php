@@ -9,6 +9,7 @@
         <meta charset="utf-8"/>
     </head>
     <body>
+        <div class="wrapper">
         <header>
             <?php require(constant("ROUTE_VIEW") . 'header.php');?>
         </header>
@@ -76,5 +77,6 @@
         <aside>
             <?php require(constant('ROUTE_VIEW') . 'aside.php');?>
         </aside>
+        </div>
     </body>
 </html>

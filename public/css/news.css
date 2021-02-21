@@ -7,8 +7,10 @@
 .news_element {
     width: 100%;
     border: 1px solid black;
+    background-color: #f2e6d9;
 }
 .news_element img {
+    margin: 10px 0px 0px 5px;
     float: left;
     width: 64px;
     height: 64px;

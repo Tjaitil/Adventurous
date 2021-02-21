@@ -1,4 +1,5 @@
 header {
+    /*grid-columns: 1 / 3;*/
     border-bottom: black thin;
     text-align: center;
     display: block;

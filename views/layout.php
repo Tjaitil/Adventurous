@@ -23,11 +23,11 @@
 <div id="news">
 </div>
 <div id="news_content">
-    <img id="cont_exit" src="#"  width="20px" height="20px" onclick="closeNews();" />
     <div id="news_content_side_panel">
         
     </div>
     <div id="news_content_main_content">
         
     </div>
+    <img id="cont_exit" src="#"  width="20px" height="20px" onclick="closeNews();" />
 </div>

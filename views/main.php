@@ -7,6 +7,7 @@
         <link rel="stylesheet" type="text/css" href="<?php echo constant("ROUTE_CSS");?>news.css" />
     </head>
     <body>
+        <div class="wrapper">
         <header>
             <?php require(constant("ROUTE_VIEW") . 'header.php');?>
             <script src="public/js/time.js"></script>
@@ -339,5 +340,9 @@
                 require(constant('ROUTE_VIEW') . 'aside.php');
             ?>
         </aside>
+        <footer>
+            
+        </footer>
+        </div>
     </body>            
 </html>
