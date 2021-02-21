@@ -9,6 +9,10 @@ header button a {
     text-decoration: none;
     color: black;
 }
+#nav {
+    display: flex;
+    justify-content: center;
+}
 #nav_2 {
     list-style-type: none;
     width: 19%;
@@ -48,8 +52,7 @@ header button a {
     background-color: #4b341b;
 }
 .top_bar {
-    width: 15%;
-    min-width: 80px;
+    min-width: 170px;
     margin:0px 0px 10px 0px;
     position: relative;
     display: inline-block;
