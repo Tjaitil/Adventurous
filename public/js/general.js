@@ -186,13 +186,17 @@
         document.getElementById("news").style.visibility = "visible";
         document.getElementById("news_content").style.visibility = "visible";
         if(typeof content == 'object') {
-            if(Object.keys(content).length > 1) {
+            if(content.innerText.indexOf("Loading") != -1) {
+                document.getElementById("news_content_main_content").appendChild(content);
+            }
+            else if(Object.keys(content).length > 1) {
                 for(var i = 0; i < Object.keys(content).length; i++) {
                     document.getElementById("news_content_main_content").appendChild(content[i]);
                 }
             }
         }
         else {
+            console.log(content);
             document.getElementById("news_content_main_content").innerHTML = content;
         }
         if(sidebar == true) {

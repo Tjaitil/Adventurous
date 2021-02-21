@@ -36,9 +36,35 @@
             /*if(event == null) {
                 return false;
             }*/
+            // If index is undefined, set it to false
             if(index == undefined) {
                 index = false;
             }
+            let h = document.createElement("h2");
+            h.innerText = "Loading...";
+            h.id = "loading_message";
+            let conversation_container = document.getElementById("conversation_container");
+            conversation_container.style.visibility = "visible";
+            conversation.conversationDiv.appendChild(h);
+            if(game.properties.device == "mobile") {
+                let conversationContainerHeight = game.properties.canvasHeight * 0.40;
+                if(conversationContainerHeight > 170) {
+                    conversation_container.style.height = "170px";
+                }
+                else {
+                    conversation_container.style.height = conversationContainerHeight + "px";
+                }
+                document.getElementById("conversation").style.height = conversation_container.offsetHeight - 32 + "px";
+                // Set offsetTop for non pc device so that the bottom of conversation container is the same as game_canvas;
+                conversation_container.style.top =
+                    (document.getElementById("game_canvas").offsetTop + document.getElementById("game_canvas").height) -
+                    conversation_container.offsetHeight + "px";
+            }
+            else {
+                document.getElementById("conversation_container").style.top =
+                document.getElementById("game_canvas").offsetTop + 250 + "px";
+            }
+            
             data = "person=" + person.toLowerCase() + "&index=" + index;
             conversation.convAJAX(data, function(response) {
                 conversation.index = true;
@@ -49,26 +75,7 @@
                     conversation.toggleButton();
                 }
                 conversation.makeLinks();
-                let conversation_container = document.getElementById("conversation_container");
-                conversation_container.style.visibility = "visible";
-                if(game.properties.device == "mobile") {
-                    let conversationContainerHeight = game.properties.canvasHeight * 0.40;
-                    if(conversationContainerHeight > 170) {
-                        conversation_container.style.height = "170px";
-                    }
-                    else {
-                        conversation_container.style.height = conversationContainerHeight + "px";
-                    }
-                    document.getElementById("conversation").style.height = conversation_container.offsetHeight - 32 + "px";
-                    // Set offsetTop for non pc device so that the bottom of conversation container is the same as game_canvas;
-                    conversation_container.style.top =
-                        (document.getElementById("game_canvas").offsetTop + document.getElementById("game_canvas").height) -
-                        conversation_container.offsetHeight + "px";
-                }
-                else {
-                    document.getElementById("conversation_container").style.top =
-                    document.getElementById("game_canvas").offsetTop + 250 + "px";
-                }
+                
                 // Set width on conversation so it fits between images by subtracting container width by both pictures
                 document.getElementById("conversation").style.width =
                     conversation_container.offsetWidth - (document.getElementById("conversation_a").width * 2)  - 17 + "px";

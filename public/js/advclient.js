@@ -108,8 +108,10 @@ function doubleClickDetect() {
             building = 'test';
         }
         let h = document.createElement("h2");
-        h.innerText = "Loadding!";
+        h.innerText = "Loading...";
+        h.id = "loading_message";
         openNews(h);
+        
         /*let test = game.checkBuilding();*/
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
@@ -1074,7 +1076,6 @@ function doubleClickDetect() {
         });
     };
     game.startGame = function () {
-        console.log('game.startGame');
         viewport.draw();
         viewport.drawEdge();
         canvasTextHeader.setDraw(document.title);

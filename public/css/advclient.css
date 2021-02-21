@@ -5,6 +5,9 @@ button:active {
     background-color: #ebd9c6
 }
 button:focus {outline:0;}
+#loading_message {
+    margin-top: 20px;
+}
 #game_canvas {
     float: left;
     image-rendering: -moz-crisp-edges;
