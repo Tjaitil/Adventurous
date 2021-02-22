@@ -72,12 +72,12 @@ button:focus {outline:0;}
     font-weight: bold;
     font-size: 11px;
 }*/
-#map {
+/*#map {
     border: 1px solid black;
 }
 #map img {
     color: white;
-}
+}*/
 button:active {
     background-color: #ebd9c6
 }
