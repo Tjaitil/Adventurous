@@ -20,7 +20,7 @@
                 <div class="top_but"><a href="/messages">Messages</a></div>
             </div>
         </div>
-        <button><a href="/rules"> Rules </a></button>
+        <button><a href="#"> Rules </a></button>
         <button><a href="/news"> News </a></button>
         <button><a href="/profile"> Profile </a></button>
         <button><a href="/logout" id="logout"> Log Out</a></button>
