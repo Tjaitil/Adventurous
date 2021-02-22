@@ -6,7 +6,7 @@
 
 .news_element {
     width: 100%;
-    border: 1px solid black;
+    border-bottom: 1px solid black;
     background-color: #f2e6d9;
 }
 .news_element img {
