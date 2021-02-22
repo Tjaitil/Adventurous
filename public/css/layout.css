@@ -169,6 +169,7 @@ button:focus {outline:0;}
 }
 #log_pseudo_parent {
     position: absolute;
+    display: none;
     left: 49%;
     width: 50%;
     height: 120px;
