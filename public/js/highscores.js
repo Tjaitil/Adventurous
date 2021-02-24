@@ -1,9 +1,3 @@
-    window.addEventListener("load", function() {
-        // Make section cover whole width of page by setting the gridRow to 1 / 3 from 2 / 3. See layout.css
-        let divWrapper = document.getElementsByClassName("wrapper")[0];
-        divWrapper.style.gridTemplateColumns = "auto";
-        document.getElementsByTagName("section")[0].style.gridRow = "1 / 3";
-    });
     function gethighscores(type) {
         var data = "model=" + "&method=";
         ajaxG(data, function(response) {
