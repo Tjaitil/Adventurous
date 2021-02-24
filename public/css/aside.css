@@ -5,6 +5,7 @@ aside {
     border: inset 2px;
     display: block;
     font-size: 13px;
+    z-index: 2;
 }
 aside a {
     color: #003cb3;
