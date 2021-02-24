@@ -15,7 +15,7 @@ body img {
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edges;
 }
-.wrapper {
+#wrapper {
     display:grid;
     grid-gap: 10px;
     width: 100%;
