@@ -1,16 +1,3 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title><?php echo $title;?></title>
-        <?php require(constant('ROUTE_VIEW') . 'head.php');?>
-        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name;?>.css" />
-    </head>
-    <body>
-        <div class="wrapper">
-            <header>
-                <?php require(constant('ROUTE_VIEW') . 'header.php'); ?>
-            </header>
-            <section>
                 <div id="adventurer">
                     <table class="highscores">
                         <caption> Adventurer <img src="<?php echo constant('ROUTE_IMG') . 'adventurer icon.png';?>"/></caption>
@@ -161,7 +148,3 @@
                         </tfoot>
                     </table>
                 </div>
-            </section>
-        </div>
-    </body>
-</html>

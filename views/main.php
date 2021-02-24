@@ -1,19 +1,3 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title><?php echo $title;?></title>
-        <?php include(constant("ROUTE_VIEW") . 'head.php');?>
-        <link rel="stylesheet" type="text/css" href="<?php echo constant("ROUTE_CSS") . $name; ?>.css" />
-        <link rel="stylesheet" type="text/css" href="<?php echo constant("ROUTE_CSS");?>news.css" />
-    </head>
-    <body>
-        <div class="wrapper">
-        <header>
-            <?php require(constant("ROUTE_VIEW") . 'header.php');?>
-            <script src="public/js/time.js"></script>
-        </header>
-        <section>
-            <?php require(constant("ROUTE_VIEW") . 'layout.php');?>
             <div id="public_chat">
             <div id="chat">
                 <ul>
@@ -165,15 +149,3 @@
                 <img class="crystal" src="<?php echo constant("ROUTE_IMG") . 'ter crystal.png';?>" />
                 <img class="crystal" src="<?php echo constant("ROUTE_IMG") . 'fansal-plains crystal.png';?>" />
             </div>
-        </section>
-        <aside>
-            <?php
-                require(constant('ROUTE_VIEW') . 'aside.php');
-            ?>
-        </aside>
-        <footer>
-            
-        </footer>
-        </div>
-    </body>            
-</html>
