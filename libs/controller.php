@@ -21,7 +21,12 @@
                 require('../' . constant('ROUTE_VIEW') . 'page.php');    
             }
             else {
-                require(constant('ROUTE_VIEW') . 'page.php');
+                if($name == 'login') {
+                    require(constant('ROUTE_VIEW') . $name . '.php');    
+                }
+                else {
+                    require(constant('ROUTE_VIEW') . 'page.php');    
+                }
             }
         }
         public function checkLevel() {
