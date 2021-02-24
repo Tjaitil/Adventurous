@@ -9,19 +9,19 @@
         // Render site
         public function render($name, $title, $gamedata, $up = false) {
             if($up !== false) {
-                require('../' . constant('ROUTE_VIEW') . $name . '.php');    
+                require('../' . constant('ROUTE_VIEW') . 'page.php');    
             }
             else {
-                require(constant('ROUTE_VIEW') . $name . '.php');
+                require(constant('ROUTE_VIEW') . 'page.php');
             }
         }
         //Render site with error Array   
         public function renderWE($name, $title, $gamedata, $data, $up = false) {
             if($up !== false) {
-                require('../' . constant('ROUTE_VIEW') . $name . '.php');    
+                require('../' . constant('ROUTE_VIEW') . 'page.php');    
             }
             else {
-                require(constant('ROUTE_VIEW') . $name . '.php');
+                require(constant('ROUTE_VIEW') . 'page.php');
             }
         }
         public function checkLevel() {
