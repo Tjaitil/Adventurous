@@ -71,18 +71,11 @@
                 return $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
             else {
-                $sql = "SELECT clock, username, message FROM public_chat
-                        WHERE id >= (SELECT id FROM public_chat WHERE clock=:clock ORDER BY ID ASC LIMIT 1)
-                        ORDER BY clock DESC";
-                $stmt = $this->db->conn->prepare($sql);
-                $stmt->bindParam(":clock", $param_clock, PDO::PARAM_STR);
-                $param_clock = $clock;
-                $stmt->execute();
                 $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 get_template('chat', $data, true);
             }
         }
-        public function chat($message) {
+        public function chat($POST) {
             // $POST variable holds the post data
             // This function is called from an AJAX request
             // Function to enter new message into public chat
@@ -92,7 +85,7 @@
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $stmt->bindParam(":message", $param_message, PDO::PARAM_STR);
             $param_clock = date("H:i:s");
-            $param_username = $this->username;
+            $param_username = htmlspecialchars($this->username);
             $param_message = $POST['message'];
             $stmt->execute();
             $this->getChat($param_clock);
