@@ -62,7 +62,8 @@
             }
             else {
                 document.getElementById("conversation_container").style.top =
-                document.getElementById("game_canvas").offsetTop + 250 + "px";
+                document.getElementById("game_canvas").offsetTop + document.getElementById("game_canvas").height - 
+                conversation_container.offsetHeight + "px";
             }
             
             data = "person=" + person.toLowerCase() + "&index=" + index;
@@ -242,6 +243,7 @@
     
         },
         togglePerson(part) {
+            console.log(part);
             if(part.indexOf("a") != -1) {
                 let a = part.split(",")[1];
                 document.getElementById("conversation_a").src = "public/images/" + a + ".png";
