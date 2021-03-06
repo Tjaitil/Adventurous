@@ -7,12 +7,17 @@
             
         }
         // Render site
-        public function render($name, $title, $gamedata, $up = false) {
-            if($up !== false) {
-                require('../' . constant('ROUTE_VIEW') . 'page.php');    
+        public function render($name, $title, $gamedata, $up = false, $ajax = false) {
+            if($ajax == false) {
+                if($up !== false) {
+                    require('../' . constant('ROUTE_VIEW') . 'page.php');    
+                }
+                else {
+                    require(constant('ROUTE_VIEW') . 'page.php');
+                }
             }
             else {
-                require(constant('ROUTE_VIEW') . 'page.php');
+                require('../' . constant('ROUTE_VIEW') . $name . '.php');   
             }
         }
         //Render site with error Array   
