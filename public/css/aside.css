@@ -6,6 +6,8 @@ aside {
     display: block;
     font-size: 13px;
     z-index: 2;
+    position: sticky;
+    top: 125px;
 }
 aside a {
     color: #003cb3;
