@@ -507,7 +507,7 @@ button:focus {outline:0;}
     border-top-right-radius: 25px 50%;
     border-bottom-right-radius: 25px 50%;
     width: 55%;
-    margin: 10px auto 10px auto;
+    margin: 20px auto 10px auto;
 }
 /*width*/
 ::-webkit-scrollbar {
