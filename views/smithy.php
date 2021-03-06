@@ -1,14 +1,5 @@
             smithy.css|smithy.js|
             <h3 class="page_title"> Smithy </h3>
-            <div id="persons">
-                <div class="person">
-                    <figure>
-                        <img src="<?php echo constant('ROUTE_IMG') . 'yvonus';?>" />
-                        <figcaption>Yvonus</figcaption>
-                    </figure>
-                    <button> Talk </button>
-                </div>
-            </div>
             <div id="smith">
                 <h5>Choose your mineral</h5>
                 <div id="minerals">
