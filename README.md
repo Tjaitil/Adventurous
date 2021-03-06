@@ -16,8 +16,7 @@ limited access in the normal game. Players are incentivized to go on adventures.
 
 # Coding structure:
 
-The structure is build on a version of Model-View-Controller (MVC) called Model-View-Presenter (MVP). There isn't used a specific framework to achieve this but 
-rather a own designed framework.
+The backend structure is build on a version of Model-View-Controller (MVC) called Model-View-Presenter (MVP). There isn't used a specific framework to achieve this but rather a own designed framework. The frontend page especially JS doesn't follow a specific framework.
 
 When you go to a page in the adventurous domain you will be redirected to index.php site where the site will try and provide with the controller matching the site
 you are trying to match. If no result are found the error controller will be loaded.
@@ -27,7 +26,8 @@ For updating the page AJAX calls are used. Different AJAX calls are sent
 to different handlers which calls the provided models. The handlers are organized by their main purpose. For example GET request and POST request have different
 handlers. There is a own errorhandler for AJAX calls.
 
-The program does not used static methods but rather try and stay true to dependency injection principle. Mostly for debugging purposes.
+The backend consisting of PHP doesn't use static methods but rather try and stay true to dependency injection principle. Mostly for debugging purposes and to include only necessary files.
+For the SQL, the code uses PDO to interact with database.
 The game is hosted by domeneshop.no and FTP is used for publishing the code.
 
 
