@@ -14,7 +14,7 @@
             $controller->index();
         }
     }*/
-    $controller = $handler->loadController($_GET['building']);
+    $controller = $handler->loadController(str_replace(" ", "", $_GET['building']));
     if(is_object($controller)) {
         $controller->index();
     }
