@@ -5,10 +5,12 @@ In the game players must chose one profiency from four skills which are farmer, 
 unlock certain advantages.
 Further the player can explore the open world fighting monsters (daqloons) or go on adventures or trade items with players/NPC.
 
-Screenshots from the game;
-
-![Skjermbilde 2021-03-06 kl  15 40 19](https://user-images.githubusercontent.com/52608380/110211174-acd81000-7e95-11eb-98c8-0f56d5aab24d.png)![Uploading Skjermbilde 2021-03-06 kl. 15.32.24.png…]()
-
+Screenshots from the game:
+![Skjermbilde 2021-03-06 kl  15 40 19](https://user-images.githubusercontent.com/52608380/110211195-bfeae000-7e95-11eb-9aa4-aca35317c6dc.png)
+![Skjermbilde 2021-03-06 kl  15 32 24](https://user-images.githubusercontent.com/52608380/110211196-c0837680-7e95-11eb-8be2-99381499d849.png)
+![Skjermbilde 2021-03-06 kl  15 29 00](https://user-images.githubusercontent.com/52608380/110211198-c11c0d00-7e95-11eb-9b94-29d37838d9c9.png)
+![Skjermbilde 2021-03-06 kl  15 27 39](https://user-images.githubusercontent.com/52608380/110211200-c11c0d00-7e95-11eb-813a-00c4d1beb28f.png)
+![Skjermbilde 2021-03-06 kl  15 09 58](https://user-images.githubusercontent.com/52608380/110211201-c11c0d00-7e95-11eb-9a9a-24ee06af1256.png)
 
 
 
