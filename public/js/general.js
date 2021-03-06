@@ -208,10 +208,10 @@
         if(document.getElementsByClassName("page_title")[0].innerText == 'merchant') {
             updateStockCountdown('end');
         }
-        // If stock menu is visible after exiting stockpile, hide it
+        // Remove stck_menu after stockpile has been exited
         if(document.getElementsByClassName("page_title")[0].innerText == 'Stockpile' &&
            document.getElementById("stck_menu").style.visibility !== "hidden") {
-            document.getElementById("stck_menu").style.visibility = "hidden";
+            document.getElementById("news_conent").removeChild(document.getElementById("stck_menu"));
         }
         // Remove event on inventory items after exiting tavern
         if(document.getElementsByClassName("page_title")[0].innerText == 'tavern') {
