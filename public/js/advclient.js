@@ -192,8 +192,8 @@ function doubleClickDetect() {
         else {
             newHeight = screen.height - 20;    
         }
-        if(newHeight > 400) {
-            newHeight = 400;
+        if(newHeight > 600) {
+            newHeight = 550;
         }
         game.properties.canvasWidth = newWidth;
         game.properties.canvasHeight = newHeight;
@@ -594,7 +594,7 @@ function doubleClickDetect() {
                     game.properties.ybase = startPoints[0].y;
                 }*/
                 else {
-                    game.properties.ybase = 2563; 
+                    game.properties.ybase = 1003; 
                 }
                 
         
@@ -975,7 +975,7 @@ function doubleClickDetect() {
         draw: function() {
             ctx = game.properties.context;
             /*ctx.clearRect( - gamePieces.player.xMovement, - gamePieces.player.yMovement, 700, 700);*/
-            /*game.properties.context3.clearRect(0, 0, game.properties.canvasWidth, game.properties.canvasHeight);*/
+            game.properties.context3.clearRect(0, 0, game.properties.canvasWidth, game.properties.canvasHeight);
             ctx.save();
             //Draw world and translate the image according to players movement
             /*console.log('drawGameY:' + (game.properties.ycamMove + gamePieces.player.yMovement));
@@ -1565,7 +1565,7 @@ function doubleClickDetect() {
         
         delta = game.properties.delta = (timestamp - game.properties.timestamp) / 1000;
         game.properties.timestamp = timestamp;
-        coinAnimation.draw();
+        /*coinAnimation.draw();*/
         if(duration % 2 === 0) {
             player.speedX = 0;
             player.speedY = 0;
@@ -1582,12 +1582,12 @@ function doubleClickDetect() {
                 player.speedY = player.speed;
             }
             
-            if(duration % 2 == 0) {
+            /*if(duration % 2 == 0) {
                 game.properties.context3.clearRect(0, 0, game.properties.canvasWidth, game.properties.canvasHeight);   
             }
             for(var i = 0; i < gamePieces.daqloon.length; i++) {
                 gamePieces.daqloon[i].draw();
-            }
+            }*/
             if((player.speedX != 0 || player.speedY != 0) && inBuilding == false && conversation.index == null) {
                 eventHandler.checkEvent();
                 game.calculateDistance();
