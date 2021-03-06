@@ -8,7 +8,7 @@
         public function index() {
             $this->loadModel('Workforcelodge', true);
             $this->data = $this->model->getData();
-            $this->render('workforcelodge', 'Wokforce Lodge', $this->data, true);
+            $this->render('workforcelodge', 'Wokforce Lodge', $this->data, true, true);
         }
     }
 ?>

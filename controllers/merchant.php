@@ -13,7 +13,7 @@
                 /*
             }*/
             
-            $this->render('merchant', 'Merchant', $this->data, true);
+            $this->render('merchant', 'Merchant', $this->data, true, true);
         }
         private function makeTrades() {
             $small_trades_amount;

@@ -15,7 +15,7 @@
                 $this->calculateContribution();
             }*/
             $this->post();
-            $this->renderWE('adventures', 'Adventures', $this->data, $this->error, true);
+            $this->renderWE('adventures', 'Adventures', $this->data, $this->error, true, true);
         }
         
         public function post() {

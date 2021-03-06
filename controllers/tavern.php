@@ -14,7 +14,7 @@
                 $this->model->resetData();
             }
             $this->workers();
-            $this->render('tavern', 'Tavern', $this->data, true);
+            $this->render('tavern', 'Tavern', $this->data, true, true);
         }
         
         public function workers() {

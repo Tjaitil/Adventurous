@@ -10,7 +10,7 @@
             $this->loadModel('Stockpile', true);
             $this->data = $this->model->getData();
             $this->data['max_amount'] = 60;
-            $this->render('stockpile', 'Stockpile', $this->data, true);
+            $this->render('stockpile', 'Stockpile', $this->data, true, true);
         }
     }
 ?>

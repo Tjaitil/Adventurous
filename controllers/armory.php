@@ -7,7 +7,7 @@
         public function index() {
             $this->loadModel('Armory', true);
             $this->data['warrior_armory'] = $this->model->getData();
-            $this->render('armory', 'Armory', $this->data, true);
+            $this->render('armory', 'Armory', $this->data, true, true);
         }
     }
 ?>

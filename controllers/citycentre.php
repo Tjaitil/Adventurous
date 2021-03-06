@@ -8,7 +8,7 @@
         public function index() {
             $this->loadModel('CityCentre', true);
             $this->data = $this->model->getData();
-            $this->render('citycentre', 'City Centre', $this->data, true);
+            $this->render('citycentre', 'City Centre', $this->data, true, true);
         }
     }
 ?>

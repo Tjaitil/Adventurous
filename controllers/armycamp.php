@@ -11,7 +11,7 @@
             $this->loadModel('ArmyCamp', true);
             $this->data = $this->model->getData();
             /*$this->data['warrior_level_up'] = $this->model->checkWarriorLevel($this->data['warrior_data']);*/
-            $this->render('armycamp', 'Army Camp', $this->data, true);
+            $this->render('armycamp', 'Army Camp', $this->data, true, true);
         }
     }
 ?>
