@@ -8,7 +8,6 @@
   display: table;
 }*/
 #minerals {
-    float: left;
     margin-bottom: 2px;
 }
 #iron, #steel, #gargonite, #adron, #yeqdon, #frajrite {
