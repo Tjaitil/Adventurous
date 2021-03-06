@@ -26,7 +26,7 @@
                 <span class="progressBar_maxValue">100</span>
             </div>
         </div>
-        <p>Current profiency: <?php echo $_SESSION['gamedata']['profiency'];?></p>
+        <p>Current profiency: <?php echo ucfirst($_SESSION['gamedata']['profiency']);?></p>
         <button class="sidebar_button">Adventure</button>
         <button class="sidebar_button">Countdowns</button>
         <button class="sidebar_button">Diplomacy</button>
