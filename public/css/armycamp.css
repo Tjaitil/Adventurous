@@ -12,7 +12,6 @@
     grid-template-columns: repeat(3, 1fr);
 }
 .warrior {
-    flex: 0 1 30%;
     padding: 5px;
     min-width: 156px;
     margin: 5px;

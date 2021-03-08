@@ -90,7 +90,8 @@
                             </div>
                         </div>
                     </li>
-                    <li><figure>
+                    <li>
+                        <figure>
                             <img class="warrior_skill" src="<?php echo constant('ROUTE_IMG') . 'precision icon.png';?>" />
                             <figcaption><?php echo $key['precision_level'];?></figcaption>
                         </figure>

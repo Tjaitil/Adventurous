@@ -260,7 +260,7 @@
             xp = skillBars[i].querySelectorAll(".progress_value1")[0].innerHTML;
             nextlevel = skillBars[i].querySelectorAll(".progress_value2")[0].innerHTML;
             width = xp / nextlevel * 100;
-            // Check if there is button inserted in a warrior element
+            // Check if there is button inserted in a warrior element, if present no new button needs to be created
             if(width === 100 && buttonInserted.indexOf(Math.floor(i / 4)) == -1) {
                 skillBars[i].children[0].style.backgroundColor = "#008000";
                 let divLevels = skillBars[i].closest(".levels");
