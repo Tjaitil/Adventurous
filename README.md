@@ -1,6 +1,6 @@
 # About Game:
 
-Adventurous is an RPG in open world. The graphics and game cameratakes inspiration from early gameboy pixel art games with top down look, especially pokemon games. 
+Adventurous (adventurous.no) is an RPG in open world. The graphics and game cameratakes inspiration from early gameboy pixel art games with top down look, especially pokemon games. 
 In the game players must chose one profiency from four skills which are farmer, miner, trader and warrior. Players can level up all skills but profiency skill will
 unlock certain advantages.
 Further the player can explore the open world fighting monsters (daqloons) or go on adventures or trade items with players/NPC. Adventures can give rewards that has
