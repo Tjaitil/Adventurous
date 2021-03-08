@@ -15,9 +15,6 @@
             <canvas id="game_canvas2" width="700" height="400"></canvas>
             <canvas id="game_canvas3" width="700" height="400"></canvas>
             <canvas id="text_canvas" width="700" height="400"></canvas>
-            <!--<canvas id="test_canvas" width="700" height="400"></canvas>-->
-            <!--<p id="demo2"></p>
-            <p id="demo3"></p>-->
             <div id="inv_toggle_button_container">
                <button id="inv_toggle_button"> INV </button>
             </div>
