@@ -52,6 +52,9 @@
         if(log != null) {
             log.scrollTop = log.scrollHeight - log.clientHeight;
         }
+        if(document.getElementById("sidebar") != null) {
+            document.getElementById("sidebar").style.width = document.getElementsByTagName("aside")[0].clientWidth + "px";
+        }
         if(document.getElementById("inventory") != null) {
             /*document.getElementById("inventory").addEventListener("scroll", function() {
                console.log("scroll");
@@ -334,9 +337,8 @@
             newsContentSidebar.adjustMainContentHeight(this.activeButton);
         },
         adjustMainContentHeight() {
-            
             document.getElementById("news_content_main_content").style.height =
-                document.getElementById(underscoreTreatment(this.activeButton, true).toLowerCase()).offsetHeight + 80 + "px";
+                document.getElementById(underscoreTreatment(this.activeButton, true).toLowerCase()).offsetHeight + 90 + "px";
         },
         addEvent() {
             let buttons = document.getElementById("news_content_side_panel").querySelectorAll("button");
@@ -647,7 +649,7 @@
                     this.sidebarElement.style.width = document.getElementsByTagName("section")[0].clientWidth * 0.12 + "px";    
                 }
                 else {
-                    this.sidebarElement.style.width = "100%";
+                    this.sidebarElement.style.width = document.getElementsByTagName("aside")[0].clientWidth + "px";
                 }
                 this.sidebarToggled = false;
                 if(window.screen.width > 830) {
