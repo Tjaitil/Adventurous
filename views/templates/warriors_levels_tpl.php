@@ -37,7 +37,7 @@
             <div class="info">
                 <img src="<?php echo constant('ROUTE_IMG') . $key['type'] . ' icon.png';?>" alt="<?php echo $key['warrior_id'];?>"/>
                 <p><?php echo '#',$key['warrior_id'];?></p>
-                <p>Location: <?php echo $key['location'];?></p>
+                <p>Location: <?php echo ucwords($key['location']);?></p>
                 <table>
                     <tr>
                         <td> Health: </td>
@@ -50,6 +50,9 @@
                             <p class="countdown"></p></td>
                     </tr>
                 </table>
+            </div>
+            <div class="warrior_level_up">
+                
             </div>
             <div class="levels">
                 <ul>

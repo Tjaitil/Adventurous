@@ -8,16 +8,16 @@
     display: none;
 }
 #warriors {
-    display: flex;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
 }
 .warrior {
     flex: 0 1 30%;
-    float: left;
-    border: 1px solid black;
-    padding: 1%;
+    padding: 5px;
     min-width: 156px;
-    height: 350px;
+    margin: 5px;
+    background-color: #f2e6d9;
+    border-radius: 5px;
 }
 .info {
     width: 100%;
@@ -33,6 +33,13 @@
 }
 .info table td {
     border: none;
+}
+.warrior_level_up {
+    height: 30px;
+}
+.warrior_level_up_button {
+    padding-top: 4px;
+    padding-bottom: 4px:;
 }
 .levels {
     width: 100%;

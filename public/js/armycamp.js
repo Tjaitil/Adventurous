@@ -253,12 +253,14 @@
         let nextlevel;
         let width;
         let button = document.createElement("button");
+        button.className = "level_up_button";
         button.innerHTML = "Level up " + '&#9650';
         let buttonInserted = [];
         for(var i = 0; i < skillBars.length; i++) {
             xp = skillBars[i].querySelectorAll(".progress_value1")[0].innerHTML;
             nextlevel = skillBars[i].querySelectorAll(".progress_value2")[0].innerHTML;
             width = xp / nextlevel * 100;
+            // Check if there is button inserted in a warrior element
             if(width === 100 && buttonInserted.indexOf(Math.floor(i / 4)) == -1) {
                 skillBars[i].children[0].style.backgroundColor = "#008000";
                 let divLevels = skillBars[i].closest(".levels");
@@ -270,7 +272,8 @@
                     );
                     levelUPWarrior();
                 });
-                divLevels.closest(".warrior").insertBefore(button, divLevels);
+                divLevels.closest(".warrior").querySelectorAll(".warrior_level_up")[0].appendChild(button);
+                console.log(divLevels.closest(".warrior").querySelectorAll(".warrior_level_up")[0]);
                 buttonInserted.push(Math.floor(i / 4));
             }
             skillBars[i].children[0].style.width = width + "%";
