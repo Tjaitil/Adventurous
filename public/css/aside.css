@@ -1,13 +1,10 @@
 aside {
     height: 500px;
     margin: 0px 0px 0px 0px;
-    background: radial-gradient(#f2e6d9 80%, #986834);
-    border: inset 2px;
     display: block;
     font-size: 13px;
     z-index: 2;
-    position: sticky;
-    top: 125px;
+    position: relative;
 }
 aside a {
     color: #003cb3;
@@ -56,11 +53,14 @@ aside caption {
 }
 #sidebar {
     background-color: #4c341a;
-    width: 100%;
+    /* Width get set by general.js -> sidebar object*/
     height: 500px;
     transition: width 0.2s ease-out;
     z-index: 2;
     color: white;
+    position: fixed;
+    box-sizing: border-box;
+    padding: 5px;
 }
 .sidebar_button {
     background-color: #f2e6d9;
