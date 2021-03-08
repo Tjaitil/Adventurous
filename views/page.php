@@ -20,11 +20,14 @@
                 <?php endif;?>
                 <script src="<?php echo constant('ROUTE_JS') . 'checkSite.js';?>"></script>
             </section>
-            <?php if(!array_search($name, array("main", "highscores", "news", "messages"))): ?>
+            <?php if(array_search($name, array("main", "highscores", "news", "messages")) === false): ?>
             <aside>
                 <?php require(constant('ROUTE_VIEW') . '/aside.php'); ?>
             </aside>
             <?php endif;?>
+            <footer>
+                Delevoped by Kjetil Baksaas
+            </footer>
         </div>
     </body>
 </html>
