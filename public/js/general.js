@@ -54,6 +54,7 @@
         }
         if(document.getElementById("sidebar") != null) {
             document.getElementById("sidebar").style.width = document.getElementsByTagName("aside")[0].clientWidth + "px";
+            sidebar.addClickEvent();
         }
         if(document.getElementById("inventory") != null) {
             /*document.getElementById("inventory").addEventListener("scroll", function() {
@@ -92,7 +93,6 @@
         }
         clock();
         checkMessages();
-        sidebar.addClickEvent();
         setTimeout(updateCountdownTab, 120000);
     });
     /*window.addEventListener("scroll", function(e) {
