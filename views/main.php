@@ -13,6 +13,7 @@
             <?php if($_SESSION['gamedata']['profiency'] === "none"): ?>
                 <script src="public/js/tutorial.js"></script>
             <?php endif;?>
+            <div id="main_wrapper">
             <div id="game_news">
                 <div id="news_header">
                     <h3> News </h3>
@@ -20,11 +21,11 @@
                 <div id="news_container">
                     <?php
                         $arr = array();
-                        $arr[] = array("news_type" => "game update", "news_title" => "alpha test", "news_introduction"  =>
+                        $arr[] = array("news_type" => "game update", "news_title" => "Alpha Test", "news_introduction"  =>
                                        "Alpha test is soon underway. Players who want to participate...");
                         for($i = 0; $i < count($arr); $i++): ?>
                         <div class="news_element">
-                            <img src="<?php echo constant('ROUTE_IMG') . $arr[$i]['news_type'];?>" />
+                            <img src="<?php echo constant('ROUTE_IMG') . $arr[$i]['news_type'];?>" alt="News picture" />
                             <h4 class="news_title"><?php echo $arr[$i]['news_title'];?></h4>
                             <p class="news_introduction">
                             <?php
@@ -37,6 +38,9 @@
                     <?php endfor;?>
                 </div>
                 <p><a href="/news">Click here for more news</a></p>
+            </div>
+            <div id="town_map">
+                <button> Go to client </button>
             </div>
             <div id="profile">
                 <span id="profile_header"> Player Card</span></br>
@@ -53,10 +57,6 @@
                 </div></br>
                 <a href="#"> View more profile details >></a>
                 <p id="demo"></p>
-            </div>
-            <div id="town_map">
-                <button> Go to client </button>
-                </script>
             </div>
             <div id="countdowns">
                 <table>
@@ -92,60 +92,4 @@
                     </tr>
                 </table>
             </div>
-            <div id="diplomacy">
-                <table>
-                    <caption> Diplomacy </caption>
-                    <thead>
-                        <tr>
-                            <td> Location </td>
-                            <td> Diplomacy </td>
-                        </tr>
-                    </thead>
-                    <tr>
-                        <td> Hirtam </td>
-                        <td><?php echo $this->data['diplomacy']['hirtam'];?></td>
-                    </tr>
-                    <tr>
-                        <td> Pvitul </td>
-                        <td><?php echo $this->data['diplomacy']['pvitul'];?></td>
-                    </tr>
-                    <tr>
-                        <td> Khanz </td>
-                        <td><?php echo $this->data['diplomacy']['khanz'];?></td>
-                    </tr>
-                    <tr>
-                        <td> Ter </td>
-                        <td><?php echo $this->data['diplomacy']['ter'];?></td>
-                    </tr>
-                    <tr>
-                        <td> Fansal Plains </td>
-                        <td><?php echo $this->data['diplomacy']['fansalplains'];?></td>
-                    </tr>
-                    </tr>
-                </table>
-            </div>
-            <div id="map_container">
-                <div id="map">
-                    <?php
-                    $y = 1;
-                    $x = 1;
-                    
-                    for($i = 0; $i < 0; $i++): ?>
-                        <img class="map_img" src="<?php echo constant("ROUTE_IMG") . $x . '.' . $y . '.png';?>" />
-                    <?php $x++;
-                          if($x == 10) {
-                            $x = 1;
-                            $y++;
-                          }
-                    endfor;?>
-                </div>
-            </div>
-            <input type="text" />
-            <script src="<?php echo constant('ROUTE_JS');?>main.js"></script>
-            <div>
-                <img class="crystal" src="<?php echo constant("ROUTE_IMG") . 'hirtam crystal2.png';?>" />
-                <img class="crystal" src="<?php echo constant("ROUTE_IMG") . 'pvitul crystal.png';?>" />
-                <img class="crystal" src="<?php echo constant("ROUTE_IMG") . 'khanz crystal.png';?>" />
-                <img class="crystal" src="<?php echo constant("ROUTE_IMG") . 'ter crystal.png';?>" />
-                <img class="crystal" src="<?php echo constant("ROUTE_IMG") . 'fansal-plains crystal.png';?>" />
-            </div>
+        </div>
