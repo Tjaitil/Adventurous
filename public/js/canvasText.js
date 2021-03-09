@@ -51,7 +51,7 @@ canvasTextHeader = {
         game.properties.textContext.fillStyle = "rgba(255,255,255" + this.opacity + ")";
         game.properties.textContext.font = "35px Times New Roman";
         game.properties.textContext.textAlign = "center";
-        game.properties.textContext.fillText(this.text, game.properties.canvasWidth * 0.50 - 20, contentY + 100);
+        game.properties.textContext.fillText(jsUcfirst(this.text), game.properties.canvasWidth * 0.50 - 20, contentY + 100);
         if(this.opacity <= 0.4) {
             this.opacity += 0.1;
         }
