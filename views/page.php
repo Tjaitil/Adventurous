@@ -15,12 +15,12 @@
             <section>
                 <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
                 <?php require(constant('ROUTE_VIEW') . $name . '.php');?>
-                <?php if($name != 'advclient'): ?>
+                <?php if(array_search($name, array('advclient', 'gameguide')) === false): ?>
                     <script src="<?php echo constant('ROUTE_JS') . $name . '.js';?>"></script>
                 <?php endif;?>
                 <script src="<?php echo constant('ROUTE_JS') . 'checkSite.js';?>"></script>
             </section>
-            <?php if(array_search($name, array("main", "highscores", "news", "messages")) === false): ?>
+            <?php if(array_search($name, array("gameguide", "profile", "main", "highscores", "news", "messages")) === false): ?>
             <aside>
                 <?php require(constant('ROUTE_VIEW') . '/aside.php'); ?>
             </aside>
