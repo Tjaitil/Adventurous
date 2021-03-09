@@ -1561,9 +1561,11 @@ function doubleClickDetect() {
             gamePieces.player.xMovement += (gamePieces.player.movementSpeed * game.properties.delta) * player.speedX;
             gamePieces.player.yMovement += (gamePieces.player.movementSpeed * game.properties.delta) * player.speedY;
     };
-    game.update = function (timestamp) {
-        
+    game.update = function(timestamp) {
         delta = game.properties.delta = (timestamp - game.properties.timestamp) / 1000;
+        if(delta > 0.08) {
+            delta = game.properties.delta = 0.016659999999999855;
+        }
         game.properties.timestamp = timestamp;
         /*coinAnimation.draw();*/
         if(duration % 2 === 0) {
