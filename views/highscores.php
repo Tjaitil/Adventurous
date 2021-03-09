@@ -1,3 +1,4 @@
+              <div id="content_wrapper">
                 <div id="adventurer">
                     <table class="highscores">
                         <caption> Adventurer <img src="<?php echo constant('ROUTE_IMG') . 'adventurer icon.png';?>"/></caption>
@@ -15,7 +16,8 @@
                         <?php endforeach;?>
                         <tfoot>
                             <tr>
-                                <td colspan="5"><button class="previous"> < Prev </button><button class="next"> Next > </button></td>
+                                <td colspan="5"><button class="previous" disabled> < Prev </button>
+                                <button class="next" disabled> Next > </button></td>
                             </tr> 
                         </tfoot>
                     </table>
@@ -30,13 +32,20 @@
                                 <td> Experience </td>
                             </tr>
                         </thead>
-                        <?php foreach($this->data['farmer_highscores'] as $key): ?>
+                        <?php for($i = 0; $i < 10; $i++): ?>
+                            <?php if(empty($this->data['farmer_highscores'][$i])): ?>
+                                <tr>
+                                    <td> - </td>
+                                    <td> - </td>
+                                    <td> - </td>
+                                </tr>
+                            <?php else: ?>  
                         <tr>
                             <td><?php echo ucfirst($key['username']); ?></td>
-                            <td><?php echo $key['farmer_level']; ?></td>
-                            <td><?php echo $key['farmer_xp']; ?></td>
+                            <td><?php echo $this->data['farmer_highscores'][$i]['farmer_level']; ?></td>
+                            <td><?php echo $this->data['farmer_highscores'][$i]['farmer_xp']; ?></td>
                         </tr>
-                        <?php endforeach;?>
+                        <?php endif; endfor;?>
                         <tfoot>
                             <tr>
                                 <td colspan="5"><button class="previous"> < Prev </button><button class="next"> Next > </button></td>
@@ -71,7 +80,8 @@
                         endfor;?>
                         <tfoot>
                             <tr>
-                                <td colspan="5"><button class="previous"> < Prev </button><button class="next"> Next > </button></td>
+                                <td colspan="5"><button class="previous" disabled> < Prev </button>
+                                <button class="next" disabled> Next > </button></td>
                             </tr> 
                         </tfoot>
                     </table>
@@ -86,16 +96,24 @@
                                 <td> Experience </td>
                             </tr>
                         </thead>
-                        <?php foreach($this->data['trader_highscores'] as $key): ?>
+                        <?php for($i = 0; $i < 10; $i++): ?>
+                            <?php if(empty($this->data['trader_highscores'][$i])): ?>
+                                <tr>
+                                    <td> - </td>
+                                    <td> - </td>
+                                    <td> - </td>
+                                </tr>
+                            <?php else: ?>  
                         <tr>
                             <td><?php echo ucfirst($key['username']); ?></td>
-                            <td><?php echo $key['trader_level']; ?></td>
-                            <td><?php echo $key['trader_xp']; ?></td>
+                            <td><?php echo $this->data['trader_highscores'][$i]['trader_level']; ?></td>
+                            <td><?php echo $this->data['trader_highscores'][$i]['trader_xp']; ?></td>
                         </tr>
-                        <?php endforeach;?>
+                        <?php endif; endfor;?>
                         <tfoot>
                             <tr>
-                                <td colspan="5"><button class="previous"> < Prev </button><button class="next"> Next > </button></td>
+                                <td colspan="5"><button class="previous" disabled> < Prev </button>
+                                <button class="next" disabled> Next > </button></td>
                             </tr> 
                         </tfoot>
                     </table>
@@ -110,23 +128,31 @@
                                 <td> Experience </td>
                             </tr>
                         </thead>
-                        <?php foreach($this->data['warrior_highscores'] as $key): ?>
+                        <?php for($i = 0; $i < 10; $i++): ?>
+                            <?php if(empty($this->data['warrior_highscores'][$i])): ?>
+                                <tr>
+                                    <td> - </td>
+                                    <td> - </td>
+                                    <td> - </td>
+                                </tr>
+                            <?php else: ?>  
                         <tr>
                             <td><?php echo ucfirst($key['username']); ?></td>
-                            <td><?php echo $key['warrior_level']; ?></td>
-                            <td><?php echo $key['warrior_xp']; ?></td>
+                            <td><?php echo $this->data['warrior_highscores'][$i]['warrior_level']; ?></td>
+                            <td><?php echo $this->data['warrior_highscores'][$i]['warrior_xp']; ?></td>
                         </tr>
-                        <?php endforeach;?>
+                        <?php endif; endfor;?>
                         <tfoot>
                             <tr>
-                                <td colspan="5"><button class="previous"> < Prev </button><button class="next"> Next > </button></td>
+                                <td colspan="5"><button class="previous" disabled> < Prev </button>
+                                <button class="next" disabled> Next > </button></td>
                             </tr> 
                         </tfoot>
                     </table>
                 </div>
                 <div id="total">
                     <table class="highscores">
-                        <caption> Total </caption>
+                        <caption> Total skill levels </caption>
                         <thead>
                             <tr>
                                 <td> Name </td>
@@ -134,17 +160,26 @@
                                 <td> Experience </td>
                             </tr>
                         </thead>
-                        <?php foreach($this->data['total_highscores'] as $key): ?>
+                        <?php for($i = 0; $i < 10; $i++): ?>
+                            <?php if(empty($this->data['total_highscores'][$i])): ?>
+                                <tr>
+                                    <td> - </td>
+                                    <td> - </td>
+                                    <td> - </td>
+                                </tr>
+                            <?php else: ?>  
                         <tr>
                             <td><?php echo ucfirst($key['username']); ?></td>
-                            <td><?php echo $key['total_level']; ?></td>
-                            <td><?php echo $key['total_xp']; ?></td>
+                            <td><?php echo $this->data['total_highscores'][$i]['total_level']; ?></td>
+                            <td><?php echo $this->data['total_highscores'][$i]['total_xp']; ?></td>
                         </tr>
-                        <?php endforeach;?>
+                        <?php endif; endfor;?>
                         <tfoot>
                             <tr>
-                                <td colspan="5"><button class="previous"> < Prev </button><button class="next"> Next > </button></td>
+                                <td colspan="5"><button class="previous" disabled> < Prev </button>
+                                <button class="next" disabled> Next > </button></td>
                             </tr> 
                         </tfoot>
                     </table>
                 </div>
+              </div>

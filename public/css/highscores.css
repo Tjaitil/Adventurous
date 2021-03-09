@@ -1,3 +1,8 @@
+#content_wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
 .highscores {
     float: left;
     margin: 1%;
@@ -8,4 +13,7 @@
     height: 50px;
     vertical-align: middle;
 }
-
+#total caption {
+    height: 50px;
+    line-height: 55px;
+}
