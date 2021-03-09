@@ -70,11 +70,17 @@ section input {
     margin: 3px;
     width: 40px;
 }
-section table:not(#game_messages) {
+section table:not(#game_messages, .noDisplayBlock) {
     margin: 10px 0px 0px 0px;
     position: relative;
     border-collapse: collapse;
     display: inline-block;
+}
+.noDisplayBlock {
+    display: none;
+    margin: 10px 0px 0px 0px;
+    position: relative;
+    border-collapse: collapse;
 }
 section table td, th, section caption {
     padding: 8px;
