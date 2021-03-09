@@ -5,18 +5,9 @@ header {
     display: block;
     background: radial-gradient(#f2e6d9 60%, #986834);
 }
-header button a {
-    text-decoration: none;
-    color: black;
-}
 #nav {
     display: flex;
     justify-content: center;
-}
-#nav_2 {
-    list-style-type: none;
-    width: 19%;
-    float: left;
 }
 #nav_but {
     display: none;
@@ -26,30 +17,20 @@ header button a {
     max-width: 100px;
     border: none;
 }
-#nav_2 ul {
-    margin-top: 2px;
-    list-style-type: none;
-    float: left;
-    visibility: hidden;
-    position: absolute;
-    z-index: 1;
-    width: 100%;
+#nav_2 {
+    margin-bottom: 10px;
 }
-#nav_2 ul li {
-    padding: 1px;
-    color:white;
-    background-color:#994d00;
-    max-width: 100px;
-}
-#nav_2 ul a {
+#nav_2 a {
+    background-color: #f2e6d9;
+    border-radius: 5px;
+    border: 1px outset;
+    box-shadow: 1px 1px 1px 1px #372715;
+    padding: 10px 12px 10px 12px;
+    color: black;
+    font-weight: bold;
+    font-size: 13px;
+    cursor: pointer;
     text-decoration: none;
-}
-#nav_2 ul li a:visited {
-    color:white;
-}
-#nav_2 li:nth-child(7) {
-    height: 2px;
-    background-color: #4b341b;
 }
 .top_bar {
     min-width: 170px;
