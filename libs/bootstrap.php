@@ -28,7 +28,9 @@
             }
             $this->session->validatelogin();
             if($this->session->status == false && $this->url[0] != 'registration') {
-                session_unset();
+                if(isset($_SESSION['outdatedSessionID']) === false) {
+                    session_unset();   
+                }
                 $this->controller = 'login';
                 $file = $this->controllerPath . $this->controller . '.php';
                 require $file;

@@ -13,7 +13,7 @@
             $this->status = true;
         }
         public function validateLogin() {
-            if (!isset($_SESSION['username']) || empty($_SESSION['username'])) {
+            if(!isset($_SESSION['username']) || empty($_SESSION['username'])) {
                 $this->status = false;
             }
         }
@@ -25,8 +25,14 @@
             return $id;
         }
         public function destroy() {
-            session_unset();
-            session_destroy();
+            if(isset($_SESSION['outdatedSessionID'])) {
+                $_SESSION = array();
+                $_SESSION['outdatedSessionID'] = true;
+            }
+            else {
+                session_unset();
+                session_destroy();
+            }
             header("Location: /login");
             exit;
         }

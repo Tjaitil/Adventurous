@@ -11,6 +11,10 @@
         </div>
         <div id="login">
             <img src="<?php echo constant('ROUTE_IMG') . 'adventurous_logo.png';?>" />
+            <?php if(isset($_SESSION['outdatedSessionID'])):?>
+                 <p style="color:red"> Your session is timed out or is logged in on another device. Login to continue to play</p>
+            <?php unset($_SESSION['outdatedSessionID']);
+                  endif;?>
             <form id="login_form" name="login" method="post" action="/login">
                 <h3>Login to continue:</h3>
                 </br>

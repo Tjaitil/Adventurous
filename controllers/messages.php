@@ -11,6 +11,8 @@
         public function index() {
             $this->loadModel('Messages', true);
             $this->data = $this->model->getMessages();
+            $this->loadModel('CanvasGameID', true);
+            $this->model->checkSessionID();
             $this->post();
             $this->renderWE('messages', 'Messages', $this->data, $this->error);
         }

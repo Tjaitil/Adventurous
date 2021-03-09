@@ -62,8 +62,18 @@
         $param_username = $this->username;
         $stmt->execute();
     }
-    public function terminateGameID() {
-        $sql = "";
+    public function checkSessionID() {
+        $sql = "SELECT session_id FROM user_data WHERE username=:username";
+        $stmt = $this->db->conn->prepare($sql);
+        $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+        $param_username = $this->username;
+        $stmt->execute();
+        $session_id = $stmt->fetch(PDO::FETCH_OBJ)->session_id;
+        if($_SESSION['session_id'] !== $session_id) {
+            $_SESSION['outdatedSessionID'] = true;
+            header("Location: /logout");
+            exit();
+        }
     }
 }
 ?>
