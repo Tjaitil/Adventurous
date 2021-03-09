@@ -4,6 +4,7 @@
             let divWrapper = document.getElementById("wrapper");
             divWrapper.style.gridTemplateColumns = "auto";
             document.getElementsByTagName("section")[0].style.gridColumn = "1 / 3";
+            document.getElementsByTagName("footer")[0].style.gridColumn = "1 / 3";
         }
         else {
             return false;
