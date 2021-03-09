@@ -23,7 +23,7 @@
                 getmMessages();
             });
         });
-        document.getElementById("receiver").addEventListener("keyup", chk_me());
+        document.getElementById("receiver").addEventListener("keyup", chk_me);
         readCheck();
     });
     
@@ -144,14 +144,17 @@
     }
     
     function userCheck() {
-        var input = document.getElementById("receiver");
-        var data = "model=Messages" + "&method=userCheck" + "&input=" + input.value;
+        let input = document.getElementById("receiver");
+        let data = "model=Messages" + "&method=userCheck" + "&input=" + input.value;
         ajaxG(data, function(response) {
-            if(response[0] == false) {
+            console.log(response);
+            console.log(parseInt(response[1]));
+            if(parseInt(response[1]) === 0) {
+                console.log('hello');
                 input.setCustomValidity("The user you are trying to send message to does not exists!");    
             }
-            if(response[0] != false) {
-            
+            else {
+                
             }
         });
     }

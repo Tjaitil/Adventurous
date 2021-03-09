@@ -5,14 +5,13 @@
             </div>
             <div id="write_message">
                 <form id="message_form" method="post" action="/messages">
-                <label for="name"> Title: </label>
-                <input type="text" name="title" /></br>
-                <label for="receiver"> Receiver: </label>
-                <input id="receiver" type="text" name="receiver" /></br>
-                <textarea id="the_message" name="message" placeholder="Enter message here:"
-                          style="background-image: url(<?php echo constant("ROUTE_IMG") . 'background.png';?>)">
-                    
-                </textarea></br>
+                <div id="info_wrapper">
+                    <label for="name"> Title: </label>
+                    <input type="text" name="title" /></br>
+                    <label for="receiver"> Receiver: </label>
+                    <input id="receiver" type="text" name="receiver" />
+                </div>
+                <textarea id="the_message" name="message" placeholder="Enter message here:"></textarea></br>
                 <button name="send"> Send message </button>
                 </form>
             </div>
@@ -33,7 +32,7 @@
                     </tr> 
                 </tfoot>
             </table>
-            <table id="sent">
+            <table id="sent" class="noDisplayBlock">
                 <thead>
                     <tr>
                         <td></td>
@@ -71,4 +70,3 @@
                 </div>
                 <button onclick="answer();"> Answer </button>
             </div>
-            <input type="text" />

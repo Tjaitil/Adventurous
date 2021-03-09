@@ -12,7 +12,30 @@ textarea {
 #write_message {
     display: none;
 }
-
+#info_wrapper {
+    display: grid;
+    grid-template-columns: 30% 70%;
+    grid-template-rows: 30px 30px;
+}
+#info_wrapper label:nth-of-type(1) {
+    grid-row: 1;
+    grid-column: 1 / 2;
+}
+#info_wrapper input:nth-of-type(1) {
+    grid-row: 1;
+    grid-column: 2;
+}
+#info_wrapper label:nth-of-type(2) {
+    grid-column: 1/ 2;
+    grid-row: 2;
+}
+#info_wrapper input:nth-of-type(2) {
+    grid-column: 2;
+    grid-row: 2;
+}
+#info_wrapper label {
+    text-align: right;
+}
 #write_message input {
     margin-left: 3px;
     margin-bottom: 5px;
@@ -21,6 +44,8 @@ textarea {
     border-left: none;
     border-bottom: 1px solid black;
     background-color: #f2e6d9;
+    max-width: 150px;
+    width: 100%;
 }
 
 #write_message textarea {
@@ -28,9 +53,13 @@ textarea {
     border-right: none;
     border-left: none;
     border-bottom: none;
-    background-image: url("background.png");
+    /*background-image: url("background.png");*/
     width: 300px;
     height: 400px;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: #f2e6d9;
+    box-shadow: black 0px 0px 5px;
 }
 
 #inbox, #sent {
