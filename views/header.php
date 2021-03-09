@@ -20,11 +20,13 @@
                 <div class="top_but"><a href="/messages">Messages</a></div>
             </div>
         </div>
-        <button><a href="#"> Rules </a></button>
-        <button><a href="/news"> News </a></button>
-        <button><a href="/profile"> Profile </a></button>
-        <button><a href="/logout" id="logout"> Log Out</a></button>
-        <div id="clock"> 00:00:00 </div>
+        <div id="nav_2">
+            <a href="#"> Rules </a>
+            <a href="/news"> News </a>
+            <a href="/profile"> Profile </a>
+            <a href="/logout" id="logout"> Log Out</a>
+        </div>
+            <div id="clock"> 00:00:00 </div>
         <script src="<?php echo '../' . constant('ROUTE_JS') . 'general.js';?>"></script>
         <script src="<?php echo '../' . constant('ROUTE_JS') . 'ajax.js';?>"></script>
         
