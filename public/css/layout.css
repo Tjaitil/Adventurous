@@ -47,7 +47,6 @@ section {
     font-weight: 200;
     font-size: 13px;
     position: relative;
-    margin-bottom: 10px;
 }
 aside {
     grid-area: aside;
@@ -60,6 +59,9 @@ footer {
     grid-row: 3 / 3;
     color: white;
     background-color: #c99b69;
+    padding: 5px;
+    margin-bottom: 5px;
+    text-align: center;
 }
 .section_wide {
     width: 98%;
