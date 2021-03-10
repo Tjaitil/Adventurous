@@ -1,11 +1,14 @@
             <div id="public_chat">
+                <h3> Public chat</h3>
             <div id="chat">
                 <ul>
                     <?php get_template('chat', $this->data['chat']);?>            
                 </ul>
             </div>
-            <input type="text" id="text" placeholder="Write message" />
-            <button type="button" onclick="chat();"> Chat </button>
+            <div id="chat_inputs">
+                <input type="text" id="text" placeholder="Write message" />
+                <button type="button" onclick="chat();"> Chat </button>
+            </div>
             </div>
             <img src="map.png" id="world_map" height="300px" width="500px"/>
             

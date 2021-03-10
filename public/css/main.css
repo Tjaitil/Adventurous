@@ -5,10 +5,16 @@
     overflow: hidden;
     margin-bottom: 10px;
     position: relative;
+    display: flex;
+    flex-direction: column;
+}
+#public_chat h3 {
+    background-color: #f2e6d9;
+    color: #c90;
 }
 #chat  {
     border: 1px solid black;
-    height: 85%;
+    height: 78%;
     width: 100%;
     overflow-x: hidden;
     overflow-y: scroll;
@@ -24,20 +30,21 @@
     text-align: left;
     display: block
 }
+#chat_inputs {
+    display: flex;
+    margin-bottom: 0px;
+}
 #public_chat input[type="text"] {
     float: left;
     width: 91%;
     /*margin-right: 5px;*/
     padding-right: 20%;
     margin: 0px 0px 0px 0px;
-    font-size: 16px;
+    font-size: 13px;
+    height: 21px;
 }
 #public_chat button {
-    position: absolute;
-    margin-top:-2px;
     padding: 6px 8px 6px 8px;
-    right: 0%;
-    top: 216px;
 }
 #main_wrapper {
     display: flex;
