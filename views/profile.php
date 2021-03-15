@@ -13,13 +13,14 @@
             </div>
             <button onclick="show('password');"> Change Password </button>
             <div id="password">
-                <form method="post" action="/profile">
+                <p> This section is currently undergoing work and is not working at the moment</p>
+                <form>
                     <label for="current_password"> Current Password: </label>
                     <input name="current_password" type="password" required /></br>
                     <label for="new_password"> New Password: </label>
-                    <input name="new_password" type="password" required tite /></br>
+                    <input name="new_password" type="password" required title="Please enter a new password" /></br>
                     <label for="confirm_password"> Confirm Password: </label>
                     <input name="confirm_password" type="password" required title="Please conifrm your password" />
-                    <button type="submit"> Change Password! </button> 
+                    <button type="button"> Change Password! </button> 
                 </form>
             </div>
