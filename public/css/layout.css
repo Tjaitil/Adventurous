@@ -84,6 +84,20 @@ section table:not(#game_messages, .noDisplayBlock) {
     position: relative;
     border-collapse: collapse;
 }
+.linkButton {
+    background-color: #f2e6d9;
+    border-radius: 5px;
+    border: 1px outset;
+    box-shadow: 1px 1px 1px 1px #372715;
+    padding: 10px 12px 10px 12px;
+    color: black;
+    font-weight: bold;
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    height: 19px;
+}
 section table td, th, section caption {
     padding: 8px;
     background-color: #f2e6d9;
