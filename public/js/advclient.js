@@ -582,7 +582,7 @@ function doubleClickDetect() {
                     game.properties.xbase = startPoints[0].x;
                 }*/
                 else {
-                    game.properties.xbase = 1856; 
+                    game.properties.xbase = 1392; 
                 }
                 if(newyBase !== false) {
                     // Legge til ybase i JSON map filene
@@ -594,7 +594,7 @@ function doubleClickDetect() {
                     game.properties.ybase = startPoints[0].y;
                 }*/
                 else {
-                    game.properties.ybase = 1003; 
+                    game.properties.ybase = 1800; 
                 }
                 
         
