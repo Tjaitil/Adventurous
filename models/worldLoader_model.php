@@ -137,6 +137,10 @@
         }
         public function loadWorld() {
             $this->getMap();
+            if(!file_exists('../gamedata/' . $this->map . '.json'))  {
+                $this->session['map_location'] = '3.5';
+                $this->getMap();
+            }
             $string = file_get_contents('../gamedata/' . $this->map . '.json');
             $this->loadObjects();
             $this->model = $this->loadModel('eventLoader', true);
