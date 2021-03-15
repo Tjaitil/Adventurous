@@ -36,14 +36,14 @@
                                 $arr[$i]['news_introduction'] = substr($arr[$i]['news_introduction'], 0, 40);
                                 $arr[$i]['news_introduction'] .= '...';
                              }
-                            echo $arr[$i]['news_introduction'];?><button>read more</button></p>
+                            echo $arr[$i]['news_introduction'];?><a href="#" class="linkButton"> read more</a></p>
                         </div>
                     <?php endfor;?>
                 </div>
                 <p><a href="/news">Click here for more news</a></p>
             </div>
             <div id="town_map">
-                <button> Go to client </button>
+                <a href="/advclient" class="linkButton">Go to client</a>
             </div>
             <div id="profile">
                 <span id="profile_header"> Skills</span></br>
