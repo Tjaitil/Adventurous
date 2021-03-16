@@ -41,10 +41,10 @@
             if(!isset($errorArray['title'])) {
                 $title = 'Game error';
             }
-            $test = mail('miner123@hotmail.no', $title, $message, 'FROM: <system@adventurous.no');
-        }
-        public function hello() {
-            print "Hello world!";
+            $header = "MIME-Version: 1.0" . "\r\n";
+            $header .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+            $header .= 'From: <system@adventurous.no';
+            $test = mail('miner123@hotmail.no', $title, $message, $header);
         }
     }
 ?>
