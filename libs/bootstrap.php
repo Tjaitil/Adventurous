@@ -4,7 +4,7 @@
         private $controller = NULL;
         private $controllerPath = 'controllers/';
         private $modelPath = 'models/';
-        private $errorFile = 'error.php';
+        private $errorFile = 'notfound';
         private $errorhandler;
         private $defaultFile = 'index.php';
         public $session;
@@ -80,8 +80,12 @@
               }
           }
           else {
+            $file = $this->controllerPath . 'error.php';
             // Report error
             $this->errorhandler->reportError(array("None", "Controller doesn't exists " . __METHOD__));
+            require $file;
+            $this->controller = new $this->errorFile();
+            $this->controller->index();
           }
       }
     }
