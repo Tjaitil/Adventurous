@@ -20,7 +20,7 @@
                 <?php endif;?>
                 <script src="<?php echo constant('ROUTE_JS') . 'checkSite.js';?>"></script>
             </section>
-            <?php if(array_search($name, array("gameguide", "profile", "main", "highscores", "news", "messages")) === false): ?>
+            <?php if(array_search($name, array("gameguide", "profile", "error", "main", "highscores", "news", "messages")) === false): ?>
             <aside>
                 <?php require(constant('ROUTE_VIEW') . '/aside.php'); ?>
             </aside>
