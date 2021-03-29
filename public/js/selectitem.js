@@ -3,6 +3,7 @@
     }*/
     function select() {
         let element = event.target.closest("figure");
+        console.log(element);
         var figure = element.cloneNode(true);
         /*img.removeAttribute("onclick");*/
         figure.children[0].style.height = "50px";
@@ -12,8 +13,16 @@
         var parent = document.getElementById("selected");
         parent.innerHTML = "";
         parent.appendChild(figure);
-        if(document.getElementsByClassName("page_title")[0].innerText == "Armory") {
-            toggleOption();
+        switch(document.getElementsByClassName("page_title")[0].innerText) {
+            case 'Armory':
+                toggleOption();
+                break;
+            case 'Tavern':
+                getHealingAmount(element.querySelectorAll("figcaption")[0].innerHTML);
+                break;
+            default:
+                
+                break;
         }
     }
     function select_i() {
