@@ -6,7 +6,7 @@
                 </p>
             <?php endif;?>
             <div id="profiency">
-                <p> Current profiency: <span id="profiency"><?php echo $_SESSION['gamedata']['profiency'];?></span></p>
+                <p> Current profiency: <span id="profiency"><?php echo ucfirst($_SESSION['gamedata']['profiency']);?></span></p>
                     <label for="profiency_select"> Change profiency</label></br>
                     <select name="profiency_select" id="profiency_select">
                         <option selected="selected"></option>
@@ -39,10 +39,10 @@
                 <button> Change artefact </button>
                 <button> Create new artefact </button>
             </div>
-            <div id="permits">
-                <p>Current permits: <?php echo $this->data['permits'];?></p>
+            <div id="miner_permits">
+                <p>Current miner permits: <?php echo $this->data['permits'];?></p>
                 <table>
-                    <caption> Buy Permits: </caption>
+                    <caption> Buy Miner Permits: </caption>
                     <thead>
                         <tr>
                             <td> Amount: </td>
