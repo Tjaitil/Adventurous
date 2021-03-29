@@ -39,10 +39,9 @@
             }
             
             $sql = "SELECT farmer_level, experience, time, seed_required FROM crops_data
-                    WHERE crop_type=:crop_type AND farmer_level<=:farmer_level AND location=:location";
+                    WHERE crop_type=:crop_type AND location=:location";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":crop_type", $param_crop_type, PDO::PARAM_STR);
-            $stmt->bindParam(":farmer_level", $param_farmer_level, PDO::PARAM_INT);
             $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
             $param_crop_type = $POST['crop'];
             $param_farmer_level = $this->session['farmer']['level'];
@@ -53,6 +52,10 @@
                 return false;
             }
             $row2 = $stmt->fetch(PDO::FETCH_ASSOC);
+            if($row2['farmer_level'] < $this->session['farmer']['level']) {
+                $this->gameMessage("ERROR: Your farmer level is too low to grow this crop", true);
+                return false;
+            }
             
             $sql = "SELECT amount FROM inventory WHERE item=:item AND username=:username";
             $stmt = $this->db->conn->prepare($sql);
