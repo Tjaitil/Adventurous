@@ -62,6 +62,22 @@ button:focus {outline:0;}
 #control_text p {
     text-align: left;
 }
+#toggle_map_button {
+    position: absolute;
+}
+#map_container {
+    border: 1px solid black;
+    width: 98%;
+    height: 600px;
+    overflow: scroll;
+    position: absolute;
+    z-index: 2;
+    display: none;
+}
+#map_img {
+    width: 1600px;
+    height: 1600px;
+}
 /*button {
     background-color: #f2e6d9;
     border-radius: 5px;
@@ -83,19 +99,8 @@ button:active {
 }
 button:focus {outline:0;}
 @media all and (max-width: 830px) {
-    #inventory {
-        /* Style added in general.js*/
-        right: 5px;
-        position: absolute;
-        height: 250px;
-        overflow-y: scroll;
-    }
     #news_content {
         width: 98%;
         font-size: 11px;
-    }
-    #inv_toggle_button {
-        display: block;
-        z-index: 2;
     }
 }
