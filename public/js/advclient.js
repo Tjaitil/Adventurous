@@ -217,6 +217,7 @@ function doubleClickDetect() {
             control.style.left = "10px";
             document.getElementById("inventory").style.top = gameCanvas[0].offsetTop + "px";
         }
+        document.getElementById("inventory").style.top = -30 + "px";
         document.getElementById("control_text").style.top = gameCanvas[0].offsetTop + game.properties.canvasHeight - 50 +  "px";
         document.getElementById("control_text").style.left = gameCanvas[0].offsetLeft + newWidth - 140 + "px";
         document.getElementById("game_text").style.maxWidth = game.properties.canvasWidth + "px";
