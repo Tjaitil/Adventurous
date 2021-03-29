@@ -23,6 +23,11 @@
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $crop_type = $row['crop_type'];
             
+            if($row['crop_type'] === "none") {
+                $this->gameMessage("ERROR: You don't have any crops to harvest", true);
+                return false;
+            }
+            
             $sql2 = "SELECT experience, min_crop_count, max_crop_count FROM crops_data WHERE crop_type=:crop_type";
             $stmt2 = $this->db->conn->prepare($sql2);
             $stmt2->bindParam(":crop_type", $param_crop_type, PDO::PARAM_STR);
