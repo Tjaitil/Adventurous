@@ -20,11 +20,9 @@
                 var data = response[1].split("|");
                 console.log(data);
                 var time = data[0] * 1000;
-                var harvest = data[1];
-                if(data[2] == "") {
-                    return false;
-                }
-                var x = setInterval (function() {
+                var harvest = parseInt(data[1]);
+                console.log(harvest);
+                var x = setInterval(function() {
                     intervals.push(x);
                     var now = new Date().getTime();
                     var distance = time - now;
@@ -36,23 +34,24 @@
                         clearInterval(x);
                     }
                     else {
-                        document.getElementById("time").innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
-                        document.getElementById("growing").innerHTML = "Crops growing";    
+                        document.getElementById("time").innerText = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+                        document.getElementById("growing").innerText = "Crops growing";    
                     }
-                    if(distance < 0 && (harvest != "false" || harvest === 0)){
+                    // Check if countdown is finished and harvest is true
+                    if(distance < 0 && harvest === 1) {
                         clearInterval(x);
                         var btn = document.createElement("BUTTON");
                         var t = document.createTextNode("Harvest");
                         btn.appendChild(t);
                         btn.addEventListener("click", updateCrop);
-                        document.getElementById("time").innerHTML = "";
+                        document.getElementById("time").innerText = "";
                         document.getElementById('time').appendChild(btn);
-                        document.getElementById("growing").innerHTML = "Finished";
+                        document.getElementById("growing").innerText = "Finished";
                     }
-                    else if(distance < 0 && (harvest == "false" || harvest == 0)) {
+                    else if(distance < 0) {
                         clearInterval(x);
-                        document.getElementById("growing").innerHTML = "No crops growing";
-                        document.getElementById("time").innerHTML = "";
+                        document.getElementById("growing").innerText = "No crops growing";
+                        document.getElementById("time").innerText = "";
                     }
                 }, 1000);
             }
