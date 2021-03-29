@@ -15,11 +15,11 @@
         }
         timer = 1;
         var data = "model=Main" + "&method=Chat" + "&message=" + text;
-        /*ajaxP(data, function(response) {
+        ajaxP(data, function(response) {
             if(response[0] !== false) {
                 updateScroll(response[1]);
             }       
-        });*/
+        });
         timer = 0;
     }
     function getNews() {
