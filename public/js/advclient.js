@@ -1113,6 +1113,10 @@ function doubleClickDetect() {
             pauseGame('loading');
         }
         function pauseGame(status = false) {
+            if(document.getElementById("conversation_container").style.visibility == "visible" || inBuilding == true) {
+                resetTimer();
+                return false;
+            }
             if((game.controls.up !== false || game.controls.right !== false ||
                 game.controls.down !== false || game.controls.left !== false) && game.properties.device == "pc" &&
                 game.properties.loading !== true) {
@@ -1122,10 +1126,6 @@ function doubleClickDetect() {
             else if((document.getElementById("control_button").style.top !== "25%" &&
                 document.getElementById("control_button").style.display != "none") && game.properties.device == "mobile" &&
                 game.properties.loading !== true) {
-                resetTimer();
-                return false;
-            }
-            if(document.getElementById("conversation_container").style.visibility == "visible") {
                 resetTimer();
                 return false;
             }
