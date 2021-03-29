@@ -16,16 +16,6 @@
     -->
     <div id="sidebar">
         <button onclick="sidebar.toggleSidebar();" id="sidebar_button_toggle" class="sidebar_button"> << </button>
-        <div id="hunger_progressBar" class="progressBarContainer">
-            <div class="progressBarOverlay">
-        
-            </div>
-            <div class="progressBar">
-                <span class="progressBar_currentValue">0</span>
-                &nbsp/&nbsp
-                <span class="progressBar_maxValue">100</span>
-            </div>
-        </div>
         <p>Current profiency: <?php echo ucfirst($_SESSION['gamedata']['profiency']);?></p>
         <button class="sidebar_button">Adventure</button>
         <button class="sidebar_button">Countdowns</button>
