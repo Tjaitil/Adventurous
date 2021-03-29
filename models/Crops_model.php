@@ -20,11 +20,9 @@
                 $stmt->execute();
                 $data['fields'] = $stmt->fetch(PDO::FETCH_ASSOC);
                 
-                $sql2 = "SELECT crop_type FROM crops_data WHERE farmer_level <=:farmlevel AND location=:location ORDER BY farmer_level ASC";
+                $sql2 = "SELECT crop_type FROM crops_data WHERE location=:location ORDER BY farmer_level ASC";
                 $stmt2 = $this->db->conn->prepare($sql2);
-                $stmt2->bindParam(":farmlevel", $param_farm_level, PDO::PARAM_STR);
                 $stmt2->bindParam(":location", $param_location, PDO::PARAM_STR);
-                $param_farm_level = $this->session['farmer']['level'];
                 $param_location = $this->session['location'];
                 $stmt2->execute();
                 $data['crop_types'] = $stmt2->fetchAll(PDO::FETCH_ASSOC);
