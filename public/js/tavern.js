@@ -2,10 +2,6 @@
     if(document.getElementById("news_content").children[2] != null) {
         document.getElementById("eat").querySelectorAll("button")[0].addEventListener("click", eat);
         selectItemEvent.addSelectEvent();
-        let figures = document.getElementById("inventory").querySelectorAll('figure');
-        figures.forEach(function(element) {
-            element.addEventListener('click', getHealingAmount);
-        });
     }
     
     function recruitWorker(type, level = false) {
@@ -43,21 +39,21 @@
         document.getElementById("curtain").style.display = "none";
         document.getElementById("conversation").style.display = "none";
     }
-    function getHealingAmount() {
-        let newSelectedItem = event.target.closest("figure").querySelectorAll("figcaption")[0].innerText;
-        let oldSelecteditem = document.getElementById("selected").querySelectorAll("figcaption")[0].innerText;
-        if(newSelectedItem === oldSelecteditem) {
+    function getHealingAmount(item) {
+        console.log(event.target);
+        if(item.length == 0) {
             return false;
         }
-        let data;
+        let data = "model=Tavern" + "&method=getHealingAmount" + "&item=" + item; 
         ajaxG(data, function(response) {
+            console.log(response);
             if(response[0] != false) {
                 let responseText = response[1];
-                if(responseText === 0) {
-                    document.getElementById("item_healing_amount").innerHTML = "No healing for this item";
+                if(parseInt(responseText) === 0) {
+                    document.getElementById("item_healing_amount").innerText = "No healing from this item";
                 }
                 else {
-                    document.getElementById("item_healing_amount").innerHTML = "Healing per item " + responseText;
+                    document.getElementById("item_healing_amount").innerText = "Healing per item " + responseText;
                 }
                 
             }

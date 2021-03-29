@@ -119,5 +119,21 @@
                 return false;
             }
         }
+        public function getHealingAmount($GET) {
+            $item = strtolower($GET['item']);
+            
+            $sql = "SELECT heal FROM bakery_data WHERE type=:item";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
+            $param_item = $item;
+            $stmt->execute();
+            // Check if returned rows are greater than 0, if so return heal value or else 0
+            if($stmt->rowCount() > 0) {
+                echo $stmt->fetch(PDO::FETCH_OBJ)->heal;
+            }
+            else {
+                echo 0;
+            }
+        }
     }
 ?>
