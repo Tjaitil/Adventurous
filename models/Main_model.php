@@ -63,11 +63,21 @@
                 return $data;    
             }
         }
-        public function getChat($clock = false) {
-            $sql = "SELECT id, clock, username, message FROM public_chat ORDER BY time ASC LIMIT 30";
-            $stmt = $this->db->conn->query($sql);
+        public function getChat($id = false) {
+            if($id == false) {
+                $sql = "SELECT id, clock, username, message FROM public_chat ORDER BY time ASC LIMIT 30";
+                $stmt = $this->db->conn->query($sql);
+            }
+            else {
+                $sql = "SELECT id, clock, username, message FROM public_chat
+                        WHERE id >= :id
+                        ORDER BY time ASC";
+                $stmt = $this->db->conn->prepare($sql);
+                $stmt->bindParam(":id", $param_id, PDO::PARAM_INT);
+                $param_id = (is_array($id)) ? $id['id'] : $id;
+            }
             $stmt->execute();
-            if($clock == false) {
+            if($id == false) {
                 return $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
             else {
@@ -79,6 +89,11 @@
             // $POST variable holds the post data
             // This function is called from an AJAX request
             // Function to enter new message into public chat
+            if(preg_match('/(<([^>]+)>)/i', $POST['message'])) {
+                $this->errorHandler->reportError(array($this->username, "tag posted" . $POST['message']));
+                $this->gameMessage("ERROR: The message wasn't able to be posted", true);
+                return false;
+            }
             $sql = "INSERT INTO public_chat (clock, username, message) VALUES (:clock, :username, :message)";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":clock", $param_clock, PDO::PARAM_STR);
@@ -88,7 +103,8 @@
             $param_username = htmlspecialchars($this->username);
             $param_message = $POST['message'];
             $stmt->execute();
-            $this->getChat($param_clock);
+            $id = $this->db->conn->lastInsertId();
+            $this->getChat($id);
         }
     }
 ?>

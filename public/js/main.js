@@ -10,13 +10,16 @@
         if(text.length == 0) {
             return false;
         }
+        if(text.search(/(<([^>]+)>)/ig) != -1) {
+            return false;
+        }
         timer = 1;
         var data = "model=Main" + "&method=Chat" + "&message=" + text;
-        ajaxP(data, function(response) {
+        /*ajaxP(data, function(response) {
             if(response[0] !== false) {
                 updateScroll(response[1]);
             }       
-        });
+        });*/
         timer = 0;
     }
     function getNews() {
@@ -44,18 +47,33 @@
         if(timer != 0) {
             return false;
         }
-        chat = document.getElementById("chat").children[0].lastElementChild.innerHTML.match(/\[(.*)\]/).pop();
-        var element = chat[0];
-        var data = "model=Main" + "&method=getChat" + "&clock=" + element;
+        let id;
+        if(document.getElementById("chat").children[0].lastElementChild) {
+            id = document.getElementById("chat").children[0].lastElementChild.dataset.message_id.trim();
+        }
+        else {
+            id = false;
+        }
+        var data = "model=Main" + "&method=getChat" + "&id=" + id;
         ajaxG(data, function(response) {
-           updateScroll(response[1]); 
+            updateScroll(response[1]);
         });
     }
     
     function updateScroll(messages) {
         var chat = document.getElementById("chat");
         var isScrolledToBottom = chat.scrollHeight - chat.clientHeight <= chat.scrollTop + 1;
-        document.getElementById("chat").children[0].innerHTML += messages;
+        messages = messages.split("|");
+        messages.pop();
+        let liElement;
+        for(let i = 0; i < messages.length; i++) {
+            liElement = document.createElement("li");
+            liData = messages[i].split("*^%");
+            liElement.innerText = liData[0].replace(/(\r\n|\n|\r)/gm, "");
+            liElement.setAttribute("data-message_id", liData[1]);
+            document.getElementById("chat").children[0].appendChild(liElement);
+        }
+        
         // scroll to bottom if isScrolledToBotto
         if(isScrolledToBottom) {
           chat.scrollTop = chat.scrollHeight - chat.clientHeight;
@@ -68,7 +86,7 @@
         // Check for browser, and return error message for not optimized browser
         if(/Safari|Chrome|Firefox/i.test(navigator.userAgent) == false) {
             alert("WARNING! \n This game is not tested and optimized for the browser you are using." +
-                  " Recommended browsers are safari, chrome or firefox");
+                  " Recommended browsers are Safari, Chrome or Firefox");
         }
     };
     function getXP() {
