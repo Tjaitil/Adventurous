@@ -345,6 +345,7 @@ button:focus {outline:0;}
     right: 5px;
     height: 100%;
     top: 120px;
+    display: none;
 }
 #inv_toggle_button {
     position: sticky;
@@ -571,12 +572,22 @@ input::-webkit-inner-spin-button {
         min-height: unset;
         width: 97.4%;
         font-size: 11px;
+        grid-column: 1 / 3;
     }
     /*.inventory_buttons {
         margin-left: 6px;
     }*/
     #skills div {min-width: 53px;}
-    
+    #inventory {
+        /* Style added in general.js*/
+        right: 5px;
+        position: absolute;
+        height: 250px;
+        overflow-y: scroll;
+    }
+    #inv_toggle_button_container {
+        display: block;
+    }
     #inv_toggle_button {
         background-color: #f2e6d9;
         border-radius: 5px;
@@ -585,7 +596,9 @@ input::-webkit-inner-spin-button {
         padding: 3px 6px 3px 7px;
         color: black;
         font-weight: bold;
+        display: block;
         font-size: 11px;
+        z-index: 2;
     }
 }
 html, body {
