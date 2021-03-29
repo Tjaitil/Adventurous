@@ -21,9 +21,6 @@
                         $model->$methodname($_GET['username']);
                     }
                     break;
-                case "Main":
-                    $model->$methodname($_GET['clock']);
-                    break;
                 case "Market":
                     if(isset($_GET['part'])) {
                         // Method getData()
