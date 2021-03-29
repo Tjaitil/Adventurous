@@ -574,6 +574,9 @@ input::-webkit-inner-spin-button {
         font-size: 11px;
         grid-column: 1 / 3;
     }
+    footer {
+        grid-column: 1 / 3;
+    }
     /*.inventory_buttons {
         margin-left: 6px;
     }*/
