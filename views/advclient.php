@@ -18,6 +18,17 @@
             <div id="inv_toggle_button_container">
                <button id="inv_toggle_button"> INV </button>
             </div>
+            <div id="hunger_progressBar" class="progressBarContainer">
+            <div class="progressBarOverlay">
+        
+            </div>
+            <button id="toggle_map_button"> Toggle map </button>
+            <div class="progressBar">
+                <span class="progressBar_currentValue">0</span>
+                &nbsp/&nbsp
+                <span class="progressBar_maxValue">100</span>
+            </div>
+            </div>
             <div id="game_text">
 
             </div>
@@ -25,8 +36,9 @@
                 <p>E</p>
                 <p>W</p>
             </div>
-            <div id="map_button">
-                
+            <div id="map_container">
+                <img id="cont_exit" src="#"  width="20px" height="20px" onclick="closeNews();" />
+                <img id="map_img" src="#" />
             </div>
             <div id="inventory">
                 <?php require(constant('ROUTE_VIEW') . '/inventory.php'); url();?>    
