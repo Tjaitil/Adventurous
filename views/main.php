@@ -2,7 +2,7 @@
                 <h3> Public chat</h3>
             <div id="chat">
                 <ul>
-                    <?php get_template('chat', $this->data['chat']);?>            
+       
                 </ul>
             </div>
             <div id="chat_inputs">
