@@ -183,6 +183,7 @@ function doubleClickDetect() {
         else {
             newWidth = document.getElementsByTagName("section")[0].offsetWidth * 0.68;
         }
+        console.log(newWidth);
         let newHeight;
         // If the device is mobile check for the shortest dimension of height and width to compensate for already rotated devices
         if(game.properties.device == "mobile") {
@@ -219,6 +220,15 @@ function doubleClickDetect() {
         document.getElementById("control_text").style.top = gameCanvas[0].offsetTop + game.properties.canvasHeight - 50 +  "px";
         document.getElementById("control_text").style.left = gameCanvas[0].offsetLeft + newWidth - 140 + "px";
         document.getElementById("game_text").style.maxWidth = game.properties.canvasWidth + "px";
+        // Position hunger bar on canvas
+        document.getElementById("hunger_progressBar").style.top = "10px";
+        document.getElementById("hunger_progressBar").style.left = "10px";
+        document.getElementById("hunger_progressBar").style.width = "250px";
+        // Position map related elements
+        document.getElementById("toggle_map_button").style.top = "10px";
+        document.getElementById("toggle_map_button").style.left = newWidth - 20 -
+                document.getElementById("toggle_map_button").offsetWidth + "px";
+        document.getElementById("map_container").style.top = gameCanvas[0].offsetTop + "px";
         /* If screen is less than 830 set sidebar to be the same top as inventory so that the two are aligned
          * Also align cont_exit button in news content to middle instead of right */
         if(window.screen.width < 830) {
@@ -660,6 +670,7 @@ function doubleClickDetect() {
             world = new Image(3201, 3201);
             world.src = "public/images/" + map + ".png";
             world.onload = function() {
+                document.getElementById("map_img").src = world.src;
                 /*gamePieces.player = new newPlayer(30, 30, "#0000A0", game.properties.xbase, game.properties.ybase);*/
                 gamePieces.player.x = game.properties.xbase;
                 gamePieces.player.y = game.properties.ybase;
@@ -1403,6 +1414,7 @@ function doubleClickDetect() {
                                  visibleObjects[i].drawY + (visibleObjects[i].height / 2) -
                                  (player.yMovement / viewport.scale));
                 }
+                console.log(visibleObjects[i]);
                 if(visibleObjects[i].visible != true && visibleObjects[i].type != "figure" && visibleObjects[i].src.length > 1) {
                     let drawContext;
                     // If building is behind player, then draw on the first canvas instead of the third
