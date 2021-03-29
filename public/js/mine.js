@@ -36,6 +36,7 @@
                     else {
                         document.getElementById("time").innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
                     }
+                    // Check if countdown is finished and fetch is true
                     if (distance < 0 && fetch === "1"){
                         clearInterval(x);
                         var btn = document.createElement("BUTTON");
