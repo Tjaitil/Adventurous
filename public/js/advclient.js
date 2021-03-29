@@ -594,7 +594,7 @@ function doubleClickDetect() {
                     game.properties.ybase = startPoints[0].y;
                 }*/
                 else {
-                    game.properties.ybase = 1800; 
+                    game.properties.ybase = 1500; 
                 }
                 
         

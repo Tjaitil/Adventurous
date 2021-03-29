@@ -1,4 +1,5 @@
     // warriorsIndex is the children index for the warriors
+    console.log('armycamp.js');
     var warriorsIndex = [];
     // warriors is the id of the warriors selected
     var warriors = [];
@@ -253,7 +254,7 @@
         let nextlevel;
         let width;
         let button = document.createElement("button");
-        button.className = "level_up_button";
+        /*button.className = "warrior_level_up_button";*/
         button.innerHTML = "Level up " + '&#9650';
         let buttonInserted = [];
         for(var i = 0; i < skillBars.length; i++) {
