@@ -17,7 +17,6 @@
     if(count($_SESSION['gamedata']['level_up']) > 0): ?>
     <script src="<?php echo constant("ROUTE_JS") . 'levelup.js'?>"></script>
 <?php endif;  ?>
-    <script src="<?php echo constant("ROUTE_JS") . 'hunger.js'?>"></script>
 <!-- News is the black "curtain" which the content is displayed upon
      both used for alert and news -->
 <div id="news">
