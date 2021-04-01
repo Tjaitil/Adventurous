@@ -63,6 +63,7 @@
             <script src="<?php echo constant('ROUTE_JS') . 'advclient.js';?>"></script>
             <script src="<?php echo constant('ROUTE_JS') . 'map.js';?>"></script>
             <script src="<?php echo constant('ROUTE_JS') . 'sidebar.js';?>"></script>
+            <script src="<?php echo constant('ROUTE_JS') . 'hunger.js';?>"></script>
             <script src="<?php echo constant('ROUTE_JS') . 'canvasText.js';?>"></script>
             <script src="<?php echo constant('ROUTE_JS') . 'artefact.js';?>"></script>
             <script src="<?php echo constant("ROUTE_JS") . 'selectitem.js';?>"></script>
