@@ -37,8 +37,13 @@
                 <p>W</p>
             </div>
             <div id="map_container">
-                <img id="cont_exit" src="#"  width="20px" height="20px" onclick="closeNews();" />
-                <img id="map_img" src="#" />
+                <div id="map_container_header">
+                    <h3> World map </h3>
+                    <img id="close_map_button" class="cont_exit" src="#"  width="20px" height="20px" />
+                </div>
+                <div id="map_img_container">
+                    <img id="map_img" src="#" />
+                </div>
             </div>
             <div id="inventory">
                 <?php require(constant('ROUTE_VIEW') . '/inventory.php'); url();?>    
@@ -56,6 +61,8 @@
                 <img src="<?php /*echo constant('ROUTE_IMG') . '3.5.png';*/?>" />
             </div>-->
             <script src="<?php echo constant('ROUTE_JS') . 'advclient.js';?>"></script>
+            <script src="<?php echo constant('ROUTE_JS') . 'map.js';?>"></script>
+            <script src="<?php echo constant('ROUTE_JS') . 'sidebar.js';?>"></script>
             <script src="<?php echo constant('ROUTE_JS') . 'canvasText.js';?>"></script>
             <script src="<?php echo constant('ROUTE_JS') . 'artefact.js';?>"></script>
             <script src="<?php echo constant("ROUTE_JS") . 'selectitem.js';?>"></script>
