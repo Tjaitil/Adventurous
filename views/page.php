@@ -2,9 +2,9 @@
 <html>
     <head>
         <title><?php echo $title; ?></title>
-        <link rel="stylesheet" type="text/css" href="<?php echo constant('ROUTE_CSS') . $name ?>.css" />
+        <link rel="stylesheet" type="text/css" href="<?php echo '../' . constant('ROUTE_CSS') . $name ?>.css" />
         <link rel="stylesheet" type="text/css" href="<?php echo '../' . constant('ROUTE_CSS')?>conversation.css" />
-        <link rel="stylesheet" type="text/css" href="<?php echo constant("ROUTE_CSS");?>news.css" />
+        <link rel="stylesheet" type="text/css" href="<?php echo '../' . constant("ROUTE_CSS");?>news.css" />
         <?php require(constant('ROUTE_VIEW') . 'head.php');?>
     </head>
     <body>
@@ -18,7 +18,7 @@
                 <?php if(array_search($name, array('advclient', 'gameguide')) === false): ?>
                     <script src="<?php echo constant('ROUTE_JS') . $name . '.js';?>"></script>
                 <?php endif;?>
-                <script src="<?php echo constant('ROUTE_JS') . 'checkSite.js';?>"></script>
+                <script src="<?php echo '../' . constant('ROUTE_JS') . 'checkSite.js';?>"></script>
             </section>
             <?php if(array_search($name, array("gameguide", "profile", "error", "main", "highscores", "news", "messages")) === false): ?>
             <aside>
