@@ -39,7 +39,7 @@ section {
     /*width: 82.8%;
     min-height: 700px;*/
     grid-column: 2 / 3;
-    border: inset 2px;
+    border: inset #4b341b 2px;
     /*float: right;*/
     text-align: center;
     padding: 1% 1% 5% 1%;
