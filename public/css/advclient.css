@@ -66,17 +66,34 @@ button:focus {outline:0;}
     position: absolute;
 }
 #map_container {
-    border: 1px solid black;
+    border: 5px ridge #5f4121;
+    border-radius: 5px;
     width: 98%;
     height: 600px;
-    overflow: scroll;
     position: absolute;
     z-index: 2;
     display: none;
 }
+#map_container_header {
+    display:  flex;
+    margin: 0;
+}
+#map_container h3 {
+    background-color: #f2e6d9;
+    width: 100%;
+}
+#map_img_container {
+    overflow: scroll;
+    height: calc(100% - 27px);
+}
 #map_img {
     width: 1600px;
     height: 1600px;
+}
+
+#close_map_wrapper {
+    position: relative;
+    
 }
 /*button {
     background-color: #f2e6d9;
