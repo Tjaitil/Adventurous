@@ -1,6 +1,7 @@
     addEventListener('load', function() {      
         conversation.conversationDiv = document.getElementById("conversation").querySelectorAll("ul")[0];
-        document.getElementById("conversation_container").querySelectorAll("img")[0].addEventListener("click", conversation.endConversation);
+        document.getElementById("conversation_container").querySelectorAll("img")[0].addEventListener("click", () =>
+                                                                                                      conversation.endConversation());
         /*conversation.toggleButton();*/
     });
     var conversation = {
@@ -45,7 +46,7 @@
             h.id = "loading_message";
             let conversation_container = document.getElementById("conversation_container");
             conversation_container.style.visibility = "visible";
-            conversation.conversationDiv.appendChild(h);
+            this.conversationDiv.appendChild(h);
             if(game.properties.device == "mobile") {
                 let conversationContainerHeight = game.properties.canvasHeight * 0.40;
                 if(conversationContainerHeight > 170) {
@@ -67,15 +68,16 @@
             }
             
             data = "person=" + person.toLowerCase() + "&index=" + index;
-            conversation.convAJAX(data, function(response) {
-                conversation.index = true;
+            conversation.convAJAX(data, (response) => {
+                console.log(this);
+                this.index = true;
                 console.log(response[1]);
-                conversation.activeDialogues = JSON.parse(response[1]);
-                console.log(conversation.buttonToggle);
-                if(conversation.buttonToggle == false) {
-                    conversation.toggleButton();
+                this.activeDialogues = JSON.parse(response[1]);
+                console.log(this.buttonToggle);
+                if(this.buttonToggle == false) {
+                    this.toggleButton();
                 }
-                conversation.makeLinks();
+                this.makeLinks();
                 
                 // Set width on conversation so it fits between images by subtracting container width by both pictures
                 document.getElementById("conversation").style.width =
@@ -87,16 +89,15 @@
             });
         },
         endConversation() {
-            conversation.index = null;
-            conversation.conversationDiv.innerHTML = "";
+            this.index = null;
+            this.conversationDiv.innerHTML = "";
             document.getElementById("conversation_container").style.visibility = "hidden";
-            conversation.buttonToggle = false;
-            conversation.button = null;
+            this.buttonToggle = false;
+            this.button = null;
             document.getElementById("conversation_a").style.visibility = "hidden";
             document.getElementById("conversation_b").style.visibility = "hidden";
             document.getElementById("conversation").querySelectorAll("button")[0].style.visibility = "hidden";
-            document.getElementById("conversation").querySelectorAll("button")[0].removeEventListener("click",
-                                                                                                  conversation.endConversation);
+
             /*if(resume == true) {
                 game.resumeGame();    
             }*/
@@ -105,14 +106,14 @@
             if(this.button === null) {
                 if(document.getElementById("conversation").querySelectorAll("button").length > 0) {
                     this.button = document.getElementById("conversation").querySelectorAll("button")[0];
-                    this.button.addEventListener("click", conversation.getNextLine);
+                    this.button.addEventListener("click", () => this.getNextLine());
                     this.button.style.visibility = "visible";
                     this.buttonToggle = true;
                 }
                 else {
                     this.button = document.createElement("button");
                     this.button.appendChild(document.createTextNode("Click here to continue"));
-                    this.button.addEventListener("click", conversation.getNextLine);
+                    this.button.addEventListener("click", () => this.getNextLine());
                     document.getElementById("conversation").appendChild(this.button);
                     this.buttonToggle = true;
                 }
@@ -129,8 +130,7 @@
             }
         },
         getNextLine(info = false) {
-            var text;
-            console.log('getNextLine');
+            let text;
             if(event === null && info == false) {
                 return;
             }
@@ -145,17 +145,17 @@
             }
             
             console.log(text);
-            data = "person=" + null +  "&index=" + text;
-            conversation.convAJAX(data, function(response) {
+            let data = "person=" + null +  "&index=" + text;
+            this.convAJAX(data, (response) => {
                 if(response[1] === "end") {
-                    conversation.endConversation();
+                    this.endConversation();
                     return false;
                 }
                 console.log(response[1]);
-                conversation.activeDialogues = [];
-                conversation.activeDialogues = JSON.parse(response[1]);
-                if(conversation.activeDialogues.length == 1) {
-                    let split = conversation.activeDialogues[0].split("|");
+                this.activeDialogues = [];
+                this.activeDialogues = JSON.parse(response[1]);
+                if(this.activeDialogues.length == 1) {
+                    let split = this.activeDialogues[0].split("|");
                     if(typeof(split[3]) !== "undefined") {
                         if(split[3].indexOf(".") != -1) {
                             let objArray = split[3].split(".");
@@ -169,11 +169,11 @@
                     }
                 }
                 if(conversation.activeDialogues.length > 1) {
-                    conversation.buttonToggle = true;
-                    conversation.toggleButton();
-                    conversation.makeLinks();
+                    this.buttonToggle = true;
+                    this.toggleButton();
+                    this.makeLinks();
                     if(response[1].indexOf("newDestination") != -1) {
-                        let lis = conversation.conversationDiv.querySelectorAll("li");
+                        let lis = this.conversationDiv.querySelectorAll("li");
                         lis.forEach(function(element) {
                             // ... code code code for this one element
                             element.addEventListener('click', gameTravel.newDestination);
@@ -187,25 +187,21 @@
                         conversation.buttonToggle = true;
                         conversation.toggleButton();
                     }*/
-                    if(conversation.buttonToggle !== true) {
-                        conversation.toggleButton();
+                    if(this.buttonToggle !== true) {
+                        this.toggleButton();
                     }
-                    switch(conversation.activeDialogues[0].split("|")[2]) {
+                    switch(this.activeDialogues[0].split("|")[2]) {
                         case "Q":
-                            conversation.makeLinks();
-                            break;
                         case "q":
-                            conversation.makeLinks();
-                            break;
                         case "r":
-                            conversation.makeLinks();
+                            this.makeLinks();
                             break;
                         case "end":
-                            conversation.makeLinks();
+                            this.makeLinks();
                             document.getElementById("conversation").querySelectorAll("button")[0].
                                     removeEventListener("click",conversation.getNextLine);
                             document.getElementById("conversation").querySelectorAll("button")[0].addEventListener("click",
-                                                                                                  conversation.endConversation);
+                                                                                                  this.endConversation);
                             break;
             
                     }
@@ -261,7 +257,7 @@
         },
         makeLinks() {
             let str = conversation.activeDialogues;
-            conversation.conversationDiv.innerHTML = "";
+            this.conversationDiv.innerHTML = "";
             if(str.length > 1 === true) {
                 for(var i = 0; i < str.length; i++) {
                     let strProperties = str[i].split("|");
@@ -270,8 +266,8 @@
                     li.innerHTML = strProperties[1];
                     li.className = "conv_link";
                     li.style.cursor = "pointer";
-                    li.addEventListener("click", conversation.getNextLine);
-                    conversation.conversationDiv.appendChild(li);
+                    li.addEventListener("click", () => this.getNextLine());
+                    this.conversationDiv.appendChild(li);
                 }
             }
             else {
@@ -281,7 +277,7 @@
                 li.innerHTML = strProperties[1];
                 li.className = "conv_link";
                 li.style.cursor = "auto";
-                conversation.conversationDiv.appendChild(li);
+                this.conversationDiv.appendChild(li);
             }
         }
     };
