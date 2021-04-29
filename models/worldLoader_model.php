@@ -205,7 +205,7 @@
                                 $object_array[$x]['diameterDown'] = 0;
                                 $object_array[$x]['diameterLeft'] = 0;
                             }
-                            $object_array[$x]['diameterTop'] = $object_array[$x]['y'];
+                            $object_array[$x]['diameterTop'] = $object_array[$x]['y'] + $object_array[$x]['height'] - 80;
                             $object_array[$x]['diameterRight'] = $object_array[$x]['x'] + $object_array[$x]['width'];
                             $object_array[$x]['diameterDown'] = $object_array[$x]['y'] + $object_array[$x]['height'];
                             $object_array[$x]['diameterLeft'] = $object_array[$x]['x'];
