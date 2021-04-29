@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title><?php echo $title; ?></title>
+        <title><?php echo ucwords($title); ?></title>
         <link rel="stylesheet" type="text/css" href="<?php echo '../' . constant('ROUTE_CSS') . $name ?>.css" />
         <link rel="stylesheet" type="text/css" href="<?php echo '../' . constant('ROUTE_CSS')?>conversation.css" />
         <link rel="stylesheet" type="text/css" href="<?php echo '../' . constant("ROUTE_CSS");?>news.css" />
