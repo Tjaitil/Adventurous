@@ -2,6 +2,7 @@
             <h3 class="page_title">Workforce Lodge</h3>
             <div id="workers">
                 <div id="farmer_workers">
+                    <h4> Farmer workforce </h4>
                     <p>Current efficiency level: <?php echo $this->data['farmer_workers']['efficiency_level'];?></p>
                     <table>
                         <tr>
@@ -23,6 +24,7 @@
                     </table>
                 </div>
                 <div id="miner_workers">
+                    <h4> Miner workforce </h4>
                     <p> Current efficiency level: <?php echo $this->data['miner_workers']['efficiency_level'];?></p>
                     <table>
                         <tr>
@@ -43,6 +45,6 @@
                         </tr>
                     </table>
                 </div>
-                <button> Hire more workers </button>
-                <button> Upgrade workers </button>
+                <p> Go to tavern to hire more workers</p>
+                <p> Go to citycentre to upgrade workers efficieny level</p>
             </div>
