@@ -64,6 +64,9 @@ button:focus {outline:0;}
 }
 #toggle_map_button {
     position: absolute;
+    width: 102px;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 #map_container {
     border: 5px ridge #5f4121;
