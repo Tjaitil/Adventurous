@@ -351,13 +351,13 @@
                     else {
                         $reduction_price = $row['price'] * 0.03;
                     }
-                    $new_merchant_sell_price = $row['price'];
+                    $new_merchant_buy_price = $row['price'];
                     $total_price = 0;
                     for($i = 0; $i < $amount; $i++) {
-                        $new_merchant_sell_price -= $reduction_price;
-                        $total_price += $new_merchant_sell_price;
+                        $new_merchant_buy_price -= $reduction_price;
+                        $total_price += $new_merchant_buy_price;
                     }
-                    $new_merchant_sell_price = floor($new_merchant_sell_price);
+                    $new_merchant_buy_price = floor($new_merchant_buy_price);
                 }
                 $sql = "SELECT item, amount FROM inventory WHERE item=:item AND username=:username";
                 $stmt = $this->db->conn->prepare($sql);
@@ -378,6 +378,7 @@
                 $buy_price = $row['price'];
                 $new_amount = $row['amount'] - $amount;
                 $total_price = $row['price'] * $amount;
+                $new_merchant_sell_price;
             }
             try {
                 $this->db->conn->beginTransaction();
@@ -393,7 +394,7 @@
                     $stmt->bindParam(":amount", $param_amount, PDO::PARAM_INT);
                     $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
                     $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
-                    $param_price = $new_merchant_sell_price;
+                    $param_price = $new_merchant_buy_price;
                     $param_amount = $new_amount;
                     $param_location = $this->session['location'];
                     $param_item = $item;
