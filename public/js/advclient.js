@@ -227,8 +227,9 @@ function doubleClickDetect() {
         document.getElementById("hunger_progressBar").style.width = "250px";
         // Position map related elements
         document.getElementById("toggle_map_button").style.top = "10px";
-        document.getElementById("toggle_map_button").style.left = newWidth - 20 -
-                document.getElementById("toggle_map_button").offsetWidth + "px";
+        console.log(document.getElementById("toggle_map_button").style.width);
+        document.getElementById("toggle_map_button").style.left = newWidth - document.getElementById("toggle_map_button").style.width -
+                20 - document.getElementById("toggle_map_button").offsetWidth + "px";
         document.getElementById("map_container").style.top = gameCanvas[0].offsetTop + "px";
         /* If screen is less than 830 set sidebar to be the same top as inventory so that the two are aligned
          * Also align cont_exit button in news content to middle instead of right */
@@ -1415,7 +1416,6 @@ function doubleClickDetect() {
                                  visibleObjects[i].drawY + (visibleObjects[i].height / 2) -
                                  (player.yMovement / viewport.scale));
                 }
-                console.log(visibleObjects[i]);
                 if(visibleObjects[i].visible != true && visibleObjects[i].type != "figure" && visibleObjects[i].src.length > 1) {
                     let drawContext;
                     // If building is behind player, then draw on the first canvas instead of the third
