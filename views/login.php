@@ -16,9 +16,9 @@
             <?php unset($_SESSION['outdatedSessionID']);
                   endif;?>
             <form id="login_form" name="login" method="post" action="/login">
-                <h3>Login to continue:</h3>
+                <h3>Login to continue</h3>
                 </br>
-                <label for="username">Username:</label> 
+                <label for="username">Username:</label>
                 <input id="username" type="text" name="username" minlength="4"/>
                 <span class="login_error"><?php echo $this->error['userErr'];?></span></br>
                 <label for="password">Password:</label>
