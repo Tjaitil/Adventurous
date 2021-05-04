@@ -4,7 +4,7 @@
                                                                                                       conversation.endConversation());
         /*conversation.toggleButton();*/
     });
-    var conversation = {
+    const conversation = {
         index: null,
         conversationDiv: null,
         button: null,
@@ -45,6 +45,7 @@
             h.innerText = "Loading...";
             h.id = "loading_message";
             let conversation_container = document.getElementById("conversation_container");
+            conversation_container.style.scale = "1";
             conversation_container.style.visibility = "visible";
             this.conversationDiv.appendChild(h);
             if(game.properties.device == "mobile") {
@@ -92,6 +93,7 @@
             this.index = null;
             this.conversationDiv.innerHTML = "";
             document.getElementById("conversation_container").style.visibility = "hidden";
+            document.getElementById("conversation_container").style.scale = "0.5";
             this.buttonToggle = false;
             this.button = null;
             document.getElementById("conversation_a").style.visibility = "hidden";

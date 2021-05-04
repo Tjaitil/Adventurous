@@ -10,6 +10,8 @@
     visibility: hidden;
     border: 3px double black;
     padding: 3px 3px 0px 3px;
+    scale: 0.5;
+    transition: scale 0.5s ease-in;
 }
 #conversation_container h3 {
     width: 100%;
