@@ -15,7 +15,7 @@ button:focus {outline:0;}
     image-rendering: pixelated;
     image-rendering: crisp-edges;
 }
-#game_canvas2, #game_canvas3, #text_canvas {
+canvas:not(#game_canvas) {
     position: absolute;
     top: 215px;
     left: 12px;
