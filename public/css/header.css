@@ -3,7 +3,7 @@ header {
     border-bottom: black thin;
     text-align: center;
     display: block;
-    background: radial-gradient(#f2e6d9 60%, #986834);
+    background: var(--layoutBgColor);
 }
 #nav {
     display: flex;
