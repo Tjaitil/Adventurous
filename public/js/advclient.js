@@ -1,4 +1,4 @@
-
+scriptLoader.loadScript(['viewport', 'gameEventHandler', 'map', 'canvasText', 'conversation', 'checkDeviceType']);
 var click = 0;
 function doubleClickDetect() {
     click++;
@@ -226,7 +226,7 @@ function doubleClickDetect() {
         document.getElementById("hunger_progressBar").style.left = "10px";
         document.getElementById("hunger_progressBar").style.width = "250px";
         // Position map related elements
-        document.getElementById("toggle_map_button").style.top = "10px";
+        // document.getElementById("toggle_map_button").style.top = "10px";
         console.log(document.getElementById("toggle_map_button").style.width);
         document.getElementById("toggle_map_button").style.left = newWidth - document.getElementById("toggle_map_button").style.width -
                 20 - document.getElementById("toggle_map_button").offsetWidth + "px";
@@ -285,6 +285,7 @@ function doubleClickDetect() {
         fillstyle2: "black",
         context2: document.getElementById("game_canvas2").getContext("2d"),
         context3: document.getElementById("game_canvas3").getContext("2d"),
+        context4: document.getElementById("game_canvas4").getContext("2d"),
         textContext: document.getElementById("text_canvas").getContext("2d"),
         canvasWidth: document.getElementById("game_canvas").width,
         canvasHeight: document.getElementById("game_canvas").height,
@@ -360,10 +361,12 @@ function doubleClickDetect() {
             combat: false,
             attackDamage: 10,
             movementSpeed: 60,
+            health: 100, 
             startCombat: function() {
                 
             },
-            takeDamage: function() {
+            takeDamage: function(damage) {
+                if(isNaN(damage) || damage === 0) return false;
                 // Draw sprite that takes damage
                 ctx2.clearRect(0, 0, 700, 700);
                 ctx2.drawImage(this.characterAttack,
@@ -375,7 +378,13 @@ function doubleClickDetect() {
                                    game.properties.charY,
                                    this.playerSize,
                                    this.playerSize);
-                
+                this.health -= damage;
+                // Player died
+                if(this.health < 0) {
+                    canvasTextHeader.setDraw("You died!");
+                    this.health = 100;
+                    game.loadWorld(false, false, false, false);
+                }
             },
             newPos: function(newPos = true) {
                 ctx2 = game.properties.context2;
@@ -537,7 +546,8 @@ function doubleClickDetect() {
             }
         }
     };
-    game.loadWorld = function(pause = true, newxBase = false, newyBase = false, method = false, newMap = false)  {
+    game.loadWorld = function(newxBase = false, newyBase = false, method = false, newMap = false)  {
+        console.log('loadWorld');
         game.properties.loading = true;
         let ctx = game.properties.context;
         ctx.fillStyle = "black";
@@ -547,6 +557,7 @@ function doubleClickDetect() {
         ctx.textAlign = "center";
         ctx.fillText("Loading ...", game.properties.canvasWidth / 2, game.properties.canvasHeight / 2);
         window.cancelAnimationFrame(game.properties.requestId);
+        game.properties.requestId = null;
         let data;
         let map;
         if(method !== false) {
@@ -570,6 +581,7 @@ function doubleClickDetect() {
                 var obj = JSON.parse(responseText[2]);
                 gamePieces.buildings = [];
                 gamePieces.characters = [];
+                gamePieces.daqloon = [];
                 let events = JSON.parse(responseText[3]);
                 for(let x = 0; x < events.length; x++) {
                     eventHandler.events.push(events[x]);
@@ -658,8 +670,8 @@ function doubleClickDetect() {
                 return;
             }
             let daqloon;
-            for(x = 0; x < 2; x++) {
-                daqloon = new createDaqloon(x, 1810 + (x * 10), 2550);
+            for(x = 0; x < 0; x++) {
+                daqloon = new createDaqloon(x, game.properties.xbase + (x * 10), game.properties.ybase + 200);
                 daqloon.drawX = (daqloon.x - game.properties.xcamMove);
                 daqloon.drawY = (daqloon.y - game.properties.ycamMove);
                 gamePieces.daqloon.push(daqloon);
@@ -688,7 +700,7 @@ function doubleClickDetect() {
                         console.log(map);
                         if(map == "6.4") {
                             tutorial.startTutorial();  
-                        }
+                        }                   
                     };
                 }
                 else {
@@ -712,149 +724,13 @@ function doubleClickDetect() {
         }
     };
     game.loadGame = function() {   
-        game.checkDeviceType();
+        checkDeviceType();
         calculateHunger();
         game.setCanvasDimensions();
         game.loadWorld();
         CookieTicket.checkCookieTicket('checkMeOut');
     };
-    game.checkDeviceType = function() {
-        // Check if there is phone
-        if(window.screen.width > 830 ||
-           (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) == false)) {
-            document.getElementById("control").style.display = "none";
-            game.properties.actionText = "Press x";
-            game.properties.enterText = "E - enter building";
-            game.properties.enterButton = "E -";
-            game.properties.personText = "W - press to talk";
-            game.properties.personButton = "W -";
-            game.properties.device = "pc";
-        }
-        else {
-            game.properties.actionText = "Double tap";
-            game.properties.enterText = "Tap on building to enter";
-            game.properties.enterButton = "Tap on";
-            game.properties.personText = "Tap on screen to talk";
-            game.properties.personButton = "Tap on";
-            game.properties.device = "mobile";
-        }
-        if(game.properties.device === "mobile") {
-            document.getElementById("text_canvas").addEventListener("click", 
-                function() {
-                    // If the conversation_container visibility is visible, conversation is happening. Prevent other actions
-                    if(conversation.checkConversation()) {
-                        return false;
-                    }
-                    // If game is loading, return false
-                    if(game.properties.loading == false) {
-                        return false;
-                    }
-                    doubleClickDetect();
-                    let clickTimer;
-                    if(click == 1) {
-                        let clientX = event.clientX;
-                        let clientY = event.clientY;
-                        /*let clientX = event.touches[0].clientX;
-                        let clientY = event.touches[0].clientY;*/
-                        console.log(clientX);
-                        console.log(clientY);
-                        clickTimer = setTimeout(function() {
-                            // Single tap
-                            console.log('single tap');
-                            let check = game.checkBuilding(clientX, clientY);
-                            if(check == false) {
-                                game.checkCharacter();
-                            }
-                        }, 300);
-                    }
-                    else {
-                        // Double tap
-                        clearTimeout(clickTimer);
-                        // If game is loading, return false
-                        if(game.properties.loading == false) {
-                            game.getNextMap();    
-                        }
-                    }
-        
-                });
-            document.getElementById("control").addEventListener("touchmove", game.controls.move);
-            document.getElementById("control").addEventListener("touchend", game.controls.endMove);   
-        }
-            // Set controls
-            game.controls.e = game.checkBuilding;
-            game.controls.w = game.checkCharacter;
-            game.controls.x = game.getNextMap;
-            // Prevent user from scrolling with arrow keys on site
-            window.addEventListener("keydown", function(e) {
-                // space and arrow keys
-                if([37, 38, 39, 40, 67].indexOf(e.keyCode) > -1 || (e.keyCode == 32 &&e.target == document.body)) {
-                    e.preventDefault();
-                }
-            }, false);
-            window.addEventListener('keydown', function (e) {
-                if(game.properties.gamePause == true) {
-                    game.resumeGame();
-                }
-                switch(e.keyCode) {
-                    case 37:
-                        game.controls.left = true;
-                        break;
-                    case 38:
-                        game.controls.up = true;
-                        break;
-                    case 39:
-                        game.controls.right = true;
-                        break;
-                    case 40:
-                        game.controls.down = true;
-                        break;
-                    case 65:
-                        // A
-                        gamePieces.player.attack = true;
-                        break;
-                    case 67:
-                        // C
-                        if(gamePieces.player.combat == false){ gamePieces.player.combat = true;}
-                        else{ gamePieces.player.combat = false;}
-                        break;
-                    case 87:
-                        // W
-                        if(game.properties.loading == false && conversation.checkConversation() == false) {
-                            game.controls.w();    
-                        }
-                        break;
-                    case 88:
-                        // X
-                        console.log('x');
-                        if(game.properties.loading == false && conversation.checkConversation() == false) {
-                            game.controls.x();
-                        }
-                        break;
-                    case 69:
-                        // E
-                        if(game.properties.loading == false && conversation.checkConversation() == false) {
-                            game.controls.e();
-                        }
-                        break;
-                }
-            }, false);
-            window.addEventListener('keyup', function (e) {
-                switch(e.keyCode) {
-                    case 37:
-                        game.controls.left = false;
-                        break;
-                    case 38:
-                        game.controls.up = false;
-                        break;
-                    case 39:
-                        game.controls.right = false;
-                        break;
-                    case 40:
-                        game.controls.down = false;
-                        break;
-                }
-            }, false);
-    };
+    
     game.checkEventStatus = function() {
         if(game.properties.loading == false && conversation.checkConversation() == false) {
             
@@ -982,95 +858,6 @@ function doubleClickDetect() {
             game.controls.down = false;
         }
     };
-    viewport = {
-        counter: 0,
-        scale: game.properties.canvasWidth / 700,
-        draw: function() {
-            ctx = game.properties.context;
-            /*ctx.clearRect( - gamePieces.player.xMovement, - gamePieces.player.yMovement, 700, 700);*/
-            game.properties.context3.clearRect(0, 0, game.properties.canvasWidth, game.properties.canvasHeight);
-            ctx.save();
-            //Draw world and translate the image according to players movement
-            /*console.log('drawGameY:' + (game.properties.ycamMove + gamePieces.player.yMovement));
-            console.log('drawGameX:' + (game.properties.xcamMove + gamePieces.player.xMovement + 200));
-            console.log(gamePieces.player.yMovement);*/
-            if(/Safari|Chrome/i.test(navigator.userAgent)) {
-                let xPos = 0;
-                let sxPos = game.properties.xcamMove + gamePieces.player.xMovement;
-                let yPos = 0;
-                let syPos = game.properties.ycamMove + gamePieces.player.yMovement;
-                if(game.properties.xcamMove + gamePieces.player.xMovement < 0) {
-                    xPos = (game.properties.xcamMove + gamePieces.player.xMovement) * -1;
-                    sxPos = 0;
-                }
-                if(game.properties.ycamMove + gamePieces.player.yMovement < 0) {
-                    yPos = (game.properties.ycamMove + gamePieces.player.yMovement) * -1;
-                    syPos = 0;
-                }
-                ctx.drawImage(world, sxPos,
-                    syPos, 1024 * this.scale, 1024 * this.scale,
-                    xPos, yPos,
-                    1024 * this.scale, 1024 * this.scale);       
-            }
-            else {
-                ctx.drawImage(world, game.properties.xcamMove + gamePieces.player.xMovement,
-                      game.properties.ycamMove + gamePieces.player.yMovement, 1024 * this.scale, 1024 * this.scale, 0, 0,
-                      1024 * this.scale, 1024 * this.scale); 
-            }
-            /*if(xbase + xMovement < 0) {
-                let width = xbase + xMovement;
-                let widthP = (xbase + xMovement) * -1;
-                console.log(widthP);
-                game.properties.context4.clearRect(0, 0, 700, 700);
-                game.properties.context4.drawImage(eastImg, 3200 + width, 0, widthP, 700, 0, 0, widthP, 700);
-            }*/
-            ctx.restore();
-        },
-        drawEdge: function() {
-            ctx = game.properties.context;
-            if(game.properties.xbase + gamePieces.player.xMovement < game.properties.charX) {
-                    ctx.fillStyle = "black";
-                    ctx.fillRect(0, 0, (game.properties.xbase + gamePieces.player.xMovement - game.properties.charX) * -1, 600);
-            }
-            
-            if(game.properties.ybase + gamePieces.player.yMovement < 200) {
-                ctx.fillStyle = "black";
-                ctx.fillRect(0, 0, game.properties.canvasWidth, (game.properties.ybase + gamePieces.player.yMovement -
-                                                                                                game.properties.charY) * -1);
-            }
-            if(gamePieces.player.xMovement + game.properties.xbase > 3200 - game.properties.charX - 100) {
-                ctx.fillStyle = "black";
-                // Safari and chrome need 2 extra pixels for the curtain to be drawn correctly
-                let widthFix;
-                if(/Safari|Chrome/i.test(navigator.userAgent)) {
-                    widthFix = 2;
-                }
-                else {
-                    widthFix = 0;
-                }
-                ctx.fillRect(game.properties.canvasWidth, 0, - (game.properties.xbase + gamePieces.player.xMovement -
-                                                              (3200 - game.properties.charX - 64 - widthFix)), 600);
-            }
-            if(gamePieces.player.yMovement + game.properties.ybase > 3200 - game.properties.charY - 100) {
-                ctx.fillStyle = "black";
-                // Compensate for height difference, 0.511 per height difference;
-                let heightDiff = (400 - game.properties.canvasHeight) * 0.511;
-                ctx.fillRect(0, game.properties.canvasHeight - (game.properties.ybase + gamePieces.player.yMovement -  (2968 + heightDiff)),
-                             game.properties.canvasWidth, (game.properties.ybase + gamePieces.player.yMovement - (2968 + heightDiff)));
-            }
-            if(gamePieces.player.ypos > 3160 || 
-               (gamePieces.player.ypos < 3100 && gamePieces.player.ypos < 32) ||
-               gamePieces.player.xpos > 3160 ||
-               (gamePieces.player.xpos < 3100 && gamePieces.player.xpos < 32)){
-                game.canvasText.showText(game.properties.actionText + ' to go to next map', false);
-            }
-            else if(game.canvasText.textDrawn !== false) {
-                game.properties.nagivateNext = false;
-                game.canvasText.hideText();
-            }
-            
-        }
-    };
     game.loadChunk = function(x, y, xpos, ypos) {
         var data = "model=worldLoader" + "&method=loadChunks" +
                     "&xMapMin=" + xMapMin + "&yMapMin=" + yMapMin + "&xbase=" + xpos +  "&ybase=" + ypos;
@@ -1088,10 +875,10 @@ function doubleClickDetect() {
             console.log(gamePieces.objects);
         });
     };
-    game.startGame = function () {
+    game.startGame = function (first) {
         viewport.draw();
         viewport.drawEdge();
-        canvasTextHeader.setDraw(document.title);
+        /*canvasTextHeader.setDraw(document.title);*/
         player = gamePieces.player;
         gamePieces.player.newPos();
         game.updateGamePiece();
@@ -1113,15 +900,17 @@ function doubleClickDetect() {
                                                                           links[x][4], links[x][5], links[x][6]);
         }
     };
-    game.inactivityTime = function (pause) {
+    game.inactivityTime = function (pause = false) {
         console.log('inactivityTime');
-        var time;
-        document.onkeydown = resetTimer;
-        document.ontouchmove = resetTimer;
-        if(pause == true) {
+        console.log('pause');
+        let time;
+        document.addEventListener("keydown", resetTimer);
+        document.addEventListener("keyup", resetTimer);
+        document.addEventListener("touchmove", resetTimer);
+        if(pause == 'resume') {
             resetTimer();
         }
-        else if(pause == 'pause') {
+        else if(pause == true) {
             clearTimeout(time);
             pauseGame('loading');
         }
@@ -1164,20 +953,22 @@ function doubleClickDetect() {
     };
     game.resumeGame = function(first = false) {
         if(first == true) {
-            game.inactivityTime(true);
+            game.inactivityTime('resume');
         }
         else {
             game.properties.textContext.clearRect(0, 0, 700, 700);
             game.inactivityTime();
         }
         game.properties.gamePause = false;
-        game.properties.requestId = window.requestAnimationFrame(game.update);
+        if(game.properties.requestId === null) {
+            game.properties.requestId = window.requestAnimationFrame(game.update);
+        }
         game.properties.startTime = new Date().getTime();
     };
     function createDaqloon(id, x, y) {
         this.id = id;
         this.index = 1;
-        this.attack = 15;
+        this.attackDamage = 15;
         this.defence = 10;
         this.x = x;
         this.y = y;
@@ -1231,7 +1022,7 @@ function doubleClickDetect() {
             if(Math.abs(this.x - gamePieces.player.xpos) < 20 && Math.abs(this.y - gamePieces.player.ypos) < 20 &&
                this.attack == false) {
                 this.attack = true;
-                gamePieces.player.takeDamage();
+                gamePieces.player.takeDamage(this.attackDamage);
                 
                 // 5
                 // 6
@@ -1290,9 +1081,9 @@ function doubleClickDetect() {
             let distanceY = gamePieces.player.ypos - this.y;
             
             // Check if there are nearby daqloons, if so prevent them from "crashing"
-            let nearbyIndex = this.findOtherDaqloons();
-            let nearbyX = nearbyIndex[0];
-            let nearbyY = nearbyIndex[1];
+            // let nearbyIndex = this.findOtherDaqloons();
+            let nearbyX = 1;
+            let nearbyY = 1;
             
             // Check wether the enemy NPC is far away from player. If so move to player, else attack player.
             /*if(Math.abs(distanceX) < 0 && Math.abs(distanceX) < 0) {
@@ -1347,41 +1138,6 @@ function doubleClickDetect() {
             return [nearbyX, nearbyY];
         };
     }
-    function gameObstacle (name, x, y, width, height, style) {
-        this.name = name;
-        this.x = x;
-        this.y = y;
-        this.width = width / viewport.scale;
-        this.height = height / viewport.scale;
-        this.diameterTop = y;
-        this.diameterRight = x + width;
-        this.diameterDown = y + height;
-        this.diameterLeft = x;
-        this.style = style;
-        ctx = game.properties.context;
-        ctx.fillStyle = style;
-        ctx.fillRect(x, y, width, height);
-        obstaclesPos.push([x, y, this.diameterTop, this.diameterRight, this.diameterDown, this.diameterLeft, width, height]);
-    }
-    function gameLinks(name, x, y, width, height, style, location) {
-        this.name = name;
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.diameterTop = y;
-        this.diameterRight = x + width;
-        this.diameterDown = y + height;
-        this.diameterLeft = x;
-        this.style = style;
-        this.img = new Image(50, 50);
-        this.img.src = style + ".png";
-        this.location = location;
-        ctx = game.properties.context;
-        ctx.fillStyle = style;
-        ctx.fillRect(x, y, width, height);
-        /*linksPos.push([x, y, this.diameterTop, this.diameterRight, this.diameterDown, this.diameterLeft, width, height]);*/
-    }
     game.updateGamePiece = function() {
             ctx = game.properties.context;
             function checkPos(object) {
@@ -1403,7 +1159,7 @@ function doubleClickDetect() {
                     continue;
                 }*/
                 if(draw == true) {
-                    ctx = game.properties.context3;
+                    ctx = game.properties.context4;
                     ctx.fillStyle = "red";
                     ctx.fillRect(visibleObjects[i].drawX - (player.xMovement / viewport.scale),
                                  visibleObjects[i].drawY - (player.yMovement / viewport.scale),
@@ -1423,7 +1179,7 @@ function doubleClickDetect() {
                         drawContext = ctx;
                     }
                     else{
-                        drawContext = game.properties.context3;  
+                        drawContext = game.properties.context4;  
                     }
                     drawContext.imageSmoothingEnabled = false;
                     /*console.log(visibleObjects[i]);*/
@@ -1505,7 +1261,7 @@ function doubleClickDetect() {
                    player.xpos > object.diameterLeft - 5 && player.xpos < object.diameterRight + 5 &&
                    Math.abs(player.ypos - object.diameterDown) < 32) {
                         conversation.loadConversation(object.src.split(".png")[0]);
-                        game.inactivityTime('pause');
+                        game.inactivityTime(true);
                         break;
                     }
         }
@@ -1596,13 +1352,10 @@ function doubleClickDetect() {
             if(game.controls.down == true) {
                 player.speedY = player.speed;
             }
-            
-            /*if(duration % 2 == 0) {
-                game.properties.context3.clearRect(0, 0, game.properties.canvasWidth, game.properties.canvasHeight);   
-            }
+            game.properties.context3.clearRect(0, 0, game.properties.canvasWidth, game.properties.canvasHeight);
             for(var i = 0; i < gamePieces.daqloon.length; i++) {
                 gamePieces.daqloon[i].draw();
-            }*/
+            }
             if((player.speedX != 0 || player.speedY != 0) && inBuilding == false && conversation.index == null) {
                 eventHandler.checkEvent();
                 game.calculateDistance();
@@ -1617,46 +1370,6 @@ function doubleClickDetect() {
         }
         duration++;
         game.properties.requestId = window.requestAnimationFrame(game.update);
-    };
-    eventHandler = {
-        events: [],
-        eventOngoing: false,
-        checkEvent: function() {
-            if(this.eventOngoing == true) {
-                return;
-            }
-            for(let i = 0; i < this.events.length; i++) {
-                if(gamePieces.player.xpos >= this.events[i].xMin && gamePieces.player.xpos <= this.events[i].xMax &&
-                   gamePieces.player.ypos <= this.events[i].yMax && gamePieces.player.ypos >= this.events[i].yMin) {
-                    loadEvent(this.events[i].name);
-                    this.eventOngoing = true;
-                    break;
-                }
-            }
-            function loadEvent(event) {
-                let data = "event=" + event; 
-                ajaxJS(data, function(response) {
-                    if(response[0] !== false) {
-                        let responseText = JSON.parse(response[1]);
-                        if(responseText.draw != false) {
-                            let img = new Image(32, 32);
-                            let img2;
-                            responseText.draw.forEach(function(element) {
-                                img2 = img.cloneNode();
-                                img2.onload = function() {
-                                    /*game.properties.context3.drawImage(img, 0, 0, 32, 32); */
-                                    game.properties.context3.drawImage(img2, game.properties.charX + element.x,
-                                                              game.properties.charY + element.y);   
-                                };
-                                img2.src = "public/images/" + element.src;
-                            });
-                        }
-                        conversation.loadConversation(responseText.con);
-                        this.currentEvent = true;
-                    }
-                }, true, 'handler_e');
-            }
-        }
     };
     game.getNextMap = function() {
         /*let coordinatesArray = map.split(",");
@@ -1695,7 +1408,7 @@ function doubleClickDetect() {
         else {
             gamePieces.player.xMovement = 0;
             gamePieces.player.yMovement = 0;
-            game.loadWorld(true, newxBase, newyBase, "changeMap", {"new_x": newX, "new_y": newY});
+            game.loadWorld(newxBase, newyBase, "changeMap", {"new_x": newX, "new_y": newY});
         }
     };
     function checkChunk() {
