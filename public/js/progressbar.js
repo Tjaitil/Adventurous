@@ -1,4 +1,4 @@
-progressBar = {
+const progressBar = {
     calculateProgress: function(progressBarElement, currentValue, maxValue, valuesInserted = true) {
         /* progressBarElement = div parent container for progressbar
          * currentValue = current value used in calculating progress
