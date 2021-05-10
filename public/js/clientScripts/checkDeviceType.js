@@ -98,7 +98,8 @@ function checkDeviceType() {
                     else{ gamePieces.player.combat = false;}
                     break;
                 case 80:
-                    
+                    // P
+                    game.inactivityTime(true);
                     break;
                 case 87:
                     // W
