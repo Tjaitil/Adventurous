@@ -1,12 +1,14 @@
 #content_wrapper {
-    display: flex;
+    display: grid;
     justify-content: center;
-    gap: 10px;
+    grid-gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 198px));
 }
 .highscores {
-    float: left;
     margin: 1%;
     border-collapse: collapse;
+    box-sizing: border-box;
+    font-size: 12px;
 }
 .highscores img {
     width: 50px;
