@@ -17,7 +17,10 @@ body {
     padding: 10px 5px;
 }
 div {
-    color: var(--textColor);
+    color: var(--altTextColor);
+}
+header, aside, #inventory {
+    color: var(--textcolor);
 }
 body img {
     image-rendering: pixelated;
@@ -31,6 +34,10 @@ body img {
     grid-template-rows: 200px auto 100px;
     grid-template-columns: 12% 87%;
     box-sizing: border-box;
+}
+#wrapperOneColumn {
+    grid-template-columns: none;
+    grid-auto-columns: auto;
 }
 header {
     grid-area: header;
@@ -264,7 +271,7 @@ button:focus {outline:0;}
     visibility: hidden;
     position: absolute;
     margin: 2% 0% 2% 0%;
-    background-color: #d1a77a;
+    background-color: var(--layoutBgColor);
     z-index: 1;
     width: 68%;
     padding: 1%;
@@ -617,7 +624,7 @@ html, body {
   height: 100%;
 }
 
-@media screen and (orientation: portrait){
+@media only screen and (orientation: portrait) and (hover:none) {
     html {
         -webkit-transform: translateY(-100%) rotate(90deg);    
         transform: translateY(-100%) rotate(90deg);
