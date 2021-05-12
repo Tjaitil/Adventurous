@@ -2,18 +2,20 @@
             <h3 class="page_title"><?php echo $title;?></h3>
             <div id="trades">
                 <p id="countdown">New merchant offers in <span id="time"></span></p>
-                <div id="do_trade" class="div_content_dark">
-                    <div id="selected_trade">
-                        
+                <div id="trades_wrapper">
+                    <div id="do_trade" class="div_content_dark">
+                        <div id="selected_trade">
+                            
+                        </div>
+                        <p></p>
+                        <p id="trade_price"><img class="gold" src="<?php echo constant("ROUTE_IMG") . 'gold.png';?>" /></p>
+                        <label for="amount"> Amount </label></br>
+                        <input type="number" id="amount" name="amount"  min="0"/></br>
+                        <button> Trade </button>
                     </div>
-                    <p></p>
-                    <p id="trade_price"><img class="gold" src="<?php echo constant("ROUTE_IMG") . 'gold.png';?>" /></p>
-                    <label for="amount"> Amount </label></br>
-                    <input type="number" id="amount" name="amount"  min="0"/></br>
-                    <button> Trade </button>
-                </div>
-                <div id="trades_container" class="div_content">
-                    <?php get_template('merchantOffers', $this->data['merchant_offers'], true); ?>
+                    <div id="trades_container" class="div_content">
+                        <?php get_template('merchantOffers', $this->data['merchant_offers'], true); ?>
+                    </div>
                 </div>
                 <p id="trade_info">
                     Click on shop item to buy or click on inventory item to sell item. The store prices are listed as buy price / sell price.
