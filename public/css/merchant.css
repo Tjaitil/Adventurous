@@ -24,6 +24,12 @@
 .store_trade label {
     width: 100%;
 }
+#trades_container {
+    width: 100%;
+    font-size: var(--smallText);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(104px, 125px));
+}
 .item .gold {
     width: 30px;
     height: 30px;
@@ -31,15 +37,29 @@
 #trade_info {
     float: left;
 }
+#trades .item {
+    height: 125px;
+    width: unset;
+    max-width: unset;
+    min-width: unset;
+}
 #trades .item p {
     float: left;
     width: 100%;
     position: relative;
-    top: -18px;
+    top: 8px;
+}
+.item .item_amount {
+    top: -26%;
 }
 #trade_sign {
     float: left;
     line-height: 5
+}
+#trades_wrapper {
+    display: flex;
+    border: 5px ridge #330;
+    border-radius: 5px;
 }
 #do_trade {
     width: 155px;
@@ -56,8 +76,6 @@
 }
 #do_trade input[type="number"] {
     width: 25px;
-}
-#assignment {
 }
 #trader_assignment table {
     margin-bottom: 10px;
