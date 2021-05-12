@@ -38,10 +38,21 @@ canvasTextHeader = {
     opacity: 0.0,
     intervalID: null,
     text: null,
-    setDraw: function(text) {
-        console.log(this);
+    transition: false,
+    timer: 0,
+    setDraw: function(text, timer) {
         this.text = text;
-        this.intervalID = setInterval(() => canvasTextHeader.draw(), 50);
+        this.intervalID = setInterval(() => this.adjustOpacity(), 75);
+        setTimeout(() => this.unsetDraw(), timer * 1000);
+    },
+    adjustOpacity() {
+        if(this.opacity <= 0.4) {
+            this.opacity += 0.1;
+            this.draw();
+        }
+        else {
+            clearInterval(canvasTextHeader.intervalID);
+        }
     },
     draw: function() {
         game.properties.textContext.clearRect(0, 0, game.properties.canvasWidth, game.properties.canvasHeight);
@@ -52,19 +63,45 @@ canvasTextHeader = {
         game.properties.textContext.font = "35px Times New Roman";
         game.properties.textContext.textAlign = "center";
         game.properties.textContext.fillText(jsUcfirst(this.text), game.properties.canvasWidth * 0.50 - 20, contentY + 100);
-        if(this.opacity <= 0.4) {
-            this.opacity += 0.1;
-        }
-        else {
-            this.unsetDraw();
-        }
     },
     unsetDraw: function() {
-        clearInterval(canvasTextHeader.intervalID);
-        setTimeout(function() {
-            game.properties.textContext.clearRect(0, 0, game.properties.canvasWidth, game.properties.canvasHeight);
-            this.opacity = 0;
-        }, 1500);
-        
+        console.log('unsetDraw');
+        game.properties.textContext.clearRect(0, 0, game.properties.canvasWidth, game.properties.canvasHeight);
+        this.opacity = 0;   
     }
 };
+const loadingCanvas = {
+    opacity: 1,
+    intervalID: null,
+    lastCall: null,
+    duration: 0,
+    setLoading() {
+        game.properties.loading = false;
+        this.intervalID = window.requestAnimationFrame(() => this.draw());
+    },
+    draw() {
+        if(duration % 3 === 0) {
+            if(this.opacity <= 0) {
+                window.cancelAnimationFrame(this.intervalID);
+                // Set header where you are at
+                canvasTextHeader.setDraw(document.title, 5);
+                this.opacity = 1;
+                return false;
+            }
+            // Ease-in effect on loading
+            if(this.opacity > 0.8) {
+                this.opacity -= 0.015;
+            }
+            else if(this.opacity > 0.4) {
+                this.opacity -= 0.04;
+            }
+            else {
+                this.opacity -= 0.06;
+            }
+            game.properties.textContext.clearRect(0, 0, game.properties.canvasWidth, game.properties.canvasHeight);
+            game.properties.textContext.fillStyle = "rgba(0, 0, 0, " + this.opacity + ")";
+            game.properties.textContext.fillRect(0, 0, game.properties.canvasWidth, game.properties.canvasHeight);
+        }
+        this.intervalID = window.requestAnimationFrame(() => this.draw());
+    }
+}
