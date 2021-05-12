@@ -8,18 +8,23 @@
     left: 0px;
     right: 0px;
     bottom: 0px;
-    background-color: white;
-    border: 1px solid black;
+    background: radial-gradient(var(--layoutBgColor), var(--layoutBgColorShadowPerc), var(--layoutBgColorShadow));
+    border: 1px solid var(--borderColor);
     width: 500px;
     height: 415px;
     visibility: hidden;
     padding: 10px;
     z-index: 2;
+    border-radius: 20px;
 }
 #mission_enabled td { 
     padding: 5px;
     border: 1px solid black;
     border-collapse: collapse;
+}
+#mission_enabled_button button:first-of-type {
+    position: absolute;
+    right: 5px;
 }
 #mission_enabled button {
     background-color: #8B4513;

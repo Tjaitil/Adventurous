@@ -6,25 +6,13 @@
         var keep_buttons = document.getElementById("keep").querySelectorAll("button");
         keep_buttons[0].addEventListener("click", changeArtefact);
         keep_buttons[1].addEventListener("click", newArtefact);
-        document.getElementById("permits").querySelectorAll("button")[0].addEventListener("click", buyPermits);
+        document.getElementById("miner_permits").querySelectorAll("button")[0].addEventListener("click", buyPermits);
         document.getElementById("efficiency").querySelectorAll("button")[0].addEventListener("click", upgradeEffiency);
         let unlock_items_button = document.getElementById("unlock_items").querySelectorAll("button");
         unlock_items_button.forEach(function(element) {
             // ... code code code for this one element
             element.addEventListener('click', unlockArmorItems);
         });
-    }
-    function show(element) {
-        var divs = ["profiency", "keep", "permits"];
-        
-        for(var i = 0; i < divs.length; i++) {
-            if(divs[i] == element) {
-                document.getElementById(divs[i]).style = "display: inline";
-            }
-            else {
-                document.getElementById(divs[i]).style = "display: none";
-            }
-        }
     }
     function unlockArmorItems() {
         let button = event.target;
@@ -87,7 +75,7 @@
     }
     function buyPermits() {
         var amount = 50;
-        let permit_div = document.getElementById("permits").querySelectorAll("p")[0];
+        let permit_div = document.getElementById("miner_permits").querySelectorAll("p")[0];
         var permits = Number(permit_div.innerHTML.split(":")[1].trim()) + 50;
         var data = "model=CityCentreA" + "&method=buyPermits" + "&amount=" + amount;
         ajaxP(data, function(response) {
