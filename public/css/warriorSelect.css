@@ -19,14 +19,14 @@
 }
 .warriors span {
     position: relative;
-    top: 28%;
+    top: 62%;
     left: -70%;
     color: black;
     text-align: right;
     float: none;
 }
 .warriors {
-    border: 1px solid black;
+    border: 3px ridge #5f4121;
     height: 200px;
     width: 140px;
     margin: 2px;
@@ -35,17 +35,23 @@
     background-color: #f2e6d9;
     padding: 5px 0px 0px 0px;
     box-sizing: border-box;
+    border-radius: 5px;
 }
 .warriors input[type="checkbox"] {
     position: relative;
-    top: -10%;
+    top: 10px;
+    left: 70px;
 }
 .warrior_front {
     
 }
 .warrior_front button {
     position: relative;
-    left: 40px;
+    left: 24px;
+    padding: 0px;
+    height: 25px;
+    width: 30px;
+    bottom: -10px;
 }
 .warrior_back {
     position: relative;
