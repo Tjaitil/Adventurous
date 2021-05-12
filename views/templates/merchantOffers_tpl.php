@@ -1,4 +1,9 @@
 <?php
+    if(count($data) === 0): ?>
+    <p>
+        No offers available
+    </p>
+<?php endif;
     foreach($data as $key): ?>   
         <div class="item">
             <figure>
@@ -6,7 +11,8 @@
                 <figcaption class="tooltip"><?php echo ucwords($key['item']); ?></figcaption>
             </figure>
             <span class="item_amount"><?php echo $key['amount'];?></span>
-            <p class="item_price"><?php echo $key['price'] . ' ( +25 )' . ' / ' . '</br>' . floor($key['price'] * 0.97) ;?>
+            <p class="item_price"><?php echo $key['price'] . ' ( +25 )' . ' / ' . '</br>'?>
+            <span class="item_sell_price"><?php echo floor($key['price'] * 0.97) ;?></span>
                 <img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.png';?>" /></p>
         </div>
 <?php endforeach;?>
