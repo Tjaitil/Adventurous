@@ -25,7 +25,7 @@
         });
     }*/
     var gameTravel = {
-        seconds: 15, // Countdown for the countdown function
+        seconds: 14, // Countdown for the countdown function
         intervalID: null, // intervalID to clear interval when countdown is finished;
         newDestination: function() {
             if(event.target == null) {
@@ -39,16 +39,15 @@
                         element.removeEventListener('click', gameTravel.newDestination);
                     });
             }
-            gameTravel.intervalID = setInterval(
-                function() {
+            canvasTextHeader.setDraw("Travelling in 15", 15);
+            setTimeout(() => game.loadWorld(false, false, "changeMap", [destination.toLowerCase()]), 16000);
+            this.intervalID = setInterval(() => {
                     if(gameTravel.seconds <= 0) {
                         clearInterval(gameTravel.intervalID);
-                        gameTravel.seconds = 15;
-                        game.canvasText.hideText();
-                        game.loadWorld(true, false, false, "changeMap", [destination.toLowerCase()]);
                     }
                     else {
-                        game.canvasText.showText('Travelling in ' + gameTravel.seconds, false, false);
+                        canvasTextHeader.text = "Travelling in " + gameTravel.seconds;
+                        canvasTextHeader.draw();
                         gameTravel.seconds--;    
                     }
                 }, 1000);
