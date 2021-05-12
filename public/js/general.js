@@ -187,6 +187,8 @@
     function openNews(content, sidebar = false) {
         document.getElementById("news_content_main_content").innerHTML = "";
         var newsDiv = document.getElementById("news_content");
+        document.getElementById("news_content").style.top = 135 + "px";
+
         document.getElementById("news").style.visibility = "visible";
         document.getElementById("news_content").style.visibility = "visible";
         if(typeof content == 'object') {
@@ -214,8 +216,8 @@
         }
         // Remove stck_menu after stockpile has been exited
         if(document.getElementsByClassName("page_title")[0].innerText == 'Stockpile' &&
-           document.getElementById("stck_menu").style.visibility !== "hidden") {
-            document.getElementById("news_conent").removeChild(document.getElementById("stck_menu"));
+           document.getElementById("stck_menu").style.visibility === "visible") {
+            document.getElementById("news_content").removeChild(document.getElementById("stck_menu"));
         }
         // Remove event on inventory items after exiting tavern
         if(document.getElementsByClassName("page_title")[0].innerText == 'tavern') {
@@ -227,6 +229,7 @@
         newsDiv.innerHTML = "";
         news.style = "visibility: hidden;";
         document.getElementById("news_content").style.visibility = "hidden";
+        document.getElementById("news_content").style.top = "200px";
         if(typeof inBuilding !== 'undefined') {
             // Render the player outside building
             /*renderPlayer(0, 40);*/
