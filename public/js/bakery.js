@@ -1,4 +1,3 @@
-
     function make(item, element) {
         var parent = element.parentNode;
         var amount = parent.children[0].value;
@@ -16,19 +15,4 @@
             }
         });
     }
-    function lol() {
-        /*ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.onload = function () {
-            if(this.readyState == 4 && this.status == 200) {
-                console.log(this.responseText);
-            }
-        };
-        ajaxRequest.open('GET', "handlers/handler_p.php");
-        ajaxRequest.send();*/
-        var data = "model=Bakery" + "&method=makeMeal" + "&item=" + "askaks" + "&amount=" + 1;
-        ajaxP(data, function(response) {
-            
-        });
-    }
-    
     
