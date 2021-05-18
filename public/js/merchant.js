@@ -69,18 +69,16 @@
         }
         trades.forEach(function(element) {
             // Add eventListener to each node
-            element.addEventListener('click', function() {
-                selectTrade();
-            });
+            element.addEventListener('click', selectTrade);
         });
         selectItemEvent.addSelectEvent();
         var button = document.getElementById("do_trade").querySelectorAll("button")[0];
         button.addEventListener("click", tradeItem);
-        button.disabled = true;
     }
     function selectTrade() {
         // If trades div is hidden return false, because then the tab visible is trader assignment
-        if(document.getElementById("trades").visibility == "hidden") {
+        if(document.getElementById("trades").visibility == "hidden" || document.getElementById("trades") == null) {
+
             return false;
         }
         document.getElementById("do_trade").querySelectorAll("button")[0].disabled = false;
@@ -94,16 +92,18 @@
         if(event.target.closest(".item") === null) {
             // Item is in inventory
             elementDiv = event.target.closest(".inventory_item");
+            // Check if player is in fagna
             if(document.title.indexOf("Fagna") != -1) {
                 getPrice(String(elementDiv.querySelectorAll(".tooltip")[0].innerHTML));    
             }
             else {
-                let items = document.getElementById("trades").querySelectorAll(".tooltip");
+                // Check if the merchant is interested in that item
+                let items = document.getElementById("trades_container").querySelectorAll(".tooltip");
                 let match = false;
                 for(var i = 0; i < items.length; i++) {
                     if(item === items[i].innerHTML) {
                         match = true;
-                        price = items[i].closest(".item").querySelectorAll(".item_price")[0].innerHTML.split("<")[0].split("/")[1].trim();
+                        price = items[i].closest(".item").querySelectorAll(".item_sell_price")[0].innerHTML.trim();
                         break;
                     }
                 }
@@ -173,9 +173,12 @@
         }
         var data = "model=Merchant" + "&method=tradeItem" + "&item=" + item + "&amount=" + amount + "&mode=" + mode;
         ajaxP(data, function(response) {
-            console.log(response);
             if(response[0] != false) {
-                document.getElementById("trades").querySelectorAll("div")[0].innerHTML = response[1];
+                document.getElementById("trades_container").innerHTML = response[1];
+                document.getElementById("selected_trade").innerHTML = "";
+                document.getElementById("do_trade").querySelectorAll("p")[1].innerHTML = "";
+                document.getElementById("do_trade").querySelectorAll("p")[0].innerHTML = "";
+                document.getElementById("amount").value = "0";
                 updateInventory();
                 addMerchantEvents();
                 updateStockCountdown(true);
