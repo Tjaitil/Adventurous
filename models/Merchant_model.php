@@ -229,12 +229,12 @@
                     }
                     $random_item['store_rate'] = $items[$x][$db_table_name];
                     // First add the store_rate variable to price, decimal value
-                    $random_item['price'] = floor($random_item['store_value'] *
+                    $random_item['user_buy_price'] = floor($random_item['store_value'] *
                          (1 + ($random_item['store_rate'] / 30)));
             
                     // If there are few items add extra to the price
-                    $random_item['price'] = floor($random_item['price'] + 
-                                                 ($random_item['price'] / 50 * (1 - ($random_item['amount'] * 0.10)))
+                    $random_item['user_buy_price'] = floor($random_item['user_buy_price'] + 
+                                                 ($random_item['user_buy_price'] / 50 * (1 - ($random_item['amount'] * 0.10)))
                                                  + rand($random_item['store_rate'] * 0.05
                                                  , $random_item['store_rate'] * 0.10));
                     $location_stores[$location][] = $random_item;
@@ -242,7 +242,6 @@
             }
             try {
                 $this->db->conn->beginTransaction();
-                
                 // Delete old trades
                 $sql = "DELETE FROM merchant_offers";
                 $stmt = $this->db->conn->prepare($sql);
@@ -253,18 +252,20 @@
                 }
                 
                 // Insert new trades
-                $sql = "INSERT INTO merchant_offers (location, item, price, amount)
-                        VALUES(:location, :item, :price, :amount)";
+                $sql = "INSERT INTO merchant_offers (location, item, user_buy_price, user_sell_price, amount)
+                        VALUES(:location, :item, :user_buy_price, :user_sell_price, :amount)";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
                 $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
-                $stmt->bindParam(":price", $param_price, PDO::PARAM_INT);
+                $stmt->bindParam(":user_buy_price", $param_user_buy_price, PDO::PARAM_STR);
+                $stmt->bindParam(":user_sell_price", $param_user_sell_price, PDO::PARAM_INT);
                 $stmt->bindParam(":amount", $param_amount, PDO::PARAM_INT);
                 foreach($location_stores as $key => $value) {
                     $param_location = $key;
                     for($i = 0; $i < count($value); $i++) {
                         $param_item = $value[$i]['name'];
-                        $param_price = $value[$i]['price'];
+                        $param_user_buy_price = $value[$i]['user_buy_price'];
+                        $param_user_sell_price = $value[$i]['user_buy_price'] * 0.97;
                         $param_amount = $value[$i]['amount'];
                         $stmt->execute();
                     }
@@ -287,7 +288,7 @@
             $this->db->closeConn();
         }
         public function getOffers($js = false) {
-            $sql = "SELECT item, price, amount FROM merchant_offers WHERE location=:location";
+            $sql = "SELECT item, user_buy_price, user_sell_price, amount FROM merchant_offers WHERE location=:location";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
             $param_location = $this->session['location'];
@@ -314,7 +315,8 @@
                 return false;
             }
             if($this->session['location'] != 'fagna') {
-                $sql = "SELECT item, price, amount FROM merchant_offers WHERE location=:location AND item=:item";
+                $sql = "SELECT item, user_buy_price, user_sell_price, amount 
+                        FROM merchant_offers WHERE location=:location AND item=:item";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
                 $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
@@ -326,37 +328,35 @@
                 if($stmt->rowCount() == 0) {
                     if($mode == 'sell') {
                         $this->gameMessage("ERROR: The merchant isn't interested in what you are trying to sell", true);
+                        return false;
                     }
                     else {
                         $this->gameMessage("ERROR: The merchant isn't selling what you are trying to buy", true); 
+                        return false;
                     }
-                    $this->gameMessage("ERROR: The merchant isn't interested in what you are trying to sell", true);
-                    return false;
                 }
                 if($mode == 'buy' && $row['amount'] < $amount) {
                     $this->gameMessage("ERROR: The merchant isn't selling the amount you are trying to buy", true);
                     return false;
                 }
             }
+            // User is selling items
             if($mode == 'sell') {
                // Check if city is fagna
                 if($this->session['location'] == "fagna") {
                     // Find price for fagna;
                 }
                 else {
-                    // 3% reduction in price
-                    if($row['price'] > 1500) {
-                        $reduction_price = $row['price'] * 0.05;
-                    }
-                    else {
-                        $reduction_price = $row['price'] * 0.03;
-                    }
-                    $new_merchant_buy_price = $row['price'];
-                    $total_price = 0;
+                    // 5% reduction in price if price is over 1500
+                    $reduction = ($row['user_buy_price'] > 1500) ? 0.95 : 0.97;
+                    $minimum_price = $row['user_sell_price'] * ((1 - $reduction) + 1);
+                    $new_merchant_buy_price = $row['user_buy_price'];
+                    
                     for($i = 0; $i < $amount; $i++) {
-                        $new_merchant_buy_price -= $reduction_price;
-                        $total_price += $new_merchant_buy_price;
+                        $new_merchant_buy_price *= $reduction;
                     }
+                    if($new_merchant_buy_price < $minimum_price) $new_merchant_buy_price = $minimum_price;
+                    $total_sell_price = $row['user_sell_price'] * $amount;
                     $new_merchant_buy_price = floor($new_merchant_buy_price);
                 }
                 $sql = "SELECT item, amount FROM inventory WHERE item=:item AND username=:username";
@@ -375,26 +375,31 @@
             }
             else {
                 // $mode == 'buy'
-                $buy_price = $row['price'];
+                $buy_price = $row['user_buy_price'];
                 $new_amount = $row['amount'] - $amount;
-                $total_price = $row['price'] * $amount;
-                $new_merchant_sell_price;
+                $total_price = $row['user_buy_price'] * $amount;
+                $new_merchant_buy_price = $row['user_buy_price'];
+                $increase = ($row['user_buy_price'] > 1500) ? 1.05 : 1.03; 
+                // Increase price by 3 %
+                for($i = 0; $i < $amount; $i++) {
+                    $new_merchant_buy_price *= $increase;
+                }
             }
             try {
                 $this->db->conn->beginTransaction();
                 if($mode == 'sell') {
                     // Update inventory
                     $this->UpdateGamedata->updateInventory($item, -$amount);
-                    $this->UpdateGamedata->updateInventory('gold', $total_price, true);
+                    $this->UpdateGamedata->updateInventory('gold', $total_sell_price, true);
                     
-                    $sql = "UPDATE merchant_offers SET price=:price, amount=:amount
+                    $sql = "UPDATE merchant_offers SET user_buy_price=:user_buy_price, amount=:amount
                             WHERE location=:location AND item=:item";
                     $stmt = $this->db->conn->prepare($sql);
-                    $stmt->bindParam(":price", $param_price, PDO::PARAM_INT);
+                    $stmt->bindParam(":user_buy_price", $param_user_buy_price, PDO::PARAM_INT);
                     $stmt->bindParam(":amount", $param_amount, PDO::PARAM_INT);
                     $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
                     $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
-                    $param_price = $new_merchant_buy_price;
+                    $param_user_buy_price = $new_merchant_buy_price;
                     $param_amount = $new_amount;
                     $param_location = $this->session['location'];
                     $param_item = $item;
@@ -406,12 +411,14 @@
                     $this->UpdateGamedata->updateInventory($item, $amount);
                     $this->UpdateGamedata->updateInventory('gold', - $total_price, true);
                     
-                    $sql = "UPDATE merchant_offers SET amount=:amount
+                    $sql = "UPDATE merchant_offers SET user_buy_price=:user_buy_price, amount=:amount
                             WHERE location=:location AND item=:item";
                     $stmt = $this->db->conn->prepare($sql);
+                    $stmt->bindParam(":user_buy_price", $param_user_buy_price, PDO::PARAM_INT);
                     $stmt->bindParam(":amount", $param_amount, PDO::PARAM_INT);
                     $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
                     $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
+                    $param_user_buy_price = $new_merchant_buy_price;
                     $param_amount = $new_amount;
                     $param_location = $this->session['location'];
                     $param_item = $item;
