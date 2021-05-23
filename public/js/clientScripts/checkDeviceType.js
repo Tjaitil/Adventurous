@@ -90,7 +90,7 @@ function checkDeviceType() {
                     break;
                 case 65:
                     // A
-                    gamePieces.player.attack = true;
+                    if(gamePieces.player.cooldown === 0) gamePieces.player.attack = true;
                     break;
                 case 67:
                     // C
