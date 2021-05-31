@@ -23,7 +23,6 @@
         }
         protected function includeDB() {
             if(!isset($this->db)) {
-                /*require_once();*/
                 $this->db = new database();
             }
         }
