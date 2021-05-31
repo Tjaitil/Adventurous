@@ -99,7 +99,7 @@
             // Check if the profiency has leveled up
             if($_SESSION['gamedata'][$profiency]['xp'] > $this->session[$profiency]['next_level']) {
                 $_SESSION['gamedata']['level_up'][] = $profiency;
-                $levelUp_model = $this->loadModel('LevelUp', true);
+                $levelUp_model = $this->loadModel('LevelUp', true, true);
                 $levelUp_model->updateData();
             }
         }

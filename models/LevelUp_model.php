@@ -4,25 +4,29 @@
         public $session;
         public $profiency;
         public $new_levels = array();
+        protected $db;
         
-        function __construct ($session) {
-            parent::__construct();
+        function __construct ($session, $db) {
             $this->username = $session['username'];
             $this->session = $session;
+            $this->db = $db;
         }
-        public function updateData($js = true) {
+        public function updateData() {
             // Update levels
-            // If js is true, the request is coming from city.js
             $profiencies = array('farmer'. 'miner', 'warrior', 'trader', 'adventurer');
             $new_level = array();
-            if(in_array($this->session['level_up'], $profiencies) != false) {
-                $this->errorHandler->reportError(array($this->username, "Not valid skill: " . $this->session['level_up'] . __METHOD__));
-                $this->gameMessage("ERROR: Something unexpected happened, please try again!", true);
+            if(in_array($this->session['level_up'], $profiencies) !== false) {
+                var_dump($profiencies);
+                throw new Exception($this->username, "Not valid skill: " . $this->session['level_up'] . __METHOD__);
+
                 return false;
             }
             $sql = "SELECT level, next_level FROM level_data WHERE next_level > :xp ORDER BY next_level ASC LIMIT 1";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":xp", $param_xp);
+            $param_xp = 1000;
+            $stmt->execute();
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $this->session['level_up'] = array_unique($this->session['level_up']);
             foreach($this->session['level_up'] as $key => $value) {
                 // $value is the profiency name, because key is the index in the array
@@ -33,23 +37,15 @@
                 // $value is the profiency
                 $this->new_levels[] = array($value, $row['level'], $row['next_level']);
             }
-            try {
-                $this->db->conn->beginTransaction();
-                /*for($i = 0; $i < count($this->session['level_up']); $i++) {
-                    $sql = "UPDATE user_levels SET {$this->new_levels[$i][0]}" . "_level=:level WHERE username=:username";
-                    $stmt = $this->db->conn->prepare($sql);
-                    $stmt->bindParam(":level", $param_level, PDO::PARAM_INT);
-                    $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                    $param_level = $this->new_levels[$i][1];
-                    $param_username = $this->username;
-                    $stmt->execute();
-                }*/
-                $this->db->conn->commit();
-            }
-            catch (Exception $e) {
-                $this->errorHandler->catchAJAX($this->db, $e);
-                return false;
-            }
+            foreach($this->new_levels as $key) {
+                $sql = "UPDATE user_levels SET {$key[0]}_level=:level WHERE username=:username";
+                $stmt = $this->db->conn->prepare($sql);
+                $stmt->bindParam(":level", $param_level, PDO::PARAM_INT);
+                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                $param_level = $key[1];
+                $param_username = $this->username;
+                $stmt->execute();
+            }            
             // Select next_level for leveled up profiencies which prevents the message from repeating
             $i = 0;
             for($i = 0; $i < count($this->new_levels); $i++) {
@@ -62,7 +58,7 @@
                     $_SESSION['gamedata']['profiency_xp'] = $this->session[$value]['xp'];
                     $_SESSION['gamedata']['profiency_xp_nextlevel'] = $next_level;
                 }
-                echo "|" . "levelup" . "|" . $skill . "|" . $level . "|";
+                echo "levelup" . "#" . $skill . "#" . $level . "#";
             }
             $_SESSION['gamedata']['level_up'] = array();
             /*$this->levelupData();*/
