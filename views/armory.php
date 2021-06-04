@@ -1,6 +1,6 @@
             armory.css|armory.js|
             <h3 class="page_title"> Armory </h3>
-            <button class="button_link"> << Back to army camp</button>
+            <button> Back to army camp</button>
             <div id="warriors">
                 <div id="put_on">
                     <div id="selected">
