@@ -138,11 +138,10 @@
     function stockpileAction() {
         hideMenu();
         let element = event.target.closest("div").parentNode;
-        let item = event.target.parentNode.children[0].innerHTML.toLowerCase();
+        let item = event.target.parentNode.children[0].innerHTML.toLowerCase().split("<br>")[0].trim();
         let quantity = event.target.innerHTML.split(" ")[1];
         let insert;
-        console.log(document.getElementById("stck_menu").querySelectorAll("LI")[1].innerHTML);
-        console.log(document.getElementById("stck_menu").querySelectorAll("LI")[1].innerHTML.indexOf("Insert"));
+        console.log(item);
         if(document.getElementById("stck_menu").querySelectorAll("LI")[1].innerHTML.indexOf("Insert") != -1) {
             insert = "1";
             if(quantity === 'x') {

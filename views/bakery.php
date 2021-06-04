@@ -1,6 +1,6 @@
             market.css|market.js|
             <h3 class="page_title"> Bakery </h3>
-            <div>
+            <div id="bakery">
                 <table>
                     <thead>
                         <tr>

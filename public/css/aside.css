@@ -38,15 +38,9 @@ aside caption {
 #side_menu ul li:before {
     content:"\00BB\0020";
 }
-/* #side_menu li:hover {
-    background-color:#e6e6e6;
-    width:120px;
-    transition: width 1s;
-} */
 #side_menu ul li ul {
     padding: 1px 0px 1px 5px;
 }
-
 #side_menu li a {
     text-decoration: none;
     font-size: 14px;
@@ -74,6 +68,7 @@ aside caption {
 }
 .sidebar_tab {
     left: 10px;
+    color: var(--textColor);
 }
 #sidebar table {
     text-align: center;

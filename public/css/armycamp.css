@@ -1,11 +1,10 @@
 #calculator {
-    display: none;
+
 }
 #calc_result {
     visibility: hidden;
 }
 #stats_individ {
-    display: none;
 }
 #warriors {
     display: grid;
