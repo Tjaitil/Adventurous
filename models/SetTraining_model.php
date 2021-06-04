@@ -18,21 +18,22 @@
             // $POST variable holds the post data
             // This function is called from an AJAX request
             // Function to set training
-            $warrior = $POST['warrior'];
+            $warriors = $POST['warrior'];
             $type = $POST['type'];
-           
             
-            $sql = "SELECT warrior_id FROM warriors WHERE warrior_id=:warrior_id AND location=:location AND username=:username";
+            $query_array = explode(",", $warriors);
+            $warrior_ids = explode(",", $warriors);
+            $amount = count($query_array);
+            $in  = str_repeat('?,', count($query_array) - 1) . '?';
+            $query_array[] = $this->username;
+            $query_array[] = $this->session['location'];
+
+            $sql = "SELECT warrior_id FROM warriors
+            WHERE fetch_report=0 AND mission=0 AND warrior_id IN ($in) AND username=? AND location=?";
             $stmt = $this->db->conn->prepare($sql);
-            $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);
-            $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
-            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-            $param_warrior_id = $warrior;
-            $param_location = $this->session['location'];
-            $param_username = $this->username;
-            $stmt->execute();
-            if(!$stmt->rowCount() > 0) {
-                $this->gameMessage("ERROR: You are in the wrong city to train this soldier!", true);
+            $stmt->execute($query_array);
+            if($stmt->rowCount() !== $amount) {
+                $this->gameMessage("ERROR: One or more of your warriors are on mission or training", true);
                 return false;
             }
             
@@ -52,6 +53,7 @@
             try {
                 $this->db->conn->beginTransaction();
                 
+
                 $sql2 = "UPDATE warriors SET training_type=:training_type, training_countdown=:training_countdown, fetch_report=1
                          WHERE warrior_id=:warrior_id AND username=:username";
                 $stmt2 = $this->db->conn->prepare($sql2);
@@ -59,15 +61,17 @@
                 $stmt2->bindParam(":training_countdown", $param_training_countdown, PDO::PARAM_STR);
                 $stmt2->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);
                 $stmt2->bindParam(":username", $param_username, PDO::PARAM_STR);
-                $param_training_type = $type;
-                $param_training_countdown = date_format($new_date, "Y-m-d H:i:s");
-                $param_warrior_id = $warrior;
-                $param_username = $this->username;
-                $stmt2->execute();
+                foreach($warrior_ids as $key) {
+                    $param_training_type = $type;
+                    $param_training_countdown = date_format($new_date, "Y-m-d H:i:s");
+                    $param_warrior_id = $key;
+                    $param_username = $this->username;
+                    $stmt2->execute();
+                }
                 
                 // Only gain xp when warrior level is below 30 or if profiency is warrior
                 if($this->session['warrior']['level'] < 30 || $this->session['profiency'] == 'warrior') { 
-                    $this->UpdateGamedata->updateXP('warrior', $row2['experience']);
+                    $this->UpdateGamedata->updateXP('warrior', $row2['experience'] * count($warriors));
                 }
                 
                 $this->db->conn->commit();
@@ -82,7 +86,7 @@
              * [1] -> gameMessage
              */
             echo "|";
-            $this->gameMessage("Warrior {$training_type} training started", true);
+            $this->gameMessage("Warrior {$type} training started", true);
         }
     }
 ?>
