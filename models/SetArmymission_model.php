@@ -85,6 +85,7 @@
                 return false;
             }
             $this->db->closeConn();
+            $this->gameMessage("Army mission started!", true);
         }
     }
 ?>
