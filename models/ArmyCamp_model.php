@@ -131,7 +131,7 @@
             $skills = array('stamina', 'technique', 'precision', 'strength');
             $level_up = array();
             //Check if xp of one or more of the levels for each warrior is above next_level
-            foreach($warriors_leves = $row as $key) {
+            foreach($row as $key) {
                 for($i = 0; $i < count($skills); $i++) {
                     if($level_info[$key[$skills[$i] . '_level']] <= $key[$skills[$i].'_xp']) {
                         if($i === 0 ) {
@@ -143,11 +143,11 @@
                     }
                 }
                 if(isset($level_up[$key['warrior_id']]['update'])) {
-                        $level_up_statement = rtrim($level_up[$key['warrior_id']]['update'], ",");
-                        $level_up_statement .= " WHERE warrior_id=" . $key['warrior_id'] . " AND username=:username";
-                        $statements[] = $level_up_statement;
-                        unset($level_up[$key['warrior_id']]['update']);
-                    }
+                    $level_up_statement = rtrim($level_up[$key['warrior_id']]['update'], ",");
+                    $level_up_statement .= " WHERE warrior_id=" . $key['warrior_id'] . " AND username=:username";
+                    $statements[] = $level_up_statement;
+                    unset($level_up[$key['warrior_id']]['update']);
+                }
             }
             if(count($level_up) > 0) {
                 try {
