@@ -9,12 +9,21 @@
                                 "golbak" => 3.5, "krasnur" => 3.6, "towhar" => 5.7, "fagna" => 7.5, "cruendo" => 6.6,
                                 "ter" => 6.3, "snerpiir" => 5.5, "pvitul" => 2.9, "hirtam" => 4.9, "khanz" => 8.2);
         private $changed_location;
-        
+        private $objectCollisionData = array();
         
         function __construct ($session) {
             parent::__construct();
             $this->username = $session['username'];
             $this->session = $session;
+            $buildingsArray = json_decode(file_get_contents('../gamedata/buildings.json'), true);
+            $buildingsArray = array_filter($buildingsArray['tiles'], function($object) {
+                return (isset($object['properties']));
+            });
+            $landscapeArray = json_decode(file_get_contents('../gamedata/landscape.json'), true);
+            $landscapeArray = array_filter($landscapeArray['tiles'], function($object) {
+                return(isset($object['properties']));
+            });
+            $this->objectCollisionData = array_merge($buildingsArray, $landscapeArray);
         }
         private function updateMap($new_location = false) {
             // Function to update map in the db and location if there is travel functions has been called ($new_location)
@@ -192,11 +201,22 @@
                                 }
                             }
                             // If the diameter variables is not set, set them.
-                            if($object_array[$x]['type'] === "figure" || $object_array[$x]['type'] === 'object') {
+                            if(in_array($object_array[$x]['type'], array('figure', 'object', 'character'))) {
                                 $object_array[$x]['y'] = round($object_array[$x]['y'], 2);
                             }
                             else {
                                 $object_array[$x]['y'] = round($object_array[$x]['y'], 2) - $object_array[$x]['height'];
+                            }
+                            // if(isset($object_array[$x]['noCollision'])) {
+                            //     $object_array[$x]['src'] = 'cattails.png';
+                            // }
+                            if(isset($object_array[$x]['src'])) {
+                                $object_array[$x]['visible'] = false;
+                                $objectSrc = $object_array[$x]['src'];
+                                $objectCollData = array_values(array_filter($this->objectCollisionData, function ($object) 
+                                        use ($objectSrc) {
+                                    return ($object['image'] == $objectSrc);
+                                }));
                             }
                             $object_array[$x]['x'] = round($object_array[$x]['x'], 2);
                             if(!isset($object_array[$x]['diameterTop'])) {
@@ -205,12 +225,40 @@
                                 $object_array[$x]['diameterDown'] = 0;
                                 $object_array[$x]['diameterLeft'] = 0;
                             }
-                            $object_array[$x]['diameterTop'] = $object_array[$x]['y'] + $object_array[$x]['height'] - 80;
-                            $object_array[$x]['diameterRight'] = $object_array[$x]['x'] + $object_array[$x]['width'];
-                            $object_array[$x]['diameterDown'] = $object_array[$x]['y'] + $object_array[$x]['height'];
-                            $object_array[$x]['diameterLeft'] = $object_array[$x]['x'];
+                            if($string['layers'][$i]['name'] === 'Buildings') {
+                                $object_array[$x]['diameterTop'] = $object_array[$x]['y'] + $object_array[$x]['height'] - 80;
+                                $object_array[$x]['diameterDown'] = $object_array[$x]['y'] + $object_array[$x]['height'];
+                                $object_array[$x]['diameterLeft'] = $object_array[$x]['x'];
+                                $object_array[$x]['diameterRight'] = $object_array[$x]['x'] + $object_array[$x]['width'];
+                            }
+                            else {
+                                if(isset($objectCollData[0]['objectgroup']['objects'])) {
+                                    $objectCollData = $objectCollData[0]['objectgroup']['objects'][0];
+                                    $object_array[$x]['diameterTop'] = $object_array[$x]['y'] + $objectCollData['y'];
+                                    $object_array[$x]['diameterDown'] = $object_array[$x]['diameterTop'] 
+                                                        + $objectCollData['height'];
+                                    $object_array[$x]['diameterLeft'] = $object_array[$x]['x'] + $objectCollData['x'];
+                                    $object_array[$x]['diameterRight'] = $object_array[$x]['diameterLeft'] 
+                                                        + $objectCollData['width'];
+                                }
+                                else {
+                                    $object_array[$x]['diameterTop'] = $object_array[$x]['y'];
+                                    $object_array[$x]['diameterDown'] = $object_array[$x]['y'] + $object_array[$x]['height'];
+                                    $object_array[$x]['diameterLeft'] = $object_array[$x]['x'];
+                                    $object_array[$x]['diameterRight'] = $object_array[$x]['x'] + $object_array[$x]['width'];
+                                }
+                            }
+                            if($object_array[$x]['type'] == 'character') {
+                                $object_array[$x]['conversation'] = true;
+                                switch($object_array[$x]['type']) {
+                                    case 'Woman character.png';
+                                    case 'Character13.png':
+                                    case 'Citizen.png':
+                                        $object_array[$x]['type']['conversation'] = false;
+                                        break;
+                                }
+                            }
                             $objects['objects'][] = $object_array[$x];
-                            unset($object_array[$x]['type']);
                         }
                 }
             }
