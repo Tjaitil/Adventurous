@@ -136,8 +136,8 @@
                                    {$parameters['strength_xp']} strength xp. You received {$warrior_experience} warrior xp", true);    
             }
             else {
-                $type = $parameters[$training_type] . '_xp';
-                $this->gameMessage("Warrior training finished. Gained {$type} . {$training_type} xp. You received {$warrior_experience}
+                $type = $parameters[$training_type . '_xp'];
+                $this->gameMessage("Warrior training finished. Gained {$type} {$training_type} xp. You received {$warrior_experience}
                                    warrior xp", true);    
             }
         }
