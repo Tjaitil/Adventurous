@@ -2,12 +2,47 @@
         <?php $i = 1; if($i = 0): ?>
             <?php $_SESSION['gamedata']['level_up_data'] = $data['warrior_level_up'];?>
                 <script src="<?php echo constant("ROUTE_JS") . 'warriorLevelUp.js'?>"></script>
-            <?php endif?>
+        <?php endif?>
             <h3 class="page_title"> Army camp </h3>
             <button type="button"> Army Missions </button>
             <button type="button"> Armory </button>
-            <button type="button" onclick="show('overview');"> Training Overview </button>
-            <button type="button" onclick="show('calculator');"> Combat Calculator </button>
+            <div id="overview">
+                <div id="actions">
+                    <label for="action"> Select action </label>
+                    <select name="action">
+                        <option selected></option>
+                        <option value="transfer"> Transfer </option>
+                        <option value="heal"> Heal </option>
+                        <option value="rest"> Rest </option>
+                        <option value="training"> Training </option>
+                        <option value="offRest"> Off rest </option>
+                        <option value="changeType"> Change Type </option>
+                    </select>
+                    <div id="heal">
+                        <p> Select item to heal: </p>
+                        <div id="selected">
+                            
+                        </div>
+                        <div id="selected_t"></div>
+                        <input type="number" id="selected_amount" min="0" />
+                    </div>
+                    <div id="training">
+                        <label for="type"> Select type of training</label>
+                        <select name="type">
+                            <option></option>
+                            <option value="general"> General </option>
+                            <option value="stamina"> Stamina </option>
+                            <option value="technique"> Technique </option>
+                            <option value="precision"> Precision </option>
+                            <option value="strength"> Strength </option>
+                        </select></br>
+                    </div>
+                    <button> Do Action </button>
+                </div>
+                <div id="warriors">
+                    <?php get_template('warriors_levels', array($this->data['warrior_data'], $this->data['levels_data']), true);?>
+                </div>
+            </div>
             <div id="calculator">
                 <div id="calc_form">
                     <form>
@@ -49,42 +84,5 @@
                 </div>
                 <div id="calc_result">
                     <button type="button" onclick="toggle(1);"> New calculation </button>
-                </div>
-            </div>
-            <div id="overview">
-                <div id="actions">
-                    <label for="action"> Select action </label>
-                    <select name="action">
-                        <option selected></option>
-                        <option value="transfer"> Transfer </option>
-                        <option value="heal"> Heal </option>
-                        <option value="rest"> Rest </option>
-                        <option value="training"> Training </option>
-                        <option value="offRest"> Off rest </option>
-                        <option value="changeType"> Change Type </option>
-                    </select>
-                    <div id="heal">
-                        <p> Select item to heal: </p>
-                        <div id="selected">
-                            
-                        </div>
-                        <div id="selected_t"></div>
-                        <input type="number" id="selected_amount" min="0" />
-                    </div>
-                    <div id="training">
-                        <label for="type"> Select type of training</label>
-                        <select name="type">
-                            <option></option>
-                            <option value="general"> General </option>
-                            <option value="stamina"> Stamina </option>
-                            <option value="technique"> Technique </option>
-                            <option value="precision"> Precision </option>
-                            <option value="strength"> Strength </option>
-                        </select></br>
-                    </div>
-                    <button> Do Action </button>
-                </div>
-                <div id="warriors">
-                    <?php get_template('warriors_levels', array($this->data['warrior_data'], $this->data['levels_data']), true);?>
                 </div>
             </div>
