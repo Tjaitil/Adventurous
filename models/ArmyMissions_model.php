@@ -61,23 +61,24 @@
             $param_username = $this->username;
             $stmt->execute();
             $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if($stmt->rowCount() > 0) {
+                $query_array = array_column($row, 'warrior_id');
+                array_unshift($query_array, $this->username);
+                $in  = str_repeat('?,', count($query_array) - 2) . '?';
                     
-            $query_array = array_column($row, 'warrior_id');
-            array_unshift($query_array, $this->username);
-            $in  = str_repeat('?,', count($query_array) - 2) . '?';
+                $sql = "SELECT warrior_id, helm, ammunition, ammunition_amount, left_hand, body, right_hand, legs, boots,
+                        (SELECT SUM(attack) FROM armory_items_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS attack,
+                        (SELECT SUM(defence) FROM armory_items_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS defence
+                        FROM warrior_armory
+                        WHERE username= ? AND warrior_id IN ($in)";
+                $stmt = $this->db->conn->prepare($sql);
+                $stmt->execute($query_array);
+                $row2 = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $this->db->closeConn();
                 
-            $sql = "SELECT warrior_id, helm, ammunition, ammunition_amount, left_hand, body, right_hand, legs, boots,
-                    (SELECT SUM(attack) FROM armory_items_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS attack,
-                    (SELECT SUM(defence) FROM armory_items_data WHERE item IN (helm, left_hand, body, right_hand, boots)) AS defence
-                    FROM warrior_armory
-                    WHERE username= ? AND warrior_id IN ($in)";
-            $stmt = $this->db->conn->prepare($sql);
-            $stmt->execute($query_array);
-            $row2 = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $this->db->closeConn();
-            
-            foreach($row2 as $key => $value) {
-                array_push($warriors, array_merge($row[$key], $row2[$key]));
+                foreach($row2 as $key => $value) {
+                    array_push($warriors, array_merge($row[$key], $row2[$key]));
+                }
             }
             get_template('warrior_select', $warriors, true);
         }
