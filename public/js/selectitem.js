@@ -68,7 +68,7 @@
                     element.removeEventListener('click', select_i);
                 }
                 else if(selectItemEvent.page === "Merchant") {
-                    element.addEventListener('click', selectTrade);
+                    element.removeEventListener('click', selectTrade);
                 }
                 else {
                     element.removeEventListener('click', select);
