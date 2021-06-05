@@ -14,40 +14,8 @@
             /*if($this->data['current_adventure']['current'] != 0) {
                 $this->calculateContribution();
             }*/
-            $this->post();
-            $this->renderWE('adventures', 'Adventures', $this->data, $this->error, true, true);
+            $this->render('adventures', 'Adventures', $this->data, $this->error, true, true);
         }
-        
-        public function post() {
-            if($_SERVER['REQUEST_METHOD'] === "POST") {
-                require_once(constant('ROUTE_HELPER') . 'formhandler.php');
-                $formhandler = new formhandler();
-                $postArray = $_POST;
-                $result = $formhandler->checkData($postArray);
-                if(array_search("Empty!", $result) !== false) {
-                        foreach($result as $key => $value) {
-                           $this->error[$key] = $value; 
-                        }
-                }
-                if(!$this->model->checkAdventure() > 0) {
-                    return false;
-                }
-                else {
-                    $this->bindData();
-                }
-            }
-            else {
-                return false;
-            }
-        }
-        
-        public function bindData() {
-            $this->loadModel('SetAdventure', true);
-
-            
-            $this->model->newAdventure($this->adventureData);
-        }
-        
         public function calculateContribution() {
             $this->data['current_adventure']['requirments']['farmer'] = array();
             $this->data['current_adventure']['requirments']['miner'] = array();
