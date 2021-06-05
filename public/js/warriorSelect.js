@@ -3,14 +3,20 @@
             check();
         };
     }
-    function check() {
+    function addWarriorEvents(element) {
+        element.addEventListener('click', function() {
+            checkWarriorBox();
+        });
+        element.querySelectorAll("button")[0].addEventListener('click', flipWarriorCard);
+    }
+    function checkWarriorBox() {
+        // function to check wether checkbox is checked or not. Apply styles based on bolean value
         if(event.target.tagName == "BUTTON") {
             return false;
         }
         var div = event.target.closest(".warriors");
         var checkbox = div.querySelectorAll("input[type=checkbox]")[0];
-        console.log(div);
-        console.log(div.querySelectorAll("input[type=checkbox]"));
+        let increment = 0;
         // If event target is not the checkbox, toggle the checked property
         if(event.target.tagName != "INPUT") {
             if(checkbox.checked) {
@@ -22,14 +28,16 @@
         }
         if(checkbox.checked) {
             document.getElementById(div.id).style.border = "3px ridge #5f4121";
+            increment = 1;
         }
         else {
-            document.getElementById(div.id).style.border = "1px solid black";
+            document.getElementById(div.id).style.border = "1px ridge #5f4121";
+            increment = -1;
         }
+        updateSelectedWarriors(increment);
     }
     function warriorsCheck() {
         var warriors_div = document.getElementsByClassName("warriors");
-        console.log(warriors_div[1]);
         var warrior_check = [];
         for(var i = 0; i < warriors_div.length; i++) {
             var checkbox = warriors_div[i].querySelectorAll("input[type=checkbox]")[0];
@@ -50,7 +58,6 @@
         else {
             div.style.transform = "rotateY(180deg)";
         }
-        console.log(div.style.transform.indexOf("180"));
         setTimeout(function() {
             if(div.style.transform.indexOf("180") == -1) {
                 div.querySelectorAll(".warrior_front")[0].style.visibility = "visible";
@@ -63,4 +70,9 @@
             div.querySelectorAll("button")[0].style.visibility = "visible"; 
         }, 100);
     }
-    
+    function updateSelectedWarriors(increment) {
+        let element = document.getElementById("selected_warrior_amount");
+        let warriorAmount = parseInt(element.innerHTML);
+        warriorAmount += increment;
+        element.innerHTML = warriorAmount;
+    }
