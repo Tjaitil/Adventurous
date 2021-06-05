@@ -10,26 +10,28 @@
         }
         public function getData() {
             $data = array();
-            $sql = "SELECT mission_id, required_warriors, mission, difficulty, reward, time, date FROM armymissions";
+            $now = new DateTime("now");
+            $date = $now->format("Y-m-d");
+            $sql = "SELECT mission_id, time, date FROM armymissions LIMIT 1";
             $stmt = $this->db->conn->prepare($sql);
-            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-            $param_username = $this->username;
+            $stmt->bindParam(":date", $param_date, PDO::PARAM_STR);
+            $param_date = $date;
             $stmt->execute();
-            $data['armyMissions'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $data['armyMissions'] = $stmt->fetch(PDO::FETCH_ASSOC);
             if(!$stmt->rowCount() > 0) {
                 $data['armyMissions'] = 'none';
             }
-            $now = new DateTime("now");
-            $db_date = new DateTime($data['armyMissions'][0]['date']);
+            $db_date = (isset($data['armyMissions']['date'])) ? new DateTime($data['armyMissions']['date']) : 0;
             if($db_date->format("Y-m-d") < $now->format("Y-m-d")) {
                 $this->generateNewAssignments();
-                $sql = "SELECT mission_id, required_warriors, mission, difficulty, reward, time, date FROM armymissions";
-                $stmt = $this->db->conn->prepare($sql);
-                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                $param_username = $this->username;
-                $stmt->execute();
-                $data['armyMissions'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
+            $sql = "SELECT mission_id, required_warriors, mission, difficulty, reward, time, date FROM armymissions
+                    WHERE DATE(date)=:date";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->bindParam(":date", $param_date, PDO::PARAM_STR);
+            $param_date = $date;
+            $stmt->execute();
+            $data['armyMissions'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
             for($i = 0; $i < count($data['armyMissions']); $i++) {
                 $data['armyMissions'][$i]['time'] = round($data['armyMissions'][$i]['time'] / 60); 
             }
@@ -159,13 +161,24 @@
                 }
                 $new_missions[] = $mission;
             }
+            $sql = "SELECT mission FROM warrior WHERE NOT mission=0";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->execute();
+            $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $active_mission_id = array_column($row, 'mission');
+            $in  = str_repeat('?,', count($active_mission_id) - 1) . '?';
             try {
                 $this->db->conn->beginTransaction();
-                
-                // Delete old assignments
-                $sql = "DELETE FROM armymissions";
+            
+                // Delete old assignments that no player is currently on
+                    if($stmt->rowCount() > 0) {
+                        $sql = "DELETE FROM armymissions WHERE mission_id NOT IN ($in)";
+                    }
+                    else {
+                        $sql = "DELETE FROM armymissions";    
+                    }
                 $stmt = $this->db->conn->prepare($sql);
-                $stmt->execute();
+                $stmt->execute($active_mission_id);
                 // If no rows has been affected, throw error;
                 if($stmt->rowCount() === 0) {
                     throw new Exception("No rows deleted from delete query " . __METHOD__);
