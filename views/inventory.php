@@ -39,7 +39,8 @@
             <div class="inventory_item">
                 <figure>
                     <img src="<?php echo constant('ROUTE_IMG') . $key['item'] . '.png';?>" />
-                    <figcaption class="tooltip"><?php echo ucwords($key['item']); ?></figcaption>
+                    <figcaption class="tooltip"><?php echo ucwords($key['item']);
+                                        echo ($key['amount'] > 1000) ? '</br>' . ' x ' . $key['amount'] : '' ?></figcaption>
                 </figure>
                 <span class="item_amount"><?php echo amount($key['amount']);?></span>
             </div>
@@ -50,7 +51,8 @@
                 <figure>
                     <?php $src = removePar($key['item']);?>
                     <img src="<?php echo constant('ROUTE_IMG') . $src . '.png';?>" />
-                    <figcaption class="tooltip"><?php echo ucwords($key['item']); ?></figcaption>
+                    <figcaption class="tooltip"><?php echo ucwords($key['item']); 
+                                        echo ($key['amount'] > 1000) ? '</br>' . ' x ' . $key['amount'] : ''?></figcaption>
                 </figure>
                 <span class="item_amount"><?php echo amount($key['amount']);?></span>
             </div>
