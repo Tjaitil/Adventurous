@@ -16,28 +16,32 @@
             $param_username = $this->username;
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            if($row['mission'] == 0) {
+                $this->gameMessage("ERROR: You do not currently have any active army missions", true);
+                return false;
+            }
             
-            $sql = "SELECT warrior_id, warrior_type WHERE mission=1 AND username=:username";
-            $stmt = $this->conn->prepare($sql);
+            $sql = "SELECT warrior_id, type FROM warriors WHERE mission=1 AND username=:username";
+            $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
             $warriors = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
-            $query_array = array_column($row, 'warrior_id');
-            array_unshift($query_array, $this->username);
-            $in  = str_repeat('?,', count($query_array) - 2) . '?';
+            $query_array = array_column($warriors, 'warrior_id');
+            $query_array[] = $this->username;
+            $in = str_repeat('?,', count($query_array) - 2) . '?';
             
-            $sql = "SELECT stamina_xp, technique_xp, precision_xp, strength_xp WHERE warrior_id IN ($in) AND username=?";
+            $sql = "SELECT stamina_xp, technique_xp, precision_xp, strength_xp FROM warriors_levels
+            WHERE warrior_id IN ($in) AND username=?";
             $stmt = $this->db->conn->prepare($sql);
-            $stmt->execute($queryArray);
+            $stmt->execute($query_array);
             $i = 0;
+            $warrior_levels = $stmt->fetchAll(PDO::FETCH_ASSOC);
             // Merge the arrays
-            while($warrior_levels = $stmt->fetchAll(PDO::FETCH_ASSOC)) {
-                $warriors[$i] = array_merge($warrior[$i], $warrior_levels[$i]);
-                $i++;
+            for($i = 0; $i < count($warrior_levels); $i++) {
+                $warriors[$i] = array_merge($warriors[$i], $warrior_levels[$i]);
             }
-            
             $sql = "SELECT difficulty, reward FROM armymissions WHERE mission_id=:mission_id";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":mission_id", $param_mission_id, PDO::PARAM_STR);
@@ -75,32 +79,32 @@
 
                 for($i = 0; $i < count($warriors); $i++) {
                     if($warriors[$i]['type'] == 'melee') {
-                        $sql = "UPDATE warriors_levels SET stamina_xp=:stamina_xp, technique_xp=:technique_xp
+                        $sql = "UPDATE warriors_levels SET stamina_xp=:stamina_xp, technique_xp=:technique_xp,
                                 strength_xp=:strength_xp WHERE warrior_id=:warrior_id AND username=:username";
-                        $stmt = $this->conn->prepare($sql);
+                        $stmt = $this->db->conn->prepare($sql);
                         $stmt->bindParam(":stamina_xp", $param_stamina_xp, PDO::PARAM_INT);
                         $stmt->bindParam(":technique_xp", $param_technique_xp, PDO::PARAM_INT);
                         $stmt->bindParam(":strength_xp", $param_strength_xp, PDO::PARAM_INT);
                         $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_INT);
                         $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                        $param_stamina_xp = $warriors[$i]['stamina_xp'] + $warrior_xp;
-                        $param_technique_xp = $warriors[$i]['technique_xp'] + $warrior_xp;
-                        $param_strength_xp = $warriors[$i]['strength_xp'] + $warrior_xp;
+                        $param_stamina_xp = intval($warriors[$i]['stamina_xp']) + $warrior_xp;
+                        $param_technique_xp = intval($warriors[$i]['technique_xp']) + $warrior_xp;
+                        $param_strength_xp = intval($warriors[$i]['strength_xp']) + $warrior_xp;
                         $param_warrior_id = $warriors[$i]['warrior_id'];
                         $param_username = $this->username;
                     }
                     else {
-                        $sql = "UPDATE warriors_levels SET stamina_xp=:stamina_xp, technique_xp=:technique_xp
+                        $sql = "UPDATE warriors_levels SET stamina_xp=:stamina_xp, technique_xp=:technique_xp, 
                                 precision_xp=:precision_xp WHERE warrior_id=:warrior_id AND username=:username";
-                        $stmt = $this->conn->prepare($sql);
+                        $stmt = $this->db->conn->prepare($sql);
                         $stmt->bindParam(":stamina_xp", $param_stamina_xp, PDO::PARAM_INT);
                         $stmt->bindParam(":technique_xp", $param_technique_xp, PDO::PARAM_INT);
                         $stmt->bindParam(":precision_xp", $param_precision_xp, PDO::PARAM_INT);
                         $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_INT);
                         $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                        $param_stamina_xp = $warriors[$i]['stamina_xp'] + $warrior_xp;
-                        $param_precision_xp = $warriors[$i]['precision_xp'] + $warrior_xp;
-                        $param_strength_xp = $warriors[$i]['strength_xp'] + $warrior_xp;
+                        $param_stamina_xp = intval($warriors[$i]['stamina_xp']) + $warrior_xp;
+                        $param_technique_xp = intval($warriors[$i]['technique_xp']) + $warrior_xp;
+                        $param_precision_xp = intval($warriors[$i]['precision_xp']) + $warrior_xp;
                         $param_warrior_id = $warriors[$i]['warrior_id'];
                         $param_username = $this->username;
                     }
@@ -113,7 +117,7 @@
                 //$param_username already is already defined in statement 1
                 $stmt3->execute();
                 
-                // Update inventory
+                // // Update inventory
                 $this->UpdateGamedata->updateInventory('gold', $row2['reward']);
                 // Only gain xp when warrior level is below 30 or if profiency is warrior
                 if($this->session['warrior']['level'] < 30 || $this->session['profiency'] == 'warrior') { 
@@ -131,7 +135,7 @@
              * [1] -> gameMessage
              */
             echo "|";
-            $this->gameMessage("Armymission completed, {$xp} xp gained and {$row['reward']} gold earned", true);
+            $this->gameMessage("Armymission completed, {$xp} xp gained and {$row2['reward']} gold earned", true);
         }
         public function cancelMission() {
             $sql = "SELECT mission FROM warrior WHERE username=:username";
