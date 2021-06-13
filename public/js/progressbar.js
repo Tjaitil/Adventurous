@@ -17,6 +17,11 @@ const progressBar = {
             maxValue = progressBarElement.querySelectorAll(".progressBar_maxValue")[0].innerHTML;
         }
         let width = (parseInt(currentValue) / parseInt(maxValue)) * 100;
+        progressBarElement.querySelectorAll(".progressBarOverlay")[0].style.transition = "width 1s ease-out";
+        progressBarElement.querySelectorAll(".progressBarOverlay")[0].style.width = "0%";
+        progressBarElement.querySelectorAll(".progressBarOverlay")[0].getBoundingClientRect();
+        if(width > 100) width = 100;
         progressBarElement.querySelectorAll(".progressBarOverlay")[0].style.width = width + "%";
+        return width;
     }
 };

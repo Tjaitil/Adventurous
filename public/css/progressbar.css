@@ -12,6 +12,7 @@
     position: absolute;
     top: 0px;
     left: 0px;
+    transition: width 1s ease-out;
 }
 .progressBar {
     width: 100%;
