@@ -23,8 +23,8 @@
                                         case 'oak bow':
                                             echo '3 x Oak log';
                                             break;
-                                        case 'beech bow':
-                                            echo '3 x Beech log';
+                                        case 'birch bow':
+                                            echo '3 x Birch log';
                                             break;
                                         case 'yew bow':
                                             echo '3 x Yew log';
@@ -32,7 +32,7 @@
                                         case 'arrow shaft':
                                             echo '1 x Oak log';
                                             break;
-                                        case 'unfinished arrow':
+                                        case 'unfinished arrows':
                                             echo '1 x Arrow shaft';
                                             echo '</br>';
                                             echo '1 x Feather';

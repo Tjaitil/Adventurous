@@ -11,7 +11,7 @@
         }
         public function getData() {
             $data = array();
-            $items = implode('|', array("oak", "beech", "yew", "unfinished arrow", "arrow shaft"));
+            $items = implode('|', array("oak", "birch", "yew", "unfinished arrow", "arrow shaft"));
             $sql = "SELECT item, wood_required, cost FROM armory_items_data WHERE item REGEXP '{$items}'";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->execute();
@@ -25,7 +25,7 @@
             $item = strtolower($POST['item']);
             $amount = $POST['amount'];
             var_dump($item);
-            $materials = array("oak", "beech", "yew");
+            $materials = array("oak", "birch", "yew");
             if(strpos($item, "arrow shaft") !== false) {
                 $log = "oak log";
             }
