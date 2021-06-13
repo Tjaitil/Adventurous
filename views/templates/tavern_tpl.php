@@ -1,8 +1,8 @@
            <div id="workers">
-                <ul>
                     <?php if(!count($data) > 0): ?>
-                        <li> No workers available </li>
+                        <p> No workers available </p>
                     <?php endif; ?>
+                <ul>
                     <?php foreach($data as $key):?>
                     <li>
                         <figure>
