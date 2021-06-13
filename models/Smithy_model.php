@@ -46,7 +46,7 @@
             $param_username = $this->username;
             $stmt->execute();
             $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if(!$stmt->rowCount() > 1) {
+            if($stmt->rowCount() == 1) {
                 $this->gameMessage("ERROR: You missing one or more items in your inventory", true);
                 return false;
             }
@@ -75,7 +75,7 @@
             }
             if(strpos($item, 'arrows') !== false) {
                 $item_data = get_item($this->session, 'unfinished arrow');
-                if(!$item_data['amount'] < 5 || $item_data['amount'] < $amount) {
+                if(!$item_data['amount'] < 5 * $amount) {
                     $this->gameMessage("ERROR: You don't have enough unfinished arrows in your inventory", true);
                     return false;    
                 }
@@ -98,7 +98,6 @@
             
             try {
                 $this->db->conn->beginTransaction();
-                
                 if(strpos($item, 'arrows') !== false) {
                     $this->UpdateGamedata->updateInventory($item, $amount * 5);
                     $this->UpdateGamedata->updateInventory('unfinished arrow', -$minerals_needed * 5, true);
