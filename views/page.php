@@ -8,27 +8,25 @@
         <?php require(constant('ROUTE_VIEW') . 'head.php');?>
     </head>
     <body>
-        <div id="wrapper">
-            <header>
-                <?php require(constant('ROUTE_VIEW') . 'header.php'); ?>
-            </header>
-            <section>
-                <?php if(array_search($name, array('advclient', 'gameguide')) === false): ?>
-                    <script src="<?php echo constant('ROUTE_JS') . $name . '.js';?>"></script>
-                <?php endif;?>
-                <script src="<?php echo '../' . constant('ROUTE_JS') . 'checkSite.js';?>"></script>
-                <script src="<?php echo constant('ROUTE_JS') . 'scriptLoader.js';?>"></script>
-                <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
-                <?php require(constant('ROUTE_VIEW') . $name . '.php');?>
-            </section>
-            <?php if(array_search($name, array("gameguide", "profile", "error", "main", "highscores", "news", "messages")) === false): ?>
-            <aside>
-                <?php require(constant('ROUTE_VIEW') . '/aside.php'); ?>
-            </aside>
+        <header>
+            <?php require(constant('ROUTE_VIEW') . 'header.php'); ?>
+        </header>
+        <section>
+            <?php if(array_search($name, array('advclient', 'gameguide')) === false): ?>
+                <script src="<?php echo constant('ROUTE_JS') . $name . '.js';?>"></script>
             <?php endif;?>
-            <footer>
-                Delevoped by Kjetil Baksaas
-            </footer>
-        </div>
+            <script src="<?php echo '../' . constant('ROUTE_JS') . 'checkSite.js';?>"></script>
+            <script src="<?php echo constant('ROUTE_JS') . 'scriptLoader.js';?>"></script>
+            <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
+            <?php require(constant('ROUTE_VIEW') . $name . '.php');?>
+        </section>
+        <?php if(array_search($name, array("gameguide", "profile", "error", "main", "highscores", "news", "messages")) === false): ?>
+        <aside>
+            <?php require(constant('ROUTE_VIEW') . '/aside.php'); ?>
+        </aside>
+        <?php endif;?>
+        <footer>
+            Delevoped by Kjetil Baksaas
+        </footer>
     </body>
 </html>
