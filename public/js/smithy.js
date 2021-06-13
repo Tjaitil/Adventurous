@@ -18,12 +18,12 @@
         element.style.border = "1px solid red";
     }
     
-    function showMineral(mineral, element) {
+    function showMineral(mineral) {
         var divs = ["iron", "steel", "gargonite", "adron", "yeqdon", "frajrite"];
         var minerals = document.getElementsByClassName("minerals");
         for(var i = 0; i < divs.length; i++) {
             if(divs[i] == mineral) {
-                document.getElementById(divs[i]).style = "display: inline";
+                document.getElementById(divs[i]).style.display = "inline-block";
                 minerals[i].style = "border: 2px solid brown";
             }
             else {
