@@ -49,30 +49,32 @@
                                 <img class="item_img" src="<?php echo constant('ROUTE_IMG') . $key['item']. '.png';?>" />
                                 <figcaption><?php echo ucwords($key['item']);?></figcaption>
                             </figure></td>
-                            <td> 1 <img src="<?php echo constant('ROUTE_IMG') . $mineral . ' bar.png';?>" /> =
-                                15 <img src="<?php echo constant('ROUTE_IMG') . $key['item']. '.png';?>" /></td>
+                            <td> <img src="<?php echo constant('ROUTE_IMG') . $mineral . ' bar.png';?>" /> + 
+                                 <img src="<?php echo constant('ROUTE_IMG') . 'unfinished arrow.png';?>" />
+                                  = 
+                                  5 <img src="<?php echo constant('ROUTE_IMG') . $key['item']. '.png';?>" /></td>
                             <td><?php echo $key['cost'];?><img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.png';?>" /></td>
                             <td> <input type="number" min="0" />
                             <button> Smith </button></td>
                         </tr>
                      <?php endif;endforeach;
                      };?>
-                <table id="iron">
+                <table id="iron" class="noDisplayBlock">
                     <?php generateTable($this->data['iron']);?>
                 </table>
-                <table id="steel">
+                <table id="steel" class="noDisplayBlock">
                     <?php generateTable($this->data['steel']);?>
                 </table>
-                <table id="gargonite">
+                <table id="gargonite" class="noDisplayBlock">
                     <?php generateTable($this->data['gargonite']);?>
                 </table>
-                <table id="adron">
+                <table id="adron" class="noDisplayBlock">
                     <?php generateTable($this->data['adron']);?>
                 </table>
-                <table id="yeqdon">
+                <table id="yeqdon" class="noDisplayBlock">
                     <?php generateTable($this->data['yeqdon']);?>
                 </table>
-                <table id="frajrite">
+                <table id="frajrite" class="noDisplayBlock">
                     <?php generateTable($this->data['frajrite']);?>
                 </table>
             </div>
