@@ -9,10 +9,6 @@
         public function index() {
             $this->loadModel('Tavern', true);
             $this->data['user_tavern_data'] = $this->model->getData();
-            if(date_timestamp_get(new DateTime(date("Y-m-d"))) >
-               date_timestamp_get(new DateTime($this->data['user_tavern_data']['workers']['new_workers']))) {
-                $this->model->resetData();
-            }
             $this->workers();
             $this->render('tavern', 'Tavern', $this->data, true, true);
         }
@@ -20,22 +16,30 @@
         public function workers() {
             $date = date("Y-m-d");
             $city = $_SESSION['gamedata']['location'];
-            if(intval($this->data['user_tavern_data']['workers'][$city]) === 0) {
+            if(empty($this->data['user_tavern_data']['workers'])) {
+                $this->data['tavern']['workers'] = array();   
+                return false;
+            }
+            else if($date > $this->data['user_tavern_data']['workers']['new_workers']) {
+                $this->model->resetData();
+            }
+            if(intval($this->data['user_tavern_data']['workers'][$city]) === 0 || 
+                $date > $this->data['user_tavern_data']['workers']['new_workers']) {
                 switch($city) {
                     case 'snerpiir' || 'golbak':
                         $farmer_amount = rand(0,2);
-                        $miner_amount = rand(0,3);
+                        $miner_amount = rand(1,3);
                         $warrior_amount = rand(1,2);
                         break;
                     case 'towhar' || 'krasnur':
-                        $farmer_amount = rand(0,3);
+                        $farmer_amount = rand(1,3);
                         $miner_amount  = rand(0,2);
                         $warrior_amount = rand(0,2);
                         break;
-                    case 'tasnobil' || 'parth':
+                    case 'tasnobil' || 'cruendo':
                         $farmer_amount = rand(0,2);
                         $miner_amount  = rand(0,2);
-                        $warrior_amount = rand(0,5);
+                        $warrior_amount = rand(1,5);
                         break;
                 }
                 $warrior_types = array('melee', 'ranged');
@@ -57,7 +61,7 @@
                 $this->data['tavern']['workers'] = $this->data['workers'];
                 $this->model->updateWorkers($this->data['workers']);
             }
-            else if($date === $this->data['user_tavern_data']['workers']['new_workers']) {
+            else if($date == $this->data['user_tavern_data']['workers']['new_workers']) {
                 $this->data['tavern']['workers'] = $this->model->getWorkers();
             }
             

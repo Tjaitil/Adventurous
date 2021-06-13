@@ -11,10 +11,10 @@
         public function getData() {
             $data = array();
             $cities = array("towhar", "golbak", "snerpiir", "krasnur", "tasnobil", "cruendo", "fagna");
-            if (array_search($this->session['location'], $cities) === false) {
-                $this->errorHandler->reportError(array($this->username, "Not valid location: " . $this->session['location'] . __METHOD__));
-                $this->gameMessage("ERROR: Something unexpected happened, please try again!", true);
-                return false;
+            if (array_search($this->session['location'], $cities) === false) {   
+                $data['workers'] = array();
+                $data['persons'] = array();             
+                return $data;
             }            
             $sql = "SELECT new_workers, {$this->session['location']} FROM tavern_times WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);
@@ -42,7 +42,7 @@
                 $param_username = $this->username;
                 $stmt->execute();
                 
-                $sql = "UPDATE tavern_times SET towhar=0, krasnur=0, snerpiir=0, golbak=0, tasnobil=0, parth=0 WHERE username=:username";
+                $sql = "UPDATE tavern_times SET towhar=0, krasnur=0, snerpiir=0, golbak=0, tasnobil=0, cruendo=0 WHERE username=:username";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $param_username = $this->username;
@@ -69,7 +69,6 @@
         public function updateWorkers($workers) {
             $cities = array("towhar", "golbak", "snerpiir", "krasnur", "tasnobil", "cruendo", "fagna");
             if (array_search($this->session['location'], $cities) === false) {
-                $this->gameMessage("ERROR: Something unexpected happened, please try again!", true);
                 return false;
             }
             
