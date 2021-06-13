@@ -70,22 +70,29 @@
             
             data = "person=" + person.toLowerCase() + "&index=" + index;
             conversation.convAJAX(data, (response) => {
-                console.log(this);
-                this.index = true;
-                console.log(response[1]);
-                this.activeDialogues = JSON.parse(response[1]);
-                console.log(this.buttonToggle);
-                if(this.buttonToggle == false) {
-                    this.toggleButton();
+
+                if(response[1] === "ERROR") {
+                    gameLog("That person is not interested in talking to you");
+                    this.endConversation();
                 }
-                this.makeLinks();
-                
-                // Set width on conversation so it fits between images by subtracting container width by both pictures
-                document.getElementById("conversation").style.width =
+                else {
+                    console.log(this);
+                    this.index = true;
+                    console.log(response[1]);
+                    this.activeDialogues = JSON.parse(response[1]);
+                    console.log(this.buttonToggle);
+                    if(this.buttonToggle == false) {
+                        this.toggleButton();
+                    }
+                    this.makeLinks();
+                    
+                    // Set width on conversation so it fits between images by subtracting container width by both pictures
+                    document.getElementById("conversation").style.width =
                     conversation_container.offsetWidth - (document.getElementById("conversation_a").width * 2)  - 17 + "px";
-                console.log(document.getElementById("conversation").style.width);
-                if(callback !== false) {
-                    callback();
+                    console.log(document.getElementById("conversation").style.width);
+                    if(callback !== false) {
+                        callback();
+                    }
                 }
             });
         },
@@ -147,7 +154,7 @@
             }
             
             console.log(text);
-            let data = "person=" + null +  "&index=" + text;
+            let data = "person=set" +  "&index=" + text;
             this.convAJAX(data, (response) => {
                 if(response[1] === "end") {
                     this.endConversation();

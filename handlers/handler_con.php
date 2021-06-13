@@ -9,7 +9,11 @@
     }
     else {
         $controller = $handler->loadController('conversation');
-        if($_POST['index'] !== "false" && $_POST['person'] == "null") {
+        if(!$controller->checkPerson($_POST['person']) && $_POST['person'] !== "set") {
+            echo "ERROR";
+            return false;
+        }
+        if($_POST['index'] !== "false" && $_POST['person'] === "set") {
             $response = $controller->getNextLine($_POST);
             if($response === "end") {
                 echo "end";
