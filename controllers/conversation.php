@@ -3,6 +3,7 @@
         public $index;
         public $text;
         public $POST;
+        public $file;
         function __construct () {
             if(isset($_SESSION['conversation']['conv_index'])) {
                 $this->index = $_SESSION['conversation']['conv_index'];    
@@ -11,21 +12,22 @@
                 $this->index === false;
             }
         }
-        public function getConversation($person) {
+        public function checkPerson($person) {
             $person = strtolower($person);
-            $file = "../gamedata/conversations/" . $person . ".json";
-            if(file_exists($file)) {
-                // get file and echo JSON file;
-                
-                /*
-                switch($person) {
-                    
-                }*/
-                
-                return file_get_contents($file);
+            $this->file = "../gamedata/conversations/" . $person . ".json";
+            if(file_exists($this->file)) {
+                return true;
             }
             else {
-                // Deal with problem, send mail?
+                return false;
+            }
+        }
+        public function getConversation($person) {
+            // Check if conversation with person exist
+            if($this->checkPerson($person)) {
+                return file_get_contents($this->file);
+        }
+            else {
                 return false;
             }
         }
