@@ -8,7 +8,7 @@
             $this->username = $session['username'];
             $this->session = $session;
         }
-        public function getData() {
+        public function getData($js = false) {
             $data = array();
             
             $sql = "SELECT permits, mining_type, mining_countdown, fetch_minerals FROM miner
@@ -21,7 +21,13 @@
             $stmt->execute();
             $data['minerData'] = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            $sql2 = "SELECT mineral_type, permit_cost FROM minerals_data ORDER BY miner_level ASC";
+            if($js === true) {
+                $sql2 = "SELECT mineral_type, miner_level, experience, time, permit_cost, location 
+                FROM minerals_data ORDER BY miner_level ASC";
+            }
+            else {
+                $sql2 = "SELECT mineral_type, permit_cost FROM minerals_data ORDER BY miner_level ASC";
+            }
             $stmt2 = $this->db->conn->prepare($sql2);
             $stmt2->bindParam(":minerlevel", $param_minerlevel, PDO::PARAM_STR);
             $stmt2->bindParam(":location", $param_location, PDO::PARAM_STR);
@@ -36,8 +42,12 @@
             $param_username = $this->username;
             $stmt3->execute();
             $data['workforceData'] = $stmt3->fetch(PDO::FETCH_ASSOC);
-
-            return $data;
+            if($js === true) {
+                echo json_encode($data);
+            }
+            else {
+                return $data;
+            }
         }
         
         // Function to echo date for ajax request

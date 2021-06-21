@@ -9,7 +9,7 @@
             $this->session = $session;
             $this->commonModels(true, false);
         }
-        public function getData() {
+        public function getData($js = false) {
                 $data = array();
                 $sql = "SELECT fields_avail FROM farmer WHERE location=:location AND username=:username";
                 $stmt = $this->db->conn->prepare($sql);
@@ -19,13 +19,20 @@
                 $param_username = $this->username;
                 $stmt->execute();
                 $data['fields'] = $stmt->fetch(PDO::FETCH_ASSOC);
-                
-                $sql2 = "SELECT crop_type FROM crops_data WHERE location=:location ORDER BY farmer_level ASC";
+                if($js == true) {
+                $sql2 = "SELECT farmer_level, crop_type, time, experience, seed_required, location
+                         FROM crops_data ORDER BY farmer_level ASC";
+
+                }
+                else {
+                    $sql2 = "SELECT crop_type FROM crops_data ORDER BY farmer_level ASC";
+                }
                 $stmt2 = $this->db->conn->prepare($sql2);
                 $stmt2->bindParam(":location", $param_location, PDO::PARAM_STR);
                 $param_location = $this->session['location'];
                 $stmt2->execute();
                 $data['crop_types'] = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+               
                 
                 $sql3 = "SELECT avail_workforce, efficiency_level FROM farmer_workforce WHERE username=:username";
                 $stmt3 = $this->db->conn->prepare($sql3);
@@ -33,8 +40,12 @@
                 $param_username = $this->username;
                 $stmt3->execute();
                 $data['workforce_data'] = $stmt3->fetch(PDO::FETCH_ASSOC);
-                
-                return $data;
+                if($js === true) {
+                    echo json_encode($data);
+                }
+                else {
+                    return $data;
+                }
         }
         public function checkCountdown($check = false) {
             $sql = "SELECT crop_countdown, plot1_harvest, crop_type FROM farmer WHERE username=:username AND location=:location";

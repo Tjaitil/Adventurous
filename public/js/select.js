@@ -26,28 +26,59 @@
         var div_inputs = div.querySelectorAll("input");
         
         div_inputs[0].value = jsUcfirst(item);
-        div_inputs[1].value = typeData[item].time;
+        document.getElementsByName("time")[0].value = typeData[item].time;
+        document.getElementsByName("experience")[0].value = typeData[item].experience;
+        document.getElementsByName("location")[0].value = typeData[item].location;
         
+        let imgSrc;
+        // Check wether or not the player are in crops or mine
         if(document.getElementsByClassName("page_title")[0].innerText == "Crops") {
-            console.log('crops');
-            div_inputs[2].value = typeData[item].seeds;    
+            document.getElementsByName("seeds")[0].value = typeData[item].seed_required;    
+            document.getElementsByName("level")[0].value = typeData[item].farmer_level;
+            imgSrc = typeData[item].crop_type + ".png";
         }
         else {
-            div_inputs[2].value = typeData[item].permits;
+            document.getElementsByName("permits")[0].value = typeData[item].permit_cost;
+            document.getElementsByName("level")[0].value = typeData[item].miner_level;
+            imgSrc = typeData[item].mineral_type + ".png";
         }
-        console.log(div.children[0].children);
         if(div.children[0].children.length == 0) {
             div.children[0].appendChild(clone);
         }
         else {
-            div.children[0].children[0].src = typeData[item].src;
-            div.children[0].children[0].alt = item;
+            let img = div.children[0].children[0]; 
+            img.src = "public/images/" + item + ".png";
+            img.alt = item;
+            img.style.border = "";
         }
     }
-    function getData(site) {
-        
-        var data = "model=" + "&method=" + "&site=" + site;
-        ajaxG(data, function(response) {
-            i    
+    function fetchData(site) {
+        let data;
+        if(game.properties.building === 'crops') {
+            data = "model=Crops" + "&method=getData";
+        }
+        else {
+            data = "model=Mine" + "&method=getData";
+        }
+        ajaxJS(data, function(response) {
+            console.log(response);
+            let responseText = JSON.parse(response[1]);
+            if(game.properties.building === 'crops') {
+                responseText['crop_types'];
+                for(let i = 0; i < responseText['crop_types'].length; i++) {
+                    typeData[responseText['crop_types'][i]['crop_type']] = responseText['crop_types'][i];
+                }    
+            }
+            else {
+                responseText['mineral_types'];
+                for(let i = 0; i < responseText['mineral_types'].length; i++) {
+                    typeData[responseText['mineral_types'][i]['mineral_type']] = responseText['mineral_types'][i];
+                }    
+
+            }
         });
     }
+    var typeData = {
+        
+    };
+    

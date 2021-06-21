@@ -24,8 +24,14 @@
                             </div>
                             <label for="time"> Time: </label>
                             <input type="text" name="time" readonly /></br>
-                            <label for="permit"> Permit: </label>
-                            <input type="text" name="permit" readonly /></br>
+                            <label for="location"> Location: </label>
+                            <input type="text" name="location" readonly /></br>
+                            <label for="level"> Level: </label>
+                            <input type="text" name="level" readonly /></br>                                
+                            <label for="experience"> Experience: </label>
+                            <input type="text" name="experience" readonly /></br>
+                            <label for="permits"> Permit: </label>
+                            <input type="text" name="permits" readonly /></br>
                             <label for="workforce"> Select number of workers:</label>
                             <input name="workforce" type="number" min="0" required />
                             <span>(<?php echo $this->data['workforceData']['avail_workforce']?>)</span></br>

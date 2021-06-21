@@ -9,6 +9,7 @@
         document.getElementById("seed_generator").children[3].addEventListener("click", seedGenerator);
         // selectitem.js
         selectItemEvent.addSelectEvent();
+        fetchData();
     }
     var intervals = [];
     function getCountdown() {
@@ -147,21 +148,3 @@
             }
         });
     }
-    function newCrop(name, seeds, time) {
-        this.src = "public/images/" + name + ".png";
-        this.seeds = seeds;
-        this.time = time;
-    }
-    var typeData = {
-        potato: new newCrop('potato', 1, 1000),
-        tomato: new newCrop('tomato', 1, 1000),
-        corn: new newCrop('corn', 1, 1000),
-        carrots: new newCrop('carrots', 1, 1000),
-        cabbages: new newCrop('cabbages', 1, 1000),
-        wheat: new newCrop('wheat', 1, 1000),
-        sugar: new newCrop('sugar', 1, 1000),
-        spices: new newCrop('spices', 1, 1000),
-        apples: new newCrop('apples', 1, 1000),
-        oranges: new newCrop('oranges', 1, 1000),
-        watermelon: new newCrop('watermelon', 1, 1000)
-    };

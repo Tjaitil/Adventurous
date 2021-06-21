@@ -24,11 +24,18 @@
                                 </div>
                                 <label for="time"> Time: </label>
                                 <input type="text" name="time" readonly /></br>
+                                <label for="location"> Location: </label>
+                                <input type="text" name="location" readonly /></br>
+                                <label for="level"> Level: </label>
+                                <input type="text" name="level" readonly /></br>                                
+                                <label for="experience"> Experience: </label>
+                                <input type="text" name="experience" readonly /></br>                                
                                 <label for="seeds"> Seeds: </label>
                                 <input type="text" name="seeds" readonly /></br>
                                 <label for="workforce"> Workforce:</label>
                                 <input name="workforce" id="" type="number" min="0" required />
                                 <span>(<?php echo $this->data['workforce_data']['avail_workforce']?>)</span>
+                                </br>
                                 <button type="button"> Grow </button>
                             </form>
                         </div>

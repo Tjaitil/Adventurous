@@ -8,6 +8,7 @@
         document.getElementById("cancel").addEventListener("click", cancelMining);
         /*document.getElementById("mineral_select").getElementsByTagName("img").addEventListener("click", showMineral);*/
         document.getElementById("data_form").querySelectorAll("button")[0].addEventListener("click", setMine);
+        fetchData();
     }
     var intervals = [];
     function getCountdown() {
