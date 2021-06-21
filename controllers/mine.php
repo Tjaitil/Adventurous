@@ -7,7 +7,7 @@
         public function index() {
             $this->loadModel('Mine', true);
             $this->data = $this->model->getData();
-            $this->render('mine', 'Mine', $this->data, true);
+            $this->render('mine', 'Mine', $this->data, true, true);
         }
     }
 ?>
