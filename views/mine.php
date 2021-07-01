@@ -6,37 +6,40 @@
                     <p id="time"></p>
                     <button id="cancel"> Cancel Mining </button>
                 </div>
-                <div id="select">
-                    <?php
+                <div id="action_body">
+                    <div id="select">
+                        <?php
                     foreach($this->data['mineral_types'] as $key): ?>
                     <img class="mineral" src="<?php echo constant('ROUTE_IMG') . $key['mineral_type'] . ' ore.png';?>"
                     alt="<?php echo $key['mineral_type'];?>"/>
                     <?php endforeach;?>
-                </div>
-                <div id="data_container">
-                    <p> Your total permits: <?php echo $this->data['minerData']['permits'];?></p>
-                    <div id="data">
-                        <form id="data_form">
-                            <figure></figure>
-                            <div class="row">
-                                <label for="mineral"> Mineral: </label>
-                                <input type="text" name="mineral" readonly /></br>
-                            </div>
-                            <label for="time"> Time: </label>
-                            <input type="text" name="time" readonly /></br>
-                            <label for="location"> Location: </label>
-                            <input type="text" name="location" readonly /></br>
-                            <label for="level"> Level: </label>
-                            <input type="text" name="level" readonly /></br>                                
-                            <label for="experience"> Experience: </label>
-                            <input type="text" name="experience" readonly /></br>
-                            <label for="permits"> Permit: </label>
-                            <input type="text" name="permits" readonly /></br>
-                            <label for="workforce"> Select number of workers:</label>
-                            <input name="workforce" type="number" min="0" required />
-                            <span>(<?php echo $this->data['workforceData']['avail_workforce']?>)</span></br>
+                    </div>
+                    <div id="data_container">
+                        <p> Your total permits: <?php echo $this->data['minerData']['permits'];?></p>
+                        <div id="data">
+                            <figure id="selected_item"></figure>
+                            <form id="data_form">
+                                <label for="mineral"> Mineral </label>
+                                <input type="text" name="mineral" readonly />
+                                <label for="time"> Time: </label>
+                                <input type="text" name="time" readonly />
+                                <span>Efficiency reduction</span><span id="reduction_time"></span>
+                                <label for="location"> Location </label>
+                                <input type="text" name="location" readonly />
+                                <label for="level"> Level </label>
+                                <input type="text" name="level" readonly />                                
+                                <label for="experience"> Experience </label>
+                                <input type="text" name="experience" readonly />
+                                <label for="permits"> Permit </label>
+                                <input type="text" name="permits" readonly />
+                                <label for="workforce"> Select workers (max)</label>
+                                <div>    
+                                    <input name="workforce" type="number" min="0" required />
+                                    <span>(<?php echo $this->data['workforceData']['avail_workforce']?>)</span></br>
+                                </div>
+                            </form>
                             <button type="button"> Mine </button>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>

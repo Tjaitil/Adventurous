@@ -23,10 +23,12 @@
         clone.style.border = "none";
         var div = document.getElementById("data_form");
         div.style.visibility = "visible";
+        document.getElementById("data").style.visibility = "visible";
         var div_inputs = div.querySelectorAll("input");
-        
         div_inputs[0].value = jsUcfirst(item);
         document.getElementsByName("time")[0].value = typeData[item].time;
+        document.getElementById("reduction_time").innerText = "- " + (parseInt(typeData[item].time) * 
+                gameData['workforce_data']['efficiency_level'] / 100) + 's';
         document.getElementsByName("experience")[0].value = typeData[item].experience;
         document.getElementsByName("location")[0].value = typeData[item].location;
         
@@ -42,11 +44,12 @@
             document.getElementsByName("level")[0].value = typeData[item].miner_level;
             imgSrc = typeData[item].mineral_type + ".png";
         }
-        if(div.children[0].children.length == 0) {
-            div.children[0].appendChild(clone);
+        let selectedFigure = document.getElementById("selected_item");
+        if(selectedFigure.children.length == 0) {
+            selectedFigure.appendChild(clone);
         }
         else {
-            let img = div.children[0].children[0]; 
+            let img = selectedFigure.children[0]; 
             img.src = "public/images/" + item + ".png";
             img.alt = item;
             img.style.border = "";
@@ -63,6 +66,7 @@
         ajaxJS(data, function(response) {
             console.log(response);
             let responseText = JSON.parse(response[1]);
+            gameData = responseText;
             if(game.properties.building === 'crops') {
                 responseText['crop_types'];
                 for(let i = 0; i < responseText['crop_types'].length; i++) {
@@ -74,11 +78,13 @@
                 for(let i = 0; i < responseText['mineral_types'].length; i++) {
                     typeData[responseText['mineral_types'][i]['mineral_type']] = responseText['mineral_types'][i];
                 }    
-
             }
+            console.log(document.getElementsByName("workforce"));
+            document.getElementsByName("workforce")[0].setAttribute("max", gameData.workforce_data.avail_workforce);
         });
     }
     var typeData = {
         
     };
+    var gameData;
     

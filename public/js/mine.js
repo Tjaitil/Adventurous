@@ -7,7 +7,7 @@
             });
         document.getElementById("cancel").addEventListener("click", cancelMining);
         /*document.getElementById("mineral_select").getElementsByTagName("img").addEventListener("click", showMineral);*/
-        document.getElementById("data_form").querySelectorAll("button")[0].addEventListener("click", setMine);
+        document.getElementById("data_container").querySelectorAll("button")[0].addEventListener("click", setMine);
         fetchData();
     }
     var intervals = [];

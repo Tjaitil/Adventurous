@@ -5,7 +5,8 @@
               // ... code code code for this one element
                 element.addEventListener('click', showSelect);
             });
-        document.getElementById("data_form").querySelectorAll("button")[0].addEventListener("click", grow);
+        console.log(document.getElementById("data_container").querySelectorAll("button"));
+        document.getElementById("data_container").querySelectorAll("button")[0].addEventListener("click", grow);
         document.getElementById("seed_generator").children[3].addEventListener("click", seedGenerator);
         // selectitem.js
         selectItemEvent.addSelectEvent();
