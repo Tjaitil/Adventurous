@@ -4,7 +4,7 @@
                 <div id="actions">
                     <p id="mining"></p>
                     <p id="time"></p>
-                    <button id="cancel"> Cancel Mining </button>
+                    <button id="cancel_action"> Cancel Mining </button>
                 </div>
                 <div id="action_body">
                     <div id="select">
@@ -15,8 +15,8 @@
                     <?php endforeach;?>
                     </div>
                     <div id="data_container">
-                        <p> Your total permits: <?php echo $this->data['minerData']['permits'];?></p>
                         <div id="data">
+                            <p> Your total permits: <?php echo $this->data['minerData']['permits'];?></p>
                             <figure id="selected_item"></figure>
                             <form id="data_form">
                                 <label for="mineral"> Mineral </label>
@@ -35,7 +35,7 @@
                                 <label for="workforce"> Select workers (max)</label>
                                 <div>    
                                     <input name="workforce" type="number" min="0" required />
-                                    <span>(<?php echo $this->data['workforce_data']['avail_workforce']?>)</span></br>
+                                    <span id="avail_workforce">(<?php echo $this->data['workforce_data']['avail_workforce']?>)</span></br>
                                 </div>
                             </form>
                             <button type="button"> Mine </button>

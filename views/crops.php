@@ -5,7 +5,7 @@
                     <div id="actions">
                         <p id="growing"> </p></br>
                         <p id="time"></p>
-                        <button onmousedown="destroyCrops();"> Destroy crops </button>
+                        <button id="cancel_action"> Destroy crops </button>
                     </div>
                     <div id="action_body">
                         <div id="select">
