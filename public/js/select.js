@@ -5,7 +5,7 @@
         clone.removeAttribute("onclick");
         var item = element.getAttribute("alt");
         let className;
-        if(document.getElementsByClassName("page_title")[0].innerText == "Crops") {
+        if(document.getElementsByClassName("page_title")[0].innerText === "crops") {
             className = "crop";
         }
         else {
@@ -34,7 +34,7 @@
         
         let imgSrc;
         // Check wether or not the player are in crops or mine
-        if(document.getElementsByClassName("page_title")[0].innerText == "Crops") {
+        if(game.properties.building === "crops") {
             document.getElementsByName("seeds")[0].value = typeData[item].seed_required;    
             document.getElementsByName("level")[0].value = typeData[item].farmer_level;
             imgSrc = typeData[item].crop_type + ".png";
@@ -50,6 +50,9 @@
         }
         else {
             let img = selectedFigure.children[0]; 
+            if(game.properties.building === 'mine') {
+                item = item + ' ore';
+            }
             img.src = "public/images/" + item + ".png";
             img.alt = item;
             img.style.border = "";

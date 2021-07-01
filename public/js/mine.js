@@ -5,7 +5,7 @@
               // ... code code code for this one element
                 element.addEventListener('click', showSelect);
             });
-        document.getElementById("cancel").addEventListener("click", cancelMining);
+        document.getElementById("cancel_action").addEventListener("click", cancelMining);
         /*document.getElementById("mineral_select").getElementsByTagName("img").addEventListener("click", showMineral);*/
         document.getElementById("data_container").querySelectorAll("button")[0].addEventListener("click", setMine);
         fetchData();
@@ -35,6 +35,7 @@
                         clearInterval(x);
                     }
                     else {
+                        document.getElementById("cancel_action").style.visibility = "";
                         document.getElementById("time").innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
                     }
                     // Check if countdown is finished and fetch is true
@@ -44,6 +45,7 @@
                         var t = document.createTextNode("Fetch Minerals");
                         btn.appendChild(t);
                         btn.addEventListener("click", updateMine);
+                        document.getElementById("cancel_action").style.visibility = "hidden";
                         document.getElementById("time").innerHTML = "";
                         document.getElementById("time").appendChild(btn);
                         document.getElementById("mining").innerHTML = "Finished";
@@ -77,32 +79,27 @@
         }
     }*/
     function setMine() {
-        var form = document.getElementById("data_form");
-        
+        let form = document.getElementById("data_form");
         if(!form[3].reportValidity()) {
             console.log("error");
         }
         else {
-            var mineral = form[0].value;
-            var workforce = form[3].value;
-            var data = "model=SetMine" + "&method=setMine" + "&mineral=" + mineral + "&workforce=" + workforce;
+            let mineral = document.getElementsByName("mineral")[0].value;
+            let workforce = document.getElementsByName("workforce")[0].value;
+            let data = "model=SetMine" + "&method=setMine" + "&mineral=" + mineral + "&workforce=" + workforce;
             ajaxP(data, function(response) {
                 if(response[0] !== false) {
                     getCountdown();
                     updateCountdownTab();
                     let responseText = response[1].split("|");
-                    let gameInfo = JSON.parse(responseText[1]);
-                    if(responseText[0].length > 0) {
-                        gameLog(responseText[0]);
-                    }
-                    let spanChild = document.getElementById("data_form").querySelectorAll("span");
-                    spanChild[spanChild.length - 1].innerText = '(' + gameInfo.avail_workforce + ')';
+                    let gameInfo = JSON.parse(responseText[2]);
+                    gameLog(responseText[1]);
+                    let spanChild = document.getElementById("avail_workforce").innerText = '(' + gameInfo.avail_workforce + ')';
                     document.getElementById("data_container").querySelectorAll("p")[0].innerHTML = "Total permits:" + gameInfo.permits;
                     newLevel.searchString(response[1]);
                 }
             });
         }
-        console.log(intervals);
     }
     function updateMine() {
         var data = "model=UpdateMine" + "&method=updateMine";

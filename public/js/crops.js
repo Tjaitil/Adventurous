@@ -8,6 +8,7 @@
         console.log(document.getElementById("data_container").querySelectorAll("button"));
         document.getElementById("data_container").querySelectorAll("button")[0].addEventListener("click", grow);
         document.getElementById("seed_generator").children[3].addEventListener("click", seedGenerator);
+        document.getElementById("cancel_action").addEventListener("click", cancelMining);
         // selectitem.js
         selectItemEvent.addSelectEvent();
         fetchData();
@@ -37,7 +38,7 @@
                     }
                     else {
                         document.getElementById("time").innerText = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
-                        document.getElementById("growing").innerText = "Crops growing";    
+                        document.getElementById("cancel_action").style.visibility = "";
                     }
                     // Check if countdown is finished and harvest is true
                     if(distance < 0 && harvest === 1) {
@@ -46,6 +47,7 @@
                         var t = document.createTextNode("Harvest");
                         btn.appendChild(t);
                         btn.addEventListener("click", updateCrop);
+                        document.getElementById("cancel_action").style.visibility = "hidden";
                         document.getElementById("time").innerText = "";
                         document.getElementById('time').appendChild(btn);
                         document.getElementById("growing").innerText = "Finished";
@@ -70,15 +72,13 @@
             ajaxP(data, function(response) {
                 if(response[0] !== false) {
                     getCountdown();
+                    updateCountdownTab();
                     let responseText = response[1].split("|");
-                    let gameInfo = JSON.parse(responseText[1]);
-                    if(responseText[0].length > 0) {
-                        gameLog(responseText[0]);
-                    }
+                    let gameInfo = JSON.parse(responseText[2]);
+                    gameLog(responseText[1]);
                     let spanChild = document.getElementById("data_form").querySelectorAll("span");
                     spanChild[spanChild.length - 1].innerText = '(' + gameInfo.avail_workforce + ')';
                     newLevel.searchString(response[1]);
-                    updateCountdownTab();
                 }
             });
         }
