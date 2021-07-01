@@ -32,7 +32,6 @@
                 $this->gameMessage("ERROR: You don't have that many fields available", true);
                 return false;
             }*/
-            $POST['quantity'] = $row['fields_avail'];
             if($row['avail_workforce'] < $POST['workforce']) {
                 $this->gameMessage("ERROR: You don't have that many workers available", true);
                 return false;
@@ -71,14 +70,14 @@
                 return false;
             }
             
-            $addTime = $row2['time'] * $POST['quantity'] / $POST['workforce'] - (10 * $row['efficiency_level']);
+            $addTime = $row2['time'] - (($row2['time'] / 100) * ($POST['effiency_level'] / 100));
             $date = date("Y-m-d H:i:s");
             $newDate = new DateTime($date);
             $newDate->modify("+{$addTime} seconds");
             try {
                 $this->db->conn->beginTransaction();
                 
-                $sql = "UPDATE farmer SET fields_avail=:fields_avail, crop_type=:crop_type,
+                $sql = "UPDATE farmer SET crop_type=:crop_type,
                         crop_quant=:crop_quant, crop_countdown=:crop_countdown, plot1_harvest=1
                         WHERE location=:location AND username=:username";
                 $stmt = $this->db->conn->prepare($sql);
@@ -88,9 +87,8 @@
                 $stmt->bindParam(":crop_countdown", $param_crop_countdown, PDO::PARAM_STR);
                 $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                $param_fields_avail = $row['fields_avail'] - $POST['quantity'];
                 $param_crop_type = $POST['crop'];
-                $param_crop_quant = $POST['quantity'];
+                $param_crop_quant = 1;
                 $param_crop_countdown = date_format($newDate, "Y-m-d H:i:s");
                 $param_location = $this->session['location'];
                 $param_username = $this->username;

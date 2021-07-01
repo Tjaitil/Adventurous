@@ -11,14 +11,6 @@
         }
         public function getData($js = false) {
                 $data = array();
-                $sql = "SELECT fields_avail FROM farmer WHERE location=:location AND username=:username";
-                $stmt = $this->db->conn->prepare($sql);
-                $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
-                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                $param_location = $this->session['location'];
-                $param_username = $this->username;
-                $stmt->execute();
-                $data['fields'] = $stmt->fetch(PDO::FETCH_ASSOC);
                 if($js == true) {
                 $sql2 = "SELECT farmer_level, crop_type, time, experience, seed_required, location
                          FROM crops_data ORDER BY farmer_level ASC";

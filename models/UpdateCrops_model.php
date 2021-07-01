@@ -13,7 +13,7 @@
             // Function to reset crops, free up workforce and give player the amount of crops they have grown
             // This function is called from an AJAX request from crops.js
             
-            $sql = "SELECT crop_type, crop_quant, fields_avail FROM farmer WHERE username=:username AND location=:location";
+            $sql = "SELECT crop_type, crop_quant FROM farmer WHERE username=:username AND location=:location";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
@@ -34,12 +34,18 @@
             $param_crop_type = $crop_type;
             $stmt2->execute();
             $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
-            
-            
-            $experience = $row2['experience'] * $row['crop_quant'];
-            $rand_min = ($row['crop_quant'] * 0.3) + $row2['min_crop_count'];;
-            $rand_max = ($row['crop_quant'] * 0.3) + $row2['max_crop_count'];
+
+            $sql3 = "SELECT avail_workforce, {$this->session['location']}_workforce, mineral_quant_level
+            FROM miner_workforce WHERE username=:username";
+            $stmt3 = $this->db->conn->prepare($sql3);
+            $stmt3->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $stmt3->execute();
+            $row3 = $stmt3->fetch(PDO::FETCH_ASSOC);
+         
+            $rand_min = $row2['min_crop_count'] * 0.3 + $row3[$this->session['location'] . '_workforce'];
+            $rand_max = $row2['max_crop_count'] * 0.3 + $row3[$this->session['location'] . '_workforce'];
             $quantity = round(rand($rand_min, $rand_max));
+            $experience = $row2['experience'] + (round($row2['experience'] / 100 * $quantity));
             
             // If the player has harvester artefact equipped, get harvester bonus
             if(strpos($this->session['artefact'], 'harvester') !== false) {
@@ -50,16 +56,6 @@
             }
             $quantity = round($quantity * $artefact_bonus);
             
-            if(in_array($this->session['location'], array('towhar', 'krasnur')) != true) {
-                return false;   
-            }
-            $workforce = $this->session['location'] . '_workforce';
-            
-            $sql3 = "SELECT $workforce, avail_workforce FROM farmer_workforce WHERE username=:username";
-            $stmt3 = $this->db->conn->prepare($sql3);
-            $stmt3->bindParam(":username", $param_username, PDO::PARAM_STR);
-            $stmt3->execute();
-            $row3 = $stmt3->fetch(PDO::FETCH_ASSOC);
             
             try {
                 $this->db->conn->beginTransaction();
@@ -69,15 +65,14 @@
                 }
                 echo "|";
                 
-                $sql = "UPDATE farmer SET fields_avail=:fields_avail, crop_type=:crop_type,
-                        crop_quant=:crop_quant, plot1_harvest=0 WHERE username=:username AND location=:location";
+                $sql = "UPDATE farmer SET fields_avail=:fields_avail, crop_type=:crop_type, plot1_harvest=0 
+                        WHERE username=:username AND location=:location";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":fields_avail", $param_fields_avail, PDO::PARAM_STR);
                 $stmt->bindParam(":crop_type", $param_crop_type, PDO::PARAM_STR);
                 $stmt->bindParam(":crop_quant", $param_crop_quant, PDO::PARAM_STR);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
-                $param_fields_avail = $row['fields_avail'] + $row['crop_quant'];
                 $param_crop_type = 'none';
                 $param_crop_quant = 0;
                 $param_username = $this->username;
