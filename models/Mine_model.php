@@ -41,7 +41,7 @@
             $stmt3->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt3->execute();
-            $data['workforceData'] = $stmt3->fetch(PDO::FETCH_ASSOC);
+            $data['workforce_data'] = $stmt3->fetch(PDO::FETCH_ASSOC);
             if($js === true) {
                 echo json_encode($data);
             }
