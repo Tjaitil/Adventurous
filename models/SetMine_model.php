@@ -60,7 +60,7 @@
                 return false;
             }
             
-            $addTime = $row2['time'] - (10 * $row['efficiency_level']);
+            $addTime = $row2['time'] * ($row['efficiency_level'] / 100);
             $date = date("Y-m-d H:i:s");
             $newDate = new DateTime($date);
             $newDate->modify("+{$addTime} seconds");

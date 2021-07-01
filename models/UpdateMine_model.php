@@ -37,8 +37,8 @@
             $stmt3->execute();
             $row3 = $stmt3->fetch(PDO::FETCH_ASSOC);
             
-            $rand_min = $row2['min_per_period'] + (0.5 * $row3[$this->session['location'] . '_workforce']);
-            $rand_max = $row2['max_per_period'] + (0.5 * $row3[$this->session['location'] . '_workforce']);
+            $rand_min = $row2['min_per_period'] + (0.2 * $row3[$this->session['location'] . '_workforce']);
+            $rand_max = $row2['max_per_period'] + (0.2 * $row3[$this->session['location'] . '_workforce']);
             $quantity = rand($rand_min, $rand_max);
             $artefact_bonus = $this->ArtefactModel->artefactCheck('prospector');
             $quantity = round($quantity * $artefact_bonus);
