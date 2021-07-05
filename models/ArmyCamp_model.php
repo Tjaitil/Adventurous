@@ -134,7 +134,7 @@
             foreach($row as $key) {
                 for($i = 0; $i < count($skills); $i++) {
                     if($level_info[$key[$skills[$i] . '_level']] <= $key[$skills[$i].'_xp']) {
-                        if($i === 0 ) {
+                        if(!isset($level_up[$key['warrior_id']]['update'])) {
                             $level_up[$key['warrior_id']]['update'] = "UPDATE warriors_levels SET ";
                         }
                         $new_level = $key[$skills[$i] . '_level'] + 1;
