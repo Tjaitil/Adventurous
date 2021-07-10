@@ -29,10 +29,15 @@
     font-size: var(--smallText);
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(104px, 125px));
+    border: none;
+}
+#trades_container, #do_trade {
+    color: var(--textColor);
 }
 .item .gold {
     width: 30px;
     height: 30px;
+
 }
 #trade_info {
     float: left;
@@ -42,6 +47,7 @@
     width: unset;
     max-width: unset;
     min-width: unset;
+    color: var(--textColor);
 }
 #trades .item p {
     float: left;
@@ -51,6 +57,7 @@
 }
 .item .item_amount {
     top: -26%;
+    color: var(--textColor);
 }
 #trade_sign {
     float: left;
@@ -60,6 +67,8 @@
     display: flex;
     border: 5px ridge #330;
     border-radius: 5px;
+    background-color: var(--layoutBgColorDark);
+    color: var(--textColor);
 }
 #do_trade {
     width: 155px;
@@ -67,15 +76,14 @@
     min-width: 155px;
     float: left;
     background-color: #724e27;
-    color: white;
+    border-top: none;
+    border-left: none;
+
 }
 #selected_trade {
     width: 100%;
     margin: 0 auto;
     padding-top: 10px;
-}
-#do_trade input[type="number"] {
-    width: 25px;
 }
 #trader_assignment table {
     margin-bottom: 10px;
