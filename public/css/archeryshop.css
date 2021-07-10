@@ -1,3 +1,12 @@
 #fletch {
     
 }
+.archeryShop_required_amount {
+    margin: auto
+}
+.archeryShop_required {
+    display: flex;
+}
+.archeryShop_required figure {
+    width: 60px;
+}
