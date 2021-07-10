@@ -195,19 +195,25 @@
                 $db_table_name = str_replace("-", "_", $db_table_name);
                 
                 // Select 4 items which has store_rate of 1 in the specified location
-                $sql = "SELECT name, store_value, {$db_table_name} FROM items WHERE {$db_table_name} = 1 AND store_value > 0
-                        ORDER BY RAND() LIMIT 4";
+                $sql = "SELECT name, store_value, {$db_table_name} FROM items WHERE {$db_table_name} = 1 AND in_game = 1
+                        ORDER BY RAND() LIMIT 7";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->execute();
                 $row1 = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 
                 // Select 4 items which has store_rate of 3 in the specified location
-                $sql = "SELECT name, store_value, {$db_table_name} FROM items WHERE NOT {$db_table_name} = 1 AND store_value > 0
+                $sql = "SELECT name, store_value, {$db_table_name} FROM items WHERE NOT {$db_table_name} = 2 AND in_game = 1
                         ORDER BY RAND() LIMIT 3";
                 $stmt = $this->db->conn->prepare($sql);
-                $stmt->execute();
                 $row2 = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $items = array_merge($row1, $row2);
+
+                // Select 4 items which has store_rate of 3 in the specified location
+                $sql = "SELECT name, store_value, {$db_table_name} FROM items WHERE NOT {$db_table_name} = 3 AND in_game = 1
+                        ORDER BY RAND() LIMIT 2";
+                $stmt = $this->db->conn->prepare($sql);
+                $stmt->execute();
+                $row3 = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $items = array_merge($row1, $row2, $row3);
                 for($x = 0; $x < count($items); $x++) {
                     $random_item = $items[$x];
                     switch(intval($items[$x][$db_table_name])) {
@@ -314,7 +320,7 @@
                 $this->gameMessage("ERROR: Something unexpected happened, please try again later!", true);
                 return false;
             }
-            if($this->session['location'] != 'fagna') {
+            if($this->session['location'] !== 'fagna') {
                 $sql = "SELECT item, user_buy_price, user_sell_price, amount 
                         FROM merchant_offers WHERE location=:location AND item=:item";
                 $stmt = $this->db->conn->prepare($sql);
@@ -345,6 +351,13 @@
                // Check if city is fagna
                 if($this->session['location'] == "fagna") {
                     // Find price for fagna;
+                    $sql = "SELECT store_value FROM items WHERE name=:name";
+                    $stmt = $this->db->conn->prepare($sql);
+                    $stmt->bindParam(":name", $param_name, PDO::PARAM_STR);
+                    $param_name = $item;
+                    $stmt->execute();
+                    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                    $total_sell_price = $amount * $row['store_value'];
                 }
                 else {
                     // 5% reduction in price if price is over 1500
@@ -391,19 +404,20 @@
                     // Update inventory
                     $this->UpdateGamedata->updateInventory($item, -$amount);
                     $this->UpdateGamedata->updateInventory('gold', $total_sell_price, true);
-                    
-                    $sql = "UPDATE merchant_offers SET user_buy_price=:user_buy_price, amount=:amount
+                    if($this->session['location'] !== "fagna") {
+                        $sql = "UPDATE merchant_offers SET user_buy_price=:user_buy_price, amount=:amount
                             WHERE location=:location AND item=:item";
-                    $stmt = $this->db->conn->prepare($sql);
-                    $stmt->bindParam(":user_buy_price", $param_user_buy_price, PDO::PARAM_INT);
-                    $stmt->bindParam(":amount", $param_amount, PDO::PARAM_INT);
-                    $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
-                    $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
-                    $param_user_buy_price = $new_merchant_buy_price;
-                    $param_amount = $new_amount;
-                    $param_location = $this->session['location'];
-                    $param_item = $item;
-                    $stmt->execute();
+                        $stmt = $this->db->conn->prepare($sql);
+                        $stmt->bindParam(":user_buy_price", $param_user_buy_price, PDO::PARAM_INT);
+                        $stmt->bindParam(":amount", $param_amount, PDO::PARAM_INT);
+                        $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
+                        $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
+                        $param_user_buy_price = $new_merchant_buy_price;
+                        $param_amount = $new_amount;
+                        $param_location = $this->session['location'];
+                        $param_item = $item;
+                        $stmt->execute();
+                    }
                 }
                 else {
                     // $mode == 'buy'
@@ -437,44 +451,13 @@
         public function getPrice($GET) {
             // Function to return sell price from database
             // Called from merchant.js
-            
             $sql = "SELECT store_value FROM items WHERE name=:name";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":name", $param_name, PDO::PARAM_STR);
-            $param_username = $this->username;
+            $param_name = $GET['itemName'];
             $stmt->execute();
             $store_value = $stmt->fetch(PDO::FETCH_OBJ)->store_value;
             echo $store_value;
-        }
-        public function hello() {
-                        $sql = "SELECT amount, want, want_amount FROM merchants WHERE item=:item";
-            $stmt = $this->db->conn->prepare($sql);
-            $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
-            $param_item = $item;
-            $stmt->execute();
-            if(!$stmt->rowCount() > 0) {
-                $this->gameMessage("ERROR: This item is not for sale anymore", true);
-                return fasle;
-            }
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $want_item = ($bond == 'false') ? $row['want'] : 'trading bond';
-            $item_amount = get_item($this->session['inventory'], $want_item)['amount'];
-            if(!$item_amount > 0) {
-                $this->gameMessage("ERROR: You don't have any {$want_item}s", true);
-                return false;
-            }
-            else if($item_amount < $row['want_amount']) {
-                $this->gameMessage("ERROR: You don't have enough {$want_item}s", true);
-                return false;
-            }
-            //Update merchant
-                $sql3 = "UPDATE merchants SET amount=:amount WHERE item=:item";
-                $stmt3 = $this->db->conn->prepare($sql3);
-                $stmt3->bindParam(":amount", $param_newValue, PDO::PARAM_STR);
-                $stmt3->bindParam(":item", $param_item, PDO::PARAM_STR);
-                $param_newValue = $row['amount'] - $amount;
-                $param_item = $item;
-                $stmt3->execute();
         }
     }
 ?>
