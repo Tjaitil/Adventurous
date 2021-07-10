@@ -31,7 +31,7 @@
             $item = strtolower($POST['item']);
             $mineral = strtolower($POST['mineral']);
             $amount = $POST['amount'];
-            $ore = $mineral . ' ' . 'ore';
+            $required = (strpos($item, 'bar')) ? $mineral . ' ore' : $mineral . ' bar';
             $minerals = array("iron", "steel", "gargonite", "adron", "yeqdon", "frajrite");
             if(in_array($mineral, $minerals) == false) {
                 $this->gameMessage("ERROR: You are not allowed to smith from that mineral", true);
@@ -42,7 +42,7 @@
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-            $param_item = $ore;
+            $param_item = $required;
             $param_username = $this->username;
             $stmt->execute();
             $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -112,7 +112,7 @@
                     $this->UpdateGamedata->updateInventory('gold', -$cost);   
                 }
                 // Update inventory
-                $this->UpdateGamedata->updateInventory($ore , -$minerals_needed, true);
+                $this->UpdateGamedata->updateInventory($required, -$minerals_needed, true);
                 
                 $this->db->conn->commit();
             }
