@@ -8,7 +8,7 @@
                             
                         </div>
                         <p></p>
-                        <p id="trade_price"><img class="gold" src="<?php echo constant("ROUTE_IMG") . 'gold.png';?>" /></p>
+                        <p id="trade_price"><span></span><img class="gold" src="<?php echo constant("ROUTE_IMG") . 'gold.png';?>" /></p>
                         <label for="amount"> Amount </label></br>
                         <input type="number" id="amount" name="amount"  min="0"/></br>
                         <button> Trade </button>

@@ -38,7 +38,6 @@
     function getMerchantCountdown() {
         var data = "&model=Merchant" + "&method=getMerchantCountdown";
         ajaxG(data, function(response) {
-            console.log(response);
             if(response[0] != false) {
                 var data = response[1].split("|");
                 var time = (parseInt(data[0]) + 14400) * 1000;
@@ -64,13 +63,13 @@
     
     function addMerchantEvents() {
         var trades = document.getElementById("trades").querySelectorAll(".item");
-        if(!trades.length > 0) {
+        if(trades.length > 0) {
+            trades.forEach(function(element) {
+                // Add eventListener to each node
+                element.addEventListener('click', selectTrade);
+            });
             return false;
         }
-        trades.forEach(function(element) {
-            // Add eventListener to each node
-            element.addEventListener('click', selectTrade);
-        });
         selectItemEvent.addSelectEvent();
         var button = document.getElementById("do_trade").querySelectorAll("button")[0];
         button.addEventListener("click", tradeItem);
@@ -78,7 +77,6 @@
     function selectTrade() {
         // If trades div is hidden return false, because then the tab visible is trader assignment
         if(document.getElementById("trades").visibility == "hidden" || document.getElementById("trades") == null) {
-
             return false;
         }
         document.getElementById("do_trade").querySelectorAll("button")[0].disabled = false;
@@ -93,10 +91,7 @@
             // Item is in inventory
             elementDiv = event.target.closest(".inventory_item");
             // Check if player is in fagna
-            if(document.title.indexOf("Fagna") != -1) {
-                getPrice(String(elementDiv.querySelectorAll(".tooltip")[0].innerHTML));    
-            }
-            else {
+            if(document.title.indexOf("Fagna") == -1) {
                 // Check if the merchant is interested in that item
                 let items = document.getElementById("trades_container").querySelectorAll(".tooltip");
                 let match = false;
@@ -130,12 +125,13 @@
         document.getElementById("selected_trade").appendChild(figure);
         document.getElementById("do_trade").querySelectorAll("#amount")[0].max = amount;
         document.getElementById("do_trade").querySelectorAll("p")[0].innerHTML = item;
-        let firstNode = document.getElementById("trade_price").childNodes[0];
-        if(firstNode.nodeName == "IMG") {
-            document.getElementById("trade_price").insertBefore(price, firstNode);  
+        document.getElementById("trade_price").querySelectorAll("span")[0].innerText = 0;
+        // If location is fagna, fetch price
+        if(document.title.indexOf("Fagna") != -1) {
+            getPrice(String(elementDiv.querySelectorAll(".tooltip")[0].innerHTML));
         }
         else {
-            document.getElementById("trade_price").replaceChild(price, firstNode);   
+            document.getElementById("trade_price").querySelectorAll("span")[0].innerText = price;
         }
         let mode;
         if(elementDiv.parentNode.id !== "inventory") {
@@ -146,13 +142,13 @@
         }
         document.getElementById("do_trade").querySelectorAll("button")[0].innerText = mode;
         function getPrice(item) {
-            let data = "model=Merchant" + "&method=getPrice" + "&item=" + item;
+            let data = "model=Merchant" + "&method=getPrice" + "&itemName=" + item;
             ajaxG(data, function(response) {
-                console.log(response);
                 if(response[0] != false) {
-                    document.getElementById("trade_price").innerText = response[1];
+                    document.getElementById("trade_price").querySelectorAll("span")[0].innerText = response[1];
                 }
             });
+            
         }
     }
     function tradeItem() {
@@ -177,7 +173,7 @@
                 document.getElementById("trades_container").innerHTML = response[1];
                 document.getElementById("selected_trade").innerHTML = "";
                 document.getElementById("do_trade").querySelectorAll("p")[1].innerHTML = "";
-                document.getElementById("do_trade").querySelectorAll("p")[0].innerHTML = "";
+                document.getElementById("trade_price").querySelectorAll("span")[0].innerText = "";
                 document.getElementById("amount").value = "0";
                 updateInventory();
                 addMerchantEvents();
