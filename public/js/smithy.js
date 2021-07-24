@@ -7,8 +7,8 @@
         });
     }
     function select(element) {
-        var parent = element.parentNode;
-        var img = parent.getElementsByTagName("IMG");
+        let parent = element.parentNode;
+        let img = parent.getElementsByTagName("IMG")[0];
         console.log(img);
         for(var i = 0; i < img.length; i++) {
             if(img[i].style.border != "1px solid red;") {
