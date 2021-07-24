@@ -31,7 +31,7 @@
         item = item.trim();
         var result = false;
         var minerals = ["Iron", "Steel", "Gargonite", "Adron", "Yeqdon", "Frajrite", "Oak", "Beech", "Yew"];
-        var items = ["Sword", "Spear", "Dagger", "Shield", "Platebody", "Platelegs", "Helm", "Arrows", "Bow" , "Knives"];
+        var items = ["Sword", "Spear", "Dagger", "Shield", "Platebody", "Platelegs", "Helm", "Arrows", "Bow" , "Knives", "Boots"];
         // Check out if the $item matches $mineral and $item
         var item_array = item.split(" ");
         console.log(item_array);
