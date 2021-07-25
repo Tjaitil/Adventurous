@@ -1,9 +1,12 @@
 .progressBarContainer {
-    height: 25px;
+    height: 27px;
     width: 50%;
-    border: 1px solid black;
+    box-shadow: 0px 5px 10px #3d2500;
     background-color: #995c00;
-    position: relative;    
+    position: relative;
+    box-sizing: content-box;
+    border-radius: 6px;
+    border: 3px solid #3d2500;
 }
 .progressBarOverlay {
     width: 0%;
@@ -13,6 +16,7 @@
     top: 0px;
     left: 0px;
     transition: width 1s ease-out;
+    border-radius: 5px;
 }
 .progressBar {
     width: 100%;
