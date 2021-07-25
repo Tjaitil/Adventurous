@@ -55,6 +55,7 @@ aside caption {
     position: fixed;
     box-sizing: border-box;
     padding: 5px;
+    overflow-y: scroll;
 }
 .sidebar_button {
     background-color: #f2e6d9;
@@ -84,6 +85,9 @@ aside caption {
 #tab_2 {
     position: absolute;
     visibility: hidden;
+}
+#tab_2 tbody tr:not(#tab_2 tbody tr:last-of-type) {
+    border-bottom: 2px solid black;
 }
 #tab_3 {
     position: absolute;
