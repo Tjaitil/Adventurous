@@ -1,6 +1,10 @@
             archeryshop.css|archeryshop.js|
             <h3 class="page_title"><?php echo $title;?></h3>
             <div id="fletch">
+                <p class="help">
+                    Craft bows, unfinished arrows or arrow shafts from logs. Some bows will require a certain total 
+                    level of warriors. check <a href="gameguide/warrior">gameguide</a>
+                </p>
                 <table>
                     <thead>
                         <tr>
@@ -11,64 +15,61 @@
                         </tr>
                         <?php
                         
-                        foreach($this->data as $key => $element):?>
+                        foreach($this->data as $key):?>
                             <tr>
-                            <td><figure>
-                                <img class="item_img" src="<?php echo constant('ROUTE_IMG') . $element['item']. '.png';?>" />
-                                <figcaption><?php echo ucwords($key['item']);?></figcaption>
-                            </figure></td>
-                            <td <?php if($key !== array_key_last($this->data)): ?>
+                            <td>
+                                <div class="item">    
+                                    <figure>
+                                        <img src="<?php echo constant('ROUTE_IMG') . $key['item'] . '.png';?>" />
+                                        <figcaption class="tooltip"><?php echo ucwords($key['item']);?></figcaption>
+                                    </figure>
+                                    <span class="item_amount"></span>
+                                </div>
+                            </td>
+                            <td <?php if(strpos($key['item'], 'unfinished')): ?>
                                 class="archeryShop_required"
                                 <?php endif;?>>
                                 <?php
                                     $required;
-                                    switch($element['item']) {
-                                        case 'oak bow': ?>
-                                            <p class="archeryShop_required_amount"><?php echo '3 x'?></p>
-                                            <figure>
-                                                <img src="<?php echo constant('ROUTE_IMG') . 'oak log.png'?>" />
-                                                <figcaption> Oak Log</figcaption>
-                                            </figure>
-                                            <?php
-                                            break;
-                                        case 'birch bow': ?>
-                                            <p class="archeryShop_required_amount"><?php echo '3 x'?></p>
-                                            <figure>
-                                                <img src="<?php echo constant('ROUTE_IMG') . 'birch log.png'?>" />
-                                                <figcaption> Birch Log</figcaption>
-                                            </figure>
-                                            <?php
-                                            break;
+                                    $material = explode(" ", $key['item'])[0];
+                                    switch($key['item']) {
+                                        case 'oak bow':
+                                        case 'spruce bow':
+                                        case 'birch bow':
                                         case 'yew bow': ?>
-                                            <p class="archeryShop_required_amount"><?php echo '3 x'?></p>
-                                            <figure>
-                                                <img src="<?php echo constant('ROUTE_IMG') . 'yew log.png'?>" />
-                                                <figcaption> Yew Log</figcaption>
-                                            </figure>
+                                            <div class="item">    
+                                                <figure>
+                                                    <img src="<?php echo constant('ROUTE_IMG') . $material . ' logs.png';?>" />
+                                                    <figcaption class="tooltip"><?php echo ucwords($material . ' logs');?></figcaption>
+                                                </figure>
+                                                <span class="item_amount">2</span>
+                                            </div>
                                             <?php
                                             break;
                                         case 'arrow shaft':?>
-                                            <p class="archeryShop_required_amount"><?php echo '1 x'?><p>
-                                            <figure>
-                                                <img src="<?php echo constant('ROUTE_IMG') . 'oak log.png'?>" />
-                                                <figcaption> Oak Log</figcaption>
-                                            </figure>
+                                            <div class="item">    
+                                                <figure>
+                                                    <img src="<?php echo constant('ROUTE_IMG') . 'oak log.png';?>" />
+                                                    <figcaption class="tooltip"><?php echo ucwords('oak logs');?></figcaption>
+                                                </figure>
+                                                <span class="item_amount">1</span>
+                                            </div>
                                             <?php
                                             break;
                                         case 'unfinished arrows': ?>
-                                            <div class="archeryShop_required">
-                                                <p class="archeryShop_required_amount"><?php echo '1 x'?></p>
+                                            <div class="item">    
                                                 <figure>
-                                                    <img src="<?php echo constant('ROUTE_IMG') . 'arrow shaft.png'?>" />
-                                                    <figcaption> Arrow shaft</figcaption>
+                                                    <img src="<?php echo constant('ROUTE_IMG') . 'arrow shaft.png';?>" />
+                                                    <figcaption class="tooltip"><?php echo ucwords('arrow shaft');?></figcaption>
                                                 </figure>
+                                                <span class="item_amount">1</span>
                                             </div>
-                                            <div class="archeryShop_required">
-                                                <p class="archeryShop_required_amount"><?php echo '1 x'?></p>
+                                            <div class="item">    
                                                 <figure>
-                                                    <img src="<?php echo constant('ROUTE_IMG') . 'feather.png'?>" />
-                                                    <figcaption> Feather </figcaption>
+                                                    <img src="<?php echo constant('ROUTE_IMG') . 'feathers.png';?>" />
+                                                    <figcaption class="tooltip"><?php echo ucwords('feathers');?></figcaption>
                                                 </figure>
+                                                <span class="item_amount">1</span>
                                             </div>
                                             <?php
                                             break;
@@ -77,7 +78,7 @@
                                     }
                                 ?>
                             </td>
-                            <td><?php echo $element['cost'];?><img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.png';?>" /></td>
+                            <td><?php echo $key['cost'];?><img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.png';?>" /></td>
                             <td><input type="number" min="0" />
                             <button> Make</button></td>
                         </tr>

@@ -11,8 +11,9 @@
         }
         public function getData() {
             $data = array();
-            $items = implode('|', array("oak", "birch", "yew", "unfinished arrow", "arrow shaft"));
-            $sql = "SELECT item, wood_required, cost FROM armory_items_data WHERE item REGEXP '{$items}'";
+            $items = implode('|', array("oak", "spruce", "birch", "yew", "unfinished arrow", "arrow shaft"));
+            $sql = "SELECT item, wood_required, cost, type FROM armory_items_data
+                    WHERE item REGEXP '{$items}' ORDER BY type DESC, cost ASC";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->execute();
             $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
