@@ -6,7 +6,7 @@ function checkDeviceType() {
         game.properties.actionText = "Press x";
         game.properties.enterText = "E - enter building";
         game.properties.enterButton = "E -";
-        game.properties.personText = "W - press to talk";
+        game.properties.personText = "W - talk to ";
         game.properties.personButton = "W -";
         game.properties.device = "pc";
     }
@@ -90,7 +90,7 @@ function checkDeviceType() {
                     break;
                 case 65:
                     // A
-                    if(gamePieces.player.cooldown === 0) gamePieces.player.attack = true;
+                    if(gamePieces.player.cooldown <= 0) gamePieces.player.attack = true;
                     break;
                 case 67:
                     // C

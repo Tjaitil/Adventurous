@@ -260,8 +260,7 @@
                 document.getElementById("conversation_a").style.visibility = "hidden";
             }
             if(part.indexOf("#") != -1) {
-                console.log(person.split("#")[1].trim());
-                document.getElementById("conversation_container").querySelectorAll("h3")[0].innerText = person.split("#")[1].trim();
+                document.getElementById("conversation_container").querySelectorAll("h3")[0].innerText = part.split("#")[1].trim();
             }
         },
         makeLinks() {
