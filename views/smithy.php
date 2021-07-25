@@ -1,6 +1,10 @@
             smithy.css|smithy.js|
             <h3 class="page_title"> Smithy </h3>
             <div id="smith">
+                <p class="help">
+                    Select a mineral below to smith from. </br>
+                    Players with miner profiency pay nothing
+                </p>
                 <h5>Choose your mineral</h5>
                 <div id="minerals">
                     <img src="<?php echo constant('ROUTE_IMG') . 'iron ore.png';?>"
@@ -30,7 +34,52 @@
                         </thead>
                     <?php
                         foreach($array as $key):
-                        if(strpos($key['item'], 'arrows') === false): ?>
+                        $mineral = explode(" ", $key['item'])[0];
+                        if(strpos($key['item'], 'arrows')):
+                        ?>
+                        <tr>
+                            <td><figure>
+                                <img class="item_img" src="<?php echo constant('ROUTE_IMG') . $key['item']. '.png';?>" />
+                                <figcaption><?php echo ucwords($key['item']);?></figcaption>
+                            </figure></td>
+                            <td> <img src="<?php echo constant('ROUTE_IMG') . $mineral . ' bar.png';?>" /> + 
+                                 <img src="<?php echo constant('ROUTE_IMG') . 'unfinished arrows.png';?>" />
+                                  = 
+                                  5 <img src="<?php echo constant('ROUTE_IMG') . $key['item']. '.png';?>" /></td>
+                            <td>
+                                <?php if($_SESSION['gamedata']['profiency'] === 'miner'): 
+                                    echo $key['cost'] * 0;?>
+                                    <s><?php echo $key['cost'];?></s>
+                                <?php else: 
+                                    echo $key['cost'];
+                                endif;?>                               
+                                <img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.png';?>" />
+                            </td>
+                            <td> <input type="number" min="0" />
+                            <button> Smith </button></td>
+                        </tr>
+                        <?php elseif(strpos($key['item'], 'knives')): ?>
+                            <tr>
+                                <td><figure>
+                                    <img class="item_img" src="<?php echo constant('ROUTE_IMG') . $key['item']. '.png';?>" />
+                                    <figcaption><?php echo ucwords($key['item']);?></figcaption>
+                                </figure></td>
+                                <td> 1 <img src="<?php echo constant('ROUTE_IMG') . $mineral . ' bar.png';?>" />
+                                    = 
+                                    3 <img src="<?php echo constant('ROUTE_IMG') . $key['item']. '.png';?>" /></td>
+                                <td>
+                                    <?php if($_SESSION['gamedata']['profiency'] === 'miner'): 
+                                        echo $key['cost'] * 0;?>
+                                        <s><?php echo $key['cost'];?></s>
+                                    <?php else: 
+                                        echo $key['cost'];
+                                    endif;?>                               
+                                    <img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.png';?>" />
+                                </td>
+                                <td> <input type="number" min="0" />
+                                <button> Smith </button></td>
+                            </tr>
+                        <?php else: ?>
                         <tr>
                             <td><figure>
                                 <img class="item_img" src="<?php echo constant('ROUTE_IMG') . $key['item'] . '.png';?>" />
@@ -39,22 +88,6 @@
                             <td><?php echo $key['mineral_required'];?></td>
                             <td><?php echo $key['cost'];?><img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.png';?>" /></td>
                             <td><input type="number" min="0" />
-                            <button> Smith </button></td>
-                        </tr>
-                        <?php else:
-                        $mineral = explode(" ", $key['item'])[0];
-                        ?>
-                        <tr>
-                            <td><figure>
-                                <img class="item_img" src="<?php echo constant('ROUTE_IMG') . $key['item']. '.png';?>" />
-                                <figcaption><?php echo ucwords($key['item']);?></figcaption>
-                            </figure></td>
-                            <td> <img src="<?php echo constant('ROUTE_IMG') . $mineral . ' bar.png';?>" /> + 
-                                 <img src="<?php echo constant('ROUTE_IMG') . 'unfinished arrow.png';?>" />
-                                  = 
-                                  5 <img src="<?php echo constant('ROUTE_IMG') . $key['item']. '.png';?>" /></td>
-                            <td><?php echo $key['cost'];?><img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.png';?>" /></td>
-                            <td> <input type="number" min="0" />
                             <button> Smith </button></td>
                         </tr>
                      <?php endif;endforeach;
