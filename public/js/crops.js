@@ -8,7 +8,7 @@
         console.log(document.getElementById("data_container").querySelectorAll("button"));
         document.getElementById("data_container").querySelectorAll("button")[0].addEventListener("click", grow);
         document.getElementById("seed_generator").children[3].addEventListener("click", seedGenerator);
-        document.getElementById("cancel_action").addEventListener("click", cancelMining);
+        document.getElementById("cancel_action").addEventListener("click", destroyCrops);
         // selectitem.js
         selectItemEvent.addSelectEvent();
         fetchData();
