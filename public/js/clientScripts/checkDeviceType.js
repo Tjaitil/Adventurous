@@ -4,7 +4,7 @@ function checkDeviceType() {
        (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) == false)) {
         document.getElementById("control").style.display = "none";
         game.properties.actionText = "Press x";
-        game.properties.enterText = "E - enter building";
+        game.properties.enterText = "E - Enter building";
         game.properties.enterButton = "E -";
         game.properties.personText = "W - talk to ";
         game.properties.personButton = "W -";
