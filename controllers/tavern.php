@@ -41,6 +41,11 @@
                         $miner_amount  = rand(0,2);
                         $warrior_amount = rand(1,5);
                         break;
+                    case 'fagna':
+                        $farmer_amount = rand(0,2);
+                        $miner_amount  = rand(0,2);
+                        $warrior_amount = rand(0,2);
+                        break;
                 }
                 $warrior_types = array('melee', 'ranged');
                 for($i = 0; $i < ($farmer_amount + $miner_amount + $warrior_amount); $i++) {
