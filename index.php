@@ -2,6 +2,7 @@
     require('root/routes.php');
     require('root/db.php');
     require('root/autoloader.php');
+    require('root/config.php');
     $autoloader = new autoloader();
     spl_autoload_register(array($autoloader, 'libsLoader'));
     spl_autoload_register(array($autoloader, 'modelLoader'));
