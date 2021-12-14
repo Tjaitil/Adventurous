@@ -5,6 +5,7 @@
             require($this->parent_dir . '/root/db.php');
             require_once($this->parent_dir . '/root/routes.php');
             require_once($this->parent_dir . 'root/autoloader.php');
+            require_once($this->parent_dir . 'root/config.php');
             $autoloader = new autoloader();
             spl_autoload_register(array($autoloader, 'libsLoader'));
             spl_autoload_register(array($autoloader, 'modelLoader'));
