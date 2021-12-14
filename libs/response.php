@@ -1,23 +1,37 @@
 <?php 
  final class response {
-    public $data = array();
-    public function addToResponse($token, $value, $options = false) {
+    public $data = array("levelUP" => array());
+    public function addTo($token, $value, $options = false) {
         // $token => specify index in data object
         // $value => $value to be stored
+
+        if(array_search($token, array("errorGameMessage", "gameMessage", "data", "levelUP", "html")) === false) {
+            var_dump($token);
+            return false;
+        }
         switch ($token) {
             case 'gameMessage':
                 $this->data['gameMessages'][] = $value;
-                if($options['error']) {
-                    $error = "ERROR";
-                } else {
-                    $error = "";
-                }
-                $this->gameMessage(trim($error . $value), true);
+                $this->gameMessage($value, true);
                 break;
-            
+            case 'errorGameMessage':
+                $message = "ERROR " . $value;
+                $this->data['gameMessages'][] = $message;
+                $this->gameMessage($message, true);
+                $this->send();
+                break;
+            case 'data':
+                $this->data[$options['index']] = $value;
+                break;
+            case 'levelUP':
+                $this->data['levelUP'] = $value; 
+                break;
+            case 'html':
+                $this->data['html'] = $value;
+                break;
             default:
-                # code...
-                break;
+
+            break;
         }
     }
     public function send() {
@@ -25,7 +39,7 @@
     }
     public function gameMessage($message, $ajax = false) {
         $date = '[' . date("H:i:s") . '] ';
-        $messageString = $date . $message;
+        $messageString = $date . trim($message);
         $_SESSION['log'][] = $messageString;
         if(count($_SESSION['log']) > 15) {
             unset($_SESSION['log'][0]);
