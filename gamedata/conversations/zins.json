@@ -1,0 +1,15 @@
+{
+    "index": "zr",
+    "zr": "a,zins|Hello|Q",
+    "zrQ": ["b|Hello, who are you?|r1",
+            "b|Rumours has it that you are interested in daqloon items|r2"],
+    "zrQr1": "a,zins|I'm Zins, who are you?|r",
+    "zrQr1r": "b|I'm @name|r",
+    "zrQr1rr": "a,zins|Nice to meet you|r",
+    "zrQr2": "a,zins|Who told you that?|r",
+    "zrQr2r": "b|Just a rumour I guess, is it true?|r",
+    "zrQr2rr": "a,zins|Well then. As a matter of fact I'm interested. Are you interested in trading some items?|r",
+    "zrQr2rrr": ["#Trade daqloon Items?|Yes|r",
+                 "#Trade daqloon items|No|end"],
+    "zrQr2rrrr": ["a,zins||end|fetchBuilding.zinsstore"]
+}
