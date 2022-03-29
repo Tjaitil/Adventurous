@@ -1,3 +1,7 @@
+    if(document.getElementById("news_content").children[3] != null) {
+        // Add events to item elements
+        itemTitle.addItemClassEvents();
+    }
     function make(item, element) {
         var parent = element.parentNode;
         var amount = parent.children[0].value;
@@ -13,6 +17,13 @@
             if(response[0] != false) {
                 updateInventory('bakery');
             }
+        });
+    }
+    function getPrices() {
+
+        var data = "";
+        ajaxP(data, function(response) {
+            
         });
     }
     

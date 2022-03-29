@@ -3,20 +3,24 @@
             check();
         };
     }
-    function addWarriorEvents(element) {
-        element.addEventListener('click', function() {
-            checkWarriorBox();
-        });
-        element.querySelectorAll("button")[0].addEventListener('click', flipWarriorCard);
+    function addWarriorEvents() {
+        let div = [...document.getElementsByClassName("warrior-select-card")];
+        div.forEach(element => {
+            element.addEventListener('click', () => checkWarriorBox());
+            element.querySelectorAll("button")[0].addEventListener('click', flipWarriorCard);
+        })
     }
     function checkWarriorBox() {
         // function to check wether checkbox is checked or not. Apply styles based on bolean value
         if(event.target.tagName == "BUTTON") {
             return false;
         }
-        var div = event.target.closest(".warriors");
+        var div = event.target.closest(".warrior-select-card");
         var checkbox = div.querySelectorAll("input[type=checkbox]")[0];
         let increment = 0;
+        // if(div.querySelectorAll(".warrior_back")[0].innerHTML.indexOf("arrows") != -1) {
+        //     // add warning
+        // }
         // If event target is not the checkbox, toggle the checked property
         if(event.target.tagName != "INPUT") {
             if(checkbox.checked) {
@@ -37,7 +41,7 @@
         updateSelectedWarriors(increment);
     }
     function warriorsCheck() {
-        var warriors_div = document.getElementsByClassName("warriors");
+        var warriors_div = document.getElementsByClassName("warrior-select-card");
         var warrior_check = [];
         for(var i = 0; i < warriors_div.length; i++) {
             var checkbox = warriors_div[i].querySelectorAll("input[type=checkbox]")[0];
@@ -50,28 +54,17 @@
         return warrior_check;
     }
     function flipWarriorCard() {
-        let div = event.target.closest(".warriors");
-        div.style.transition = "transform 0.2s";
-        if(div.style.transform.indexOf("180") != -1) {
+        let div = event.target.closest(".warrior-select-card");      
+        if(div.style.transform.indexOf("180") !== -1) {
             div.style.transform = "rotateY(0deg)";
         }
         else {
             div.style.transform = "rotateY(180deg)";
         }
-        setTimeout(function() {
-            if(div.style.transform.indexOf("180") == -1) {
-                div.querySelectorAll(".warrior_front")[0].style.visibility = "visible";
-                div.querySelectorAll(".warrior_back")[0].style.visibility = "hidden";
-            }
-            else {
-                div.querySelectorAll(".warrior_front")[0].style.visibility = "hidden";
-                div.querySelectorAll(".warrior_back")[0].style.visibility = "visible";
-            }
-            div.querySelectorAll("button")[0].style.visibility = "visible"; 
-        }, 100);
     }
     function updateSelectedWarriors(increment) {
         let element = document.getElementById("selected_warrior_amount");
+        if(!element) return false;
         let warriorAmount = parseInt(element.innerHTML);
         warriorAmount += increment;
         element.innerHTML = warriorAmount;

@@ -100,7 +100,7 @@
         window.addEventListener('keyup', function (e) {
             switch(e.keyCode) {
                 case 37:
-                    game.controls.left = false;
+                    controls.playerLeft = false;
                     break;
                 case 38:
                     game.controls.up = false;

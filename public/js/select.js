@@ -27,8 +27,10 @@
         var div_inputs = div.querySelectorAll("input");
         div_inputs[0].value = jsUcfirst(item);
         document.getElementsByName("time")[0].value = typeData[item].time;
-        document.getElementById("reduction_time").innerText = "- " + (parseInt(typeData[item].time) * 
-                gameData['workforce_data']['efficiency_level'] / 100) + 's';
+
+        let baseReduction = Number(parseInt(typeData[item].time) * (workforceData['efficiency_level'] * 0.01)).toFixed(2);
+        let perWorkforce = Number(parseInt(typeData[item].time) * (1 * 0.02)).toFixed(2);
+        document.getElementById("reduction_time").innerText = "- " + baseReduction + 's ' + '& -' + perWorkforce + 's each worker';
         document.getElementsByName("experience")[0].value = typeData[item].experience;
         document.getElementsByName("location")[0].value = typeData[item].location;
         
@@ -67,9 +69,8 @@
             data = "model=Mine" + "&method=getData";
         }
         ajaxJS(data, function(response) {
-            console.log(response);
-            let responseText = JSON.parse(response[1]);
-            gameData = responseText;
+            let responseText = response[1];
+            workforceData = responseText.workforce_data;
             if(game.properties.building === 'crops') {
                 responseText['crop_types'];
                 for(let i = 0; i < responseText['crop_types'].length; i++) {
@@ -82,12 +83,11 @@
                     typeData[responseText['mineral_types'][i]['mineral_type']] = responseText['mineral_types'][i];
                 }    
             }
-            console.log(document.getElementsByName("workforce"));
-            document.getElementsByName("workforce")[0].setAttribute("max", gameData.workforce_data.avail_workforce);
+            document.getElementsByName("workforce")[0].setAttribute("max", responseText.workforce_data.avail_workforce);
         });
     }
     var typeData = {
         
     };
-    var gameData;
+    var workforceData;
     

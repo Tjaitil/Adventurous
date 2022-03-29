@@ -30,14 +30,15 @@
         toggleOfferType();
         var item = element.children[1].innerHTML.toLowerCase().trim();
         if(item === 'gold') {
-            gameLog("ERROR: You cannot sell gold!");
+            gameLogger.addMessage("ERROR: You cannot sell gold!");
+            gameLogger.logMessages();
             return false;
         }
         document.getElementById("item_name").value = jsUcWords(item);
-        var img = element.cloneNode(true);
+        let img = element.cloneNode(true);
         img.removeChild(img.children[1]);
         img.removeAttribute("onclick");
-        var parent = document.getElementById("selected");
+        let parent = document.getElementById("selected");
         parent.innerHTML = "";
         parent.appendChild(img);
     }
@@ -105,16 +106,18 @@
     };
     function selectedCheck(amount_r = true) {
         if(document.getElementById("selected").getElementsByTagName("figure").length == 0) {
-            gameLog("Please select a valid item");
+            gameLogger.addMessage("Please select a valid item");
+            gameLogger.logMessages();
             return false;
         }
         var div = document.getElementById("selected");
-        
+        let item = document.getElementById("selected").querySelectorAll("figcaption")[0].innerHTML.toLowerCase().trim(); 
         // amount_r is variable that opens up for checking only item or item and amount
         if(amount_r === true) {
             var amount = document.getElementById("selected_amount").value;
             if(amount == 0) {
-                gameLog("Please select a valid amount");
+                gameLogger.addMessage("Please select a valid amount");
+                gameLogger.logMessages();
                 return false;
             }
             return [item, amount];

@@ -4,7 +4,7 @@
     var method = false;
     var menubarToggle = {
         toggled: false,
-        addEvent: function() {
+        addEvent() {
             menubarToggle.toggled = true;
             var buttons = document.getElementById("inventory").querySelectorAll("div");
             buttons.forEach(function(element) {
@@ -13,7 +13,7 @@
             });
             itemTitle.removeTitleEvent();
         },
-        removeEvent: function() {
+        removeEvent() {
             menubarToggle.toggled = false;
             var buttons = document.getElementById("inventory").querySelectorAll("div");
             buttons.forEach(function(element) {
@@ -48,6 +48,7 @@
     }
     // Check if news_content_main_content -> children[2] has gotten content from game.js -> game.fetchBuilding()
     if(document.getElementById("news_content").children[2] != null) {
+        document.getElementById("item_tooltip").style.visibility = "hidden";
         menubarToggle.addEvent();
         addShowMenuEvent();
         addStockpileActions();
@@ -141,7 +142,6 @@
         let item = event.target.parentNode.children[0].innerHTML.toLowerCase().split("<br>")[0].trim();
         let quantity = event.target.innerHTML.split(" ")[1];
         let insert;
-        console.log(item);
         if(document.getElementById("stck_menu").querySelectorAll("LI")[1].innerHTML.indexOf("Insert") != -1) {
             insert = "1";
             if(quantity === 'x') {
@@ -159,7 +159,13 @@
         ajaxP(data, function(response) {
             if(response[0] !== false) {
                 console.log(response[1]);
-                updatePage();
+                let responseText = response[1];
+                document.getElementById("stockpile").innerHTML = responseText.html;
+                // ShowMenuEvent is added in updateInventory
+                updateInventory('stockpile');
+                addShowMenuEvent();
+                document.getElementById("stck_menu").style.visibility = "hidden";
+                newsContentSidebar.adjustMainContentHeight();
             }
         });
     }
@@ -169,22 +175,11 @@
             return false;
         }
         else if(isNaN(amount) == true || amount.search(",") != -1) {
-            gameLog("ERROR: Please insert a valid number!");
+            gameLogger.addMessage("ERROR: Please insert a valid number!");
+            gameLogger.logMessages();
             return false;
         }
         else {
             return amount;
         }
-    }
-    function updatePage() {
-        var data = "model=Stockpile" + "&method=getData";
-        ajaxJS(data, function(response) {
-            if(response[0] != false) {
-                console.log(response[1]);
-                document.getElementById("stockpile").innerHTML = response[1];
-                updateInventory('stockpile');
-                addShowMenuEvent();
-                document.getElementById("stck_menu").style.visibility = "hidden";
-            }
-        });
     }

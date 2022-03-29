@@ -1,32 +1,31 @@
-    window.onload = levelUP();
-    function levelUP() {
-        var data = "model=LevelUp" + "&method=updateData";
-        ajaxP(data, function(response) {
-            if(response[0] !== false) {
-                var responseText = response[1];
-                /*data = response[1].split("|");
-                var pos = data.indexOf("unlocked");
-                var unlocked = data.slice(0, pos);
-                console.log(data);
-                var count = 0;
-                var div = document.createElement("DIV");
-                div.setAttribute("id", "level_up");
-                div.innerHTML += response[1];
-
-                if(unlocked.length > 0 ) {
-                    for(var i = 0; i < unlocked.length; i++) {
-                        var img = document.createElement("IMG");
-                        img.setAttribute("src", "/public/images/" + hello[i] + ".jpg");
-                        div.appendChild(img);
-                        count++;
-                    }
-                }
-                else {
-                    var element = document.createElement("p");
-                    element.innerHTML = "Nothing new at this level";
-                    div.appendChild(element);
-                }*/
-                newLevel.searchString(response[1]);
-            }       
-        });
-    }
+    const newLevel = {
+        skillElement: null,
+        skillData: null,
+        highLightIndex: 0,
+        elementIndexes: {
+            adventurer: 0,
+            farmer: 1,
+            miner: 2,
+            trader: 3,
+            warrior: 4
+        },
+        update(levelData) {
+            if(!Object.keys(levelData)) return false;
+            
+            let index = this.elementIndexes[levelData['skill']];
+            let element = document.getElementById("skills").querySelectorAll(".skill_level")[index];
+            element.innerHTML = levelData['new_level'];
+            gameLogger.addMessage("Congratulations! You have leveled up " + jsUcfirst(levelData['skill']) + " to " +
+                                    levelData['new_level']);
+            setInterval(() => this.skillHighlight(document.getElementById("skills").children[index]), 1000);
+        },
+        skillHighlight(element) {
+            if (element.style.backgroundColor === "" || element.style.backgroundColor == "rgb(201, 155, 105)") {
+                element.style.backgroundColor = "#f8f2ec";
+            }
+            else {
+                element.style.backgroundColor = "#c99b69";
+            }
+        }
+    
+    };

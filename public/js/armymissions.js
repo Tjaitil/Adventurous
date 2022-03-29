@@ -2,16 +2,17 @@
         getCountdown();
         document.getElementById("current_mission").querySelectorAll("button")[0].addEventListener("click", cancelMission);
         document.getElementById("news_content_main_content").querySelectorAll("button")[0].addEventListener("click", function() {
-           game.fetchBuilding('armycamp'); 
+            inputHandler.fetchBuilding('armycamp'); 
         });
+        addWarriorEvents();
     }
     function getCountdown() {
         var data = "model=ArmyMissions" + "&method=getCountdown";
         ajaxG(data, function(response) {
             if(response[0] != false) {
-                var data = response[1].split("|");
-                var time = data[0] * 1000;
-                var mission = data[1];
+                let responseText = response[1];
+                var time = responseText.date * 1000;
+                var mission = responseText.mission;
                 var x = setInterval (function() {
                     let now = new Date().getTime();
                     let distance = time - now;
@@ -49,31 +50,11 @@
     }
     function prepareMission(tr_id, mission_id) {
         var tr = tr_id.parentNode.parentNode;
-        var clone = tr.cloneNode(true);
-        clone.deleteCell(5);
-        clone.setAttribute("id", mission_id);
-        var ele = document.getElementById("mission_enabled");
-        /* Check wether mission table is visible, if so replace node instead of appending to prevent two rows with missions
-           Plus if the mission table there is no need to make ajax request to get warrior data */
-        if(document.getElementById("mission_table").firstChild && ele.style.visibility == "visible") {
-            document.getElementById("mission_table").replaceChild(clone, document.getElementById("mission_table").children[0]);
-        }
-        else {
-            document.getElementById("mission_table").appendChild(clone);
-            ele.style.visibility = "visible";
-            var data = "model=ArmyMissions" + "&method=getWarriors";
-            ajaxJS(data, function(response) {
-                console.log(response[1]);
-                if(response[0] != false) {
-                    document.getElementById("mission_enabled").innerHTML += response[1];
-                    var divs = document.querySelectorAll(".warriors");
-                    divs.forEach(function(element) {
-                        addWarriorEvents(element);
-                        
-                    });
-                }
-            });
-        }
+        let tds = [...tr.children];
+        tds.pop();
+        let infoContainers = document.getElementsByClassName("mission-info-container");
+        tds.forEach((element, i) => infoContainers[i].children[1].innerHTML = element.innerHTML); 
+        document.getElementById("mission_enabled").style.visibility = "visible";       
     }
     function exit() {
         let ele = document.getElementById("mission_enabled");
@@ -81,9 +62,7 @@
         document.getElementById("mission_table").innerHTML = "";
         // Loop through children and find warriors_container and remove it
         for(let i = 0; i < ele.children.length; i++) {
-            console.log(ele.children[i].id);
             if(ele.children[i].id === "warriors_container") {
-                console.log('removed');
                 ele.removeChild(ele.children[i]);
                 break;
             }
@@ -94,7 +73,8 @@
         var warrior_check = warriorsCheck();
         // Send array with warriors id and mission id to model
         if(warrior_check.length == 0) {
-            gameLog("Please select warriors");
+            gameLogger.addMessage("Please select warriors!");
+            gameLogger.logMessages();
             return false;
         }
         let mission_id = document.getElementById("mission_table").querySelectorAll("tr")[0].id;
@@ -104,11 +84,10 @@
             if(response[0] != false) {
                 getCountdown();
                 updateCountdownTab();
-                gameLog(response[1]);
+                updateHunger(response.newHunger);
                 document.getElementById("mission_table").innerHTML = "";
                 document.getElementById("warriors_container").innerHTML = "";
                 document.getElementById("mission_enabled").style.visibility = "hidden";
-                newLevel.searchString(response[1]);
             }
         });
     }
@@ -118,7 +97,6 @@
             if(response[0] != false) {
                 getCountdown();
                 updateCountdownTab();
-                gameLog(response[1]);
             }
         });
     }
@@ -127,13 +105,18 @@
         ajaxP(data, function (response) {
             console.log(response);
             if(response[0] !== false) {
-                let responseText = response[1].split("|");
-                updateCountdownTab();
+                let responseText = response[1];
+                let ele = document.getElementById("mission_enabled");
+                for(let i = 0; i < ele.children.length; i++) {
+                    if(["cont_exit", "battle_result"].indexOf(ele.children[i].className) === -1) {
+                        ele.children[i].style.display = "none";
+                    }
+                }
+                document.getElementById("battle_result").innerHTML = responseText[0];
+                document.getElementById("battle_result").style.display = "";
+                document.getElementById("mission_enabled").style.visibility = "visible";
                 updateInventory();
-                gameLog(responseText[1]);
                 getCountdown();
-                // Search string for next level message
-                newLevel.searchString(response[1]);
             }
         });
     }

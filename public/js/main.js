@@ -29,7 +29,8 @@
                 console.log(this.responseText);
                 if(this.responseText.indexOf("ERROR:") != -1) {
                     if(log == true) {
-                        gameLog(this.responseText);
+                        gameLogger.addMessage("getNews error");
+                        gameLogger.logMessages();
                     }
                     callback([false, this.responseText]);
                 }

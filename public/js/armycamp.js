@@ -1,41 +1,101 @@
-    // warriorsIndex is the children index for the warriors
-    console.log('armycamp.js');
-    var warriorsIndex = [];
-    // warriors is the id of the warriors selected
-    var warriors = [];
+    var warriors = {
+        init() {
+            let warriorsNodeList = document.getElementsByClassName("warrior");
+            for(let i = 0; i < warriorsNodeList.length; i++) {
+                this.data.push({
+                    cIndex: i,
+                    id: parseInt(warriorsNodeList[i].id.split("_")[1]),
+                    selected: false,
+                    intervalID: null,
+                    countdownData: null,
+                    calculateSkillbar
+                })   
+            }
+        },
+        selectedIds: [],
+        data: [],
+        toggleSelect(id) {
+            this.data.forEach((element, index) => {
+                if(element.id === id ) {
+                    this.data[index].selected = !element.selected;
+                }
+            })
+        },
+        getSelectedIds(all = false) {
+            this.selectedIds = [];
+            if(all === true) {
+                this.data.forEach(element => this.selectedIds.push(element.id));
+            }
+            else {
+                this.data.forEach(element => {
+                    console.log(element.selected);
+                    if(element.selected === true) this.selectedIds.push(element.id);
+                });
+            }
+        },
+        unselectDiv() {
+            let warriorsNodeList = document.getElementsByClassName("warrior");
+            for(const i of warriorsNodeList) {
+                i.style.border = "none";
+            }
+        },
+        resetSelected() {
+            this.data.forEach((element, index) => this.data[index].selected = false);
+            this.selectedIds = [];
+        }
+    }
+    var singleWarriorAction = ["transfer", "training", "change type", "heal"];
+    function toggleHiglightedWarriorDiv() {
+        if(event.target.tagName === 'BUTTON') {
+            return false;
+        }
+        let DOMelement = event.target.closest(".warrior")
+        let id = parseInt(DOMelement.id.split("_")[1]);
+        if(DOMelement.style.borderLeftWidth === "3px") {
+            DOMelement.style.border = "";
+        }
+        else {
+            DOMelement.style.border = "3px ridge #5f4121";        
+        }
+        warriors.toggleSelect(id);
+        checkAction();
+    }
     var intervalID = {      
     };
     if(document.getElementById("news_content").children[2] != null) {
         document.getElementById("actions").children[1].addEventListener("change", toogleActions);
         document.getElementById("actions").getElementsByTagName("button")[0].addEventListener("click", actions);
+        document.getElementsByName("action")[0].addEventListener("change", () => checkAction());
         selectItemEvent.addSelectEvent();
-        warriorView(false, true);
+        (() => warriors.init())();
+        getInitCountdown();
+        warriors.data.forEach(element => {
+            if(warriors.selectedIds.includes(element.id)) {
+                element.calculateSkillbar(element.cIndex);
+            }
+        });
+        var warriorsDivs = document.querySelectorAll(".warrior");
+        warriorsDivs.forEach((element, index) => {
+            // Add event to each .warrior class
+            warriorsDivs[index].addEventListener('click', () => toggleHiglightedWarriorDiv());
+        });
         let buttons = document.getElementById("news_content_main_content").querySelectorAll("button");
-        console.log(buttons);
         buttons[0].addEventListener("click", function() {
-            game.fetchBuilding('ArmyMissions'); 
+            inputHandler.fetchBuilding('ArmyMissions'); 
         });
         buttons[1].addEventListener("click", function() {
-            game.fetchBuilding('Armory');
+            inputHandler.fetchBuilding('Armory');
         });
     }
-    function warriorView(selectedWarrior = false, set = false) {
-        var warriors = document.getElementsByClassName("warrior");
-        if(warriors.length > 0) {
-            warriors = document.querySelectorAll(".warrior");
-            let i = 0;
-            warriors.forEach(function(element) {
-            // Add event to each .warrior class
-            if(selectedWarrior == false) {
-                element.addEventListener('click', selectWarrior);
-            }
-            else if(warriorsIndex.indexOf(i) != -1) {
-                element.addEventListener('click', selectWarrior);
-            }
-            i++;
-            });    
-            getCountdown(set);
-            calculateSkillbar();
+    function checkAction() {
+        let select = document.getElementsByName("action")[0];
+        let val = select.children[select.selectedIndex].value;
+        let warning =  document.getElementById("multiple-warrior-action-warning");
+        let amount = warriors.data.filter(element => (element.selected === true)).length;
+        if(singleWarriorAction.includes(val) && amount > 1) {
+            warning.style.visibility = "visible";
+        } else {
+            warning.style.visibility = "hidden";
         }
     }
     function show(element) {
@@ -118,15 +178,15 @@
             }
             form_data[form[i].name] = form[i].value;
         }*/
-        var form_data = {};
+        let form_data = {};
         form_data['warriors'] = ["1", "2", "3"];
         form_data['daqloon'] = 3;
-        var data = "model=CombatCalculator" + "&method=calculate" + "&form_data=" + JSON.stringify(form_data) + "&route=" + "db";
+        let data = "model=CombatCalculator" + "&method=calculate" + "&form_data=" + JSON.stringify(form_data) + 
+                    "&route=" + "db";
         ajaxP(data, function(response) {
             console.log(response);
             if(response[0] !== false) {
                 console.log(response[1]);
-                show('calculator');
                 document.getElementById("calc_form").style = "display: none";
                 var div = document.getElementById("calc_result");
                 div.style = "visibility: visible";
@@ -152,298 +212,279 @@
             }
         }
     }
-    function selectWarrior() {
-        if(event.target.tagName === 'BUTTON') {
-            return false;
+    function updatePage() {
+        document.getElementsByName("action")[0].selectedIndex = 0;
+        let selected = warriors.selectedIds;
+        if(warriors.selectedIds === 0) return false;
+        let data = "model=ArmyCamp" + "&method=getData" + "&warriors=" + JSON.stringify(selected);
+        ajaxG(data, function(response) {
+            // console.log(response);
+            let responseText = response[1];
+            updateCountdownTab();
+            let warriorsDiv = document.getElementById("warriors").children;
+            let template;
+            let div;
+            if(typeof(responseText.html) === "string") {
+                let res = responseText.html;
+                responseText.html = [res];
+            }
+            let data = {
+                html: {
+
+                },
+                warriorCountdowns: {
+
+                }
+            };
+            // Index data by warrior-id
+            selected.forEach((id, index) => {
+                    data.html[id] = responseText.html[index];
+                    data.warriorCountdowns[id] = responseText.warriorCountdowns[id];
+            });
+            console.log(warriors.selectedIds);
+            warriors.data.forEach((element, index) => {
+                if(warriors.selectedIds.includes(element.id)) {
+                    template = document.createElement("template");
+                    template.innerHTML = data.html[element.id].trim();
+                    div = template.content.firstChild;
+                    document.getElementById("warriors").replaceChild(div, warriorsDiv[element.cIndex]);
+                    div.addEventListener('click', () => toggleHiglightedWarriorDiv());
+                    createCount(data.warriorCountdowns);
+                    element.calculateSkillbar(element.cIndex);
+                }
+            });
+            warriors.resetSelected();
+        });
+    }
+    function calculateSkillbar(warriorIndex) {
+        var skillBars = document.getElementById("overview").querySelectorAll(".skill_bar"); 
+        let width;
+        let nodeIndex
+        for(let i = 0; i < skillBars.length; i++) {
+            nodeIndex = Math.floor(i / 4);
+            if(warriorIndex !== false && nodeIndex !== warriorIndex) {
+                continue;
+            }
+            skillBars[i].querySelectorAll(".progressBarOverlay")[0].style.width = 0 + "%";
+            width = progressBar.calculateProgress(skillBars[i], false, false, true, true);
+            if(width === 100) {
+                if(document.querySelectorAll(".warrior_level_up")[nodeIndex].children.length === 0) {
+                    button = document.createElement("button");
+                    button.innerHTML = "Level up " + '&#9650';
+                    button.addEventListener("click", function() {
+                        // warriorsIndex.push(Math.floor(id / 4));
+                        let warrior_id = getWarriorId(this);
+                        levelUPWarrior(warrior_id);
+                    });
+                    document.querySelectorAll(".warrior_level_up")[nodeIndex].appendChild(button);
+                }
+            } 
         }
-        var element = event.target.closest(".warrior");
-        if(element.style.border === "3px solid black") {
-            element.style.border = "1px solid black";
+    }
+    function getInitCountdown() {
+        warriors.getSelectedIds(true);
+        let data = "model=ArmyCamp" + "&method=getCountdown" + "&warriors=" + JSON.stringify(warriors.selectedIds);
+        ajaxG(data, function(response) {
+            if(response[0] != false) {
+                let responseText = response[1];
+                createCount(responseText.warriorCountdowns);
+            }
+        });
+    }
+    function createCount(data) {
+        console.log(data);
+        console.log(warriors.selectedIds);
+        warriors.data.forEach((element, index) => {
+            if(warriors.selectedIds.includes(element.id)) {
+                warriors.data[index].time = data[element.id].training_countdown;
+                warriors.data[index].report = data[element.id].fetch_report;
+                warriors.data[index].date = data[element.id].date;
+                warriors.data[index].intervalID = setInterval(() => countdown(element), 1000);
+            }
+        }); 
+    }
+    function countdown(warrior) {
+        // console.log(time, report, warriorIndex);
+        // warriorIndex is the child index of warrior
+        this.time = warrior.date * 1000;
+        let report = warrior.report;
+        let now = new Date().getTime();
+        let distance = this.time - now;
+        let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        let p = document.getElementsByClassName("countdown");
+        if(!p[warrior.cIndex]) {
+            clearInterval(warrior.intervalID);
+            return;
+        }
+        if (distance < 0 && report === "1"){
+            // warriorIndex + 1 is the id of the warrior
+            clearInterval(warrior.intervalID);
+            var btn = document.createElement("BUTTON");
+            var t = document.createTextNode("Get report");
+            btn.appendChild(t);
+            btn.addEventListener("click", function(){
+                warrior_id = this.closest(".warrior").id.split("_")[1];
+                let warrior = warriors.data.find(element => element.id === warrior_id);
+                if(warrior === "undefined") {
+                    return false;
+                }
+                updateTraining(parseInt(warrior_id));
+            });
+            p[warrior.cIndex].innerHTML = "";
+            p[warrior.cIndex].appendChild(btn);
+        }
+        else if (distance < 0) {
+            // warriorIndex + 1 is the id of the warrior
+            clearInterval(warrior.intervalID);
+            p[warrior.cIndex].innerHTML = "";
         }
         else {
-            element.style.border = "3px solid black";
+            p[warrior.cIndex].innerHTML = hours + "h " + minutes + "m " + seconds + "s";;
         }
-        
     }
-    function actions() {
+    function getWarriorId(element) {
+        return parseInt(element.closest(".warrior").id.split("_")[1]);
+    }
+    function actions(action = false) {
         var select = document.getElementsByName("action")[0];
-        var value = select.options[select.selectedIndex].value;
-        // warriorsD is the node list of the warriors
-        warriorsNodeList = document.getElementsByClassName("warrior");
-        // warrriorsI is the div index of the warrior;
-        warriorsIndex = [];
-        // warriors is the id of warriors;
-        warriors = [];
-        for(var i = 0; i < warriorsNodeList.length; i++) {
-            if(warriorsNodeList[i].style.border === "3px solid black") {
-                warriorsIndex.push(i);
-                var id = warriorsNodeList[i].id.split("_")[1];
-                warriors.push(id);
-            }
-        }
-        if(warriors.length === 0) {
-            gameLog("ERROR: You have not selected any warriors to action");
+        var action = select.options[select.selectedIndex].value;
+        if(action.length === 0) {
+            gameLogger.addMessage("ERROR: Select a action to perform");
+            gameLogger.logMessages();
             return false;
         }
-        var m_warriors = ["transfer", "rest"];
-        if(m_warriors.indexOf(value) == -1 && warriors.length > 1) {
-            gameLog("ERROR: Only 1 warrior allowed for " + value + " action");
+        warriors.getSelectedIds();
+        let selectedIds = warriors.selectedIds;
+        if(selectedIds.length === 0) {
+            gameLogger.addMessage("ERROR: You have not selected any warriors for action");
+            gameLogger.logMessages();
             return false;
         }
-        switch(value) {
+        if(singleWarriorAction.includes(action) == -1 && selectedIds.length > 1) {
+            gameLogger.addMessage("ERROR: Only 1 warrior allowed for " + action + " action");
+            gameLogger.logMessages();
+            return false;
+        }
+        selectedIds = JSON.stringify(selectedIds);
+        let update = false;
+        let data;
+        switch(action) {
             case 'transfer':
-                transfer();
+                // Single warrior action
+                data = "model=ArmyCamp" + "&method=transfer" + "&warriors=" + selectedIds;
+                update = true;
                 break;
             case 'heal':
-                healWarrior('heal', warriors);
+                let item = false;
+                let quantity = false;
+                quantity = document.getElementById("selected_amount").value;
+                if(selectedCheck() === false) return false;
+                item = document.getElementById("selected").children[0].children[1].innerHTML.toLowerCase();
+                let healing = {
+                    'yest-herb': 4,
+                    'healing potion': 3,
+                    'yas-herb': 2
+                };
+                // Check wether the item is a valid one
+                if(healing[item] == 0) {
+                    gameLogger.addMessage("ERROR: Pick a valid item!");
+                    gameLogger.logMessages();
+                }
+                // Check if the quantity provided is higher than the quantity you would maximum need
+                else if(healing[item] < quantity) {
+                    quantity = healing[item];
+                    return false;
+                }
+                data = "model=ArmyCamp" + "&method=healWarrior" + "&actionType=heal" + "&item=" + item + "&amount=" + quantity + 
+                        "&warriors=" + selectedIds;
+                update = true;
                 break;
             case 'rest':
-                healWarrior('rest', warriors);
+                data = "model=ArmyCamp" + "&method=rest" + "&warriors=" + selectedIds;
+                update = true;
                 break;
             case 'offRest':
-                offRest();
+                data = "model=ArmyCamp" + "&method=offRest" + "&warriors=" + selectedIds;
+                ajaxP(data, function(response) {
+                    if(response[0] !== false) {
+                        warriors.data.forEach(element => {
+                            if(selectedIds.includes(element.id)) {
+                                document.getElementsByClassName("warrior-status")[element.cIndex].innerText = "Idle";
+                                document.getElementsByClassName("warrior-health")[element.cIndex].innerText = "";
+                            }
+                        })
+                    }       
+                }); 
                 break;
             case 'training':
-                training(warriors, warriorsIndex);
+                let select = document.getElementById("training").children[1];
+                let type = select.children[select.selectedIndex].value;
+                if(type.length < 0 || type == undefined) {
+                    gameLogger.addMessage("ERROR: Please select training type!");
+                    gameLogger.logMessages();
+                    return false;
+                }
+                data = "model=SetTraining" + "&method=setTraining" + "&warrior=" + selectedIds + "&type=" + type;
+                ajaxP(data, function(response) {
+                    if(response[0] !== false) {
+                        updateCountdownTab();
+                        updatePage();
+                    }
+                });
                 break;
             case 'changeType':
-                changeType();
+                data = "model=ArmyCamp" + "&method=changeType" + "&warrior=" + selectedIds[0];
+                ajaxP(data, function(response) {
+                    if(response[0] !== false) {
+                        updateInventory();
+                        let responseText = response[0];
+                        let type = responseText.warrior_type;                
+                        warriors.data.forEach(element => {
+                            if(selectedIds.includes(element.id)) {
+                                document.getElementsByClassName("warrior").children[element.cIndex].querySelectorAll("img");
+                                img.src = "public/images/" + type + " icon.png";
+                            }
+                        });
+                    }
+                });
                 break;
             default:
-                
+
             break;
         }
-        function transfer() {
-            var data = "model=ArmyCamp" + "&method=transfer" + "&warriors=" + warriors;
+        if(update === true) {
             ajaxP(data, function(response) {
                 if(response[0] !== false) {
-                    document.getElementById("overview").children[1].innerHTML = response[1];
                     updatePage();
-                    getCountdown();
-                    gameLog(response[1]);
                 }       
             });
         }
     }
-    function updatePage() {
-        document.getElementsByName("action")[0].selectedIndex = 0;
-        var data = "model=ArmyCamp" + "&method=getData" + "&warriors=" + warriors;
-        ajaxG(data, function(response) {
-            if(response[0] != false) {
-                let splitArray = response[1].split('<div id=');
-                splitArray.shift();
-                for(let i = 0; i < splitArray.length; i++) {
-                    let div = splitArray[i].split('"warrior">')[1].slice(0, -5);
-                    document.getElementById("warriors").children[warriorsIndex[i]].innerHTML = div.trim();
-                }
-                warriorView(true);
-            }
-        });
-    }
-    function calculateSkillbar(warriorIndex = false) {
-        var skillBars = document.getElementById("overview").querySelectorAll(".skill_bar"); 
-        if(warriorIndex != false) {
-            // skillBars2 holds the nodes from the specified warriorIndexes
-            skillBars2 = [];
-            for(var x = 0; x < warriorsIndex.length; x++) {
-                skillBars2.push(skillBars[warriorsIndex[x]]);
-            }
-            skillBars = skillBars2;
-        }
-        let xp;
-        let nextlevel;
-        let width;
-        let button = document.createElement("button");
-        /*button.className = "warrior_level_up_button";*/
-        button.innerHTML = "Level up " + '&#9650';
-        let buttonInserted = [];
-        for(var i = 0; i < skillBars.length; i++) {
-            xp = skillBars[i].querySelectorAll(".progress_value1")[0].innerHTML;
-            nextlevel = skillBars[i].querySelectorAll(".progress_value2")[0].innerHTML;
-            width = xp / nextlevel * 100;
-            // Check if there is button inserted in a warrior element, if present no new button needs to be created
-            if(width === 100 && buttonInserted.indexOf(Math.floor(i / 4)) == -1) {
-                skillBars[i].children[0].style.backgroundColor = "#008000";
-                let divLevels = skillBars[i].closest(".levels");
-                let id = i;
-                button.addEventListener("click", function() {
-                    warriorsIndex.push(Math.floor(id / 4));
-                    warriors.push(
-                    document.getElementById("warriors").children[Math.floor(id / 4)].querySelectorAll("p")[0].innerHTML.split("#")[1].trim()
-                    );
-                    levelUPWarrior();
-                });
-                divLevels.closest(".warrior").querySelectorAll(".warrior_level_up")[0].appendChild(button);
-                console.log(divLevels.closest(".warrior").querySelectorAll(".warrior_level_up")[0]);
-                buttonInserted.push(Math.floor(i / 4));
-            }
-            skillBars[i].children[0].style.width = width + "%";
-        }
-    }
-    function getCountdown(set = false) {
-        let data = "model=ArmyCamp" + "&method=getCountdown" + "&warriors=" + warriors;
-        ajaxG(data, function(response) {
-            if(response[0] != false) {
-                console.log(response[1]);
-                data = response[1].split("||");
-                data.pop();
-                // warriorsData holds the information gathered from db
-                var warriorsData = [];
-                let time;
-                let report;
-                let warrior;
-                for(let i = 0; i < data.length; i++) {
-                    warriorsData.push(data[i].split("|"));
-                    time = warriorsData[i][0];
-                    report = warriorsData[i][1];
-                    if(set === true) {
-                        warrior = 'warrior' + [i];
-                        intervalID[warrior] = setInterval(createCount(time, report, i), 1000);
-                    }
-                    else {
-                        warrior = 'warrior' + warriorsIndex[i];
-                        intervalID[warrior] = setInterval(createCount(time, report, warriorsIndex[i]), 1000);
-                    }
-                }    
-            }
-        });
-    } 
-    function createCount(time, report, warriorIndex) {
-        return function() {
-            countdown(time, report, warriorIndex);
-        };
-    }
-    function countdown(time, report, warriorIndex) {
-        // warriorIndex is the child index of warrior
-        this.time = time * 1000;
-        var now = new Date().getTime();
-        var distance = this.time - now;
-        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-        var p = document.getElementsByClassName("countdown");
-        p[warriorIndex].innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
-        if (distance < 0 && report === "1"){
-            clearInterval(intervalID['warrior' + warriorIndex]);
-            var btn = document.createElement("BUTTON");
-            var t = document.createTextNode("Get training report");
-            btn.appendChild(t);
-            btn.addEventListener("click", function(){
-                warrior_id = this.closest(".warrior").id.split("_")[1];
-                updateTraining(warrior_id);
-                warriors.push(id);
-                warriorsIndex.push(warriorIndex);
-            });
-            p[warriorIndex].innerHTML = "";
-            p[warriorIndex].appendChild(btn);
-        }
-        else if (distance < 0) {
-            clearInterval(intervalID['warrior' + warriorIndex]);
-            p[warriorIndex].innerHTML = "";
-        }
-    }
-    function levelUPWarrior() {
-        if(warriors.length < 1 || warriorsIndex.length < 1) {
-            return;
-        }
-        let data = "model=ArmyCamp" + "&method=checkWarriorLevel" + "&warriors=" + warriors;
+    function levelUPWarrior(id) {
+        let warrior_id = parseInt(id);
+        warriors.resetSelected();
+        warriors.toggleSelect(warrior_id);
+        warriors.getSelectedIds();
+        let data = "model=ArmyCamp" + "&method=checkWarriorLevel" + "&warriors=" + warrior_id;
         ajaxP(data, function(response) {
             if(response[0] != false) {
-                let responseText = response[1].split("|");
-                gameLog(responseText[1]);
                 updatePage();
-                newLevel.searchString(response[1]);
             }
         });
     }
-    function updateTraining(warrior_id) {
-        var data = "model=UpdateTraining" + "&method=updateTraining" + "&warrior_id=" + warrior_id;
+    function updateTraining(id) {
+        let warrior_id = parseInt(id);
+        warriors.resetSelected();
+        warriors.toggleSelect(warrior_id);
+        warriors.getSelectedIds();
+        if(warriors.selectedIds.length === 0) return false;
+        let data = "model=UpdateTraining" + "&method=updateTraining" + "&warrior_id=" + warriors.selectedIds[0];
         ajaxP(data, function(response) {
             if(response[0] !== false) {
-                let responseText = response[1].split("|");
                 updateCountdownTab();
                 updatePage();
-                gameLog(responseText[1]);
-                newLevel.searchString(response[1]);
             }       
-        });
-    }
-    function healWarrior(type, warriors) {
-        var item = false;
-        var quantity = false;
-        if(type == 'heal') {
-            if(warriors.length > 1) {
-                
-            }
-            quantity = document.getElementById("quantity").value;
-            var check = selectedCheck();
-            if(check == false) {
-                return false;
-            }
-            item = document.getElementById("selected").children[0].children[1].innerHTML.toLowerCase();
-            var healing = {
-                'yest-herb': 4,
-                'healing potion': 3,
-                'yas-herb': 2
-            };
-            // Check wether the item is a valid one
-            if(healing[item] == 0) {
-                gameLog("ERROR: Pick a valid item!", true);
-                return false;
-            }
-            // Check if the quantity provided is higher than the quantity you would maximum need
-            else if(healing[item] < quantity) {
-                quantity = healing[item];
-            }
-        }
-        var data = "model=ArmyCamp" + "&method=healWarrior" + "&item=" + item + "&quantity=" + quantity + "&warriors" + warriors;
-        ajaxP(data, function(response) {
-            if(response[0] !== false) {
-                gameLog(response[1]);
-                updatePage();
-            }       
-        });
-    }
-    function offRest() {
-        var data = "model=ArmyCamp" + "&method=offRest" + "&warriors=" + warriors;
-        ajaxP(data, function(response) {
-            if(response[0] !== false) {
-                for(let i = 0; i < warriors.length; i++) {
-                    document.getElementById("warriors").children[warriorsIndex[i]].querySelectorAll("td")[3].innerText = "Nothing special";
-                }
-            }       
-        }); 
-    }
-    function training(warriors, warriorsI) {
-        var select = document.getElementById("training").children[1];
-        var type = select.children[select.selectedIndex].value;
-        if(type.length < 0 || type == undefined) {
-            gameLog("ERROR: Please select training type!", true);
-            return false;
-        }
-        var data = "model=SetTraining" + "&method=setTraining" + "&warrior=" + warriors + "&type=" + type;
-        ajaxP(data, function(response) {
-            if(response[0] !== false) {
-                let responseText = response[1].split("|");
-                updateCountdownTab();
-                updatePage();
-                newLevel.searchString(response[1]);
-                gameLog(responseText[1]);
-            }
-        });
-    }
-    function changeType() {
-        var data = "model=ArmyCamp" + "&method=changeType" + "&warriors=" + warriors;
-        ajaxP(data, function(response) {
-            if(response[0] !== false) {
-                updateInventory();
-                gameLog(response[1]);
-                let type = response[1].split("to ")[1].split(" for")[0].trim();
-                for(var i = 0; i < warriors.length; i++) {
-                    let img = document.getElementById("warriors").children[warriorsIndex[i]].querySelectorAll("img");
-                    img.src = "public/images/" + type + " icon.png";
-                }
-            }
         });
     }

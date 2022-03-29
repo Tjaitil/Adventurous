@@ -26,7 +26,7 @@ function checkDeviceType() {
                     return false;
                 }
                 // If game is loading, return false
-                if(game.properties.loading == false) {
+                if(game.properties.gameState == 'playing') {
                     return false;
                 }
                 doubleClickDetect();
@@ -43,7 +43,7 @@ function checkDeviceType() {
                         console.log('single tap');
                         let check = game.checkBuilding(clientX, clientY);
                         if(check == false) {
-                            game.checkCharacter();
+                            inputHandler.checkCharacter();
                         }
                     }, 300);
                 }
@@ -51,7 +51,7 @@ function checkDeviceType() {
                     // Double tap
                     clearTimeout(clickTimer);
                     // If game is loading, return false
-                    if(game.properties.loading == false) {
+                    if(game.properties.gameState === 'playing') {
                         game.getNextMap();    
                     }
                 }
@@ -61,8 +61,8 @@ function checkDeviceType() {
         document.getElementById("control").addEventListener("touchend", game.controls.endMove);   
     }
         // Set controls
-        game.controls.e = game.checkBuilding;
-        game.controls.w = game.checkCharacter;
+        game.controls.e = inputHandler.checkBuilding;
+        game.controls.w = inputHandler.checkCharacter;
         game.controls.x = game.getNextMap;
         // Prevent user from scrolling with arrow keys on site
         window.addEventListener("keydown", function(e) {
@@ -72,8 +72,8 @@ function checkDeviceType() {
             }
         }, false);
         window.addEventListener('keydown', function (e) {
-            if(game.properties.gamePause == true) {
-                game.resumeGame();
+            if(game.properties.gameState === 'pause') {
+                pauseManager.resumeGame();
             }
             switch(e.keyCode) {
                 case 37:
@@ -103,20 +103,20 @@ function checkDeviceType() {
                     break;
                 case 87:
                     // W
-                    if(game.properties.loading == false && conversation.checkConversation() == false) {
+                    if(game.properties.gameState === 'playing' && conversation.checkConversation() == false) {
                         game.controls.w();    
                     }
                     break;
                 case 88:
                     // X
                     console.log('x');
-                    if(game.properties.loading == false && conversation.checkConversation() == false) {
+                    if(game.properties.gameState === 'playing' && conversation.checkConversation() == false) {
                         game.controls.x();
                     }
                     break;
                 case 69:
                     // E
-                    if(game.properties.loading == false && conversation.checkConversation() == false) {
+                    if(game.properties.gameState === 'playing' && conversation.checkConversation() == false) {
                         game.controls.e();
                     }
                     break;

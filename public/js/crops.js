@@ -67,56 +67,43 @@
             console.log("error");
         }
         else {
-            var JSON_data = JSONForm(form);
-            var data = "model=SetCrops" + "&method=setCrops" + "&JSON_data=" + JSON_data;
+            let JSON_data = JSONForm(form);
+            let data = "model=SetCrops" + "&method=setCrops" + "&JSON_data=" + JSON_data;
             ajaxP(data, function(response) {
                 if(response[0] !== false) {
+                    let responseText = response[1];
+                    updateHunger(responseText.newHunger);
                     getCountdown();
                     updateCountdownTab();
-                    let responseText = response[1].split("|");
-                    let gameInfo = JSON.parse(responseText[2]);
-                    gameLog(responseText[1]);
-                    let spanChild = document.getElementById("data_form").querySelectorAll("span");
-                    spanChild[spanChild.length - 1].innerText = '(' + gameInfo.avail_workforce + ')';
-                    newLevel.searchString(response[1]);
+                    document.getElementById("data_container_avail_workforce").innerText = '(' + responseText.availWorkforce + ')';
                 }
             });
         }
     }
     function updateCrop() {
-        var data = "model=UpdateCrops" + "&method=updateCrops";
+        let data = "model=UpdateCrops" + "&method=updateCrops";
         ajaxP(data, function (response) {
             if(response[0] !== false) {
+                let responseText = response[1];
                 getCountdown();
-                let responseText = response[1].split("|");
-                let gameInfo = JSON.parse(responseText[3]);
-                // Check artefact message
-                if(responseText[0].length > 0) {
-                    gameLog(responseText[0]);
-                }
-                // Check xp message
-                if(responseText[2].length > 0) {
-                    gameLog(responseText[2]);
-                }
-                let spanChild = document.getElementById("data_form").querySelectorAll("span");
-                spanChild[spanChild.length - 1].innerText = '(' + gameInfo.avail_workforce + ')';
-                newLevel.searchString(response[1]);
                 updateCountdownTab();
+                document.getElementById("data_container_avail_workforce").innerText = '(' + responseText.availWorkforce + ')';
+
             }
         });
     }
     function destroyCrops() {
-        var conf = confirm("You will lose seeds used to plant crops, proceed?");
-        if(conf != true) {
+        if(confirm("You will lose seeds used to plant crops, proceed?")) {
             return false;
         }
         var data = "model=Crops" + "&method=destroyCrops";
         ajaxP(data, function(response) {
             if(response[0] !== false) {
-                gameLog(response[1]);
+                let responseText = response[1];
                 window.clearInterval(intervals.pop());
                 getCountdown();
                 updateCountdownTab();
+                document.getElementById("data_container_avail_workforce").innerText = '(' + responseText.availWorkforce + ')';
             }
         });
     }
@@ -138,7 +125,8 @@
         }
         var items = ["potato", "tomato", "corn", "carrots", "cabbages", "wheat", "sugar", "spices", "apples", "oranges", "watermelon"];
         if(items.indexOf(itemData[0]) == -1) {
-            gameLog("ERROR: Pick a valid item");
+            gameLogger.addMessage("ERROR: Pick a valid item");
+            gameLogger.logMessages();
             return false;
         }
         var data = "model=Crops" + "&method=getSeeds" + "&type=" + itemData[0] + "&amount=" + itemData[1];

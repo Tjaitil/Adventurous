@@ -17,7 +17,7 @@ const eventHandler = {
             let data = "event=" + event; 
             ajaxJS(data, function(response) {
                 if(response[0] !== false) {
-                    let responseText = JSON.parse(response[1]);
+                    let responseText = response[1];
                     if(responseText.draw != false) {
                         let img = new Image(32, 32);
                         let img2;

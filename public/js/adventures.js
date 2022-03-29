@@ -26,47 +26,37 @@
                     break;
                 }
             }
+            document.getElementById("hire-citizen").addEventListener("click", hireCitizen);
         }
         // Add event to the warriors
-        var divs = document.querySelectorAll(".warriors");
-        if(divs.length > 0) {
-            divs.forEach(function(element) {
-                // ... code code code for this one element
-                element.addEventListener('click', function() {
-                    check();
-                });
-            });
-        }
+        addWarriorEvents();
+        
         // If div with id people does not exists there is no active adventure
         if(document.getElementById("people") != null) {
             document.getElementsByName("leave_adventure")[0].addEventListener("click", leaveAdventure);
         }
-        let data_form_buttons = document.getElementById("data_form").querySelectorAll("button");
-        console.log(data_form_buttons.length);
-        data_form_buttons[data_form_buttons.length].addEventListener("click", newAdventure);
+        document.getElementsByName("start_adventure")[0].addEventListener("click", newAdventure);
     }
     function getCountdown() {
         var data = "model=Adventures" + "&method=getCountdown";
         ajaxJS(data, function(response) {
             if(response[0] != false) {
-                var data = response[1].split("|");
-                var time = data[0] * 1000;
-                var fetch = data[1];
-                console.log(fetch);
-                console.log(data);
-                var x = setInterval (function() {
-                    var now = new Date().getTime();
-                    var distance = time - now;
-                    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                let responseText = response[1];
+                let time = responseText['adventure_countdown'] * 1000;
+                let status = responseText['adventure_status'];
+                let x = setInterval (function() {
+                    let now = new Date().getTime();
+                    let distance = time - now;
+                    let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    let seconds = Math.floor((distance % (1000 * 60)) / 1000);
                     document.getElementById("time").innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
-                    if (distance < 0 && fetch === "1"){
+                    if (distance < 0 && status === "1"){
                         clearInterval(x);
                         /*document.getElementById("current_adventure").removeChild(document.getElementById("adv_start"));*/
-                        var btn = document.createElement("BUTTON");
-                        var t = document.createTextNode("Fetch report");
+                        let btn = document.createElement("BUTTON");
+                        let t = document.createTextNode("Fetch report");
                         btn.appendChild(t);
                         btn.addEventListener("click", updateAdventure);
                         document.getElementById("report").appendChild(btn);
@@ -90,17 +80,15 @@
     function newAdventure() {
         var form = document.getElementById("data_form");
         if(!form.reportValidity()) {
-            gameLog("Please fill out all required inputs in the form");
+            gameLogger.addMessage("Please fill out all required inputs in the form");
+            gameLogger.logMessages();
             return false;
         }
         var JSON_data = JSONForm(form);
         let data = "model=SetAdventure" + "&method=newAdventure" + "&JSON_data=" + JSON_data;
         ajaxP(data, function(response) {
             if(response[0] !== false) {
-                let responseText = response[1].split("|");
-                newLevel.searchString(response[1]);
-                gameLog(responseText[0]);
-                game.fetchBuilding("adventures");
+                inputHandler.fetchBuilding("adventures");
             }
         });
         
@@ -163,13 +151,32 @@
             }
         });
     }
-    function startAdventure() {
-        var data = "model=AdventureStatus" + "&method=startAdventure";
-        ajaxP(data, function (response) {
+    function hireCitizen() {
+        let selectElement = document.getElementById("adventure-citizen-role");
+        let role = selectElement.options[selectElement.selectedIndex].value;
+        if(!role.length > 0) {
+            gameLogger.addMessage("You need to select a role");
+            gameLogger.logMessages();
+            return false;
+        }
+        let people = document.getElementById("people").querySelectorAll("figcaption");
+        // Check if role has been filled
+        if(people[selectElement.selectedIndex - 1].innerHTML !== "None") {
+            gameLogger.addMessage("That role is already filled");
+            gameLogger.logMessages();
+            return false;
+        } else if(selectElement.selectedIndex - 1 === 3) {
+            gameLogger.addMessage("Citizens can't be hired for the warrior role");
+            gameLogger.logMessages();
+            return false;
+        }
+        
+        let data = "model=SetAdventure" + "&method=hireCitizen" + "&role=" + role;
+        ajaxP(data, function(response) {
+            console.log(response);
             if(response[0] !== false) {
-                gameLog(response[1]);
-                document.getElementById("status").children[0].innerHTML = "Adventure status: underway!";
-                getCountdown();
+                inputHandler.fetchBuilding("adventures");
+                updateInventory();
             }
         });
     }
@@ -192,9 +199,9 @@
     function joinAdventure(id) {
         var data = "model=AdventureRequest" + "&method=joinAdventure" + "&id=" + id;
         ajaxP(data, function(response) {
-            if(response[0] != false) {
-                gameLog(response[1]);
-                game.fetchBuilding("adventures");
+            console.log(response);
+            if(response[0] != false) {                
+                inputHandler.fetchBuilding("adventures");
             }
         });
     }
@@ -227,41 +234,47 @@
         var data = "model=AdventureRequest" + "&method=request" + "&id=" + id + "&route=" + route + "&invitee=" + name;
         ajaxP(data, function(response) {
             if(response[0] !== false) {
-                gameLog(response[1]);
+                // reset form
             }       
         });
     }
     function provide() {
-        var data = "model=SetAdventure" + "&method=provide";
-        var item;
-        if(document.getElementsByClassName("warriors").length == 0) {
+        let item = false;
+        let quantity = false;
+        let warrior_check = false;
+        console.log(document.getElementsByClassName("warriors"));
+        if(document.getElementsByClassName("warriors").length === 0) {
+            console.log('hello');
             if(document.getElementById("selected").children.length == 0) {
-                gameLog("Please select a item");
+                gameLogger.addMessage("Please select a item");
+                gameLogger.logMessages();
                 return false;
             }
-            item = document.getElementById("selected").querySelectorAll("figure")[0].children[1].innerHTML.toLowerCase();
-            var quantity = document.getElementById("selected_amount").value;
+            item = document.getElementById("selected").querySelectorAll("figcaption")[0].innerHTML.toLowerCase();
+            quantity = document.getElementById("selected_amount").value;
             if(quantity == 0) {
-                gameLog("Please select a valid amount");
+                gameLogger.addMessage("Please select a valid amount");
+                gameLogger.logMessages();
                 return false;
             }
-            data+= "&item=" + item + "&quantity=" + quantity;
         }
         else {
-            var warrior_check = warriorsCheck();
+            warrior_check = warriorsCheck();
             if(warrior_check.length == 0) {
-                gameLog("Please select warriors");
+                gameLogger.addMessage("Please select warriors");
+                gameLogger.logMessages();
                 return false;
             }
-            data += "&warrior_check=" + warrior_check;    
         }
+        let data = "model=SetAdventure" + "&method=provide" + "&item=" + item + "&quantity=" + quantity 
+        + "&warrior_check=" + warrior_check;
         ajaxP(data, function(response) {
+            console.log(response);
             if(response[0] !== false) {
-                var responseText = response[1].split("|");
-                gameLog(responseText[0]);
-                document.getElementById("requirements").getElementsByTagName("tbody")[0].innerHTML = responseText[1];
+                var responseText = response[1];
+                document.getElementById("requirements").getElementsByTagName("tbody")[0].innerHTML = responseText.html[0];
                 if(typeof(warrior_check) !== 'undefined') {
-                    document.getElementById("provide").innerHTML = responseText[2];
+                    document.getElementById("provide").innerHTML = responseText.html[1];
                 }
                 else {
                     document.getElementById("selected").innerHTML = "";
@@ -297,11 +310,12 @@
         ajaxP(data, function (response) {
             console.log(response);
             if(response[0] !== false) {
-                console.log(response[1]);
-                openNews(response[1], true);
-                newLevel.searchString(response[1]);
+                let responseText = response[1];
+                openNews(responseText.html, true);
+                // Add events to item elements
+                itemTitle.addItemClassEvents();
                 document.getElementById("news_content_main_content").querySelectorAll("button")[0].addEventListener("click", function() {
-                    game.fetchBuilding('adventures');
+                    inputHandler.fetchBuilding('adventures');
                 });
                 updateInventory();
             }
@@ -311,8 +325,7 @@
         var data = "model=Adventures" + "&method=leaveAdventure";
         ajaxP(data, function(response) {
             if(response[0] !== false) {
-                gameLog(response[1]);
-                game.fetchBuilding('adventures'); 
+                inputHandler.fetchBuilding('adventures'); 
             }
         });
     }

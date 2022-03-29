@@ -1,15 +1,37 @@
-function ajaxG(data, callback, log = true) {
+
+    function validJSON(str) {
+        try {
+            JSON.parse(str);
+        } catch (e) {
+            return false;
+        }
+        return true;
+    }
+    function checkError(responseText) {
+        let errorWords = ["ERROR", "error", "notice", "Exception", "exception", "Trace", "trace", "Warning"];
+        let match = false;
+        for(const i of errorWords) {
+            if(responseText.includes(i)) {
+                match = true;
+                break;
+            }
+        }
+        if(match === true) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    function ajaxG(data, callback, log = true) {
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
             if(this.readyState == 4 && this.status == 200) {
-                if(this.responseText.indexOf("ERROR:") != -1) {
-                    if(log == true) {
-                        gameLog(this.responseText);
-                    }
-                    callback([false, this.responseText]);
-                }
-                else {
-                    callback([true, this.responseText]);
+                let responseText = JSON.parse(this.responseText);
+                checkResponse(responseText);
+                if(checkError(this.responseText)) {
+                    callback([false, responseText]);
+                } else {
+                    callback([true, responseText]);
                 }
             }
         };
@@ -23,15 +45,19 @@ function ajaxG(data, callback, log = true) {
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
             if(this.readyState == 4 && this.status == 200) {
-                if(this.responseText.indexOf("ERROR:") != -1) {
-                    if(log == true) {
-                        gameLog(this.responseText);
-                    }
-                    callback([false, this.responseText]);
+                let responseText = JSON.parse(this.responseText);
+                checkResponse(responseText);
+                if(checkError(this.responseText)) {
+                    callback([false, responseText]);
+                    gameLogger.addMessage("ERROR!:");
+                    console.log(this.responseText);
+                    gameLogger.logMessages();
+                } else {
+                    callback([true, responseText]);
                 }
-                else {
-                    callback([true, this.responseText]);
-                }
+            }
+            else {
+                console.log(this.responseText);
             }
         };
         ajaxRequest.open('GET', "handlers/" + file + ".php?" + data);
@@ -41,18 +67,37 @@ function ajaxG(data, callback, log = true) {
         ajaxRequest = new XMLHttpRequest();
         ajaxRequest.onload = function () {
             if(this.readyState == 4 && this.status == 200) {
-                if(this.responseText.indexOf("ERROR:") != -1) {
-                    if(log == true) {
-                        gameLog(this.responseText);
-                    }
-                    callback([false, this.responseText]);
+                console.log(this.responseText);
+                let responseText = JSON.parse(this.responseText);
+                checkResponse(responseText);
+                if(checkError(this.responseText)) {
+                    callback([false, responseText]);
+                    // gameLogger.addMessage("ERROR Something unexpected happened!");
+                    // gameLogger.logMessages();
+                } else {
+                    callback([true, responseText]);
                 }
-                else {
-                    callback([true, this.responseText]);
-                }
+            }
+            else {
+                console.log(this.responseText);
             }
         };
         ajaxRequest.open('POST', "handlers/handler_p.php");
         ajaxRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         ajaxRequest.send(data);
+    }
+    function checkResponse(responseText) {
+        if(typeof(responseText.levelUP) !== "undefined" && Object.keys(responseText.levelUP).length > 0) {
+            newLevel.update(responseText.levelUP);
+        } 
+        if(typeof(responseText.gameMessages) !== "undefined") {
+            gameLogger.addMessage(responseText.gameMessages);
+            gameLogger.logMessages();
+        }
+    }
+    function diplomacy() {
+        let data = "model=test" + "&method=diplomacy";
+        ajaxG(data, function(response) {
+            console.log(response);
+        });
     }

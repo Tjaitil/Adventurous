@@ -19,15 +19,14 @@
         let item = button.closest("tr").children[0].innerText.toLowerCase().trim();
         console.log(item);
         if(["frajrite items", "wujkin items"].indexOf(item) == -1) {
-            gameLog("This item cannot be unlocked");
+            gameLogger.addMessage("This item cannot be unlocked");
+            gameLogger.logMessages();
             return false;
         }
         let data = "model=CityCentreA" + "&method=unlockArmorItems" + "&type=" + item; 
         ajaxP(data, function(response) {
             if(response[0] != false) {
-                let responseText = response[1].split("|");
                 updateInventory();
-                gameLog(responseText[0]);
                 button.className = "button_disabled";
                 button.innerText = "Unlocked";
             }
@@ -38,13 +37,14 @@
         var select = document.getElementById("profiency_select");
         var val = select.value;
         if(!val) {
-            gameLog("Please select a profiency!");
+            gameLogger.addMessage("Please select a profiency!"); 
+            gameLogger.logMessages();
             return false;
         }
         /*var data = "model=Profiency" + "&method=changeProfiency" + "&newProfiency=" + val;
         ajaxP(data, function(response) {
             if(response[0] !== false) {
-                gameLog(response[1]);
+
             }       
         });*/
     }
@@ -56,7 +56,8 @@
         }
         var artefacts = ["harvester", "prospector", "collector", "healer", "rewardist", "fighter"];
         if(artefacts.indexOf(itemData[0]) == -1) {
-            gameLog("That is not an artefact");
+            gameLogger.addMessage("That is not an artefact");
+            gameLogger.logMessages();
         }
         else {
             var data = "model=Artefact" + "&method=changeArtefact" + "&artefact=" + itemData[0];
@@ -74,14 +75,23 @@
         }
     }
     function buyPermits() {
-        var amount = 50;
-        let permit_div = document.getElementById("miner_permits").querySelectorAll("p")[0];
-        var permits = Number(permit_div.innerHTML.split(":")[1].trim()) + 50;
-        var data = "model=CityCentreA" + "&method=buyPermits" + "&amount=" + amount;
+        let amount = 50;
+        let selectedLocation = document.querySelector('input[name="permit_location"]:checked').value;
+        if(!selectedLocation) {
+            gameLogger.addMessage("ERROR Select a location to buy permits");
+            gameLogger.logMessages();
+            return false;
+        }
+        let data = "model=CityCentreA" + "&method=buyPermits" + "&amount=" + amount + "&selectedLocation=" + selectedLocation;
         ajaxP(data, function(response) {
             if(response[0] !== false) {
-                gameLog(response[1]);
-                permit_div.innerHTML = "Current permits: " + permits;
+                let responseText = response[1];
+                let spans = document.getElementById("miner_permits").querySelectorAll("span");
+                if(selectedLocation === "golbak") {
+                    spans[0].innerText = responseText.permits; 
+                } else {
+                    spans[1].innerText = responseText.permits; 
+                }
                 updateInventory();
             }       
         });
@@ -112,22 +122,21 @@
         });
     }
     function upgradeEffiency() {
-        var tr = event.target.closest("tr");
-        var skill;
+        let tr = event.target.closest("tr");
+        let skill;
         if(tr.previousSibling != null) {
             skill = "farmer";
         }
         else {
             skill = "miner";
         }
-        var data = "model=Workers" + "&method=upgradeEffiency" + "&skill=" + skill;
+        let data = "model=Workers" + "&method=upgradeEffiency" + "&skill=" + skill;
         ajaxP(data, function(response) {
             if(response[0] !== false) {
                 updateInventory();
-                var responseText = response[1].split("|");
-                gameLog(responseText[0]);
-                tr.children[1].innerHTML = responseText[1];
-                tr.children[2].childNodes[0] = responseText[1] * 150;
+                let responseText = response[1];
+                tr.children[1].innerHTML = responseText[1].effiencyLevel;
+                tr.children[2].childNodes[0] = responseText[1].effiencyLevel * 150;
             }    
         });
     }

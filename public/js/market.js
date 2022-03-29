@@ -1,7 +1,5 @@
     var offers = {};
     if(document.getElementById("news_content").children[2] != null) {
-        let div = document.getElementById("offers");
-        let inputs = div.getElementsByTagName("input");
         /*for(var i = 0; i < inputs.length; i++) {
             if(inputs[i].getAttribute("type") == 'hidden') {
                 offers[inputs[i].parentElement.parentElement.nodeName + i] = inputs[i].value;
@@ -51,13 +49,8 @@
     }
     function offersListeners() {
         tradeEvent();
-        var itemClass = document.querySelectorAll(".item");
-        itemClass.forEach(function(element) {
-            // Add event to figure inside item class
-            element.querySelectorAll("figure")[0].addEventListener('click', function() {
-                show_title();
-            });
-        });
+        // Add events to item elements
+        itemTitle.addItemClassEvents();
         // Add even to boxItem class to retrieve item
         var boxItems = document.querySelectorAll(".box_item");
         boxItems.forEach(function(element) {
@@ -251,23 +244,15 @@
         });
     }
     function trade() {
-        var amount = event.target.parentElement.children[1].value;
-        var id = event.target.parentElement.children[2].value;
-        /*var tr = event.target.closest("TR");
-        var i = 0;
-        while( (tr = tr.previousSibling) != null ) {
-            i++;
-        }
-        if(offers["TR" + (i+1)] != id) {
-            gameLog("ERROR: Please try again");
-            return false;
-        }*/
+        let amount = event.target.parentElement.children[1].value;
+        let id = event.target.parentElement.children[2].value;
         
         if(amount == 0 || amount == null) {
-            gameLog("ERROR: Select a amount");
+            gameLogger.addMessage("ERROR: Select a amount");
+            gameLogger.logMessages();
             return false;
         }
-        var data = "model=Market" + "&method=trade" + "&id=" + id  + "&amount=" + amount;
+        let data = "model=Market" + "&method=trade" + "&id=" + id  + "&amount=" + amount;
         ajaxP(data, function(response) {
             console.log(response);
             if(response[0] !== false) {
@@ -283,7 +268,8 @@
             i++;
         }
         if(offers["TR" + (i+1)] != id) {
-            gameLog("ERROR: Please try again");
+            gameLogger.addMessage("ERROR: Please try again");
+            gameLogger.logMessages();
             return false;
         }
     }

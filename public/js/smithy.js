@@ -45,7 +45,8 @@
             }
         } 
         if(this.mineral.length < 1){
-            gameLog("Please select a mineral");
+            gameLogger.addMessage("Please select a mineral");
+            gameLogger.logMessages();
             return false;
         }
         event.target.parentElement.children[0].value = "";

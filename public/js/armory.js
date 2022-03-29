@@ -2,7 +2,7 @@
         // selectitem.js
         selectItemEvent.addSelectEvent();
         document.getElementById("news_content_main_content").querySelectorAll("button")[0].addEventListener("click", function() {
-           game.fetchBuilding('armycamp'); 
+           inputHandler.fetchBuilding('armycamp'); 
         });
         if(/Safari|Chrome/i.test(navigator.userAgent)) {
             let span = document.getElementsByClassName("armory_view_span");
@@ -25,17 +25,15 @@
         }
     }
     function wearArmor() {
-        var warrior_id = document.getElementById("select_warrior").selectedIndex;
-        var element = document.getElementById("selected");
-        var item = element.children[0].children[1].innerHTML;
+        let warrior_id = document.getElementById("select_warrior").selectedIndex;
+        let element = document.getElementById("selected");
+        let item = element.children[0].children[1].innerHTML;
         item = item.trim();
-        var result = false;
-        var minerals = ["Iron", "Steel", "Gargonite", "Adron", "Yeqdon", "Frajrite", "Oak", "Beech", "Yew"];
-        var items = ["Sword", "Spear", "Dagger", "Shield", "Platebody", "Platelegs", "Helm", "Arrows", "Bow" , "Knives", "Boots"];
+        let result = false;
+        let minerals = ["Iron", "Steel", "Gargonite", "Adron", "Yeqdon", "Frajrite", "Oak", "Beech", "Yew"];
+        let items = ["Sword", "Spear", "Dagger", "Shield", "Platebody", "Platelegs", "Helm", "Arrows", "Bow" , "Throwing", "Boots"];
         // Check out if the $item matches $mineral and $item
-        var item_array = item.split(" ");
-        console.log(item_array);
-        console.log(items.indexOf(item_array[0]));
+        let item_array = item.split(" ");
         if(minerals.indexOf(item_array[0]) == -1) {
             result = true;
         }
@@ -43,38 +41,34 @@
             result = true;
         }
         if(result === true) {
-            gameLog("ERROR: Select a valid item to wear!");
+            gameLogger.addMessage("ERROR: Select a valid item to wear!");
+            gameLogger.logMessages();
             return false;
         }
-        var select = document.getElementById("type");
-        var hand;
-        console.log(select);
+        let select = document.getElementById("type");
+        let hand;
         if(select.style.visibility == "visible") {
             hand = select.options[select.selectedIndex].value;
         }
         else {
             hand = false;
         }
-        var rangedAmount = document.getElementById("ranged_alt");
-        var amount;
+        let rangedAmount = document.getElementById("ranged_alt");
+        let amount;
         if(rangedAmount.style.visibility == "visible") {
             amount = rangedAmount.querySelectorAll("input")[0].value;
         }
         else {
             amount = false;
         }
-        var data = "model=Armory" + "&method=wearArmor" + "&warrior_id=" + warrior_id + "&item=" + item  + "&hand=" +
+        let data = "model=Armory" + "&method=wearArmor" + "&warrior_id=" + warrior_id + "&item=" + item  + "&hand=" +
                     hand + "&amount=" + amount;
         ajaxP(data, function(response) {
-            console.log(response);
             if(response[0] != false) {
                 document.getElementById("selected").innerHTML = "";
                 document.getElementById("ranged_alt").children[1].value = 1;
                 document.querySelectorAll(".armory_view")[warrior_id -1].innerHTML = response[1];
                 updateInventory('armory', true);
-            }
-            else {
-                gameLog(response[1]);
             }
         }, false);
     }
@@ -89,6 +83,7 @@
         }
         var data = "model=Armory" + "&method=removeArmor" + "&warrior_id=" + warrior_id + "&part=" + part;
         ajaxP(data, function(response) {
+            console.log(response);
             if(response[0] != false) {
                 document.getElementsByClassName("armory_view")[warrior_id - 1].innerHTML = response[1];
                 updateInventory('armory', true);
@@ -101,5 +96,11 @@
             if(response[0] != false) {
                 document.getElementById("warriors").innerHTML = response[1];
             }
+        });
+    }
+    function testCombatSkills(warriors) {
+        var data = "model=test" + "&method=loadCombat" + "&route=calculator" + "&warriors=" + JSON.stringify(warriors);
+        ajaxP(data, function(response) {
+            console.log(response);
         });
     }

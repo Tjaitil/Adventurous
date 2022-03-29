@@ -16,27 +16,25 @@
         var data = "&model=Mine" + "&method=checkCountdown";
         ajaxG(data, function(response) {
             if(response[0] != false) {
-                var data = response[1].split("|");
-                var time = data[0] * 1000;
-                var fetch = data[1];
-                console.log(data);
-                if(data[2] !== 'none') {
-                    document.getElementById("mining").innerHTML = "Currently mining " + jsUcfirst(data[2]);    
+                let responseText = response[1];
+                let time = responseText.data * 1000;
+                let fetch = responseText.fetch_minerals;
+                if(responseText.mining_type !== 'none') {
+                    document.getElementById("mining").innerHTML = "Currently mining " + responseText.mining_type;    
                 }
-                var x = setInterval (function() {
+                let x = setInterval (function() {
                     intervals.push(x);
-                    var now = new Date().getTime();
-                    var distance = time - now;
-                    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                    let now = new Date().getTime();
+                    let distance = time - now;
+                    let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    let seconds = Math.floor((distance % (1000 * 60)) / 1000);
                     if(document.getElementById("time") == null) {
                         clearInterval(x);
                     }
                     else {
                         document.getElementById("cancel_action").style.visibility = "";
-                        document.getElementById("time").innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+                        document.getElementById("time").innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
                     }
                     // Check if countdown is finished and fetch is true
                     if (distance < 0 && fetch === "1"){
@@ -48,7 +46,6 @@
                         document.getElementById("cancel_action").style.visibility = "hidden";
                         document.getElementById("time").innerHTML = "";
                         document.getElementById("time").appendChild(btn);
-                        document.getElementById("mining").innerHTML = "Finished";
                     }
                     else if (distance < 0) {
                         clearInterval(x);
@@ -59,68 +56,39 @@
             }
         });
     }
-    /*function showMineral() {
-        var element = event.target;
-        var clone = element.cloneNode(true);
-        clone.removeAttribute("onclick");
-        var mineral = element.getAttribute("alt");
-        var div = document.getElementById("mine_form");
-        div.style.visibility = "visible";
-        console.log(div.children[1]);
-        var div_inputs = div.querySelectorAll("input");
-        div_inputs[0].value = jsUcfirst(mineral);
-        div_inputs[1].value = this[mineral].time;
-        div_inputs[2].value = this[mineral].permits;
-        if(div.children[0].children.length == 0) {
-            div.children[0].appendChild(clone);
-        }
-        else {
-            clone.src = this[mineral].src;
-        }
-    }*/
     function setMine() {
-        let form = document.getElementById("data_form");
-        if(!form[3].reportValidity()) {
-            console.log("error");
+        let mineral = document.getElementsByName("mineral")[0].value;
+        let workforceInput = document.getElementsByName("workforce")[0];
+        let workforce = workforceInput.value;
+        if(workforce === 0) { 
+            gameLogger.addMessage("ERROR You need to select at least 1 worker");
+            gameLogger.logMessages();
         }
-        else {
-            let mineral = document.getElementsByName("mineral")[0].value;
-            let workforce = document.getElementsByName("workforce")[0].value;
-            let data = "model=SetMine" + "&method=setMine" + "&mineral=" + mineral + "&workforce=" + workforce;
-            ajaxP(data, function(response) {
-                if(response[0] !== false) {
-                    getCountdown();
-                    updateCountdownTab();
-                    let responseText = response[1].split("|");
-                    let gameInfo = JSON.parse(responseText[2]);
-                    gameLog(responseText[1]);
-                    let spanChild = document.getElementById("avail_workforce").innerText = '(' + gameInfo.avail_workforce + ')';
-                    document.getElementById("data_container").querySelectorAll("p")[0].innerHTML = "Total permits:" + gameInfo.permits;
-                    newLevel.searchString(response[1]);
-                }
-            });
-        }
+        workforceInput.value = "";
+        let data = "model=SetMine" + "&method=setMine" + "&mineral=" + mineral + "&workforce=" + workforce;
+        ajaxP(data, function(response) {
+            if(response[0] !== false) {
+                let responseText = response[1];
+                updateHunger(responseText.newHunger);
+                getCountdown();
+                updateCountdownTab();
+                document.getElementById("data_container_avail_workforce").innerText = 
+                '(' + responseText.availWorkforce + ')';
+                document.getElementById("data_container").querySelectorAll("p")[0].innerHTML = 
+                    "Total permits:" + responseText.permits;
+            }
+        });
     }
     function updateMine() {
-        var data = "model=UpdateMine" + "&method=updateMine";
+        let data = "model=UpdateMine" + "&method=updateMine";
         ajaxP(data, function(response) {
             console.log(response);
             if(response[0] !== false) {
+                let responseText = response[1];
                 getCountdown();
                 updateInventory();
                 updateCountdownTab();
-                let responseText = response[1].split("|");
-                let gameInfo = JSON.parse(responseText[3]);
-                // Check artefact message
-                if(responseText[0].length > 0) {
-                    gameLog(responseText[0]);
-                }
-                // Check xp message
-                if(responseText[2].length > 0) {
-                    gameLog(responseText[2]);
-                }
-                let spanChild = document.getElementById("data_form").querySelectorAll("span");
-                spanChild[spanChild.length - 1].innerText = '(' + gameInfo.avail_workforce + ')';
+                document.getElementById("data_container_avail_workforce").innerText = '(' + responseText.availWorkforce + ')';
             }       
         });
     }
@@ -129,14 +97,11 @@
         ajaxP(data, function(response) {
             if(response[0] !== false) {
                 // Clear interval started by getCountdown
+                let responseText = response[1];
                 window.clearInterval(intervals.pop());
                 updateCountdownTab();
                 getCountdown();
-                let responseText = response[1].split("|");
-                let gameInfo = JSON.parse(responseText[1]);
-                gameLog(response[1]);
-                spanChild[spanChild.length - 1].innerText = '(' + gameInfo.avail_workforce + ')';
-                updateCountdownTab();
+                document.getElementById("data_container_avail_workforce").innerText = '(' + responseText.availWorkforce + ')';
             }       
         });
     }
