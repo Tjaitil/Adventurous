@@ -1,17 +1,20 @@
-#test {
-    color: gray;  
+#conversation_flex_container {
+    display: flex;
+    justify-content: center;
+    height: 122px;
+    overflow: hidden;
 }
 #conversation_container {
-    width: 68%;
+    /* Width is being set by UIsetup */
     height: 170px;
     background-color: #f2e6d9;
     position: absolute;
     z-index: 3;
     visibility: hidden;
-    border: 3px double black;
     padding: 3px 3px 0px 3px;
     scale: 0.5;
     transition: scale 0.5s ease-in;
+    box-sizing: border-box;
 }
 #conversation_container h3 {
     width: 100%;
@@ -19,25 +22,26 @@
 }
 #conversation_container img:not(.cont_exit) {
     display: block;
-    height: 48px;
-    width: 48px;
+    height: 64px;
+    width: 64px;
 }
 #conversation {
     width: 79%;
-    border: 1px solid black;
     height: 138px;
-    float: left;
     overflow-y: scroll;
-    padding: 5px 10px;
+    padding: 5px 100px;
 }
 #conversation ul {
     list-style-type: none;
+    margin-bottom: 5px;
 }
 #conversation_a {
-    float: left;
+    position: relative;
+    left: 48px;
 }   
 #conversation_b {
-    float: right;
+    position: relative;
+    right: 60px;
 }
 .conv_link {
     cursor: pointer;

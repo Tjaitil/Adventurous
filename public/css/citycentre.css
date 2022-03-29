@@ -1,6 +1,5 @@
-#miner_permits {
-    width: 35%;
-    float: left;
+#miner_permits .div_content {
+    max-width: 300px;
 }
 #artefact img {
     width: 50px;

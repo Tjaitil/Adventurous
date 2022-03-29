@@ -16,7 +16,7 @@
     max-width: 231px;
     box-sizing: border-box;
     float: left;
-    padding: 1.5px;
+    padding: 0.5rem 0.5rem;
 }
 #action_div label {
     width: 120px;
@@ -46,9 +46,9 @@
     display: flex;
 }
 #data_form {
-    display:grid;
+    display: grid;
     grid-template-columns: max-content max-content;
-    grid-gap:5px;
+    grid-gap: 5px;
 }
 #data {
     visibility: hidden;
@@ -73,5 +73,5 @@
 }
 #reduction_time {
     text-align: left;
-    padding-left: 10px;
+    padding-left: 5px;
 }

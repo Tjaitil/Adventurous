@@ -1,10 +1,6 @@
-section table td {
-    padding:5px;
-    border: 1px solid black;
-    border-collapse: collapse;
+.bakery_required_amount {
+    margin: auto 0;
 }
-
-
-input[type="number"] {
-    max-width: 30px;
+.bakery_required {
+    display: flex;
 }

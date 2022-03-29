@@ -1,54 +1,6 @@
-#workers ul {
-    list-style-type: none;
+#tavern-workers-grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 175px));
+    justify-content: center;
+    row-gap: 2rem;
 }
-#workers li {
-    box-sizing: border-box;
-    display: inline-block;
-    float: left;
-    width: 50%;
-    height: 135px;
-}
-#workers {
-    float:left;
-    width: 69%;
-}
-/*
-#container {
-    position: absolute;
-}
-#curtain {
-    display: none;
-    z-index: 1;
-    width: 100%;
-    height: 100%;
-    background-color: #262626;
-    opacity: 0.5;
-}
-#conversation {
-    border: 1px solid black;
-    display: none;
-    width: 300px;
-    height: 300px;
-    z-index: 2;
-    float: right;
-    color: white;
-}
-#conversation button {
-    background: none;
-    border: none; 
-    padding: 0;
-    color: #FFFFFF;
-    cursor: pointer;
-}
-#conv_a {
-    float: left;
-    width: 50px;
-}
-#conv_b {
-    float: right;
-    width: 50px;
-}
-#conversation a {
-    color: red;
-}
-*/

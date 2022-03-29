@@ -1,23 +1,31 @@
+.warrior_warning {
+    color: red;
+}
 #warriors_container {
     overflow-x: scroll;
     overflow-y: hidden;
-    margin: 3px;
+    margin: 0.5rem;
     white-space: nowrap;
-    height: 210px;
+    height: auto;
 }
-#warriors_container img {
+.warrior-card-skill-container img {
     width: 30px;
     height: 30px;
 }
-#warriors_container figure figure {
-    display: inline-block;
+.warrior-card-skill-container {
+    display: flex;
+    justify-content: center;
+    gap: 3px;
+}
+.warrior-card-skill {
+    display: flex;
     width: 30px;
-    height: 30px;
+    flex-direction: column;
 }
 #warriors_container figcaption {
     display: none;
 }
-.warriors span {
+.warrior-select-cards span {
     position: relative;
     top: 62%;
     left: -70%;
@@ -25,40 +33,48 @@
     text-align: right;
     float: none;
 }
-.warriors {
-    border: 3px ridge #5f4121;
-    height: 200px;
+.warrior-select-card {
+    position: relative;
+    display: inline-grid;
+    height: 260px;
     width: 140px;
     margin: 2px;
-    cursor: pointer;
-    display: inline-grid;
-    background-color: #f2e6d9;
+    border-radius: 5px;
     padding: 5px 0px 0px 0px;
     box-sizing: border-box;
-    border-radius: 5px;
+    border: 1px ridge #5f4121;
+    cursor: pointer;
+    transition: transform 1s;
+    perspective: 140px;
+    transform-style: preserve-3d;
+    background-color: var(--contentBgColor);
 }
-.warriors input[type="checkbox"] {
-    position: relative;
-    top: 10px;
-    left: 70px;
+.warrior-select-card input[type="checkbox"] {
+    visibility: hidden;
+    position: absolute;
 }
-.warrior_front {
-    
-}
-.warrior_front button {
-    position: relative;
-    left: 24px;
+.warrior-select-card button {
+    position: absolute;
+    right: 5px;
+    bottom: 0px;
     padding: 0px;
     height: 25px;
     width: 30px;
-    bottom: -10px;
+    z-index: 999;
 }
 .warrior_back {
-    position: relative;
-    top: -200px;
     transform: rotateY(180deg);
-    visibility: hidden;
 }
 .warrior_back ul {
     list-style-type: none;
+}
+.warrior-side {
+    position: absolute;
+    width: 100%;
+    height: calc(100% - 5px);
+    top: 5px;
+    transition: transform 1s;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    background-color: var(--contentBgColor);
 }

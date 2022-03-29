@@ -2,8 +2,7 @@ aside {
     height: 500px;
     margin: 0px 0px 0px 0px;
     display: block;
-    font-size: 13px;
-    z-index: 2;
+    z-index: 4;
     position: relative;
 }
 aside a {
@@ -56,7 +55,18 @@ aside caption {
     box-sizing: border-box;
     padding: 5px;
     overflow-y: scroll;
+    width: 12%;
 }
+/* #sidebar:before {
+    content: '';
+    border: 4px solid black;
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    position: absolute;
+    display: block;
+    left: -6px;
+    top: -6px;
+} */
 .sidebar_button {
     background-color: #f2e6d9;
     border-radius: 5px;
@@ -70,6 +80,8 @@ aside caption {
 .sidebar_tab {
     left: 10px;
     color: var(--textColor);
+    width: calc(100% - 20px);
+    text-align: center;
 }
 #sidebar table {
     text-align: center;
@@ -82,12 +94,36 @@ aside caption {
     position: absolute;
     visibility: hidden;
 }
+#tab_1 > * {
+    color: var(--textColor);
+}
 #tab_2 {
     position: absolute;
     visibility: hidden;
 }
 #tab_2 tbody tr:not(#tab_2 tbody tr:last-of-type) {
     border-bottom: 2px solid black;
+}
+#tab_2 table {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+.fullLengthColumn {
+    margin: 0 auto;
+}
+#traderAssignment_current {
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+.traderAssignment_fullColumn {
+    grid-column: 1 / span 2;
+}
+.countdown-flex-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
 }
 #tab_3 {
     position: absolute;
@@ -96,28 +132,26 @@ aside caption {
 #tab_4 {
     position: absolute;
     visibility: hidden;
-    width: 100%;
-    left: 0px;
-    color: black;
 }
 #people figure {
     display: inline-block;
+    padding-inline: 8px;
 }
 #skills {
     height: 86px;
     margin-bottom: 5px;
+    display: flex;
+    justify-content: center;
 }
 #skills div {
     position: relative;
     display: inline-block;
     border: 1px ridge black;
-    float: left;
     width: 19%;
-    height: 70px;
+    height: 80px;
     max-width: 70px;
     min-width: 55px;
     padding: 3px 0px 3px 0px;
-    font-size: 100%;
     box-sizing: border-box;
     background-color: #f2e6d9;
     text-align: center;
@@ -131,16 +165,6 @@ aside caption {
 }
 #skills figure {
     position: relative;
-}
-#ad_tooltip {
-    left: 18px;
-    position: absolute;
-    bottom: -10px;
-}
-.skill_level {
-    position: absolute;
-    bottom: -10px;
-    left: 44%;
 }
 .skill_tooltip {
     position: absolute;

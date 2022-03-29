@@ -12,8 +12,17 @@
 }
 #new_adventure {
 }
+#new_adventure_form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 5px;
+}
+#new_adventure_form > button {
+    grid-column: span 2;
+}
 #people figure {
     display: inline-block;
+    padding-inline: 0.5rem;
 }
 #people img {
     width: 100px;
@@ -32,11 +41,9 @@
     position: absolute;   
 }
 #requirements {
-    float: left;
 }
 #provide {
     width: 100%;
-    float: left;
 }
 #adventure_rewards {
     box-sizing: border-box;

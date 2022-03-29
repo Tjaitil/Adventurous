@@ -10,7 +10,7 @@
         
         public function index() {
             $this->loadModel('Adventures', true);
-            $this->data = $this->model->getData();
+            $this->data['adventure'] = $this->model->getData();
             /*if($this->data['current_adventure']['current'] != 0) {
                 $this->calculateContribution();
             }*/

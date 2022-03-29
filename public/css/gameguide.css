@@ -1,3 +1,23 @@
+.gameguide-article {
+    width: 150px;
+    height: 100px;
+    background-color: var(--layoutBgColorDark);
+    box-shadow: 5px 0px 10px #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+}
+.gameguide-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 150px);
+    grid-gap: 20px;
+    justify-content: center;
+}
+.gameguide-article-link {
+    text-decoration: none;
+    color: var(--textColor);
+}
 #welcome_butt a {
     color: white;
     text-decoration: none;
@@ -109,3 +129,4 @@
     width: 128px;
     height: 128px;
 }
+    

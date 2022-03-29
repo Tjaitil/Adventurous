@@ -8,7 +8,7 @@
     width: 100%;
     border-bottom: 1px solid black;
     background-color: #f2e6d9;
-    padding: 0px 0px 0px 5px;
+    padding: 0px 0px 1rem 0px;
 }
 .news_element img {
     margin: 10px 0px 0px 5px;

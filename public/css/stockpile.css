@@ -16,7 +16,6 @@
     box-sizing: border-box;
     padding: 5px;
     width: 100%;
-    border: 3px double black;
     background-color: #724e27;
     color: white;
     overflow-x: visible;
@@ -34,11 +33,13 @@
 }
 #stck_menu {
     visibility: hidden;
+    z-index: 2;
 }
 #stck_menu ul {
     text-align: left;
     list-style-type: none;
-    border: 1px solid black;
+    border: 3px ridge var(--borderColorDark);
+    border-radius: 4px;
     position: absolute;
     max-width: 100px;
     z-index: 1;
@@ -48,6 +49,8 @@
     overflow: scroll;
     color: #FFFFFF;
     font-size: 12px;
+    width: 125px;
+    text-align: center;
 }
 #stck_menu ul li {
     background-color: #724e27;

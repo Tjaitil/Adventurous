@@ -8,10 +8,11 @@
 }
 #warriors {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(156px, 225px));
+    justify-content: center;
 }
 .warrior {
-    padding: 5px;
+    padding: 1rem 0.5rem;
     min-width: 156px;
     margin: 5px;
     background-color: #f2e6d9;
@@ -26,11 +27,15 @@
     height: 30%;
     float:left;
 }
-.info table {
-    border-collapse: collapse;
+.warrior-info-container {
+    display: flex;
+    gap: 30px;
 }
-.info table td {
-    border: none;
+.warrior-info-container > * {
+    flex-basis: 50%;
+}
+.warrior-info-container > p {
+    flex-basis: 30%
 }
 .warrior_level_up {
     height: 30px;
@@ -42,36 +47,24 @@
 .levels {
     width: 100%;
 }
-.levels ul {
+.warrior-skill-container {
     width: 100%;
-    float:left;
-    list-style-type: none;
+    display: flex;
+    gap: 10px;
 }
-.levels ul li {
-    text-align: left;
-    height: 25px;
+.warrior-skill-container figure {
+    flex-basis: 25%;
 }
-.levels li p {
-    width: 48%;
+.warrior figure img {
     float: left;
-}
-.warrior figure {
-    width: 50%;
-    float: left;
-    position: relative;
-}
-.warrior figcaption {
-    position: absolute;
-    left: 35px;
-    top: 0px;
 }
 .skill_bar {
     height: 25px;
-    width: 50%;
+    width: 80%;
     border: 1px solid black;
     background-color: #995c00;
-    float:right;
     position: relative;
+    font-size: 14px;
 }
 .skill_bar2 {
     width: 0%;
@@ -86,6 +79,7 @@
     display: block;
     text-align: center;
     position: relative;
+    height: 100%;
     /*line-height: 25px;*/
 }
 #overview {
@@ -103,4 +97,7 @@
 }
 #training {
     display: none;
+}
+#multiple-warrior-action-warning {
+    visibility: hidden;
 }

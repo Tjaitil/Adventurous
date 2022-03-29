@@ -1,26 +1,31 @@
 #warriors {
-    float: left;
-    clear: right;
-    width: 70%;
+
+}
+#warrior_container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 200px));
+    grid-gap: 5px;
+    justify-content: center;
 }
 .armory_view {
-    height: 300px;
+    height: 305px;
     width: 200px;
-    border: 1px solid black;
+    border: 3px ridge #322c10;
     margin: 5px;
     position: relative;
-    display: inline-block;
-    float: left;
-    background-color: #322c10;
+    background-color: var(--layoutBgColorDark);
     box-sizing: border-box;
     color: white;
+    padding: 10px 0px 0px 0px;
 }
 .armory_view img {
     width: 48px;
     height: 48px;
     position: absolute;
-    border: 1px solid black;
     box-sizing: border-box;
+}
+.armory_view img:not(.type_icon) {
+    border: 3px ridge #322c10
 }
 .type_icon {
     top: 2%;
@@ -72,9 +77,6 @@
 }
 #put_on {
     width: 100%;
-}
-#selected {
-    margin: 0 auto;
 }
 @media all and (max-width: 830px) {
     #armory_view_span {

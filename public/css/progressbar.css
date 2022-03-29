@@ -1,26 +1,47 @@
 .progressBarContainer {
-    height: 27px;
+    height: 30px;
     width: 50%;
+    margin: 0px;
+    position: relative;
     box-shadow: 0px 5px 10px #3d2500;
     background-color: #995c00;
-    position: relative;
     box-sizing: content-box;
     border-radius: 6px;
     border: 3px solid #3d2500;
 }
 .progressBarOverlay {
     width: 0%;
-    height:100%;
-    background-color: #ff9900;
+    height: 70%;
     position: absolute;
-    top: 0px;
-    left: 0px;
-    transition: width 1s ease-out;
+    top: 50%;
+    left: 0;
     border-radius: 5px;
+    background-color: #ff9900;
+    transition: width 0.7s ease-out;
+    transform: translateY(-51%);
 }
 .progressBar {
     width: 100%;
     display: block;
     text-align: center;
     position: absolute;
+}
+.progressBar > * {
+    vertical-align: middle;
+}
+.progressBarOverlayShadow {
+    background-color: #f90;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    filter: brightness(77%);
+    border-radius: 5px;
+}
+.progressFinished {
+    background-color: var(--greenColor);
+}
+.progressBarOverlayShadow,
+.progressBarOverlay,
+.progressBar {
+    transition: all 1s ease-in-out;
 }

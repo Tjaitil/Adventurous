@@ -10,6 +10,7 @@
             }
             else {
                 $this->index === false;
+                $_SESSION['conversation']['conv_index'] = false;
             }
         }
         public function checkPerson($person) {
@@ -35,6 +36,7 @@
             // Set new person
             $person = $POST['person'];
             $_SESSION['conversation']['person'] = $person;
+            $this->conversationCheck();
             // If the index is false the conversation will begin at the start. If else the conversation will start at specified index
             if($index == false) {
                 $this->echoConversation(true);
@@ -42,6 +44,10 @@
             else {
                 $this->echoConversation();
             }
+        }
+        public function conversationCheck() {
+            // Function to check for different situations which can change the conversation index
+            $_SESSION['conversation']['conv_index'];
         }
         public function getNextLine($POST) {
             // Loop through the active_dialogues for the match for text clicked on and make next index
@@ -57,8 +63,8 @@
             
             person|conversation|nextIndex|Funcname/other/end
            
-           
            */
+
             $info = false;
             $this->text = $POST['index'];
             if(strpos($this->text, "|")) {
@@ -78,20 +84,22 @@
                     $this->text = explode("|", $conversation[$this->index])[1];
                 }
             }
-            // Add check
+            // Search through current dialogue and find the active dialogue
             $active_dialogues = $_SESSION['conversation']['active_dialogues'];
             for($i = 0; $i < count($active_dialogues); $i++) {
                 if(strpos($active_dialogues[$i], $this->text)) {
                     $dialogue_match = explode("|", $active_dialogues[$i]);
-                    /*var_dump($dialogue_match);*/
+                    // Check for end index in conversation
                     if($dialogue_match[2] === "end") {
                         $end = true;
                         break;
                     }
+                    // Check for backend methods in dialogue
                     if(isset($dialogue_match[4])) {
                         $split = explode("#", $dialogue_match[4]);
                     }
                     else {
+                        // Set new index for conversation
                         $this->index = $_SESSION['conversation']['conv_index'] . $dialogue_match[2];
                         /*var_dump($this->index);*/
                     }
@@ -117,7 +125,7 @@
             }
             // If the index is false, it means the index is not set by getNextLine() and setPerson() is called
             if($getIndex === true) {
-                $_SESSION['conversation']['conv_index'] = $conversation['index'];
+                $_SESSION['conversation']['conv_index'] = $this->index = $conversation['index'];
             }
             if(!isset($conversation[$_SESSION['conversation']['conv_index']])) {
                 // Find last Q (conversation)
@@ -133,6 +141,7 @@
                 $active_conversation = $_SESSION['conversation']['active_dialogues'] =
                     $conversation[$_SESSION['conversation']['conv_index']];
             }
+            // Remvoe backend functions name from active conversation
             for($i = 0; $i < count($active_conversation); $i++) {
                 $for_index = explode("|", $active_conversation[$i]);
                 if(isset($for_index[4])) {
@@ -142,11 +151,26 @@
             }
             // Return false if the length of conversation array is not over 0;
             if(count($active_conversation) > 0) {
-                echo json_encode($active_conversation);
+                // Replace @ in dialogue with data
+                $active_conversation = $this->dataReplacer($active_conversation);
+                echo json_encode(array("conversation" => $active_conversation, "conversationIndex" => $this->index));
             }
             else {
                 return false;
             }
         }
-}
+        protected function dataReplacer($active_conversation) {
+            foreach($active_conversation as $key => $value) {
+                if(strpos($value, '@name')) {
+                    $active_conversation[$key] = str_replace('@name', $_SESSION['username'], $value);
+                }
+                // If location is current and the current person is pesr or sailor
+                if((strpos($this->index, "sl") !== false || strpos($this->index, "pr") !== false) &&
+                    strpos(strtolower($active_conversation[$key]), $_SESSION['gamedata']['location'])) {
+                    unset($active_conversation[$key]);
+                }
+            }
+            return array_values($active_conversation);
+        }
+ }
 ?>

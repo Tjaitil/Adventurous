@@ -1,15 +1,13 @@
-section table {
-    border-collapse: collapse;
+#workers-overview {
+    display: flex;
+    gap: 10px;
 }
-#farmer_workers {
-    float: left;
-    width: 50%;
+#farmer_workers,
+#miner_workers {
+    flex-basis: 50%;
     box-sizing: border-box;
 }
-#farmer_workers table {
-    display: table;
-    margin: 0 auto;
-}
+#farmer_workers table,
 #miner_workers table {
     display: table;
     margin: 0 auto;

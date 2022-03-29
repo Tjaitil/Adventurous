@@ -1,19 +1,37 @@
-#toggle_map_button {
-    position: absolute;
-    width: 102px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-}
 #map_container {
     border: 5px ridge #5f4121;
     border-radius: 5px;
     width: 98%;
     height: 600px;
     position: absolute;
-    z-index: 2;
-    display: none;
+    z-index: 4;
+    visibility: hidden;
+    left: 98%;
+    transition: left 0.3s ease-out;
 }
-
+#map_icon_list {
+    width: 0%;
+    max-width: 225px;
+    position: absolute;
+    top: 53px;
+    left: 0px;
+    height: auto;
+    padding: 1rem;
+    z-index: 3;
+    text-align: left;
+    background-color: var(--contentBgColor);
+    transition: width 0.2s ease-out;
+    visibility: hidden;
+}
+#map_icon_list ul {
+    list-style-type: none;
+}
+#map_icon_list li {
+    margin: 1rem 0rem;
+}
+#map_icon_list span {
+    margin-left: 1rem;
+}
 #map_container_header {
     display:  flex;
     margin: 0;
@@ -25,6 +43,7 @@
 #map_local_img_container {
     overflow: scroll;
     height: calc(100% - 27px);
+    position: relative;
 }
 #local_img {
     width: 1600px;
@@ -41,24 +60,43 @@
 .world_img {
     width: 200px;
     height: 200px;
+    image-rendering: initial;
 }
 .world_img_placeholder {
     width: 200px;
     height: 200px;
+}
+.mapTag {
+    position: absolute;
 }
 .mapTextTag {
     position: absolute;
     z-index: 1;
     color: white;
 }
+.localTag {
+    width: 32px;
+    height: 32px;
+}
+#map_player_marker {
+    width: 25px;
+    height: 25px;
+    top: 0px;
+    left: 0px;
+    background-color: red;
+    position: absolute;
+    border-radius: 10px;
+}
 #close_map_wrapper {
+    position: relative;    
+}
+#map_type_toggle_container {
     position: relative;
-    
 }
 #toggle_world_image {
     cursor: pointer;
 }
-#map_image_overlay {
+#map_type_toggle_overlay {
     height: 40px;
     width: 40px;
     position: absolute;

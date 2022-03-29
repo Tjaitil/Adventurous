@@ -1,11 +1,4 @@
-#trades {
-    /*display: inline-block;*/
-    float: left;
-    width: 69%;
-    margin: 0px 5px 5px 0px;
-    box-sizing: border-box;
-}
-.store_trade {
+/* .store_trade {
     display: inline-block;
     float: left;
     cursor: pointer;
@@ -23,7 +16,7 @@
 }
 .store_trade label {
     width: 100%;
-}
+} */
 #trades_container {
     width: 100%;
     font-size: var(--smallText);
@@ -38,9 +31,6 @@
     width: 30px;
     height: 30px;
 
-}
-#trade_info {
-    float: left;
 }
 #trades .item {
     height: 125px;
@@ -65,20 +55,14 @@
 }
 #trades_wrapper {
     display: flex;
-    border: 5px ridge #330;
-    border-radius: 5px;
-    background-color: var(--layoutBgColorDark);
-    color: var(--textColor);
 }
 #do_trade {
-    width: 155px;
-    height: 213px;
+    height: 100%;
     min-width: 155px;
-    float: left;
-    background-color: #724e27;
-    border-top: none;
-    border-left: none;
-
+    background-color: #5f4121;
+    border: 3px solid rgba(0, 0, 0, 0.6);
+    border-radius: 5px;
+    box-sizing: border-box;
 }
 #selected_trade {
     width: 100%;
@@ -93,4 +77,51 @@
 }
 #traderAssignment_progressBar {
     float: right;
+}
+#merchant-offer-container {
+    position: relative;
+    height: 272px;
+    display: flex;
+    flex-direction: row;
+    box-sizing: border-box;
+}
+#merchant-offer-selected {
+    flex-basis: 50%;
+}
+#merchant-offer-list {
+    display: flex;
+    overflow-y: scroll;
+    flex-direction: column;
+    flex-basis: 50%;
+}
+.merchant-offer {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    position: relative;
+    padding-block: 1rem;
+    cursor: pointer;
+}
+.merchant-offer :where(figure, p, img) {
+    align-self: center;
+}
+.merchant-offer:hover {
+    filter: brightness(1.15);
+}
+#merchant-offer-list .merchant-offer:not(:last-child):after {
+    content: "";
+    position: absolute;
+    left: 10%;
+    width: 80%;
+    height: 2px;
+    background-color: #5f4121;
+    bottom: 0px;
+}
+.merchant-offer-price {
+    flex-basis: 35%;
+    display: flex;
+    flex-direction: column;
+}
+.merchant-offer span {
+    text-align: left;
 }

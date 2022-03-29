@@ -7,7 +7,7 @@
         }
         public function index() {
             $this->loadModel('ArmyMissions', true);
-            $this->data = $this->model->getData();
+            $this->data = $this->model->getData(false);
             $this->render('armymissions', 'Army-Missions', $this->data, true, true);
         }
     }

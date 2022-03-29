@@ -11,16 +11,11 @@
     background: radial-gradient(var(--layoutBgColor), var(--layoutBgColorShadowPerc), var(--layoutBgColorShadow));
     border: 1px solid var(--borderColor);
     width: 500px;
-    height: 415px;
+    height: auto;
     visibility: hidden;
     padding: 10px;
     z-index: 2;
     border-radius: 20px;
-}
-#mission_enabled td { 
-    padding: 5px;
-    border: 1px solid black;
-    border-collapse: collapse;
 }
 #mission_enabled_button button:first-of-type {
     position: absolute;
@@ -34,4 +29,17 @@
 }
 #mission_table img {
     vertical-align: middle;
+}
+#mission-info {
+    padding-left: 2rem;
+    margin-top: 2rem;
+}
+.mission-info-container {
+    display: flex;
+    align-items: flex-start;
+}
+.mission-info-container > p {
+    flex-basis: 50%;
+    text-align: left;
+    max-width: 200px;
 }
