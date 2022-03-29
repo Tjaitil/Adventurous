@@ -140,14 +140,6 @@ function move() {
         right: false,
         down: false
     };
-    /*var lastLoop = new Date();
-    game.fps = function() { 
-        var thisLoop = new Date();
-        var fps = 1000 / (thisLoop - lastLoop);
-        lastLoop = thisLoop;
-        document.getElementById("frames").innerHTML = fps;
-    };*/
-    
     game.startGame = function () {
         game.properties.context.drawImage(world, 0 + xMovement, 0 + yMovement, 1024 * scale, 1024 * scale, 0, 0, 1024, 1024);
         game.loadGamePieces();
@@ -158,7 +150,6 @@ function move() {
         }
         console.log(player_img);
     };
-    console.log(gamePieces.objects);
     game.loadGamePieces = function() {
         var list = [];
         list.push(["obstc1", 240, 0, 20, 20, "red"]);
@@ -224,40 +215,6 @@ function move() {
         ctx.fillRect(x, y, width, height);
         linksPos.push([x, y, this.diameterTop, this.diameterRight, this.diameterDown, this.diameterLeft, width, height]);
     }
-    window.addEventListener('keydown', function (e) {
-        switch(e.keyCode) {
-            case 37:
-                game.controls.left = true;
-                break;
-            case 38:
-                game.controls.up = true;
-                break;
-            case 39:
-                game.controls.right = true;
-                break;
-            case 40:
-                game.controls.down = true;
-                break;
-        }
-        
-    }, false);
-    window.addEventListener('keyup', function (e) {
-        switch(e.keyCode) {
-            case 37:
-                game.controls.left = false;
-                break;
-            case 38:
-                game.controls.up = false;
-                break;
-            case 39:
-                game.controls.right = false;
-                break;
-            case 40:
-                game.controls.down = false;
-                break;
-        }
-    }, false);
-
     game.updateGamePiece = function() {
             /*console.log("objects :" + gamePieces.objects.length);*/
             var visibleObjects = gamePieces.objects.filter(function(object) {

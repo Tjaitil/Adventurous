@@ -107,7 +107,42 @@ function move() {
     // 1 is normal then the picture will be painted in 1024 width and height.
     var scale = 1;
     var render = 0;
-    
+    var stateModule = (function () {
+    var state = "DC"// Private Variable
+    let humour = null;
+    let load = false;
+    let xbase = null;
+    let ybase = null;
+
+    var pub = {};// public object - returned at end of module
+
+    pub.changeState = function (newstate) {
+        state = newstate;
+    };
+
+    pub.getState = function () {
+        return state;
+    };
+    const loadHumour = function (x, y) {
+        if (load === true) {
+            console.log('Function already set!');
+            return;
+        }
+        xbase = x;
+        ybase = y;
+        load = true;
+    };
+    const getHumour = function () {
+        return [xbase, ybase];
+    };
+    const setHumour = function (mood) {
+        humour = mood;
+    };
+    return {
+        getHumour: getHumour,
+        loadHumour: loadHumour
+    };
+}());
         
     function draw(mx, my, sx, sy) {
         var ctx = game.properties.context;
@@ -589,3 +624,28 @@ function move() {
     </script>
 </body>
 </html>
+// game.checkEventStatus = function () {
+    //     if (game.properties.gameState == false && conversation.checkConversation() == false) {
+    
+    //     }
+    //     else {
+    
+    //     }
+    // };
+    // game.loadChunk = function (x, y, xpos, ypos) {
+    //     var data = "model=worldLoader" + "&method=loadChunks" +
+    //         "&xMapMin=" + xMapMin + "&yMapMin=" + yMapMin + "&xbase=" + xpos + "&ybase=" + ypos;
+    //     ajaxG(data, function (response) {
+    //         var responseText = response[1];
+    //         for (var i = 0; i < gamePieces.objects.length; i++) {
+    //             let object = gamePieces.objects[i];
+    //             if (object.y > yMapMax + 400 || object.y < yMapMin - 400 || object.x > xMapMax + 400 || object.x < xMapMin - 400) {
+    //                 console.log('helasaslo');
+    //                 gamePieces.objects.splice(i, 1);
+    //             }
+    //         }
+    //         gamePieces.objects = gamePieces.objects.concat(responseText);
+    //         console.log(gamePieces.objects.length);
+    //         console.log(gamePieces.objects);
+    //     });
+    // };
