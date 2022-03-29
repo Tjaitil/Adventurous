@@ -26,11 +26,17 @@
         else {
             $url = $url;
         } ?>
-        <p> Inventory <?php echo '(' . count($_SESSION['gamedata']['inventory']) . '/' . '18' . ')';?></p>
+        <p> Inventory <?php echo '(' . count($_SESSION['gamedata']['inventory']) . ' / ' . '18' . ')';?></p>
+        <div id="item_tooltip_container">
+        </div>
         <div id="item_tooltip">
-            <ul>
-                <li></li>
-            </ul>
+                <ul>
+                    <li></li>
+                    <li>
+                        <span id="tooltip_item_price"></span> 
+                        <img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.png';?>"> each
+                    </li>
+                </ul>
         </div>
 <?php
         switch($url):
@@ -59,4 +65,5 @@
             <?php endforeach;?>
         <?php break;
         endswitch;
+        
     }?>

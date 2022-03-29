@@ -35,7 +35,9 @@
                                 <label for="workforce"> Select workers (max)</label>
                                 <div>    
                                     <input name="workforce" type="number" min="0" required />
-                                    <span id="avail_workforce">(<?php echo $this->data['workforce_data']['avail_workforce']?>)</span></br>
+                                    <span id="data_container_avail_workforce">
+                                        (<?php echo $this->data['workforce_data']['avail_workforce']?>)
+                                    </span></br>
                                 </div>
                             </form>
                             <button type="button"> Mine </button>

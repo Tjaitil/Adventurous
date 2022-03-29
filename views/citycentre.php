@@ -9,7 +9,7 @@
                 <p> Current profiency: <span id="profiency"><?php echo ucfirst($_SESSION['gamedata']['profiency']);?></span></p>
                     <label for="profiency_select"> Change profiency</label></br>
                     <select name="profiency_select" id="profiency_select">
-                        <option selected="selected"></option>
+                        <option selected disabled hidden></option>
                         <?php
                         $profiences = array('farmer' => 'farmer', 'miner' => 'miner', 'trader' => 'trader',
                                             'warrior' => 'warrior');
@@ -40,22 +40,21 @@
                 <button> Create new artefact </button>
             </div>
             <div id="miner_permits">
-                <p>Current miner permits: <?php echo $this->data['permits'];?></p>
-                <table>
-                    <caption> Buy Miner Permits: </caption>
-                    <thead>
-                        <tr>
-                            <td> Amount: </td>
-                            <td> Cost: </td>
-                            <td></td>
-                        </tr>
-                    </thead>
-                    <tr>
-                        <td> 50 </td>
-                        <td> 50 <img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.png';?>"/></td>
-                        <td><button> Buy </button></td>
-                    </tr>
-                </table>
+                <p class="help"> You will need miner permits to mine for minerals. Different types of minerals require a 
+                    certain amount of minerals</p>
+                <div class="div_content_light div_content inlineAuto mt-1">
+                    <h4>Buy Permits</h4>
+                    <label>
+                        <input type="radio" name="permit_location" value="golbak"> 
+                        Golbak - <span><?php echo $this->data['permits']['golbak'];?></span>
+                    </label>
+                    <label>
+                        <input type="radio" name="permit_location" value="Snerpiir"> 
+                        Snerpiir - <span><?php echo $this->data['permits']['snerpiir'];?></span>
+                    </label>
+                    <p>50 permits cost <img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.png';?>"/></p>
+                    <button type="button" class="mb-1">Buy</button>
+                </div>
             </div>
             <div id="unlock_items">
                     <table>
@@ -93,7 +92,8 @@
                 </div>
             <div id="efficiency">
                 <table>
-                    <caption> Upgrade efficiency level on farmer and miner workforce </caption>
+                    <caption> Upgrade efficiency level on farmer and miner workforce. Countdowns for mine - and crop workforce will be reduced 
+                        with higher levels </caption>
                     <thead>
                         <tr>
                             <td> Profiency </td>

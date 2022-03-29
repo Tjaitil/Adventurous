@@ -1,6 +1,9 @@
             stockpile.css|stockpile.js|
             <h3 class="page_title"> Stockpile </h3>
-            <div id="stockpile">
+                <p class="help">
+                    Click on items to withdraw or insert items into the stockpile.
+                </p>
+            <div id="stockpile" class="div_content mb-1">
                 <?php get_template('stockpile', $this->data, true);?>
             </div>
             <!--<div id="inventory">

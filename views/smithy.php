@@ -1,9 +1,8 @@
             smithy.css|smithy.js|
             <h3 class="page_title"> Smithy </h3>
             <div id="smith">
-                <p class="help">
-                    Select a mineral below to smith from. </br>
-                    Players with miner profiency pay nothing
+                <p class="help mb-1">
+                    Select a mineral below to smith from. Players with miner profiency pay nothing
                 </p>
                 <h5>Choose your mineral</h5>
                 <div id="minerals">
@@ -26,9 +25,9 @@
                         // Generate thead and tr tags ?>
                         <thead>
                             <tr>
-                                <td> Item: </td>
-                                <td> Ores required: </td>
-                                <td> Cost: </td>
+                                <td>Item</td>
+                                <td>Ores required</td>
+                                <td>Cost</td>
                                 <td></td>
                             </tr>
                         </thead>

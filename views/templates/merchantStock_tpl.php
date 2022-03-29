@@ -1,3 +1,4 @@
+   <?php // unused ?>
     <?php if(!count($data['shop']) > 0): ?>
         <div>
             <span>No trades available!</span>

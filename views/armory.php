@@ -2,11 +2,14 @@
             <h3 class="page_title"> Armory </h3>
             <button> Back to army camp</button>
             <div id="warriors">
+                <div class="help">
+                    <p> Select an item from inventory to put on warrior or click one of the items worn by warriors to unequip.</p>
+                </div>
                 <div id="put_on">
-                    <div id="selected">
-                    </div>
-                    <select id="select_warrior">
-                        <option></option>
+                    <?php get_template("select_item", null, true); ?>
+                    <label for="warrior_id">Select warrior</label>
+                    <select name="warrrior_id" id="select_warrior">
+                        <option selected disabled hidden></option>
                         <?php foreach($this->data['warrior_armory'] as $key): ?>
                         <option><?php echo $key['warrior_id'];?></option>
                         <?php endforeach;?>
@@ -21,6 +24,8 @@
                     </div>
                     <button onclick="wearArmor();"> Put on </button>
                 </div>
-                <?php get_template('armory', $this->data['warrior_armory'], true) ;?>
+                <div id="warrior_container">
+                    <?php get_template('armory', $this->data['warrior_armory'], true) ;?>
+                </div>
             </div>
             </br>

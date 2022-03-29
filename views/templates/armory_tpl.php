@@ -1,7 +1,7 @@
 <?php
 foreach($data as $key):
     if(!isset($key['check'])):?>
-        <div class="armory_view">
+        <div class="armory_view darkTextColor">
     <?php endif;?>
         <img class="type_icon" src="<?php echo constant('ROUTE_IMG') . $key['type'] . ' icon.png';?>" />
         <p> Warrior #<?php echo $key['warrior_id'];?></p>

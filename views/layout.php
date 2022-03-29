@@ -5,12 +5,15 @@
 <div id="log_pseudo_parent">
     
 </div>
-<div id="log">
-    <table id="game_messages">
-        <?php if(count($_SESSION['log']) > 0) {
-            get_template('log', $_SESSION['log']);
-        };?>
-    </table>
+<input type="checkbox" name="" id="draw_checkbox">
+<div id="log_container" class="div_content mb-1">
+    <div id="log" class="darkTextColor">
+        <table id="game_messages">
+            <?php if(count($_SESSION['log']) > 0) {
+                get_template('log', $_SESSION['log']);
+            };?>
+        </table>
+    </div>
 </div>
 <div id="log_2"></div>
 <?php
@@ -26,7 +29,7 @@
         
     </div>
     <div id="news_content_main_content">
-        
+
     </div>
-    <img id="cont_exit" src="#"  width="20px" height="20px" onclick="closeNews();" />
+    <img class="cont_exit" src="<?php echo constant("ROUTE_IMG") . 'exit.png';?>"  width="20px" height="20px" onclick="closeNews();" />
 </div>

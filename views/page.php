@@ -17,7 +17,6 @@
             <?php endif;?>
             <script src="<?php echo '../' . constant('ROUTE_JS') . 'checkSite.js';?>"></script>
             <script src="<?php echo constant('ROUTE_JS') . 'scriptLoader.js';?>"></script>
-            <?php require(constant('ROUTE_VIEW') . 'layout.php');?>
             <?php require(constant('ROUTE_VIEW') . $name . '.php');?>
         </section>
         <?php if(array_search($name, array("gameguide", "profile", "error", "main", "highscores", "news", "messages")) === false): ?>

@@ -9,13 +9,10 @@
                     <button onclick="talk('<?php echo ucfirst($key); ?>', '0');">Talk</button></div>
                 <?php endforeach;*/?>
             </div>
-            </br>
             <?php get_template('tavern', $this->data['tavern']['workers'], true); ?>
             <div id="eat">
-                <div id="selected">
-                    
-                </div>
+                <?php get_template("select_item", null, true);?>
                 <input type="number" min="0" />
                 <button> Eat </button>
-                <p id="item_healing_amount"></p>
+                <p id="item_healing_amount mb-1"></p>
             </div>

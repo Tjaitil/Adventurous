@@ -3,7 +3,7 @@
             <div id="new_off">
                 <form id="offer_form">
                     <div id="offer_types">
-                        <p> Select type of offer:</p>
+                        <p> Select type of offer</p>
                         <button>
                             Buy
                         </button>

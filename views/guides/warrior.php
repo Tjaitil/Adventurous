@@ -87,7 +87,38 @@
             <?php endfor;?>
         </table>
         * Frajrite and Wujkin armor requires that you unlock by collecting weapon tokens from adventures. To receive weapon tokens you need to
-        complete adventure as warrior profiency
+        complete adventure as warrior profiency 
+        </br>
+        </br>
+        <p> Types of bows</p>
+        
+        <?php $list_info = array();
+        $list_info[] = array("1", 'oak bow');
+        $list_info[] = array("13", 'spruce bow');
+        $list_info[] = array("25", 'birch bow');
+        $list_info[] = array("40", 'yew bow');
+        ?>
+        <table>
+            <thead>
+                <tr>
+                    <td>Warrior total required</td>
+                    <td>Bow type</td>
+                </tr>
+            </thead>
+            <tbody>
+            <?php for($i = 0; $i < count($list_info); $i++): ?>
+                <tr>
+                    <td><?php echo $list_info[$i][0];?></td>
+                    <td>
+                        <figure>
+                        <img src="<?php echo '../' . constant('ROUTE_IMG') . $list_info[$i][1] . '.png';;?>" />
+                        <figcaption><?php echo ucwords($list_info[$i][1]);?></figcaption>
+                        </figure>
+                    </td>
+                </tr>
+            <?php endfor;?>
+            </tbody>
+        </table>
     </p>
     <h5 class="p_header"> Armymission </h5>
     <p id="armymission">

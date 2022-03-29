@@ -2,7 +2,12 @@
             <h3 class="page_title"><?php echo $title;?></h3>
             <div id="grow_crops">
                 <div id="action_div" class="div_content">
-                    <div id="actions">
+                    <div id="actions" class>
+                        <p class="help">
+                            Select a crop type from the list to grow. </br>
+                            Number of workers selected will increase the crops you get when harvesting. </br>
+                            Efficiency level reduces grow time
+                        </p>
                         <p id="growing"> </p></br>
                         <p id="time"></p>
                         <button id="cancel_action"> Destroy crops </button>
@@ -35,7 +40,9 @@
                                     <label for="workforce"> Select workers (max)</label>
                                     <div>
                                         <input name="workforce" id="" type="number" min="0" required />
-                                        <span>(<?php echo $this->data['workforce_data']['avail_workforce']?>)</span>
+                                        <span id="data_container_avail_workforce">
+                                            (<?php echo $this->data['workforce_data']['avail_workforce']?>)
+                                        </span>
                                     </div>
                                     </br>
                                 </form>

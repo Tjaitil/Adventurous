@@ -10,7 +10,7 @@
                 <div id="actions">
                     <label for="action"> Select action </label>
                     <select name="action">
-                        <option selected></option>
+                        <option selected disabled hidden></option>
                         <option value="transfer"> Transfer </option>
                         <option value="heal"> Heal </option>
                         <option value="rest"> Rest </option>
@@ -20,16 +20,13 @@
                     </select>
                     <div id="heal">
                         <p> Select item to heal: </p>
-                        <div id="selected">
-                            
-                        </div>
-                        <div id="selected_t"></div>
+                        <?php get_template("select_item", null, true);?>                            
                         <input type="number" id="selected_amount" min="0" />
                     </div>
                     <div id="training">
                         <label for="type"> Select type of training</label>
                         <select name="type">
-                            <option></option>
+                            <option selected hidden disabled></option>
                             <option value="general"> General </option>
                             <option value="stamina"> Stamina </option>
                             <option value="technique"> Technique </option>
@@ -37,10 +34,14 @@
                             <option value="strength"> Strength </option>
                         </select></br>
                     </div>
+                    <p id="multiple-warrior-action-warning" class="mt-1 mb-1"> Only one warrior can be selected for this action </p>
                     <button> Do Action </button>
                 </div>
                 <div id="warriors">
-                    <?php get_template('warriors_levels', array($this->data['warrior_data'], $this->data['levels_data']), true);?>
+                    <?php 
+                    foreach($this->data['warrior_data'] as $key => $value) {
+                        get_template('warriors_levels', array($this->data['warrior_data'][$key], $this->data['levels_data']), true);
+                    }?>
                 </div>
             </div>
             <div id="calculator">

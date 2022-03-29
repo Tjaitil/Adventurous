@@ -14,4 +14,8 @@
         <link rel="stylesheet" type="text/css" href="<?php echo '../' . constant('ROUTE_CSS')?>select.css" />
         <link rel="stylesheet" type="text/css" href="<?php echo '../' . constant('ROUTE_CSS')?>progressbar.css" />
         <link rel="stylesheet" type="text/css" href="<?php echo '../' . constant('ROUTE_CSS')?>warriorSelect.css" />
+        <link rel="stylesheet" type="text/css" href="<?php echo '../' . constant('ROUTE_CSS')?>battleresult.css" />
+        <?php if(strpos($_SERVER['REQUEST_URI'], 'advclient')): ?>
+            <link rel="stylesheet" type="text/css" href="<?php echo '../' . constant('ROUTE_CSS')?>map.css" />
+        <?php endif;?>
         
