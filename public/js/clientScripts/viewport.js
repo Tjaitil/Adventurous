@@ -77,6 +77,10 @@ const viewport = {
         this.elements.frontObjects.width = this.width;
         this.elements.frontObjects.height = this.height;
         this.elements.frontObjects.style.left = this.left + "px";
+        this.elements.text.width = this.width;
+        this.elements.text.height = this.height;
+        this.elements.text.style.left = this.left + "px";
+        
 
         this.layer.background.scale(this.zoom, this.zoom);
         this.layer.player.scale(this.zoom, this.zoom);
