@@ -26,6 +26,21 @@ function updateInventory(page, addSelect = false) {
     ajaxRequest.open('GET', "handlers/handlerf.php?file=inventory" + "&page=" + page);
     ajaxRequest.send();
 }
+function checkInventoryStatus() {
+    // Fetch items amount
+    let items = document.getElementsByClassName("inventory_item");
+
+    let status = (items.length === 18);
+
+    let inventoryStatusElement = document.getElementById("inventory-status");
+    // Adjust color according to inventory status
+    if(status)  {
+        inventoryStatusElement.classList.add("not-able-color");
+    } else {
+        inventoryStatusElement.classList.remove("not-able-color");
+    }
+    return status;
+}
 const itemPrices = {
     prices: [],
     findItem(itemName) {
