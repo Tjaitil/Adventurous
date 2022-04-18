@@ -1,3 +1,4 @@
+    scriptLoader.loadScript(['gameLogger'], 'utility');
 
     function validJSON(str) {
         try {
