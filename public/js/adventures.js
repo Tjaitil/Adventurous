@@ -1,4 +1,5 @@
-
+    scriptLoader.loadScript(['jsonForm'], 'utility');
+    
     if(document.getElementById("news_content").children[2] != null) {
         if(document.getElementById("provide") != null && document.getElementById("provide").children.length > 0) {
             document.getElementById("provide").querySelectorAll(":scope > button")[0].addEventListener('click', provide);

@@ -1,3 +1,4 @@
+    scriptLoader.loadScript(['jsonForm'], 'utility');
     if(document.getElementById("news_content").children[2] != null) {
         getCountdown();
         var img = document.getElementById("select").querySelectorAll("img");

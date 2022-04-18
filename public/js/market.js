@@ -1,3 +1,4 @@
+    scriptLoader.loadScript(['jsonForm'], 'utility');
     var offers = {};
     if(document.getElementById("news_content").children[2] != null) {
         /*for(var i = 0; i < inputs.length; i++) {
