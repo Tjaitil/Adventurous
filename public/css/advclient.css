@@ -20,14 +20,6 @@ button:focus {outline:0;}
 #loading_message {
     margin-top: 20px;
 }
-#game_canvas {
-    float: left;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: -webkit-crisp-edges;
-    image-rendering: pixelated;
-    image-rendering: crisp-edges;
-    box-sizing: border-box;
-}
 #canvas_border {
     border: 8px solid var(--borderColor);
     position: absolute;
@@ -49,17 +41,16 @@ button:focus {outline:0;}
     top: -5px;
     border-radius: 4px;
 }
-canvas:not(#game_canvas) {
+canvas {
     position: absolute;
-    top: 215px;
-    left: 12px;
+    left: 0px;
     image-rendering: -moz-crisp-edges;
     image-rendering: -webkit-crisp-edges;
     image-rendering: pixelated; 
     image-rendering: crisp-edges;
 }
 #game_hud {
-    position: relative;
+    position: absolute;
     z-index: 3;
 }
 #game_hud > * {
