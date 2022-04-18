@@ -5,8 +5,6 @@ function backgroundImageSlider() {
     let direction = -1;
     let request = requestAnimationFrame(animate);
     let duration = 0;
-    document.getElementById("background_image_container").style.height = screen.availHeight + "px";
-    console.log(screen.availHeight);
     function animate() {
         // If 2 frames have gone by, animate
         if(duration % 2 === 0) {
