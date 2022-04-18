@@ -10,10 +10,10 @@ function updateInventory(page, addSelect = false) {
                         // ... code code code for this one element
                         element.addEventListener('click', show_menu);
                     });
-                    itemTitle.removeTitleEvent();
+                    (() =>itemTitle.removeTitleEvent())();
                 }
                 else {
-                    itemTitle.addTitleEvent();
+                    (() =>itemTitle.addTitleEvent())();
                 }
                 itemPrices.get();
             }
