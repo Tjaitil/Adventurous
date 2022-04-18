@@ -7,7 +7,7 @@ const gameLogger = {
     messages: [],
     currentlyLogging: false,
     currentIndex: 0,
-    addMessage(message) {
+    addMessage(message, instantLog = false) {
         if(Array.isArray(message)) {
             for(let i = 0; i < message.length; i++) {
                 this.messages.push(message[i]);
@@ -16,6 +16,8 @@ const gameLogger = {
         else {
             this.messages.push(message);
         }
+        // Use to start this.logMessages instead of having to call it directly in another file 
+        if(instantLog) this.logMessages();
     },
     logMessages() {
         if(this.messages.length === 0) return false;
