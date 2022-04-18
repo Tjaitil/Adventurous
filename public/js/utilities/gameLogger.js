@@ -1,3 +1,7 @@
+// Object containing common game messages
+const commonMessages = {
+    'inventoryFull': "Remove some items from inventory before doing this action",
+}
 // Log gamemessages
 const gameLogger = {
     messages: [],
