@@ -1,4 +1,4 @@
-scriptLoader.loadScript(['itemTitle', 'uppercase'], 'utility');
+scriptLoader.loadScript(['itemTitle', 'uppercase', 'inventoryToggle'], 'utility');
 
 const generalProperties = {
     computerDevice: true,
@@ -179,23 +179,6 @@ const mainContentHelpContainer = {
         }
     }
 }
-const inventorySidebarMob = {
-    toggleInventory() {
-        let inventory = document.getElementById("inventory");
-        if (inventory.style.visibility === "hidden") {
-            console.log('hlelo');
-            inventory.style.width = "50%";
-            inventory.style.visibility = "visible";
-        }
-        else {
-            if (inventory.querySelectorAll("#stck_menu").length > 0) {
-                inventory.querySelectorAll("#stck_menu")[0].style.visibility = "hidden";
-            }
-            inventory.style.width = "10%";
-            inventory.style.visibility = "hidden";
-        }
-    }
-};
 const newsContentSidebar = {
     activeButton: null,
     adjustSidebar() {
@@ -308,13 +291,6 @@ const newsContentSidebar = {
         });
     }
 };
-function checkGameMessages(echoData) {
-    if(echoData['gameMessages'] !== "undefined") {
-        echoData['gameMessages'].forEach((message) => {
-            gameLog(gameInfo.gameMessages[message]);
-        });
-    }
-}
 function underscoreTreatment(string, addUnderscore) {
     let result = string.search("_");
     let editedString;
