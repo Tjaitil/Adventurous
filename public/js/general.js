@@ -1,3 +1,5 @@
+scriptLoader.loadScript(['itemTitle', 'uppercase'], 'utility');
+
 const generalProperties = {
     computerDevice: true,
     setDeviceType() {
@@ -6,92 +8,11 @@ const generalProperties = {
         }
     }
 };
-const itemTitle = {
-    status: true,
-    currentTitle: null,
-    addTitleEvent() {
-        console.log('addTitleEvent');
-        let figures = document.getElementById("inventory").querySelectorAll("figure");
-        figures.forEach(function (element) {
-            // ... code code code for this one element
-            if (generalProperties.computerDevice) {
-                element.addEventListener('mouseenter', () => itemTitle.show());
-                element.addEventListener('mouseleave', () => itemTitle.hide());
-            }
-            else {
-                element.addEventListener('click', () => itemTitle.show());
-            }
-        });
-        this.status = true;
-    },
-    removeTitleEvent() {
-        console.log('removeTitle');
-        let figures = document.getElementById("inventory").querySelectorAll("figure");
-        figures.forEach(function (element) {
-            // ... code code code for this one element
-            if (generalProperties.computerDevice) {
-                element.removeEventListener('mouseenter', () => itemTitle.show());
-                element.removeEventListener('mouseleave', () => itemTitle.hide());
-            }
-            else {
-                element.removeEventListener('click', () => itemTitle.show());
-            }
-        });
-        this.status = false;
-    },
-    addItemClassEvents() {
-        // Add events on specific pages
-        if(["merchant", "zinsstore"].indexOf(game.properties.building) !== -1) return false;
-        let itemDivs = document.getElementById("news_content_main_content").querySelectorAll(".item");
-        itemDivs.forEach(element => {
-            element.removeEventListener('mouseenter', () => itemTitle.show());
-            element.removeEventListener('mouseleave', () => itemTitle.hide());
-        });
-    },
-    show() {
-        let element = event.target.closest("div");
-        this.currentTitle = element;
-        let item = element.getElementsByTagName("figcaption")[0].innerHTML;
-        let menu = document.getElementById("item_tooltip");
-        if(menu.children[0].children[0].innerHTML === item && menu.style.visibility !== "hidden") {
-            return false;
-        }
-        // Insert item name at the first li
-        menu.children[0].children[0].innerHTML = item;
-        menu.style.visibility = "visible";
-        // Declare menu top by measuring the positon from top of parent and also if inventory/stockpile is scrolled
-        let menuTop;
-        document.getElementById("tooltip_item_price").innerHTML = itemPrices.findItem(item);
-        if (element.className == "inventory_item") {
-            document.getElementById("inventory").insertBefore(menu,
-                document.getElementById("inventory").querySelectorAll(".inventory_item")[0]);
-            // menuTop = element.offsetTop + 30;
-            menuTop = element.offsetTop + 15;
-            menu.children[0].style.top = menuTop + "px";
-            menu.children[0].children[0].style.textAlign = "center";
-            if (item.length < 8) {
-                menu.children[0].style.left = element.offsetLeft + 20 + "px";
-            }
-            else {
-                menu.children[0].style.left = element.offsetLeft + 10 + "px";
-            }
-        }
-        else {
-            let elementParent = element.closest("div");
-            let firstChild = elementParent.children[0];
-            console.log(firstChild);
-            elementParent.appendChild(menu);
-            menu.children[0].style.left = 10 + "px";
-            menu.children[0].style.top = 55 + "px";
-        }
-    },
-    hide() {
-        document.getElementById("item_tooltip").style.visibility = "hidden";
-        this.currentTitle = null;
-    }
-};
-window.addEventListener("load", function () {
+window.addEventListener("load", () => generalInit());
+function generalInit() {
     generalProperties.setDeviceType();
+    itemTitle.init(generalProperties.computerDevice);
+    itemTitle.addTitleEvent();
     // document.getElementById("help_button").addEventListener("click", () => helpContainer.toggle());
     // helpContainer.helpElement = document.getElementById("help");
     var log = document.getElementById("log");
@@ -104,7 +25,6 @@ window.addEventListener("load", function () {
     }
     if (document.getElementById("inventory") != null) {
         if (window.location.href.indexOf("stockpile") == -1) {
-            itemTitle.addTitleEvent();
         }
         if (/Safari|Chrome/i.test(navigator.userAgent)) {
             let span = document.getElementsByClassName("item_amount");
@@ -136,7 +56,7 @@ window.addEventListener("load", function () {
     if (location.href.indexOf("gameguide") == -1) {
         // checkInboxMessages();
     }
-});
+}
 
 
 /*window.addEventListener("scroll", function(e) {
@@ -182,90 +102,6 @@ function addZero(i) {
 //         }
 //     }
 // }
-const gameLogger = {
-    messages: [],
-    currentlyLogging: false,
-    currentIndex: 0,
-    addMessage(message) {
-        if(Array.isArray(message)) {
-            for(let i = 0; i < message.length; i++) {
-                this.messages.push(message[i]);
-            }
-        }
-        else {
-            this.messages.push(message);
-        }
-    },
-    logMessages() {
-        if(this.messages.length === 0) return false;
-        // Start new loop only if none is set
-        if(!this.currentlyLogging) {
-           this.clientLog();
-        } 
-        this.currentlyLogging = true;
-    },
-    mainLog() {
-        let message = this.messages[this.currentIndex];
-        let tr = document.createElement("TR");
-        let td = document.createElement("TD");
-        if(message.indexOf("ERROR") != -1) {
-            message = message.split("ERROR")[1].trim();
-            td.className = "error_log";
-        }
-        if(message.search("\\[") == -1) {
-            var d = new Date();
-            var time = "[" + addZero(d.getHours()) + ":" + addZero(d.getMinutes()) + ":" + addZero(d.getSeconds()) + "] ";
-            message = time + message;
-        }
-        let table = document.getElementById("game_messages");
-        tr.appendChild(td);
-        td.innerHTML = message;
-        let logElement = document.getElementById("log");
-        let isScrolledToBottom = logElement.scrollHeight - logElement.clientHeight <= logElement.scrollTop + 1;
-        table.appendChild(tr);
-        // scroll to bottom if isScrolledToBottom
-        if (isScrolledToBottom) {
-            logElement.scrollTop = logElement.scrollHeight - logElement.clientHeight;
-        }
-    },
-    clientLog() {
-        let message = this.messages[this.currentIndex];
-        let div = document.getElementById("log_2");
-        div.innerHTML = message;
-        div.style.opacity = 1;
-        div.style.height = "50px";
-        div.style.top = window.pageYOffset + 5 + "px";
-        this.mainLog();
-        setTimeout(() => {
-            document.getElementById("log_2").style.height = "4px";
-        }, 3700);
-        setTimeout(() => {
-            if(this.currentIndex !== this.messages.length - 1) {
-                this.currentIndex++;
-                this.clientLog();
-            } else {
-                this.closeClientLog();
-            }
-        }, 4000);
-    },
-    closeClientLog() {
-        let div = document.getElementById("log_2");
-        div.style.height = "4px";
-        div.style.top = "0px"
-        div.style.opacity = 0;
-        ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.onload = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                console.log(this.responseText);
-            }
-        };
-        ajaxRequest.open('GET', "handlers/handler_log.php?log=" + JSON.stringify(this.messages));
-        ajaxRequest.send();
-        this.messages = [];
-        this.currentIndex = 0;
-        this.currentlyLogging = false;
-    }
-};
 // function gameLog(message, log = false) {
 //     let tr = document.createElement("TR");
 //     let td = document.createElement("TD");
@@ -377,7 +213,7 @@ function closeNews() {
         menubarToggle.removeEvent();
     }
     if (itemTitle.status === false) {
-        itemTitle.addTitleEvent();
+        (() =>itemTitle.addTitleEvent())();
     }
 }
 const mainContentHelpContainer = {
@@ -723,48 +559,6 @@ function hide_title(element) {
         var div_button = data[2].parentElement.children[0];
         div_button.style = "visibility: hidden";
     }
-}
-function jsUcfirst(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
-function jsUcWords(str) {
-    return str.replace(/\w\S*/g, function (txt) {
-        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-    });
-}
-function JSONForm(form) {
-    // Returns JSON object from a form
-    var form_data = {};
-    for (var i = 0; i < form.length; i++) {
-        switch (form[i].tagName) {
-            case 'DIV':
-                for (var x = 0; x < form[i].children.length; x++) {
-                    if (form[i].children[x].tagName != 'INPUT') {
-                        continue;
-                    }
-                    form_data[form[i].children[x].name] = form[i].children[x].value;
-                }
-                break;
-            case 'INPUT':
-                if (form[i].name.length == 0) {
-                    break;
-                }
-                if (form[i].type == 'checkbox' && form[i].checked === true) {
-                    form_data[form[i].name] = form[i].value;
-                }
-                form_data[form[i].name] = form[i].value;
-                break;
-            case 'SELECT':
-                if (form[i].name.length > 0) {
-                    form_data[form[i].name] = form[i].children[form[i].selectedIndex].value;
-                    break;
-                }
-                break;
-            default:
-                break;
-        }
-    }
-    return JSON.stringify(form_data);
 }
 var sidebar = {
     sidebarElement: document.getElementById("sidebar"),
