@@ -35,6 +35,10 @@
         newsContentSidebar.adjustMainContentHeight();
     }
     function smith() {
+        if(checkInventoryStatus()) {
+            gameLogger.addMessage(commonMessages.inventoryFull, true);
+            return false;
+        }
         var amount = event.target.parentElement.children[0].value;
         var item = event.target.closest("tr").querySelectorAll("figcaption")[0].innerHTML.toLowerCase();
         var minerals = document.getElementsByClassName("minerals");
