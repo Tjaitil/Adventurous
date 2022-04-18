@@ -11,7 +11,7 @@
                 // ... code code code for this one element
                 element.addEventListener('click', show_menu);
             });
-            itemTitle.removeTitleEvent();
+            (() => itemTitle.removeTitleEvent())();
         },
         removeEvent() {
             menubarToggle.toggled = false;
