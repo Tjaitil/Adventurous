@@ -26,7 +26,7 @@
         else {
             $url = $url;
         } ?>
-        <p> Inventory <?php echo '(' . count($_SESSION['gamedata']['inventory']) . ' / ' . '18' . ')';?></p>
+        <p> Inventory <span id="inventory-status"><?php echo '(' . count($_SESSION['gamedata']['inventory']) . ' / ' . '18' . ')';?></span></p>
         <div id="item_tooltip_container">
         </div>
         <div id="item_tooltip">
