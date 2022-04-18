@@ -34,12 +34,15 @@
                         <img src="#" id="conversation_b" />
                     </div>
                 </div>
-                <div id="canvas_border"></div>
-                <canvas id="game_canvas" width="700" height="400"></canvas>
-                <canvas id="game_canvas2" width="700" height="400"></canvas>
-                <canvas id="game_canvas3" width="700" height="400"></canvas>
-                <canvas id="game_canvas4" width="700" height="400"></canvas>
-                <canvas id="text_canvas" width="700" height="400"></canvas>
+                <div id="game-screen">
+                
+                    <div id="canvas_border"></div>
+                    <canvas id="game_canvas" width="700" height="400"></canvas>
+                    <canvas id="game_canvas2" width="700" height="400"></canvas>
+                    <canvas id="game_canvas3" width="700" height="400"></canvas>
+                    <canvas id="game_canvas4" width="700" height="400"></canvas>
+                    <canvas id="text_canvas" width="700" height="400"></canvas>
+                </div>
                 <div id="client_help_container" class="div_content div_content_dark">
                     <div id="client_help_content">
                         <img class="cont_exit" src="<?php echo constant("ROUTE_IMG") . 'exit.png'; ?>" />
@@ -62,7 +65,9 @@
                     <div id="client_help_content">
                         <img class="cont_exit" src="<?php echo constant("ROUTE_IMG") . 'exit.png'; ?>" />
                         <h1 class="page_title"> Settings </h1>
-                        <label class="label-container">Minial Controls?
+                        <label class="label-container">
+                            Minimal Controls? <br>
+                            This will remove "P" and "C" section
                             <input type="checkbox" name="client-settings-minimal-control" id="client-settings-minimal-control">
                             <span class="checkmark"></span>
                         </label>
