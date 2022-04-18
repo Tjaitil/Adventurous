@@ -5,7 +5,7 @@
                     Select a mineral below to smith from. Players with miner profiency pay nothing
                 </p>
                 <h5>Choose your mineral</h5>
-                <div id="minerals">
+                <div id="minerals" class="mb-2">
                     <img src="<?php echo constant('ROUTE_IMG') . 'iron ore.png';?>"
                     class="minerals" title="iron" onclick="showMineral('iron', this);" />
                     <img src="<?php echo constant('ROUTE_IMG') . 'steel ore.png';?>"
