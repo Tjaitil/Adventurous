@@ -92,57 +92,6 @@ function addZero(i) {
     }
     return i;
 }
-// function checkMessages(gameMessages) {
-//     for(let i = 0; i < gameMessages.length; i++) {
-//         if(i === 0) {
-//             gameLog(gameMessages[i]);
-//         }
-//         else {
-//             setTimeout(() => gameLog(gameInfo.gameMessages[i]), i * 3000);
-//         }
-//     }
-// }
-// function gameLog(message, log = false) {
-//     let tr = document.createElement("TR");
-//     let td = document.createElement("TD");
-//     if(message.indexOf("ERROR") != -1) {
-//         message = message.split("ERROR:")[1];
-//         td.className = "error_log";
-//     }
-//     if (message.search("\\[") == -1) {
-//         var d = new Date();
-//         var time = "[" + addZero(d.getHours()) + ":" + addZero(d.getMinutes()) + ":" + addZero(d.getSeconds()) + "] ";
-//         message = time + message;
-//     }
-//     if (log == true) {
-//         ajaxRequest = new XMLHttpRequest();
-//         ajaxRequest.onload = function () {
-//             if (this.readyState == 4 && this.status == 200) {
-//                 console.log(this.responseText);
-//             }
-//         };
-//         ajaxRequest.open('GET', "handlers/handler_log.php?log=" + message);
-//         ajaxRequest.send();
-//     }
-//     secondLog(message);
-//     let table = document.getElementById("game_messages");
-//     tr.appendChild(td);
-//     td.innerHTML = message;
-//     let logElement = document.getElementById("log");
-//     let isScrolledToBottom = logElement.scrollHeight - logElement.clientHeight <= logElement.scrollTop + 1;
-//     table.appendChild(tr);
-//     // scroll to bottom if isScrolledToBottom
-//     if (isScrolledToBottom) {
-//         logElement.scrollTop = logElement.scrollHeight - logElement.clientHeight;
-//     }
-// }
-// function secondLog(message) {
-//     console.log(message);
-//     let div = document.getElementById("log_2");
-//     div.innerHTML = message;
-//     div.style.opacity = 1;
-//     div.style.top = window.pageYOffset + 5 + "px";
-// }
 function getgMessage() {
     ajaxRequest = new XMLHttpRequest();
     ajaxRequest.onload = function () {
