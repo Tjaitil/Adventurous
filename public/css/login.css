@@ -5,20 +5,48 @@ html, body {
     height: 100%;
     margin: 0;
 }
+html {
+    scroll-snap-type: y mandatory;
+}
+.login-slide {
+    height: 100vh;
+    display: block;
+    scroll-snap-align: start;
+}
+.z-front {
+    z-index: 5;
+    position: relative;
+}
+.front-title {
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+.front-title > h1 {
+    font-size: 60px;
+}
+.front-title > img {
+    width: 150px;
+    image-rendering: crisp-edges;
+}
 #login {
     background-color: #d1a77a;
-    width: 700px;
+    max-width: 700px;
     position: relative;
     top: 50px;
     padding: 5px;
     text-align: center;
     font-family: sans-serif;
-    box-shadow: 4px 4px 8px black;
+    box-shadow: 0px 0px 15px black;
     border-radius: 8px;
     color: white;
-    margin: 0 auto;
+    margin-inline: auto;
 }
-#login h3 {
+#login label {
+    margin-right: 0.5rem;
+}
+#login h1 {
     margin: 5px 0px 0px 0px;
 }
 #login input {
@@ -26,14 +54,6 @@ html, body {
     font-size: 16px;
 }
 #login button {
-    /*background-color:#002b80;
-    color:white;
-    border-radius: 4px;
-    box-shadow: 1px 1px 2px grey;
-    width:50px;
-    height:25px;
-    text-align:center;
-    margin: 3px 0px 10px 5px;*/
     background-color: #f2e6d9;
     border-radius: 5px;
     border: 1px outset;
@@ -57,12 +77,13 @@ html, body {
 }
 #background_image_container {
     width: 100%;
-    height: 100%;
+    height: 200vh;
     overflow-y: hidden;
     overflow-x: hidden;
     /*background-image: url('7.5m.png');
     background-size: 200% 200%;*/
     position: absolute;
+    top: 0px;
 }
 #background_image {
   position: absolute;
