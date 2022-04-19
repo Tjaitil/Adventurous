@@ -5,6 +5,7 @@ const itemTitle = {
     computerDevice: true,
     init(computerDevice) {
         itemTitle.computerDevice = computerDevice;
+        this.addTitleEvent();
     },
     addTitleEvent() {
         let figures = document.getElementById("inventory").querySelectorAll("figure");
@@ -12,6 +13,7 @@ const itemTitle = {
             // ... code code code for this one element
             if (this.computerDevice) {
                 element.addEventListener('mouseenter', () => itemTitle.show());
+                element.addEventListener('mouseleave', () => itemTitle.hide());
             }
             else {
                 element.addEventListener('click', () => itemTitle.show());
@@ -20,7 +22,6 @@ const itemTitle = {
         this.status = true;
     },
     removeTitleEvent() {
-        console.log('removeTitle');
         let figures = document.getElementById("inventory").querySelectorAll("figure");
         figures.forEach(element => {
             // ... code code code for this one element

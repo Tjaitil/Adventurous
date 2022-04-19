@@ -12,7 +12,6 @@ window.addEventListener("load", () => generalInit());
 function generalInit() {
     generalProperties.setDeviceType();
     itemTitle.init(generalProperties.computerDevice);
-    itemTitle.addTitleEvent();
     // document.getElementById("help_button").addEventListener("click", () => helpContainer.toggle());
     // helpContainer.helpElement = document.getElementById("help");
     var log = document.getElementById("log");
