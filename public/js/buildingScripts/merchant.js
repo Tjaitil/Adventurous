@@ -150,6 +150,10 @@
         }
     }
     function tradeItem() {
+        if(checkInventoryStatus()) {
+            gameLogger.addMessage(commonMessages.inventoryFull, true);
+            return false;
+        }
         if(document.getElementById("selected_trade").children[0] == undefined) {
             gameLogger.addMessage("ERROR: Select a trade!");
             gameLogger.logMessages();

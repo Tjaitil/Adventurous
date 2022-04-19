@@ -7,6 +7,10 @@
         });
     }
     function zinsTrade() {
+        if(checkInventoryStatus()) {
+            gameLogger.addMessage(commonMessages.inventoryFull, true);
+            return false;
+        }
         let items = document.getElementById("news_content_main_content").querySelectorAll(".item");
         items = [...items];
         let match = items.filter((element) => {

@@ -5,6 +5,10 @@
 
 
     function make(item, element) {
+        if(checkInventoryStatus()) {
+            gameLogger.addMessage(commonMessages.inventoryFull, true);
+            return false;
+        }
         var parent = element.parentNode;
         var amount = parent.children[0].value;
         parent.children[0].value = '';

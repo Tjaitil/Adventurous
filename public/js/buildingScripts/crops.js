@@ -82,6 +82,10 @@
         }
     }
     function updateCrop() {
+        if(checkInventoryStatus()) {
+            gameLogger.addMessage(commonMessages.inventoryFull, true);
+            return false;
+        }
         let data = "model=UpdateCrops" + "&method=updateCrops";
         ajaxP(data, function (response) {
             if(response[0] !== false) {

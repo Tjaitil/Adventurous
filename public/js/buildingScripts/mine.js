@@ -80,6 +80,10 @@
         });
     }
     function updateMine() {
+        if(checkInventoryStatus()) {
+            gameLogger.addMessage(commonMessages.inventoryFull, true);
+            return false;
+        }
         let data = "model=UpdateMine" + "&method=updateMine";
         ajaxP(data, function(response) {
             console.log(response);
