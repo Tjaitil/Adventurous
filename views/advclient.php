@@ -115,7 +115,7 @@
                 </div>
                 <div id="map_container">
                     <div id="map_container_header">
-                        <img id="toggle_icon_list_image" src="#" alt="" srcset="" />
+                        <img id="toggle_icon_list_image" class="cur-pointer" src="<?php echo constant('ROUTE_IMG') . 'symbol icon.png'; ?>">
                         <div id="map_type_toggle_container">
                             <div id="map_type_toggle_overlay"></div>
                             <img id="toggle_world_image" src="<?php echo constant("ROUTE_IMG") . 'globe.png' ?>" />
