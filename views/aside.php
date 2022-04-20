@@ -82,6 +82,9 @@
                     }
                 }
             ?>
+            <div class="mt-1">
+                <img src="<?php echo constant('ROUTE_IMG') . 'diplomacy icon.png'?>">
+            </div>
             <table class="lightTextColor middle-align">
                 <thead>
                     <tr>
