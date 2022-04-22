@@ -7,13 +7,13 @@
             parent::__construct();
             $this->username = $session['username'];
             $this->session = $session;
-            $this->commonModels(true, false);
+            $this->commonModels(true, false, true);
         }
         public function setMine($POST) {
             // $POST variable holds the post data
             // This function is called from an AJAX request
             // Function to set mining
-            $mineral = $POST['mineral'];
+            $mineral = strtolower($POST['mineral']);
             $workforce = $POST['workforce'];
             if(!$this->checkHunger()) return false;
 
@@ -60,7 +60,7 @@
                 return false;
             }
             
-            $addTime = $row2['time'] - ($row2['time'] * ($row['efficiency_level'] / 100));
+            $addTime = $row2['time'] * (0.1 * $row['efficiency_level'] + $workforce * 0.2);
             $date = date("Y-m-d H:i:s");
             $newDate = new DateTime($date);
             $newDate->modify("+{$addTime} seconds");
@@ -68,7 +68,10 @@
             $experience = ($row2['experience'] * 0.20);
             try {
                 $this->db->conn->beginTransaction();
-                $param_mining_type = $mineral;
+
+                $this->hungerModel->setHunger('skill');
+                
+                $param_mining_type = strtolower($mineral);
                 $param_mining_countdown = date_format($newDate, "Y-m-d H:i:s");
                 $param_permits = $row['permits'] - $row2['permit_cost'];
                 $param_location = $this->session['location'];
@@ -103,15 +106,15 @@
                 $this->db->conn->commit();
                 }
             catch (Exception $e) {
-                $this->errorHandler->catchAJAX($this->db, $e);
+                $this->response->addTo("errorGameMessage", $this->errorHandler->catchAJAX($this->db, $e));
                 return false;
             }
             $this->db->closeConn();
             $this->response->addTo("data" , $experience, array("index" => "xpGained"));
             $this->response->addTo("data" , $param_avail_workforce, array("index" => "availWorkforce"));
             $this->response->addTo("data" , $param_permits, array("index" => "permits"));
+            $this->response->addTo("data" , $this->hungerModel->getHunger(), array("index" => "newHunger"));
             $this->response->addTo("gameMessage" , "Mining started, {$experience} miner xp gained");
-            $this->response->send();
         }
     }
 ?>
