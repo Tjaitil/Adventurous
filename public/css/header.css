@@ -27,7 +27,6 @@ header {
     padding: 10px 12px 10px 12px;
     color: black;
     font-weight: bold;
-    font-size: 13px;
     cursor: pointer;
     text-decoration: none;
 }
@@ -80,7 +79,6 @@ header {
     text-decoration: none;
     line-height: 25px;
     color: #FFFFFF;
-    font-size: 13px;
 }
 
 @media all and (max-width: 830px) {

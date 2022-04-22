@@ -21,40 +21,42 @@
             $invitee = $POST['invitee'];
 
             if(in_array($route, array("invite", "request")) === false) {
-                $this->gameMessage("ERROR: Something unexpected happened, please try again!", true);
+                $this->response->addTo("errorGameMessage", "Something unexpected happened, please try again");
                 return false;
             }
             $difficulties = array("easy" => 1.0, "medium" => 5.0, "hard" => 12);
             
             if($route == 'request') {
+                $param_adventure_id = $adventure_id;
                 $sql = "SELECT adventure_leader, difficulty, other_invite FROM adventures WHERE adventure_id=:adventure_id";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_INT);
-                $param_adventure_id = $adventure_id;
                 $stmt->execute();
                 if(!$stmt->rowCount() > 0) {
-                    $this->gameMessage("ERROR: This adventure is no longer available!", true);
+                    $this->response->addTo("errorGameMessage", "This adventure is no longer available!");
+                    return false;
                 }
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                if($row['other_invite'] == 0) {
-                    $this->gameMessage("ERROR: Invite only is on for this adventure", true);
-                    return false;   
-                }
-                if($difficulties[$row['difficulty']] > $this->session['adventurer_respect']) {
-                    $this->gameMessae("ERROR: You don't have high enough adventure_respect to join this adventure!", true);
+                // if($row['other_invite'] == 0) {
+                //     $this->response->addTo("errorGameMessage", "Invite only is on for this adventure");
+                //     return false;   
+                // }
+                if($difficulties[$row['difficulty']] > $this->session['adventurer']) {
+                    $this->response->addTo("errorGameMessage", "You don't have high enough adventure_respect to join this adventure!");
+                    return false;
                 }
             }
             else if($route == 'invite') {
+                $param_username = $this->username;
                 $sql = "SELECT adventure_leader, difficulty, other_invite FROM adventures WHERE adventure_leader=:username";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                $param_username = $this->username;
                 $stmt->execute();
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                if($row['other_invite'] == 0 && $row['adventure_leader'] != $this->username) {
-                    $this->gameMessage("ERROR: Invite only is on for this adventure", true);
-                    return false;
-                }
+                // if($row['other_invite'] == 0 && $row['adventure_leader'] != $this->username) {
+                //     $this->response->addTo("errorGameMessage", "Invite only is on for this adventure");
+                //     return false;
+                // }
                 
                 $sql = "SELECT adventure_id FROM adventure WHERE username=:username";
                 $stmt = $this->db->conn->prepare($sql);
@@ -62,12 +64,12 @@
                 $param_username = strtolower($invitee);
                 $stmt->execute();
                 if(!$stmt->rowCount() > 0) {
-                    $this->gameMessage("ERROR: The user you have invited doesn't exists", true);
+                    $this->response->addTo("errorGameMessage", "The user you have invited doesn't exists");
                     return false;
                 }
                 
                 if($stmt->fetch(PDO::FETCH_OBJ)->adventure_id != 0) {
-                    $this->gameMessage("ERROR: The person you have invite is already in an adventure", true);
+                    $this->response->addTo("errorGameMessage", "The person you have invite is already in an adventur");
                     return false;
                 }
                 $sql = "SELECT adventurer_respect FROM user_levels WHERE username=:username";
@@ -78,10 +80,14 @@
                 $row2 = $stmt->fetch(PDO::FETCH_ASSOC);
 
                 if($difficulties[$row['difficulty']] > $row2['adventurer_respect']) {
-                    $this->gameMessae("ERROR: The person you are trying to invite doesn't have high enough adventurer respect", true);
+                    $this->response->addTo("errorGameMessage", "The person you are trying to invite doesn't have high enough adventurer respect");
+                    return false;
                 }
             }
             
+            $param_adventure_id = $adventure_id;
+            ($route == 'request')? $param_username1 = $row['adventure_leader'] : $param_username1 = $invitee; 
+            $param_username2 = $this->username;
             $sql = "SELECT sender, receiver, adventure_id FROM adventure_requests
                     WHERE adventure_id=:adventure_id AND (sender =:username1 OR receiver =:username1)
                     AND (sender =:username2 OR receiver =:username2)";
@@ -89,12 +95,9 @@
             $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_INT);
             $stmt->bindParam(":username1", $param_username1, PDO::PARAM_STR);
             $stmt->bindParam(":username2", $param_username2, PDO::PARAM_STR);
-            $param_adventure_id = $adventure_id;
-            ($route == 'request')? $param_username1 = $row['adventure_leader'] : $param_username1 = $invitee; 
-            $param_username2 = $this->username;
             $stmt->execute();
             if($stmt->rowCount() > 0) {
-                $this->gameMessage("ERROR: You have already sent a {$route}", true);
+                $this->response->addTo("errorGameMessage", "You have already sent a {$route}");
                 return false;
             }
             
@@ -112,20 +115,15 @@
             $stmt->execute();
             $row2 = $stmt->fetch(PDO::FETCH_ASSOC);
             if($row2[$role] !== 'none') {
-                $this->gameMessage("ERROR: The role has already been filled!", true);
+                $this->response->addTo("errorGameMessage", "The role has already been filled!");
                 return false;
             }
             
-            require('../' . constant('ROUTE_HELPER') . 'message_templates.php');
             switch($route) {
                 case 'request':
-                    $title = "Adventure request";
-                    $text = $message_templates['adventure_request'];
                     $receiver = $row['adventure_leader'];
                     break;
                 case 'invite':
-                    $title = "Adventure invite";
-                    $text = $message_templates['adventure_invite'];
                     $receiver = $invitee;
                     break;
             }
@@ -133,18 +131,23 @@
             try {
                 $this->db->conn->beginTransaction();
                 
-                $sql = "INSERT INTO messages (title, sender, receiver, message) VALUES (:title, :sender, :receiver, :message)";
-                $stmt = $this->db->conn->prepare($sql);
-                $stmt->bindParam(":title", $param_title, PDO::PARAM_STR);
-                $stmt->bindParam(":sender", $param_sender, PDO::PARAM_STR);
-                $stmt->bindParam(":receiver", $param_receiver, PDO::PARAM_STR);
-                $stmt->bindParam(":message", $param_message, PDO::PARAM_STR);
-                $param_title = $title;
-                $param_sender = $this->username;
-                $param_receiver = $receiver;
-                $param_message = $text;
-                $stmt->execute();
+                // $param_title = $title;
+                // $param_sender = $this->username;
+                // $param_receiver = $receiver;
+                // $param_message = $text;
+                // $sql = "INSERT INTO messages (title, sender, receiver, message) VALUES (:title, :sender, :receiver, :message)";
+                // $stmt = $this->db->conn->prepare($sql);
+                // $stmt->bindParam(":title", $param_title, PDO::PARAM_STR);
+                // $stmt->bindParam(":sender", $param_sender, PDO::PARAM_STR);
+                // $stmt->bindParam(":receiver", $param_receiver, PDO::PARAM_STR);
+                // $stmt->bindParam(":message", $param_message, PDO::PARAM_STR);
+                // $stmt->execute();
                 
+                $param_receiver = $receiver;
+                $param_sender = $this->username;
+                $param_adventure_id = $adventure_id;
+                $param_role = $role;
+                $param_method = $route;
                 $sql2 = "INSERT INTO adventure_requests (sender, receiver, adventure_id, role, method)
                          VALUES(:sender, :receiver, :adventure_id, :role, :method)";
                 $stmt2 = $this->db->conn->prepare($sql2);
@@ -153,38 +156,33 @@
                 $stmt2->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_STR);
                 $stmt2->bindParam(":role", $param_role, PDO::PARAM_STR);
                 $stmt2->bindParam(":method", $param_method, PDO::PARAM_STR);
-                $param_receiver = $receiver;
-                $param_sender = $this->username;
-                $param_adventure_id = $adventure_id;
-                $param_role = $role;
-                $param_method = $route;
                 $stmt2->execute();
                 
                 $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->errorHandler->catchAJAX($this->db, $e);
+                $this->response->addTo("errorGameMessage", $this->errorHandler->catchAJAX($this->db, $e));
                 return false;
             }
-            unset($stmt, $stmt2);
-            unset($this->db->conn);
+            $this->db->closeConn();
             if($route == 'invite') {
-                $this->gameMessage("Invite sent to ". ucfirst($invitee), true);
+                $message = "Invite sent to ". ucfirst($invitee);
             }
             else {
-                $this->gameMessage("Request sent to ". ucfirst($row['adventure_leader']), true);
+                $message = "Request sent to ". ucfirst($row['adventure_leader']);
             }
+            $this->response->addTo("gameMessage", $message);
         }
         public function joinAdventure($POST) {
             // $POST variable holds the post data
-            $request_id = $POST['id'];
+            $request_id = intval($POST['id']);
+            $param_request_id = intval($request_id); 
             $sql = "SELECT sender, receiver, adventure_id, method, role FROM adventure_requests WHERE request_id=:request_id";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":request_id", $param_request_id, PDO::PARAM_STR);
-            $param_request_id = $request_id;
             $stmt->execute();
             if(!$stmt->rowCount() > 0) {
-                $this->gameMessage("ERROR: Something unexpected happened, please try again", false);
+                $this->response->addTo("errorGameMessage", "Something unexpected happened, please try again");
                 return false;
             }
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -198,35 +196,35 @@
                 $receiver = $row['sender'];
             }
 
+            $param_username = $this->joiner;
             $sql = "SELECT adventure_id FROM adventure WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-            $param_username = $this->joiner;
             $stmt->execute();
             $row2 = $stmt->fetch(PDO::FETCH_ASSOC);
             if($row2['adventure_id'] != 0) {
                 if($row['method'] == 'request') {
-                    $this->gameMessage("ERROR: You are already in an adventure", true);   
+                    $this->response->addTo("errorGameMessage", "You are already in an adventure");
                 }
                 else {
-                    $this->gameMessage("ERROR: The person you have invited is already in an adventure", true);
+                    $this->response->addTo("errorGameMessage", "The person you have invited is already in an adventure");
                 }
                 return false;
             }
         
+            $param_adventure_id = $row['adventure_id'];
             $sql = "SELECT adventure_id, difficulty, {$row['role']} FROM adventures
                     WHERE adventure_id=:adventure_id";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_INT);
-            $param_adventure_id = $row['adventure_id'];
             $stmt->execute();
             $this->adventure_data = $row3 = $stmt->fetch(PDO::FETCH_ASSOC);
             if(!$stmt->rowCount() > 0) {
-                $this->gameMessage("ERROR: Adventure doesn't exists", true);
+                $this->response->addTo("errorGameMessage", "Adventure doesn't exists");
                 return false;
             }
             else if($row3[$row['role']] != 'none') {
-                $this->gameMessage("ERROR: Someone already has that role!", true);
+                $this->response->addTo("errorGameMessage", "Someone already has that role!");
                 return false;
             }
             
@@ -237,24 +235,27 @@
             $stmt->execute();
             $row2 = $stmt->fetch(PDO::FETCH_ASSOC);
             if($row['role'] != $row2['profiency']) {
-                $this->gameMessage("ERROR: Profiency doesn't match the role in adventure", true);
+                $this->response->addTo("errorGameMessage", "Profiency doesn't match the role in adventure");
                 return false;
             }
-            
+            $SetAdventure = $this->loadModel('SetAdventure');
             $profiences = array("farmer", "miner", "trader", "warrior");
             if(in_array($row['role'], $profiences) == false) {
-                $this->gameMessage("ERROR: Something unexpected happened, please try again!", true);
+                $this->response->addTo("errorGameMessage", "Something unexpected happened, please try again!");
                 return false;
             }
             try {
                 $this->db->conn->beginTransaction();
-                $sql = "UPDATE adventures SET {$row['role']}=:username WHERE adventure_id=:adventure_id";
-                $stmt = $this->db->conn->prepare($sql);
-                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_STR);
+                $SetAdventure->advRequirements($row['role'], $this->adventure_data['difficulty'],
+                                $row['adventure_id'], strtolower($this->joiner));
+                                
+                $sql2 = "UPDATE adventures SET {$row['role']}=:username WHERE adventure_id=:adventure_id";
+                $stmt2 = $this->db->conn->prepare($sql2);
+                $stmt2->bindParam(":username", $param_username, PDO::PARAM_STR);
+                $stmt2->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_STR);
                 $param_adventure_id = $row['adventure_id'];
                 $param_username = strtolower($this->joiner);
-                $stmt->execute();
+                $stmt2->execute();
                 
                 $sql3 = "DELETE FROM adventure_requests WHERE request_id=:request_id";
                 $stmt3 = $this->db->conn->prepare($sql3);
@@ -262,143 +263,47 @@
                 $param_request_id = $request_id;
                 $stmt3->execute();
                 
-                $sql4 = "UPDATE adventure SET adventure_id=:adventure_id WHERE username=:username";
+                $sql4 = "UPDATE adventure SET adventure_id=:adventure_id, notification=1 WHERE username=:username";
                 $stmt4 = $this->db->conn->prepare($sql4);
                 $stmt4->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_STR);
                 $stmt4->bindParam(":username", $param_username, PDO::PARAM_STR);
                 //$param_username and $param_adventure_id is already defined
                 $stmt4->execute();
                 
-                $sql5 = "INSERT INTO messages (title, sender, receiver, message) VALUES(:title, :sender, :receiver, :message)";
-                $stmt5 = $this->db->conn->prepare($sql5);
-                $stmt5->bindParam(":title", $param_title, PDO::PARAM_STR);
-                $stmt5->bindParam(":sender", $param_sender, PDO::PARAM_STR);
-                $stmt5->bindParam(":receiver", $param_receiver, PDO::PARAM_STR);
-                $stmt5->bindParam(":message", $param_message, PDO::PARAM_STR);
-                $param_title = "Adventure update!";
-                $param_sender = "game_info@adventurous";
-                $param_receiver = $receiver;
-                $param_message = nl2br("For your information {$this->joiner} has joined your adventure!");
-                $stmt5->execute();
-                
-                $this->advRequirements();
+
                 $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->errorHandler->catchAJAX($this->db, $e);
+                $this->response->addTo("errorGameMessage", $this->errorHandler->catchAJAX($this->db, $e));
                 return false;
             }
             $this->db->closeConn();
             
             if($this->joiner == $this->username) {
-                $this->gameMessage("You have joined the adventure!", true);   
+                $message = "You have joined the adventure!";
             }
             else {
-                $this->gameMessage(ucfirst($this->joiner) . " has joined the adventure!", true);
+                $message = ucfirst($this->joiner) . " has joined the adventure!";
             }
+            $this->response->addTo("gameMessage", $message);
         }
-        private function advRequirements() {
-            $sql = "SELECT profiency FROM user_data WHERE username=:username";
-            $stmt = $this->db->conn->prepare($sql);
-            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-            $param_username = $this->joiner;
-            $stmt->execute();
-            $role = $stmt->fetch(PDO::FETCH_OBJ)->profiency;
-            
-            $difficulty = $this->adventure_data['difficulty'];
-            $difficulties = array();
-            $difficulties['easy'] = array("grade" => 1, "multiplier" => 1);
-            $difficulties['medium'] = array("grade" => 2, "multiplier" => 1.3);
-            $difficulties['hard'] = array("grade" => 3, "multiplier" => 1.5);
-            
-            $requirments_amount = 2;
-            $adventure_req = array();
-            $adventure_req['trader'] = array("easy" => "2.00/3.00", "medium" => "4.00/6.00", "hard" => "8.00/10.00");
-            $adventure_req['item_amount'] = array("easy" => 3, "medium" => 4, "hard" => 5);
-            $adventure_req['warrior_amount'] = array("easy" => "2/3", "medium" => "4/8", "hard" => "10/15");
-            $adventure_req['warrior'] = array("melee", "ranged");
-            $requirements = array();
-            
-            if($role == 'trader') {
-                $rand = explode("/", $adventure_req['trader'][$difficulty]);
-                $requirements[] = array("requirement" => "diplomacy", 'amount' => rand($rand[0], $rand[1]));
-            }
-            else if($role == 'warrior') {
-                $rand = explode("/", $adventure_req['warrior_amount'][$this->adventure_data['difficulty']]);
-                $rand = rand($rand[0], $rand[1]);
-                for($i = 0; $i < $rand; $i++ ) {
-                    $requirements[] = $adventure_req['warrior'][array_rand($adventure_req['warrior'])];
-                }
-                $counts = array_count_values($requirements);
-                $requirements = array();
-                foreach($counts as $key => $value) {
-                    $requirements[] = array("requirement" => $key . ' warrior', "amount" => $value);
-                }
-            }
-            else {
-                //If $role is warrior or miner
-                //Query to get the item requirements
-                $count = $adventure_req['item_amount'][$difficulty] - 1;
-            
-                $sql = "SELECT name FROM adventure_req_items WHERE role=:role AND difficulty=:difficulty
-                    ORDER BY rand() LIMIT 1;";
-                $stmt = $this->db->conn->prepare($sql);
-                $stmt->bindParam(":role", $param_role, PDO::PARAM_STR);
-                $stmt->bindParam(":difficulty", $param_difficulty, PDO::PARAM_INT);
-                $param_role = $role;
-                $param_difficulty = $difficulties[$difficulty]['grade'];
-                $stmt->execute();
-                $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-                $sql = "(SELECT name as requirement, difficulty, amount_min, amount_max
-                    FROM adventure_req_items WHERE role=:role AND difficulty=:difficulty AND name=:name)
-                    UNION ALL
-                    (SELECT name as requirement, difficulty, amount_min, amount_max FROM adventure_req_items
-                    WHERE role=:role AND difficulty <= :difficulty AND name != :name
-                    ORDER BY RAND() LIMIT {$count})";
-                $stmt = $this->db->conn->prepare($sql);
-                $stmt->bindParam(":role", $param_role, PDO::PARAM_STR);
-                $stmt->bindParam(":difficulty", $param_difficulty, PDO::PARAM_INT);
-                $stmt->bindParam(":name", $param_name, PDO::PARAM_STR);
-                $param_role = $role;
-                $param_difficulty = $difficulties[$difficulty]['grade'];
-                $param_name = $row['name'];
-                $stmt->execute();
+        public function declineRequest($POST) {
+            $param_request_id = intval($POST['request_id']);
+        
+            try {
+                $this->db->conn->beginTransaction();
                 
-                $i = 0;
-                while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                    $requirements[] = $row;
-                }
-            }
-            
-            $sql = "INSERT INTO adventure_requirements (adventure_id, username, role, required, amount)
-            VALUES (:adventure_id, :username, :role, :required, :amount)";
-            $stmt = $this->db->conn->prepare($sql);
-            $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_INT);
-            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-            $stmt->bindParam(":role", $param_role, PDO::PARAM_STR);
-            $stmt->bindParam(":required", $param_required, PDO::PARAM_STR);
-            $stmt->bindParam(":amount", $param_amount, PDO::PARAM_INT);
-            $param_username = strtolower($this->joiner);
-            $param_adventure_id = $this->adventure_data['adventure_id'];
-            $param_role = $role;
-            foreach($requirements as $key) {
-                $param_required = $key['requirement'];
-                if(in_array($role, array("farmer", "miner")) === true) {
-                    $param_amount = rand($key['amount_min'], $key['amount_max']);
-                    ($key['difficulty'] < $difficulties[$difficulty]['grade']) ?
-                    round($param_amount*= $difficulties[$difficulty]['multiplier']) : "";
-                }
-                else {
-                    $param_amount = $key['amount'];
-                }
+                $sql = "UPDATE adventure_requests SET status='decline' WHERE request_id=:request_id";
+                $stmt = $this->db->conn->prepare($sql);
+                $stmt->bindParam(":request_id", $param_request_id, PDO::PARAM_STR);
+                $param_request_id = $param_request_id;
                 $stmt->execute();
+
+                $this->db->conn->commit();
             }
-        }
-        public function getRequests($GET) {
-            $id = $GET['id'];
-            
-            $sql = "SELECT request_";
+            catch(Exception $e) {
+                $this->response->addTo("errorGameMessage", $this->errorHandler->catchAJAX($this->db, $e));
+                return false;
+            }
         }
     }
-?>
