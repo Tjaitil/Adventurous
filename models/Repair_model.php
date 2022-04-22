@@ -16,10 +16,10 @@
                 return array(true, false);
             }
             $repaired_item = trim(str_replace("broken", " ", $item));
+            $param_item = strtolower($repaired_item);
             $sql = "SELECT mineral_required, cost FROM armory_items_data WHERE item=:item";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
-            $param_item = strtolower($repaired_item);
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             if($this->session['profiency'] === 'miner') {
@@ -57,7 +57,7 @@
                 $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->errorHandler->catchAJAX($this->db, $e);
+                $this->response->addTo("errorGameMessage", $this->errorHandler->catchAJAX($this->db, $e));
                 $_SESSION['conversation']['conv_index'] = "kpsrQrq2";
                 return array(true, false);  
             }

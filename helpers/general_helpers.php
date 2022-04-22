@@ -20,17 +20,17 @@
             echo '|';
         }
     }
-    function get_template($name, $data, $up = false) {
+    function get_template($name, $data, $up = false, $flag = false) {
         $filename = $name . '_tpl.php';
         $path = constant('ROUTE_TEMPLATE') . $filename;
         if($up == true) {
             $path = '../' . constant('ROUTE_TEMPLATE') . $filename;   
         }
         if(file_exists($path)) {
-            require($path);
+            include($path);
         }
         else {
-            return;
+            echo "Error loading template";
         }
     }
     function store_file($file, $arr) {
