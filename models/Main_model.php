@@ -10,10 +10,10 @@
         }
         public function getData($js = false, $chat = true) {
             $data = array();
+            $param_username = $this->username;
             $sql = "SELECT hirtam, pvitul, khanz, ter, fansalplains FROM diplomacy WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-            $param_username = $this->username;
             $stmt->execute();
             $data['diplomacy'] = $stmt->fetch(PDO::FETCH_ASSOC);
             
@@ -69,12 +69,12 @@
                 $stmt = $this->db->conn->query($sql);
             }
             else {
+                $param_id = (is_array($id)) ? $id['id'] : $id;
                 $sql = "SELECT id, clock, username, message FROM public_chat
                         WHERE id >= :id
                         ORDER BY time ASC";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":id", $param_id, PDO::PARAM_INT);
-                $param_id = (is_array($id)) ? $id['id'] : $id;
             }
             $stmt->execute();
             if($id == false) {
@@ -91,17 +91,17 @@
             // Function to enter new message into public chat
             if(preg_match('/(<([^>]+)>)/i', $POST['message'])) {
                 $this->errorHandler->reportError(array($this->username, "tag posted" . $POST['message']));
-                $this->gameMessage("ERROR: The message wasn't able to be posted", true);
+                $this->response->addTo("errorGameMessage", "The message wasn't able to be posted");
                 return false;
             }
+            $param_clock = date("H:i:s");
+            $param_username = htmlspecialchars($this->username);
+            $param_message = $POST['message'];
             $sql = "INSERT INTO public_chat (clock, username, message) VALUES (:clock, :username, :message)";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":clock", $param_clock, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $stmt->bindParam(":message", $param_message, PDO::PARAM_STR);
-            $param_clock = date("H:i:s");
-            $param_username = htmlspecialchars($this->username);
-            $param_message = $POST['message'];
             $stmt->execute();
             $id = $this->db->conn->lastInsertId();
             $this->getChat($id);

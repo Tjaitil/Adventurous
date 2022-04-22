@@ -15,7 +15,7 @@ class Trader_model extends model
         $this->username = $session['username'];
         $this->session = $session;
         $this->assignment_types = $assignment_types = restore_file('trader_assignment_types', true);
-        $this->commonModels(true, false);
+        $this->commonModels(true, false, true);
     }
     private function getAssignmentTypeData($type)
     {
@@ -29,8 +29,6 @@ class Trader_model extends model
         // $POST variable holds the post data
         // This function is called from an AJAX request
         // Function to set a new trader assignment
-        $echo_data = array();
-        $echo_data['gameMessages'] = array();
 
         $assignment_id = $POST['assignment_id'];
 
@@ -44,18 +42,14 @@ class Trader_model extends model
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($row['assignment_id'] > 0) {
             $this->response->addTo(
-                'gameMessage',
-                "Finish your assignment before taking a new one",
-                array("error" => true)
-            );
+                'errorGameMessage',
+                "Finish your assignment before taking a new one");
             return false;
         }
         if ($row['cart'] == 'none') {
             $this->response->addTo(
-                'gameMessage',
-                "You don't have a cart. Go buy one at a travel bureau!",
-                array("error" => true)
-            );
+                'errorGameMessage',
+                "You don't have a cart. Go buy one at a travel bureau!");
             return false;
         }
         $param_assignment_id = $assignment_id;
@@ -74,6 +68,7 @@ class Trader_model extends model
         try {
             $this->db->conn->beginTransaction();
 
+            $this->hungerModel->setHunger('skill');
             $param_id = $assignment_id;
             $param_trading_countdown = date_format($new_date, "Y-m-d H:i:s");
             $sql = "UPDATE trader SET assignment_id=:assignment_id, trading_countdown=:trading_countdown WHERE username=:username";
@@ -86,13 +81,12 @@ class Trader_model extends model
 
             // Only gain xp when warrior level is below 30 or if profiency is trader and assignment_xp is greater than 0
             if ($this->session['trader']['level'] < 30 || $this->session['profiency'] == 'trader') {
-                $echo_data['levelUP'][] = $this->UpdateGamedata->updateXP('trader', $assignment_type_data['xp']);
-                $xpUpdate = true;
+                $this->response->addTo("levelUP", $this->UpdateGamedata->updateXP('trader', $assignment_type_data['xp']));
             }
 
             $this->db->conn->commit();
         } catch (Exception $e) {
-            $this->errorHandler->catchAJAX($this->db, $e);
+            $this->response->addTo("errorGameMessage", $this->errorHandler->catchAJAX($this->db, $e));
             return false;
         }
         $data = array();
@@ -125,15 +119,12 @@ class Trader_model extends model
         }
         ob_start();
         get_template('traderAssignment', $data['trader_data'], true);
-        $this->response->addTo('html', ob_get_clean());
-        $this->response->send();
+        $this->response->addTo("html", ob_get_clean());
+        $this->response->addTo("data", $this->hungerModel->getHunger(), array("index" => "newHunger"));
     }
-    public function pickUp()
-    {
+    public function pickUp() {
         //AJAX function
         if (!$this->checkHunger()) return false;
-        $echo_data = array();
-        $echo_data['gameMessages'] = array();
 
         $param_username = $this->username;
         $sql = "SELECT t.assignment_id, t.cart, t.cart_amount, t.delivered, ta.assignment_amount, ta.assignment_type, ta.base
@@ -146,7 +137,7 @@ class Trader_model extends model
         $favor = ($row['assignment_type'] === 'favor') ? true : false;
 
         if (!$row['assignment_id'] > 0) {
-            $this->response->addTo('errorGameMessages', "You don't have any assignment at the moment");
+            $this->response->addTo('errorGameMessage', "You don't have any assignment at the moment");
             return false;
         }
         if ($row['base'] != $this->session['location']) {
@@ -186,19 +177,14 @@ class Trader_model extends model
             $stmt->execute();
             $this->db->conn->commit();
         } catch (Exception $e) {
-            $this->errorHandler->catchAJAX($this->db, $e);
+            $this->response->addTo("errorGameMessage", $this->errorHandler->catchAJAX($this->db, $e));
             return false;
         }
         $this->db->closeConn();
-        $this->response->addTo('gameMessages', "You have picked up " . $cart_space . " items");
+        $this->response->addTo('gameMessage', "You have picked up " . $cart_space . " items");
         $this->response->addTo('data', $param_cart_amount, array("index" => "cartAmount"));
-        $this->response->send();
     }
-    public function deliver()
-    {
-        //AJAX function
-        $echo_data = array();
-        $echo_data['gameMessages'] = array();
+    public function deliver() {
         if (!$this->checkHunger()) return false;
 
         $param_username = $this->username;
@@ -309,14 +295,13 @@ class Trader_model extends model
 
             $this->db->conn->commit();
         } catch (Exception $e) {
-            $this->errorHandler->catchAJAX($this->db, $e);
+            $this->response->addTo("errorGameMessage", $this->errorHandler->catchAJAX($this->db, $e));
             return false;
         }
         $this->db->closeConn();
         //Echo to prevent getting the timestamp from gameMessage()
         if ($row['assignment_amount'] == $delivered) {
             $this->response->addTo("data", true, array("index" => "assignment_finished"));
-            $echo_data['assignment_finished'] = true;
             $this->response->addTo("gameMessage", "You finished assignment and received {$reward_amount} of {$row['cargo']}");
             $this->response->addTo("gameMessage", "Diplomacy relations have been updated! See diplomacy tab");
 
@@ -326,12 +311,10 @@ class Trader_model extends model
         } else {
             $this->response->addTo("data", false, array("index" => "assignment_finished"));
             $this->response->addTo("data", $delivered, array("index" => "delivered"));
-            $this->response->addTo(
-                "gameMessage",
+            $this->response->addTo("gameMessage",
                 "You have delivered: {$row['cart_amount']}, Total: {$param_delivered}. Gained
             {$experience} trader experience"
             );
         }
-        $this->response->send();
     }
 }

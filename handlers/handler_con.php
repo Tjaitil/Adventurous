@@ -54,10 +54,8 @@
                 $_SESSION['conversation']['conv_index'] = $controller->index;
                 $controller->echoConversation();
             }
-            
         }
         else if($_POST['index'] !== "false") {
-            var_dump($_POST['index']);
             // If index is false there is a specific index specified in loadConversation
             $controller->index = $_SESSION['conversation']['conv_index'] = $_POST['index'];
             $controller->setPerson($_POST, true);

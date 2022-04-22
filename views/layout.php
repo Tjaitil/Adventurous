@@ -28,7 +28,7 @@
     <div id="news_content_side_panel">
         
     </div>
-    <div id="news_content_main_content">
+    <div id="news_content_main_content" class="mb-2 mt-2">
 
     </div>
     <img class="cont_exit" src="<?php echo constant("ROUTE_IMG") . 'exit.png';?>"  width="20px" height="20px" onclick="closeNews();" />

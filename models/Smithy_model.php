@@ -23,6 +23,8 @@
                 });
             }
             return $data;
+
+
         }
         public function smith($POST) {
             // $POST variable holds the post data
@@ -116,7 +118,7 @@
                 $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->errorHandler->catchAJAX($this->db, $e);
+                $this->response->addTo("errorGameMessage", $this->errorHandler->catchAJAX($this->db, $e));
                 return false;
             }
             $this->db->closeConn();

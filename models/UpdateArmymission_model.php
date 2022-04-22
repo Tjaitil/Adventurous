@@ -10,14 +10,15 @@
             $this->commonModels(true, false);
         }
         public function updateMission() {
+
+            $param_username = $this->username;
             $sql = "SELECT mission FROM warrior WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-            $param_username = $this->username;
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             if($row['mission'] == 0) {
-                $this->gameMessage("ERROR: You do not currently have any active army missions", true);
+                $this->response->addTo("errorGameMessage" , "You do not currently have any active army mission");
                 return false;
             }
             
@@ -42,10 +43,10 @@
             for($i = 0; $i < count($warrior_levels); $i++) {
                 $warriors[$i] = array_merge($warriors[$i], $warrior_levels[$i]);
             }
-            $sql = "SELECT difficulty, reward FROM armymissions WHERE mission_id=:mission_id";
+            $param_mission_id = $row['mission'];
+            $sql = "SELECT difficulty, reward, combat FROM armymissions WHERE mission_id=:mission_id";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":mission_id", $param_mission_id, PDO::PARAM_STR);
-            $param_mission_id = $row['mission'];
             $stmt->execute();
             $row2 = $stmt->fetch(PDO::FETCH_ASSOC);
             
@@ -63,10 +64,14 @@
                     $warrior_xp = 100;
                     break;
                 default:
-                    0;
+                    $xp = 0;
+                    $warrior_xp = 0;
                     break;
             }
-    
+            if($row2['combat'] == 1) {
+                $combat_model = $this->loadModel('combat', true, true);
+                $this->response->addTo("html", $combat_model->calculate(array("route" => "army mission", "difficulty" => $row2['difficulty'])));
+            }
             try {
                 $this->db->conn->beginTransaction();
                 
@@ -77,8 +82,13 @@
                 $stmt->execute();
                 
 
+                $param_username = $this->username;
                 for($i = 0; $i < count($warriors); $i++) {
                     if($warriors[$i]['type'] == 'melee') {
+                        $param_stamina_xp = intval($warriors[$i]['stamina_xp']) + $warrior_xp;
+                        $param_technique_xp = intval($warriors[$i]['technique_xp']) + $warrior_xp;
+                        $param_strength_xp = intval($warriors[$i]['strength_xp']) + $warrior_xp;
+                        $param_warrior_id = $warriors[$i]['warrior_id'];
                         $sql = "UPDATE warriors_levels SET stamina_xp=:stamina_xp, technique_xp=:technique_xp,
                                 strength_xp=:strength_xp WHERE warrior_id=:warrior_id AND username=:username";
                         $stmt = $this->db->conn->prepare($sql);
@@ -87,13 +97,12 @@
                         $stmt->bindParam(":strength_xp", $param_strength_xp, PDO::PARAM_INT);
                         $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_INT);
                         $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                        $param_stamina_xp = intval($warriors[$i]['stamina_xp']) + $warrior_xp;
-                        $param_technique_xp = intval($warriors[$i]['technique_xp']) + $warrior_xp;
-                        $param_strength_xp = intval($warriors[$i]['strength_xp']) + $warrior_xp;
-                        $param_warrior_id = $warriors[$i]['warrior_id'];
-                        $param_username = $this->username;
                     }
                     else {
+                        $param_stamina_xp = intval($warriors[$i]['stamina_xp']) + $warrior_xp;
+                        $param_technique_xp = intval($warriors[$i]['technique_xp']) + $warrior_xp;
+                        $param_precision_xp = intval($warriors[$i]['precision_xp']) + $warrior_xp;
+                        $param_warrior_id = $warriors[$i]['warrior_id'];
                         $sql = "UPDATE warriors_levels SET stamina_xp=:stamina_xp, technique_xp=:technique_xp, 
                                 precision_xp=:precision_xp WHERE warrior_id=:warrior_id AND username=:username";
                         $stmt = $this->db->conn->prepare($sql);
@@ -102,11 +111,6 @@
                         $stmt->bindParam(":precision_xp", $param_precision_xp, PDO::PARAM_INT);
                         $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_INT);
                         $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                        $param_stamina_xp = intval($warriors[$i]['stamina_xp']) + $warrior_xp;
-                        $param_technique_xp = intval($warriors[$i]['technique_xp']) + $warrior_xp;
-                        $param_precision_xp = intval($warriors[$i]['precision_xp']) + $warrior_xp;
-                        $param_warrior_id = $warriors[$i]['warrior_id'];
-                        $param_username = $this->username;
                     }
                     $stmt->execute();
                 }
@@ -121,61 +125,55 @@
                 $this->UpdateGamedata->updateInventory('gold', $row2['reward']);
                 // Only gain xp when warrior level is below 30 or if profiency is warrior
                 if($this->session['warrior']['level'] < 30 || $this->session['profiency'] == 'warrior') { 
-                    $this->UpdateGamedata->updateXP('warrior', $xp);
+                    $this->response->addTo("levelUP", $this->UpdateGamedata->updateXP('warrior', $xp));
                 }
                 $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->errorHandler->catchAJAX($this->db, $e);
+                $this->response->addTo("errorGameMessage", $this->errorHandler->catchAJAX($this->db, $e));
                 return false;
             }
             $this->db->closeConn();
-            /* Echo order, split by "|"
-             * [0] -> possible level up message;
-             * [1] -> gameMessage
-             */
-            echo "|";
-            $this->gameMessage("Armymission completed, {$xp} xp gained and {$row2['reward']} gold earned", true);
+            $this->response->addTo("gameMessage", "Armymission completed, {$xp} xp gained and {$row2['reward']} gold earned");
         }
         public function cancelMission() {
+            $param_username = $this->username;
             $sql = "SELECT mission FROM warrior WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-            $param_username = $this->username;
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             
             if($row['mission'] == 0) {
-                $this->gameMessage("ERROR: Your warriors are not on a mission", true);
+                $this->response->addTo("errorGameMessage", "Your warriors are not on a mission");
                 return false;
             }
             try {
-                
                 $this->db->conn->beginTransaction();
                 
+                $param_username = $this->username;
                 $sql = "UPDATE warrior SET mission=0 WHERE username=:username";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                $param_username = $this->username;
                 $stmt->execute();
                 
+                $param_mission = $row['mission'];
+                $param_username = $this->username;
                 $sql = "UPDATE warriors SET mission=0 WHERE mission=mission AND username=:username";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":mission", $param_mission, PDO::PARAM_INT);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                $param_mission = $row['mission'];
-                $param_username = $this->username;
                 $stmt->execute();
                 $stmt->fetch(PDO::FETCH_ASSOC);
                 
                 $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->errorHandler->catchAJAX($this->db, $e);
+                $this->response->addTo("errorGameMessage", $this->errorHandler->catchAJAX($this->db, $e));
                 return false;
             }
             $this->db->closeConn();
-            $this->gameMessage("Mission has been cancelled", true);
+            $this->response->addTo("gameMessage", "Mission has been cancelled");
         }
     }
 ?>
