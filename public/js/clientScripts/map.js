@@ -40,11 +40,14 @@ const map = {
         {"id": 4, "x": 50, "y": 80, "src": "combat icon", "type": "icon", "mapParent": "8.3", "tagType": "img"},
         {"id": 4, "x": 50, "y": 80, "src": "combat icon", "type": "icon", "mapParent": "6.2", "tagType": "img"}
     ],
-    mapType: "world",
-    load() {
+    mapType: "local",
+    load(currentMap) {
+        if(document.getElementById("local_img")) {
+            document.getElementById("local_img").src = "public/images/" + currentMap + "m.png";
+        }
         this.drawTags();
         this.checkImages();
-        this.locatePlayerMarker();
+        this.loadLocalMapTags();
     },
     loadLocalMapTags() {
         this.localMapTags.forEach((element) => {
@@ -61,7 +64,6 @@ const map = {
             }
         });
         this.drawLocalTags();
-        this.locatePlayerMarker();
     },
     locatePlayerMarker() {
         let playerMarker = document.getElementById("map_player_marker");
@@ -70,6 +72,8 @@ const map = {
         if(this.mapType === "local") {
             if(playerMarker.parentElement.id !== "map_local_img_container") {
                 document.getElementById("map_world_img_container").removeChild(playerMarker);
+                document.getElementById("map_local_img_container").appendChild(playerMarker);
+            } else if(!playerMarker.parentElement.id) {
                 document.getElementById("map_local_img_container").appendChild(playerMarker);
             }
             playerX /= 2;
@@ -156,6 +160,7 @@ const map = {
             mapContainer.style.visibility = "visible";
             mapContainer.style.left = "0px";
         } else {
+            document.getElementById("map_icon_list").style.visibility = "hidden";
             mapContainer.style.visibility = "hidden";
             map_container.style.left = map_container.offsetWidth + "px";
         }
@@ -178,14 +183,14 @@ const map = {
             document.getElementById("map_world_img_container").style.display = "grid";
             document.getElementById("map_type_toggle_overlay").style.visibility = "visible";
             this.mapType = "world";
-            document.getElementById("map_container_header").querySelectorAll("h3")[0].innerText = jsUcfirst(this.mapType) + " map";
+            document.getElementById("map_container_header").querySelectorAll("h2")[0].innerText = jsUcfirst(this.mapType) + " map";
         }
         else {
             document.getElementById("map_local_img_container").style.display = "block";
             document.getElementById("map_world_img_container").style.display = "none";
             document.getElementById("map_type_toggle_overlay").style.visibility = "hidden";
             this.mapType = "local";
-            document.getElementById("map_container_header").querySelectorAll("h3")[0].innerText = jsUcfirst(this.mapType) + " map";
+            document.getElementById("map_container_header").querySelectorAll("h2")[0].innerText = jsUcfirst(this.mapType) + " map";
         }
         this.locatePlayerMarker();
     }
