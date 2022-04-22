@@ -1,6 +1,7 @@
 <?php 
  final class response {
-    public $data = array("levelUP" => array());
+    public $data = array();
+    
     public function addTo($token, $value, $options = false) {
         // $token => specify index in data object
         // $value => $value to be stored
@@ -18,7 +19,6 @@
                 $message = "ERROR " . $value;
                 $this->data['gameMessages'][] = $message;
                 $this->gameMessage($message, true);
-                $this->send();
                 break;
             case 'data':
                 $this->data[$options['index']] = $value;
@@ -27,7 +27,7 @@
                 $this->data['levelUP'] = $value; 
                 break;
             case 'html':
-                $this->data['html'] = $value;
+                $this->data['html'][] = $value;
                 break;
             default:
 
@@ -35,7 +35,10 @@
         }
     }
     public function send() {
-        echo json_encode($this->data);
+        if(isset($this->data['html']) && count($this->data['html']) === 1) {
+                $this->data['html'] = $this->data['html'][0];
+        }
+        return json_encode($this->data);
     }
     public function gameMessage($message, $ajax = false) {
         $date = '[' . date("H:i:s") . '] ';
