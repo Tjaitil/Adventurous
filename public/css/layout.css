@@ -1,7 +1,6 @@
 * {
   margin: 0;
   padding: 0;
-  font-size: 16px;
 }
 :root {
   --layoutBgColor: #c99b69;
@@ -19,11 +18,15 @@
   --transitionDuration: 1.12;
   --filterAnimation: filter 0.3s ease-out;
 }
+html {
+  font-size: 100%;
+}
 body {
   /*padding: 10px 8%;*/
   background-color: #120e07;
   /*font-family: 'Source Sans Pro', 'bold';*/
-  font-family: "Martel", serif;
+  font-family: serif;
+  font-size: 16px;
   padding: 10px 5px;
   display: grid;
   grid-gap: 10px;
@@ -51,9 +54,7 @@ h1 {
 .able-color {
   color: var(--greenColor);
 }
-.not-able-color {
-  color: var(--errorTextColor);
-}
+.not-able-color,
 .error-co.or {
   color: var(--errorTextColor);
 }
@@ -83,6 +84,9 @@ h1 {
 }
 .mt-05 {
   margin-top: 0.5rem;
+}
+.cur-pointer {
+  cursor: pointer;
 }
 header,
 aside,
@@ -170,6 +174,7 @@ footer {
   margin-left: 1rem;
   line-height: 100%;
   vertical-align: middle;
+  display: inline-block;
 }
 .label-container:hover input ~ .checkmark {
   background-color: #ccc;
@@ -554,9 +559,6 @@ button:focus {
   position: relative;
   z-index: 3;
   transition: background-color 0.8s ease-out;
-}
-#inventory p {
-  margin-bottom: 0;
 }
 #inv_toggle_button_container {
   position: absolute;
