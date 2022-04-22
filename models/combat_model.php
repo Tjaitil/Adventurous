@@ -10,14 +10,9 @@
         private $warriors;
         private $warrior_amount;
         private $daqloons;
-        private $duration;
-        private $duration_multiplier;
-        private $battle_result = "Battle went on too long";
         private $battle_progress = array();
         private $warrior_damage = array();
         private $daqloon_damage = array();
-        private $error = false;
-        private $errorHTML = "<p> An error has occured. Please try again </p>";
         private $combo_attack = array('warrior' => 0, 'daqloon' => 0);
         private $blocked = array('warrior' => 0, 'daqloon' => 0);
         private $stats = array("blocked" => array("warrior" => 0, "daqloon" => 0), 
@@ -27,6 +22,7 @@
             1 => array('sword', 'bow'),
             2 => array('knife', 'dagger')
         );
+        private $duration;
         private $warrior_i;
         private $daqloon_i;
         private $POST;
@@ -59,33 +55,25 @@
                     $this->getDaqloons('army mission');
                     break;    
                 default:
-                    $this->error = true;
+                    return false;
                     break;
             }
-            if($this->error === true) {
-                return $this->errorHTML;
-            }
             $battle_result = null;
-            $this->duration = 0;
+            $this->duration = 1;
             do {
+                $this->battle_progress[] = "Hit: " . $this->duration;
+                // shuffle($this->warriors);
+                
                 for($i = 0; $i < count($this->warriors); $i++) {
                     $this->warrior_i = $i;
                     $this->daqloon_i = $i;
                     $warrior = $this->warriors[$i];
-                    // if(!isset($this->warriors[$i])) {
+                    $daqloon = $this->daqloons[$i];
+                    // if(isset($this->daqloons[$i])) {
+                    // }
+                    // else {
                     //     break;
                     // }
-                    if(!isset($this->daqloons[$i])) {
-                        $index = $this->findNextTarget($this->daqloons, $i + 1);
-                        if($index === false) {
-                            break;
-                        } else {
-                            $this->daqloon_i = $index;
-                            $daqloon = $this->daqloons[$this->daqloon_i];
-                        }
-                    } else {
-                        $daqloon = $this->daqloons[$this->daqloon_i];
-                    }
                     
                     $first = rand(1,2);
                     if(($this->duration % 3 !== 0 || $this->duration % 2 !== 0) && $this->warriors[$i]['type'] == 'ranged') {
@@ -115,54 +103,110 @@
                             $this->warriorHit($daqloon, $warrior);
                         }
                     }
-                }
-                if(count($this->daqloons) > count($this->warriors)) {
-                    $count = count($this->daqloons) - count($this->warriors);
-                    $starting_index = count($this->daqloons) - $count;
-                    $i = 0;
-                    for($x = 0; $x < $count; $x++) {
-                        $index = $this->findNextTarget($this->warriors, $i);
-                        if($index === false) {
-                            break;
-                        } else {
-                            $this->warrior_i = $index;
-                            $this->daqloon_i = $starting_index + $x;
-                            $daqloon = $this->daqloons[$this->daqloon_i];
-                            $warrior = $this->warriors[$this->warrior_i];
-                            $this->daqloonHit($daqloon, $warrior);
+                    
+                    $daqloon_count = count($this->daqloons);
+                    $warrior_count = count($this->warriors);
+                    if($daqloon_count != $warrior_count) {
+                        ($daqloon_count > $warrior_count) ? $array = "daqloons" : $array = "warriors";
+                        switch($array) {
+                            case "daqloons":
+                                $count = round(($daqloon_count - $warrior_count) / $warrior_count);
+                                if($count > 4) {
+                                    $count = 4;
+                                }
+                                // Get maximum daqloons in array to calculate which daqloon(s) is left over
+                                $x = max(array_keys($this->daqloons));
+                                for ($w = 0; $w < $count; $w++) {
+                                    if(!isset($this->warriors[$i])) {
+                                        // If current warrior is wounded the daqloon(s) will move to the next
+                                        $i++;
+                                        $this->warrior_i += 1;
+                                        if(!isset($this->warriors[$i])) {
+                                            // If the next iteration doesn't exists it means that daqloons have won
+                                            break;
+                                        }
+                                    }
+                                    if($this->duration % 3 === 0 && $this->warriors[$i]['type'] === 'ranged') {
+                                        $this->daqloonHit($this->daqloons[$x - $w - ($i * $count)],
+                                                                                $this->warriors[$i], $number = $x - $w - ($i * $count));
+                                    }
+                                    else if($this->warriors[$i]['type'] != 'ranged') {
+                                        $this->daqloonHit($this->daqloons[$x - $w - ($i * $count)],
+                                                                                $this->warriors[$i], $number = $x - $w - ($i * $count));
+                                    }
+                                    // If $this->warriors[$i] isn't isset, it means that the daqloon is wounded
+                                    if(!isset($this->warriors[$i])) {
+                                        break;
+                                    }
+                                }
+                                /*if(isset($this->warriors[$i]) && (($daqloon_count - $warrior_count) / $warrior_count) % 2 != 0
+                                         && $count < 4) {
+                                    $this->daqloonHit($this->daqloons[$x  - $w - (($i * $count) -1)], $this->warriors[$i],
+                                                      $number = $x - $w - ($i * $count));
+                                }*/
+                                break;
+                            case "warriors":
+                                $count = round(($warrior_count - $daqloon_count) / $daqloon_count);
+                                if($count > 4) {
+                                    $count = 4;
+                                }
+                                // Get maximum warriors in array to calculate which warrior(s) is left over
+                                $x = max(array_keys($this->warriors));
+                                for ($w = 0; $w < $count; $w++) {
+                                    if(!isset($this->daqloons[$i])) {
+                                        // If current warrior is wounded the daqloon(s) will move to the next
+                                        $i++;
+                                        $this->daqloon_i += 1;
+                                        if(!isset($this->daqloons[$i])) {
+                                            // If the next iteration doesn't exists it means that daqloons have won
+                                            break;
+                                        }
+                                    }
+                                    /*$this->warrior_i += 1;*/
+                                    $this->warriorHit($this->daqloons[$i], $this->warriors[$x - $w - ($i * $count)], $i);
+                                    // If $this->daqloons[$i] isn't isset, it means that the daqloon is wounded
+                                    if(!isset($this->daqloons[$i])) {
+                                        break;
+                                    }
+                                }
+                                break;
                         }
-                        $i++;
                     }
                 }
-                $this->warriors = array_values(array_filter($this->warriors, 
-                    function($element) { return $element['wounded'] === false;}));
-                $this->daqloons = array_values(array_filter($this->daqloons, 
-                    function($element) { return $element['wounded'] === false;}));
-                if(count($this->warriors) === 0) {
-                    $this->battle_result = "Daqloons wins";
-                    $this->battle_progress[$this->duration][] = "Daqloons wins";
+                $this->warriors = array_values($this->warriors);
+                $this->daqloons = array_values($this->daqloons);
+                
+                if($this->warrior_amount <= 0) {
+                        $this->battle_result = "Daqloons wins";
+                        $this->battle_progress[] = "Daqloons wins";
+                        break;
+                    }
+                else if($this->daqloons <= 0) {
+                        $this->battle_result = 'Warriors wins';
+                        $this->battle_progress[] = "Warriors wins";
+                        break;
+                }
+                $this->battle_progress[] = "</br>";
+                $this->duration++;
+                if($this->duration == 30) {
+                    $this->battle_progress[] = "Battle went on too long";
                     break;
                 }
-                else if(count($this->daqloons) === 0) {
-                    $this->battle_result = 'Warriors wins';
-                    $this->battle_progress[$this->duration][] = "Warriors wins";
-                    break;
-                }
-            $this->duration++;
-            $this->duration_multiplier = ($this->duration * 0.4 > 10) ? 10 : $this->duration_multiplier * 0.4;
-            if($this->duration == 100) {
-                $this->battle_progress[$this->duration][] = "Battle went on too long";
-                break;
-            }
             }
             while(empty($battle_result));
+            $this->getStatistics();
             for($i = 0; $i < count($this->warriors); $i++) {
                 $update_data[$i] = array($this->warriors[$i]['health'], $this->warriors[$i]['warrior_id'], $this->username);
             }
             try {
+                // $sql2 = "UPDATE warriors SET health = ? WHERE warrior_id = ? AND username = ?";
+                // $stmt2 = $this->db->conn->prepare($sql2);
+                // foreach($update_data as $key) {
+                //     $stmt2->execute($key);
+                // }
+                $param_battle_result = $battle_result;
+                $param_adventure_id = $this->adventure_data['adventure_id'];
                 if($this->POST['route'] === 'adventure' ) { 
-                    $param_battle_result = $battle_result;
-                    $param_adventure_id = $this->adventure_data['adventure_id'];
                     $sql = "UPDATE adventures SET battle_result=:battle_result WHERE adventure_id=:adventure_id";
                     $stmt = $this->db->conn->prepare($sql);
                     $stmt->bindParam(":battle_result", $param_battle_result, PDO::PARAM_STR);
@@ -194,46 +238,27 @@
                 throw new Exception("ERROR: Failed to update warrior stats", $e->getMessage());
                 return;
             }
-            return $this->getStatistics();
-        }
-        private function findNextTarget($targets, $starting_index) {
-            $index = false;
-            for($i = $starting_index; $i < count($targets); $i++) {
-                if($targets[$i]['wounded'] === false) {
-                    $index = $i;
-                    break;
-                }
-            }
-            if($index === null) {
-                for($i = 0; $i < count($targets); $i++) {
-                    if($targets[$i]['wounded'] === false) {
-                        $index = $i;
-                        break;
-                    }
-                }
-                return false;
-            }
-            return $index;
-        }   
+            
+        }       
         protected function daqloonHit($daqloon, $warrior , $number = false) {
             if(rand(1,100) <= round(($warrior['technique_level'] * (0.75 + ($warrior['block_ratio'] * 0.4))))
                && $warrior['type'] != 'ranged'
                && $warrior['block_ratio'] > 0.9) {
-                    $this->battle_progress[$this->duration][] = "Blocked attack from daqloon " . $daqloon['id'];
+                    $this->battle_progress[] = "Blocked attack from daqloon " . $daqloon['id'];
                     $this->stats['blocked']['warrior'] += 1;
             }
             else {
-                $daqloon_hit = round($daqloon['attack']) - $warrior['defence'] - $this->duration_multiplier * (10 / rand(8, 12));
+                $daqloon_hit = round(rand(0, $daqloon['attack']) - $warrior['defence'] - ($this->duration  * 0.4));
                 $daqloon_hit = ($daqloon_hit <  0) ? 0 : $daqloon_hit;
                 $warrior['health'] -= $daqloon_hit;
                 $this->daqloon_damage[] = $daqloon_hit;
-                $this->battle_progress[$this->duration][] = "Warrior " . $warrior['warrior_id'] . " got hit for " . $daqloon_hit . " by daqloon " .
+                $this->battle_progress[] = "Warrior " . $warrior['warrior_id'] . " got hit for " . $daqloon_hit . " by daqloon " .
                 $daqloon['id'] . ", warrior health: " . $warrior['health'];
                 
                 if($warrior['health'] < 10) {
-                    $this->battle_progress[$this->duration][] = "Warrior " . $warrior['warrior_id'] . " wounded";
+                    $this->battle_progress[] = "Warrior " . $warrior['warrior_id'] . " wounded";
                     $warrior['health'] = 9.5;
-                    $warrior['wounded'] = true;
+                    unset($this->warriors[$this->warrior_i]);
                     $this->stats['wounded']['warrior'] += 1;
                     $this->warrior_amount -= 1;
                 }
@@ -249,22 +274,25 @@
         }
         protected function warriorHit($daqloon, $warrior, $second = false, $number = false) {
             $tech_min = (15 - $warrior['technique_level'] < 1) ? 1 :  15 - $warrior['technique_level'];
+            $duration_multiplier = ($warrior['stamina_level'] - $this->duration > 0) ? 0 : $warrior['stamina_level'] - 
+            $this->duration;
             if(rand(1, 100) >=  66 + ($warrior['technique_level'] * 2)) {
-                $this->battle_progress[$this->duration][] = "Attack missed from warrior " . $warrior['warrior_id'];
+                $this->battle_progress[] = "Attack missed from warrior " . $warrior['warrior_id'];
                 $this->stats['missed']['warrior']+= 1;
                 $warrior_hit = 0;
             }
             if($warrior['type'] === 'ranged' && !isset($warrior_hit)) {
                 if($warrior['ammunition_amount'] <= 0) {
                     
-                    $this->battle_progress[$this->duration][] = $warrior['warrior_id'] . ' ammunition empty!';
+                    $this->battle_progress[] = 'Ammunition empty!';
                     $warrior_hit = 5;
                 }
                 else {
                     //Hit damage decrease when they are fighting
                     $warrior_hit = round(rand($warrior['precision_level'] * 1, $warrior['attack'] + ($warrior['precision_level'] / 2))
-                                        - $daqloon['defence'] - $this->duration_multiplier);
-                    $warrior['ammunition_amount'] -= 1;
+                                        - $daqloon['defence'] - $duration_multiplier);
+                    $this->warriors['ammunition_amount'] -= 1;
+                    echo "Ammo: " . $this->warriors['ammunition_amount'];
                     $warrior_hit += ($warrior['type'] === 'warrior') ?  : (0.6 * $warrior['precision_level']);
                 }
             }
@@ -272,19 +300,19 @@
                 // Warrior is melee
                 //Hit damage decrease when they are fighting
                 $warrior_hit = round(rand($warrior['strength_level'] * 1, $warrior['attack'] + ($warrior['strength_level'] / 2))
-                                        - $daqloon['defence'] - $this->duration_multiplier);
+                                        - $daqloon['defence'] - $duration_multiplier);
             }
             if($warrior_hit <= 0) {
                 $warrior_hit = 0;
             }
             $daqloon['health'] -= $warrior_hit;
             $this->warrior_damage[] = $warrior_hit;
-            $this->battle_progress[$this->duration][] = "Daqloon " .  $daqloon['id'] . " got hit for " . $warrior_hit . " by warrior " .
+            $this->battle_progress[] = "Daqloon " .  $daqloon['id'] . " got hit for " . $warrior_hit . " by warrior " .
             $warrior['warrior_id'] . ", daqloon health: " . $daqloon['health'];
             if($daqloon['health'] < 10 ) {
-                $this->battle_progress[$this->duration][] =  'Daqloon ' . $daqloon['id'] . ' wounded';
-                $this->stats['wounded']['daqloon'] += 1;
-                $warrior['wounded'] = true;
+                $this->battle_progress[] =  'Daqloon ' . $daqloon['id'] . ' wounded';
+                unset($this->daqloons[$this->daqloon_i]);
+                $this->stats['wounded']['daqloons'] += 1;
                 $this->daqloon_amount -= 1;
             }
             // $number is the index of the daqloon because of uneven numbers of daqloons vs warriors
@@ -332,16 +360,13 @@
                 'warrior_combo' => $this->combo_attack['warrior'], 'daqloon_combo' => $this->combo_attack['daqloon'],
                 'stats' => $this->stats);
             }
-            ob_start();
             get_template('battleResult', $data, true);
-            return ob_get_clean();
-            
         }
         protected function getDaqloons($type) {
             if($type === 'army mission') {
                 switch ($this->POST['difficulty']) {
                     case 'easy':
-                        $this->daqloon_amount = rand(5, 7);
+                        $this->daqloon_amount = rand(3, 5);
                         break;
                     case 'medium':
                         $this->daqloon_amount = rand(5, 7);
@@ -357,7 +382,7 @@
             else if($type === 'adventure') {
                 switch ($this->POST['difficulty']) {
                     case 'easy':
-                        $this->daqloon_amount = rand(5, 7);
+                        $this->daqloon_amount = rand(3, 6);
                         break;
                     case 'medium':
                         $this->daqloon_amount = rand(5, 8);
@@ -374,8 +399,8 @@
                 $this->daqloon_amount = 5;
             }   
             for($i = 0; $i < $this->daqloon_amount; $i++) {
-                $this->daqloons[$i] = array('id' => $i + 1, 'health' => 150, 'attack' => 75,
-                                           'defence' =>  50, 'wounded' => false);
+                $this->daqloons[$i] = array('id' => $i + 1, 'health' => 150, 'attack' => 25,
+                                           'defence' =>  50);
             }
         }
         protected function dbStats($type, $calc = false) {
@@ -389,19 +414,15 @@
                     $mission_number = 2;
                 }
                 $param_username = $this->username;
-                $sql = "SELECT warrior_id FROM warriors WHERE username=:username AND mission = {$mission_number}";
+                $value = intval($mission_number);
+                $sql = "SELECT warrior_id FROM warriors WHERE username=:username AND mission = {$value}";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $stmt->execute();
-                $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $query_array = array_column($row, "warrior_id");
+                $query_array = array_column($stmt->fetchAll(PDO::FETCH_ASSOC), "warrior_id");
             }
             else {
                 $query_array = $this->test_warriors;
-            }
-            if(!count($query_array) > 0) {
-                $this->error = true;
-                return $this->errorHTML;
             }
             $query_array[] = $this->username;
             $in  = str_repeat('?,', count($query_array) - 2) . '?';
@@ -436,8 +457,8 @@
             $types = array("dagger", "knives");
             $this->warrior_amount = count($warriors);
             for($q = 0; $q < $this->warrior_amount; $q++) {
-                $this->warriors[$q] = array_merge($warriors[$q], $stats[$q]);
-                $this->warriors[$q]['wounded'] = false;
+                $this->warriors[] = array_merge($warriors[$q], $stats[$q]);
+                
                 if(strpos($stats[$q]['left_hand'], 'shield') !== false && $warriors[$q]['type'] != 'ranged') {
                     $this->warriors[$q]['block_ratio'] = 2;
                 }

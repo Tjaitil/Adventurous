@@ -20,43 +20,58 @@
             $this->commonModels(true, true);
         }
         public function updateAdventure() {
-            $param_username = $this->username;
             $sql = "SELECT adventure_id FROM adventure WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_username = $this->username;
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $adventure_id = $row['adventure_id'];
             
             if(!$adventure_id > 0) {
-                $this->response->addTo("errorGameMessage", "You don't have any adventures!");
+                $this->gameMessage("ERROR: You don't have any adventures!", true);
                 return false;
             }
             
-            $param_adventure_id = $adventure_id;
             $sql = "SELECT difficulty, location, farmer, miner, trader, warrior, adventure_status, adventure_countdown,
                     battle_result FROM adventures WHERE adventure_id=:adventure_id";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_STR);
+            $param_adventure_id = $adventure_id;
             $stmt->execute();
             $this->adventure_data = $stmt->fetch(PDO::FETCH_ASSOC);
             $time = date("Y-m-d H:i:s");
             if($time < $this->adventure_data['adventure_countdown']) {
-                $this->response->addTo("errorGameMessage", "The adventure is not yet finished!");
+                $this->gameMessage("ERROR: The adventure is not yet finished!", true);
                 return false;
             }
             $this->adventure_data['adventure_id'] = $adventure_id;
-            $combat_model = $this->loadModel('combat', true, true);
+            
             if($this->adventure_data['battle_result'] == 0) {
-                $combat_model->calculate(array("route" => "adventure", "difficulty" => $this->adventure_data['difficulty']));
+                $check = $this->getResult();
+                if($check === false) {
+                    $this->gameMessage("ERROR: Something unexpected happened, please try again!", true);
+                }
             }
             else {
-                // Fetch data
-                $combat_model->getStatistics(true);
+                $sql = "SELECT daqloon_damage, warrior_damage, warrior_wounded, daqloon_wounded, warrior_combo, daqloon_combo
+                        FROM adventure_battles WHERE adventure_id=:adventure_id";
+                $stmt = $this->db->conn->prepare($sql);
+                $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_INT);
+                $param_adventure_id;
+                $stmt->execute();
+                $this->battle_statistics = $stmt->fetch(PDO::FETCH_ASSOC);
+                if($this->adventure_data['battle_result'] == 1) {
+                    $this->battle_statistics['result'] = "Warriors wins!";
+                }
+                else {
+                    $this->battle_statistics['result'] = "Daqloons wins!";   
+                }
             }
             $role = array_search($this->username, $this->adventure_data);
             if($role === false) {
-                $this->response->addTo("errorGameMessage", "Something unexpected happened, please try again");
+                $this->errorHandler->reportError(array($this->username, "player has no role " . __METHOD__), true);
+                $this->gameMessage("ERROR: Something unexpected happened, please try again", true);
                 return false;
             }
             else {
@@ -64,26 +79,26 @@
             }
         }
         public function updateRole($role) {
-            $param_adventure_id = $this->adventure_data['adventure_id'];
             $sql = "SELECT battle_result FROM adventures WHERE adventure_id=:adventure_id";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_STR);
+            $param_adventure_id = $this->adventure_data['adventure_id'];
             $stmt->execute();
             $battle_result = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            $param_location = $this->adventure_data['location'];
-            $param_difficulty = $this->adventure_data['difficulty'];
             $sql2 = "SELECT user_xp, warrior_xp_min, warrior_xp_max FROM adventures_data WHERE location=:location AND difficulty=:difficulty";
             $stmt2 = $this->db->conn->prepare($sql2);
             $stmt2->bindParam(":location", $param_location, PDO::PARAM_STR);
             $stmt2->bindParam(":difficulty", $param_difficulty, PDO::PARAM_STR);
+            $param_location = $this->adventure_data['location'];
+            $param_difficulty = $this->adventure_data['difficulty'];
             $stmt2->execute();
             $xp_data = $stmt2->fetch(PDO::FETCH_ASSOC);
             
-            $param_username = $this->username;
             $sql = "SELECT COUNT(item) as item_count FROM inventory WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_username = $this->username;
             $stmt->execute();
             $item_count = $stmt->fetch(PDO::FETCH_OBJ)->item_count;
             
@@ -108,7 +123,7 @@
             }
             // If player doesn't have enough inventory spaces, echo error message and return
             if($item_count + $count > 18) {
-                $this->response->addTo("errorGameMessage", "You need to have at least {$count} empty spaces in your inventory");
+                $this->gameMessage("ERROR: You need to have at least {$count} empty spaces in your inventory", true);
                 return false;
             }
             
@@ -119,21 +134,17 @@
                 case 'miner':
                 case 'trader':
                     // Do it is so there is a high chance of getting a high reward
-                    $param_role = $role;
-                    $param_difficulty = $this->adventure_data['difficulty'];
                     $sql = "SELECT item, min_amount, max_amount FROM adventure_rewards
                             WHERE role=:role AND difficulty=:difficulty
                             ORDER BY RAND() LIMIT 1";
                     $stmt = $this->db->conn->prepare($sql);
                     $stmt->bindParam(":role", $param_role, PDO::PARAM_STR);
                     $stmt->bindParam(":difficulty", $param_difficulty, PDO::PARAM_STR);
+                    $param_role = $role;
+                    $param_difficulty = $this->adventure_data['difficulty'];
                     $stmt->execute();
                     $rewards[] = $stmt->fetch(PDO::FETCH_ASSOC);
                     $count--;
-
-                    $param_role = $role;
-                    $param_difficulty = $this->adventure_data['difficulty'];
-                    $param_name = $rewards[0]['item'];
                     $sql2 = "SELECT item, min_amount, max_amount FROM adventure_rewards
                             WHERE role=:role AND difficulty <= :difficulty AND item !=:name
                             ORDER BY RAND() LIMIT {$count}";
@@ -141,6 +152,9 @@
                     $stmt2->bindParam(":role", $param_role, PDO::PARAM_STR);
                     $stmt2->bindParam(":difficulty", $param_difficulty, PDO::PARAM_INT);
                     $stmt2->bindParam(":name", $param_name, PDO::PARAM_STR);
+                    $param_role = $role;
+                    $param_difficulty = $this->adventure_data['difficulty'];
+                    $param_name = $rewards[0]['item'];
                     $stmt2->execute();
                     while($row = $stmt2->fetch(PDO::FETCH_ASSOC)) {
                         $rewards[] = $row;
@@ -148,20 +162,17 @@
                     break;
                 
                 case 'warrior':
-                    $param_role = $role;
-                    $param_difficulty = $this->adventure_data['difficulty'];
                     $sql = "SELECT item, min_amount, max_amount FROM adventure_rewards
                             WHERE role=:role AND difficulty=:difficulty
                             ORDER BY RAND() LIMIT 1";
                     $stmt = $this->db->conn->prepare($sql);
                     $stmt->bindParam(":role", $param_role, PDO::PARAM_STR);
                     $stmt->bindParam(":difficulty", $param_difficulty, PDO::PARAM_STR);
+                    $param_role = $role;
+                    $param_difficulty = $this->adventure_data['difficulty'];
                     $stmt->execute();
                     $rewards[] = $stmt->fetch(PDO::FETCH_ASSOC);
                     
-                    $param_role = $role;
-                    $param_difficulty = $this->adventure_data['difficulty'];
-                    $param_name = $rewards[0]['item'];
                     $sql = "SELECT item, min_amount, max_amount FROM adventure_rewards
                             WHERE role=:role AND difficulty <= :difficulty AND item != :name
                             ORDER BY RAND() LIMIT {$count}";
@@ -169,6 +180,9 @@
                     $stmt->bindParam(":role", $param_role, PDO::PARAM_STR);
                     $stmt->bindParam(":difficulty", $param_difficulty, PDO::PARAM_INT);
                     $stmt->bindParam(":name", $param_name, PDO::PARAM_STR); 
+                    $param_role = $role;
+                    $param_difficulty = $this->adventure_data['difficulty'];
+                    $param_name = $rewards[0]['item'];
                     $stmt->execute();
                     while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                         $rewards[] = $row;
@@ -199,10 +213,10 @@
             $roles = array("farmer", "miner", "trader", "warrior");
             unset($roles[$role]);
             
-            $nones = 0;
+            $none = 0;
             for($i = 0; $i < count($roles); $i++) {
                 if($this->adventure_data[$roles[$i]] ==  'none') {
-                    $nones++;    
+                    $none++;    
                 }
             }
             for($i = 0; $i < count($rewards); $i++) {
@@ -241,14 +255,14 @@
                 
                 // Only gain xp when farmer level is below 30 or if profiency is farmer
                 if($this->session[$role]['level'] < 30 || $this->session['profiency'] == $role) { 
-                    $this->response->addTo("levelUP",$this->UpdateGamedata->updateXP($role, $xp_data['user_xp'])); 
+                    $this->UpdateGamedata->updateXP($role, $xp_data['user_xp']);    
                 }
-                $param_adventurer_respect = $xp_data['adventurer_xp'] + $this->session['adventurer'];
-                $param_username = $this->username;
                 $sql = "UPDATE user_levels SET adventurer_respect=:respect WHERE username=:username";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":respect", $param_adventurer_respect, PDO::PARAM_INT);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                $param_adventurer_respect = $xp_data['adventurer_xp'] + $this->session['adventurer'];
+                $param_username = $this->username;
                 $stmt->execute();
                 
                 $sql = "DELETE FROM adventure_requirements WHERE username=:username";
@@ -263,8 +277,7 @@
                 $param_username = $this->username;
                 $stmt->execute();
 
-                // If count of roles is 3, then the player getting the report is the last player in the adventure
-                if((count($roles) - 1) - $nones == 0) {
+                if(count($roles) - $none == 0) {
                     $sql = "DELETE FROM adventures WHERE adventure_id=adventure_id";
                     $stmt = $this->db->conn->prepare($sql);
                     $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_INT);
@@ -300,31 +313,274 @@
             }
             catch(Exception $e) {
                 $this->db->conn->rollBack();
-                $this->response->addTo("errorGameMessage", $this->errorHandler->catchAJAX($this->db, $e));
+                $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
-            $this->db->closeConn();
             $_SESSION['gamedata']['adventurer'] = $param_adventurer_respect;
             $this->adventure_data['user_xp'] = $xp_data['user_xp'];
             $this->adventure_data['role'] = $role;
             
-            ob_start();
             // get_template to show user
             get_template('adventure_rewards', array('adventure_data' => $this->adventure_data,
                                                     'rewards' => $rewards,
                                                     'statistics' => $this->battle_statistics,
                                                     'warrior_xp' => $warrior_xp, 'stockpile_insert' =>
                                                     (isset($Stockpile_model)) ? 'true' : 'false'), true);
-            $this->response->addTo("html", ob_get_clean());
             
+            $this->db->closeConn();
         }
-        protected function calculateCrystal() {
+        public function getResult() {
+            //Get levels of the soldiers, armour and weapons
+            $sql = "SELECT warrior_id FROM warriors WHERE mission=1 AND username=:username";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_username = $this->adventure_data['warrior'];
+            $stmt->execute();
+            $warriors = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $query_array = array();
+            foreach($warriors as $key) {
+                array_push($query_array, $key['warrior_id']);
+            }
+            $query_array[] = $this->adventure_data['warrior'];
+            $in  = str_repeat('?,', count($query_array) - 2) . '?';
+            
+            $sql = "SELECT warrior_id, type, health FROM warriors WHERE warrior_id IN ($in) AND username=?";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->execute($query_array);
+            $warrior_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            $sql = "SELECT stamina_level, technique_level, precision_level, strength_level FROM warriors_levels
+                    WHERE warrior_id IN ($in) AND username=?";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->execute($query_array);
+            $warriors_levels = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            $sql = "SELECT attack, defence FROM warrior_armory WHERE warrior_id IN ($in) AND username=?";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->execute($query_array);
+            $stats = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            $this->warriors = array();
+            for($q = 0; $q < count($warrior_data); $q++) {
+                $this->warriors[$q] = array_merge($warrior_data[$q], $warriors_levels[$q], $stats[$q]);
+            }
+            
+            //Get the strength of daqloon
+            $sql = "SELECT attack, defence, amount FROM daqloon_stats WHERE difficulty=:difficulty";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->bindParam(":difficulty", $param_difficulty, PDO::PARAM_STR);
             $param_difficulty = $this->adventure_data['difficulty'];
-            $param_location = $this->adventure_data['location'];
+            $stmt->execute();
+            $daqloon = $stmt->fetch(PDO::FETCH_ASSOC);
+            $this->daqloons = array();
+            $daqloon_amount = 2;
+            for($i = 0; $i < $daqloon_amount; $i++) {
+                $this->daqloons[$i] = array("health" => rand(100,120), "id" => $i+1, "attack" => $daqloon['attack'] - rand(1,3),
+                                      "defence" => $daqloon['defence'] - rand(1,3));
+            }
+            
+            $total_amount = count($this->warriors);
+            $total_daqloon = count($this->daqloons);
+            $battle_result;
+            $duration = 1;
+            do {
+                $this->battle_progress[] = "Hit: " . $duration;
+                for($i = 0; $i < count($this->warriors); $i++) {
+                    $warrior = $this->warriors[$i];
+                    if(empty($this->daqloons[$i])) {
+                        $this->daqloons = array_values($this->daqloons);
+                        for($d = 0; $d < count($this->daqloons); $d++) {
+                            if(!empty($this->daqloons[$d])) {
+                                $daqloon = $this->daqloons[$d];
+                                break;
+                            }
+                        }
+                    }
+                    else {
+                        $daqloon = $this->daqloons[$i];
+                    }
+                    //Remove daqloon(s) who are wounded from $this->daqloons
+                    if(array_key_exists('d_' . $daqloon['id'], $this->daqloon_status) == true) {
+                        unset($this->daqloons[$i]);
+                        $this->daqloons = array_values($this->daqloons);
+                        if(!count($this->daqloons) > 0) {
+                            $this->battle_result = 'Warriors wins';
+                            break;
+                        }
+                        for($l = 0; $l < count($this->daqloons); $l++) {
+                            if(!empty($this->daqloons[$l])) {
+                                $daqloon = $this->daqloons[$l];
+                            }
+                        }
+                    }
+                    //Remove warrior(s) who are wounded from $this->arriors
+                    if(array_key_exists('w_' . $this->warriors[$i]['warrior_id'], $this->warrior_status) == true) {
+                        unset($this->warriors[$i]);
+                        $this->warriors = array_values($this->warriors);
+                        continue;
+                    }
+                    $first = rand(1,2);
+                    if($duration % 3 !== 0 && $this->warriors[$i]['type'] === 'ranged') {
+                        $this->daqloons[$i] = $this->warriorHit($daqloon, $warrior, $duration);   
+                    }
+                    else if($first === 1) {
+                        $this->daqloons[$i] = $this->warriorHit($daqloon, $warrior, $duration);
+                        $this->warriors[$i] = $this->daqloonHit($daqloon, $warrior);
+                    }
+                    else {
+                        $this->warriors[$i] = $this->daqloonHit($daqloon, $warrior);
+                        $this->daqloons[$i] = $this->warriorHit($daqloon, $warrior, $duration);
+                    }
+                    $daqloon_count = count($this->daqloons);
+                    $warrior_count = count($this->warriors);
+                    if($daqloon_count != $warrior_count) {
+                        ($daqloon_count > $warrior_count) ? $array = "daqloons" : $array = "warriors";
+                        switch($array) {
+                            case "daqloons":
+                                $count = round(($daqloon_count - $warrior_count) / $warrior_count);
+                                $x = max(array_keys($this->daqloons));
+                                for ($w = 0; $w < $count; $w++) {
+                                    if($duration % 3 === 0 && $this->warriors[$i]['type'] === 'ranged') {
+                                        $this->warriors[$i] = $this->daqloonHit($this->daqloons[$x - $w - ($i * $count)],
+                                                                                $this->warriors[$i]);
+                                    }
+                                    else if($this->warriors[$i]['type'] != 'ranged') {
+                                        $this->warriors[$i] = $this->daqloonHit($this->daqloons[$x - $w - ($i * $count)],
+                                                                                $this->warriors[$i]);
+                                    }
+                                    if($this->warriors[$i]['health'] < 10.1) {
+                                        break;
+                                    }
+                                }
+                                break;
+                            case "warriors":
+                                $count = round(($warrior_count - $daqloon_count) / $daqloon_count);
+                                $x = max(array_keys($this->warriors));
+                                for ($w = 0; $w < $count; $w++) {
+                                    $this->daqloons[$i] = $this->warriorHit($this->daqloons[$i], $this->warriors[$x - $w], $i);
+                                    if($this->daqloons[$i]['health'] < 10) {
+                                        break;
+                                    }
+                                }
+                                break;
+                        }
+                    }
+                }
+                if(count($this->warrior_status) === $total_amount) {
+                        $this->battle_result = "Daqloons wins";
+                        $battle_result = 2;
+                        $this->battle_progress[] = "Daqloons wins";
+                        break;
+                    }
+                else if(count($this->daqloon_status) === $total_daqloon) {
+                        $this->battle_result = 'Warriors wins';
+                        $battle_result = 1;
+                        $this->battle_progress[] = "Warriors wins";
+                        break;
+                }
+                $this->battle_progress[] = "</br>";
+                $duration++;
+                if($duration == 100) {
+                    $battle_result = 1;
+                    $this->battle_progress[] = "Battle went on too long, daqloons fled";
+                    break;
+                }
+            }
+            while(empty($battle_result));
+            
+            for($i = 0; $i < count($this->warriors); $i++) {
+                $update_data[$i] = array($this->warriors[$i]['health'], $this->warriors[$i]['warrior_id'], $this->username);
+            }
+            $this->getStatistics();
+            try {
+                $this->db->conn->beginTransaction();
+                
+                $sql = "UPDATE adventures SET battle_result=:battle_result WHERE adventure_id=:adventure_id";
+                $stmt = $this->db->conn->prepare($sql);
+                $stmt->bindParam(":battle_result", $param_battle_result, PDO::PARAM_STR);
+                $stmt->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_STR);
+                $param_battle_result = $battle_result;
+                $param_adventure_id = $this->adventure_data['adventure_id'];
+                $stmt->execute();
+                
+                $sql2 = "UPDATE warriors SET health = ? WHERE warrior_id = ? AND username = ?";
+                $stmt2 = $this->db->conn->prepare($sql2);
+                foreach($update_data as $key) {
+                    $stmt2->execute($key);
+                }
+                
+                $sql3 = "INSERT INTO adventure_battle
+                        (adventure_id, daqloon_damage, warrior_damage, warrior_wounded, daqloon_wounded, warrior_combo, daqloon_combo)
+                        VALUES(:adventure_id, :daqloon_damage, :warrior_damage, :daqloon_wounded, :warrior_wounded, :daqloon_combo,
+                        :warrior_combo)";
+                $stmt3 = $this->db->conn->prepare($sql3);
+                $stmt3->bindParam(":adventure_id", $param_adventure_id, PDO::PARAM_INT);
+                $stmt3->bindParam(":daqloon_damage", $param_daqloon_damage, PDO::PARAM_INT);
+                $stmt3->bindParam(":warrior_damage", $param_warrior_damage, PDO::PARAM_INT);
+                $stmt3->bindParam(":daqloon_wounded", $param_daqloon_wounded, PDO::PARAM_INT);
+                $stmt3->bindParam(":warrior_wounded", $param_warrior_wounded, PDO::PARAM_INT);
+                $stmt3->bindParam(":daqloon_combo", $param_daqloon_combo, PDO::PARAM_INT);
+                $stmt3->bindParam(":warrior_combo", $param_warrior_combo, PDO::PARAM_INT);
+                $param_adventure_id = $this->adventure_data['adventure_id'];
+                $param_daqloon_damage = $this->battle_statistics['daqloon_damage'];
+                $param_warrior_damage = $this->battle_statistics['warrior_damage'];
+                $param_daqloon_wounded = $this->battle_statistics['daqloon_wounded'];
+                $param_warrior_wounded = $this->battle_statistics['warrior_wounded'];
+                $param_daqloon_combo = $this->battle_statistics['daqloon_combo'];
+                $param_warrior_combo = $this->battle_statistics['warrior_combo'];
+                $stmt3->execute();
+                
+                $this->db->conn->commit();
+            }
+            catch(Exception $e) {
+                $this->errorHandler->catchAJAX($this->db, $e);
+                return false;
+            }
+        }
+        protected function daqloonHit($daqloon, $warrior) {
+                $daqloon_hit = $daqloon['attack'] + rand(1,3) * (0.025 * $warrior['defence']);
+                $warrior['health'] -= $daqloon_hit;
+                $this->daqloon_damage[] = $daqloon_hit;
+                $this->battle_progress[] = "Warrior " . $warrior['warrior_id'] . " got hit for " . $daqloon_hit . " by daqloon " .
+                $daqloon['id'] . ", warrior health: " . $warrior['health'];
+                if($warrior['health'] < 10) {
+                    $this->warrior_status['w_' . $warrior['warrior_id']] = "wounded";
+                    $this->battle_progress[] = "Warrior " . $warrior['warrior_id'] . " wounded";
+                    $warrior['health'] = 10;
+                }
+                return $warrior;
+        } 
+        protected function warriorHit($daqloon, $warrior, $duration) {
+                $warrior_hit = $warrior['attack'] + (0.5 * $warrior['strength_level']) + 
+                               (($warrior['attack'] / 100) * $warrior['technique_level'] + rand(1,3)) //Damage increase from technique 
+                             * (0.025 * $daqloon['defence']);
+                             - ($warrior['stamina_level'] - ($duration * 0.2)); //Hit damage decrease when they are fighting
+                $daqloon['health'] -= $warrior_hit;
+                $this->warrior_damage[] = $warrior_hit;
+                $this->battle_progress[] = "Daqloon " .  $daqloon['id'] . " got hit for " . $warrior_hit . " by warrior " .
+                $warrior['warrior_id'] . ", daqloon health: " . $daqloon['health'];
+                //precision_level is hit percentage for getting in a second attack
+                if(rand(1,100) <= $warrior['precision_level']) {
+                    $daqloon['health'] -= $warrior_hit;
+                    $this->warrior_damage[] = $warrior_hit;
+                    $this->combo_attack['warrior'] += 1;
+                    $this->battle_progress[] = "COMBO! Daqloon " .  $daqloon['id'] . " got hit for " . $warrior_hit . " by " .
+                    $warrior['warrior_id'] . " Health: " . $daqloon['health'];
+                }
+
+                if($daqloon['health'] < 10 ) {
+                    $this->daqloon_status['d_' . $daqloon['id']] = "wounded";
+                    $this->battle_progress[] =  'Daqloon ' . $daqloon['id'] . ' wounded';
+                }
+                return $daqloon;
+        } 
+        protected function calculateCrystal() {
             $sql = "SELECT min_chance, max_chance FROM adventure_crystals WHERE difficulty=:difficulty AND location=:location";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":difficulty", $param_difficulty, PDO::PARAM_STR);
             $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
+            $param_difficulty = $this->adventure_data['difficulty'];
+            $param_location = $this->adventure_data['location'];
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             
@@ -335,6 +591,22 @@
             else if($rand > 1) {
                 return 0;
             }
+        }
+        public function getStatistics() {
+            $this->battle_statistics = array('battle_progress' => $this->battle_progress, 'result'  => $this->battle_result,
+                          'daqloon_damage' => array_sum($this->daqloon_damage), 'warrior_damage' => array_sum($this->warrior_damage),
+                          'warrior_wounded' => count($this->warrior_status), 'daqloon_wounded' => count($this->daqloon_status),
+                          'warrior_combo' => $this->combo_attack['warrior'], 'daqloon_combo' => $this->combo_attack['daqloon']);
+        }
+        
+        
+        private function calculateItemDamage() {
+            
+            $item_data  = array("iron" => "", "steel" => "", "gargonite" => "", "adron" => "", "yeqdon" => "", "frajrite" => "",
+                                "wujkin" => "");
+            
+            
+            
         }
     }
 ?>

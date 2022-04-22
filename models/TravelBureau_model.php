@@ -11,6 +11,16 @@
         }
         public function getData($js = false) {
             /*$city = $_SESSION['gamedata']['location'];
+            if($_SESSION['gamedata']['location'] === 'travelling') {
+                header("Location: /city");
+                exit();
+            }
+            $cities = array("towhar", "golbak", "snerpiir", "krasnur", "tasnobil", "cruendo", "fagna");
+            if(array_search($this->session['location'], $cities) === false) {
+                $this->errorHandler->reportError(array($this->username, "Not valid location: " . $this->session['location'] . __METHOD__));
+                $this->gameMessage("ERROR: Something unexpected happened, please try again!", true);
+                return false;
+            }*/
             /*$sql = "SELECT type, $city, value FROM travelbureau_horses";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":amount", $param_amount, PDO::PARAM_STR);
@@ -20,10 +30,10 @@
             $data['horse_shop'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $data['city'] = $city;*/
             
-            $param_username = $this->username;
             $sql = "SELECT cart FROM trader WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_username = $this->username;
             $stmt->execute();
             $data['cart'] = $stmt->fetch(PDO::FETCH_OBJ)->cart;
             
@@ -32,19 +42,26 @@
             $stmt->execute();
             $data['cart_shop'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $this->db->closeConn();
+             // if statement to check if ajax request is being called
             if($js === true) {
-                ob_start();
+                // "||" is for next item and "#" is to split the different shops
+                /*foreach($data['horseShop'] as $key) {
+                    echo $key['type'] .'|'. $key['value'] .'|'. $key[$data['city']] . '||';
+                }
+                echo "#";
+                foreach($data['cartShop'] as $key) {
+                    echo $key['wheel'] . '|' . $key['wood']. '|' . $key['value'] . '|' . $key['capasity'] . '|' . $key[$data['city']] . '||';
+                }*/
+                /*get_template('horseShop', $data, true);
+                echo "#";*/
                 get_template('cartShop', $data, true);
-                $this->response->addTo("html", ob_get_clean());
             }
             else {
                 return $data;
             }
         }
         
-        public function buyItem($POST) {
-            $shop = $POST['shop'];
-            $item = $POST['item'];
+        public function buyItem($shop, $item) {
             $city = $this->session['location'];
             $cities = array("towhar", "golbak", "snerpiir", "krasnur", "tasnobil", "cruendo", "fagna");
             if (array_search($this->session['location'], $cities) === false) {
@@ -72,15 +89,15 @@
                     $updateSTMT3 = "UPDATE travelbureau_horses SET $city=:city WHERE type=:type";
                 break;
              }
-            $param = $item;
             $sql = $selectSTMT1;
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam($selectBind1, $param, PDO::PARAM_STR);
+            $param = $item;
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $count = $stmt->rowCount();
             if(!$count > 0) {
-                $this->response->addTo("errorGameMessage", "The item you are trying to buy does not exists!");
+                $this->gameMessage("ERROR: The item you are trying to buy does not exists!", true);
                 return false;
             }
             switch($shop) {
@@ -88,20 +105,20 @@
                     $mineral = $row['wheel'] . ' bar';
                     $mineral_amount = get_item($this->session['inventory'], $mineral)['amount'];
                     if($mineral_amount < $row['mineral_amount']) {
-                        $this->response->addTo("errorGameMessage", "You don't have enough {$mineral}s to buy this!");
+                        $this->gameMessage("ERROR: You don't have enough {$mineral}s to buy this!", true);
                         return false;
                     }
                     $wood = $row['wood'] . ' log';
                     $wood_amount = get_item($this->session['inventory'], $wood)['amount'];
                     if($wood_amount < $row['wood_amount']) {
-                        $this->response->addTo("errorGameMessage", "You don't have enough {$wood}s to buy this!");
+                        $this->gameMessage("ERROR: You don't have enough {$wood}s to buy this!", true);
                         return false;
                     }
                     $boughtMessage = "You bought a {$item} cart for {$row['wood_amount']} {$mineral} and {$row['wood_amount']} {$wood}";
                     break;
                 case 'horse':
                     if($row['value'] > $this->session['gold'] && $shop == 'horse') {
-                        $this->response->addTo("errorGameMessage", "You don't have enough gold to buy this item!");
+                        $this->gameMessage("ERROR: You don't have enough gold to buy this item!", true);
                         return false;
                     }
                     break;
@@ -109,14 +126,14 @@
             }
         
             if(!$row[$city] > 0 ) {
-                $this->response->addTo("errorGameMessage", "There are none left of this item in stock");
+                $this->gameMessage("ERROR: There are none left of this item in stock", true);
                 return false;
             }
             //Check if user has a horse already, if so 80% of the price will be refunded.
-            $param_username = $this->username;
             $sql = $selectSTMT2;
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_username = $this->username;
             $stmt->execute();
             $row_count = $stmt->rowCount();
             $row2 = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -156,23 +173,25 @@
                         }
                         break;
                 }
-                $param_item = $item;
-                $param_city_amount = $newStoreAmount;
                 //Update store
                 $sql3 = $updateSTMT3;
                 $stmt3 = $this->db->conn->prepare($sql3);
                 $stmt3->bindParam(":city", $param_city_amount, PDO::PARAM_STR);
                 $stmt3->bindParam($selectBind1, $param_item, PDO::PARAM_STR);
+                $param_item = $item;
+                $param_city_amount = $newStoreAmount;
                 $stmt3->execute();
                 
                 $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->response->addTo("errorGameMessage", $this->errorHandler->catchAJAX($this->db, $e));
+                $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
             $this->db->closeConn();
-            $this->response->addTo("gameMessage", $boughtMessage);
+            if($shop == 'cart') {
+            }
+            $this->gameMessage($boughtMessage, true);
         }
     }
 ?>

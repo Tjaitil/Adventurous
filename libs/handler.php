@@ -2,6 +2,7 @@
     class handler {
         private $parent_dir = '../';
         function __construct($model = false) {
+            require($this->parent_dir . '/root/db.php');
             require_once($this->parent_dir . '/root/routes.php');
             require_once($this->parent_dir . 'root/autoloader.php');
             require_once($this->parent_dir . 'root/config.php');

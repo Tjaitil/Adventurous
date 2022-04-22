@@ -36,56 +36,58 @@
             else {
                 $material = strtolower(explode(" ", $POST['item'][0]));
                 if(in_array($material, $materials) == false) {
-                    $this->response->addTo("errorGameMessage", "You are not allowed to fletch from that material");
+                    $this->gameMessage("ERROR: You are not allowed to fletch from that material", true);
                     return false;
                 }
                 $log = $material . ' log';
             }
-            $param_item = $log;
-            $param_username = $this->username;
+    
             $sql = "SELECT item, amount FROM inventory WHERE item=:item AND username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_item = $log;
+            $param_username = $this->username;
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             if(!$stmt->rowCount() > 0) {
-                $this->response->addTo("errorGameMessage", "You missing one or more items in your inventory");
+                $this->gameMessage("ERROR: You missing one or more items in your inventory", true);
                 return false;
             }
         
-            $param_item = $item;
             $sql = "SELECT wood_required, level, cost FROM armory_items_data WHERE item=:item";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
+            $param_item = $item;
             $stmt->execute();
             $row2 = $stmt->fetch(PDO::FETCH_ASSOC);
             if(!$stmt->rowCount() > 0) {
-                $this->response->addTo("errorGameMessage", "That item does not exist!");
+                $this->gameMessage("ERROR: That item does not exist!", true);
                 return false;
             }
             if($row2['level'] > $this->session['miner']['level']) {
-                $this->response->addTo("errorGameMessage", "Your level is too low");
+                $this->gameMessage("ERROR: Your level is too low", true);
                 return false;
             }
             
             if($item === 'unfinished arrow') {
                 $item_data = get_item($this->session['inventory'], 'feather');
                 if(!$item_data['amount'] < 0 || $item_data['amount'] < $amount) {
-                    $this->response->addTo("errorGameMessage", "You don't have enough feathers in your inventory");
+                    $this->gameMessage("ERROR: You don't have enough feathers in your inventory", true);
                     return false;    
                 }
             }
 
             $materials_needed = $row2['wood_required'] * $amount;
+            var_dump($materials_needed);
             if($materials_needed > $row['amount']) {
-                $this->response->addTo("errorGameMessage", "You dont have enough {$material}");
+                $this->gameMessage("ERROR! You dont have enough {$material}", true);
                 return false;
             }
             
             $cost = $row2['cost'] * $amount;
             if($this->session['gold'] < $cost) {
-                $this->response->addTo("errorGameMessage", "You don't have enough gold");
+                $this->gameMessage("ERROR! You don't have enough gold", true);
                 return false;
             }
     
@@ -116,7 +118,7 @@
                 $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->response->addTo("errorGameMessage", $this->errorHandler->catchAJAX($this->db, $e));
+                $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
             $this->db->closeConn();

@@ -11,23 +11,21 @@
         public function getData() {
             $data = array();
             
-            $param_username = $this->username;
             $sql = "SELECT artefact FROM user_data WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_username = $this->username;
             $stmt->execute();
             $data['artefact_data'] = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            $sql = "SELECT permits, location FROM miner WHERE username=:username";
+            $sql = "SELECT permits FROM miner WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             //$param_username already defined in statement 1
             $stmt->execute();
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $data['permits'] = $row['permits'];
             
-            while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $data['permits'][$row['location']] = $row['permits'];
-            }
-                    
             $sql = "SELECT frajrite_items, wujkin_items FROM user_data WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);

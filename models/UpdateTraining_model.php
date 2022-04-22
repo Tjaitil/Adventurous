@@ -13,18 +13,17 @@
             // $POST variable holds the post data
             // This function is called from an AJAX request from armycamp.js
             // Function to update the data of the warrior who has completed training
-
             $warrior_id = $POST['warrior_id'];
-            $param_warrior_id = $warrior_id;
-            $param_username = $this->username;
             $sql = "SELECT training_type FROM warriors WHERE warrior_id=:warrior_id AND username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_warrior_id = $warrior_id;
+            $param_username = $this->username;
             $stmt->execute();
             $count = $stmt->rowCount();
             if(!$count > 0) {
-                $this->response->addTo("errorGameMessage" , "Your soldier is not currently under training");
+                $this->gameMessage("ERROR: Your soldier is not currently under training", true);
                 return false;
             }
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -91,10 +90,10 @@
             $values[':warrior_id'] = $warrior_id;
             $values[':username'] = $this->username;
             
-            $param_training_type = $training_type;
             $sql = "SELECT experience FROM training_type_data WHERE training_type=:training_type";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":training_type", $param_training_type, PDO::PARAM_STR);
+            $param_training_type = $training_type;
             $stmt->execute();
             $warrior_experience = $stmt->fetch(PDO::FETCH_OBJ)->experience;
         
@@ -111,7 +110,7 @@
                 
                 // Only gain xp when warrior level is below 30 or if profiency is warrior
                 if($this->session['warrior']['level'] < 30 || $this->session['profiency'] == 'warrior') { 
-                    $this->response->addTo("levelUP", $this->UpdateGamedata->updateXP('warrior', $warrior_experience));
+                    $this->UpdateGamedata->updateXP('warrior', $warrior_experience);
                 }
                 
                 $stmt4 = $this->db->conn->prepare($sql4);
@@ -120,23 +119,27 @@
                 $this->db->conn->commit();
             }
             catch (Exception $e) {
-                $this->response->addTo("errorGameMessage", $this->errorHandler->catchAJAX($this->db, $e));
+                $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
             $this->db->closeConn();
+            /* Echo order, split by "|"
+             * [0] -> possible level up message;
+             * [1] -> gameMessage
+             */
+            echo "|"; 
             if($training_type === 'general') {
-                $message  = "Warrior training finished. Gained
+                $this->gameMessage("Warrior training finished. Gained
                                    {$parameters['stamina_xp']} stamina xp,
                                    {$parameters['technique_xp']} technique xp,
                                    {$parameters['precision_xp']} precision xp and
-                                   {$parameters['strength_xp']} strength xp. You received {$warrior_experience} warrior xp";   
+                                   {$parameters['strength_xp']} strength xp. You received {$warrior_experience} warrior xp", true);    
             }
             else {
                 $type = $parameters[$training_type . '_xp'];
-                $message = "Warrior training finished. Gained {$type} {$training_type} xp. 
-                                                You received {$warrior_experience} warrior xp";
+                $this->gameMessage("Warrior training finished. Gained {$type} {$training_type} xp. You received {$warrior_experience}
+                                   warrior xp", true);    
             }
-            $this->response->addTo("gameMessage", $message);
         }
     }
 ?>

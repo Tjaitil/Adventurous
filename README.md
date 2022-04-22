@@ -6,10 +6,6 @@ unlock certain advantages.
 Further the player can explore the open world fighting monsters (daqloons) or go on adventures or trade items with players/NPC. Adventures can give rewards that has
 limited access in the normal game. Players are incentivized to go on adventures.
 
-# Future improvements
-- Convert JS files to module
-- Convert backend to Laravel API
-
 # Screenshots from the game:
 ![Skjermbilde 2021-03-06 kl  15 40 19](https://user-images.githubusercontent.com/52608380/110211195-bfeae000-7e95-11eb-9aa4-aca35317c6dc.png)
 ![Skjermbilde 2021-03-06 kl  15 32 24](https://user-images.githubusercontent.com/52608380/110211196-c0837680-7e95-11eb-8be2-99381499d849.png)
