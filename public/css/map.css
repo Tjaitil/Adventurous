@@ -3,15 +3,16 @@
     border-radius: 5px;
     width: 98%;
     height: 600px;
+    max-height: 75vh;
     position: absolute;
-    z-index: 4;
+    z-index: 999;
     visibility: hidden;
     left: 98%;
     transition: left 0.3s ease-out;
 }
 #map_icon_list {
     width: 0%;
-    max-width: 225px;
+    max-width: 180px;
     position: absolute;
     top: 53px;
     left: 0px;
@@ -33,11 +34,18 @@
     margin-left: 1rem;
 }
 #map_container_header {
-    display:  flex;
+    display: flex;
     margin: 0;
     background-color: #f2e6d9;
+    padding-inline: 0.5rem;
+    padding-block: 1rem;
 }
-#map_container h3 {
+#close_map_button {
+    position: relative;
+    top: 0px;
+    bottom: 0px;
+}
+#map_header {
     width: 100%;
 }
 #map_local_img_container {
@@ -50,11 +58,11 @@
     height: 1600px;
 }
 #map_world_img_container {
+    position: relative;
     overflow: scroll;
     height: calc(100% - 27px);
-    display: grid;
+    display: none;
     grid-template-columns: repeat(9, 200px);
-    position: relative;
     background-color: #120e07;
 }
 .world_img {
