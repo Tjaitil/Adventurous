@@ -77,9 +77,9 @@ const gamePieces = {
             this.diameterLeft = this.x;
         },
         checkPosition() {
-            if (this.ypos > 3160 ||
+            if (this.ypos > 3170 ||
                 (this.ypos < 3100 && this.ypos < 10) ||
-                this.xpos > 3160 || (this.xpos < 3100 && this.xpos < 10)) {
+                this.xpos > 3170 || (this.xpos < 3170 && this.xpos < 10)) {
                 return true;
             } else {
                 return false;
