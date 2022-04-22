@@ -120,7 +120,7 @@
                             <div id="map_type_toggle_overlay"></div>
                             <img id="toggle_world_image" src="<?php echo constant("ROUTE_IMG") . 'globe.png' ?>" />
                         </div>
-                        <h3> Local map </h3>
+                        <h2 id="map_header"> Local map </h2>
                         <img id="close_map_button" class="cont_exit" src="<?php echo constant("ROUTE_IMG") . 'exit.png'; ?>" width="20px" height="20px" />
                     </div>
                     <div id="map_icon_list">
