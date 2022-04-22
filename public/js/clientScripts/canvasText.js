@@ -1,39 +1,3 @@
-// game.canvasText = {
-//     textDrawn: false,
-//     intervalID: 0,
-//     gameText: document.getElementById("game_text"),
-//     showText(text, timer = true, textDrawn = false) {
-//         if(textDrawn === false) {
-//             let canvas = document.getElementById("game_canvas");
-//             this.gameText.style.top = canvas.offsetTop + 50 + "px";
-//             this.gameText.innerHTML = text;
-//             this.gameText.style.left = (game.properties.canvasWidth / 2) - (this.gameText.offsetWidth / 2) + "px";
-//             this.gameText.style.opacity = 1;
-//             /*this.intervalID = setInterval(this.changeTextOpactiy, 100);*/
-//             // Set textDrawn status to true so it can be cleared
-//             this.textDrawn = true;
-//         }
-//         if(timer == true) {
-//             // Set textDrawn to false, so that hideText wont be called from viewport.drawEdge
-//             this.textDrawn = false;
-//             setTimeout(this.hideText, 3000);    
-//         }
-//     },
-//     hideText() {
-//         this.textDrawn = false;
-//         console.log('hideText');
-//         game.canvasText.gameText.style.opacity = 0;
-//         setTimeout(function() {
-
-//         game.canvasText.gameText.innerHTML = "";}, 500);
-//     },
-//     changeTextOpactiy() {
-//         let opacity = game.canvasText.gameText.style.opacity = Number(game.canvasText.gameText.style.opacity) + 0.1;
-//         if(opacity > 1) {
-//             clearInterval(game.canvasText.intervalID);
-//         }
-//     }
-// };
 const canvasTextHeader = {
     opacity: 0.0,
     intervalID: null,
@@ -57,19 +21,18 @@ const canvasTextHeader = {
             clearInterval(canvasTextHeader.intervalID);
         }
     },
-    draw: function () {
-        game.properties.textContext.clearRect(0, 0, game.properties.canvasWidth, game.properties.canvasHeight);
+    draw() {
+        viewport.layer.text.clearRect(0, 0, viewport.width, viewport.height);
         let contentY = game.properties.canvasHeight * 0.15;
-        game.properties.textContext.fillStyle = "rgba(38, 38, 38," + this.opacity + ")";
-        game.properties.textContext.fillRect(0, contentY, game.properties.canvasWidth, 200);
-        game.properties.textContext.fillStyle = "rgba(255,255,255" + this.opacity + ")";
-        game.properties.textContext.font = "35px Times New Roman";
-        game.properties.textContext.textAlign = "center";
-        game.properties.textContext.fillText(jsUcfirst(this.text), game.properties.canvasWidth * 0.50 - 20, contentY + 100);
+        viewport.layer.text.fillStyle = "rgba(38, 38, 38," + this.opacity + ")";
+        viewport.layer.text.fillRect(0, contentY, viewport.width, 200);
+        viewport.layer.text.fillStyle = "rgba(255,255,255" + this.opacity + ")";
+        viewport.layer.text.font = "35px Times New Roman";
+        viewport.layer.text.textAlign = "center";
+        viewport.layer.text.fillText(jsUcfirst(this.text), viewport.width * 0.50 - 20, contentY + 100);
     },
-    unsetDraw: function () {
-        console.log('unsetDraw');
-        game.properties.textContext.clearRect(0, 0, game.properties.canvasWidth, game.properties.canvasHeight);
+    unsetDraw() {
+        viewport.layer.text.clearRect(0, 0, viewport.width, viewport.height);
         this.opacity = 0;
     }
 };
@@ -96,12 +59,12 @@ const loadingCanvas = {
         }
     },
     loadingScreen() {
-        game.properties.textContext.fillStyle = "black";
-        game.properties.textContext.fillRect(0, 0, game.properties.canvasWidth, game.properties.canvasHeight);
-        game.properties.textContext.font = "30px Comic Sans MS";
-        game.properties.textContext.fillStyle = "white";
-        game.properties.textContext.textAlign = "center";
-        game.properties.textContext.fillText("Loading ...", game.properties.canvasWidth / 2, game.properties.canvasHeight / 2);
+        viewport.layer.text.fillStyle = "black";
+        viewport.layer.text.fillRect(0, 0, game.properties.canvasWidth, game.properties.canvasHeight);
+        viewport.layer.text.font = "30px Comic Sans MS";
+        viewport.layer.text.fillStyle = "white";
+        viewport.layer.text.textAlign = "center";
+        viewport.layer.text.fillText("Loading ...", game.properties.canvasWidth / 2, game.properties.canvasHeight / 2);
     },
     drawCurtain() {
         if (this.opacity < 0 && this.curtainEffect === 'open') {
@@ -134,10 +97,9 @@ const loadingCanvas = {
                 this.opacity += 0.02;
             }
         }
-        game.properties.textContext.fillStyle = "rgba(0, 0, 0, " + this.opacity + ")";
-        game.properties.textContext.clearRect(0, 0, game.properties.canvasWidth, game.properties.canvasHeight);
-        game.properties.textContext.fillRect(0, 0, game.properties.canvasWidth, game.properties.canvasHeight);
-        
+        viewport.layer.text.fillStyle = "rgba(0, 0, 0, " + this.opacity + ")";
+        viewport.layer.text.clearRect(0, 0, viewport.width, viewport.height);
+        viewport.layer.text.fillRect(0, 0, viewport.width, viewport.height);
         this.intervalID = window.requestAnimationFrame(() => this.drawCurtain());
     }
 }
