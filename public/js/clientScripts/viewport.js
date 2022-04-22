@@ -96,7 +96,6 @@ const viewport = {
     },
     init() {
         this.drawBackground();
-        this.drawEdge();
         this.checkViewportGamePieces(true);
     },
     drawBackground(xMovement, yMovement) {
@@ -111,13 +110,21 @@ const viewport = {
         this.layer.player.drawImage(img, spriteX, spriteY,
             sWidth, sHeight, this.charX, this.charY, width, height);
     },
-    drawEdge() {
-        if (gamePieces.player.ypos > 3160 ||
-            (gamePieces.player.ypos < 3100 && gamePieces.player.ypos < 10) ||
-            gamePieces.player.xpos > 3160 ||
-            (gamePieces.player.xpos < 3100 && gamePieces.player.xpos < 10)) {
-            game.getNextMap();
+    resetObjectLayer() {
+        this.layer.frontObjects.clearRect(0, 0, this.width, this.height);
+    },
+    drawObject(layer, img, spriteX, spriteY, width, height) {
+        if(!['background','frontObjects'].includes(layer)) return false;
+        if(layer === "background") {
+            this.layer.background.drawImage(img, spriteX, spriteY, width, height);
+        } else if(layer === "frontObjects") {
+            this.layer.frontObjects.drawImage(img, spriteX, spriteY, width, height);
         }
+    },
+    drawText(font, fillStyle, text, x, y) {
+        this.layer.font = font;
+        this.layer.fillStyle = fillStyle;
+        this.layer.text(text, x, y);
     },
     checkViewportGamePieces(first = true) {
         // If player has moved a certain amount of pixels update object that will be drawn
