@@ -3,7 +3,63 @@ const controls = {
         playerUp: false,
         playerRight: false,
         playerDown: false,
-        e: null,
+        checkPlayerMovement() {
+            gamePieces.player.speedX = 0;
+            gamePieces.player.speedY = 0;
+            if (this.playerLeft === true) {
+                gamePieces.player.speedX = - gamePieces.player.speed;
+            }
+            if (this.playerRight === true) {
+                gamePieces.player.speedX = gamePieces.player.speed;
+            }
+            if (this.playerUp === true) {
+                gamePieces.player.speedY = - gamePieces.player.speed;
+            }
+            if (this.playerDown === true) {
+                gamePieces.player.speedY = gamePieces.player.speed;
+            }
+        },
+        e(mouseX = false, mouseY = false) {
+            if(tutorial.onGoing) {
+                gameLogger.addMessage("This building can not be accessed on tutorial island");
+                gameLogger.logMessages();
+            }
+            if (game.properties.inBuilding != true && game.properties.device == "pc") {
+                for (i = 0; i < gamePieces.buildings.length; i++) {
+                    let object = gamePieces.buildings[i];
+                    if (gamePieces.player.ypos > object.diameterUp && gamePieces.player.ypos < object.diameterDown &&
+                        gamePieces.player.xpos > object.diameterLeft && gamePieces.player.xpos < object.diameterRight &&
+                        Math.abs(gamePieces.player.ypos - object.diameterDown) < 32) {
+                        if (game.properties.inBuilding == false) {
+                            inputHandler.fetchBuilding(object.src.split(".png")[0]);
+                        }
+                        break;
+                    }
+                }
+            }
+            else if (game.properties.inBuilding != true && game.properties.device == "mobile") {
+                console.log('check building');
+                let element = document.getElementById("text_canvas");
+                let ElementPos = element.getBoundingClientRect();
+                // Remove elementPos of the canvas so that 0.0 is in up-left corner
+                mouseY = mouseY - ElementPos.top;
+                mouseX = mouseX - ElementPos.left;
+                let x = mouseX + (gamePieces.player.xpos - (viewport.width / 2) + 32);
+                let y = mouseY + (gamePieces.player.ypos - (viewport.height / 2));
+                let result = false;
+                for (i = 0; i < gamePieces.buildings.length; i++) {
+                    object = gamePieces.buildings[i];
+                    if (y > object.diameterUp && y < object.diameterDown &&
+                        x > object.diameterLeft && x < object.diameterRight &&
+                        Math.abs(gamePieces.player.ypos - object.diameterDown) < 32) {
+                        result = true;
+                        inputHandler.fetchBuilding(object.src.split(".png")[0]);
+                        break;
+                    }
+                }
+                return result;
+            }
+        },
         w: null,
         x: null,
         p: null,
@@ -123,20 +179,20 @@ const controls = {
             if(window.screen.width > 830 ||
             (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) == false)) {
                 document.getElementById("control").style.display = "none";
-                game.properties.actionText = "Press x";
-                game.properties.enterText = "E - Enter building";
-                game.properties.enterButton = "E -";
-                game.properties.personText = "W - talk to ";
-                game.properties.personButton = "W -";
-                game.properties.device = "pc";
+                controls.actionText = "Press x";
+                controls.enterText = "E - Enter building";
+                controls.enterButton = "E -";
+                controls.personText = "W - talk to ";
+                controls.personButton = "W -";
+                controls.device = "pc";
             }
             else {
-                game.properties.actionText = "Double tap";
-                game.properties.enterText = "Tap on building to enter";
-                game.properties.enterButton = "Tap on";
-                game.properties.personText = "Tap on screen to talk";
-                game.properties.personButton = "Tap on";
-                game.properties.device = "mobile";
+                controls.actionText = "Double tap";
+                controls.enterText = "Tap on building to enter";
+                controls.enterButton = "Tap on";
+                controls.personText = "Tap on screen to talk";
+                controls.personButton = "Tap on";
+                controls.device = "mobile";
             }
             if(game.properties.device === "mobile") {
                 document.getElementById("text_canvas").addEventListener("click", 
@@ -160,7 +216,6 @@ const controls = {
                             console.log(clientY);
                             clickTimer = setTimeout(function() {
                                 // Single tap
-                                console.log('single tap');
                                 let check = inputHandler.checkBuilding(clientX, clientY);
                                 if(check == false) {
                                     inputHandler.checkCharacter();
@@ -181,7 +236,6 @@ const controls = {
                 document.getElementById("control").addEventListener("touchend", controls.endMobileMove);   
             }
             // Set controls
-            controls.e = inputHandler.checkBuilding;
             controls.w = inputHandler.checkCharacter;
             controls.x = game.getNextMap;
             controls.p = function() {
@@ -268,5 +322,4 @@ const controls = {
                 }
             }, false);
     },
-    
 };
