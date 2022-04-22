@@ -1,6 +1,5 @@
 <?php
     require('root/routes.php');
-    require('root/db.php');
     require('root/autoloader.php');
     require('root/config.php');
     $autoloader = new autoloader();
