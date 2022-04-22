@@ -213,15 +213,15 @@
              "name":"",
              "objects":[
                     {
-                     "height":113.334,
+                     "height":118.666666666667,
                      "id":1,
                      "name":"",
                      "rotation":0,
                      "type":"",
                      "visible":true,
                      "width":224,
-                     "x":4.66667,
-                     "y":117.333
+                     "x":4.66666666666666,
+                     "y":117.333333333333
                     }],
              "opacity":1,
              "type":"objectgroup",
@@ -249,7 +249,7 @@
         }, 
         {
          "id":19,
-         "image":"citycentre.png",
+         "image":"city centre.png",
          "imageheight":256,
          "imagewidth":256,
          "objectgroup":
@@ -376,11 +376,6 @@
          "imagewidth":64,
          "properties":[
                 {
-                 "name":"path",
-                 "type":"object",
-                 "value":0
-                }, 
-                {
                  "name":"type",
                  "type":"string",
                  "value":"teleport"
@@ -477,41 +472,17 @@
          "id":34,
          "image":"stockpile desert.png",
          "imageheight":128,
-         "imagewidth":128,
-         "properties":[
-                {
-                 "name":"src",
-                 "type":"string",
-                 "value":"stockpile desert.png"
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"buildiing"
-                }],
-         "type":"object"
+         "imagewidth":128
         }, 
         {
          "id":35,
          "image":"merchant desert.png",
          "imageheight":128,
-         "imagewidth":128,
-         "properties":[
-                {
-                 "name":"src",
-                 "type":"string",
-                 "value":"merchant.png"
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"building"
-                }],
-         "type":"object"
+         "imagewidth":128
         }, 
         {
          "id":36,
-         "image":"house3 tudor.png",
+         "image":"house4 tudor.png",
          "imageheight":128,
          "imagewidth":128
         }, 
@@ -519,50 +490,19 @@
          "id":37,
          "image":"house6 desert.png",
          "imageheight":128,
-         "imagewidth":128,
-         "properties":[
-                {
-                 "name":"src",
-                 "type":"string",
-                 "value":"house6 desert.png"
-                }],
-         "type":"object"
+         "imagewidth":128
         }, 
         {
          "id":38,
          "image":"market desert.png",
          "imageheight":128,
-         "imagewidth":128,
-         "properties":[
-                {
-                 "name":"src",
-                 "type":"string",
-                 "value":"market.png"
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"building"
-                }],
-         "type":"object"
+         "imagewidth":128
         }, 
         {
          "id":39,
          "image":"adventure base desert.png",
          "imageheight":128,
-         "imagewidth":128,
-         "properties":[
-                {
-                 "name":"src",
-                 "type":"string",
-                 "value":"adventure base.png"
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"building"
-                }],
-         "type":"object"
+         "imagewidth":128
         }],
  "tilewidth":256,
  "type":"tileset",

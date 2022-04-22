@@ -3,22 +3,22 @@
         protected $db;
         protected $UpdateGamedata;
         protected $ArtefactModel;
-        protected $hungerModel;
         protected $errorHandler;
-        public $response;
         // $updateGamedata is the variable that holds updateGamedata_model if it is being instantiated with $this->loadModel from foo_model
         // $Artefact_model is the variable that holds updateGamedata_model if it is being instantiated with $this->loadModel from foo_model
         function __construct() {
             $this->includeDB();
             $this->errorHandler = new errorhandler();
-            $this->response = new response();
         }
-        public function checkHunger() {
-            if($this->session['hunger'] > 14) {
-                return true;
-            } else {
-                $this->response->addTo('gameMessage', "Your hunger is too high, please eat!", array("error" => true));
-                return false;
+        public function gameMessage($message, $ajax = false) {
+            $date = '[' . date("H:i:s") . '] ';
+            if($ajax != false) {
+                echo $date . $message;
+            }
+            $_SESSION['log'][] = $date . $message;
+            if(count($_SESSION['log']) > 15) {
+                unset($_SESSION['log'][0]);
+                $_SESSION['log'] = array_values($_SESSION['log']);
             }
         }
         protected function includeDB() {
@@ -26,16 +26,13 @@
                 $this->db = new database();
             }
         }
-        protected function commonModels($UpdateGamedata = false, $ArtefactModel = false, $hungerModel = false) {
+        protected function commonModels($UpdateGamedata = false, $ArtefactModel = false) {
             // Load common models
             if($UpdateGamedata === true) {
                 $this->UpdateGamedata = $this->loadModel('UpdateGamedata', true, true);
             }
             if($ArtefactModel === true) {
                 $this->ArtefactModel = $this->loadModel('Artefact', true);
-            }
-            if($hungerModel === true) {
-                $this->hungerModel = $this->loadModel('Hunger', true, true);
             }
         }
         protected function loadModel($model, $directoryUP = true, $db = false) {
@@ -50,7 +47,7 @@
                 }
             }
             else {
-                $this->errorHandler->reportError('model', false, 'model not found' . $model, false);
+                $this->reportError('model', false, 'model not found' . $model, false);
             }
         }
     }

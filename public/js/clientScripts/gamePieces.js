@@ -1,4 +1,3 @@
-
 const gamePieces = {
     events: [],
     obstacles: [],
@@ -10,8 +9,8 @@ const gamePieces = {
     characters: [],
     daqloon_fighting_area: [],
     player: {
-        width: 32 * 1.05,
-        height: 32 * 1.05,
+        width: 32,
+        height: 32,
         speedX: 0,
         speedY: 0,
         speed: 1.5,
@@ -30,7 +29,7 @@ const gamePieces = {
         left: "open",
         down: "open",
         right: "open",
-        playerSize: 32 * 1.05,
+        playerSize: 32,
         diameterUp: this.y,
         diameterRight: this.x + this.width - 5,
         diameterDown: this.y + 28,
@@ -61,28 +60,24 @@ const gamePieces = {
         regenerateCoundown: false,
         // imageFix to adjust character sprite not being in 32 x 32 format
         imageFix: 0,
-        setup() {
+        load() {
             this.setHuntedStatus(false);
-            this.character.src = "public/images/character1.png";
-            this.characterAttack.src = "public/images/character attack2.png";
-        },
-        load(xbase, ybase, nearestDaqloon) {
-            this.xMovement = 0;
-            this.yMovement = 0;
-            this.attackedBy = nearestDaqloon;
-            this.x = xbase;
-            this.y = ybase;
-            this.diameterUp = this.y + 20;
-            this.diameteRight = this.x + this.width;
-            this.diameterDown = this.y + this.height;
-            this.diameterLeft = this.x;
         },
         startCombat() {
         },
         takeDamage(damage) {
             if (isNaN(damage) || damage === 0) return false;
             // Draw sprite that takes damage
-            viewport.drawPlayer(this.characterAttack, 41 * 2, 38 * 1, 32, 32, this.playerSize, this.playerSize);
+            game.properties.context2.clearRect(0, 0, 700, 700);
+            game.properties.context2.drawImage(this.characterAttack,
+                41 * 2,
+                38 * 1,
+                32,
+                32,
+                game.properties.charX,
+                game.properties.charY,
+                this.playerSize,
+                this.playerSize);
             this.health -= damage;
             progressBar.calculateProgress(document.getElementById("health_progressBar"),
                 (this.health > 0 ? this.health : 0), 100, false);
@@ -114,13 +109,23 @@ const gamePieces = {
             }
         },
         draw() {
+            game.properties.context2.clearRect(0, 0, 700, 700);
             if (this.combat === true) {
-                viewport.drawPlayer(this.characterAttack, (41 * this.loopIndex) + this.imageFix, 38 * this.indexY,
-                                    32, 32, this.playerSize, this.playerSize);
+                game.properties.context2.drawImage(this.characterAttack,
+                    (41 * this.loopIndex) + this.imageFix,
+                    38 * this.indexY,
+                    32,
+                    32,
+                    game.properties.charX,
+                    game.properties.charY,
+                    this.playerSize,
+                    this.playerSize);
             }
             else {
-                viewport.drawPlayer(this.character, this.indexX * this.loopIndex, this.indexY, 32, 32, 
-                                    this.playerSize, this.playerSize)
+                game.properties.context2.clearRect(0, 0, 700, 700);
+                game.properties.context2.drawImage(this.character, this.indexX * this.loopIndex, this.indexY,
+                    32, 32,
+                    game.properties.charX, game.properties.charY, this.playerSize, this.playerSize);
             }
         },
         drawCooldown() {
@@ -138,6 +143,7 @@ const gamePieces = {
             }
         },
         regenerateHealth() {
+            console.log('regenerateHealth');
             if(this.health <= 0) return;
             (this.health + 10 > 100) ? this.health = 100 : this.health += 10;
             progressBar.calculateProgress(document.getElementById("health_progressBar"),
@@ -145,6 +151,7 @@ const gamePieces = {
             this.regenerateCoundown = false;
         },
         newPos(newPos = true) {
+            game.properties.context2 = game.properties.context2;
             if(this.health < 100 && this.regenerateCoundown === false) {
                 this.regenerateCoundown = true;
                 setTimeout(() => this.regenerateHealth(), 7000);
@@ -163,10 +170,10 @@ const gamePieces = {
                 game.properties.xMapMax = this.xpos + 320;
                 game.properties.yMapMin = this.ypos - 320;
                 game.properties.yMapMax = this.ypos + 320;
-                this.diameterUp = this.ypos + 20;
-                this.diameterRight = this.xpos + this.width - 4;
-                this.diameterDown = this.ypos + this.height;
-                this.diameterLeft = this.xpos + 4;
+                gamePieces.player.diameterUp = this.ypos + 20;
+                gamePieces.player.diameterRight = this.xpos + this.width - 4;
+                gamePieces.player.diameterDown = this.ypos + this.height;
+                gamePieces.player.diameterLeft = this.xpos + 4;
             }
             if (this.combat === true) {
                 let newDirection = 'none';
@@ -305,59 +312,11 @@ const gamePieces = {
             this.oldXbase = gamePieces.player.xpos;
         }
     },
-    loadAssets(xbase, ybase, mapData) {
-        this.loadStaticPieces();
-        this.loadDaqloonFightingArea(mapData['daqloon_fighting_areas']);
-        this.player.load(xbase, ybase, getNearestDaqloon());
-    },
-    loadDaqloonFightingArea(daqloonFightingAreas) {
-        if (typeof (daqloonFightingAreas) !== "undefined") {
-            this.daqloon_fighting_area = daqloonFightingAreas[0];
-            checkDaqloon(gamePieces.daqloon_fighting_area.daqloon_amount);
-        }
-        else {
-            this.daqloon_fighting_area = [];
-            this.daqloon = [];
-            document.getElementById("HUD_hunted_locater").innerHTML = "";
-        }
-    },
-    loadStaticPieces() {
-        for(var i = 0; i < this.objects.length; i++) {
-            if (this.objects[i].src != undefined && this.objects[i].src.length > 1) {
-                if (this.objects[i].type === 'character') {
-                    this.objects[i].width = 38;
-                    this.objects[i].height = 38;
-                    this.objects[i].x -= 6;
-                    this.objects[i].y -= 6;
-                }
-                this.objects[i].img = new Image();
-                if (this.objects[i].src.indexOf('.png') == -1) this.objects[i].src += '.png';
-                this.objects[i].img.src = "public/images/" + this.objects[i].src;
-
-
-            }
-            this.objects[i].width *= viewport.scale;
-            this.objects[i].height *= viewport.scale;
-            this.objects[i].drawX = Math.round(this.objects[i].x - viewport.offsetX);
-            this.objects[i].drawY = Math.round(this.objects[i].y - viewport.offsetY);
-            if (this.objects[i].type == "building") {
-                this.buildings.push(this.objects[i]);
-            }
-            else if (this.objects[i].type == "character") {
-                this.characters.push(this.objects[i]);
-            }
-        }
-        this.objects.sort((a, b) => { return a.diameterDown - b.diameterDown; });
-    },
-    init() {
-        this.drawStaticPieces();
-    },
     drawStaticPieces() {
         // buildingMatch variable is to check if there is at building that the player can enter
         let buildingMatch = false;
         let personMatch = false;
         let person = null;
-        game.properties.context4.clearRect(0, 0, game.properties.canvasWidth, game.properties.canvasHeight);
         for(let i = 0; i < gamePieces.visibleObjects.length; i++) {
             // console.log(gamePieces.visibleObjects[i]);
             if(gamePieces.visibleObjects[i].visible === true && gamePieces.visibleObjects[i].type !== "figure" &&  
@@ -402,16 +361,16 @@ const gamePieces = {
             }
         }
         if (buildingMatch === true) {
-            document.getElementById("control_text_building").innerHTML = controls.enterText;
+            document.getElementById("control_text_building").innerHTML = game.properties.enterText;
         }
         else {
-            document.getElementById("control_text_building").innerHTML = controls.enterButton;
+            document.getElementById("control_text_building").innerHTML = game.properties.enterButton;
         }
         if (personMatch === true) {
-            document.getElementById("control_text_conversation").innerHTML = controls.personText + " " + person;
+            document.getElementById("control_text_conversation").innerHTML = game.properties.personText + " " + person;
         }
         else {
-            document.getElementById("control_text_conversation").innerHTML = controls.personButton;
+            document.getElementById("control_text_conversation").innerHTML = game.properties.personButton;
         }
         if(draw === true) {
             for(let i = 0; i < gamePieces.visibleObjects.length; i++) {
@@ -432,4 +391,3 @@ const gamePieces = {
         }
     }
 };
-window.gamePieces = gamePieces;

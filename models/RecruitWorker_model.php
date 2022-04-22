@@ -9,10 +9,7 @@
             $this->session = $session;
             $this->commonModels(true, false);
         }
-        public function recruitWorker($POST) {
-            $type = $POST['type'];
-            $level = $POST['level'];
-
+        public function recruitWorker($type, $level = false) {
             // AJAX function
             switch($type) {
                 case "farmer":
@@ -45,14 +42,14 @@
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            $param_username = $this->username;
             $stmt2 = $this->db->conn->prepare($sql2);
             $stmt2->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_username = $this->username;
             $stmt2->execute();
             $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
             
             if($row[$column] >= $row2[$column2]) {
-                $this->respnose->addTo("errorGameMessage", "You need to level up before recruiting more");
+                $this->gameMessage("ERROR: You need to level up before recruiting more", true);
                 return false;
             }
             if($type == 'warrior') {
@@ -74,29 +71,29 @@
                     $warrior_xp = 0;
                 }
             }
-            $param_type = $type;
             $sql = "SELECT price FROM tavern_prices WHERE type=:type";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":type", $param_type, PDO::PARAM_STR);
+            $param_type = $type;
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             
             if($row['price'] > $this->session['gold']) {
-                $this->response->addTo("errorGameMessage", "You don't have enough gold");
+                $this->gameMessage("ERROR: You don't have enough gold", true);
                 return false;
             }
         
-            $param_city = $this->session['location'];
-            $param_level = $level;
-            $param_username = $this->username;
             $sql = "SELECT type, level FROM tavern_workers WHERE city=:city AND username=:username AND level=:level";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":city", $param_city, PDO::PARAM_STR);
             $stmt->bindParam(":level", $param_level, PDO::PARAM_INT); 
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_city = $this->session['location'];
+            $param_level = $level;
+            $param_username = $this->username;
             $stmt->execute();
             if(!$stmt->rowCount() > 0) {
-                $this->response->addTo("errorGameMessage", "The worker you are trying to recruit does not exists!");
+                $this->gameMessage("ERROR: The worker you are trying to recruit does not exists!", true);
                 return false;
             }
             $row4 = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -105,39 +102,37 @@
                 $this->db->conn->beginTransaction();
                 
                 if(in_array($type, array('farmer', 'miner')) == true) {
-                    $param_workforce_total = $row2['workforce_total'] + 1;
-                    $param_avail_workforce = $row2['avail_workforce'] + 1;
-                    $param_username = $this->username;
                     $sql = "UPDATE {$type}_workforce SET workforce_total=:workforce_total, avail_workforce=:avail_workforce
                             WHERE username=:username";
                     $stmt = $this->db->conn->prepare($sql);
                     $stmt->bindParam(":workforce_total", $param_workforce_total, PDO::PARAM_STR);
                     $stmt->bindParam(":avail_workforce", $param_avail_workforce, PDO::PARAM_STR);
                     $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                    $param_workforce_total = $row2['workforce_total'] + 1;
+                    $param_avail_workforce = $row2['avail_workforce'] + 1;
+                    $param_username = $this->username;
                     $stmt->execute();
                 }
                 else {
-                    $param_warrior_amount = $row2['warrior_amount'] + 1;
                     $sql = "UPDATE warrior SET warrior_amount=:warrior_amount WHERE username=:username";
                     $stmt = $this->db->conn->prepare($sql);
                     $stmt->bindParam(":warrior_amount", $param_warrior_amount, PDO::PARAM_STR);
                     $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                    $param_warrior_amount = $row2['warrior_amount'] + 1;
                     $param_username = $this->username;
                     $stmt->execute();
-                    
-                    $param_username = $this->username;
-                    $param_warrior_id = $row3['MAX(warrior_id)'] + 1;
-                    $param_type = $type;
+                
                     $sql2 = "INSERT INTO warriors (username, warrior_id, type)
                             VALUES(:username, :warrior_id, :type)";
                     $stmt2 = $this->db->conn->prepare($sql2);
                     $stmt2->bindParam(":username", $param_username, PDO::PARAM_STR);
                     $stmt2->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);
                     $stmt2->bindParam(":type", $param_type, PDO::PARAM_STR);
+                    $param_username = $this->username;
+                    $param_warrior_id = $row3['MAX(warrior_id)'] + 1;
+                    $param_type = $type;
                     $stmt2->execute();
                     
-                    $param_level = $level;
-                    $param_xp = $warrior_xp;
                     $sql3 = "INSERT INTO warriors_levels (username, warrior_id, stamina_level,  stamina_xp, technique_level, technique_xp.
                              precision_level, precision_xp, strength_level, strength_xp)
                              VALUES(:username, :warrior_id, :stamina_level, :stamina_xp, :technique_level, :technique_xp, :precision_level,
@@ -154,6 +149,8 @@
                     $stmt3->bindParam(":strength_level", $param_level, PDO::PARAM_INT);
                     $stmt3->bindParam(":strength_xp", $param_xp, PDO::PARAM_INT);
                     // $param_username and $param_warrior_id is already defined in statement 1
+                    $param_level = $level;
+                    $param_xp = $warrior_xp;
                     $stmt3->execute();
                     
                     $sql4 = "INSERT INTO warrior_armory (username, warrior_id) VALUES(:username, :warrior_id)";
@@ -179,18 +176,16 @@
                 $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->response->addTo("errorGameMessage", $this->errorHandler->catchAJAX($this->db, $e));
+                $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
             $this->db->closeConn();
-            
             if(in_array($type, array('melee', 'ranged')) == true) {
-                $message = "You just recruited a {$type} warrior";
+                $this->gameMessage("You just recruited a {$type} warrior", true);
             }
             else {
-                $message = "You just recruited a {$type}, true";
+                $this->gameMessage("You just recruited a {$type}, true", true);
             }
-            $this->response->addTo("gameMessage", $message);
         }
     }
 ?>

@@ -1,5 +1,5 @@
             armymissions.css|armymissions.js|
-            <h1 class="page_title"> Army Missions </h1>
+            <h3 class="page_title"> Army Missions </h3>
             <div id="missions" class="cont_close">
                 <button> Back to army camp</button>
                 <div id="current_mission">

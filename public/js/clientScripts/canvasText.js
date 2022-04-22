@@ -57,7 +57,7 @@ const canvasTextHeader = {
             clearInterval(canvasTextHeader.intervalID);
         }
     },
-    draw(context) {
+    draw: function () {
         game.properties.textContext.clearRect(0, 0, game.properties.canvasWidth, game.properties.canvasHeight);
         let contentY = game.properties.canvasHeight * 0.15;
         game.properties.textContext.fillStyle = "rgba(38, 38, 38," + this.opacity + ")";

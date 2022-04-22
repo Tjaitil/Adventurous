@@ -44,7 +44,7 @@
                 $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->response->addTo("errorGameMessage", $this->errorHandler->catchAJAX($this->db, $e));
+                $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
             // Set conversation index
@@ -59,16 +59,16 @@
             // This function is called from an AJAX request from citycentre.js
             // Function to change the active artefact for user
             $artefact = $POST['artefact'];
-            $param_item = $artefact;
-            $param_username = $this->username;
             $sql = "SELECT amount FROM inventory WHERE item=:item AND username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_item = $artefact;
+            $param_username = $this->username;
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             if(!$stmt->rowCount() > 0 || $row['amount'] == 0) {
-                $this->response->addTo("errorGameMessage", "You don't have that artefact in your inventory");
+                $this->gameMessage("ERROR: You don't have that artefact in your inventory", true);
                 return false;
             }
             
@@ -94,12 +94,12 @@
             try {
                 $this->db->conn->beginTransaction();
                 
-                $param_artefact = $artefact;
-                $param_username = $this->username;
                 $sql = "UPDATE user_data SET artefact=:artefact WHERE username=:username";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":artefact", $param_artefact, PDO::PARAM_STR);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                $param_artefact = $artefact;
+                $param_username = $this->username;
                 $stmt->execute();
                 
                 if($charges > 0) {
@@ -112,7 +112,7 @@
                 $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->response->addTo("errorGameMessage", $this->errorHandler->catchAJAX($this->db, $e));
+                $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
             $this->db->closeConn();
@@ -153,10 +153,10 @@
             }
         }
         public function updateArtefact() {
-            $param_username = $this->username;
             $sql = "SELECT artefact FROM user_data WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_username = $this->username;
             $stmt->execute();
             $artefact = $stmt->fetch(PDO::FETCH_OBJ)->artefact;
             
@@ -164,17 +164,17 @@
             $charges = $matches[1] - 1;
             $artefact_sub = trim(explode("(", $artefact)[0]);
             
-            
-            $param_artefact = $artefact_sub . " ({$charges})";
-            $param_username = $this->username;
+                
             $sql = "UPDATE user_data SET artefact=:artefact WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":artefact", $param_artefact, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_artefact = $artefact_sub . " ({$charges})";
+            $param_username = $this->username;
             $stmt->execute();
             
             $_SESSION['gamedata']['artefact'] = $param_artefact;
-            $this->response->addTo("gameMessage", $this->session['artefact'] . " artefact used, charges left: {$charges}");
+            $this->gameMessage($this->session['artefact'] . " artefact used, charges left: {$charges}", true);
         }
     }
 ?>

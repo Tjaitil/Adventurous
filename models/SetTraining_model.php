@@ -13,14 +13,17 @@
             // $POST variable holds the post data
             // This function is called from an AJAX request
             // Function to set training
-            $warriors = json_decode($POST['warrior']);
+
+            $warriors = $POST['warrior'];
             $type = $POST['type'];
             
-            $query_array = $warrior_ids = $warriors;
+            $query_array = explode(",", $warriors);
+            $warrior_ids = explode(",", $warriors);
             $amount = count($query_array);
             $in  = str_repeat('?,', count($query_array) - 1) . '?';
             $query_array[] = $this->username;
             $query_array[] = $this->session['location'];
+
             $sql = "SELECT warrior_id FROM warriors
             WHERE fetch_report=0 AND mission=0 AND warrior_id IN ($in) AND username=? AND location=?";
             $stmt = $this->db->conn->prepare($sql);
@@ -71,10 +74,11 @@
                 $this->db->conn->commit();
                 }
             catch (Exception $e) {
-                $this->response->addTo("errorGameMessage", $this->errorHandler->catchAJAX($this->db, $e));
+                $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
             $this->db->closeConn();
             $this->response->addTo("gameMessage", "Warrior {$type} training started");
+            $this->response->send();
         }
     }

@@ -1,5 +1,5 @@
 <?php
-    class ArmyCamp_model extends model {
+    class ArmyCamp_model extends model /*implements getDataInterface*/ {
         public $username;
         public $session;
         
@@ -12,7 +12,6 @@
         public function getData($GET = false) {
             $data = array();
             if($GET === false) {
-                $param_username = $this->username;
                 $sql = "SELECT a.warrior_id, a.type, a.location, a.mission, a.fetch_report, a.health, a.rest, a.rest_start,
                         b.stamina_level, b.stamina_xp, b.technique_level, b.technique_xp,
                         b.precision_level, b.precision_xp, b.strength_level, b.strength_xp
@@ -21,16 +20,16 @@
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 /*$stmt->bindParam(":location", $param_location, PDO::PARAM_STR);*/
+                $param_username = $this->username;
                 /*$param_location = $this->session['location'];*/
                 $stmt->execute();
             }
             else {
-                $warriors = json_decode($GET['warriors']);
-                $queryArray = $warriors;
-                // $queryArray = explode(",", json_decode($GET['warriors']));
+                $queryArray = array();
+                $queryArray = explode(",", $GET['warriors']);
                 $queryArray[] = $this->username;
                 $in  = str_repeat('?,', count($queryArray) - 2) . '?';
-
+                
                 $sql = "SELECT a.warrior_id, a.type, a.location, a.mission, a.fetch_report, a.health, a.rest, a.rest_start,
                         b.stamina_level, b.stamina_xp, b.technique_level, b.technique_xp,
                         b.precision_level, b.precision_xp, b.strength_level, b.strength_xp
@@ -42,7 +41,6 @@
                 $stmt->execute($queryArray);
             }
             $data['warrior_data'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $this->getCountdown($GET);
             $levels = array_unique(array_merge(
                                 array_column($data['warrior_data'], 'stamina_level'),
                                 array_column($data['warrior_data'], 'technique_level'),
@@ -57,61 +55,59 @@
                 $data['levels_data'][$row['skill_level']] = $row['next_level'];
             }
             if($GET !== false) {
-                foreach($data['warrior_data'] as $key => $value) {
-                    ob_start();
-                    get_template('warriors_levels', array($data['warrior_data'][$key], $data['levels_data']), true);
-                    $this->response->addTo("html", ob_get_clean());
-                }
+                get_template('warriors_levels', array($data['warrior_data'], $data['levels_data']), true);
             }
             else {
                 return $data;
             }
         }
-        public function getCountdown($GET = false, $return = false) {
+        public function getCountdown($GET) {
             // Function to echo date for ajax request
-            if($GET === false) {
-                $param_username = $this->username;
-                $sql = "SELECT warrior_id, training_countdown, fetch_report FROM warriors WHERE username=:username";
+            if(explode(",", $GET['warriors'])[0] === "") {
+                $sql = "SELECT training_countdown, fetch_report FROM warriors WHERE username=:username";
                 $stmt = $this->db->conn->prepare($sql);
+                /*$stmt->bindParam(":location", $param_location, PDO::PARAM_STR);*/
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                $param_location = $this->session['location'];
+                $param_username = $this->username;
                 $stmt->execute();   
             }
             else {
-                $warriors = json_decode($GET['warriors']);
-                $queryArray = $warriors;
+                $queryArray = array();
+                $queryArray = explode(",", $GET['warriors']);
                 $queryArray[] = $this->username;
                 $in  = str_repeat('?,', count($queryArray) - 2) . '?';
-                $sql = "SELECT warrior_id, training_countdown, fetch_report FROM warriors WHERE warrior_id IN ($in) AND username=?";
+                
+                $sql = "SELECT training_countdown, fetch_report FROM warriors WHERE warrior_id IN ($in) AND username=?";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->execute($queryArray);
             }
             $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $this->db->closeConn();
             $data = array();
-            foreach($row as $key => $value) {
-                $datetime = new DateTime($value['training_countdown']);
+            foreach($row as $key) {
+                $datetime = new DateTime($key['training_countdown']);
                 $date = date_timestamp_get($datetime);
-                $data[$value['warrior_id']] = $value;
-                $data[$value['warrior_id']]['date'] = $date;
+                echo $date . "|" . $key['fetch_report'] . "||";
             }
-            $this->response->addTo("data", $data, array("index" => "warriorCountdowns"));
         }
         public function checkWarriorLevel($POST) {
             // $POST variable holds the post data
             // This function is called from an AJAX request from armycamp.js
             // Function to transfer warriors between Tasnobil and Cruendo
-
-            $param_warrior_id = explode(",", $POST['warriors'])[0];
-            $param_username = $this->username;
+            
             $sql = "SELECT warrior_id, stamina_level, stamina_xp, technique_level, technique_xp, precision_level, precision_xp,
                     strength_level, strength_xp FROM warriors_levels
                         WHERE warrior_id=:warrior_id AND username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_warrior_id = explode(",", $POST['warriors'])[0];
+            $param_username = $this->username;
             $stmt->execute();
             // If rowcount is less than 1 then the warrior id may have been changed
             if($stmt->rowCount() < 1) {
-                $this->response->addTo("errorGameMessage", "Warrior not found, please try again");
+                $this->gameMessage("ERROR: Warrior not found, please try again", true);
                 return false;
             }
             
@@ -165,20 +161,24 @@
                     }
     
                     if($this->session['warrior']['level'] < 30 || $this->session['profiency'] == 'warrior') { 
-                        $this->response->addTo("levelUP", $this->UpdateGamedata->updateXP('warrior', 20 * count($level_up)));
+                        $this->UpdateGamedata->updateXP('warrior', 20 * count($level_up));
                     }                
                     $this->db->conn->commit();
                 }
                 catch(Exception $e) {
-                    $this->response->addTo("errorGameMessage", $this->errorHandler->catchAJAX($this->db, $e));
+                    $this->errorHandler->catchAJAX($this->db, $e);
                     return false;
                 }
                 unset($stmt, $stmt2, $stmt3);
-                $this->response->addTo("gameMessage", "Warrior {$param_warrior_id} leveled up");
-                $this->response->addTo("data", $param_warrior_id, array("index" => "warrior_id"));
+                /* Echo order, split by "|"
+                * [0] -> possibly level up message;
+                * [1] -> gameMessage
+                */
+               echo "|";
+               $this->gameMessage("Warrior {$param_warrior_id} leveled up", true);
             }
             else {
-                $this->response->addTo("errorGameMessage", "None of your warriors is leveling up");
+                $this->gameMessage("ERROR: None of your warriors is leveling up", true);
                 return false;
             }
             $this->db->closeConn();
@@ -187,17 +187,15 @@
             // $POST variable holds the post data
             // This function is called from an AJAX request from armycamp.js
             // Function to transfer warriors between Tasnobil and Cruendo
-
-            $warriors = json_decode($POST['warriors']);
-            $query_array = $warriors;
+            $query_array = explode(",", $POST['warriors']);
             $warrior_amount = count($query_array);
-            $in  = str_repeat('?,', count($query_array) - 1) . '?';
             $query_array[] = $this->username;
-            $sql = "SELECT location, warrior_id FROM warriors WHERE warrior_id IN ($in) AND username=?";
+            $in  = str_repeat('?,', count($query_array) - 2) . '?';
+            $sql = "SELECT location FROM warriors WHERE warrior_id IN ($in) AND username= ?";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->execute($query_array);
-            if($stmt->rowCount() !== count($warriors)) {
-                $this->response->addTo("errorGameMessage", "Some of the selected warriors does not exists!");
+            if($stmt->rowCount() < count($query_array) - 1) {
+                $this->gameMessage("ERROR: Some of the selected warriors does not exists!", true);
                 return false;
             }
             $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -209,9 +207,10 @@
                 }
             }
             if($status === false) {
-                $this->response->addTo("errorGameMessage", "One or more of your warriors are in the wrong city");
+                $this->gameMessage("ERROR: One or more of your warriors are in the wrong city", true);
                 return false;
-            }            
+            }
+            
             switch($this->session['location']) {
                 case 'tasnobil':
                     $city = 'cruendo';
@@ -224,32 +223,29 @@
             try {
                 $this->db->conn->beginTransaction();
                 
-                foreach ($row as $key) {
-                    $sql = "UPDATE warriors SET location= ? WHERE warrior_id=? AND username = ?";
-                    $stmt = $this->db->conn->prepare($sql);
-                    $stmt->execute(array($city, $key['warrior_id'], $this->username));
-                }
-                    
+                $sql = "UPDATE warriors SET location= ? WHERE warrior_id IN ($in) AND username = ?";
+                $stmt = $this->db->conn->prepare($sql);
+                $stmt->execute($query_array);
+                
                 $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->response->addTo("errorGameMessage", $this->errorHandler->catchAJAX($this->db, $e));
+                $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
             $this->db->closeConn();
-            $this->response->addTo("gameMessage", "{$warrior_amount} transferred to {$city}");
+            $this->gameMessage("{$warrior_amount} transferred to {$city}", true);
         }
         public function healWarrior($POST) {
             // $POST variable holds the post data
             // This function is called from an AJAX request from armycamp.js
             // Function to heal warrior with either item or set warrior on rest
-            var_dump($POST);
-            $action_type = $POST['actionType'];
-            $warriors = json_decode($POST['warriors']);
+            $type = $POST['type'];
+            $warriors = $POST['warriors'];
             $item = $POST['item'];
             $amount = $POST['amount'];
             
-            $query_array = $warriors;
+            $query_array = explode(",", $warriors);
             $in  = str_repeat('?,', count($query_array) - 1) . '?';
             $query_array[] = $this->username;
             $query_array[] = $this->session['location'];
@@ -258,14 +254,14 @@
             $stmt = $this->db->conn->prepare($sql);
             $stmt->execute($query_array);
             if(!$stmt->rowCount() > 0) {
-                $this->response->addTo("errorGameMessage", "One or more of your warriors does not exists!");
+                $this->gameMessage("ERROR: One or more of your warriors does not exists!", true);
                 return false;
             }
             
-            if($action_type =='item') {
+            if($type =='item') {
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
                 if($row['health'] == 100) {
-                    $this->response->addTo("errorGameMessage", "One or more of your warriors does not exists!");
+                    $this->gameMessage("ERROR: Warrior does not need to rest", true);
                     return false;
                 }
             }
@@ -274,115 +270,99 @@
                 if(array_search("100", array_column($row, "health")) !== false) {
                     foreach($row as $key) {
                         if($key['health'] == 100) {
-                            $this->response->addTo("errorGameMessage", "Warrior {$key['warrior_id']} don't need to rest");
+                            $this->gameMessage("ERROR: Warrior {$key['warrior_id']} don't need to rest", true);
                         }
                     }
                     return false;
                 }
             }
             if(count(explode(",", $warriors)) > count($row)) {
-                $this->response->addTo("errorGameMessage", "One or more of your warriors are on mission or training");
+                $this->gameMessage("ERROR: One or more of your warriors are on mission or training", true);
                 return false;
             }
-            $item_amount = get_item($this->session['inventory'], $item)['amount'];
-            if(!$item_amount > 0) {
-                $this->response->addTo("errorGameMessage", "You don't have any of this item");
-                return false;
+            if($type == 'item') {
+                $item_amount = get_item($this->session['inventory'], $item)['amount'];
+                if(!$item_amount > 0) {
+                    $this->gameMessage("ERROR: You don't have any of this item", true);
+                    return false;
+                }
+                else if($item_amount < $amount) {
+                    $this->gameMessage("ERROR: You don't have enough of this item", true);
+                    return false;
+                }
+                $healing = array();
+                $healing['yest-herb'] = array("heal" => 25);
+                $healing['healing potion'] = array("heal" => 35);
+                $healing['yas-herb'] = array("heal" => 45);
             }
-            else if($item_amount < $amount) {
-                $this->response->addTo("errorGameMessage", "You don't have enough of this item");
-                return false;
+            else {
+                $rest_start = date("Y-m-d H:i:s"); 
             }
-            $healing = array();
-            $healing['yest-herb'] = array("heal" => 25);
-            $healing['healing potion'] = array("heal" => 35);
-            $healing['yas-herb'] = array("heal" => 45);
             try {
                 $this->db->conn->beginTransaction();
-                $param_health = $row['health'] + ($healing[$item]['heal'] * $amount);
-                $param_warrior_id = $warriors;
-                $param_username = $this->username;
-                $sql = "UPDATE warriors SET health=:health WHERE warrior_id=:warrior_id AND username=:username";
-                $stmt = $this->db->conn->prepare($sql);
-                $stmt->bindParam(":health", $param_health, PDO::PARAM_STR);
-                $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_INT);
-                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                $stmt->execute();
-                
-                // Update inventory
-                $this->UpdateGamedata->updateInventory($item, - $amount, true);
-                $this->db->conn->commit();
-            }
-            catch(Exception $e) {
-                $this->response->addTo("errorGameMessage", $this->errorHandler->catchAJAX($this->db, $e));
-                return false;
-            }
-            $healing_amount = $healing[$item]['heal'] * $amount;
-            $this->response->addTo("gameMessage", "Warrior healed for {$healing_amount}, new health: {$param_health}");
-            $this->db->closeConn();
-        }
-        public function rest($POST) {
-            $warriors = json_decode($POST['warriors']);
-            
-            $query_array = $warriors;
-            $in  = str_repeat('?,', count($query_array) - 1) . '?';
-            $query_array[] = $this->username;
-            $sql = "SELECT warrior_id FROM warriors
-            WHERE fetch_report=0 AND mission=0 AND warrior_id IN ($in) AND username=?";
-            $stmt = $this->db->conn->prepare($sql);
-            $stmt->execute($query_array);
-            if(!$stmt->rowCount() > 0) {
-                $this->response->addTo("errorGameMessage", "One or more of your warriors does not exists!");
-                return false;
-            } else if($stmt->rowCount() !== count($warriors)) {
-                $this->response->addTo("errorGameMessage", "One or more of you warriors are not avaiable for resting!");
-                return false;
-            }
-            $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $rest_start = date("Y-m-d H:i:s"); 
-            try {
-                $this->db->conn->beginTransaction();
-                foreach($row as $key) {
-                    $sql = "UPDATE warriors SET rest=1, rest_start=? WHERE warrior_id=? AND username=?";
+                if($type == 'item') {
+                    $sql = "UPDATE warriors SET health=:health WHERE warrior_id=:warrior_id AND username=:username";
                     $stmt = $this->db->conn->prepare($sql);
-                    $stmt->execute(array($rest_start, $key['warrior_id'], $this->username));
+                    $stmt->bindParam(":health", $param_health, PDO::PARAM_STR);
+                    $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_INT);
+                    $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                    $param_health = $row['health'] + ($healing[$item]['heal'] * $amount);
+                    $param_warrior_id = $warriors;
+                    $param_username = $this->username;
+                    $stmt->execute();
+                    
+                    // Update inventory
+                    $this->UpdateGamedata->updateInventory($item, - $amount, true);
+            
+                }
+                else {
+                    array_unshift($query_array, $rest_start);
+                    $sql = "UPDATE warriors SET rest=1, rest_start=? WHERE warrior_id IN ($in) AND username=?";
+                    $stmt = $this->db->conn->prepare($sql);
+                    $stmt->execute($query_array);
                 }
                 $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->response->addTo("errorGameMessage", $this->errorHandler->catchAJAX($this->db, $e));
+                $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
-            $this->response->addTo("gameMessage", "Warrior(s) on rest!");
+            if($type == 'item') {
+                $healing_amount = $healing[$item]['heal'] * $amount;
+                $this->gameMessage("Warrior healed for {$healing_amount}, new health: {$param_health}", true);
+            }
+            else {
+                $this->gameMessage("Warrior(s) on rest!", true);
+            }
             $this->db->closeConn();
         }
         public function offRest($POST) {
             // $POST variable holds the post data
             // This function is called from an AJAX request from armycamp.js
             // Function to get warrior(s) off rest and available for other actions
-            $warriors = json_decode($POST['warriors']);
-            $query_array = $warriors;
+            $query_array = explode(",", $POST['warriors']);
             $in  = str_repeat('?,', count($query_array) - 1) . '?';
             $query_array[] = $this->username;
-            $sql = "SELECT warrior_id, health, rest_start FROM warriors 
-                    WHERE rest=1 AND warrior_id IN ($in) AND username=?";
+            $query_array[] = $this->session['location'];
+            $sql = "SELECT warrior_id, health, rest_start FROM warriors WHERE rest=1 AND warrior_id IN ($in) AND username=? AND location=?";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->execute($query_array);
             if(!$stmt->rowCount() > 0) {
-                $this->response->addTo("errorGameMessage", "One or more of your warriors does not exists");
+                $this->gameMessage("ERROR: One or more of your warriors does not exists!", true);
                 return false;
             }
             $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if(count($warriors) > count($row)) {
-                $this->response->addTo("errorGameMessage", "One or more of your warriors are on mission or training");
+            if(count(explode(",", $warriors)) > count($row)) {
+                $this->gameMessage("ERROR: One or more of your warriors are on mission or training", true);
                 return false;
             }
             if(array_search('0', array_column($row, '0')) !== false) {
-                $this->response->addTo("errorGameMessage", "One or more of your warriors isn't resting");
+                $this->gameMessage("ERROR: One or more of your warriors isn't resting", true);
                 return false;
             }
             
             $warrior_data = array();
+            
             foreach($row as $key => $value) {
                 $rest_start = date_timestamp_get(new DateTime($value['rest_start']));
                 $date_now = date_timestamp_get(new DateTime(date("Y-m-d H:i:s")));
@@ -398,6 +378,7 @@
         
             try {
                 $this->db->conn->beginTransaction();
+                
                 foreach($warrior_data as $key) {
                     $sql = "UPDATE warriors SET rest=0, health=? WHERE warrior_id=? AND username=?";
                     $stmt = $this->db->conn->prepare($sql);
@@ -407,61 +388,62 @@
                 $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->response->addTo("errorGameMessage", $this->errorHandler->catchAJAX($this->db, $e));
+                $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
             $this->db->closeConn();
+            $this->gameMessage("");
         }
         public function changeType($POST) {
             // $POST variable holds the post data
             // This function is called from an AJAX request from armycamp.js
             // Function to get warrior(s) off rest and available for other actions
-            $param_warrior_id = $warrior_id = $POST['warrior'];
-            $param_location = $this->session['location'];
-            $param_username = $this->username;
+            $warrior_id = $POST['warriors'];
             $sql = "SELECT type FROM warriors WHERE warrior_id=:warrior_id AND location=:location AND username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_INT);
             $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_warrior_id = $warrior_id;
+            $param_location = $this->session['location'];
+            $param_username = $this->username;
             $stmt->execute();
             if(!$stmt->rowCount() > 0) {
-                $this->response->addTo("errorGameMessage", "The warrior does not exists!");
+                $this->gameMessage("ERROR: The warrior does not exists!", true);
                 return false;
             }
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            $action_type = ($row['type'] == 'melee') ? 'ranged' : 'melee';
+            $type = ($row['type'] == 'melee') ? 'ranged' : 'melee';
             $prices = array("ranged" => 600, "melee" => 500);
             
-            if($prices[$action_type] > $this->session['gold']) {
-                $this->response->addTo("errorGameMessage", "Not enough gold in inventory");
+            if($prices[$type] > $this->session['gold']) {
+                $this->gameMessage("ERROR: Not enough gold in inventory", true);
                 return false;
             }  
             try {
                 $this->db->conn->beginTransaction();
                 
-                $param_type = $action_type;
-                $param_warrior_id = $warrior_id;
-                $param_username = $this->username;
                 $sql = "UPDATE warriors SET type=:type WHERE warrior_id=:warrior_id AND username=:username";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":type", $param_type, PDO::PARAM_STR);
                 $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_INT);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                $param_type = $type;
+                $param_warrior_id = $warrior_id;
+                $param_username = $this->username;
                 $stmt->execute();
                 
                 // Update inventory
-                $this->UpdateGamedata->updateInventory('gold', -$prices[$action_type], true);
+                $this->UpdateGamedata->updateInventory('gold', -$prices[$type], true);
                 
                 $this->db->conn->commit();
             }
             catch(Exception $e) {
-                $this->response->addTo("errorGameMessage", $this->errorHandler->catchAJAX($this->db, $e));
+                $this->errorHandler->catchAJAX($this->db, $e);
                 return false;
             }
-            $this->response->addTo("data", $action_type, array("index" => 'warrior_type'));
-            $this->response->addTo("gameMessage", "Type changed to {$action_type} for {$prices[$action_type]} gold");
+            $this->gameMessage("Type changed to {$type} for {$prices[$type]} gold", true);
         }
     }
 ?>

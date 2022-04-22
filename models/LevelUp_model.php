@@ -16,14 +16,15 @@
             $profiencies = array('farmer'. 'miner', 'warrior', 'trader', 'adventurer');
             $new_level = array();
             if(in_array($this->session['level_up'], $profiencies) !== false) {
+                var_dump($profiencies);
                 throw new Exception($this->username, "Not valid skill: " . $this->session['level_up'] . __METHOD__);
 
                 return false;
             }
-            $param_xp = 1000;
             $sql = "SELECT level, next_level FROM level_data WHERE next_level > :xp ORDER BY next_level ASC LIMIT 1";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":xp", $param_xp);
+            $param_xp = 1000;
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $this->session['level_up'] = array_unique($this->session['level_up']);
@@ -37,12 +38,12 @@
                 $this->new_levels[] = array($value, $row['level'], $row['next_level']);
             }
             foreach($this->new_levels as $key) {
-                $param_level = $key[1];
-                $param_username = $this->username;
                 $sql = "UPDATE user_levels SET {$key[0]}_level=:level WHERE username=:username";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":level", $param_level, PDO::PARAM_INT);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                $param_level = $key[1];
+                $param_username = $this->username;
                 $stmt->execute();
             }            
             // Select next_level for leveled up profiencies which prevents the message from repeating
@@ -57,9 +58,9 @@
                     $_SESSION['gamedata']['profiency_xp'] = $this->session[$value]['xp'];
                     $_SESSION['gamedata']['profiency_xp_nextlevel'] = $next_level;
                 }
+                echo "levelup" . "#" . $skill . "#" . $level . "#";
             }
             $_SESSION['gamedata']['level_up'] = array();
-            return array("skill" => $skill, "new_level" => $level);
             /*$this->levelupData();*/
         }
         public function levelupData() {

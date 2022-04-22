@@ -1,12 +1,4 @@
 { "compressionlevel":-1,
- "editorsettings":
-    {
-     "export":
-        {
-         "format":"json",
-         "target":"3.4.json"
-        }
-    },
  "height":100,
  "infinite":false,
  "layers":[
@@ -425,23 +417,6 @@
                  "width":148.667,
                  "x":2944,
                  "y":98
-                }, 
-                {
-                 "height":32,
-                 "id":36,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"type",
-                         "type":"string",
-                         "value":"start_point"
-                        }],
-                 "rotation":0,
-                 "type":"start_point",
-                 "visible":false,
-                 "width":32,
-                 "x":2528,
-                 "y":288
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -450,7 +425,7 @@
          "y":0
         }],
  "nextlayerid":10,
- "nextobjectid":37,
+ "nextobjectid":35,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.6.0",

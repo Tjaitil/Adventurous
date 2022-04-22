@@ -14,7 +14,6 @@
             $controller->index();
         }
     }*/
-    if($_GET['building'] === 'adventure base') $_GET['building'] = 'adventures';
     $controller = $handler->loadController(str_replace(" ", "", $_GET['building']));
     if(is_object($controller)) {
         $controller->index();

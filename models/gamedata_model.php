@@ -9,14 +9,14 @@
             $this->username = $username;
         }
         public function fetchData() {
-            $param_username = $this->username;
             $sql = "SELECT username, location, map_location, destination, profiency, hunger, artefact FROM user_data
                     WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_username = $this->username;
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
+            $profiency = $row['profiency'];
             //Workforce data for farmer
             $sql3 = "SELECT workforce_total, avail_workforce FROM farmer_workforce WHERE username=:username";
             $stmt3 = $this->db->conn->prepare($sql3);
@@ -24,7 +24,6 @@
             $stmt3->execute();
             $row3 = $stmt3->fetch(PDO::FETCH_ASSOC);
             
-            $gold = "";
             $sql4 = "SELECT amount FROM inventory WHERE username=:username AND item='gold'";
             $stmt4 = $this->db->conn->prepare($sql4);
             $stmt4->bindParam(":username", $param_username, PDO::PARAM_STR);
@@ -57,10 +56,6 @@
             $stmt6->execute();
             $row6['inventory'] = $stmt6->fetchAll(PDO::FETCH_ASSOC);
             
-            $param_farmer_level = $row5['farmer_level'];
-            $param_miner_level = $row5['miner_level'];
-            $param_warrior_level = $row5['warrior_level'];
-            $param_trader_level = $row5['trader_level'];
             //Get next level xp cap for each skill, OR istedenfor UNION?
             $sql2 = "SELECT next_level FROM level_data WHERE level=:farmer_level
                     UNION ALL
@@ -74,6 +69,10 @@
             $stmt2->bindParam(":miner_level", $param_miner_level, PDO::PARAM_STR);
             $stmt2->bindParam(":warrior_level", $param_warrior_level, PDO::PARAM_STR);
             $stmt2->bindParam(":trader_level", $param_trader_level, PDO::PARAM_STR);
+            $param_farmer_level = $row5['farmer_level'];
+            $param_miner_level = $row5['miner_level'];
+            $param_warrior_level = $row5['warrior_level'];
+            $param_trader_level = $row5['trader_level'];
             $stmt2->execute();
             $row2x = $stmt2->fetchAll(PDO::FETCH_ASSOC);
             $row2['farmer']['next_level'] = $row2x[0]['next_level'];
@@ -101,13 +100,13 @@
             js_echo($row);
         }
         public function checkMarket() {
-            $param_username = $this->username;
             $sql = "SELECT box_item FROM offers WHERE offeror=:username AND box_amount > 0";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $param_username = $this->username;
             $stmt->execute();
             if($stmt->rowCount() > 0) {
-                $this->response->addTo("gameMessage", "You have items waiting at market");
+                $this->gameMessage("You have items waiting at market");
             }
         }
     }
