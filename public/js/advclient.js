@@ -1,7 +1,7 @@
 scriptLoader.loadScript([
     'inputHandler', 'help', 'collision', 'gameEventHandler', 'map', 'canvasText', 'conversation',
-    'controls', 'spritesContainer', 'testScripts', 'pause', 'inventory', 'tutorial', 'hunger', 'travel']);
-const game = {};
+    'controls', 'spritesContainer', 'testScripts', 'pause', 'inventory', 'tutorial', 'hunger', 'travel'], 'client');
+
 CookieTicket = {
     checkCookieTicket(cookieNoob = "getOut") {
         var today = new Date();
@@ -72,7 +72,9 @@ function doubleClickDetect() {
         }, 300);
     }
 }
-game.properties = {
+const game = {
+    properties: {
+    HUD: HUD,
     fillStyle1: "red",
     fillstyle2: "black",
     duration: 0,
@@ -112,15 +114,15 @@ game.properties = {
     building: "none",
     inBuilding: false,
     checkingPerson: "none",
-};
-game.setGameState = function (state) {
+},
+setGameState(state) {
     if (['playing', 'conversation', 'loading', 'help', 'map', 'pause'].indexOf(state) === -1) {
         alert("Unkown state found: " + state);
         return false;
     }
     game.properties.gameState = state;
-}
-game.loadWorld = function (parameters = false) {
+},
+loadWorld(parameters = false) {
     game.setGameState('loading');
     window.cancelAnimationFrame(game.properties.requestId);
     loadingCanvas.set('close');
@@ -129,154 +131,111 @@ game.loadWorld = function (parameters = false) {
         data = "model=worldLoader" + "&method=changeMap" + "&newMap=" + JSON.stringify(parameters.newMap);
     }
     else {
-        data = "model=worldLoader" + "&method=loadWorld";
+        data = "model=worldLoader&method=loadWorld";
     }
+    fetch("/handlers/handler_g.php?model=worldLoader&method=loadWorld").then(res => res.json()
+    .then(data => console.log(data)));
     ajaxG(data, function (response) {
+        console.log(response);
         let responseText = response[1].data;
-        if (response[0] != false) {
-            game.properties.currentMap = responseText.currentMap;
-            if (responseText.changedLocation) {
-                document.title = jsUcWords(responseText.changedLocation.replace("-", " "));
-            }
-            for (let x = 0; x < responseText.events.length; x++) {
-                eventHandler.events.push(responseText.events[x]);
-            }
-            gamePieces.objects = responseText.mapData['objects'];
-            function findStartPoint(object) {
-                return (object.type === "start_point");
-            }
-            function removeStartPoint(object) {
-                return (object.type !== "start_point");
-            }
-            let startPoints = gamePieces.objects.filter(findStartPoint);
-            let startPoint = getRndInteger(0, startPoints.length);
-            gamePieces.objects = gamePieces.objects.filter(removeStartPoint);
-            if (parameters.newxBase) {
-                // Legge til xbase i JSON map filene
-                game.properties.xbase = parameters.newxBase;
-            }
-            else if (startPoints.length > 0) {
-                game.properties.xbase = startPoints[0].x;
-            }
-            else {
-                game.properties.xbase = 800;
-            }
-            if (parameters.newyBase) {
-                // Legge til ybase i JSON map filene
-                game.properties.ybase = parameters.newyBase;
-            }
-            else if (startPoints.length > 0) {
-                game.properties.ybase = startPoints[0].y;
-            }
-            else {
-                game.properties.ybase = 1000;
-            }
-            game.properties.xcamMove = game.properties.xbase - game.properties.charX;
-            game.properties.ycamMove = game.properties.ybase - game.properties.charY;
-            gamePieces.player.xMovement = 0;
-            gamePieces.player.yMovement = 0;
-            for (var i = 0; i < gamePieces.objects.length; i++) {
-                if (gamePieces.objects[i].src != undefined && gamePieces.objects[i].src.length > 1) {
-                    if (gamePieces.objects[i].type === 'character') {
-                        gamePieces.objects[i].width = 38;
-                        gamePieces.objects[i].height = 38;
-                        gamePieces.objects[i].x -= 6;
-                        gamePieces.objects[i].y -= 6;
-                    }
-                    gamePieces.objects[i].img = new Image();
-                    if (gamePieces.objects[i].src.indexOf('.png') == -1) gamePieces.objects[i].src += '.png';
-                    gamePieces.objects[i].img.src = "public/images/" + gamePieces.objects[i].src;
-
-
-                }
-                gamePieces.objects[i].width *= viewport.scale;
-                gamePieces.objects[i].height *= viewport.scale;
-                gamePieces.objects[i].drawX = Math.round(gamePieces.objects[i].x - game.properties.xcamMove);
-                gamePieces.objects[i].drawY = Math.round(gamePieces.objects[i].y - game.properties.ycamMove);
-                if (gamePieces.objects[i].type == "building") {
-                    gamePieces.buildings.push(gamePieces.objects[i]);
-                }
-                else if (gamePieces.objects[i].type == "character") {
-                    gamePieces.characters.push(gamePieces.objects[i]);
-                }
-            }
-            gamePieces.objects.sort((a, b) => { return a.diameterDown - b.diameterDown; });
-        }
-        else {
+        if (response[0] == false) {
             viewport.worldImage.src = false;
             location.reload();
             return;
         }
-        gamePieces.player.load();
-        if (typeof (responseText.mapData['daqloon_fighting_areas']) !== "undefined") {
-            gamePieces.daqloon_fighting_area = responseText.mapData['daqloon_fighting_areas'][0];
-            checkDaqloon(gamePieces.daqloon_fighting_area.daqloon_amount);
-            gamePieces.player.attackedBy = getNearestDaqloon();
+        game.properties.currentMap = responseText.currentMap;
+        if (responseText.changedLocation) {
+            document.title = jsUcWords(responseText.changedLocation.replace("-", " "));
+        }
+        for (let x = 0; x < responseText.events.length; x++) {
+            eventHandler.events.push(responseText.events[x]);
+        }
+        gamePieces.objects = responseText.mapData['objects'];
+        function findStartPoint(object) {
+            return (object.type === "start_point");
+        }
+        function removeStartPoint(object) {
+            return (object.type !== "start_point");
+        }
+        let startPoints = gamePieces.objects.filter(findStartPoint);
+        let startPoint = getRndInteger(0, startPoints.length);
+        gamePieces.objects = gamePieces.objects.filter(removeStartPoint);
+        if (parameters.newxBase) {
+            // Legge til xbase i JSON map filene
+            game.properties.xbase = parameters.newxBase;
+        }
+        else if (startPoints.length > 0) {
+            game.properties.xbase = startPoints[0].x;
         }
         else {
-            gamePieces.daqloon_fighting_area = [];
-            gamePieces.player.attackedBy = false;
-            gamePieces.daqloon = [];
-            document.getElementById("HUD_hunted_locater").innerHTML = "";
+            game.properties.xbase = 800;
         }
-        viewport.worldImage.src = "public/images/" + game.properties.currentMap + ".png";
-        worldMap = new Image(3200, 3200);
-        worldMap.src = "public/images/" + game.properties.currentMap + "m.png";
-        viewport.worldImage.onload = function () {
-            document.getElementById("local_img").src = worldMap.src;
-            gamePieces.player.x = game.properties.xbase;
-            gamePieces.player.y = game.properties.ybase;
-            gamePieces.player.diameterUp = gamePieces.player.y + 20;
-            gamePieces.player.diameteRight = gamePieces.player.x + gamePieces.player.width;
-            gamePieces.player.diameterDown = gamePieces.player.y + gamePieces.player.height;
-            gamePieces.player.diameterLeft = gamePieces.player.x;
-            map.loadLocalMapTags();
-            map.load();
-            // If newMap is false, then the loading is first.
-            if(parameters.method !== "changeMap") {
-                gamePieces.player.character.src = "public/images/character1.png";
-                gamePieces.player.characterAttack.src = "public/images/character attack2.png";
-                gamePieces.player.character.onload = function () {
-                    game.startGame();
-                    loadingCanvas.set('open')
-                    if (game.properties.currentMap == "9.9") {
-                        tutorial.startTutorial();
-                        gamePieces.player.setHuntedStatus(false);
-                    }
-                };
+        if (parameters.newyBase) {
+            // Legge til ybase i JSON map filene
+            game.properties.ybase = parameters.newyBase;
+        }
+        else if (startPoints.length > 0) {
+            game.properties.ybase = startPoints[0].y;
+        }
+        else {
+            game.properties.ybase = 1000;
+        }
+        let worldMapSrc = "public/images/" + game.properties.currentMap + ".png";
+        viewport.adjustViewport(game.properties.xbase, game.properties.ybase, worldMapSrc);
+        viewport.checkViewportGamePieces(true);
+        gamePieces.loadAssets(game.properties.xbase, game.properties.ybase, responseText.mapData);
+        map.load(game.properties.currentMap);
+        // If newMap is false, then the loading is first.
+        if(parameters.method !== "changeMap") {
+            game.startGame();
+            loadingCanvas.set('open')
+            if (game.properties.currentMap == "9.9") {
+                tutorial.startTutorial();
             }
-            else {
-                setTimeout(() => {
-                    loadingCanvas.set('open')
-                    game.startGame();
-                }, 4000);
-            }
-        };
+        }
+        else {
+            loadingCanvas.set('open');
+            setTimeout(() => {
+                game.startGame();
+            }, 4000);
+        }
     });
-};
-game.loadGame = function () {
+},
+setup() {
+    setTimeout(() => {
+        document.getElementById("client-container").style.opacity = 1;
+        document.getElementById("client-loading-container").style.display = "none";
+        this.loadGame();
+    }, 5000);
+},
+loadGame() {
+    this.loadWorld();
+    viewport.setup([
+        document.getElementById("game_canvas"),
+        document.getElementById("game_canvas2"),
+        document.getElementById("game_canvas3"),
+        document.getElementById("game_canvas4"),
+        document.getElementById("text_canvas")], game.properties.xbase, game.properties.ybase);
+    HUD.setup(viewport.width, viewport.height, 
+        document.getElementById("game_canvas").offsetTop, 
+        document.getElementById("game_canvas").offsetLeft);
+    gamePieces.player.setup();
     controls.checkDeviceType();
     // getHunger();
     itemPrices.get();
     spritesContainer.loadDefaultSprites();
-    game.loadWorld();
     CookieTicket.checkCookieTicket('checkMeOut');
-};
-game.startGame = function () {
+},
+startGame() {
     game.properties.requestId = null;
+    // GamePieces is called here so that player position is set before viewport.checkViewportGamePieces is called
     gamePieces.player.newPos();
-    viewport.draw();
-    viewport.drawEdge();
-    viewport.checkViewportGamePieces(true);
-    gamePieces.drawStaticPieces();
-    // Resume game and start the pause timer
+    map.locatePlayerMarker()
+    viewport.init();
+    gamePieces.init();
     pauseManager.resumeGame(true);
-};
-var draw = false;
-document.getElementById("draw_checkbox").addEventListener("click", () => {
-    draw = document.getElementById("draw_checkbox").checked;
-});
-game.update = function (timestamp) {
+},
+update(timestamp) {
     game.properties.delta = ((timestamp - game.properties.timestamp) / 1000) / viewport.zoom;
     // Calculate the number of seconds passed since the last frame
     secondsPassed = (timestamp - game.properties.timestamp) / 1000;
@@ -295,47 +254,46 @@ game.update = function (timestamp) {
     if (game.properties.gameState !== 'playing') {
         return false;
     }
-        gamePieces.player.speedX = 0;
-        gamePieces.player.speedY = 0;
-        if (controls.playerLeft === true) {
-            gamePieces.player.speedX = - gamePieces.player.speed;
-        }
-        if (controls.playerRight === true) {
-            gamePieces.player.speedX = gamePieces.player.speed;
-        }
-        if (controls.playerUp === true) {
-            gamePieces.player.speedY = - gamePieces.player.speed;
-        }
-        if (controls.playerDown === true) {
-            gamePieces.player.speedY = gamePieces.player.speed;
-        }
-        game.properties.context3.clearRect(0, 0, game.properties.canvasWidth, game.properties.canvasHeight);
-        for (let i = 0; i < gamePieces.items.length; i++) {
-            gamePieces.items[i].draw();
-        }
-        if ((gamePieces.player.speedX != 0 || gamePieces.player.speedY != 0) && game.properties.inBuilding == false &&
-            conversation.active === false) {
-            eventHandler.checkEvent();
-            viewport.checkViewportGamePieces();
-            collisionCheck();
-            gamePieces.player.newPos();
-        }
-        else if (gamePieces.player.animationEnd != true) {
-            gamePieces.player.newPos(false);
-        }
-        for (var i = 0; i < gamePieces.daqloon.length; i++) {
-            if (gamePieces.daqloon[i].dead === false && gamePieces.daqloon[i].spawn === true ||
-                gamePieces.daqloon[i].spawn === false) {
-                    gamePieces.daqloon[i].draw();
-                }
+    gamePieces.player.speedX = 0;
+    gamePieces.player.speedY = 0;
+    if (controls.playerLeft === true) {
+        gamePieces.player.speedX = - gamePieces.player.speed;
+    }
+    if (controls.playerRight === true) {
+        gamePieces.player.speedX = gamePieces.player.speed;
+    }
+    if (controls.playerUp === true) {
+        gamePieces.player.speedY = - gamePieces.player.speed;
+    }
+    if (controls.playerDown === true) {
+        gamePieces.player.speedY = gamePieces.player.speed;
+    }
+    game.properties.context3.clearRect(0, 0, game.properties.canvasWidth, game.properties.canvasHeight);
+    for (let i = 0; i < gamePieces.items.length; i++) {
+        gamePieces.items[i].draw();
+    }
+    if ((gamePieces.player.speedX != 0 || gamePieces.player.speedY != 0) && game.properties.inBuilding == false &&
+        conversation.active === false) {
+        eventHandler.checkEvent();
+        viewport.checkViewportGamePieces();
+        collisionCheck();
+        gamePieces.player.newPos();
+    }
+    else if (gamePieces.player.animationEnd != true) {
+        gamePieces.player.newPos(false);
+    }
+    for (var i = 0; i < gamePieces.daqloon.length; i++) {
+        if (gamePieces.daqloon[i].dead === false && gamePieces.daqloon[i].spawn === true ||
+            gamePieces.daqloon[i].spawn === false) {
+                gamePieces.daqloon[i].draw();
             }
-            game.properties.duration++;
-    viewport.draw();
-    viewport.drawEdge();
+    }
+    viewport.drawBackground(gamePieces.player.xMovement, gamePieces.player.yMovement);
     gamePieces.drawStaticPieces();
+    game.properties.duration++;
     game.properties.requestId = window.requestAnimationFrame(game.update);
-};
-game.getNextMap = function () {
+},
+getNextMap() {
     let newX = 0;
     let newY = 0;
     let newxBase = gamePieces.player.xpos;
@@ -370,11 +328,12 @@ game.getNextMap = function () {
     if (match !== true) {
         return false;
     } else {
-        game.loadWorld({'newxBase': newxBase, 
+        this.loadWorld({'newxBase': newxBase, 
                         'newyBase': newyBase, 
                         'method': "changeMap", 
                         'newMap': { "new_x": newX, "new_y": newY }});
     }
+}
 };
 function renderPlayer(x, y) {
     player = gamePieces.player;
@@ -425,4 +384,8 @@ function checkCollision(object) {
         }
     }
 }
-window.addEventListener("load", UISetup);
+var draw = false;
+document.getElementById("draw_checkbox").addEventListener("click", () => {
+    draw = document.getElementById("draw_checkbox").checked;
+});
+window.addEventListener("load", () => game.setup());
