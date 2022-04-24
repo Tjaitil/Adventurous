@@ -1,6 +1,5 @@
 const viewport = {
     counter: 0,
-    // scale: game.properties.canvasWidth / 700,
     scale: 1,
     zoom: 1.2,
     worldImage: new Image(3200, 3200),
@@ -12,14 +11,14 @@ const viewport = {
     elements: {
         background: null,
         player: null,
-        daqloon: null,
+        sprite: null,
         frontObjects: null,
         text: null,  
     },
     layer: {
         background: null,
         player: null,
-        daqloon: null,
+        sprite: null,
         frontObjects: null,
         text: null,
     },
@@ -84,7 +83,7 @@ const viewport = {
 
         this.layer.background.scale(this.zoom, this.zoom);
         this.layer.player.scale(this.zoom, this.zoom);
-        this.layer.daqloon.scale(this.zoom, this.zoom);
+        this.layer.sprite.scale(this.zoom, this.zoom);
         this.layer.frontObjects.scale(this.zoom, this.zoom);
     },
     adjustViewport(xbase, ybase, src) {
