@@ -39,7 +39,7 @@ function item(drawX, drawY, name) {
         if(this.loopIndex > 3) this.loopIndex = 0;
         // let context = (this.drawX + this.width < gamePieces.player.diameterDown) ? game.properties.context : game.properties.context3;
 
-        game.properties.context3.drawImage(this.spriteObject.sprite, 
+        viewport.drawSprite(this.spriteObject.sprite, 
             0, 0, 
             32 * viewport.scale, 32 * viewport.scale, 
             this.drawX - (gamePieces.player.xMovement * viewport.scale) + 5, 
@@ -91,45 +91,46 @@ function shadowAnimation(x, y) {
     this.loopArray = [0, 1, 2, 1];
     this.draw = function() { 
         if(this.indexX > 3) this.indexX = 0;
-        game.properties.context3.drawImage(this.spriteObject.sprite, 
-        this.loopArray[this.indexX] * 32, 0, 
-        32 * viewport.scale, 32 * viewport.scale, 
-        this.drawX - (gamePieces.player.xMovement * viewport.scale) - 8, 
-        this.drawY - (gamePieces.player.yMovement * viewport.scale) - 8,
-        48, 48);
+        viewport.drawSprite(this.spriteObject.sprite, 
+                             this.loopArray[this.indexX] * 32, 0, 
+                            32 * viewport.scale, 32 * viewport.scale, 
+                            this.drawX - (gamePieces.player.xMovement * viewport.scale) - 8, 
+                            this.drawY - (gamePieces.player.yMovement * viewport.scale) - 8,
+                            48, 48);
         if(game.properties.duration % 20 === 0) {
             this.indexX++; 
         }
     };
 }
-function coinAnimation(x, y) {
-    this.index = 0;
-    this.x = x;
-    this.y = y;
-    this.drawX = this.x;
-    this.drawY = this.y;
-    this.indexX = 0;
-    this.sprite = new Image(108, 40);
-    this.sprite.onload = function() {
-        this.sprite.src = "./public/images/coin.png";
-    };
-    this.draw = function() {
-        if(game.properties.duration % 2 == 0) {
-            this.index++;
-            game.properties.context3.drawImage(this.sprite, 
-                                              this.index * 18, 0, 
-                                              18 * viewport.scale, 20 * viewport.scale, 
-                                              this.drawX - (gamePieces.player.xMovement * viewport.scale), 
-                                              this.drawY - (gamePieces.player.yMovement * viewport.scale),
-                                              this.width, this.height);
-            game.properties.context3.fillRect(this.drawX - (gamePieces.player.xMovement * viewport.scale), 
-            this.drawY - (gamePieces.player.yMovement * viewport.scale), 30, 30);
-            if(this.index == 5) {
-                this.index = 0;
-            }
-        }
-    };
-}
+// function coinAnimation(x, y) {
+//     this.index = 0;
+//     this.x = x;
+//     this.y = y;
+//     this.drawX = this.x;
+//     this.drawY = this.y;
+//     this.indexX = 0;
+//     this.sprite = new Image(108, 40);
+//     this.sprite.onload = function() {
+//         this.sprite.src = "./public/images/coin.png";
+//     };
+//     this.draw = function() {
+//         if(game.properties.duration % 2 == 0) {
+//             this.index++;
+            
+//             game.properties.context3.drawImage(this.sprite, 
+//                                               this.index * 18, 0, 
+//                                               18 * viewport.scale, 20 * viewport.scale, 
+//                                               this.drawX - (gamePieces.player.xMovement * viewport.scale), 
+//                                               this.drawY - (gamePieces.player.yMovement * viewport.scale),
+//                                               this.width, this.height);
+//             game.properties.context3.fillRect(this.drawX - (gamePieces.player.xMovement * viewport.scale), 
+//             this.drawY - (gamePieces.player.yMovement * viewport.scale), 30, 30);
+//             if(this.index == 5) {
+//                 this.index = 0;
+//             }
+//         }
+//     };
+// }
 function checkDaqloon(amount, id = false) {
     amount = parseInt(amount);
     console.log(amount);
@@ -231,21 +232,15 @@ function createDaqloon(id, x, y) {
         this.left = false;
     };
     this.hit = function() {
-        game.properties.context3.drawImage(this.sprite,
-                                           7 * 32,
-                                           this.spriteYIndex * 32,
-                                           32 * viewport.scale,
-                                           32 * viewport.scale,
-                                           this.drawX - (gamePieces.player.xMovement * viewport.scale),
-                                           this.drawY - (gamePieces.player.yMovement * viewport.scale), this.width, this.height);
+        viewport.drawSprite(this.sprite, 7 * 32, this.spriteYIndex * 32, 32 * viewport.scale, 32 * viewport.scale, 
+                             this.drawX - (gamePieces.player.xMovement * viewport.scale),
+                             this.drawY - (gamePieces.player.yMovement * viewport.scale), this.width, this.height);
         let damage  = getRndInteger(0, gamePieces.player.attackDamage);
         this.health -= damage;
         this.hitMessage = game.properties.duration;
-        game.properties.textContext.font = "18px Times New Roman";
-        game.properties.textContext.fillStyle = "#FFFFFF";
-        game.properties.textContext.fillText(damage, this.drawX - (gamePieces.player.xMovement * viewport.scale), 
-                                             this.drawY - (gamePieces.player.yMovement * viewport.scale));
-
+        viewport.drawText("18px Times New Roman", "#FFFFFF", damage, 
+                        this.drawX - (gamePieces.player.xMovement * viewport.scale), 
+                        this.drawY - (gamePieces.player.yMovement * viewport.scale))
         this.drawHealthBar(this.drawX - (gamePieces.player.xMovement * viewport.scale),
                            this.drawY - (gamePieces.player.yMovement * viewport.scale));
         if(this.health <= 0) {
@@ -284,24 +279,20 @@ function createDaqloon(id, x, y) {
         if(this.health <= 0) return false;
         let remainingHealth = 100 - this.health;
         if(this.health !== 100) {
-            game.properties.context3.fillStyle = "#4d0000";
-            game.properties.context3.fillRect(x + 5, y - 20, 0.35 * 100, 10);
+            viewport.drawDaqloonHealthbar("#4d0000", x + 5, y - 20, 0.35 * 100, 10);
         }
-        game.properties.context3.fillStyle = "red";
-        game.properties.context3.fillRect(x + 5, y - 20, 0.35 * this.health, 10);
-    
+        viewport.drawDaqloonHealthbar("red", x + 5, y - 20, 0.35 * this.health, 10);    
     };
     this.checkNearBy = function() {
         console.log(gamePieces.daqloon.findIndex(this.findOtherDaqloons));
     };
     this.drawOnCanvas = function() {
-        game.properties.context3.drawImage(this.sprite,
-        this.spriteXIndex * 32,
-        this.spriteYIndex * 32,
-        32 * viewport.scale,
-        32 * viewport.scale,
-        this.drawX - (gamePieces.player.xMovement * viewport.scale),
-        this.drawY - (gamePieces.player.yMovement * viewport.scale), this.width, this.height);
+        viewport.drawSprite(this.sprite, this.spriteXIndex * 32,
+                            this.spriteYIndex * 32,
+                            32 * viewport.scale,
+                            32 * viewport.scale,
+                            this.drawX - (gamePieces.player.xMovement * viewport.scale),
+                            this.drawY - (gamePieces.player.yMovement * viewport.scale), this.width, this.height);
         if(gamePieces.player.attackedBy === this.id) {
             this.locater();
             this.drawHealthBar(this.drawX - (gamePieces.player.xMovement * viewport.scale),

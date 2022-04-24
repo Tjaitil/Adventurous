@@ -58,8 +58,8 @@ const viewport = {
         this.elements.background = layers[0];
         this.layer.player = layers[1].getContext("2d");
         this.elements.player = layers[1];
-        this.layer.daqloon = layers[2].getContext("2d");
-        this.elements.daqloon = layers[2];
+        this.layer.sprite = layers[2].getContext("2d");
+        this.elements.sprite = layers[2];
         this.layer.frontObjects = layers[3].getContext("2d");
         this.elements.frontObjects = layers[3];
         this.layer.text = layers[4].getContext("2d");
@@ -71,9 +71,9 @@ const viewport = {
         this.elements.player.width = this.width;
         this.elements.player.height = this.height;
         this.elements.player.style.left = this.left + "px";
-        this.elements.daqloon.width = this.width;
-        this.elements.daqloon.height = this.height;
-        this.elements.daqloon.style.left = this.left + "px";
+        this.elements.sprite.width = this.width;
+        this.elements.sprite.height = this.height;
+        this.elements.sprite.style.left = this.left + "px";
         this.elements.frontObjects.width = this.width;
         this.elements.frontObjects.height = this.height;
         this.elements.frontObjects.style.left = this.left + "px";
@@ -121,10 +121,17 @@ const viewport = {
             this.layer.frontObjects.drawImage(img, spriteX, spriteY, width, height);
         }
     },
+    drawSprite(img, spriteX, spriteY, sWidth, sHeight, x, y, width, height) {
+        this.layer.sprite.drawImage(img, spriteX, spriteY, sWidth, sHeight, x, y, width, height);
+    },
     drawText(font, fillStyle, text, x, y) {
-        this.layer.font = font;
-        this.layer.fillStyle = fillStyle;
-        this.layer.text(text, x, y);
+        this.layer.text.font = font;
+        this.layer.text.fillStyle = fillStyle;
+        this.layer.text.fillText(text, x, y);
+    },
+    drawDaqloonHealthbar(fillstyle, x, y, width, height) {
+        this.layer.sprite.fillStyle = fillstyle;
+        this.layer.sprite.fillRect(x, y, width, height);
     },
     checkViewportGamePieces(first = true) {
         // If player has moved a certain amount of pixels update object that will be drawn
