@@ -28,7 +28,7 @@ button:focus {outline:0;}
     box-sizing: border-box;
     left: 4px;
     border-radius: 4px;
-    z-index: 2;
+    z-index: 999;
 }
 #canvas_border::before {
     content: '';
@@ -49,9 +49,12 @@ canvas {
     image-rendering: pixelated; 
     image-rendering: crisp-edges;
 }
+#text_canvas {
+    z-index: 3;
+}
 #game_hud {
     position: absolute;
-    z-index: 3;
+    z-index: 4;
 }
 #game_hud > * {
     top: 10px;
