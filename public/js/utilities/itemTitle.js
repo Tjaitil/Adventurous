@@ -8,29 +8,27 @@ const itemTitle = {
         this.addTitleEvent();
     },
     addTitleEvent() {
-        let figures = document.getElementById("inventory").querySelectorAll("figure");
-        figures.forEach(element => {
-            // ... code code code for this one element
+        let elements = document.getElementById("inventory").querySelectorAll("figure");
+        elements.forEach(element => {
             if (this.computerDevice) {
-                element.addEventListener('mouseenter', () => itemTitle.show());
-                element.addEventListener('mouseleave', () => itemTitle.hide());
+                element.addEventListener('mouseenter', itemTitle.show);
+                element.addEventListener('mouseleave', itemTitle.hide);
             }
             else {
-                element.addEventListener('click', () => itemTitle.show());
+                element.addEventListener('click', itemTitle.show);
             }
         });
         this.status = true;
     },
     removeTitleEvent() {
-        let figures = document.getElementById("inventory").querySelectorAll("figure");
-        figures.forEach(element => {
-            // ... code code code for this one element
+        let elements = document.getElementById("inventory").querySelectorAll("figure");
+        elements.forEach(element => {
             if (this.computerDevice) {
-                element.removeEventListener('mouseenter', () => itemTitle.show());
-                element.removeEventListener('mouseleave', () => itemTitle.hide());
+                element.removeEventListener('mouseenter', itemTitle.show);
+                element.removeEventListener('mouseleave', itemTitle.hide);
             }
             else {
-                element.removeEventListener('click', () => itemTitle.show());
+                element.removeEventListener('click', itemTitle.show);
             }
         });
         this.status = false;
