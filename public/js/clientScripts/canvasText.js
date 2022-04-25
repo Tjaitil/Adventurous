@@ -44,18 +44,27 @@ const loadingCanvas = {
     text: null,
     curtainEffect: 'open',
     animationDuration: 0,
-    set(state) {
-        if(state === 'loading') {
-            this.loadingScreen();
-        } else if(state === 'close') {
-            this.curtainEffect = 'close'
-            this.opacity = 0;
-            this.intervalID = window.requestAnimationFrame(() => this.drawCurtain());
-
-        } else if(state === 'open') {
-            this.curtainEffect = 'open';
-            this.opacity = 1;
-            this.intervalID = window.requestAnimationFrame(() => this.drawCurtain());
+    loadingAnimationTracker: {
+        resolve: undefined,
+        start(state) {
+            if(state === 'loading') {
+                this.loadingScreen();
+            } else if(state === 'close') {
+                loadingCanvas.curtainEffect = 'close'
+                loadingCanvas.opacity = 0.01;
+    
+            } else if(state === 'open') {
+                loadingCanvas.curtainEffect = 'open';
+                loadingCanvas.opacity = 0.99;
+            }
+            return new Promise((resolve, reject) => {
+                this.resolve = resolve;
+                loadingCanvas.intervalID = window.requestAnimationFrame(() => loadingCanvas.drawCurtain());
+            });
+        },
+        finish() {
+            if(loadingCanvas.curtainEffect === 'close') loadingCanvas.loadingScreen();
+            this.resolve();
         }
     },
     loadingScreen() {
@@ -67,13 +76,12 @@ const loadingCanvas = {
         viewport.layer.text.fillText("Loading ...", game.properties.canvasWidth / 2, game.properties.canvasHeight / 2);
     },
     drawCurtain() {
-        if (this.opacity < 0 && this.curtainEffect === 'open') {
-            return false;
-        } else if(this.opacity > 1 && this.curtainEffect === 'close') {
-            this.loadingScreen();
-            return false;
+        if ((this.opacity < 0 && this.curtainEffect === 'open') ||
+            this.opacity > 1 && this.curtainEffect === 'close') {
+            this.loadingAnimationTracker.finish();
+            return;
         }
-        if (this.curtainEffect === 'open') {
+        else if (this.curtainEffect === 'open') {
             // Ease-in effect on loading
             if (this.opacity > 0.8) {
                 this.opacity -= 0.005;
