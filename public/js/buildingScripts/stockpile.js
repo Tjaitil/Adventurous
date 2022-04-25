@@ -1,25 +1,17 @@
     
-    var timeID = [];
     
-    var method = false;
-    var menubarToggle = {
+    let menubarToggle = {
         toggled: false,
         addEvent() {
             menubarToggle.toggled = true;
-            var buttons = document.getElementById("inventory").querySelectorAll("div");
-            buttons.forEach(function(element) {
-                // ... code code code for this one element
-                element.addEventListener('click', show_menu);
-            });
-            (() => itemTitle.removeTitleEvent())();
+            let figures = document.getElementById("inventory").querySelectorAll("figure");
+            figures.forEach(element => element.addEventListener('click', show_menu));
+            itemTitle.removeTitleEvent();
         },
         removeEvent() {
             menubarToggle.toggled = false;
-            var buttons = document.getElementById("inventory").querySelectorAll("div");
-            buttons.forEach(function(element) {
-                // ... code code code for this one element
-                element.removeEventListener('click', show_menu);
-            });
+            let figures = document.getElementById("inventory").querySelectorAll("figure");
+            figures.forEach(element => element.removeEventListener('click', show_menu));
         }
     };
     function addStockpileActions() {
@@ -33,9 +25,8 @@
         });
     }
     function addShowMenuEvent() {
-        var figures = document.getElementById("stockpile").querySelectorAll("figure");
+        let figures = document.getElementById("stockpile").querySelectorAll("figure");
         figures.forEach(function(element) {
-            // ... code code code for this one element
             element.addEventListener('click', show_menu);
         });
         if(/Safari|Chrome/i.test(navigator.userAgent)) {
@@ -57,48 +48,32 @@
         console.log("show_menu");
         // Show menu above the item;
         clearTimeout(timeID.pop());
-        var element = event.target.closest("div");
-        var menu = document.getElementById("stck_menu");
-        console.log(menu);
+        let element = event.target.closest("div");
+        let menu = document.getElementById("stck_menu");
         if(element.className == 'inventory_item') {
             document.getElementById("inventory").appendChild(menu);         
         }
         else {
             document.getElementById("news_content").appendChild(menu); 
         }
-        var item = element.getElementsByTagName("figcaption")[0].innerHTML;
+        let item = element.getElementsByTagName("figcaption")[0].innerHTML;
         // Insert item name at the first li
         menu.children[0].children[0].innerHTML = item;
         menu.style.visibility = "visible";
         // Declare menu top by measuring the positon from top of parent and also if inventory/stockpile is scrolled
-        var menuTop;
-        /*console.log('parentNode.ScrollTop: ' + element.parentNode.scrollTop);
-        console.log('elementOffsetTop: ' + element.offsetTop);*/
-        var lis = menu.children[0].children;
+        let menuTop;
+        let lis = menu.children[0].children;
         
-        let elementPos;
         if(element.className == 'inventory_item') {
             for(var i = 1; i < (lis.length - 1); i++) {
                 lis[i].innerHTML = "Insert " + lis[i].innerHTML.split(" ")[1];
             }
             lis[lis.length - 1].innerHTML = "Insert all";
             elementPos = element.getBoundingClientRect();
-            /*console.log(element.offsetTop);
-            console.log(elementPos);
-            console.log(screen.height);
-            console.log(elementPos.top + 145);*/
             if(element.offsetTop + 150 > document.getElementById("stockpile").offsetHeight) {
-                console.log('1');
                 menuTop = element.offsetTop - 70;
-            }
-            /*else if(screen.height < elementPos.top + 145) {
-                console.log('menudown');
-                menuTop = elementPos.top - 70;
-                console.log(menuTop);
-            }*/
-            else {
-                console.log('3');
-                menuTop = element.offsetTop + 15;
+            } else {
+                menuTop = element.offsetTop - 25;
             }
             menu.children[0].style.left = element.offsetLeft + "px";
         }
@@ -109,27 +84,14 @@
             }
             lis[lis.length - 1].innerHTML = "Widthdraw all";
             elementPos = element.getBoundingClientRect();
-            /*console.log(element.offsetTop);
-            console.log(elementPos);
-            console.log(screen.height);
-            console.log(elementPos.top + 145);*/
             if(element.offsetTop + 150 > document.getElementById("stockpile").offsetHeight) {
-                console.log('1');
                 menuTop = element.offsetTop - 70;
-            }
-            /*else if(screen.height < elementPos.top + 145) {
-                console.log('menudown');
-                menuTop = elementPos.top - 70;
-                console.log(menuTop);
-            }*/
-            else {
-                console.log('3');
+            } else {
                 menuTop = element.offsetTop + 85;
             }
             menu.children[0].style.left = element.offsetLeft + "px";
         }
         menu.children[0].style.top = menuTop + "px";
-        /*timeID.push(setTimeout(hideMenu, 4000));*/
     }  
     function hideMenu() {
         let menu = document.getElementById("stck_menu");
@@ -137,12 +99,11 @@
         document.getElementById("news_content").appendChild(menu);
     }
     function stockpileAction() {
-        hideMenu();
         let element = event.target.closest("div").parentNode;
         let item = event.target.parentNode.children[0].innerHTML.toLowerCase().split("<br>")[0].trim();
         let quantity = event.target.innerHTML.split(" ")[1];
         let insert;
-        if(document.getElementById("stck_menu").querySelectorAll("LI")[1].innerHTML.indexOf("Insert") != -1) {
+        if(document.getElementById("stck_menu").closest("#inventory")) {
             insert = "1";
             if(quantity === 'x') {
                 quantity = selectAmount('insert');
@@ -154,6 +115,8 @@
                 quantity = selectAmount('withdraw');
             }
         }
+        hideMenu();
+
         let data = "model=Stockpile" + "&method=updateInventory" + "&item=" + item +
                          "&insert=" + insert + "&quantity=" + quantity;
         ajaxP(data, function(response) {
