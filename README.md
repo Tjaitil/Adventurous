@@ -1,3 +1,6 @@
+# Introductory comments
+This a project I started on when first learning PHP and mysql. At the same time my JavaScript knowledge was basic. Bear this in mind while looking at the code as some modern features are missing. Back then I had little knowledge about PHP/JS frameworks and I also wanted to learn apart from any frameworks. Bear this in mind when browsing the codebase. I have plans to migrate the project to existing frameworks. However with limited sparetime and other projects I want to work on the timeline is uncertain.
+
 # About Game:
 
 Adventurous (http://adventurous.no) is an RPG in open world. The graphics and game cameratakes inspiration from early gameboy pixel art games with top down look, especially pokemon games. 
