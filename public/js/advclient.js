@@ -117,7 +117,6 @@ const game = {
 },
 setGameState(state) {
     if (['playing', 'conversation', 'loading', 'help', 'map', 'pause'].indexOf(state) === -1) {
-        alert("Unkown state found: " + state);
         return false;
     }
     game.properties.gameState = state;
@@ -125,7 +124,7 @@ setGameState(state) {
 loadWorld(parameters = false) {
     game.setGameState('loading');
     window.cancelAnimationFrame(game.properties.requestId);
-    loadingCanvas.set('close');
+    if(loadingCanvas.opacity !== 1) loadingCanvas.loadingAnimationTracker.start('close');
     let data;
     if (parameters !== false) {
         data = "model=worldLoader" + "&method=changeMap" + "&newMap=" + JSON.stringify(parameters.newMap);
@@ -133,10 +132,7 @@ loadWorld(parameters = false) {
     else {
         data = "model=worldLoader&method=loadWorld";
     }
-    fetch("/handlers/handler_g.php?model=worldLoader&method=loadWorld").then(res => res.json()
-    .then(data => console.log(data)));
     ajaxG(data, function (response) {
-        console.log(response);
         let responseText = response[1].data;
         if (response[0] == false) {
             viewport.worldImage.src = false;
@@ -185,23 +181,60 @@ loadWorld(parameters = false) {
         viewport.checkViewportGamePieces(true);
         gamePieces.loadAssets(game.properties.xbase, game.properties.ybase, responseText.mapData);
         map.load(game.properties.currentMap);
-        // If newMap is false, then the loading is first.
         if(parameters.method !== "changeMap") {
+            loadingCanvas.loadingAnimationTracker.start('open');
             game.startGame();
-            loadingCanvas.set('open')
             if (game.properties.currentMap == "9.9") {
                 tutorial.startTutorial();
             }
         }
         else {
-            loadingCanvas.set('open');
             setTimeout(() => {
+                loadingCanvas.loadingAnimationTracker.start('open');
                 game.startGame();
-            }, 4000);
+            }, 3000);
         }
     });
 },
+getNextWorld() {
+    let newX = 0;
+    let newY = 0;
+    let newxBase = gamePieces.player.xpos;
+    let newyBase = gamePieces.player.ypos;
+    let match = false;
+    if (gamePieces.player.diameterDown > 3170 && gamePieces.player.direction.indexOf("down") !== -1) {
+        newY += 1;
+        newyBase = 1;
+        match = true;
+    }
+    else if (gamePieces.player.diameterUp < 10 && gamePieces.player.direction.indexOf("up") !== -1) {
+        newY -= 1;
+        newyBase = 3158;
+        match = true;
+    }
+    if (gamePieces.player.xpos > 3170 && gamePieces.player.direction.indexOf("right") !== -1) {
+        newX += 1;
+        newxBase = 1;
+        match = true;
+    }
+    else if (gamePieces.player.diameterLeft < 10 && gamePieces.player.direction.indexOf("left") !== -1) {
+        newX -= 1;
+        newxBase = 3158;
+        match = true;
+    }
+    if (match !== true) {
+        return false;
+    } else {
+        gamePieces.player.travel = true;
+        this.loadWorld({'newxBase': newxBase, 
+                        'newyBase': newyBase, 
+                        'method': "changeMap", 
+                        'newMap': { "new_x": newX, "new_y": newY }});
+    }
+},
 setup() {
+    gamePieces.player.setup();
+    spritesContainer.loadDefaultSprites();
     setTimeout(() => {
         document.getElementById("client-container").style.opacity = 1;
         document.getElementById("client-loading-container").style.display = "none";
@@ -219,11 +252,9 @@ loadGame() {
     HUD.setup(viewport.width, viewport.height, 
         document.getElementById("game_canvas").offsetTop, 
         document.getElementById("game_canvas").offsetLeft);
-    gamePieces.player.setup();
     controls.checkDeviceType();
     // getHunger();
     itemPrices.get();
-    spritesContainer.loadDefaultSprites();
     CookieTicket.checkCookieTicket('checkMeOut');
 },
 startGame() {
@@ -291,49 +322,9 @@ update(timestamp) {
     viewport.drawBackground(gamePieces.player.xMovement, gamePieces.player.yMovement);
     gamePieces.drawStaticPieces();
     game.properties.duration++;
+    if(gamePieces.player.checkPosition()) game.getNextWorld();
     game.properties.requestId = window.requestAnimationFrame(game.update);
 },
-getNextMap() {
-    let newX = 0;
-    let newY = 0;
-    let newxBase = gamePieces.player.xpos;
-    let newyBase = gamePieces.player.ypos;
-    let match = false;
-    if (gamePieces.player.travel) {
-        return false;
-    }
-    else {
-        gamePieces.player.travel = false;
-    }
-    if (gamePieces.player.diameterDown > 3170 && gamePieces.player.direction.indexOf("down") !== -1) {
-        newY += 1;
-        newyBase = 1;
-        match = true;
-    }
-    else if (gamePieces.player.diameterUp < 8 && gamePieces.player.direction.indexOf("up") !== -1) {
-        newY -= 1;
-        newyBase = 3158;
-        match = true;
-    }
-    if (gamePieces.player.xpos > 3170 && gamePieces.player.direction.indexOf("right") !== -1) {
-        newX += 1;
-        newxBase = 1;
-        match = true;
-    }
-    else if (gamePieces.player.diameterLeft < 8 && gamePieces.player.direction.indexOf("left") !== -1) {
-        newX -= 1;
-        newxBase = 3158;
-        match = true;
-    }
-    if (match !== true) {
-        return false;
-    } else {
-        this.loadWorld({'newxBase': newxBase, 
-                        'newyBase': newyBase, 
-                        'method': "changeMap", 
-                        'newMap': { "new_x": newX, "new_y": newY }});
-    }
-}
 };
 function renderPlayer(x, y) {
     player = gamePieces.player;
