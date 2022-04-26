@@ -105,7 +105,7 @@ function getgMessage() {
 /*window.addEventListener("load", getgMessage, false);*/
 function openNews(content, sidebar = false) {
     document.getElementById("news_content_main_content").innerHTML = "";
-    document.getElementById("news_content").style.top = game.properties.rootCanvas.offsetTop + "px";
+    document.getElementById("news_content").style.top = viewport.elements.background.offsetTop + "px";
 
     document.getElementById("news").style.visibility = "visible";
     document.getElementById("news_content").style.visibility = "visible";

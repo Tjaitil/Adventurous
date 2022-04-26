@@ -89,7 +89,6 @@ const game = {
     // Context for HUD
     textContext: document.getElementById("text_canvas").getContext("2d"),
     canvasHeight: document.getElementById("game_canvas").height,
-    rootCanvas: document.getElementById("game_canvas"),
     requestId: null,
     nagivateNext: false,
     pauseID: null,
