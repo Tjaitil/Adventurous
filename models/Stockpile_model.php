@@ -43,11 +43,11 @@
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            if(!$stmt->rowCount() > 0 && $insert === '0') {
-                $this->response->addTo("errorGameMessage", "You don't have that item");
+            $current_amount = ($row !== false) ? $row['amount'] : 0;
+            if($insert === '0' && !$stmt->rowCount() > 0) {
+                $this->response->addTo("errorGameMessage", "You don't have that item in stockpile");
                 return false;
             }
-            
             $sql2 = "SELECT amount FROM inventory WHERE item=:item AND username=:username";
             $stmt2 = $this->db->conn->prepare($sql2);
             $stmt2->bindParam(":item", $param_item, PDO::PARAM_STR);
@@ -56,8 +56,8 @@
             $param_username = $this->username;
             $stmt2->execute();
             $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
-            if(!$stmt2->rowCount() > 0 && $insert === '1') {
-                $this->response->addTo("errorGameMessage", "You don't have that item");
+            if($insert === '1' && !$stmt2->rowCount() > 0) {
+                $this->response->addTo("errorGameMessage", "You don't have that item in inventory");
                 return false;
             }
             if($quantity === 'all' && $insert === '1') {
@@ -74,20 +74,19 @@
                 $this->response->addTo("errorGameMessage", "You don't have that amount to insert");
                 return false;
             }
-            
             try {
                 $this->db->conn->beginTransaction();
                 if($insert === "0") {
                     //widthdraw from stockpile
-                    $this->updateStockpile($item, -$quantity);
+                    $this->updateStockpile($item, -$quantity, $current_amount);
                     // Update inventory
-                    $this->UpdateGamedata->updateInventory($item, $quantity, true);
+                    $this->UpdateGamedata->updateInventory($item, $quantity, $current_amount);
                 }
                 else  if($insert === "1" ) {
                     //Insert into stockpile
-                    $this->updateStockpile($item, $quantity);
+                    $this->updateStockpile($item, $quantity, $current_amount);
                     // Update inventory
-                    $this->UpdateGamedata->updateInventory($item, -$quantity, true);
+                    $this->UpdateGamedata->updateInventory($item, -$quantity, $current_amount);
                 }
                 
                 $this->db->conn->commit();
@@ -98,19 +97,10 @@
             }
             $this->getData(true);            
         }
-        public function updateStockpile($item, $quantity) {
-            $param_item = $item;
+        public function updateStockpile($item, $quantity, $current_amount) {
             $param_username = $this->username;
-            $sql = "SELECT amount FROM stockpile WHERE item=:item AND username=:username";  
-            $stmt = $this->db->conn->prepare($sql);
-            $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
-            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-            $stmt->execute();
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $count = $stmt->rowCount();
-            if ($count === 0 && $quantity > 0) {
+            if ($quantity > 0 && $current_amount === 0) {
                 // Insert new item into bank
-                $param_username = $this->username;
                 $param_item = $item;
                 $param_amount = $quantity;
                 $sql = "INSERT INTO stockpile (username, item, amount) VALUES(:username, :item, :amount)";
@@ -119,30 +109,26 @@
                 $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
                 $stmt->bindParam(":amount", $param_amount, PDO::PARAM_STR);
                 $stmt->execute();
-            }
-            $new_amount = $row['amount'] + $quantity;
-            
-            if($count > 0 && $new_amount > 0) {
+            } else if($quantity - $current_amount === 0) {
+                $param_item = $item;
+                $param_username = $this->username;
+                //If item is zero
+                $sql = "DELETE FROM stockpile WHERE item=:item AND username=:username";
+                $stmt = $this->db->conn->prepare($sql);
+                $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
+                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+                $stmt->execute();
+            } else {
+                $param_amount = $current_amount + $quantity;
+                $param_username = $this->username;
+                $param_item = $item;
                 // If items already exists in bank
                 $sql2 = "UPDATE stockpile SET amount=:amount WHERE username=:username AND item=:item";
                 $stmt2 = $this->db->conn->prepare($sql2);
                 $stmt2->bindParam(":amount", $param_amount, PDO::PARAM_STR);
                 $stmt2->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $stmt2->bindParam(":item", $param_item, PDO::PARAM_STR);
-                $param_amount = $row['amount'] + $quantity;
-                $param_username = $this->username;
-                $param_item = $item;
                 $stmt2->execute();
-            }
-            if(!$new_amount > 0) {
-                //If item is zero
-                $sql = "DELETE FROM stockpile WHERE item=:item AND username=:username";
-                $stmt = $this->db->conn->prepare($sql);
-                $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
-                $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
-                $param_item = $item;
-                $param_username = $this->username;
-                $stmt->execute();
             }
         }
     }
