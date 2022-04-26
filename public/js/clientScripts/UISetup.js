@@ -23,8 +23,6 @@ const HUD = {
     (document.getElementById("game_canvas").offsetTop + document.getElementById("game_canvas").height) + "px";
     document.getElementById("news_content").width = width + "px";
 
-    game.properties.charX = (Math.floor((width / 2) - gamePieces.player.playerSize)) / viewport.zoom;
-    game.properties.charY = Math.floor((height / 2) - gamePieces.player.playerSize) / viewport.zoom;
     if (document.getElementById("control").style.display === "block") {
         let control = document.getElementById("control");
         control.style.top = top + left - 125 + "px";

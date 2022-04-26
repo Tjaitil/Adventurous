@@ -98,11 +98,6 @@ const game = {
     ybase: 200,
     currentMap: null,
     gameState: "loading",
-    // charX and charY where the character is drawn on canvas (middle);
-    /*charX: 320,
-    charY: 200,*/
-    charX: null,
-    charY: null,
     // xcamMove/ycamMove is the variables that holds how much the picture is moved. It is - 320 because the player is drawn is the middle on
     // x axis and - 200 on the y axis.
     xcamMove: null,
