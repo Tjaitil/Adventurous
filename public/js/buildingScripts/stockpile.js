@@ -63,7 +63,7 @@
         // Declare menu top by measuring the positon from top of parent and also if inventory/stockpile is scrolled
         let menuTop;
         let lis = menu.children[0].children;
-        
+        let elementPos;
         if(element.className == 'inventory_item') {
             for(var i = 1; i < (lis.length - 1); i++) {
                 lis[i].innerHTML = "Insert " + lis[i].innerHTML.split(" ")[1];
