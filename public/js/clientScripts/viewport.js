@@ -129,6 +129,9 @@ const viewport = {
         this.layer.text.fillStyle = fillStyle;
         this.layer.text.fillText(text, x, y);
     },
+    resetTextLayer() {
+        this.layer.text.clearRect(0, 0, this.width, this.height);
+    },
     drawDaqloonHealthbar(fillstyle, x, y, width, height) {
         this.layer.sprite.fillStyle = fillstyle;
         this.layer.sprite.fillRect(x, y, width, height);

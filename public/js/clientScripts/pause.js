@@ -35,7 +35,7 @@ const pauseManager = {
     },
     resumeGame(first = false) {
         if(["pause"].includes(game.properties.gameState)) {
-            game.properties.textContext.clearRect(0, 0, game.properties.canvasWidth, game.properties.canvasHeight);
+            viewport.resetTextLayer();
         }
         game.setGameState('playing');
         game.properties.requestId = window.requestAnimationFrame(game.update);

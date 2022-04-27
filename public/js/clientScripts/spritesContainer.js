@@ -300,7 +300,7 @@ function createDaqloon(id, x, y) {
         }
         if(this.hitMessage !== false && game.properties.duration - this.hitMessage > 10) {
             this.hitMessage = false;
-            game.properties.textContext.clearRect(0, 0, 700, 700);
+            viewport.resetTextLayer();
         }
         this.setDiameter();
         this.resetDirections();
