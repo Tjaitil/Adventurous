@@ -83,10 +83,6 @@ const game = {
     ybase: 200,
     currentMap: null,
     gameState: "loading",
-    // xcamMove/ycamMove is the variables that holds how much the picture is moved. It is - 320 because the player is drawn is the middle on
-    // x axis and - 200 on the y axis.
-    xcamMove: null,
-    ycamMove: null,
     // Scale is a variable which compensates for the canvas being zoomed in so that objects drawn on canvas will follow the background.
     // 1 is normal then the picture will be painted in 1024 width and height.
     device: "pc",

@@ -22,8 +22,8 @@ function getRndInteger(min, max) {
     return Math.floor(Math.random() * (max - min + 1) ) + min;
 }
 function item(drawX, drawY, name) {
-    this.x = drawX + game.properties.xcamMove;
-    this.y = drawY + game.properties.ycamMove;
+    this.x = drawX + viewport.offsetX;
+    this.y = drawY + viewport.offsetY;
     this.drawX = drawX;
     this.drawY = drawY;
     this.id = gamePieces.items.length + 1;
@@ -155,8 +155,8 @@ function checkDaqloon(amount, id = false) {
         daqloon.setDiameter();
         daqloon.resetDirections();
         daqloon.dead = false;
-        daqloon.drawX = (daqloon.x - game.properties.xcamMove);
-        daqloon.drawY = (daqloon.y - game.properties.ycamMove);
+        daqloon.drawX = (daqloon.x - viewport.offsetX);
+        daqloon.drawY = (daqloon.y - viewport.offsetY);
         daqloon.sprite.src = "public/images/daqloon sprite.png";
         if(id === false) {
             gamePieces.daqloon.push(daqloon);     
