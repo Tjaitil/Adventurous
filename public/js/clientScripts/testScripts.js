@@ -5,8 +5,8 @@ function testObjectImg() {
             if(gamePieces.objects[i].visible === true && 
                 ["desert_dune", "nc_object", "figure"].includes(gamePieces.objects[i].type) == false && 
                 gamePieces.objects[i].src.length > 1) {
-                    game.properties.context4.imageSmoothingEnabled = false;
-                    game.properties.context4.drawImage(gamePieces.objects[i].img,
+                    viewport.layer.frontObjects.imageSmoothingEnabled = false;
+                    viewport.layer.frontObjects.drawImage(gamePieces.objects[i].img,
                         gamePieces.objects[i].drawX - (gamePieces.player.xMovement * viewport.scale),
                         gamePieces.objects[i].drawY - (gamePieces.player.yMovement * viewport.scale));
                     }

@@ -76,10 +76,6 @@ const game = {
     properties: {
     HUD: HUD,
     duration: 0,
-    // Context 3 is for daqloon
-    context3: document.getElementById("game_canvas3").getContext("2d"),
-    // Context 4 is for objects
-    context4: document.getElementById("game_canvas4").getContext("2d"),
     requestId: null,
     pauseID: null,
     timestamp: 0,

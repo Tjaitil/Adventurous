@@ -37,7 +37,6 @@ function item(drawX, drawY, name) {
     this.checking = false;
     this.draw = function() {
         if(this.loopIndex > 3) this.loopIndex = 0;
-        // let context = (this.drawX + this.width < gamePieces.player.diameterDown) ? game.properties.context : game.properties.context3;
 
         viewport.drawSprite(this.spriteObject.sprite, 
             0, 0, 

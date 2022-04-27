@@ -422,13 +422,13 @@ const gamePieces = {
         if(draw === true) {
             for(let i = 0; i < gamePieces.visibleObjects.length; i++) {
                 if(draw == true) {
-                    game.properties.context4.fillStyle = "red";
-                    game.properties.context4.fillRect(gamePieces.visibleObjects[i].drawX - (gamePieces.player.xMovement / viewport.scale),
+                    viewport.layer.frontObjects.fillStyle = "red";
+                    viewport.layer.frontObjects.fillRect(gamePieces.visibleObjects[i].drawX - (gamePieces.player.xMovement / viewport.scale),
                         gamePieces.visibleObjects[i].drawY - (gamePieces.player.yMovement / viewport.scale),
                         gamePieces.visibleObjects[i].width, gamePieces.visibleObjects[i].height);
-                    game.properties.context4.font = "10px Comic Sans MS";
-                    game.properties.context4.fillStyle = "white";
-                    game.properties.context4.fillText(i + ' | ' + gamePieces.visibleObjects[i].id,
+                    viewport.layer.frontObjects.font = "10px Comic Sans MS";
+                    viewport.layer.frontObjects.fillStyle = "white";
+                    viewport.layer.frontObjects.fillText(i + ' | ' + gamePieces.visibleObjects[i].id,
                         gamePieces.visibleObjects[i].drawX - (gamePieces.player.xMovement / viewport.scale) +
                         (gamePieces.visibleObjects[i].width / 2),
                         gamePieces.visibleObjects[i].drawY + (gamePieces.visibleObjects[i].height / 2) -
