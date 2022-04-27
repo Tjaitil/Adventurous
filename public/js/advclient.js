@@ -78,10 +78,6 @@ const game = {
     fillStyle1: "red",
     fillstyle2: "black",
     duration: 0,
-    // Context 1 is for objects
-    context: document.getElementById("game_canvas").getContext("2d"),
-    // Context 2 is for players
-    context2: document.getElementById("game_canvas2").getContext("2d"),
     // Context 3 is for daqloon
     context3: document.getElementById("game_canvas3").getContext("2d"),
     // Context 4 is for objects
