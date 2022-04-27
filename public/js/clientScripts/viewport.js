@@ -120,6 +120,9 @@ const viewport = {
             this.layer.frontObjects.drawImage(img, spriteX, spriteY, width, height);
         }
     },
+    resetSpriteLayer() {
+        this.layer.sprite.clearRect(0, 0, viewport.width, viewport.height);
+    },
     drawSprite(img, spriteX, spriteY, sWidth, sHeight, x, y, width, height) {
         this.layer.sprite.drawImage(img, spriteX, spriteY, sWidth, sHeight, x, y, width, height);
     },

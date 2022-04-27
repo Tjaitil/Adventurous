@@ -283,7 +283,7 @@ update(timestamp) {
     if (controls.playerDown === true) {
         gamePieces.player.speedY = gamePieces.player.speed;
     }
-    game.properties.context3.clearRect(0, 0, game.properties.canvasWidth, game.properties.canvasHeight);
+    viewport.resetSpriteLayer();
     for (let i = 0; i < gamePieces.items.length; i++) {
         gamePieces.items[i].draw();
     }
