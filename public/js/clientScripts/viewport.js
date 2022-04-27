@@ -132,6 +132,10 @@ const viewport = {
     resetTextLayer() {
         this.layer.text.clearRect(0, 0, this.width, this.height);
     },
+    drawAttackCoolDown(cooldown) {
+        this.layer.player.fillStyle = "orange";
+        this.layer.player.fillRect(10, 60, 100 - (100 - cooldown), 10);
+    },
     drawDaqloonHealthbar(fillstyle, x, y, width, height) {
         this.layer.sprite.fillStyle = fillstyle;
         this.layer.sprite.fillRect(x, y, width, height);

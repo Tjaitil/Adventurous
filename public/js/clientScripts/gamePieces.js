@@ -131,8 +131,7 @@ const gamePieces = {
         },
         drawCooldown() {
             this.cooldown -= 3;
-            game.properties.context2.fillStyle = "orange";
-            game.properties.context2.fillRect(10, 60, 100 - (100 - this.cooldown), 10);
+            viewport.drawAttackCoolDown(this.cooldown);
         },
         setHuntedStatus(status) {
             this.hunted = status;
