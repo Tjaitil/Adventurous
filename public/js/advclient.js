@@ -75,8 +75,6 @@ function doubleClickDetect() {
 const game = {
     properties: {
     HUD: HUD,
-    fillStyle1: "red",
-    fillstyle2: "black",
     duration: 0,
     // Context 3 is for daqloon
     context3: document.getElementById("game_canvas3").getContext("2d"),
@@ -84,7 +82,6 @@ const game = {
     context4: document.getElementById("game_canvas4").getContext("2d"),
     canvasHeight: document.getElementById("game_canvas").height,
     requestId: null,
-    nagivateNext: false,
     pauseID: null,
     timestamp: 0,
     xbase: 320,
@@ -97,7 +94,6 @@ const game = {
     ycamMove: null,
     // Scale is a variable which compensates for the canvas being zoomed in so that objects drawn on canvas will follow the background.
     // 1 is normal then the picture will be painted in 1024 width and height.
-    scale: 1.5,
     device: "pc",
     building: "none",
     inBuilding: false,
