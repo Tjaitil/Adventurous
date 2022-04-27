@@ -23,7 +23,7 @@ const canvasTextHeader = {
     },
     draw() {
         viewport.layer.text.clearRect(0, 0, viewport.width, viewport.height);
-        let contentY = game.properties.canvasHeight * 0.15;
+        let contentY = viewport.height * 0.15;
         viewport.layer.text.fillStyle = "rgba(38, 38, 38," + this.opacity + ")";
         viewport.layer.text.fillRect(0, contentY, viewport.width, 200);
         viewport.layer.text.fillStyle = "rgba(255,255,255" + this.opacity + ")";
@@ -69,11 +69,11 @@ const loadingCanvas = {
     },
     loadingScreen() {
         viewport.layer.text.fillStyle = "black";
-        viewport.layer.text.fillRect(0, 0, game.properties.canvasWidth, game.properties.canvasHeight);
+        viewport.layer.text.fillRect(0, 0, viewport.width, viewport.height);
         viewport.layer.text.font = "30px Comic Sans MS";
         viewport.layer.text.fillStyle = "white";
         viewport.layer.text.textAlign = "center";
-        viewport.layer.text.fillText("Loading ...", game.properties.canvasWidth / 2, game.properties.canvasHeight / 2);
+        viewport.layer.text.fillText("Loading ...", viewport.width / 2, viewport.height / 2);
     },
     drawCurtain() {
         if ((this.opacity < 0 && this.curtainEffect === 'open') ||

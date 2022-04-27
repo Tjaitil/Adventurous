@@ -46,8 +46,8 @@ const viewport = {
         if (newHeight > 600) {
             newHeight = 550;
         }
-        game.properties.canvasWidth = this.width = newWidth;
-        game.properties.canvasHeight = this.height = newHeight;
+        this.width = newWidth;
+        this.height = newHeight;
     },
     setup(layers) {
         // Set layers and elements

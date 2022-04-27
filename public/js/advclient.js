@@ -80,7 +80,6 @@ const game = {
     context3: document.getElementById("game_canvas3").getContext("2d"),
     // Context 4 is for objects
     context4: document.getElementById("game_canvas4").getContext("2d"),
-    canvasHeight: document.getElementById("game_canvas").height,
     requestId: null,
     pauseID: null,
     timestamp: 0,

@@ -68,7 +68,7 @@ const conversation = {
         }
         this.conversationDiv.appendChild(h);
         if (game.properties.device == "mobile") {
-            let conversationContainerHeight = game.properties.canvasHeight * 0.40;
+            let conversationContainerHeight = viewport.height * 0.40;
             if (conversationContainerHeight > 170) {
                 conversation_container.style.height = "170px";
             }
