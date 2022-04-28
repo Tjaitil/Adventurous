@@ -127,7 +127,11 @@ const viewport = {
         this.layer.sprite.drawImage(img, spriteX, spriteY, sWidth, sHeight, x, y, width, height);
     },
     drawText(font, fillStyle, text, x, y, textAlign = false) {
-        if(textAlign) this.layer.text.textAlign = "center";
+        if(textAlign) {
+            this.layer.text.textAlign = "center";
+        } else {
+            this.layer.text.textAlign = "start";
+        } 
         this.layer.text.font = font;
         this.layer.text.fillStyle = fillStyle;
         this.layer.text.fillText(text, x, y);
