@@ -17,6 +17,15 @@ const spritesContainer = {
             console.log(image.src + ' Sprite loading failed');
         }
     },
+    update() {
+        gamePieces.items.forEach(item => item.draw());
+
+        gamePieces.daqloon.forEach(daqloon => {
+            if((daqloon.dead == false && daqloon.spawn === true) || daqloon.spawn === false) {
+                daqloon.draw();
+            }
+        });
+    }
 }
 function getRndInteger(min, max) {
     return Math.floor(Math.random() * (max - min + 1) ) + min;
@@ -210,7 +219,7 @@ function createDaqloon(id, x, y) {
     this.down = false;
     this.left = false;
     this.health = 10;
-    this.movementSpeed = 90;
+    this.movementSpeed = 70;
     this.dead = false;
     this.attack = false;
     this.cooldown = false;
@@ -231,15 +240,17 @@ function createDaqloon(id, x, y) {
         this.left = false;
     };
     this.hit = function() {
+        if(this.dead) return false;
         viewport.drawSprite(this.sprite, 7 * 32, this.spriteYIndex * 32, 32 * viewport.scale, 32 * viewport.scale, 
                              this.drawX - (gamePieces.player.xMovement * viewport.scale),
                              this.drawY - (gamePieces.player.yMovement * viewport.scale), this.width, this.height);
         let damage  = getRndInteger(0, gamePieces.player.attackDamage);
+        console.log('damage', damage);
         this.health -= damage;
         this.hitMessage = game.properties.duration;
         viewport.drawText("18px Times New Roman", "#FFFFFF", damage, 
-                        this.drawX - (gamePieces.player.xMovement * viewport.scale), 
-                        this.drawY - (gamePieces.player.yMovement * viewport.scale))
+                        this.drawX - (gamePieces.player.xMovement * viewport.scale) + 40, 
+                        this.drawY - (gamePieces.player.yMovement * viewport.scale) + 20)
         this.drawHealthBar(this.drawX - (gamePieces.player.xMovement * viewport.scale),
                            this.drawY - (gamePieces.player.yMovement * viewport.scale));
         if(this.health <= 0) {

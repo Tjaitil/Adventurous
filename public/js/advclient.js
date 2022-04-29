@@ -275,9 +275,7 @@ update(timestamp) {
         gamePieces.player.speedY = gamePieces.player.speed;
     }
     viewport.resetSpriteLayer();
-    for (let i = 0; i < gamePieces.items.length; i++) {
-        gamePieces.items[i].draw();
-    }
+    spritesContainer.update();
     if ((gamePieces.player.speedX != 0 || gamePieces.player.speedY != 0) && game.properties.inBuilding == false &&
         conversation.active === false) {
         eventHandler.checkEvent();
@@ -287,12 +285,6 @@ update(timestamp) {
     }
     else if (gamePieces.player.animationEnd != true) {
         gamePieces.player.newPos(false);
-    }
-    for (var i = 0; i < gamePieces.daqloon.length; i++) {
-        if (gamePieces.daqloon[i].dead === false && gamePieces.daqloon[i].spawn === true ||
-            gamePieces.daqloon[i].spawn === false) {
-                gamePieces.daqloon[i].draw();
-            }
     }
     viewport.drawBackground(gamePieces.player.xMovement, gamePieces.player.yMovement);
     gamePieces.drawStaticPieces();
