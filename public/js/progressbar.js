@@ -31,7 +31,6 @@ const progressBar = {
             shadowLength = 100;
             if(finishClass === true) progressBarElement.querySelectorAll(".progressBar")[0].classList.add("progressFinished");
         } else if(finishClass === false) {
-            console.log(progressBarElement.querySelectorAll(".progressBar")[0]);
             progressBarElement.querySelectorAll(".progressBar")[0].removeAttribute(".progressFinished");
         }
         progressBarElement.querySelectorAll(".progressBarOverlay")[0].style.width = width + "%";
