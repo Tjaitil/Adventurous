@@ -30,17 +30,12 @@ const HUD = {
         document.getElementById("inventory").style.top = top + "px";
     }
     let control_text = document.getElementById("control_text");
-    console.log(top);
-    console.log(control_text.offsetHeight);
-    control_text.style.top = top + height - control_text.offsetHeight + "px";
+    control_text.style.top = top + height - control_text.offsetHeight - 20 + "px";
     control_text.style.left = left + 20 + "px";
-    document.getElementById("game_text").style.maxWidth = left + "px";
     let HUDTopPosition = 15;
     let HUDLeftPosition = 10;
     let HUDrowHeight = 46;
-    // Position canvas HUD
-    document.getElementById("game_hud").style.width = width + "px";
-
+    
     // Position the hunger bar
     this.elements.hungerProgressBar = document.getElementById("hunger_progressBar");
     this.elements.hungerProgressBar.style.top = HUDTopPosition + (HUDrowHeight * 0) +  "px";
