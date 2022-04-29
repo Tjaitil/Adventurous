@@ -5,6 +5,7 @@ const viewport = {
     worldImage: new Image(3200, 3200),
     width: 0,
     height: 0,
+    top: 0,
     left: 0,
     offsetX: 0,
     offsetY: 0,
@@ -34,6 +35,7 @@ const viewport = {
         let canvasContainer = document.getElementById("game-screen");
         if(canvasContainer) {
             this.left = canvasContainer.offsetLeft;
+            this.top = canvasContainer.offsetTop;
         }
         let newHeight;
         // If the device is mobile check for the shortest dimension of height and width to compensate for already rotated devices

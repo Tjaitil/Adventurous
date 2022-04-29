@@ -224,9 +224,7 @@ loadGame() {
         document.getElementById("game_canvas3"),
         document.getElementById("game_canvas4"),
         document.getElementById("text_canvas")], game.properties.xbase, game.properties.ybase);
-    HUD.setup(viewport.width, viewport.height, 
-        document.getElementById("game_canvas").offsetTop, 
-        document.getElementById("game_canvas").offsetLeft);
+    HUD.setup(viewport.width, viewport.height, viewport.top, viewport.left);
     controls.checkDeviceType();
     // getHunger();
     itemPrices.get();
