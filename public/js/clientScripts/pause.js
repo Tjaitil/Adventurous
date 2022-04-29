@@ -9,19 +9,16 @@ const pauseManager = {
     },
     pauseGame(status = false, id) {
         if (document.getElementById("conversation_container").style.visibility == "visible" || game.properties.inBuilding == true) {
-            resetTimer();
             return false;
         }
         if ((controls.playerUp !== false || controls.playerRight !== false ||
             controls.playerDown !== false || controls.playerLeft !== false) && game.properties.device == "pc" &&
             game.properties.gameState === 'playing') {
-            resetTimer();
             return false;
         }
         else if ((document.getElementById("control_button").style.top !== "25%" &&
             document.getElementById("control_button").style.display != "none") && game.properties.device == "mobile" &&
             game.properties.gameState === 'playing') {
-            resetTimer();
             return false;
         }
         // updateHunger();
