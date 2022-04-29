@@ -28,7 +28,7 @@ button:focus {outline:0;}
     box-sizing: border-box;
     left: 4px;
     border-radius: 4px;
-    z-index: 999;
+    z-index: 10;
 }
 #canvas_border::before {
     content: '';
@@ -54,7 +54,7 @@ canvas {
 }
 #game_hud {
     position: absolute;
-    z-index: 4;
+    z-index: var(--HUDZIndex);
 }
 #game_hud > * {
     top: 10px;
@@ -90,7 +90,7 @@ canvas {
     position: absolute;
     height: 600px;
     visibility: hidden;
-    z-index: 4;
+    z-index: var(--frontZIndez);
     box-sizing: border-box;
 }
 #client_help_content,

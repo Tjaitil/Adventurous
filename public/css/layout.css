@@ -17,6 +17,9 @@
   --greenColor: #008000;
   --transitionDuration: 1.12;
   --filterAnimation: filter 0.3s ease-out;
+  --newsZIndex: 12;
+  --HUDZIndex: 10;
+  --frontZIndez: 11;
 }
 html {
   font-size: 100%;
@@ -444,7 +447,7 @@ button:focus {
   height: 100%;
   width: 101%;
   border: 1px solid black;
-  z-index: 3;
+  z-index: var(--newsZIndex);
   visibility: hidden;
   margin-left: -2%;
   color: #ffffff;
@@ -460,7 +463,7 @@ button:focus {
     var(--layoutBgColorShadowPerc),
     var(--layoutBgColorShadow)
   );
-  z-index: 4;
+  z-index: var(--newsZIndex);
   width: 68%;
   padding: 1%;
   display: flex;
@@ -557,7 +560,7 @@ button:focus {
   background-color: var(--layoutBgColorDark);
   color: white;
   position: relative;
-  z-index: 3;
+  z-index: var(--newsZIndex);
   transition: background-color 0.8s ease-out;
 }
 #inv_toggle_button_container {
