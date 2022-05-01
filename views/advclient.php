@@ -35,7 +35,7 @@
                     </div>
                 </div>
                 <div id="game-screen">
-                
+
                     <div id="canvas_border"></div>
                     <canvas id="game_canvas" width="700" height="400"></canvas>
                     <canvas id="game_canvas2" width="700" height="400"></canvas>
@@ -103,15 +103,15 @@
                         <img class="HUD-icon" id="HUD_help_button" src="<?php echo constant('ROUTE_IMG') . 'help icon.png'; ?>" />
                         <img class="HUD-icon" id="setting_button" src="<?php echo constant('ROUTE_IMG') . 'settings icon.png'; ?>" />
                     </div>
+                    <div id="control_text">
+                        <p class="extendedControls">C - Toggle Attack Mode</p>
+                        <p class="extendedControls">P - Pause</p>
+                        <p>A - Attack</p>
+                        <p id="control_text_building">E</p>
+                        <p id="control_text_conversation">W</p>
+                    </div>
                 </div>
                 <div id="game_text">
-                </div>
-                <div id="control_text">
-                    <p class="extendedControls">C - Toggle Attack Mode</p>
-                    <p class="extendedControls">P - Pause</p>
-                    <p>A - Attack</p>
-                    <p id="control_text_building">E</p>
-                    <p id="control_text_conversation">W</p>
                 </div>
                 <div id="map_container">
                     <div id="map_container_header">

@@ -24,6 +24,10 @@ const HUD = {
     container.style.left = left + "px";
     container.style.width = width + "px";
     container.style.height = height + "px";
+
+    let HUDTopPosition = 15;
+    let HUDLeftPosition = 10;
+    let HUDrowHeight = 46;
     
     // Set width on elements that should be same with as canvas
     let conversation_container = document.getElementById("conversation_container");
@@ -39,11 +43,8 @@ const HUD = {
         document.getElementById("inventory").style.top = top + "px";
     }
     let control_text = document.getElementById("control_text");
-    control_text.style.top = top + height - control_text.offsetHeight - 20 + "px";
+    control_text.style.top = height - control_text.offsetHeight - 20 + "px";
     control_text.style.left = left + 20 + "px";
-    let HUDTopPosition = 15;
-    let HUDLeftPosition = 10;
-    let HUDrowHeight = 46;
     
     // Position the hunger bar
     this.elements.hungerProgressBar = document.getElementById("hunger_progressBar");
