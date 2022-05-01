@@ -1,4 +1,5 @@
 const HUD = {
+    container: null,
     elements: {
         // controlText: new HTMLElement(),
         controlText: null,
@@ -16,7 +17,15 @@ const HUD = {
         iconContainer: null,
     },
     setup(width, height, top, left) {
-        // Set width on elements that should be same with as canvas
+    
+    // Setup game_hud container;
+    let container = document.getElementById("game_hud");
+    container.style.top = top + "px";
+    container.style.left = left + "px";
+    container.style.width = width + "px";
+    container.style.height = height + "px";
+    
+    // Set width on elements that should be same with as canvas
     let conversation_container = document.getElementById("conversation_container");
     conversation_container.style.width = width + "px";
     conversation_container.style.top =
