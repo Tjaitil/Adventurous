@@ -28,6 +28,7 @@
                 <div class="top_but"><a href="/logout">Log out</a></div>
             </div>
         </div>
+        <script src="<?php echo '../' . constant('ROUTE_JS') . 'scriptLoader.js';?>"></script>
         <script src="<?php echo '../' . constant('ROUTE_JS') . 'general.js';?>"></script>
         <script src="<?php echo '../' . constant('ROUTE_JS') . 'ajax.js';?>"></script>
         
