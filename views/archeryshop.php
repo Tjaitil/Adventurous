@@ -1,5 +1,5 @@
             archeryshop.css|archeryshop.js|
-            <h3 class="page_title"><?php echo $title;?></h3>
+            <h1 class="page_title">Archery Shop</h1>
             <div id="fletch">
                 <p class="help">
                     Craft bows, unfinished arrows or arrow shafts from logs. Some bows will require a certain total 

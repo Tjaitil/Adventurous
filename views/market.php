@@ -1,5 +1,5 @@
             market.css|market.js|
-            <h3 class="page_title"> Market </h3>
+            <h1 class="page_title">Market</h1>
             <div id="new_off">
                 <form id="offer_form">
                     <div id="offer_types">

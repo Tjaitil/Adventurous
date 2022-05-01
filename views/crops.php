@@ -1,5 +1,5 @@
             crops.css|crops.js%select.js|
-            <h3 class="page_title"><?php echo $title;?></h3>
+            <h1 class="page_title">Crops</h1>
             <div id="grow_crops">
                 <div id="action_div" class="div_content">
                     <div id="actions" class>

@@ -1,5 +1,5 @@
             citycentre.css|citycentre.js|
-            <h3 class="page_title"> City Centre </h3>
+            <h1 class="page_title"> City Centre </h1>
             <?php if(in_array($_SESSION['gamedata']['location'], array("fansal-plains", "hirtam", "khanz", "pvitul", "ter"))): ?>
                 <p> Current diplomacy relation: <?php echo $_SESSION['gamedata']['location'], ', ' , 
                 $this->data['diplomacy'][0]; ?>

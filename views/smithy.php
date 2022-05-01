@@ -1,5 +1,5 @@
             smithy.css|smithy.js|
-            <h3 class="page_title"> Smithy </h3>
+            <h1 class="page_title">Smithy</h1>
             <div id="smith">
                 <p class="help mb-1">
                     Select a mineral below to smith from. Players with miner profiency pay nothing

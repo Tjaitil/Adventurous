@@ -1,5 +1,5 @@
             armory.css|armory.js|
-            <h3 class="page_title"> Armory </h3>
+            <h1 class="page_title"> Armory </h1>
             <button> Back to army camp</button>
             <div id="warriors">
                 <div class="help">

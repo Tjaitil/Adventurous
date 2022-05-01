@@ -1,5 +1,5 @@
             bakery.css|bakery.js|
-            <h3 class="page_title"> Bakery </h3>
+            <h1 class="page_title"> Bakery </h1>
             <div id="bakery">
                 <div class="help">
                     <p>Here you can make food to decrease your hunger. Players with farmer profiency pay 75 % less

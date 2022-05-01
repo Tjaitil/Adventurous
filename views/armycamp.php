@@ -3,7 +3,7 @@
             <?php $_SESSION['gamedata']['level_up_data'] = $data['warrior_level_up'];?>
                 <script src="<?php echo constant("ROUTE_JS") . 'warriorLevelUp.js'?>"></script>
         <?php endif?>
-            <h3 class="page_title"> Army camp </h3>
+            <h1 class="page_title"> Army camp </h1>
             <button type="button"> Army Missions </button>
             <button type="button"> Armory </button>
             <div id="overview">

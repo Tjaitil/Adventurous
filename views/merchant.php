@@ -1,5 +1,5 @@
             merchant.css|merchant.js%trader.js|
-            <h3 class="page_title"><?php echo $title; ?></h3>
+            <h1 class="page_title">Merchant</h1>
             <p id="countdown">New merchant offers in <span id="time"></span></p>
             <div id="trades">
                 <p class="help mb-1 mt-1">Beware that diplomacy relation to places can affect prices. Difference will be displayed in
