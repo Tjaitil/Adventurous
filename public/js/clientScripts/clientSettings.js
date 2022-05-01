@@ -40,9 +40,10 @@ const clientSettings = {
     checkLocalStorage() {
         // Loop through local storage to check if any settings is set
         this.list.forEach(setting => {
-            if(localStorage.getItem(setting.name)) this.set(setting.name);
-            // Setup function will add event listener and reflect setting value in UI
-            setting.setup();
+            let storedValue = localStorage.getItem(setting.name);
+            // Pass storedValue if it exists
+            if(storedValue) setting.setup(storedValue); 
+            else setting.setup();
         })
     },
     list: [
@@ -51,20 +52,23 @@ const clientSettings = {
             type: 'switch',
             value: false,
             targetElement: null,
-            setup() {
+            setup(storedValue = null) {
+                // Check for storedValue
+                if(storedValue !== null) this.value = (storedValue != 'false') ? true : false;
                 this.targetElement = document.getElementById("client-settings-minimal-control");
                 this.targetElement.checked = this.value;
-                document.getElementById("client-settings-minimal-control").addEventListener("change", () => clientSettings.set("minimalControls"));        
+                this.targetElement.addEventListener("change", () => clientSettings.set("minimalControls"));        
+                this.update();
             },
             update() {
                 let controlPara = document.querySelectorAll(".extendedControls");
                 let style;
                 if(this.value === true) {
-                    style = "none";
+                    style = "hidden";
                 } else {
-                    style = "block";
+                    style = "visible";
                 }
-                controlPara.forEach(element => element.style.display = style);
+                controlPara.forEach(element => element.style.visibility = style);
                 localStorage.setItem("minimalControls", this.value);
             },
         },
