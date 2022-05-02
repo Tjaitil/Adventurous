@@ -1,5 +1,8 @@
 const scriptLoader = {
     scripts: [],
+    async importBuildingModule(script) {
+        return import('/public/js/buildingScripts/' + script);
+    },
     loadScript(scriptArray, scriptType) {
         return new Promise((resolve, reject) => {
             let folder; 
