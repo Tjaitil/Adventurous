@@ -44,10 +44,7 @@ const inputHandler = {
     async fetchBuilding(building) {
         game.properties.inBuilding = true;
         conversation.endConversation();
-        if (building == false) {
-            building = 'test';
-        }
-        let h = document.createElement("h2");
+        let h = document.createElement("h1");
         h.innerText = "Loading...";
         h.id = "loading_message";
         openNews(h);
@@ -75,7 +72,6 @@ const inputHandler = {
 
                 const module = await scriptLoader.importBuildingModule(script)
                 .then(data => {
-                    console.log(data);
                     this.currentBuildingModule = data;
                     if(this.currentBuildingModule.default.init) {
                         this.currentBuildingModule.default.init();
