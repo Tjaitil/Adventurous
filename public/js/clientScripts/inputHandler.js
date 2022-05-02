@@ -40,6 +40,7 @@ const inputHandler = {
             return result;
         }
     },
+    currentBuildingModule: null,
     async fetchBuilding(building) {
         game.properties.inBuilding = true;
         conversation.endConversation();
@@ -53,90 +54,39 @@ const inputHandler = {
     
         building = building.trim();
         let module = 'bakery';
-        
         await fetch('handlers/handler_v.php?' + new URLSearchParams({'building': building})).
-            then(response => response.text())
-            .then(data => { 
+            then(response => {
+                if(!response.ok) throw new Error("Something unexpected happened. Please try again");
+                return response.text();
+            })
+            .then(async (data) => { 
                 game.properties.building = building;
                 let dataArray = data.split("|");
                 let css = dataArray[0].trim();
                 let script = dataArray[1];
                 let html = dataArray[2];
-                
-                import('../buildingScripts/' + script);
-                
                 link = document.createElement("link");
                 link.type = "text/css";
                 link.rel = "stylesheet";
                 link.href = "public/css/" + css;
                 document.getElementsByTagName("head")[0].appendChild(link);
-
                 openNews(html, true);
                 itemTitle.addItemClassEvents();
+
+                const module = await scriptLoader.importBuildingModule(script)
+                .then(data => {
+                    console.log(data);
+                    this.currentBuildingModule = data;
+                    if(this.currentBuildingModule.default.init) {
+                        this.currentBuildingModule.default.init();
+                    } 
+                });
             })
-            .catch(() => {
+            .catch(error => {
+                closeNews();
+                alert(error);
                 return;
             })
-            
-        // ajaxRequest = new XMLHttpRequest();
-        // ajaxRequest.onload = function () {
-        //     if (this.readyState == 4 && this.status == 200) {
-        //         if (this.responseText.indexOf("ERROR") != -1) {
-        //             gameLogger.addMessage("ERROR: Something unexpected happened, please try again");
-        //             gameLogger.logMessages();
-        //             closeNews();
-        //             return false;
-        //         }
-        //         // Set building
-        //         game.properties.building = building;
-        //         var responseText = this.responseText.split("|");
-        //         var link;
-        //         if (document.getElementById("fetch_stylesheet") === null) {
-        //             link = document.createElement("link");
-        //             link.type = "text/css";
-        //             link.rel = "stylesheet";
-        //             link.setAttribute("id", "fetch_stylesheet");
-        //             link.href = "public/css/" + responseText[0].trim();
-        //         }
-        //         else {
-        //             link = document.getElementById("fetch_stylesheet");
-        //             link.href = "public/css/" + responseText[0].trim();
-        //         }
-        //         document.getElementsByTagName("head")[0].appendChild(link);
-        //         var script;
-        //         var script2;
-        //         var scripts = responseText[1].split("%");
-        //         openNews(responseText[2], true);
-        //         if (document.getElementById("fetch_script") === null) {
-        //             script = document.createElement("script");
-        //             script.src = "public/js/buildingScripts/" + scripts[0].trim();
-        //             script.id = "fetch_script";
-        //             document.getElementsByTagName("section")[0].appendChild(script);
-        //         }
-        //         else {
-        //             script = document.createElement("script");
-        //             document.getElementById("fetch_script");
-        //             script.src = "public/js/buildingScripts/" + scripts[0].trim();
-        //             script.id = "fetch_script";
-        //             document.getElementsByTagName("section")[0].replaceChild(script, document.querySelector("#fetch_script"));
-        //         }
-        //         if (document.getElementById("fetch_script2") === null && scripts.length > 1) {
-        //             script2 = document.createElement("script");
-        //             script2.src = "public/js/buildingScripts" + scripts[1].trim();
-        //             script2.id = "fetch_script2";
-        //         }
-        //         else if (scripts.length > 1) {
-        //             script2 = document.getElementById("fetch_script2");
-        //             script2.src = "public/js/buildingScripts" + scripts[1].trim();
-        //         }
-        //         if (script2 !== undefined) {
-        //             document.getElementsByTagName("section")[0].appendChild(script2);
-        //         }
-        //         // Add events to item elements
-        //     }
-        // };
-        // ajaxRequest.open('GET', "handlers/handler_v.php?" + "&building=" + building.trim());
-        // ajaxRequest.send();
         return building;
     },
     checkCharacter() {
