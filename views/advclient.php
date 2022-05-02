@@ -160,7 +160,7 @@
                     <button id="inv_toggle_button"> INV </button>
                 </div>
                 <div id="inventory">
-                    <?php require(constant('ROUTE_VIEW') . '/inventory.php');?>
+                    <?php require(constant('ROUTE_VIEW') . '/inventory.php'); loadInventory();?>
                 </div>
                 <div id="control">
                     <button id="control_button"></button>
