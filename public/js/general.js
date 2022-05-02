@@ -132,11 +132,6 @@ function closeNews() {
         if (document.getElementsByClassName("page_title")[0].innerText == 'merchant') {
             updateStockCountdown('end');
         }
-        // Remove stck_menu after stockpile has been exited
-        if (document.getElementsByClassName("page_title")[0].innerText == 'Stockpile' &&
-            document.getElementById("stck_menu").style.visibility === "visible") {
-            document.getElementById("news_content").removeChild(document.getElementById("stck_menu"));
-        }
         // Remove event on inventory items after exiting tavern
         if (document.getElementsByClassName("page_title")[0].innerText == 'tavern') {
             let figures = document.getElementById("inventory").querySelectorAll('figure');
@@ -144,6 +139,9 @@ function closeNews() {
                 element.removeEventListener('click', getHealingAmount);
             });
         }
+    }
+    if(inputHandler.currentBuildingModule) {
+        inputHandler.currentBuildingModule.default.onClose();
     }
     newsDiv.innerHTML = "";
     news.style = "visibility: hidden;";
@@ -156,9 +154,6 @@ function closeNews() {
     }
     if (selectItemEvent.selectItemStatus === true) {
         selectItemEvent.removeSelectEvent();
-    }
-    if (typeof (menubarToggle) !== 'undefined') {
-        menubarToggle.removeEvent();
     }
     if (itemTitle.status === false) {
         (() =>itemTitle.addTitleEvent())();
