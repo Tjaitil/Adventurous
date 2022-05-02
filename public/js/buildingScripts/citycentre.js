@@ -14,6 +14,7 @@
             element.addEventListener('click', unlockArmorItems);
         });
     }
+
     function unlockArmorItems() {
         let button = event.target;
         let item = button.closest("tr").children[0].innerText.toLowerCase().trim();
@@ -23,7 +24,7 @@
             gameLogger.logMessages();
             return false;
         }
-        let data = "model=CityCentreA" + "&method=unlockArmorItems" + "&type=" + item; 
+        let data = "model=ArmorItems" + "&method=unlockArmorItems" + "&type=" + item; 
         ajaxP(data, function(response) {
             if(response[0] != false) {
                 updateInventory();
@@ -33,7 +34,6 @@
         });
     }
     function changeProfiency() {
-        console.log('hello');
         var select = document.getElementById("profiency_select");
         var val = select.value;
         if(!val) {
@@ -82,7 +82,7 @@
             gameLogger.logMessages();
             return false;
         }
-        let data = "model=CityCentreA" + "&method=buyPermits" + "&amount=" + amount + "&selectedLocation=" + selectedLocation;
+        let data = "model=permits" + "&method=buyPermits" + "&amount=" + amount + "&selectedLocation=" + selectedLocation;
         ajaxP(data, function(response) {
             if(response[0] !== false) {
                 let responseText = response[1];
