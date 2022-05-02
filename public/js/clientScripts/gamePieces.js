@@ -206,8 +206,6 @@ const gamePieces = {
                         let number = 0;
                         let number2 = 0;
                         for (let i = 0; i < gamePieces.daqloon.length; i++) {
-                            if(i === 0) {
-                            }
                             if ((this.direction === 'up' && gamePieces.daqloon[i].y < this.ypos &&
                                   Math.abs(gamePieces.daqloon[i].x - this.xpos) < 30 &&
                                   Math.abs(gamePieces.daqloon[i].y - this.ypos) < 30) 
