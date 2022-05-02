@@ -1,30 +1,25 @@
-function updateInventory(page, addSelect = false) {
-    ajaxRequest = new XMLHttpRequest();
-    ajaxRequest.onload = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            document.getElementById("inventory").innerHTML = this.responseText;
-            if (document.getElementsByClassName("page_title").length > 0) {
-                if (document.getElementsByClassName("page_title")[0].innerText == "Stockpile") {
-                    var buttons = document.getElementById("inventory").querySelectorAll("div");
-                    buttons.forEach(function (element) {
-                        // ... code code code for this one element
-                        element.addEventListener('click', show_menu);
-                    });
-                    (() =>itemTitle.removeTitleEvent())();
-                }
-                else {
-                    (() =>itemTitle.addTitleEvent())();
-                }
-                itemPrices.get();
+async function updateInventory(page, addSelect = false) {
+    await fetch("handlers/handlerf.php?file=inventory")
+        .then(response => response.text())
+        .then(data => {
+            console.log(data);
+            document.getElementById("inventory").innerHTML = data;
+            if (document.getElementsByClassName("page_title")[0].innerText == "Stockpile") {
+                let buttons = document.getElementById("inventory").querySelectorAll("div");
+                buttons.forEach(element => {
+                    element.addEventListener('click', inputHandler.currentBuildingModule.show_menu);
+                });
+                (() =>itemTitle.removeTitleEvent())();
             }
+            else {
+                (() =>itemTitle.addTitleEvent())();
+            }
+            itemPrices.get();
             if(selectItemEvent.selectItemStatus == true) {
                 selectItemEvent.addSelectEvent();
             }
             document.getElementById("inv_toggle_button").addEventListener("click", inventorySidebarMob.toggleInventory);
-        }
-    };
-    ajaxRequest.open('GET', "handlers/handlerf.php?file=inventory" + "&page=" + page);
-    ajaxRequest.send();
+        })
 }
 function checkInventoryStatus() {
     // Fetch items amount

@@ -7,7 +7,7 @@
     switch($file) {
         case 'inventory':
             require('../' . constant('ROUTE_VIEW') . 'inventory.php');
-            url($_GET['page']);
+            loadInventory();
             break;
         case 'conversation':
             $controller = $handler->loadController('conversation');
