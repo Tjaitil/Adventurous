@@ -156,7 +156,7 @@ function closeNews() {
         selectItemEvent.removeSelectEvent();
     }
     if (itemTitle.status === false) {
-        (() =>itemTitle.addTitleEvent())();
+        itemTitle.addTitleEvent();
     }
 }
 const mainContentHelpContainer = {

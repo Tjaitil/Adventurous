@@ -5,14 +5,14 @@ async function updateInventory(page, addSelect = false) {
             console.log(data);
             document.getElementById("inventory").innerHTML = data;
             if (document.getElementsByClassName("page_title")[0].innerText == "Stockpile") {
-                let buttons = document.getElementById("inventory").querySelectorAll("div");
-                buttons.forEach(element => {
-                    element.addEventListener('click', inputHandler.currentBuildingModule.show_menu);
-                });
-                (() =>itemTitle.removeTitleEvent())();
+                let figure = document.getElementById("inventory").querySelectorAll("figure");
+                figures.forEach(element =>  
+                    element.addEventListener('click', inputHandler.currentBuildingModule.show_menu)
+                );
+                itemTitle.removeTitleEvent();
             }
             else {
-                (() =>itemTitle.addTitleEvent())();
+                itemTitle.addTitleEvent();
             }
             itemPrices.get();
             if(selectItemEvent.selectItemStatus == true) {
