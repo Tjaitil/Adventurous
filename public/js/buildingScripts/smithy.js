@@ -1,63 +1,59 @@
-    if(document.getElementById("news_content").children[2] != null) {
-        console.log('smith');
-        var buttons = document.getElementById("smith").querySelectorAll("button");
-        buttons.forEach(function(element) {
-            // Add event for each element
-            element.addEventListener('click', smith);
+const smithyModule = {
+    init() {
+        document.getElementById("smith").querySelectorAll("button").forEach(element => 
+            element.addEventListener('click', this.smith)
+        );
+
+        [...document.getElementsByClassName("minerals")].forEach(element => {
+            element.addEventListener('click', () => {
+                if(!element.getAttribute("title")) return;
+                this.showMineral(element.getAttribute("title"));
+            });
         });
-    }
-    function select(element) {
-        let parent = element.parentNode;
-        let img = parent.getElementsByTagName("IMG")[0];
-        console.log(img);
-        for(var i = 0; i < img.length; i++) {
-            if(img[i].style.border != "1px solid red;") {
-                img[i].style.border = "none";
+    },
+    showMineral(mineral) {
+        if(!mineral) return;
+        [...document.getElementsByClassName("minerals")].forEach(element => {
+            if(element.getAttribute("title") == mineral) {
+                document.getElementById(element.getAttribute("title")).style.display = "inline-block";
+                element.style = "border: 2px solid brown";
+            } else {
+                if(!document.getElementById(element.getAttribute("title"))) return false;
+                document.getElementById(element.getAttribute("title")).style = "display: none";
+                element.style = "border: none"; 
             }
-        }
-        element.style.border = "1px solid red";
-    }
-    
-    function showMineral(mineral) {
-        var divs = ["iron", "steel", "gargonite", "adron", "yeqdon", "frajrite"];
-        var minerals = document.getElementsByClassName("minerals");
-        for(var i = 0; i < divs.length; i++) {
-            if(divs[i] == mineral) {
-                document.getElementById(divs[i]).style.display = "inline-block";
-                minerals[i].style = "border: 2px solid brown";
-            }
-            else {
-                document.getElementById(divs[i]).style = "display: none";
-                minerals[i].style = "border: none"; 
-            }   
-        }
+        })
         newsContentSidebar.activeButton = "smith";
         newsContentSidebar.adjustMainContentHeight();
-    }
-    function smith() {
+    },
+    smith(event) {
         if(checkInventoryStatus()) {
             gameLogger.addMessage(commonMessages.inventoryFull, true);
             return false;
         }
-        var amount = event.target.parentElement.children[0].value;
-        var item = event.target.closest("tr").querySelectorAll("figcaption")[0].innerHTML.toLowerCase();
-        var minerals = document.getElementsByClassName("minerals");
-        for(var i = 0; i < minerals.length; i++) {
+        let amount = event.target.parentElement.children[0].value;
+        let item = event.target.closest("tr").querySelectorAll("figcaption")[0].innerHTML.toLowerCase();
+        let minerals = document.getElementsByClassName("minerals");
+        for(let i = 0; i < minerals.length; i++) {
             if(minerals[i].style.borderStyle == "solid") {
                 this.mineral = minerals[i].getAttribute("title");
                 break;
             }
         } 
         if(this.mineral.length < 1){
-            gameLogger.addMessage("Please select a mineral");
-            gameLogger.logMessages();
+            gameLogger.addMessage("Please select a mineral", true);
             return false;
         }
         event.target.parentElement.children[0].value = "";
-        var data = "model=Smithy" + "&method=smith" + "&item=" + item  + "&amount=" + amount + "&mineral=" + this.mineral;
+        let data = "model=Smithy" + "&method=smith" + "&item=" + item  + "&amount=" + amount + "&mineral=" + this.mineral;
         ajaxP(data, function(response) {
             if(response[0] !== false) {
-                updateInventory('smithy');
+                updateInventory();
             }       
         });
-    }
+    },
+    onClose() {
+        return;
+    },
+}
+export default smithyModule;
