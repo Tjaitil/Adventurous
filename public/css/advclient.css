@@ -162,9 +162,7 @@ canvas {
 #map img {
     color: white;
 }*/
-button:active {
-    background-color: #ebd9c6
-}
+
 button:focus {outline:0;}
 @media all and (max-width: 830px) {
     #news_content {
