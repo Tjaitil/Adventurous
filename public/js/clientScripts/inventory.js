@@ -5,7 +5,7 @@ async function updateInventory(page, addSelect = false) {
             console.log(data);
             document.getElementById("inventory").innerHTML = data;
             if (document.getElementsByClassName("page_title")[0].innerText == "Stockpile") {
-                let figure = document.getElementById("inventory").querySelectorAll("figure");
+                let figures = document.getElementById("inventory").querySelectorAll("figure");
                 figures.forEach(element =>  
                     element.addEventListener('click', inputHandler.currentBuildingModule.show_menu)
                 );
