@@ -1,11 +1,12 @@
 const zinsStoreModule = {
-        // Check if news_content_main_content -> children[2] has gotten content from game.js -> game.fetchBuilding()
     init() {
-        document.getElementById("zinsstore_trade").addEventListener("click", () => {this.trade()});
+        document.getElementById("zinsstore_trade").addEventListener("click", () => 
+            this.trade()
+        );
         let items = document.getElementById("news_content_main_content").querySelectorAll(".item");
-        items.forEach((element) => {
-            element.addEventListener("click", () => this.selectItem());
-        });
+        items.forEach(element => 
+            element.addEventListener("click", () => this.selectItem())
+        );
     },
     trade() {
         if(checkInventoryStatus()) {
