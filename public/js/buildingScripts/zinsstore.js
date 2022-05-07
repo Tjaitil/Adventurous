@@ -1,21 +1,20 @@
-    // Check if news_content_main_content -> children[2] has gotten content from game.js -> game.fetchBuilding()
-    if(document.getElementById("news_content").children[2] != null) {
-        document.getElementById("zinsstore_trade").addEventListener("click", () => {zinsTrade()});
+const zinsStoreModule = {
+        // Check if news_content_main_content -> children[2] has gotten content from game.js -> game.fetchBuilding()
+    init() {
+        document.getElementById("zinsstore_trade").addEventListener("click", () => {this.trade()});
         let items = document.getElementById("news_content_main_content").querySelectorAll(".item");
         items.forEach((element) => {
-            element.addEventListener("click", () => selectItem());
+            element.addEventListener("click", () => this.selectItem());
         });
-    }
-    function zinsTrade() {
+    },
+    trade() {
         if(checkInventoryStatus()) {
             gameLogger.addMessage(commonMessages.inventoryFull, true);
             return false;
         }
         let items = document.getElementById("news_content_main_content").querySelectorAll(".item");
-        items = [...items];
-        let match = items.filter((element) => {
-                return (element.querySelectorAll("img")[0].classList.contains("item_selected"));
-            }
+        let match = [...items].filter(element => 
+            element.querySelectorAll("img")[0].classList.contains("item_selected")
         );
         let amount = document.getElementById("zinsstore_item_amount").value;
         if(match.length === 0) {
@@ -30,7 +29,6 @@
         }
         let item = match[0].querySelectorAll("figcaption")[0].innerHTML.trim().toLowerCase();
         ajaxP("model=ZinsStore" + "&method=tradeItem" + "&item=" + item + "&amount=" + amount, function(response) {
-            console.log(response);
             if(response[0] !== false) {
                 updateInventory();
                 document.getElementById("zinsstore_item_amount").value = 0;
@@ -39,13 +37,11 @@
                 });
             }
         });
-    }
-    function selectItem() {
+    },
+    selectItem() {
         let element = event.target.closest("div");
-        console.log(event.target);
+        if(!element) return false;
         let items = document.getElementById("news_content_main_content").querySelectorAll(".item");
-        console.log(items);
-        console.log(element);
         for(let i = 0; i < items.length; i++) {
             if(element.querySelectorAll("figcaption")[0].innerHTML.trim() === 
                 items[i].querySelectorAll("figcaption")[0].innerHTML.trim()) {
@@ -55,4 +51,9 @@
                 items[i].querySelectorAll("img")[0].classList.remove('item_selected');
             }
         }
+    },
+    onClose() {
+
     }
+}
+export default zinsStoreModule;
