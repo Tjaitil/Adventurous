@@ -16,6 +16,7 @@
         public function workers() {
             $date = date("Y-m-d");
             $city = $_SESSION['gamedata']['location'];
+            // Check which is used to determine if player is in a city where you can't recruit workers
             if(empty($this->data['user_tavern_data']['workers'])) {
                 $this->data['tavern']['workers'] = array();   
                 return false;
