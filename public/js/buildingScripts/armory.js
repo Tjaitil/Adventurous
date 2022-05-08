@@ -1,19 +1,29 @@
-    if(document.getElementById("news_content").children[2] != null) {
+const armoryModule = {
+    init() {
         // selectitem.js
         selectItemEvent.addSelectEvent();
         document.getElementById("news_content_main_content").querySelectorAll("button")[0].addEventListener("click", function() {
            inputHandler.fetchBuilding('armycamp'); 
         });
-        if(/Safari|Chrome/i.test(navigator.userAgent)) {
-            let span = document.getElementsByClassName("armory_view_span");
-            for(var i = 0; i < span.length; i++) {
-                span[i].style.left = "-10%";
-                span[i].style.display = "block";
-            }
+        this.addClickEvents();
+        document.getElementById("put_on_button").addEventListener("click", () => this.wearArmor());
+    },
+    addClickEvents(childIndex = false) {
+        let elements;
+        if(!childIndex) {
+            elements = [...document.getElementsByClassName("armory_view_part")];
+        } else {
+            // Find armory_view_part inside warriorDiv that has childIndex
+            let warriorDiv = document.getElementById("warrior_container").getElementsByClassName("armory_view")[childIndex];
+            elements = [...warriorDiv.getElementsByClassName("armory_view_part")];
         }
-    }
-    function toggleOption() {
-        var element = document.getElementById("selected").children[0].children[1].innerHTML;
+        
+        elements.forEach(element => 
+            element.addEventListener("click", event => this.removeArmor(event))
+        );
+    },
+    toggleOption() {
+        let element = document.getElementById("selected").children[0].children[1].innerHTML;
         if(element.search("Sword") != -1 || element.search("Dagger") != -1) {
             document.getElementById("type").style.visibility = "visible";
         }
@@ -23,8 +33,8 @@
         else {
             document.getElementById("type").style.visibility = "hidden";
         }
-    }
-    function wearArmor() {
+    },
+    wearArmor() {
         let warrior_id = document.getElementById("select_warrior").selectedIndex;
         let element = document.getElementById("selected");
         let item = element.children[0].children[1].innerHTML;
@@ -63,44 +73,60 @@
         }
         let data = "model=Armory" + "&method=wearArmor" + "&warrior_id=" + warrior_id + "&item=" + item  + "&hand=" +
                     hand + "&amount=" + amount;
-        ajaxP(data, function(response) {
+        ajaxP(data, response => {
             if(response[0] != false) {
+                let responseText = response[1];
                 document.getElementById("selected").innerHTML = "";
-                document.getElementById("ranged_alt").children[1].value = 1;
-                document.querySelectorAll(".armory_view")[warrior_id -1].innerHTML = response[1];
+                this.replaceWarriorContainer(responseText.html, warrior_id - 1);
                 updateInventory('armory', true);
             }
         }, false);
-    }
-    
-    function removeArmor(element) {
-        var parent = element.parentNode;
-        var warrior_id = parent.querySelectorAll("p")[0].innerHTML.split("#")[1].trim();
-        var item = element.title;
-        var part = element.className;
-        if(item === 'none') {
-            return false;
-        }
-        var data = "model=Armory" + "&method=removeArmor" + "&warrior_id=" + warrior_id + "&part=" + part;
-        ajaxP(data, function(response) {
-            console.log(response);
+    },
+    removeArmor(event) {
+        let partElement = event.currentTarget;
+        if(!partElement) return false;
+        let parent = partElement.closest(".armory_view");
+        if(!parent.querySelectorAll(".armory_view_warrior_id")[0]) return false;
+        let warrior_id = parent.querySelectorAll(".armory_view_warrior_id")[0].innerHTML.trim();
+        let part = partElement.classList[1];
+        let item = partElement.title;
+        if(item === 'none') return false;
+        let data = "model=Armory" + "&method=removeArmor" + "&warrior_id=" + warrior_id + "&part=" + part;
+        ajaxP(data, response => {
             if(response[0] != false) {
-                document.getElementsByClassName("armory_view")[warrior_id - 1].innerHTML = response[1];
+                let responseText = response[1];
+                this.replaceWarriorContainer(responseText.html, warrior_id - 1);
                 updateInventory('armory', true);
             }
         });
-    }
-    function updatePage() {
-        var data = "model=Armory" + "&method=getData";
+    },
+    replaceWarriorContainer(newContainer, replaceIndex) {
+        let parentContainer = document.getElementById("warrior_container");
+        let warriorContainer = document.getElementsByClassName("armory_view");
+        // Convert newContainer string into object
+        let div = document.createElement("div");
+        div.innerHTML = newContainer;
+        if(!warriorContainer[replaceIndex]) return false;
+        parentContainer.replaceChild(div.getElementsByClassName("armory_view")[0], warriorContainer[replaceIndex]);
+        this.addClickEvents(replaceIndex);
+    },
+    updatePage() {
+        let data = "model=Armory" + "&method=getData";
         ajaxJS(data, function(response) {
             if(response[0] != false) {
                 document.getElementById("warriors").innerHTML = response[1];
             }
         });
-    }
-    function testCombatSkills(warriors) {
-        var data = "model=test" + "&method=loadCombat" + "&route=calculator" + "&warriors=" + JSON.stringify(warriors);
+    },
+    testCombatSkills(warriors) {
+        // For testing purposes
+        let data = "model=test" + "&method=loadCombat" + "&route=calculator" + "&warriors=" + JSON.stringify(warriors);
         ajaxP(data, function(response) {
             console.log(response);
         });
+    },
+    onClose() {
+
     }
+};
+export default armoryModule;
