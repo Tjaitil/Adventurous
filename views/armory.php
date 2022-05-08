@@ -22,7 +22,7 @@
                         <label for="amount"> Amount of arrows/knives</label>
                         <input name="amount" type="number" min="1" />
                     </div>
-                    <button onclick="wearArmor();"> Put on </button>
+                    <button id="put_on_button"> Put on </button>
                 </div>
                 <div id="warrior_container">
                     <?php get_template('armory', $this->data['warrior_armory'], true) ;?>
