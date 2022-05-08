@@ -5,7 +5,7 @@
                 <div class="help">
                     <p> Select an item from inventory to put on warrior or click one of the items worn by warriors to unequip.</p>
                 </div>
-                <div id="put_on">
+                <div id="put_on" class="mb-1">
                     <?php get_template("select_item", null, true); ?>
                     <label for="warrior_id">Select warrior</label>
                     <select name="warrrior_id" id="select_warrior">
