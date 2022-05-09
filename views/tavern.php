@@ -1,18 +1,10 @@
             tavern.css|tavern.js|
-            <h3 class="page_title"> Tavern </h3>
-            <div id="persons">
-                <?php /*if(empty($this->data['user_tavern_data']['persons'])) */ ?>
-                <!--<div> No persons of relevance to talk to in tavern </div>-->
-                <?php /*endif;*/ ?>
-                <?php /*foreach($this->data['user_tavern_data']['persons'] as $key): ?>
-                    <div><img src="#" width="50px" height="50px" /><?php echo ucfirst($key); ?>
-                    <button onclick="talk('<?php echo ucfirst($key); ?>', '0');">Talk</button></div>
-                <?php endforeach;*/?>
-            </div>
+            <h1 class="page_title"> Tavern </h1>
             <?php get_template('tavern', $this->data['tavern']['workers'], true); ?>
             <div id="eat">
-                <?php get_template("select_item", null, true);?>
-                <input type="number" min="0" />
-                <button> Eat </button>
-                <p id="item_healing_amount mb-1"></p>
+                <h3 class="mb-05">Current hunger</h3>
+                <?php get_template("select_item", null, true); ?>
+                <p id="item_healing_amount" class="mb-1"></p>
+                <input type="number" min="0" id="healing-item-amount" />
+                <button id="tavern-eat-button"> Eat </button>
             </div>
