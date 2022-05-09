@@ -67,6 +67,12 @@ h1 {
 .p1 {
   padding: 1rem;
 }
+.mt-0 {
+  margin-top: 0;
+}
+.mb-0 {
+  margin-bottom: 0;
+}
 .mt-1 {
   margin-top: 1rem;
 }
@@ -88,8 +94,14 @@ h1 {
 .mt-05 {
   margin-top: 0.5rem;
 }
+.mb-05 {
+  margin-bottom: 0.5rem;
+}
 .cur-pointer {
   cursor: pointer;
+}
+.text-align-center {
+  text-align: center;
 }
 header,
 aside,
