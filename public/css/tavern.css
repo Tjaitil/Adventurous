@@ -4,3 +4,8 @@
     justify-content: center;
     row-gap: 2rem;
 }
+#eat #hunger_progressBar {
+    margin-inline: auto;
+    top: 0px !important;
+    left: 0px !important;
+}
