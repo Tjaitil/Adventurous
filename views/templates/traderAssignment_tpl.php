@@ -37,8 +37,8 @@
             <span id="traderAssignment_cart_"><?php echo $data['capasity'];?></span>
         </div>
         <div class="traderAssignment_fullColumn">
-                <button onclick="pickUp();">Pick up items</button>
-                <button onclick="deliver();">Deliver</button>
+                <button id="traderAssignment-pick-up">Pick up items</button>
+                <button id="traderAssignment-deliver">Deliver</button>
         </div>
     <?php else: ?>
         <div class="traderAssignment_fullColumn">
