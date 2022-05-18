@@ -1,17 +1,21 @@
-<?php $i = 0;
+<?php
     if(!count($data) > 0):?>
         <p> No assignments available here </p>
     <?php endif;
     foreach($data as $key): ?>
-    <tr>
-        <td class="city"><?php echo ucfirst($key['base']);?></td>
-        <td class="destination"><?php echo ucfirst($key['destination']);?></td>
-        <td class="cargo"><img src="<?php echo constant('ROUTE_IMG') . $key['cargo'] . '.png';?>"/>
-            <?php echo ucwords($key['cargo']);?>
-        </td>
-        <td class="assignment_amount"><?php echo $key['assignment_amount'];?></td>
-        <td class="time"><?php echo $key['time'];?></td>
-        <td class="assignment_type"><?php echo ucfirst($key['assignment_type']);?></td>
-        <td><button onclick="newAssignment(<?php echo $key['assignment_id'];?>);"> Do task </button></td>
-    </tr>
-<?php $i++; endforeach;?>
+    <div class="trader_assignment div_content div_content_dark lightTextColor">
+        <p>
+            <img class="mb-1" src="<?php echo constant('ROUTE_IMG') . $key['cargo'] . '.png';?>"/><br>
+            <?php echo $key['assignment_amount'];?> * <?php echo ucwords($key['cargo']);?>
+        </p>
+        <p><?php echo ucfirst($key['base']);?> -> <?php echo ucfirst($key['destination']);?></p>
+        <p><?php echo $key['time'];?></p>
+        <p><?php echo ucfirst($key['assignment_type']);?></p>
+        <p class="trader_assignment_id">
+            #
+            <span class="trader_assignment_id">
+                <?php echo $key['assignment_id'];?>
+            </span>
+        </p>
+    </div>
+<?php endforeach;?>

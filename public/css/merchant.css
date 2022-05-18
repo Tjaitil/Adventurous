@@ -69,10 +69,7 @@
     margin: 0 auto;
     padding-top: 10px;
 }
-#trader_assignment table {
-    margin-bottom: 10px;
-}
-#trader_assignment .item {
+.trader_assignments .item {
     float: none;
 }
 #traderAssignment_progressBar {
@@ -124,4 +121,21 @@
 }
 .merchant-offer span {
     text-align: left;
+}
+#trader_assignments_container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 190px);
+    gap: 1rem;
+}
+.trader_assignment {
+    display: flex;
+    flex-direction: column;
+    max-width: 190px;
+    padding-bottom: 0.5rem;
+}
+.trader_assignment p {
+    margin-block: 0.5rem;
+}
+.selected_trader_assignment {
+    filter: brightness(1.5);
 }

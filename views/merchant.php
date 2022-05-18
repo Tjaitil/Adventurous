@@ -1,4 +1,4 @@
-            merchant.css|merchant.js%trader.js|
+            merchant.css|merchant.js|
             <h1 class="page_title">Merchant</h1>
             <p id="countdown">New merchant offers in <span id="time"></span></p>
             <div id="trades">
@@ -28,23 +28,11 @@
                     The merchant will only accept trading on items it is already selling. Head to Fagna to sell all items.
                 </p>
             </div>
-            <div id="trader_assignment">
-                <table id="get_assignment">
-                    <thead>
-                        <tr>
-                            <th> From </th>
-                            <th> To </th>
-                            <th> Cargo </th>
-                            <th> Cargo Amount </th>
-                            <th> Time </th>
-                            <th> Assignment Type </th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tr>
-                        <?php get_template('assignment', $this->data['trader_assignments'], true); ?>
-                    </tr>
-                </table>
+            <div id="trader_assignments">
+                <div id="trader_assignments_container">
+                    <?php get_template('assignment', $this->data['trader_assignments'], true); ?>
+                </div>
+                <button type="button" id="start_trader_assignment" class="mt-1 mb-1">Do Assigment</button>
                 <div id="traderAssignment_current" class="content_div" class="div_content_light">
                     <p class="traderAssignment_fullColumn"> Current trader assignment details </p>
                     <?php get_template('traderAssignment', $this->data['trader_data'], true); ?>
