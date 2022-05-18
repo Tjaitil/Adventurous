@@ -13,6 +13,13 @@ if (in_array($location, $locations)) {
     }
 }
 
+if($_SESSION['gamedata']['location'] === "fagna"): ?>
+<p> 
+    No store trades in Fagna
+</p>
+<?php elseif(count($data['offers']) === 0):?>
+<p>No available trades at the moment</p>
+<?php else: 
 foreach ($data['offers'] as $key) : 
     $price_info = getBuyPrice($key['user_buy_price'], $key['user_sell_price'], $diplomacy_price_adjust);
     ?>
@@ -33,7 +40,7 @@ foreach ($data['offers'] as $key) :
         <img class="gold" src="<?php echo constant("ROUTE_IMG") . 'gold.png'; ?>" />
         <p class="merchant-offer-amount"> X <?php echo $key['amount'];?></p>
     </div>
-<?php endforeach; ?>
+<?php endforeach; endif; ?>
 <?php 
 function getBuyPrice($original_price, $sell_price, $diplomacy_price_adjust) {
     $buy_price = "";
