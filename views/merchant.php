@@ -1,7 +1,7 @@
             merchant.css|merchant.js|
             <h1 class="page_title">Merchant</h1>
-            <p id="countdown">New merchant offers in <span id="time"></span></p>
             <div id="trades">
+                <p id="trades_countdown">New merchant offers in <span id="trades_countdown_time"></span></p>
                 <p class="help mb-1 mt-1">Beware that diplomacy relation to places can affect prices. Difference will be displayed in
                 parenthesis. Trading in adventure locations will affect diplomacy relation</p>
                 <div id="merchant-offer-container" class="div_content div_content_dark">
@@ -29,12 +29,14 @@
                 </p>
             </div>
             <div id="trader_assignments">
+                <div id="traderAssignment_current" class="content_div mb-2">
+                    <p class="traderAssignment_fullColumn"> Current trader assignment details </p>
+                    <?php get_template('traderAssignment', $this->data['trader_data'], true); ?>
+                </div>
+                <p id="trader_assignments_countdown">New trader assignments in <span id="trader_assignments_countdown_time"></span></p>
+                <h4>Select your assignment below. Greyed out assignments are locked</h4>
                 <div id="trader_assignments_container">
                     <?php get_template('assignment', $this->data['trader_assignments'], true); ?>
                 </div>
                 <button type="button" id="start_trader_assignment" class="mt-1 mb-1">Do Assigment</button>
-                <div id="traderAssignment_current" class="content_div" class="div_content_light">
-                    <p class="traderAssignment_fullColumn"> Current trader assignment details </p>
-                    <?php get_template('traderAssignment', $this->data['trader_data'], true); ?>
-                </div>
             </div>
