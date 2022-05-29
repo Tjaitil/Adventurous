@@ -30,7 +30,7 @@
             </div>
             <div id="trader_assignments">
                 <div id="traderAssignment_current" class="content_div mb-2">
-                    <p class="traderAssignment_fullColumn"> Current trader assignment details </p>
+                    <p class="traderAssignment_fullColumn mb-0"> Current trader assignment details </p>
                     <?php get_template('traderAssignment', $this->data['trader_data'], true); ?>
                 </div>
                 <p id="trader_assignments_countdown">New trader assignments in <span id="trader_assignments_countdown_time"></span></p>
