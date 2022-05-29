@@ -4,10 +4,6 @@ class Trader_model extends model
     public $username;
     public $session;
     public $assignment_types;
-    private $assignment_type;
-    private $assignment_amount;
-    private $cargo;
-    private $favor;
 
     function __construct($session)
     {
