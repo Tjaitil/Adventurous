@@ -61,8 +61,20 @@ h1 {
 .error-co.or {
   color: var(--errorTextColor);
 }
+.d-flex {
+  display: flex;
+}
+.flex-row {
+  flex-direction: row;
+}
+.flex-column {
+  flex-direction: column;
+}
 .pb-05 {
   padding-block: 0.5rem;
+}
+.px-1 {
+  padding-inline: 1rem;
 }
 .p1 {
   padding: 1rem;
@@ -103,6 +115,20 @@ h1 {
 .text-align-center {
   text-align: center;
 }
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+.ms-auto {
+  margin-left: auto;
+}
+.me-auto {
+  margin-right: auto;
+}
+h4, h5, h6 {
+  margin-bottom: 1rem;
+}
+.se
 header,
 aside,
 #inventory {
@@ -315,9 +341,6 @@ section table:not(#game_messages) > *,
 }
 .div_content_dark {
   background-color: var(--layoutBgColorDark);
-  color: var(--textColor);
-}
-.div_content_dark > *:not(button, input) {
   color: var(--textColor);
 }
 section table,
@@ -752,6 +775,7 @@ button:focus {
   width: 56px;
   border: 2px outset #724e27;
   margin-inline: auto;
+  margin-bottom: 1rem;
 }
 #selected_t {
   height: 50px;
