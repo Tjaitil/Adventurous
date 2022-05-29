@@ -32,7 +32,7 @@ class Trader_model extends model
 
         $assignment_id = $POST['assignment_id'];
         
-        if (!$this->hungerModel->checkHunger()) {
+        if ($this->hungerModel->checkHunger()) {
             $this->response->addTo("errorGameMessage", $this->hungerModel->getHungerError());
             return false;
         } 
