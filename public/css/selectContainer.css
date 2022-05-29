@@ -28,9 +28,9 @@
     flex-direction: row;
 }
 #cancel_action {
-    visibility: hidden;
+    display: none;
 }
-.crop, .mineral {
+.crop_type, .mineral {
     width: 64px;
     height: 64px;
     float: left;
