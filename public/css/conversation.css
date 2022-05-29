@@ -9,7 +9,7 @@
     height: 170px;
     background-color: #f2e6d9;
     position: absolute;
-    z-index: 3;
+    z-index: 12;
     visibility: hidden;
     padding: 3px 3px 0px 3px;
     scale: 0.5;
@@ -27,7 +27,7 @@
 }
 #conversation {
     width: 79%;
-    height: 138px;
+    height: 110px;
     overflow-y: scroll;
     padding: 5px 100px;
 }

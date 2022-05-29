@@ -33,7 +33,8 @@ const HUD = {
     let conversation_container = document.getElementById("conversation_container");
     conversation_container.style.width = width + "px";
     conversation_container.style.top =
-    (document.getElementById("game_canvas").offsetTop + document.getElementById("game_canvas").height) + "px";
+    (document.getElementById("game_canvas").offsetTop + document.getElementById("game_canvas").offsetHeight
+        - conversation_container.offsetHeight - 8) + "px";
     document.getElementById("news_content").width = width + "px";
 
     if (document.getElementById("control").style.display === "block") {
