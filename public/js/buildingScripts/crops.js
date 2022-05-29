@@ -62,17 +62,15 @@ const cropsModule = {
         });
     },
     grow() {
-        let form = document.getElementById("data_form");
-        if(!form.reportValidity()) {
-            console.log("error");
-        }
         let workforce = document.getElementById("workforce_amount").value;
         let crop = document.getElementById("selected_crop_type").value;
 
         if(workforce === 0 || workforce.length === 0) {
             gameLogger.addMessage("You need to select the amount of workers", true);
+            return false;
         } else if(crop.length === 0) {
             gameLogger.addMessage("You need to select the crop you are trying to grow", true);
+            return false;
         }
         let JSON_data = JSON.stringify({
             workforce,
