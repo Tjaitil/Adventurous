@@ -173,7 +173,6 @@
             <script src="<?php echo constant('ROUTE_JS') . 'sidebar.js'; ?>"></script>
             <script src="<?php echo constant('ROUTE_JS') . 'artefact.js'; ?>"></script>
             <script src="<?php echo constant("ROUTE_JS") . 'selectitem.js'; ?>"></script>
-            <script src="<?php echo constant('ROUTE_JS') . 'select.js'; ?>"></script>
             <script src="<?php echo constant('ROUTE_JS') . 'warriorSelect.js'; ?>"></script>
             <script src="<?php echo constant('ROUTE_JS') . 'progressbar.js'; ?>"></script>
             <script src="<?php echo constant('ROUTE_JS') . 'levelup.js'; ?>"></script>
