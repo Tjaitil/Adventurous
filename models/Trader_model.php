@@ -34,7 +34,8 @@ class Trader_model extends model
         } 
 
         $param_username = $this->username;
-        $sql = "SELECT assignment_id, cart FROM trader WHERE username=:username";
+        $sql = "SELECT assignment_id, cart, (SELECT capasity FROM travelbureau_carts WHERE wheel= cart) as capasity  
+                FROM trader WHERE username=:username";
         $stmt = $this->db->conn->prepare($sql);
         $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
         $stmt->execute();
@@ -63,7 +64,7 @@ class Trader_model extends model
         }
         $assignment_type_data = $this->getAssignmentTypeData($assignment_data['assignment_type']);
 
-        //countdown
+        // Add to countdown
         $add_time = $assignment_data['time'];
         $date = date("Y-m-d H:i:s");
         $new_date = new DateTime($date);
@@ -73,11 +74,16 @@ class Trader_model extends model
 
             $this->hungerModel->setHunger('skill');
             $param_id = $assignment_id;
+            $param_cart_amount = intval($row['capasity']);
             $param_trading_countdown = date_format($new_date, "Y-m-d H:i:s");
-            $sql = "UPDATE trader SET assignment_id=:assignment_id, cart_amount=0, delivered=0, trading_countdown=:trading_countdown WHERE username=:username";
+            $sql = "UPDATE trader 
+                    SET assignment_id=:assignment_id, cart_amount=:cart_amount, 
+                        delivered=0, trading_countdown=:trading_countdown 
+                    WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":assignment_id", $param_id, PDO::PARAM_STR);
             $stmt->bindParam(":trading_countdown", $param_trading_countdown, PDO::PARAM_STR);
+            $stmt->bindParam(":cart_amount", $param_cart_amount, PDO::PARAM_INT);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $param_username = $this->username;
             $stmt->execute();
