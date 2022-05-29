@@ -35,8 +35,8 @@
             $stmt2->execute();
             $row2 = $stmt2->fetch(PDO::FETCH_ASSOC);
 
-            $sql3 = "SELECT avail_workforce, $location_workforce, mineral_quant_level
-            FROM miner_workforce WHERE username=:username";
+            $sql3 = "SELECT avail_workforce, $location_workforce
+                     FROM farmer_workforce WHERE username=:username";
             $stmt3 = $this->db->conn->prepare($sql3);
             $stmt3->bindParam(":username", $param_username, PDO::PARAM_STR);
             $stmt3->execute();
@@ -48,39 +48,37 @@
             $experience = $row2['experience'] + (round($row2['experience'] / 100 * $quantity));
             
             // If the player has harvester artefact equipped, get harvester bonus
-            if(strpos($this->session['artefact'], 'harvester') !== false) {
-                $artefact_bonus = $this->ArtefactModel->artefactCheck('harvester');
-            }
-            else {
-                $artefact_bonus = 1;
-            }
-            $quantity = round($quantity * $artefact_bonus);
+            // if(strpos($this->session['artefact'], 'harvester') !== false) {
+            //     $artefact_bonus = $this->ArtefactModel->artefactCheck('harvester');
+            // }
+            // else {
+            //     $artefact_bonus = 1;
+            // }
+            // $quantity = round($quantity * $artefact_bonus);
             
             try {
                 $this->db->conn->beginTransaction();
                 
-                if($artefact_bonus > 1) {
-                    $this->response->addTo("gameMessage", $this->ArtefactModel->updateArtefact());
-                }
+                // if($artefact_bonus > 1) {
+                //     $this->response->addTo("gameMessage", $this->ArtefactModel->updateArtefact());
+                // }
                 $param_crop_type = 'none';
-                $param_crop_quant = 0;
                 $param_username = $this->username;
                 $param_location = $this->session['location'];
-                $sql = "UPDATE farmer SET fields_avail=:fields_avail, crop_type=:crop_type, plot1_harvest=0 
+                $sql = "UPDATE farmer SET crop_type=:crop_type, plot1_harvest=0 
                         WHERE username=:username AND location=:location";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":crop_type", $param_crop_type, PDO::PARAM_STR);
-                $stmt->bindParam(":crop_quant", $param_crop_quant, PDO::PARAM_STR);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
                 $stmt->execute();
                 
-                $param_avail_workforce = $row3['avail_workforce'] + $row3[$location_workforce];
+                $param_avail_workforce = intval($row3['avail_workforce']) + intval($row3[$location_workforce]);
                 $param_username = $this->username;
-                $sql2 = "UPDATE farmer_workforce SET avail_workforce=:avail_workforce, $location_workforce= 0
+                $sql2 = "UPDATE farmer_workforce SET avail_workforce=:avail_workforce, $location_workforce=0
                          WHERE username=:username";
                 $stmt2 = $this->db->conn->prepare($sql2);
-                $stmt2->bindParam(":avail_workforce", $param_avail_workforce, PDO::PARAM_STR);
+                $stmt2->bindParam(":avail_workforce", $param_avail_workforce, PDO::PARAM_INT);
                 $stmt2->bindParam(":username", $param_username, PDO::PARAM_STR);
                 $stmt2->execute();
                 // Only gain xp when farmer level is below 30 or if profiency is farmer

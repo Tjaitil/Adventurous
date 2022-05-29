@@ -15,11 +15,13 @@
             // Function to set crops
             $POST = json_decode($POST['JSON_data'], true);
             
-            if(!$this->checkHunger()) {
+            if($this->hungerModel->checkHunger()) {
+                $this->response->addTo("errorGameMessage", $this->hungerModel->getHungerError());
                 return false;
-            }
+            } 
+
             $param_username = $this->username;
-            $sql = "SELECT f.fields_avail, f.crop_type, fw.avail_workforce, fw.efficiency_level
+            $sql = "SELECT f.crop_type, fw.avail_workforce, fw.efficiency_level
                     FROM farmer as f INNER JOIN farmer_workforce as fw ON fw.username = f.username
                     WHERE f.username=:username";
             $stmt = $this->db->conn->prepare($sql);
@@ -31,9 +33,7 @@
                 $this->response->addTo("errorGameMessage" , "You don't have that many workers available");
                 return false;
             }
-            
             $param_crop_type = $POST['crop'];
-            $param_farmer_level = $this->session['farmer']['level'];
             $param_location = $this->session['location'];
             $sql = "SELECT farmer_level, experience, time, seed_required FROM crops_data
                     WHERE crop_type=:crop_type AND location=:location";
@@ -46,15 +46,15 @@
                 return false;
             }
             $row2 = $stmt->fetch(PDO::FETCH_ASSOC);
-            if($row2['farmer_level'] < $this->session['farmer']['level']) {
+            if($row2['farmer_level'] > $this->session['farmer']['level']) {
                 $this->response->addTo("errorGameMessage" , "Your farmer level is too low to grow this crop");
                 return false;
             }
             
-            $param_item = $POST['crop'] . ' seed';
+            $param_item_seed = $POST['crop'] . ' seed';
             $sql = "SELECT amount FROM inventory WHERE item=:item AND username=:username";
             $stmt = $this->db->conn->prepare($sql);
-            $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
+            $stmt->bindParam(":item", $param_item_seed, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $stmt->execute();
             $data['inventory_seed'] = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -63,8 +63,10 @@
                 $this->response->addTo("errorGameMessage" , "You don't have enough seeds!");
                 return false;
             }
-            
-            $addTime = $row2['time'] - ($row2['time'] * ($POST['effiency_level'] / 100));
+            // Calculate reduction
+            $workforce_reduction = ($row2['time']) * ($POST['workforce'] * 0.005);
+            $base_reduction = $row2['time'] * ($row['efficiency_level'] * 0.01);
+            $addTime = $row2['time'] - $workforce_reduction - $base_reduction;
             $date = date("Y-m-d H:i:s");
             $newDate = new DateTime($date);
             $newDate->modify("+{$addTime} seconds");
@@ -97,7 +99,7 @@
                 $stmt2->execute();
                 
                 // Update inventory
-                $this->UpdateGamedata->updateInventory($POST['crop'] . ' seed', -$row2['seed_required'], true);
+                $this->UpdateGamedata->updateInventory($param_item_seed, -$row2['seed_required'], true);
                 // Only gain xp when warrior level is below 30 or if profiency is farmer
                 if($this->session['farmer']['level'] < 30 || $this->session['profiency'] == 'farmer') { 
                     $this->response->addTo("levelUP", $this->UpdateGamedata->updateXP('farmer', $row2['experience']));
