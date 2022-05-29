@@ -1,5 +1,5 @@
 <?php
-    class Permits extends model {
+    class Permits_model extends model {
         // Class is a grouping of functions which can be called from ajax request from /citycentre
         public $username;
         public $session;
@@ -57,7 +57,8 @@
                 return false;
             }
             $this->db->closeConn();
-            $this->response->addTo("gameMessage", "You bought 50 permits in {$selected_location}  50 gold");
+            $selected_location = ucfirst($selected_location);
+            $this->response->addTo("gameMessage", "You bought 50 permits in {$selected_location} for 50 gold");
             $this->response->addTo("data", $param_permits, array("index" => "permits"));
         }
     }
