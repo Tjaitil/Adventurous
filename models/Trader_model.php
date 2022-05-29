@@ -31,9 +31,12 @@ class Trader_model extends model
         // Function to set a new trader assignment
 
         $assignment_id = $POST['assignment_id'];
+        
+        if (!$this->hungerModel->checkHunger()) {
+            $this->response->addTo("errorGameMessage", $this->hungerModel->getHungerError());
+            return false;
+        } 
 
-        if (!$this->checkHunger()) return false;
-        /*$assignment_amount = str_replace(" ", "+", $assignment_amount);*/
         $param_username = $this->username;
         $sql = "SELECT assignment_id, cart FROM trader WHERE username=:username";
         $stmt = $this->db->conn->prepare($sql);
@@ -58,6 +61,10 @@ class Trader_model extends model
         $stmt->bindParam(":assignment_id", $param_assignment_id, PDO::PARAM_STR);
         $stmt->execute();
         $assignment_data = $stmt->fetch(PDO::FETCH_ASSOC);
+        if(!$stmt->rowCount() > 0) {
+            $this->response->addTo("errorGameMessage", "Something unexpected happened, please try again");
+            return false;
+        }
         $assignment_type_data = $this->getAssignmentTypeData($assignment_data['assignment_type']);
 
         //countdown
@@ -71,7 +78,7 @@ class Trader_model extends model
             $this->hungerModel->setHunger('skill');
             $param_id = $assignment_id;
             $param_trading_countdown = date_format($new_date, "Y-m-d H:i:s");
-            $sql = "UPDATE trader SET assignment_id=:assignment_id, trading_countdown=:trading_countdown WHERE username=:username";
+            $sql = "UPDATE trader SET assignment_id=:assignment_id, cart_amount=0, delivered=0, trading_countdown=:trading_countdown WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":assignment_id", $param_id, PDO::PARAM_STR);
             $stmt->bindParam(":trading_countdown", $param_trading_countdown, PDO::PARAM_STR);
@@ -123,9 +130,6 @@ class Trader_model extends model
         $this->response->addTo("data", $this->hungerModel->getHunger(), array("index" => "newHunger"));
     }
     public function pickUp() {
-        //AJAX function
-        if (!$this->checkHunger()) return false;
-
         $param_username = $this->username;
         $sql = "SELECT t.assignment_id, t.cart, t.cart_amount, t.delivered, ta.assignment_amount, ta.assignment_type, ta.base
                     FROM trader AS t INNER JOIN trader_assignments AS ta ON ta.assignment_id = t.assignment_id
@@ -185,7 +189,6 @@ class Trader_model extends model
         $this->response->addTo('data', $param_cart_amount, array("index" => "cartAmount"));
     }
     public function deliver() {
-        if (!$this->checkHunger()) return false;
 
         $param_username = $this->username;
         $sql = "SELECT t.assignment_id, t.cart_amount, t.delivered, ta.assignment_amount, ta.cargo, ta.assignment_type,
