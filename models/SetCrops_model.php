@@ -73,6 +73,7 @@
             try {
                 $this->db->conn->beginTransaction();
                 
+                $this->hungerModel->setHunger('skill');
                 $param_crop_type = $POST['crop'];
                 $param_crop_quant = 1;
                 $param_crop_countdown = date_format($newDate, "Y-m-d H:i:s");
