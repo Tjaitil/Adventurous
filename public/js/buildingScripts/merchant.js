@@ -1,8 +1,8 @@
-    
 import traderModule from './trader.js';
 import countdown from '../utilities/countdown.js';
 
 const merchantModule = {
+    stockTimerId: null,
     init() {
         this.updateStockCountdown(true);
         this.getMerchantCountdown();
@@ -12,12 +12,11 @@ const merchantModule = {
         document.getElementById("trade_button").addEventListener("click", () => this.tradeItem());
     },
     updateStockCountdown(pause = false) {
-        time = 0;
         if(pause == true) {
             this.resetStockTimer();
         }
         else if(pause == 'end') {
-            clearTimeout(time);
+            clearTimeout(this.stockTimerId);
         }
     },
     updateStock() {
@@ -34,8 +33,12 @@ const merchantModule = {
         });
     },
     resetStockTimer() {
-        clearTimeout(time);
-        time = setTimeout(() => this.updateStock(), 15000);
+        clearTimeout(this.stockTimerId);
+        this.stockTimerId = setTimeout(() => {
+            if(this.updateStock) {
+                this.updateStock()
+            }
+        }, 15000);
     }, 
     getMerchantCountdown() {
         let data = "&model=Merchant" + "&method=getMerchantCountdown";
@@ -43,18 +46,18 @@ const merchantModule = {
             if(response[0] != false) {
                 let responseText = response[1];
                 let endTime = (parseInt(responseText.date) + 14400) * 1000;
-                let x = setInterval (function() {
+                let x = setInterval (() => {
                     let { remainder, hours, minutes, seconds } = countdown.calculate(endTime);
-                    if(document.getElementById("time") == null) {
+                    if(document.getElementById("trades_countdown_time") == null) {
                         clearInterval(x);
                     } 
                     else if(remainder < 1) {
-                        document.getElementById("time").innerHTML = "0";
+                        document.getElementById("trades_countdown_time").innerHTML = "0";
                         this.updateStock();
                         clearInterval(x);
                     }
                     else {
-                        document.getElementById("time").innerHTML = hours + "h " + minutes + "m " + seconds + "s ";   
+                        document.getElementById("trades_countdown_time").innerHTML = hours + "h " + minutes + "m " + seconds + "s ";   
                     }
                 }, 1000);
             }
@@ -62,12 +65,10 @@ const merchantModule = {
     },
     addMerchantEvents() {
         let trades = document.getElementById("trades").querySelectorAll(".merchant-offer");
-        console.log(trades.length);
         if(trades.length > 0) {
             trades.forEach(element => 
                 element.addEventListener('click', event => this.selectTrade(event))
             );
-            return false;
         }
     },
     selectTrade(event) {
@@ -90,12 +91,12 @@ const merchantModule = {
             // Check if player is in fagna
             if(document.title.indexOf("Fagna") == -1) {
                 // Check if the merchant is interested in that item
-                let items = document.getElementById("trades_container").querySelectorAll(".tooltip");ftrade
+                let items = document.getElementById("merchant-offer-container").querySelectorAll(".tooltip");
                 let match = false;
                 for(var i = 0; i < items.length; i++) {
                     if(item === items[i].innerHTML) {
                         match = true;
-                        price = items[i].closest(".item").querySelectorAll(".item_sell_price")[0].innerHTML.trim();
+                        price = items[i].closest(".merchant-offer").querySelectorAll(".item_sell_price")[0].innerHTML.trim();
                         break;
                     }
                 }
@@ -169,9 +170,9 @@ const merchantModule = {
                 let responseText = response[1];
                 updateDiplomacyTab();
                 updateInventory();
+                document.getElementById("merchant-offer-list").innerHTML = responseText.html;
                 this.addMerchantEvents();
                 this.updateStockCountdown(true);
-                document.getElementById("merchant-offer-list").innerHTML = responseText.html;
                 document.getElementById("selected_trade").innerHTML = "";
                 document.getElementById("trade_price").querySelectorAll("span")[0].innerHTML = "";
                 document.getElementById("amount").value = "0";
