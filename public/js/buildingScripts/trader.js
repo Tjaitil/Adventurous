@@ -69,6 +69,8 @@ const traderModule = {
                 document.getElementById("traderAssignment_current").innerHTML = responseText['html'];
                 progressBar.calculateProgress(document.getElementById("traderAssignment_progressBar"), false, false, true);
                 newsContentSidebar.adjustMainContentHeight();
+                document.getElementById("traderAssignment-pick-up").addEventListener("click", () => this.pickUp());
+                document.getElementById("traderAssignment-deliver").addEventListener("click", () => this.deliver());
             }
         });
     },
