@@ -115,6 +115,11 @@ aside caption {
 #traderAssignment_current {
     display: grid;
     grid-template-columns: 50% 50%;
+    justify-content: center;
+    gap: 1rem;
+}
+#traderAssignment_current .item {
+    float: none;
 }
 .traderAssignment_fullColumn {
     grid-column: 1 / span 2;
