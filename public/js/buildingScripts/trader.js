@@ -68,6 +68,7 @@ const traderModule = {
                 updateCountdownTab();
                 document.getElementById("traderAssignment_current").innerHTML = responseText['html'];
                 progressBar.calculateProgress(document.getElementById("traderAssignment_progressBar"), false, false, true);
+                newsContentSidebar.adjustMainContentHeight();
             }
         });
     },
@@ -97,6 +98,7 @@ const traderModule = {
                     document.getElementById("traderAssignment_current").innerHTML = responseText.html;
                     updateDiplomacyTab();
                     updateInventory();
+                    newsContentSidebar.adjustMainContentHeight();
                 }
                 else {
                     document.getElementById("traderAssignment_cart_amount").innerHTML = 0;
