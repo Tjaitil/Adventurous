@@ -45,24 +45,41 @@
             $stmt = $this->db->conn->prepare($sql);
             $stmt->execute();
             $data['merchantTimes'] = $stmt->fetch(PDO::FETCH_ASSOC);
-            
 
-            // If it has been 4 hours, make new trades
+            // Select latest date
+            $sql = "SELECT MAX(date_inserted) as max_date_inserted FROM trader_assignments";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->execute();
+            $data['traderAssignmentTime'] = $stmt->fetch(PDO::FETCH_ASSOC);
+            $datetime_now = date_timestamp_get(new DateTime(date("Y-m-d H:i:s")));
+            // If 4 hours has passed, make new trades
             if(date_timestamp_get(new DateTime($data['merchantTimes']['date_inserted'])) + 14400 <
-                date_timestamp_get(new DateTime(date("Y-m-d H:i:s")))) {
+                $datetime_now) {
                 $this->makeTrades();
-            }            
+            }
             // Get trader offers
             $data['offers'] = $this->getOffers();
+
+
+            // If 4 hours has passed, make new trader assignments
+            if(date_timestamp_get(new DateTime($data['traderAssignmentTime']['max_date_inserted'])) + 14400 <
+            $datetime_now || $data['traderAssignmentTime']['max_date_inserted'] === NULL) {
+                $data['trader_assignments'] = $this->makeTraderAssignments();
+            }
             
-            $param_city = $this->session['location'];
-            $sql5 = "SELECT assignment_id, base, destination, cargo, assignment_amount, time, assignment_type FROM trader_assignments
-                     WHERE base=:base";
+            $sql5 = "SELECT assignment_id, base, destination, cargo, assignment_amount, time, assignment_type,
+                        date_inserted
+                        FROM trader_assignments
+                        WHERE date_inserted = (SELECT MAX(date_inserted) FROM trader_assignments)";
             $stmt5 = $this->db->conn->prepare($sql5);
-            $stmt5->bindParam(":base", $param_city, PDO::PARAM_STR);
             $stmt5->execute();
             $data['trader_assignments'] = $stmt5->fetchAll(PDO::FETCH_ASSOC);
+        
+            $location = $this->session['location'];
+
+            $data['trader_assignments'] = $this->sortTraderAssignments($data['trader_assignments'], $location);
             
+            // $data['trader_assignments'] = array_reverse($data['trader_assignments']);
             $data['gold'] = $this->session['gold'];
             $this->db->closeConn();
             // if statement to check if ajax request is being called
@@ -88,21 +105,21 @@
                 switch($i) {
                     case ($i <= $small_trades_amount):
                         // Make assignment with easy difficulty
-                        $assignment['assignment_type'] = "small trade";
+                        $assignment['assignment_type'] = "small";
                         $assignment['assignment_amount'] = rand(60, 100);
                         $assignment['reward'] = 200;
                         $assignment['time'] = 600;
                         break;
                     case ($i <= ($small_trades_amount + $medium_trades_amount)):
                         // Make missions with medium difficulty
-                        $assignment['assignment_type'] = "medium trade";
+                        $assignment['assignment_type'] = "medium";
                         $assignment['assignment_amount'] = rand(120, 300);
                         $assignment['reward'] = 500;
                         $assignment['time'] = 500;
                         break;
                     case ($i <= ($small_trades_amount + $medium_trades_amount + $large_trades_amount)):
                         // Make missions with hard difficulty
-                        $assignment['assignment_type'] = "large trade";
+                        $assignment['assignment_type'] = "large";
                         $assignment['assignment_amount'] = rand(350, 700);
                         $assignment['reward'] = 1200;
                         $assignment['time'] = 400;
@@ -145,25 +162,31 @@
                 $assignment['cargo'] = $stmt->fetch(PDO::FETCH_OBJ)->name;
                 $trader_assignments[] = $assignment;
             }
+            // Delete old assigments which isn't active and which is not current datetime
+            $sql = "DELETE a FROM trader_assignments AS a
+                    LEFT JOIN trader AS b ON a.assignment_id = b.assignment_id 
+                    JOIN 
+                        (SELECT MAX(date_inserted) as date_inserted 
+                        FROM trader_assignments GROUP BY date_inserted) 
+                    AS c ON a.date_inserted < c.date_inserted 
+                    WHERE b.assignment_id IS NULL";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->execute();
             try {
                 $this->db->conn->beginTransaction();
-                // Delete old assignments
-                $sql = "DELETE FROM trader_assignments";
-                $stmt = $this->db->conn->prepare($sql);
-                $stmt->execute();
-                // If no rows has been affected, throw error;
-                if($stmt->rowCount() === 0) {
-                    throw new Exception("No rows deleted from delete query" . __METHOD__);
-                }
+
                 $param_base = "";
                 $param_destination = "";
                 $param_cargo = "";
                 $param_assignment_amount = "";
                 $param_time = "";
                 $param_assignment_type = "";
+
                 // Insert new trades
-                $sql = "INSERT INTO trader_assignments (base, destination, cargo, assignment_amount, time, assignment_type)
-                        VALUES(:base, :destination, :cargo, :assignment_amount, :time, :assignment_type)";
+                $sql = "INSERT INTO trader_assignments 
+                        (base, destination, cargo, assignment_amount, time, assignment_type)
+                        VALUES
+                        (:base, :destination, :cargo, :assignment_amount, :time, :assignment_type)";
                 $stmt = $this->db->conn->prepare($sql);
                 $stmt->bindParam(":base", $param_base, PDO::PARAM_STR);
                 $stmt->bindParam(":destination", $param_destination, PDO::PARAM_STR);
@@ -303,6 +326,15 @@
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $date = date_timestamp_get(new DateTime($row['date_inserted']));
             $this->response->addTo("data", $date, array("index" => "date"));
+            $this->db->closeConn();
+        }
+        public function getTraderAssigmentCountdown($js = false) {
+            $sql = "SELECT date_inserted FROM trader_assignments ORDER BY date_inserted DESC LIMIT 1";
+            $stmt = $this->db->conn->prepare($sql);
+            $stmt->execute();
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $date = date_timestamp_get(new DateTime($row['date_inserted']));
+            $this->response->addTo("data", $date, array("index" => "traderAssigmentCountdown"));
             $this->db->closeConn();
         }
         public function getOffers($js = false) {
@@ -555,6 +587,30 @@
             $stmt->execute();
             $store_value = $stmt->fetch(PDO::FETCH_OBJ)->store_value;
             $this->response->addTo("data", $store_value, array("index" => "price"));
+        }
+        protected function sortTraderAssignments($trader_assignments, $location) {
+            function getDifficultyValue($difficulty) {
+                switch ($difficulty) {
+                    case 'small':
+                        return 4;
+                    case 'favor':
+                        return 3;
+                    case 'medium':
+                        return 2;
+                    case 'large':
+                        return 1;
+                }
+                return 5;
+            }
+            usort($trader_assignments, function($a, $b) use ($location) {
+                $a_check = ($a["base"] === $location) ? 1 : - 1;
+                $b_check = ($b["base"] === $location) ? 1 : - 1;
+                return 
+                        [$b_check, getDifficultyValue($b['assignment_type'])]
+                        <=> 
+                        [$a_check, getDifficultyValue($a['assignment_type'])]; 
+            });
+            return $trader_assignments; 
         }
     }
 ?>
