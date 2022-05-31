@@ -14,14 +14,12 @@
             $param_location = $this->session['location'];
             $param_username = $this->username;
             $sql = "SELECT permits, mining_type, mining_countdown, fetch_minerals FROM miner
-                    WHERE location=:location AND username=:username";          
+                    WHERE username=:username";          
             $stmt = $this->db->conn->prepare($sql);
-            $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $stmt->execute();
             $data['minerData'] = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            $param_minerlevel = $this->session['miner']['level'];
             $param_location = $this->session['location'];
             if($js === true) {
                 $sql2 = "SELECT mineral_type, miner_level, experience, time, permit_cost, location 
@@ -41,8 +39,7 @@
             $stmt3->execute();
             $data['workforce_data'] = $stmt3->fetch(PDO::FETCH_ASSOC);
             if($js === true) {
-                $this->response->addTo("data", $data['mineral_types'], array("index" => "mineral_types"));
-                $this->response->addTo("data", $data['workforce_data'], array("index" => "workforce_data"));
+                $this->response->addTo("data", $data, array("index" => "data"));
             }
             else {
                 return $data;
@@ -67,13 +64,14 @@
         }
         public function cancelMining() {
             if(in_array($this->session['location'], array('golbak', 'snerpiir')) != true) {
-                    return false;   
+                $this->response->addTo("errorGameMessage", "You are in the wrong location to do this action");
+                return false;   
             }
             $param_location = $this->session['location'];
             $param_username = $this->username;
             $workforce = $this->session['location'] . '_workforce';
-            $sql = "SELECT m.mining_countdown, m.fetch_minerals, mw.avail_workforce, mw.$workforce FROM miner as m
-                    INNER JOIN miner_workforce as mw ON mw.username = m.username
+            $sql = "SELECT m.mining_countdown, m.fetch_minerals, mw.avail_workforce, mw.$workforce FROM miner AS m
+                    INNER JOIN miner_workforce AS mw ON mw.username = m.username
                     WHERE m.location=:location AND m.username=:username";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":location", $param_location, PDO::PARAM_STR);
