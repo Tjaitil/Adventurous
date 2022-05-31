@@ -8,7 +8,7 @@
 }
 #actions {
     width: 100%;
-    padding: 2px;
+    padding: 0px 0px 1rem;
     border-bottom: 3px solid black;
 }
 #select {
@@ -30,7 +30,7 @@
 #cancel_action {
     display: none;
 }
-.crop_type, .mineral {
+.crop_type, .mineral_type {
     width: 64px;
     height: 64px;
     float: left;

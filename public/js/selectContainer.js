@@ -30,14 +30,10 @@ const skillContainer = {
         document.getElementById("data").style.visibility = "visible";
         let div_inputs = div.querySelectorAll("input");
         div_inputs[0].value = jsUcfirst(item);
-        console.log(item);
         document.getElementsByName("time")[0].value = this.typeData[item].time;
 
-        let baseReduction = Number(parseInt(this.typeData[item].time) * (this.workforceData['efficiency_level'] * 0.01)).toFixed(2);
-        let perWorkforce = Number(parseInt(this.typeData[item].time) * 0.005).toFixed(2);
-        document.getElementById("reduction_time").innerText = "- " + baseReduction + 's ' + '& -' + perWorkforce + 's each worker';
-        document.getElementsByName("experience")[0].value = this.typeData[item].experience;
-        document.getElementsByName("location")[0].value = this.typeData[item].location;
+        let baseReduction;
+        let perWorkforce;
         
         let imgSrc;
         // Check wether or not the player are in crops or mine
@@ -45,12 +41,20 @@ const skillContainer = {
             document.getElementsByName("seeds")[0].value = this.typeData[item].seed_required;    
             document.getElementsByName("level")[0].value = this.typeData[item].farmer_level;
             imgSrc = this.typeData[item].crop_type + ".png";
+            baseReduction = Number(parseInt(this.typeData[item].time) * (this.workforceData['efficiency_level'] * 0.01)).toFixed(2);
+            perWorkforce = Number(parseInt(this.typeData[item].time) * 0.005).toFixed(2);
         }
         else {
             document.getElementsByName("permits")[0].value = this.typeData[item].permit_cost;
             document.getElementsByName("level")[0].value = this.typeData[item].miner_level;
             imgSrc = this.typeData[item].mineral_type + ".png";
+            baseReduction = Number(parseInt(this.typeData[item].time) * (this.workforceData['efficiency_level'] * 0.01)).toFixed(2);
+            perWorkforce = Number(parseInt(this.typeData[item].time) * 0.005).toFixed(2);
         }
+        document.getElementById("reduction_time").innerText = "- " + baseReduction + 's ' + '& -' + perWorkforce + 's each worker';
+        document.getElementsByName("experience")[0].value = this.typeData[item].experience;
+        document.getElementsByName("location")[0].value = this.typeData[item].location;
+        
         let selectedFigure = document.getElementById("selected_item");
         if(selectedFigure.children.length == 0) {
             selectedFigure.appendChild(clone);
