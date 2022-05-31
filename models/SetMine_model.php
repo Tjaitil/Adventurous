@@ -15,7 +15,10 @@
             // Function to set mining
             $mineral = strtolower($POST['mineral']);
             $workforce = $POST['workforce'];
-            if(!$this->checkHunger()) return false;
+            if($this->hungerModel->checkHunger()) {
+                $this->response->addTo("errorGameMessage", $this->hungerModel->getHungerError());
+                return false;
+            } 
 
             $param_location = $this->session['location'];
             $param_username = $this->username;
@@ -60,7 +63,7 @@
                 return false;
             }
             
-            $addTime = $row2['time'] * (0.1 * $row['efficiency_level'] + $workforce * 0.2);
+            $addTime = $row2['time'] - (0.1 * $row['efficiency_level'] + $workforce * 0.05);
             $date = date("Y-m-d H:i:s");
             $newDate = new DateTime($date);
             $newDate->modify("+{$addTime} seconds");
