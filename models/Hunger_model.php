@@ -2,21 +2,27 @@
     class Hunger_model extends model {
         public $username;
         public $session;
-        protected $provided_db;  
+        protected $hungerError;
+        protected $provided_db;
          
         
         function __construct ($session, $provided_db = false) {
             if(!is_object($provided_db)) {
                 parent::__construct(true);
                 $this->commonModels(true, false, false);
+                $this->provided_db = $this->db;
             } else {
                 $this->provided_db = $provided_db;
             }
+            $this->hungerError = "Your hunger is too high, decrease hunger first";
             $this->username = $session['username'];
             $this->session = $session;
         }
+        public function getHungerError() {
+            return $this->hungerError;
+        }
         public function checkHunger() {
-            if($this->session['hunger'] < 10) {
+            if(intval($this->session['hunger']) < 15) {
                 return true;
             } else {
                 return false;
@@ -35,7 +41,7 @@
             }
             $param_username = $this->session['username'];
             $sql = "UPDATE user_data SET hunger=:hunger WHERE username=:username";
-            $stmt = $this->db->conn->prepare($sql);
+            $stmt = $this->provided_db->conn->prepare($sql);
             $stmt->bindParam(":hunger", $new_hunger, PDO::PARAM_INT);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $stmt->execute();
@@ -71,7 +77,7 @@
             $item_data = get_item($this->session['inventory'], $item);
 
             if($_SESSION['gamedata']['hunger'] === 100) {
-                $this->response->addTo("errorGameMessage", "Your hunger is low, you can't eat");
+                $this->response->addTo("errorGameMessage", "Your hunger doesn't need to be replenished");
                 return false;
             }
 
@@ -86,7 +92,7 @@
             
             $param_item = $item;
             $sql = "SELECT heal FROM bakery_data WHERE type=:item";
-            $stmt = $this->db->conn->prepare($sql);
+            $stmt = $this->provided_db->conn->prepare($sql);
             $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
             $stmt->execute();
             if(!$stmt->rowCount() > 0) {
@@ -97,7 +103,7 @@
             
             $param_username = $this->username;
             $sql = "SELECT hunger, hunger_date, hunger FROM user_data WHERE username=:username";
-            $stmt = $this->db->conn->prepare($sql);
+            $stmt = $this->provided_db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $stmt->execute();
             $row2 = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -105,13 +111,13 @@
             $hunger = ($row['heal'] * $amount) + $row2['hunger'];
             if($hunger > 100) $hunger = 100;
             try {
-                $this->db->conn->beginTransaction();
+                $this->provided_db->conn->beginTransaction();
                 
                 $param_hunger = $hunger;
                 $param_hunger_date = date("Y-m-d H:i:s");
                 $param_username = $this->username;
                 $sql = "UPDATE user_data SET hunger=:hunger, hunger_date=:hunger_date WHERE username=:username";
-                $stmt = $this->db->conn->prepare($sql);
+                $stmt = $this->provided_db->conn->prepare($sql);
                 $stmt->bindParam(":hunger", $param_hunger, PDO::PARAM_INT);
                 $stmt->bindParam(":hunger_date", $param_hunger_date, PDO::PARAM_STR);
                 $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
@@ -120,12 +126,13 @@
                 // Update inventory
                 $this->UpdateGamedata->updateInventory($item, -$amount, true);
                 
-                $this->db->conn->commit();
+                $this->provided_db->conn->commit();
             }
             catch(Exception $e) {
                 $this->response->addTo("errorGameMessage", $this->errorHandler->catchAJAX($this->db, $e));
                 return false;
             }
+            $_SESSION['gamedata']['hunger'] = $param_hunger;
             $this->response->addTo("data", $param_hunger, array("index" => "newHunger"));
         }
     }
