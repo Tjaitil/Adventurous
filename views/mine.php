@@ -41,7 +41,7 @@
                                     </span></br>
                                 </div>
                             </form>
-                            <button type="button"> Mine </button>
+                            <button type="button" class="mb-2"> Mine </button>
                         </div>
                     </div>
                 </div>

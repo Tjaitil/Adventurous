@@ -47,7 +47,7 @@
                                     </div>
                                     </br>
                                 </form>
-                                <button type="button"> Grow </button>
+                                <button type="button" class="mb-2"> Grow </button>
                             </div>
                         </div>
                     </div>
