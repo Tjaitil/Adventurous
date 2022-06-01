@@ -34,26 +34,45 @@ const skillContainer = {
 
         let baseReduction;
         let perWorkforce;
-        
         let imgSrc;
+        let level;
+
+        const checkSkillLevel = (skillLevel, level) => {
+            console.log(skillLevel, level);
+            let input = document.getElementsByName("level")[0];
+            if(parseInt(level) > parseInt(skillLevel)) {
+                input.classList.add("not-able-color");
+            } else {
+                input.classList.remove("not-able-color");
+            }
+        }
         // Check wether or not the player are in crops or mine
         if(game.properties.building === "crops") {
             document.getElementsByName("seeds")[0].value = this.typeData[item].seed_required;    
             document.getElementsByName("level")[0].value = this.typeData[item].farmer_level;
             imgSrc = this.typeData[item].crop_type + ".png";
+            // Calculate reduction times
             baseReduction = Number(parseInt(this.typeData[item].time) * (this.workforceData['efficiency_level'] * 0.01)).toFixed(2);
             perWorkforce = Number(parseInt(this.typeData[item].time) * 0.005).toFixed(2);
+            // Retrieve skill level
+            level = document.querySelectorAll(".skill_level")[0].innerHTML.trim();
+            checkSkillLevel(level, this.typeData[item].farmer_level);
         }
         else {
             document.getElementsByName("permits")[0].value = this.typeData[item].permit_cost;
             document.getElementsByName("level")[0].value = this.typeData[item].miner_level;
             imgSrc = this.typeData[item].mineral_type + ".png";
+            // Calculate reduction times
             baseReduction = Number(parseInt(this.typeData[item].time) * (this.workforceData['efficiency_level'] * 0.01)).toFixed(2);
             perWorkforce = Number(parseInt(this.typeData[item].time) * 0.005).toFixed(2);
+            // Retrieve skill level
+            level = document.querySelectorAll(".skill_level")[1].innerHTML.trim();
+            checkSkillLevel(level, this.typeData[item].miner_level);
         }
-        document.getElementById("reduction_time").innerText = "- " + baseReduction + 's ' + '& -' + perWorkforce + 's each worker';
+
+        document.getElementById("reduction_time").innerText = "- " + baseReduction + 's ' + '& - ' + perWorkforce + 's each worker';
         document.getElementsByName("experience")[0].value = this.typeData[item].experience;
-        document.getElementsByName("location")[0].value = this.typeData[item].location;
+        document.getElementsByName("location")[0].value = jsUcfirst(this.typeData[item].location);
         
         let selectedFigure = document.getElementById("selected_item");
         if(selectedFigure.children.length == 0) {

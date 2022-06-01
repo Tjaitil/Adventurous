@@ -50,7 +50,7 @@ const mineModule = {
                         document.getElementById("time").innerHTML = "";
                     }
                 }, 1000);
-                newsContentSidebar.adjustMainContentHeight();
+                setTimeout(() => newsContentSidebar.adjustMainContentHeight(), 1100);
             }
         });
     },

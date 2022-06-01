@@ -33,13 +33,13 @@ const cropsModule = {
                 this.intervalID = setInterval(() => {
                     let { remainder, hours, minutes, seconds } = countdown.calculate(endTime);
                     
-                    document.getElementById("harvest_action").style.display = "none";
                     if(document.getElementById("time") == null) {
                         clearInterval(x);
                     }
                     else {
                         document.getElementById("time").innerText = hours + "h " + minutes + "m " + seconds + "s ";
                         document.getElementById("cancel_action").style.display = "inline-block";
+                        document.getElementById("harvest_action").style.display = "none";
                     }
                     // Check if countdown is finished and harvest is true
                     if(remainder < 0 && harvest === 1) {
@@ -57,7 +57,7 @@ const cropsModule = {
                         document.getElementById("harvest_action").style.display = "none";
                     }
                 }, 1000);
-                newsContentSidebar.adjustMainContentHeight();
+                setTimeout(() => newsContentSidebar.adjustMainContentHeight(), 1100);
             }
         });
     },
