@@ -67,3 +67,29 @@
 #stck_menu ul li:hover {
     background-color: #986834;
 }
+#stck_menu_custom_amount {
+    font-size: 12px;
+    padding: 0px;
+    background-color: transparent;
+    border: none;
+    width: 75px;
+    height: 100%;
+    color: var(--textColor);
+    font-weight: normal;
+    font-family: serif;
+    text-align: center;
+}
+#stck_menu_custom_amount:focus {
+    outline: none;
+}
+/* Hide browser arrow for input Chrome, safari, edge */
+#stck_menu_custom_amount::-webkit-outer-spin-button,
+#stck_menu_custom_amount::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+#stck_menu_custom_amount {
+  -moz-appearance: textfield;
+}

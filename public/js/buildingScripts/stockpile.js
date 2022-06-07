@@ -14,12 +14,18 @@ const menubarToggle = {
 };
 function addStockpileActions() {
     let listElements = document.getElementById("stck_menu").querySelectorAll("LI");
-    listElements.forEach(function(element, index) {
-        // First element is the item name
-        if(index === 0) {
-            return;   
+    listElements.forEach((element, index) => {
+        // First element is the item name, third is the input
+        if([0, 3].includes(index)) {
+            return;
         }
-        element.addEventListener("click", stockpileModule.stockpileAction);
+        element.addEventListener("click", event => stockpileModule.stockpileAction(false, event));
+    });
+    document.getElementById("stck_menu_custom_amount").addEventListener("keyup", event => {
+        event.preventDefault();
+        if(event.key === "Enter") {
+            stockpileModule.stockpileAction(true, event);
+        }
     });
 }
 function addShowMenuEvent() {
@@ -56,7 +62,11 @@ function show_menu() {
     let elementPos;
     if(element.className == 'inventory_item') {
         for(var i = 1; i < (lis.length - 1); i++) {
-            lis[i].innerHTML = "Insert " + lis[i].innerHTML.split(" ")[1];
+            if(i === 3) {
+                lis[i].children[0].placeholder = "Insert x";
+            } else {
+                lis[i].innerHTML = "Insert " + lis[i].innerHTML.split(" ")[1];
+            }
         }
         lis[lis.length - 1].innerHTML = "Insert all";
         elementPos = element.getBoundingClientRect();
@@ -68,9 +78,12 @@ function show_menu() {
         menu.children[0].style.left = element.offsetLeft + "px";
     }
     else {
-        let newsContent = document.getElementById("news_content");
         for(var x = 1; x < (lis.length - 1); x++) {
-            lis[x].innerHTML = "Withdraw " + lis[x].innerHTML.split(" ")[1]; 
+            if(x === 3) {
+                lis[x].children[0].placeholder = "Widthdraw x";
+            } else {
+                lis[x].innerHTML = "Withdraw " + lis[x].innerHTML.split(" ")[1]; 
+            }
         }
         lis[lis.length - 1].innerHTML = "Widthdraw all";
         elementPos = element.getBoundingClientRect();
@@ -91,60 +104,47 @@ function hideMenu() {
 
 const stockpileModule = {
     init() {
-        console.log('init');
-        console.log(document.getElementById("item_tooltip"));
         document.getElementById("item_tooltip").style.visibility = "hidden";
         menubarToggle.addEvent();
         addShowMenuEvent();
         addStockpileActions();
     },
-    stockpileAction() {
+    stockpileAction(amount = false, event) {
         let element = event.target.closest("div").parentNode;
-        let item = event.target.parentNode.children[0].innerHTML.toLowerCase().split("<br>")[0].trim();
-        let quantity = event.target.innerHTML.split(" ")[1];
+        let item = document.getElementById("stck_menu").querySelectorAll("li")[0].innerHTML.toLowerCase().trim();
+        let quantity;
         let insert;
         if(document.getElementById("stck_menu").closest("#inventory")) {
             insert = "1";
-            if(quantity === 'x') {
-                quantity = selectAmount('insert');
-            }
         }
         else {
             insert = "0";    
-            if(quantity === 'x') {
-                quantity = selectAmount('withdraw');
-            }
         }
+
+        if(amount) {
+            quantity = document.getElementById("stck_menu_custom_amount").value;
+        } else if(event.currentTarget === document.getElementById("stck_menu_all")) {
+            quantity = "all";  
+        } else {
+            quantity = event.target.innerHTML.split(" ")[1];
+        }
+
         hideMenu();
 
         let data = "model=Stockpile" + "&method=updateInventory" + "&item=" + item +
                             "&insert=" + insert + "&quantity=" + quantity;
-        ajaxP(data, function(response) {
+        ajaxP(data, response => {
             if(response[0] !== false) {
-                console.log(response[1]);
                 let responseText = response[1];
                 document.getElementById("stockpile").innerHTML = responseText.html;
                 // ShowMenuEvent is added in updateInventory
-                updateInventory('stockpile');
+                updateInventory();
                 addShowMenuEvent();
                 document.getElementById("stck_menu").style.visibility = "hidden";
+                document.getElementById("stck_menu_custom_amount").value = "";
                 newsContentSidebar.adjustMainContentHeight();
             }
         });
-    },
-    selectAmount(type) {
-        var amount = prompt("Select a number to withdraw " + type);
-        if(amount == false) {
-            return false;
-        }
-        else if(isNaN(amount) == true || amount.search(",") != -1) {
-            gameLogger.addMessage("ERROR: Please insert a valid number!");
-            gameLogger.logMessages();
-            return false;
-        }
-        else {
-            return amount;
-        }
     },
     onClose() {
         menubarToggle.removeEvent();
