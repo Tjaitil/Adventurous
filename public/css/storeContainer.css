@@ -1,0 +1,73 @@
+#container-item-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    box-sizing: border-box;
+    max-width: 500px;
+    margin-inline: auto;
+}
+#container-item-selected {
+    flex-basis: 50%;
+}
+#do_trade {
+    height: 100%;
+    min-width: 155px;
+    background-color: #5f4121;
+    border: 3px solid rgba(0, 0, 0, 0.6);
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+#selected_trade {
+    width: 100%;
+    margin: 0 auto;
+    padding-top: 0.8rem;
+}
+#container-item-list {
+    display: flex;
+    overflow-y: scroll;
+    flex-direction: column;
+    flex-basis: 50%;
+    max-width: 250px;
+    max-height: 336px;
+}
+.container-item {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    padding-block: 1rem;
+    padding-left: 1rem;
+    cursor: pointer;
+}
+.container-item :where(figure, p, img) {
+    align-self: center;
+}
+.container-item:hover {
+    filter: brightness(1.15);
+}
+#container-item-list .container-item:not(:last-child):after {
+    content: "";
+    position: absolute;
+    left: 10%;
+    width: 80%;
+    height: 2px;
+    background-color: #5f4121;
+    bottom: 0px;
+}
+.container-item-price {
+    flex-basis: 35%;
+    display: flex;
+    flex-direction: column;
+}
+.container-item span {
+    text-align: left;
+}
+#container-item-selected #reqiurements {
+
+}
+#container-item-selected .item figcaption {
+    visibility: hidden;
+}
+#container-item-selected .item .item_amount {
+    color: var(--textColor);
+}
