@@ -34,6 +34,11 @@
             $insert = $POST['insert'];
             $item = strtolower($POST['item']);
             $quantity = $POST['quantity'];
+
+            if(intval($quantity) === 0 && $quantity !== "all") {
+                $this->response->addTo("errorGameMessage", "Please provide a valid amount");
+                return false;
+            }
             //$insert, 1 = insert, 0 = widthdraw
             $param_item = $item;
             $param_username = $this->username;
@@ -66,11 +71,11 @@
             else if ($quantity === 'all' && $insert === '0') {
                 $quantity = $row['amount'];
             }
-            if($insert === '0' && $quantity > $row['amount']) {
+            if($insert === '0' && intval($quantity) > intval($row['amount'])) {
                 $this->response->addTo("errorGameMessage", "You don't have that amount to widthdraw");
                 return false;
             }
-            if($insert === '1' && $quantity > $row2['amount']) {
+            if($insert === '1' && intval($quantity) > intval($row2['amount'])) {
                 $this->response->addTo("errorGameMessage", "You don't have that amount to insert");
                 return false;
             }
@@ -109,7 +114,7 @@
                 $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
                 $stmt->bindParam(":amount", $param_amount, PDO::PARAM_STR);
                 $stmt->execute();
-            } else if($quantity - $current_amount === 0) {
+            } else if($current_amount + $quantity <= 0) {
                 $param_item = $item;
                 $param_username = $this->username;
                 //If item is zero
