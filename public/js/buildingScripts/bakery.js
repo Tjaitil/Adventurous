@@ -15,6 +15,7 @@ const bakeryModule = {
         let item = elementDiv.querySelectorAll("figcaption")[0].innerHTML.toLowerCase().trim();
         let itemData = this.data.find(element => element.item === item);
         if(itemData && itemData.ingredients.length > 0) {
+            storeContainer.clearRequirementContainer();
             itemData.ingredients.forEach(element => 
                 storeContainer.addRequirement(element.ingredient, element.amount, element.ingredient)
             );

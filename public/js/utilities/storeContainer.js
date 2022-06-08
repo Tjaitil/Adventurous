@@ -20,10 +20,11 @@ const storeContainer = {
         document.getElementById("trade_price").querySelectorAll("span")[0].innerText = 0;
         document.getElementById("trade_price").querySelectorAll("span")[0].innerHTML = price;
     },
+    clearRequirementContainer() {
+        document.getElementById("container-item-requirements").innerHTML = "";
+    },
     addRequirement(name, amount, imgSrc) {
         // Add requirements to storeContainer
-
-        document.getElementById("container-item-requirements").innerHTML = "";
         // Create div
         let div = document.createElement("div");
         div.classList.add("item");
