@@ -81,5 +81,9 @@ const itemTitle = {
     hide() {
         document.getElementById("item_tooltip").style.visibility = "hidden";
         this.currentTitle = null;
+    },
+    resetItemTooltip() {
+        document.getElementById("inventory").insertBefore(menu,
+            document.getElementById("inventory").querySelectorAll(".inventory_item")[0]);
     }
 };
