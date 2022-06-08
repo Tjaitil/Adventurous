@@ -1,15 +1,16 @@
-#container-item-wrapper {
+#store-container-item-wrapper {
     position: relative;
     display: flex;
     flex-direction: row;
     box-sizing: border-box;
     max-width: 500px;
+    min-height: 250px;
     margin-inline: auto;
 }
-#container-item-selected {
+#store-container-item-selected {
     flex-basis: 50%;
 }
-#do_trade {
+#store-container-do-trade {
     height: 100%;
     min-width: 155px;
     background-color: #5f4121;
@@ -17,12 +18,12 @@
     border-radius: 5px;
     box-sizing: border-box;
 }
-#selected_trade {
+#store-container-selected-trade {
     width: 100%;
     margin: 0 auto;
     padding-top: 0.8rem;
 }
-#container-item-list {
+#store-container-item-list {
     display: flex;
     overflow-y: scroll;
     flex-direction: column;
@@ -30,7 +31,7 @@
     max-width: 250px;
     max-height: 336px;
 }
-.container-item {
+.store-container-item {
     position: relative;
     display: flex;
     flex-direction: row;
@@ -39,13 +40,13 @@
     padding-left: 1rem;
     cursor: pointer;
 }
-.container-item :where(figure, p, img) {
+.store-container-item :where(figure, p, img) {
     align-self: center;
 }
-.container-item:hover {
+.store-container-item:hover {
     filter: brightness(1.15);
 }
-#container-item-list .container-item:not(:last-child):after {
+#store-container-item-list .store-container-item:not(:last-child):after {
     content: "";
     position: absolute;
     left: 10%;
@@ -54,20 +55,17 @@
     background-color: #5f4121;
     bottom: 0px;
 }
-.container-item-price {
+.store-container-item-price {
     flex-basis: 35%;
     display: flex;
     flex-direction: column;
 }
-.container-item span {
+.store-container-item span {
     text-align: left;
 }
-#container-item-selected #reqiurements {
-
-}
-#container-item-selected .item figcaption {
+#store-container-item-selected .item figcaption {
     visibility: hidden;
 }
-#container-item-selected .item .item_amount {
+#store-container-item-selected .item .item_amount {
     color: var(--textColor);
 }
