@@ -24,11 +24,6 @@ const bakeryModule = {
     make() {
         let { item, amount } = storeContainer.getSelectedTrade() || {};
         if(!item) return;
-
-        if(amount == 0) {
-            gameLogger.addMessage("Please enter a valid quantity", true);
-            return false;
-        }
         
         let data = "model=Bakery" + "&method=makeMeal" + "&item=" + item + "&amount=" + amount;
         ajaxP(data, response => {
