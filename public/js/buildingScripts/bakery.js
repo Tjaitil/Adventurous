@@ -5,13 +5,13 @@ const bakeryModule = {
         itemTitle.addItemClassEvents();
         storeContainer.addSelectTrade();
         storeContainer.addSelectedItemButtonEvent(this.make, 'Make');
-        [...document.getElementsByClassName("container-item")].forEach(element => 
+        [...document.getElementsByClassName("store-container-item")].forEach(element => 
             element.addEventListener("click", event => this.getIngredients(event)));
         this.getData();
     },
     data: null,
     getIngredients(event) {
-        let elementDiv = event.currentTarget.closest(".container-item");
+        let elementDiv = event.currentTarget.closest(".store-container-item");
         let item = elementDiv.querySelectorAll("figcaption")[0].innerHTML.toLowerCase().trim();
         let itemData = this.data.find(element => element.item === item);
         if(itemData && itemData.ingredients.length > 0) {
@@ -22,8 +22,8 @@ const bakeryModule = {
         }
     },
     make() {
-        let item = document.getElementById("selected_trade").querySelectorAll("figcaption")[0].innerHTML;
-        let amount = document.getElementById("amount").value;
+        let { item, amount } = storeContainer.getSelectedTrade() || {};
+        if(!item) return;
 
         if(amount == 0) {
             gameLogger.addMessage("Please enter a valid quantity", true);
@@ -45,9 +45,7 @@ const bakeryModule = {
         });
     },
     onClose() {
-        if(document.getElementById("news_content_main_content").querySelectorAll("item_tooltip").length > 0) {
-            itemTitle.resetItemTooltip();
-        } 
+        storeContainer.checkItemTooltip();
     },
 };
 export default bakeryModule;

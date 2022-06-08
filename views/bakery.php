@@ -1,4 +1,4 @@
-bakery.css|bakery.js|
+|bakery.js|
 <h1 class="page_title"> Bakery </h1>
 <div id="bakery">
     <div class="help">
