@@ -18,9 +18,6 @@ const archeryShopModule = {
                 updateInventory('ArhceryShop');
             }       
         });
-    },
-    onClose() {
-
-    },
+    }
 };
 export default archeryShopModule;

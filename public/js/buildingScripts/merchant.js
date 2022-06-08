@@ -178,9 +178,6 @@ const merchantModule = {
                 document.getElementById("amount").value = "0";
             }
         });
-    },
-    onClose() {
-
     }
 };
 export {

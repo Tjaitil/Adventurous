@@ -106,9 +106,6 @@ const mineModule = {
                 document.getElementById("data_container_avail_workforce").innerText = '(' + responseText.availWorkforce + ')';
             }       
         });
-    },
-    onClose() {
-
     }
 }
 export default mineModule;

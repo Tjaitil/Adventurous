@@ -146,9 +146,6 @@ const cropsModule = {
                 document.getElementById("selected_amount").value = "";
             }
         });
-    },
-    onClose() {
-
     }
 };
 export default cropsModule;

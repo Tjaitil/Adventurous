@@ -124,9 +124,6 @@ const armoryModule = {
         ajaxP(data, function(response) {
             console.log(response);
         });
-    },
-    onClose() {
-
     }
 };
 export default armoryModule;

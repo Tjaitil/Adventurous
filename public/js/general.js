@@ -141,7 +141,9 @@ function closeNews() {
         }
     }
     if(inputHandler.currentBuildingModule) {
-        inputHandler.currentBuildingModule.default.onClose();
+        if(inputHandler.currentBuildingModule.default.onClose) {
+            inputHandler.currentBuildingModule.default.onClose();
+        }
     }
     newsDiv.innerHTML = "";
     news.style = "visibility: hidden;";
@@ -184,7 +186,7 @@ const newsContentSidebar = {
         }
         document.getElementById("news_content_side_panel").innerHTML = "";
         let divChildren = news_content_main.children;
-        let exceptions = ["put_on", "mission_enabled", "current_mission", "persons", "stck_menu", "battle-result"];
+        let exceptions = ["store-container-item-wrapper", "put_on", "mission_enabled", "current_mission", "persons", "stck_menu", "battle-result"];
         let buttonCount = 0;
         let divFirst = false;
         for (let i = 0; i < divChildren.length; i++) {

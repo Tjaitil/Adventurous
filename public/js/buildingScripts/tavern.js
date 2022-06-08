@@ -66,9 +66,6 @@ const tavernModule = {
                 document.getElementById("healing-item-amount").value = "";
             }
         });
-    },
-    onClose() {
-
     }
 }
 export default tavernModule;
