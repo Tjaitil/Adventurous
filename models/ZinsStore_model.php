@@ -16,7 +16,7 @@
             }
             
             $param_username = $this->username;
-            $param_item = $POST['item']; 
+            $param_item = strtolower($POST['item']); 
             $sql = "SELECT amount FROM inventory WHERE username=:username AND item=:item";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
@@ -36,6 +36,10 @@
             $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
             $param_item = $POST['item']; 
             $stmt->execute();
+            if(!$stmt->rowCount()) {
+                $this->response->addTo("errorGameMessae", "Something unexpected happened, please try again");
+                return false;
+            }
             $price = $stmt->fetch(PDO::FETCH_OBJ)->store_value;
 
             try {

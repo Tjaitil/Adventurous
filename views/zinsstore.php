@@ -1,24 +1,15 @@
-        zinsstore.css|zinsstore.js|
-        <h3 class="page_title"> Zins Store </h3>
+        |zinsstore.js|
+        <h1 class="page_title"> Zins Store </h1>
         <p class="help">
-            Trade loot from daqloons
+            Trade loot from daqloons. The list contains item Zins is willing to trade. <br>
+            Select a trade from the container below
         </p>
-        <div id="zinsstore">
-            <div class="item">
-                <figure>
-                    <img src="<?php echo constant('ROUTE_IMG') . 'daqloon horns.png'?>">
-                    <figcaption> Daqloon horns </figcaption>
-                </figure>
-                <p>1500 x <img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.png';?>" /></p>
-            </div>
-            <div class="item">
-                <figure>
-                    <img src="<?php echo constant('ROUTE_IMG') . 'daqloon scale.png'?>">
-                    <figcaption> Daqloon scale </figcaption>
-                </figure>
-                <p>250 x <img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.png';?>" /></p>
-            </div>
-            </br>
-            <input type="number" name="zinsstore_amount" id="zinsstore_item_amount" min="0"/></br>
-            <button id="zinsstore_trade"> Trade </button>
+            <?php
+                $data = array();
+                $data['container_items'] = array();
+                $data['container_items'][] = array("item" => "daqloon horns", "price" => 1500);
+                $data['container_items'][] = array("item" => "daqloon scale", "price" => 25);
+            ?>
+
+            <?php get_template("storeContainer", $data, true, false, false);?>
         </div>
