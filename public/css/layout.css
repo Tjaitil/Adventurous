@@ -536,6 +536,7 @@ button:focus {
   position: relative;
   top: -20px;
   padding: 0px 2px 1rem 8px;
+  transition: height 0.5s ease-out;
 }
 #cont_exit,
 .cont_exit {
@@ -691,11 +692,10 @@ button:focus {
 }
 .item {
   display: inline-block;
-  float: left;
   max-width: 104px;
   min-width: 60px;
   width: 30%;
-  height: 80px;
+  height: 70px;
   position: relative;
 }
 .item_selected {
@@ -727,9 +727,9 @@ button:focus {
 .item figure {
   position: relative;
 }
-.item figure {
+/* .item figure {
   top: 20%;
-}
+} */
 .inventory_buttons {
   visibility: hidden;
   font-size: 12px;
@@ -759,8 +759,9 @@ button:focus {
   float: none;
 }
 .item .item_amount {
-  top: -48%;
-  left: 30%;
+  position: absolute;
+  top: 0px;
+  right: 10px;
   color: black;
 }
 #all {
