@@ -83,7 +83,7 @@ const itemTitle = {
         this.currentTitle = null;
     },
     resetItemTooltip() {
-        document.getElementById("inventory").insertBefore(menu,
+        document.getElementById("inventory").insertBefore(document.getElementById("item_tooltip"),
             document.getElementById("inventory").querySelectorAll(".inventory_item")[0]);
     }
 };
