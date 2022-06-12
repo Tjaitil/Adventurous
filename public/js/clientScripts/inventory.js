@@ -1,8 +1,7 @@
-async function updateInventory(page, addSelect = false) {
+async function updateInventory(page = false, addSelect = false) {
     await fetch("handlers/handlerf.php?file=inventory")
         .then(response => response.text())
         .then(data => {
-            console.log(data);
             document.getElementById("inventory").innerHTML = data;
             if (document.getElementsByClassName("page_title")[0].innerText == "Stockpile") {
                 let figures = document.getElementById("inventory").querySelectorAll("figure");
