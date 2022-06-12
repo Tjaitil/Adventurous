@@ -9,52 +9,70 @@
             $this->session = $session;
             $this->commonModels(true, false);
         }
-        public function getData() {
+        public function getData($js = false) {
             $data = array();
-            $items = implode('|', array("oak", "spruce", "birch", "yew", "unfinished arrow", "arrow shaft"));
-            $sql = "SELECT item, wood_required, cost, type FROM armory_items_data
-                    WHERE item REGEXP '{$items}' ORDER BY type DESC, cost ASC";
+            $sql = "SELECT a.item_id, a.item, a.price, a.type, b.material, b.required_amount
+                    FROM armory_items_data AS a INNER JOIN 
+                    archery_shop_data AS b ON a.item_id=b.item_id
+                    ORDER BY type DESC, price ASC";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->execute();
-            $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            return $data;
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $data = array();
+
+            $setAmountItems = array("arrow shaft");
+            foreach($rows as $key => $value) {
+                $index = array_search($value['item_id'], array_column($data, 'item_id'));
+                if($index !== false) {
+                    $data[$index]['required'][] = 
+                        array("required_amount" => $value['required_amount'], "material" => $value['material']);
+                } else {
+                    $value['required'][] = array("required_amount" => $value['required_amount'], "material" => $value['material']);
+                    (array_search($value['item'], $setAmountItems) !== false) ? $value['setAmount'] = 15 : "";
+                    array_push($data, $value);
+                }
+            }
+
+            if($js === false) {
+                return $data;
+            } else {
+                $this->response->addTo("data", $data, array("index" => "data"));
+            }
         }
         public function fletch($POST) {
-            // $POST variable holds the post data
-            // This function is called from an AJAX request from smithy.js
-            // Function to smith items from minerals
             $item = strtolower($POST['item']);
             $amount = $POST['amount'];
-            $materials = array("oak", "birch", "yew");
-            if(strpos($item, "arrow shaft") !== false) {
-                $log = "oak log";
-            }
-            else if(strpos($item, "unfinished arrow") !== false) {
-                $log = "arrow shaft";
-            }
-            else {
-                $material = explode(" ", $POST['item'])[0];
-                if(in_array($material, $materials) == false) {
-                    $this->response->addTo("errorGameMessage", "You are not allowed to fletch from that material");
-                    return false;
-                }
-                $log = $material . ' log';
-            }
-            $param_item = $log;
-            $param_username = $this->username;
-            $sql = "SELECT item, amount FROM inventory WHERE item=:item AND username=:username";
+
+            $param_item = $item;
+            $sql = "SELECT a.item_id, a.item, a.price, a.type, b.material, b.required_amount
+                FROM armory_items_data AS a INNER JOIN 
+                archery_shop_data AS b ON a.item_id=b.item_id WHERE a.item=:item
+                ORDER BY type DESC, price ASC";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
-            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             $stmt->execute();
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
             if(!$stmt->rowCount() > 0) {
-                $this->response->addTo("errorGameMessage", "You missing one or more items in your inventory");
+                $this->response->addTo("errorGameMessage", "You cannot craft this item!");
                 return false;
             }
-        
+            $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $have_required_items = true;
+            $check_item = 'none';
+            foreach($data as $key) {
+                $check_item = get_item($this->session['inventory'], $key['material']);
+                if(is_null($check_item) || $check_item['amount'] < $key['required_amount']) {
+                    $have_required_items = false;
+                    $check_item = $key['material']; 
+                    break;
+                }
+            }
+            if($have_required_items != true) {
+                $this->response->addTo("errorGameMessage", "You don't have enough of $check_item");
+            }
+
             $param_item = $item;
-            $sql = "SELECT wood_required, level, cost FROM armory_items_data WHERE item=:item";
+            $sql = "SELECT wood_required, level, price FROM armory_items_data WHERE item=:item";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
             $stmt->execute();
@@ -67,22 +85,8 @@
                 $this->response->addTo("errorGameMessage", "Your level is too low");
                 return false;
             }
-            
-            if($item === 'unfinished arrow') {
-                $item_data = get_item($this->session['inventory'], 'feather');
-                if(!$item_data['amount'] < 0 || $item_data['amount'] < $amount) {
-                    $this->response->addTo("errorGameMessage", "You don't have enough feathers in your inventory");
-                    return false;    
-                }
-            }
-
-            $materials_needed = $row2['wood_required'] * $amount;
-            if($materials_needed > $row['amount']) {
-                $this->response->addTo("errorGameMessage", "You dont have enough {$material}");
-                return false;
-            }
-            
-            $cost = $row2['cost'] * $amount;
+                        
+            $cost = $row2['price'] * $amount;
             if($this->session['gold'] < $cost) {
                 $this->response->addTo("errorGameMessage", "You don't have enough gold");
                 return false;
@@ -99,18 +103,10 @@
                     // Update inventory
                     $this->UpdateGamedata->updateInventory($item, $amount); 
                 }
-                if($this->session['profiency'] !== 'miner') {
-                    // Update inventory
-                    $this->UpdateGamedata->updateInventory('gold', -$cost);   
-                }
-                if($item === 'unfinished arrow') {
-                    // Update feather/arrow shaft in inventory
-                    $this->UpdateGamedata->updateInventory('feather', -$materials_needed);
-                    $this->UpdateGamedata->updateInventory('arrow shaft', -$materials_needed, true);
-                }
-                else {
-                    // Update inventory
-                    $this->UpdateGamedata->updateInventory($log , -$materials_needed, true);
+                // Subtract gold from inventory
+                $this->UpdateGamedata->updateInventory('gold', -$cost);   
+                foreach($data as $key) {
+                    $this->UpdateGamedata->updateInventory($key['material'], -$key['required_amount'] * $amount);
                 }
                 $this->db->conn->commit();
             }
