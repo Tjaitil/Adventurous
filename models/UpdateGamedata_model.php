@@ -75,7 +75,12 @@
                 $_SESSION['gamedata']['inventory'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
             if($item === 'gold') {
-                $_SESSION['gamedata']['gold'] = get_item($_SESSION['gamedata']['inventory'], 'gold')['amount'];
+                $amount = get_item($_SESSION['gamedata']['inventory'], 'gold')['amount'];
+                if($amount) {
+                    $_SESSION['gamedata']['gold'] = $amount;
+                } else {
+                    $_SESSION['gamedata']['gold'] = 0;
+                }
             }
             // $conn is unset by the model that is instantiating this class
         }
