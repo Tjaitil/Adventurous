@@ -20,8 +20,7 @@
 }
 #store-container-selected-trade {
     width: 100%;
-    margin: 0 auto;
-    padding-top: 0.8rem;
+    margin-inline: auto;
 }
 #store-container-item-list {
     display: flex;
@@ -63,8 +62,11 @@
 .store-container-item span {
     text-align: left;
 }
-#store-container-item-selected .item figcaption {
-    visibility: hidden;
+#store-container-selected-trade .tooltip {
+    visibility: visible;
+    text-align: center;
+    width: 100%;
+    display: block;
 }
 #store-container-item-selected .item .item_amount {
     color: var(--textColor);

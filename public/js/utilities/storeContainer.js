@@ -16,9 +16,16 @@ const storeContainer = {
         let figure = elementDiv.querySelectorAll("figure")[0].cloneNode(true);
         document.getElementById("store-container-selected-trade").innerHTML = "";
         document.getElementById("store-container-selected-trade").appendChild(figure);
-        document.getElementById("store-container-do-trade").querySelectorAll("p")[0].innerHTML = item;
         document.getElementById("store-contaniner-trade-price").querySelectorAll("span")[0].innerText = 0;
         document.getElementById("store-contaniner-trade-price").querySelectorAll("span")[0].innerHTML = price;
+        // Hide item amount on selectd item by default
+        if(document.getElementById("store-container-selected-trade")
+        .querySelectorAll(".item_amount")[0]) {
+            document.getElementById("store-container-selected-trade")
+            .querySelectorAll(".item_amount")[0]
+            .style.visibility = "none";
+        }
+
     },
     getSelectedTrade() {
         if(checkInventoryStatus()) {
@@ -46,7 +53,13 @@ const storeContainer = {
         }
     },
     clearRequirementContainer() {
+        this.checkItemTooltip();
         document.getElementById("store-container-item-requirements").innerHTML = "";
+    },
+    addRequirementEvent(funcName) {
+        if(!funcName && funcName.length === 0) return false;
+        [...document.getElementsByClassName("store-container-item")].forEach(element => 
+            element.addEventListener("click", event => funcName(event)));
     },
     addRequirement(name, amount, imgSrc) {
         // Add requirements to storeContainer
@@ -55,12 +68,14 @@ const storeContainer = {
         div.classList.add("item");
         let figure = document.createElement("figure");
         figure.appendChild(document.createElement("img"));
-        figure.appendChild(document.createElement("figcaption"));
+        let figcaption = document.createElement("figcaption");
+        figcaption.classList.add("tooltip");
+        figure.appendChild(figcaption);
         div.appendChild(figure);
-        let span = document.createElement("spam");
+        let span = document.createElement("span");
         span.classList.add("item_amount");
         div.appendChild(span);
-        div.querySelectorAll("figcaption")[0].innerHTML = name;
+        div.querySelectorAll("figcaption")[0].innerHTML = jsUcWords(name);
         div.querySelectorAll("img")[0].src = "public/images/" + imgSrc + ".png";
         div.querySelectorAll(".item_amount")[0].innerHTML = amount;
 
@@ -70,7 +85,7 @@ const storeContainer = {
         document.getElementById("store-container-item-requirements").append(div);
     },
     checkItemTooltip() {
-        if(document.getElementById("news_content_main_content").querySelectorAll("item_tooltip").length > 0) {
+        if(document.getElementById("news_content_main_content").querySelectorAll("#item_tooltip").length > 0) {
             itemTitle.resetItemTooltip();
         }
     }

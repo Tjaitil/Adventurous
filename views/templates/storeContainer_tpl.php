@@ -21,15 +21,14 @@
     </div>
     <div id="store-container-item-selected" class="div_content_dark">
         <div id="store-container-do-trade" class="div_content_dark">
-            <div id="store-container-selected-trade">
+            <div id="store-container-selected-trade" class="item mt-1">
 
             </div>
-            <p></p>
             <p id="store-contaniner-trade-price"><span></span>
                 <img class="gold" src="<?php echo constant("ROUTE_IMG") . 'gold.png'; ?>" />
             </p>
             <?php if(is_array($options) && $options['site'] === 'bakery'): ?>
-                <div id="store-container-item-requirements"></div>
+                <div id="store-container-item-requirements" class="mt-2"></div>
             <?php endif;?>
             <label for="amount"> Amount </label></br>
             <input class="mb-1" type="number" id="store-container-selected-trade-amount" name="amount" min="1" /></br>
