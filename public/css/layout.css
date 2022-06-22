@@ -693,7 +693,7 @@ button:focus {
 .item {
   display: inline-block;
   max-width: 104px;
-  min-width: 60px;
+  min-width: 70px;
   width: 30%;
   height: 70px;
   position: relative;
@@ -762,7 +762,7 @@ button:focus {
   position: absolute;
   top: 0px;
   right: 10px;
-  color: black;
+  color: var(--textColor);
 }
 #all {
   width: 40%;
