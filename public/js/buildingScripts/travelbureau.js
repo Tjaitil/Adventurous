@@ -1,19 +1,25 @@
-    
-    function buyItem (item, shop) {
-        this.item = item;
-        this.shop = shop;
-        let data = "model=TravelBureau" + "&method=buyItem" + "&item=" + item + "&shop=" + shop;
-        ajaxP(data, function(response) {
+const travelBureauModule =  {
+    init() {
+        [...document.getElementsByClassName("travel_burea_buy_event")].forEach(element =>
+            element.addEventListener("click", event => this.buyItem(event))
+        );
+    },
+    buyItem(event) {
+        let itemContainer = event.currentTarget.closest(".cart-container-item")
+                    .querySelectorAll(".cart-container-item-type")[0];
+        if(!itemContainer) return false;
+        let item = itemContainer.innerHTML.trim();
+        let data = "model=TravelBureau" + "&method=buyItem" + "&item=" + item;
+        ajaxP(data, response => {
            if(response[0] != false) {
-                updateStock();
+                updateInventory();
+                let responseText = response[1];
+                itemContainer.innerHTML = responseText.cart;
            }
         });
+    },
+    onClose() {
+        itemTitle.resetItemTooltip();
     }
-    function updateStock() {
-        let data = "model=TravelBureau" + "&method=getData";
-        ajaxG(data, function(response) {
-            let responseText = response[1];
-            document.getElementById("cart_shop").children[1].innerHTML = responseText[1].html;
-            updateInventory();
-        });
-    }
+}
+export default travelBureauModule;

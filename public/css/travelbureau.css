@@ -1,11 +1,14 @@
-#horse_shop {
-    margin-bottom: 2%;
-    float: left;
-}
 
-#cart_shop {
-    float: left;
+#cart-container {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, 230px);
+    justify-content: center;
 }
+.cart-container-item {
+    max-width: 230px;
+    box-sizing: border-box;
+} 
 
 #cart_shop thead td:nth-child(6), thead td:nth-child(7) {
     width: 30px;
