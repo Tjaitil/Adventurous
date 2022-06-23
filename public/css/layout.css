@@ -125,6 +125,12 @@ h1 {
 .me-auto {
   margin-right: auto;
 }
+.d-flex {
+  display: flex;
+}
+.justify-center {
+  justify-content: center;
+}
 h4, h5, h6 {
   margin-bottom: 1rem;
 }
@@ -139,6 +145,17 @@ body img {
   image-rendering: -webkit-crisp-edges;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
+}
+.dark-image-container {
+  background-color: var(--layoutBgColorShadow);
+  border-radius: 5px;
+  padding: 10px;
+  display: flex;
+  width: 60px;
+  height: 60px;
+  justify-content: center;
+  align-content: center;
+  margin-inline: auto;
 }
 header {
   grid-area: header;
