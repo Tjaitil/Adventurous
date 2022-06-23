@@ -14,7 +14,7 @@
             // This function is called from an AJAX request from citycentre.js
             // Function to upgrade efficiency level for farmer and miner
             $skill = $POST['skill'];
-            if(in_array($skill, array('farmer', 'miner')) != true) {
+            if(!in_array($skill, array('farmer', 'miner'))) {
                 return false;
             }
             
@@ -44,9 +44,9 @@
                 return false;
             }
             try {
-                $this->db->conn->beginTransacion();
+                $this->db->conn->beginTransaction();
                 
-                $param_efficiency_level = $row['effency_level'] + 1;
+                $param_efficiency_level = $row['efficiency_level'] + 1;
                 $param_username = $this->username;
                 $sql = "UPDATE {$skill}_workforce SET efficiency_level=:efficiency_level WHERE username=:username";
                 $stmt = $this->db->conn->prepare($sql);
