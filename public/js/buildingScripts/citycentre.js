@@ -3,7 +3,7 @@ const cityCentreModule = {
         let keep_buttons = document.getElementById("keep").querySelectorAll("button");
         keep_buttons[0].addEventListener("click", this.changeArtefact);
         keep_buttons[1].addEventListener("click", this.newArtefact);
-        document.getElementById("miner-permits").querySelectorAll("button")[0].addEventListener("click", this.buyPermits);
+        document.getElementById("miner-permits-buy-permits").addEventListener("click", this.buyPermits);
         [...document.getElementsByClassName("upgrade-efficiency-button")].forEach(element => {
             element.addEventListener("click", this.upgradeEffiency);
         });
@@ -83,7 +83,7 @@ const cityCentreModule = {
         ajaxP(data, function(response) {
             if(response[0] !== false) {
                 let responseText = response[1];
-                let spans = document.getElementById("miner-permits").querySelectorAll("span");
+                let spans = document.getElementById("miner_permits").querySelectorAll("span");
                 if(selectedLocation === "golbak") {
                     spans[0].innerText = responseText.permits; 
                 } else {
