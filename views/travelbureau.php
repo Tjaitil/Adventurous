@@ -5,7 +5,7 @@
             ?>
             <h1 class="page_title"><?php echo $title; ?></h1>
             <div id="cart_shop">
-                <p> Your current cart: <?php echo $this->data['cart'] . ' cart'; ?></p>
+                <p> Your current cart: <?php echo $this->data['cart'];?></p>
                 <div id="cart-container">
                     <?php foreach ($this->data['cart_shop'] as $key) : ?>
                         <div class="cart-container-item div_content div_content_dark p1">
