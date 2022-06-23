@@ -211,7 +211,7 @@ const newsContentSidebar = {
                 buttonCount++;
             }
         }
-        if(buttonCount == 1) {
+        if(buttonCount < 2) {
             // Remove padding
             document.getElementById("news_content_main_content").style.paddingRight = "0px";
             // If first div is persons then show second div ([2] in the child tree, [0] is title, [1] is persons div)
