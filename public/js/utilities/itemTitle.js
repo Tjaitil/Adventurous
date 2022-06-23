@@ -38,8 +38,8 @@ const itemTitle = {
         if(["merchant", "zinsstore"].indexOf(game.properties.building) !== -1) return false;
         let itemDivs = document.getElementById("news_content_main_content").querySelectorAll(".item");
         itemDivs.forEach(element => {
-            element.removeEventListener('mouseenter', () => itemTitle.show());
-            element.removeEventListener('mouseleave', () => itemTitle.hide());
+            element.addEventListener('mouseenter', () => itemTitle.show());
+            element.addEventListener('mouseleave', () => itemTitle.hide());
         });
     },
     show() {
@@ -83,7 +83,9 @@ const itemTitle = {
         this.currentTitle = null;
     },
     resetItemTooltip() {
-        document.getElementById("inventory").insertBefore(document.getElementById("item_tooltip"),
+        if(document.getElementById("news_content_main_content").querySelectorAll("#item_tooltip").length > 0) {
+            document.getElementById("inventory").insertBefore(document.getElementById("item_tooltip"),
             document.getElementById("inventory").querySelectorAll(".inventory_item")[0]);
+        }
     }
 };
