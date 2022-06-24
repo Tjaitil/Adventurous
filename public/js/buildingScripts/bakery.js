@@ -2,12 +2,10 @@ import storeContainer from '../utilities/storeContainer.js';
 
 const bakeryModule = {
     init() {
-        itemTitle.addItemClassEvents();
-        storeContainer.addSelectTrade();
-        storeContainer.addSelectedItemButtonEvent(this.make, 'Make');
-        [...document.getElementsByClassName("store-container-item")].forEach(element => 
-            element.addEventListener("click", event => this.getIngredients(event)));
         this.getData();
+        storeContainer.addSelectTrade();
+        storeContainer.addRequirementEvent(event => this.getIngredients(event));
+        storeContainer.addSelectedItemButtonEvent(this.make, 'Make');
     },
     data: null,
     getIngredients(event) {
@@ -20,6 +18,7 @@ const bakeryModule = {
                 storeContainer.addRequirement(element.ingredient, element.amount, element.ingredient)
             );
         }
+        document.getElementById("store-container-item-information").innerHTML = "Heal per item " + itemData.heal;
     },
     make() {
         let { item, amount } = storeContainer.getSelectedTrade() || {};
