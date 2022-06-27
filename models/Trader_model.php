@@ -34,7 +34,7 @@ class Trader_model extends model
         } 
 
         $param_username = $this->username;
-        $sql = "SELECT assignment_id, cart, (SELECT capasity FROM travelbureau_carts WHERE wheel= cart) as capasity  
+        $sql = "SELECT assignment_id, cart, (SELECT capasity FROM travelbureau_carts WHERE type= cart) as capasity  
                 FROM trader WHERE username=:username";
         $stmt = $this->db->conn->prepare($sql);
         $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
