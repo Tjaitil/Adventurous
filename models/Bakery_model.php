@@ -11,7 +11,7 @@
         }
         public function getData($js = false) {
             $data = array();
-            $sql = "SELECT b.item_id, b.item, b.price, b.food_units, BE.amount, BE.ingredient 
+            $sql = "SELECT b.item_id, b.item, b.price, b.heal, BE.amount, BE.ingredient 
                     FROM  
                     bakery_data AS B INNER JOIN bakery_ingredients AS BE ON b.item_id = be.item_id 
                     WHERE b.bakery_item=1";
