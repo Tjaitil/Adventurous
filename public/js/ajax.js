@@ -95,9 +95,3 @@
             gameLogger.logMessages();
         }
     }
-    function diplomacy() {
-        let data = "model=test" + "&method=diplomacy";
-        ajaxG(data, function(response) {
-            console.log(response);
-        });
-    }
