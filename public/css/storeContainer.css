@@ -67,6 +67,7 @@
     text-align: center;
     width: 100%;
     display: block;
+    position: relative;
 }
 #store-container-item-selected .item .item_amount {
     color: var(--textColor);
