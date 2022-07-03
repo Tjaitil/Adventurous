@@ -1,5 +1,5 @@
 <?php
-    class item_model extends model {
+    class Item_model extends model {
         public $username;
         public $session;
         

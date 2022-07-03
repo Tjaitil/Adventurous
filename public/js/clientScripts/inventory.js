@@ -51,7 +51,7 @@ const itemPrices = {
         }
     },
     get() {
-        let data = "model=item" + "&method=getPrices";
+        let data = "model=Item" + "&method=getPrices";
         ajaxG(data, function(response) {
             itemPrices.prices = response[1].prices;
         });
