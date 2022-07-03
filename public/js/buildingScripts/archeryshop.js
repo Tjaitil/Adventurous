@@ -25,14 +25,7 @@ const archeryShopModule = {
             itemData.required.forEach(element => 
                 storeContainer.addRequirement(element.material, element.required_amount, element.material)
             );
-            if(itemData.setAmount) {
-                let span = document.createElement("span")
-                span.classList.add("item_amount");
-                span.innerHTML = itemData.setAmount;
-                span.style.visibility = "visible";
-                console.log(span);
-                document.getElementById("store-container-selected-trade").appendChild(span);
-            }
+            storeContainer.checkSetAmount(itemData)
         }
     },
     fletch() {
