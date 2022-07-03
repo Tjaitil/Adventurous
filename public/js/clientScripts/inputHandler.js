@@ -62,11 +62,13 @@ const inputHandler = {
                 let css = dataArray[0].trim();
                 let script = dataArray[1];
                 let html = dataArray[2];
-                link = document.createElement("link");
-                link.type = "text/css";
-                link.rel = "stylesheet";
-                link.href = "public/css/" + css;
-                document.getElementsByTagName("head")[0].appendChild(link);
+                if(css.length > 2 || css !== "#") {
+                    link = document.createElement("link");
+                    link.type = "text/css";
+                    link.rel = "stylesheet";
+                    link.href = "public/css/" + css;
+                    document.getElementsByTagName("head")[0].appendChild(link);
+                }
                 openNews(html, true);
                 itemTitle.addItemClassEvents();
 
