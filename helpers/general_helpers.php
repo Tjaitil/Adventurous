@@ -20,7 +20,7 @@
             echo '|';
         }
     }
-    function get_template($name, $data, $up = false) {
+    function get_template($name, $data, $up = false, $flag = false) {
         $filename = $name . '_tpl.php';
         $path = constant('ROUTE_TEMPLATE') . $filename;
         if($up == true) {
