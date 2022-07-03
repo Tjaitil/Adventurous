@@ -79,10 +79,19 @@ const storeContainer = {
         div.querySelectorAll("img")[0].src = "public/images/" + imgSrc + ".png";
         div.querySelectorAll(".item_amount")[0].innerHTML = amount;
 
-        // ADd itemtitle events
-        div.addEventListener("mouseenter", () => itemTitle.show());
-        div.addEventListener("mouseleave", () => itemTitle.hide());
+        // Add itemtitle events
+        div.addEventListener("mouseenter", event => itemTitle.show(event));
+        div.addEventListener("mouseleave", event => itemTitle.hide(event));
         document.getElementById("store-container-item-requirements").append(div);
+    },
+    checkSetAmount(itemData) {
+        if(itemData.setAmount) {
+            let span = document.createElement("span")
+            span.classList.add("item_amount");
+            span.innerHTML = itemData.setAmount;
+            span.style.visibility = "visible";
+            document.getElementById("store-container-selected-trade").appendChild(span);
+        }
     },
     checkItemTooltip() {
         if(document.getElementById("news_content_main_content").querySelectorAll("#item_tooltip").length > 0) {
