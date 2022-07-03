@@ -49,6 +49,9 @@
     transform-style: preserve-3d;
     background-color: var(--contentBgColor);
 }
+.warrior-select-card-selected {
+    border: 3px ridge #5f4121;
+}
 .warrior-select-card input[type="checkbox"] {
     visibility: hidden;
     position: absolute;
