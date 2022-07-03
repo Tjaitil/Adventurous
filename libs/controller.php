@@ -50,7 +50,7 @@
                 }
             }
         }
-        public function loadModel($name, $db) {
+        public function loadModel($name, $db, $secondaryModel = false) {
             $path = $name.'_model';
             if(class_exists($path)) {
                 $modelName = $name . '_model';
@@ -65,17 +65,11 @@
                 else {
                     $session = $_SESSION['gamedata'];
                     $session['username'] = $_SESSION['username'];
-                    $this->model = new $modelName($session);
-                    /*switch($db) {
-                        case true:
-                            $session = $_SESSION['gamedata'];
-                            $session['username'] = $_SESSION['username'];
-                            $this->model = new $modelName($session, $db);
-                            break;
-                        case false:
-                            $this->model = new $modelName($db);
-                            break;
-                    }*/
+                    if($secondaryModel) {
+                        return new $modelName($session);
+                    } else {
+                        $this->model = new $modelName($session);
+                    }
                 }
             }
         }
