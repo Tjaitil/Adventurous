@@ -124,7 +124,7 @@
             $item = strtolower($GET['item']);
             
             $param_item = $item;
-            $sql = "SELECT heal FROM bakery_data WHERE type=:item";
+            $sql = "SELECT heal FROM bakery_data WHERE item=:item";
             $stmt = $this->db->conn->prepare($sql);
             $stmt->bindParam(":item", $param_item, PDO::PARAM_STR);
             $stmt->execute();
