@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "noImplicitAny": false,
+        "noImplicitThis": true,
+        "noEmitOnError": true,
+        "removeComments": false,
+        "sourceMap": false,
+        "target": "esnext",
+        "module": "esnext",
+        "lib": ["es5", "es6", "dom", "dom.iterable", "es2016"],
+        "rootDir": "./public/",
+        // "outDir": "public/compiled"
+    },
+    "include": ["./public/js/**/*"]
+}
