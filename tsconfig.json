@@ -8,8 +8,9 @@
         "target": "esnext",
         "module": "esnext",
         "lib": ["es5", "es6", "dom", "dom.iterable", "es2016"],
-        "rootDir": "./public/",
-        // "outDir": "public/compiled"
+        "rootDir": "./public",
+        "outDir": "./public/dist"
     },
-    "include": ["./public/js/**/*"]
+    "include": ["./public/js"],
+    "exclude": ["./public/js/types"]
 }
