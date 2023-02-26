@@ -1,10 +1,15 @@
 <?php
 
+namespace App\services;
+
+use App\builders\StoreBuilder;
+use App\libs\Response;
+use App\resources\StoreItemResource;
+
 class StoreService
 {
 
     public StoreBuilder $storeBuilder;
-    private $item_searches = [];
 
     public function __construct(StoreBuilder $storeBuilder)
     {
@@ -59,13 +64,6 @@ class StoreService
      */
     public function getStoreItem(string $name)
     {
-
-        // if (count($this->item_searches) > 1) {
-        //     $array = $this->item_searches;
-        // } else {
-        //     $array = $this->storeBuilder->build()->list;
-        // }
-
         $matches = [];
 
         foreach ($this->storeBuilder->build()->list as $key => $item) {
@@ -78,17 +76,15 @@ class StoreService
     }
 
     /**
-     * Undocumented function
+     *  Calculate Item cost
      *
-     * @param [type $item
-     * @param [type] $amount
+     * @param string $item
+     * @param int $amount
      *
      * @return int
      */
-    public function calculateItemCost($item, $amount)
+    public function calculateItemCost(string $item, int $amount)
     {
-        // $matches = array_map(fn ($item) => $item['required_amount'] = $amount * $item->value, $this->getStoreItem($item));
-
         $item = $this->getStoreItem($item);
         $price = $amount * $item->store_value;
 
@@ -102,7 +98,6 @@ class StoreService
      * @param int $amount
      * 
      * 
-     * @throws Exception If the store isn't selling the wanted amount
      * @return bool
      */
     public function hasItemAmount(StoreItemResource|array $storeItemResource, int $amount)
@@ -112,19 +107,6 @@ class StoreService
         } else {
             return true;
         }
-    }
-
-    /**
-     * Undocumented function
-     *
-     * @param string $item
-     *
-     * @return bool
-     */
-    public function hasItemMultiplierAmount(string $item)
-    {
-        $item = $this->getStoreItem($item);
-        // if($item->)
     }
 
     /**
