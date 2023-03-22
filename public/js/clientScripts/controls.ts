@@ -14,7 +14,7 @@ export const controls = {
     actionText: "Press x",
     enterText: "E - Enter building",
     enterButton: "E -",
-    personText: "W - talk to ",
+    personText: "W - Talk to ",
     personButton: "W -",
     device: "pc",
     w: null,
@@ -210,7 +210,7 @@ export const controls = {
             this.actionText = "Press x";
             this.enterText = "E - Enter building";
             this.enterButton = "E -";
-            this.personText = "W - talk to ";
+            this.personText = "W - Talk to ";
             this.personButton = "W -";
             this.device = "pc";
         } else {

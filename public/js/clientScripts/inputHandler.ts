@@ -1,18 +1,18 @@
+import { Character } from './../gamepieces/Character';
 import { controls } from "./controls.js";
-import { clientOverlayInterface } from "./clientOverlayInterface.js";
+import { ClientOverlayInterface } from "./clientOverlayInterface.js";
 import { tutorial } from "./tutorial.js";
 import { itemTitle } from "../utilities/itemTitle.js";
 import { Game } from "../advclient.js";
 import { gameLogger } from "../utilities/gameLogger.js";
 import { conversation } from "./conversation.js";
 import { GamePieces } from "./gamePieces.js";
+import { Building } from "../gamepieces/Building.js";
 
 
 export const inputHandler = {
-    buildingMatch: undefined,
+    buildingMatch: <undefined | Building>undefined,
     checkBuilding(mouseinputX = 0, mouseinputY = 0) {
-        if (Game.properties.inBuilding != true) return;
-
         if (Game.properties.inBuilding != true && Game.properties.device == "pc") {
             for (let i = 0, n = GamePieces.buildings.length; i < n; i++) {
                 let object = GamePieces.buildings[i];
@@ -29,35 +29,11 @@ export const inputHandler = {
                 }
             }
         }
-        // else if (game.properties.inBuilding != true && game.properties.device == "mobile") {
-        //     let element = document.getElementById("text_canvas");
-        //     let ElementPos = element.getBoundingClientRect();
-        //     // Remove elementPos of the canvas so that 0.0 is in up-left corner
-        //     let mouseY = mouseinputX - ElementPos.top;
-        //     let mouseX = mouseinputY - ElementPos.left;
-        //     let x = mouseX + (GamePieces.player.xpos - viewport.width / 2 + 32);
-        //     let y = mouseY + (GamePieces.player.ypos - viewport.height / 2);
-        //     let result = false;
-        //     for (let i = 0; i < GamePieces.buildings.length; i++) {
-        //         let object = GamePieces.buildings[i];
-        //         if (
-        //             y > object.diameterUp &&
-        //             y < object.diameterDown &&
-        //             x > object.diameterLeft &&
-        //             x < object.diameterRight &&
-        //             Math.abs(GamePieces.player.ypos - object.diameterDown) < 32
-        //         ) {
-        //             result = true;
-        //             inputHandler.fetchBuilding(object.src.split(".png")[0]);
-        //             break;
-        //         }
-        //     }
-        //     return result;
-        // }
-        if (this.buildingMatch !== undefined) {
-            document.getElementById("control_text_building").innerHTML = controls.enterText;
+        if (this.buildingMatch) {
+            document.getElementById("control_text_building").innerHTML =
+                controls.enterText + " " + this.mapBuildingName(this.buildingMatch.displayName);
         } else {
-            document.getElementById("control_text_building").innerHTML = controls.enterButton;
+            document.getElementById("control_text_building").innerHTML = controls.enterText;
         }
     },
     interactBuilding() {
@@ -65,37 +41,59 @@ export const inputHandler = {
             gameLogger.addMessage("This building can not be accessed on tutorial island", true);
         }
     },
+    mapBuildingName(name: string) {
+        let buildingName;
+        switch (name) {
+            case "adventure base":
+            case "adventures base desert":
+                buildingName = "adventures";
+                break;
+            case "stockpile desert":
+                buildingName = "stockpile";
+                break;
+            case "merchant desert":
+                buildingName = "merchant";
+                break
+            default:
+                buildingName = name;
+                break;
+        }
+        return buildingName;
+    },
     currentBuildingModule: undefined,
-    async fetchBuilding(building) {
-        building = building.trim();
+    async fetchBuilding(building: string) {
+        building = this.mapBuildingName(building.trim());
 
         Game.properties.inBuilding = true;
+
         conversation.endConversation();
 
-        clientOverlayInterface.loadingScreen();
+        ClientOverlayInterface.loadingScreen();
         await fetch("handlers/handler_v.php?" + new URLSearchParams({ building: building }))
             .then((response) => {
                 if (!response.ok) throw new Error("Something unexpected happened. Please try again");
                 return response.text();
             })
             .then(async (data) => {
-                Game.properties.building = building;
                 let dataArray = data.split("|");
                 let css = dataArray[0].trim();
                 let script = dataArray[1];
                 let html = dataArray[2];
                 let link;
                 if (css.length > 2 || css !== "#") {
+                    Game.properties.building = building;
                     link = document.createElement("link");
                     link.type = "text/css";
                     link.rel = "stylesheet";
                     link.href = "public/css/" + css;
                     document.getElementsByTagName("head")[0].appendChild(link);
                 }
-                clientOverlayInterface.show(html);
+                ClientOverlayInterface.show(html);
                 itemTitle.addItemClassEvents();
-                const src = (["stockpile"].includes(building)) ? '/public/dist/js/buildingScripts/' : '/public/js/buildingScripts/';
+                console.log(building);
+                const src = '/public/dist/js/buildingScripts/';
                 const module = await import(src + script).then((data) => {
+                    console.log(data);
                     this.currentBuildingModule = data;
                     if (this.currentBuildingModule.default.init) {
                         this.currentBuildingModule.default.init();
@@ -110,7 +108,7 @@ export const inputHandler = {
             })
         return building;
     },
-    characterMatched: null,
+    characterMatched: <undefined | Character>null,
     checkCharacter() {
         let characterMatch = null;
 
