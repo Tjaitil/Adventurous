@@ -13,6 +13,7 @@ import { Building } from "../gamepieces/Building.js";
 export const inputHandler = {
     buildingMatch: <undefined | Building>undefined,
     checkBuilding(mouseinputX = 0, mouseinputY = 0) {
+        this.buildingMatch = undefined;
         if (Game.properties.inBuilding != true && Game.properties.device == "pc") {
             for (let i = 0, n = GamePieces.buildings.length; i < n; i++) {
                 let object = GamePieces.buildings[i];
@@ -33,7 +34,7 @@ export const inputHandler = {
             document.getElementById("control_text_building").innerHTML =
                 controls.enterText + " " + this.mapBuildingName(this.buildingMatch.displayName);
         } else {
-            document.getElementById("control_text_building").innerHTML = controls.enterText;
+            document.getElementById("control_text_building").innerHTML = controls.enterButton;
         }
     },
     interactBuilding() {
