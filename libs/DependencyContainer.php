@@ -1,5 +1,12 @@
 <?php
 
+namespace App\libs;
+
+use \ReflectionClass;
+use \ReflectionParameter;
+use \Exception;
+use \ReflectionMethod;
+
 class DependencyContainer
 {
 
@@ -49,7 +56,7 @@ class DependencyContainer
 
             return $instance;
         } catch (Exception $e) {
-            var_dump($e->getMessage());
+            throw new Exception("Error occured" . $e->getMessage() . $e->getLine());
         }
     }
 
@@ -81,7 +88,7 @@ class DependencyContainer
 
             return $name;
         }
-        return (new ReflectionClass($name));
+        return (new \ReflectionClass($name));
     }
 
     /**
@@ -107,22 +114,41 @@ class DependencyContainer
             if (!is_null($type) && !in_array($type->getName(), ["int", "array"])) {
                 $params[] = $this->resolveParams($param);
             } else {
-                throw new Exception("Could not resolve param " . $param->getName());
+                throw new Exception("Could not resolve param " . $param->getName() . $reflector->getName());
             }
         }
         return $reflector->newInstanceArgs($params);
     }
 
-    private function resolveParams($param)
+    /**
+     * Resolve class dependency parameter
+     *
+     * @param \ReflectionParameter $param
+     *
+     * @return void
+     */
+    private function resolveParams(ReflectionParameter $param)
     {
         if ($type = $param->getType()) {
             $instance = $this->get($type->getName());
-            $this->set($type->getName(), $instance);
+            try {
+                $this->set($type->getName(), $instance);
+            } catch (\Exception $e) {
+                throw new Exception("Could not resolve param " . $param->getName() . $e->getMessage());
+            }
             return $instance;
         }
     }
 
-    public function getMethodParameters($class, $class_method)
+    /**
+     * Return parameters for a given method
+     *
+     * @param mixed $class Class instance
+     * @param string $class_method Method name
+     *
+     * @return array
+     */
+    public function getMethodParameters($class, string $class_method)
     {
         $reflector = new ReflectionMethod($class::class, $class_method);
         foreach ($reflector->getParameters() as $param) {
