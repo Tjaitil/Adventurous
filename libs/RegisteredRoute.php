@@ -1,5 +1,7 @@
 <?php
 
+namespace App\libs;
+
 class RegisteredRoute
 {
 

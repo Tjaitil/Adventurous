@@ -1,5 +1,9 @@
 <?php
 
+namespace App\libs;
+
+use \Exception;
+
 /**
  * @property string $targetURI
  * @property class $currentRoute
@@ -86,17 +90,18 @@ class Router
         try {
             if (!isset($this->matchedRoute)) throw new Exception("Not found");
 
-
             if (!class_exists($this->matchedRoute->getClassName(), true)) {
                 throw new Exception("Class does not exist!");
             } else if (!method_exists($this->matchedRoute->getClassName(), $this->matchedRoute->getClassMethodName())) {
                 throw new Exception("Method does not exists");
             }
 
+            database::getInstance()->openConn();
             $this->runRoute();
         } catch (Exception $e) {
-            $e->getMessage();
-            return false;
+            database::getInstance()->rollBack();
+            //  TODO: Add error handling
+            return Response::addMessage($e->getMessage())->setStatus(500);
         }
     }
 

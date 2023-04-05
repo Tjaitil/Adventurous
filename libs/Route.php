@@ -1,5 +1,7 @@
 <?php
 
+namespace App\libs;
+
 /**
  * @property string $uri
  * @property array $action
