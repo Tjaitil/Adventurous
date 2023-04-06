@@ -1,4 +1,22 @@
 <?php
+
+/**
+ * @var array $data warriors[]
+ * @property int warrior[].$warrior_id
+ * @property string warrior[].$type
+ * @property string warrior[].$helm
+ * @property string warrior[].$ammunition
+ * @property string warrior[].$ammunition_amount
+ * @property string warrior[].$left_hand
+ * @property string warrior[].$body
+ * @property string warrior[].$right_hand
+ * @property string warrior[].$legs
+ * @property string warrior[].$boots
+ * @property int warrior[].$attack
+ * @property int warrior[].$defence
+ * @property int warrior[].$attack_speed
+ */
+
 foreach ($data as $key) : ?>
      <div class="armory_view darkTextColor">
           <div class="armory_view_info">
