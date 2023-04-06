@@ -2,7 +2,7 @@ import { ChangeArmorResponse } from '../types/responses/ArmoryResponses.js';
 import { changeArmorRequest } from '../types/requests/ArmoryRequests.js';
 import { Inventory } from './../clientScripts/inventory.js';
 import { inputHandler } from '../clientScripts/inputHandler.js';
-import { ItemSelector } from '../selectitem.js';
+import { ItemSelector } from '../ItemSelector.js';
 import { AdvApi } from '../AdvApi.js';
 
 
