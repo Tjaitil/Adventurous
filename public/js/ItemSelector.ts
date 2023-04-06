@@ -2,20 +2,19 @@ import { gameLogger } from './utilities/gameLogger.js';
 import { inputHandler } from './clientScripts/inputHandler.js';
 import { itemTitle } from './utilities/itemTitle.js';
 
-/*if(document.getElementById("inventory") != null) {
-        addSelectEvent(false);
-    }*/
-
+/**
+ * 
+ * @depcrated
+ */
 function select(event) {
     let element = event.target.closest("figure");
-    console.log(element);
-    var figure = element.cloneNode(true);
-    /*img.removeAttribute("onclick");*/
+    let figure = element.cloneNode(true);
+
     figure.children[0].style.height = "50px";
     figure.children[0].style.width = "50px";
     figure.children[1].style.visibility = "hidden";
-    /*figure.className = "item";*/
-    var parent = document.getElementById("selected");
+
+    let parent = document.getElementById("selected");
     parent.innerHTML = "";
     parent.appendChild(figure);
     let pageTitle = <HTMLElement>document.getElementsByClassName("page_title")[0];
@@ -49,6 +48,119 @@ function select(event) {
 //     parent.innerHTML = "";
 //     parent.appendChild(img);
 // }
+
+export class ItemSelector {
+    private static eventStatus: boolean = false;
+    private static page: string = "";
+    private static container: HTMLElement;
+    private static selectedWrapper: HTMLElement;
+    private static selectedItemAmountInput: HTMLInputElement;
+    private static isSelectedAmountInputVisible: boolean = false;
+
+
+    public static setup() {
+        this.container = document.getElementById("selected-item-container");
+        this.selectedWrapper = document.getElementById("selected");
+        this.selectedItemAmountInput = document.getElementById("selected-item-amount") as HTMLInputElement;
+    }
+
+    public static get isEventSet() {
+        return this.eventStatus;
+    }
+
+    public static addSelectEventToInventory() {
+        this.eventStatus = true;
+        let figures = document.getElementById("inventory").querySelectorAll("figure");
+        figures.forEach((element) => {
+            let page_title = <HTMLElement>document.getElementsByClassName("page_title")[0];
+            this.page = page_title.innerText;
+            if (this.page === "Market") {
+                // element.addEventListener("click", select_i);
+            } else if (this.page === "Merchant") {
+                element.addEventListener("click", (event) =>
+                    inputHandler.currentBuildingModule.default.selectTrade(event)
+                );
+            } else {
+                element.addEventListener("click", (event) => select(event));
+            }
+        });
+    }
+
+    public static removeSelectEventFromInventory() {
+        this.eventStatus = false;
+
+        let inventory = document.getElementById("inventory");
+        let newInventory = inventory.cloneNode(true);
+        document.getElementById("client-container").replaceChild(newInventory, inventory);
+        itemTitle.addTitleEvent();
+    }
+
+    public static selectItem(event) {
+        let element = event.target.closest("figure");
+        let figure = element.cloneNode(true);
+
+        figure.children[0].style.height = "50px";
+        figure.children[0].style.width = "50px";
+        figure.children[1].style.visibility = "hidden";
+
+        this.selectedWrapper.innerHTML = "";
+        this.selectedWrapper.appendChild(figure);
+        let pageTitle = <HTMLElement>document.getElementsByClassName("page_title")[0];
+        switch (pageTitle.innerText) {
+            case "Armory":
+                inputHandler.currentBuildingModule.default.toggleOption();
+                break;
+            case "Tavern":
+                inputHandler.currentBuildingModule.default.getHealingAmount(
+                    element.querySelectorAll("figcaption")[0].innerHTML
+                );
+                break;
+            default:
+                break;
+        }
+    }
+
+    public static isItemValid(): boolean {
+        if (document.getElementById("selected").getElementsByTagName("figure").length == 0) {
+            gameLogger.addMessage("Please select a valid item");
+            gameLogger.logMessages();
+            return false;
+        }
+        if (this.isSelectedAmountInputVisible) {
+            let amount = parseInt(this.selectedItemAmountInput.value);
+
+            if (amount <= 0) {
+                gameLogger.addMessage("Please enter a valid amount");
+                gameLogger.logMessages();
+                return false;
+            }
+        }
+    }
+
+    public static get selected(): { name: string, amount: number } {
+        let name = this.selectedWrapper.querySelectorAll("figcaption")[0].innerHTML.toLowerCase().trim();
+        // Is input visible?
+        if (this.isSelectedAmountInputVisible) {
+            let amount = parseInt(this.selectedItemAmountInput.value);
+            return { name, amount };
+        } else {
+            return { name, amount: 1 };
+        }
+    }
+
+    public static hideSelectedAmountInput() {
+        this.isSelectedAmountInputVisible = false;
+        document.getElementById("selected_item_amount_wrapper").style.display = "none";
+    }
+
+    public static showSelectedAmountInput() {
+        this.isSelectedAmountInputVisible = true;
+        document.getElementById("selected_item_amount_wrapper").style.display = "block";
+    }
+
+}
+
+
 export const selectItemEvent = {
     selectItemStatus: false,
     page: "",
@@ -105,6 +217,13 @@ export const selectItemEvent = {
 //         conversation.getNextLine(item);
 //     },
 // };
+
+
+
+/**
+ * 
+ * @depcrated
+ */
 export function selectedCheck(amount_r = true) {
     if (document.getElementById("selected").getElementsByTagName("figure").length == 0) {
         gameLogger.addMessage("Please select a valid item");
@@ -116,14 +235,14 @@ export function selectedCheck(amount_r = true) {
     // amount_r is variable that opens up for checking only item or item and amount
     if (amount_r === true) {
         let inputElement = <HTMLInputElement>document.getElementById("selected_amount");
-        let amount = inputElement.value;
-        if (parseInt(amount) === 0) {
+        let amount = parseInt(inputElement.value);
+        if (amount === 0) {
             gameLogger.addMessage("Please select a valid amount");
             gameLogger.logMessages();
             return false;
         }
-        return [item, amount];
+        return { item, amount };
     } else {
-        return [item];
+        return { item, amount: 1 };
     }
 }
