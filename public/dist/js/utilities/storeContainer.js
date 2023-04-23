@@ -1,8 +1,12 @@
-import { checkInventoryStatus } from "../clientScripts/inventory";
-import { commonMessages, gameLogger } from "./gameLogger";
-import { itemTitle } from "./itemTitle";
-import { jsUcWords } from "./uppercase";
+import { checkInventoryStatus } from "../clientScripts/inventory.js";
+import { commonMessages, gameLogger } from "./gameLogger.js";
+import { itemTitle } from "./itemTitle.js";
+import { jsUcWords } from "./uppercase.js";
 const storeContainer = {
+    storeItems: [],
+    setStoreItems(items) {
+        this.storeItems = items;
+    },
     addSelectedItemButtonEvent(func, text) {
         document.getElementById("store-container-item-event-button").addEventListener("click", () => func());
         // Custom text for button
@@ -13,22 +17,34 @@ const storeContainer = {
         [...document.getElementsByClassName("store-container-item")].forEach(element => element.addEventListener("click", event => this.selectTrade(event)));
     },
     selectTrade(event) {
+        document.getElementById("store-container-selected-trade").innerHTML = "";
         document.getElementById("store-container-do-trade").querySelectorAll("button")[0].disabled = false;
         let eventElement = event.currentTarget;
         let elementDiv = eventElement.closest(".store-container-item");
-        let price = elementDiv.querySelectorAll(".store-container-item-price")[0].innerHTML.trim();
-        let item = elementDiv.querySelectorAll("figcaption")[0].innerHTML.trim();
+        let item = elementDiv.querySelectorAll("figcaption")[0].innerHTML.trim().toLowerCase();
+        let itemData = this.storeItems.find((element) => element.name === item);
+        let price = itemData.adjusted_store_value
+            ? itemData.adjusted_store_value :
+            itemData.store_value;
+        elementDiv.querySelectorAll(".store-container-item-price")[0].innerHTML.trim();
         let figure = elementDiv.querySelectorAll("figure")[0].cloneNode(true);
-        document.getElementById("store-container-selected-trade").innerHTML = "";
         document.getElementById("store-container-selected-trade").appendChild(figure);
-        document.getElementById("store-contaniner-trade-price").querySelectorAll("span")[0].innerHTML = "" + 0;
-        document.getElementById("store-contaniner-trade-price").querySelectorAll("span")[0].innerHTML = price;
+        document.getElementById("store-contaniner-trade-price").querySelectorAll("span")[0].innerHTML = price + " ";
         let itemAmountElement = document.getElementById("store-container-selected-trade")
             .querySelectorAll(".item_amount")[0];
         // Hide item amount on selectd item by default
         if (itemAmountElement) {
             itemAmountElement
                 .style.visibility = "none";
+        }
+        this.checkHasRequirements(item);
+        this.checkItemMultiplier(itemData);
+    },
+    checkHasRequirements(item) {
+        let itemData = this.storeItems.find((element) => element.name === item);
+        if (itemData && itemData.required_items.length > 0) {
+            this.clearRequirementContainer();
+            itemData.required_items.forEach((element) => this.addRequirement(element.name, element.amount, element.name));
         }
     },
     getSelectedTrade() {
@@ -86,13 +102,12 @@ const storeContainer = {
         div.addEventListener("mouseleave", () => itemTitle.hide());
         document.getElementById("store-container-item-requirements").append(div);
     },
-    // TODO: Fix this
     /** Check if item creates a set amount  */
-    checkSetAmount(itemData) {
-        if (itemData.setAmount) {
+    checkItemMultiplier(itemData) {
+        if (itemData.item_multiplier > 1) {
             let span = document.createElement("span");
             span.classList.add("item_amount");
-            span.innerHTML = "" + itemData.setAmount;
+            span.innerHTML = "" + itemData.item_multiplier;
             span.style.visibility = "visible";
             document.getElementById("store-container-selected-trade").appendChild(span);
         }

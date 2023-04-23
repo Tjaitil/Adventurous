@@ -5,6 +5,7 @@ namespace App\services;
 use App\builders\StoreBuilder;
 use App\libs\Response;
 use App\resources\StoreItemResource;
+use Illuminate\Database\Eloquent\Model;
 
 class StoreService
 {
@@ -76,6 +77,18 @@ class StoreService
     }
 
     /**
+     * Create StoreItemResource from model
+     *
+     * @param Model $item
+     *
+     * @return StoreItemResource
+     */
+    public function createStoreItemResourceFromModel(Model $item)
+    {
+        return new StoreItemResource($item);
+    }
+
+    /**
      *  Calculate Item cost
      *
      * @param string $item
@@ -89,6 +102,30 @@ class StoreService
         $price = $amount * $item->store_value;
 
         return $price;
+    }
+
+    public function calculateAdjustedBuyValue($original_price, $sell_price, $diplomacy_price_adjust, $diplomacy_price_ratio)
+    {
+        $buy_price = "";
+        $difference = 0;
+        $class = "";
+        if (!isset($diplomacy_price_ratio)) {
+            return array("buy_price" => $original_price, "difference" => $difference, "class" => $class);
+        } else {
+            // Calculate ratio, example 0.95 diplomacy would result in (0.05 in paranthesis)
+            if (round(($diplomacy_price_ratio < 1))) {
+                $buy_price = $original_price * (1.0 + $diplomacy_price_adjust);
+                $class = "negativeDiplomacy";
+            } else {
+                $buy_price = $original_price * (1.0 - $diplomacy_price_adjust);
+                $class = "positiveDiplomacy";
+            }
+            $difference = $original_price - $buy_price;
+            if ($difference > 0) $difference = "- " . $difference;
+            if ($buy_price < $sell_price) $buy_price = $sell_price;
+        }
+
+        return;
     }
 
     /**

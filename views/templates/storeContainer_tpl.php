@@ -1,6 +1,7 @@
-<?php 
+<?php
+
 /**
- * @param array $data
+ * @param StoreItemResource[] $data 
  * @param array 
  * $options = [
  *  'item_requirements' => (boolean) Add requirements container. Optional.
@@ -8,31 +9,39 @@
  * ]
  * @return html
  */
-function createStoreContainer($data, $options = []) {  ?>
+function createStoreContainer($data, $options = [])
+{  ?>
     <div id="store-container-item-wrapper" class="div_content div_content_dark">
         <div id="store-container-item-list" class=".pb-05">
-            <?php foreach($data['container_items'] as $key): ?>
+            <?php foreach ($data['container_items'] as $key) : ?>
                 <div class="store-container-item">
                     <figure>
-                        <img src="<?php echo constant('ROUTE_IMG') . $key['item'] . '.png'; ?>" />
-                        <figcaption class="tooltip"><?php echo ucwords($key['item']); ?></figcaption>
+                        <img src="<?php echo constant('ROUTE_IMG') . $key['name'] . '.png'; ?>" />
+                        <figcaption class="tooltip"><?php echo ucwords($key['name']); ?></figcaption>
                     </figure>
                     <span class="item_amount"></span>
                     <p>
                         <span>
-                            <span class="store-container-item-price"><?php echo $key['price']?></span>
-                            <span 
-                                class="
-                                    <?php echo (isset($key['discount']) && $key['discount'] >  0) ? "able-color" : ""?>
-                                ">
-                                <?php echo 
-                                        (isset($key['discount']) && $key['discount'] >  0) ?  
-                                        "- " . $key['discount'] 
-                                        : ""?>
+                            <span class="store-container-item-price 
+                                <?php echo $key['adjusted_store_value'] > 0 ? 'line-through' : ''; ?>
+                            ">
+                                <?php
+                                echo $key['store_value']; ?>
                             </span>
-                        </span>
+                            <?php if ($key['adjusted_store_value'] > 0) : ?>
+                                <span class="able-color">
+                                    <?php echo $key['adjusted_store_value']; ?>
+                                </span>
+                            <?php endif; ?>
+                            <span class="
+                                    <?php /*echo ($key['adjusted_store_value'] >  0) ? "able-color" : "not-able-color" ?>
+                                ">
+                                <?php echo (isset($key['adjusted_store_value']) && $key['adjusted_store_value'] >  0) ?
+                                    "- " . $key['adjusted_store_value']
+                                    : ""*/ ?>">
+                            </span>
                     </p>
-                    <img class="gold" src="<?php echo constant("ROUTE_IMG") . 'gold.png'; ?>" />
+                    <img class=" gold" src="<?php echo constant("ROUTE_IMG") . 'gold.png'; ?>" />
                 </div>
             <?php endforeach; ?>
         </div>
@@ -44,15 +53,14 @@ function createStoreContainer($data, $options = []) {  ?>
                 <p id="store-contaniner-trade-price"><span></span>
                     <img class="gold" src="<?php echo constant("ROUTE_IMG") . 'gold.png'; ?>" />
                 </p>
-                <?php if(isset($options['item_requirements']) && $options['item_requirements'] === true): ?>
+                <?php if (isset($options['item_requirements']) && $options['item_requirements'] === true) : ?>
                     <div id="store-container-item-requirements" class="mt-2"></div>
-                <?php endif;?>
-                <?php if(isset($options['item_information']) && $options['item_information'] === true): ?>
+                <?php endif; ?>
+                <?php if (isset($options['item_information']) && $options['item_information'] === true) : ?>
                     <p id="store-container-item-information"></p>
-                <?php endif;?>
+                <?php endif; ?>
                 <label for="amount"> Amount </label></br>
-                <input class="mb-1" type="number" 
-                    id="store-container-selected-trade-amount" name="amount" min="1" />
+                <input class="mb-1" type="number" id="store-container-selected-trade-amount" name="amount" min="1" />
                 </br>
                 <button class="mb-1" id="store-container-item-event-button"> Trade </button>
             </div>

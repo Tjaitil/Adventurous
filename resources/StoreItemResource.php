@@ -1,5 +1,8 @@
 <?php
 
+namespace App\resources;
+
+
 /**
  * @property string $name
  * @property int $amount
@@ -7,7 +10,8 @@
  * @property int $sell_value
  * @property StoreItemResource[] $required_items
  * @property int $item_multiplier Item amount to be multiplied when crafting. Default is 1
- * @property string 
+ * @property int $adjusted_store_value Store value adjustment. Default is 0
+ * @property int $adjusted_difference Difference between adjusted store value and original store value. Default is 0
  */
 class StoreItemResource extends Resource
 {
@@ -21,6 +25,8 @@ class StoreItemResource extends Resource
             "sell_value" => "",
             "required_items" => [],
             "item_multiplier" => 0,
+            "adjusted_store_value" => 0,
+            "adjusted_difference" => 0,
         ], $resource);
     }
 
@@ -31,17 +37,19 @@ class StoreItemResource extends Resource
 
     /**
      * Convert resource to an array
-     *
-     * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
+
         $required_items = [];
-        if (isset($this->required_items)) {
+
+        $required = $this->required_items;
+        if (\is_array($required) && count($required) > 0) {
             foreach ($this->required_items as $key => $item) {
                 array_push($required_items, $item->toArray());
             }
         }
+
 
         return [
             "name" => $this->name,
@@ -49,6 +57,9 @@ class StoreItemResource extends Resource
             "store_value" => $this->store_value,
             "sell_value" => $this->sell_value,
             "required_items" => $required_items,
+            "adjusted_store_value" => $this->adjusted_store_value,
+            "adjusted_difference" => $this->adjusted_difference,
+            "item_multiplier" => $this->item_multiplier,
         ];
     }
 
@@ -75,10 +86,6 @@ class StoreItemResource extends Resource
                     new StoreItemResource($value)
                 );
             }
-        }
-
-        if (!isset($data['item_multiplier'])) {
-            $data['item_multiplier'] = 1;
         }
 
         return $data;

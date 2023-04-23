@@ -1,5 +1,10 @@
 <?php
 
+namespace App\resources;
+
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+
 /**
  * @property StoreItemResource[] $list
  */
@@ -15,7 +20,18 @@ class StoreResource extends Resource
 
     public static function mapping(array $data): array
     {
-        $data["list"] = array_map(fn ($item) => new StoreItemResource($item), $data['list']);
+        if ($data['list'] instanceof Collection) {
+            $data['list'] = $data['list']->toArray();
+        }
+
+        $data["list"] = array_map(function ($item) {
+            if ($item instanceof Model) {
+                $item = $item->toArray();
+            }
+            return new StoreItemResource($item);
+        }, $data["list"]);
+
+
         return $data;
     }
 
@@ -24,7 +40,7 @@ class StoreResource extends Resource
      *
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         $list = [];
 
