@@ -29,21 +29,12 @@ class RegisteredRoute
         $this->action = $action;
     }
 
-    /**
-     * Undocumented function
-     *
-     * @return string $class_name
-     */
+
     public function getClassName()
     {
         return $this->action[0];
     }
 
-    /**
-     * Undocumented function
-     *
-     * @return string
-     */
     public function getClassMethodName()
     {
         return $this->action[1];

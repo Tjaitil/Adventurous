@@ -5,12 +5,11 @@ namespace App\libs;
 use Exception;
 use Respect\Validation\Validator as v;
 
-/**
- * @property string $method
- */
 class Request
 {
     private $data = [];
+
+    private $method;
 
     public function __construct()
     {
