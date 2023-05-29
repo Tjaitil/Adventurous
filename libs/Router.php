@@ -5,7 +5,6 @@ namespace App\libs;
 use \Exception;
 
 /**
- * @property string $targetURI
  * @property class $currentRoute
  * @property array $routes
  * @property RegisteredRoute $matchedRoute
@@ -15,6 +14,12 @@ class Router
 {
 
     private static $instance = null;
+
+    protected $targetURI;
+    protected $currentRoute;
+    protected array $routes;
+    protected RegisteredRoute $matchedRoute;
+    protected Request $request;
 
     private function __construct()
     {
@@ -87,22 +92,16 @@ class Router
      */
     protected function checkRoute()
     {
-        try {
-            if (!isset($this->matchedRoute)) throw new Exception("Not found");
+        if (!isset($this->matchedRoute)) throw new Exception("Not found");
 
-            if (!class_exists($this->matchedRoute->getClassName(), true)) {
-                throw new Exception("Class does not exist!");
-            } else if (!method_exists($this->matchedRoute->getClassName(), $this->matchedRoute->getClassMethodName())) {
-                throw new Exception("Method does not exists");
-            }
-
-            database::getInstance()->openConn();
-            $this->runRoute();
-        } catch (Exception $e) {
-            database::getInstance()->rollBack();
-            //  TODO: Add error handling
-            return Response::addMessage($e->getMessage())->setStatus(500);
+        if (!class_exists($this->matchedRoute->getClassName(), true)) {
+            throw new Exception("Class does not exist!");
+        } else if (!method_exists($this->matchedRoute->getClassName(), $this->matchedRoute->getClassMethodName())) {
+            throw new Exception("Method does not exists");
         }
+
+        database::getInstance()->openConn();
+        $this->runRoute();
     }
 
     /**
@@ -154,8 +153,16 @@ class Router
                 break;
             }
         }
-        $this->setMatchedRoute($matched_route);
-        $this->checkRoute();
+
+        try {
+            if ($matched_route === null) throw new Exception("Not found");
+            $this->setMatchedRoute($matched_route);
+            $this->checkRoute();
+        } catch (Exception $e) {
+            database::getInstance()->rollBack();
+            return Response::addMessage($e->getMessage())->setStatus(404);
+        }
+
         return $matched_route !== null ? true : false;
     }
 
