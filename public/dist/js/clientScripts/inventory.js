@@ -1,9 +1,11 @@
-import { selectItemEvent } from '../selectitem.js';
-import { ajaxG } from '../ajax.js';
+import { ItemSelector } from '../ItemSelector.js';
 import { itemTitle } from '../utilities/itemTitle.js';
 import { inputHandler } from './inputHandler.js';
 import { getClientPageTitle } from '../utilities/getClientPageTitle.js';
 import { AdvApi } from '../AdvApi.js';
+/**
+ * @deprecated
+ */
 export async function getInventory() {
     AdvApi.get("/inventory")
         .then(data => {
@@ -17,12 +19,16 @@ export async function getInventory() {
             itemTitle.addTitleEvent();
         }
         itemPrices.get();
-        if (selectItemEvent.selectItemStatus == true) {
-            selectItemEvent.addSelectEvent();
+        if (ItemSelector.isEventSet) {
+            ItemSelector.addSelectEventToInventory();
         }
         // document.getElementById("inv_toggle_button").addEventListener("click", inventorySidebarMob.toggleInventory);
     });
 }
+/**
+ *
+ * @deprecated
+ */
 export async function updateInventory(page = false, addSelect = false) {
     await fetch("handlers/handlerf.php?file=inventory")
         .then(response => response.text())
@@ -37,10 +43,9 @@ export async function updateInventory(page = false, addSelect = false) {
             itemTitle.addTitleEvent();
         }
         itemPrices.get();
-        if (selectItemEvent.selectItemStatus == true) {
-            selectItemEvent.addSelectEvent();
+        if (ItemSelector.isEventSet) {
+            ItemSelector.addSelectEventToInventory();
         }
-        // document.getElementById("inv_toggle_button").addEventListener("click", inventorySidebarMob.toggleInventory);
     });
 }
 export function checkInventoryStatus() {
@@ -72,10 +77,9 @@ export class Inventory {
                 itemTitle.addTitleEvent();
             }
             itemPrices.get();
-            if (selectItemEvent.selectItemStatus == true) {
-                selectItemEvent.addSelectEvent();
+            if (ItemSelector.isEventSet) {
+                ItemSelector.addSelectEventToInventory();
             }
-            // document.getElementById("inv_toggle_button").addEventListener("click", inventorySidebarMob.toggleInventory);
         });
     }
 }
@@ -84,7 +88,7 @@ export const itemPrices = {
     findItem(itemName) {
         let item = itemName.toLowerCase();
         let array = this.prices.filter((element) => {
-            if (element.item === item)
+            if (element.name === item)
                 return element.store_value;
         });
         if (array.length > 0) {
@@ -95,9 +99,8 @@ export const itemPrices = {
         }
     },
     get() {
-        let data = "model=Item" + "&method=getPrices";
-        ajaxG(data, function (response) {
-            itemPrices.prices = response[1].prices;
-        });
+        AdvApi.get("/inventory/prices").then(response => {
+            this.prices = response.prices;
+        }).catch(() => false);
     }
 };

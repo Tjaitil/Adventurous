@@ -1,5 +1,5 @@
-import { AdvApi } from './../AdvApi';
-import { clientOverlayInterface } from "../clientScripts/clientOverlayInterface.js";
+import { AdvApi } from './../AdvApi.js';
+import { ClientOverlayInterface } from "../clientScripts/clientOverlayInterface.js";
 import { getInventory } from "../clientScripts/inventory.js";
 import { itemTitle } from "../utilities/itemTitle.js";
 const menubarToggle = {
@@ -130,10 +130,11 @@ const stockpileModule = {
     },
     stockpileAction(amountSet = false, event) {
         let element = event.target.closest("div").parentNode;
-        let item = document
+        let itemName = document
             .getElementById("stck_menu")
-            .querySelectorAll("li")[0]
-            .innerHTML.toLowerCase()
+            .querySelectorAll("li")[0].innerHTML;
+        let item = itemName
+            .toLowerCase()
             .trim();
         let amount;
         let insert;
@@ -148,21 +149,21 @@ const stockpileModule = {
             amount = stckMenuInput.value;
         }
         else if (event.currentTarget === document.getElementById("stck_menu_all")) {
-            amount = "all";
+            let array = [];
+            if (insert === true) {
+                array = [...document.getElementById("inventory").querySelectorAll(".inventory_item")];
+            }
+            else {
+                array = [...document.getElementById("stockpile").querySelectorAll(".stockpile_item")];
+            }
+            let itemElement = array.find((element) => element.querySelectorAll("figcaption")[0].innerHTML === itemName);
+            amount = parseInt(itemElement.querySelectorAll(".item_amount")[0].innerHTML);
         }
         else {
             amount = event.target.innerHTML.split(" ")[1];
         }
         hideMenu();
-        // let data =
-        //   "model=Stockpile" +
-        //   "&method=updateInventory" +
-        //   "&item=" +
-        //   item +
-        //   "&insert=" +
-        //   insert +
-        //   "&quantity=" +
-        //   quantity;
+        item = item.split("<br>")[0];
         let data = {
             insert,
             amount,
@@ -175,7 +176,9 @@ const stockpileModule = {
             document.getElementById("stck_menu").style.visibility = "hidden";
             stckMenuInput.value = "";
             getInventory();
-            clientOverlayInterface.adjustWrapperHeight();
+            ClientOverlayInterface.adjustWrapperHeight();
+        }).catch((error) => {
+            return;
         });
     },
     onClose() {
