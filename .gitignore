@@ -41,3 +41,4 @@ Thumbs.db
 .htaccess
 
 vendor
+.phpunit.result.cache
