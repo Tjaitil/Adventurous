@@ -100,7 +100,6 @@ class Router
             throw new Exception("Method does not exists");
         }
 
-        database::getInstance()->openConn();
         $this->runRoute();
     }
 
