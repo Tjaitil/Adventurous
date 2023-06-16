@@ -7,4 +7,13 @@ export interface advAPIResponse<T extends object> {
         new_level: number;
     },
     html?: string[];
+}import { LevelUpSkill } from './../LevelUpSkill';
+export interface advAPIResponse {
+    gameMessage?: string[];
+    errorGameMessage?: string[];
+    data?: {};
+    levelUp?: LevelUpSkill[],
+    html?: {
+        [key: string]: string;
+    }
 }

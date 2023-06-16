@@ -5,6 +5,7 @@ namespace App\controllers;
 use App\libs\controller;
 use App\libs\Request;
 use App\libs\Response;
+use App\models\UserData;
 use App\models\UserData_model;
 use App\services\SessionService;
 
@@ -22,6 +23,7 @@ class WorldLoaderController extends controller
     );
     private $changed_location;
     private $objectCollisionData = array();
+    private $map_location = "";
 
     function __construct(private UserData_model $userData_model, private SessionService $sessionService)
     {
@@ -47,7 +49,7 @@ class WorldLoaderController extends controller
     public function changeMap(Request $request)
     {
         $is_new_map_string = $request->getInput('is_new_map_string');
-        
+
         if ($is_new_map_string) {
             $s = $request->getInput('new_destination');
             // Find the map in the index
@@ -99,15 +101,11 @@ class WorldLoaderController extends controller
             } else {
                 // TODO: Error handling when world is not found
             }
-
         }
 
-        $this->userData_model
-            ->queryUpdate()
-            ->updateColumn('map_location')
-            ->addQueryData($this->map)
-            ->where('username=?', [$this->sessionService->username])
-            ->execute();
+        $User_data = UserData::where('username', [$this->sessionService->getCurrentUsername()])->first();
+        $User_data->map_location = $this->map;
+        $User_data->save();
 
         $this->loadWorld();
     }

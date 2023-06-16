@@ -61,6 +61,7 @@ export const sidebar = {
                 }
                 tab.style.visibility = "visible";
             } else {
+                console.log(tab);
                 tab.style.visibility = "hidden";
             }
         }

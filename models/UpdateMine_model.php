@@ -81,4 +81,3 @@
             $this->response->addTo("data", $param_avail_workforce, array("index" => "availWorkforce"));
         }
     }
-?>

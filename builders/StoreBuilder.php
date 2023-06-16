@@ -19,6 +19,17 @@ class StoreBuilder
     }
 
     /**
+     * Set infinite item amount
+     *
+     * @return void
+     */
+    public function setInfiniteAmount(bool $infinite_amount)
+    {
+        $this->resource->infinite_amount = $infinite_amount;
+        return $this;
+    }
+
+    /**
      * Set available item amount
      *
      * @param string $item Item name
@@ -66,6 +77,18 @@ class StoreBuilder
             $item->adjusted_difference = $item->store_value - $item->adjusted_store_value;
         }
     }
+
+    public function setSkillRequired(string $item, string $skill)
+    {
+        foreach ($this->resource->list as $key => $item) {
+            if ($item->name) {
+                $item->skill_level_required = $skill;
+                break;
+            }
+        }
+        return $this;
+    }
+
 
     /**
      * Set updated list

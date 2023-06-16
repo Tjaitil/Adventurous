@@ -2,16 +2,16 @@
 
 namespace App\controllers;
 
-use App\libs\controller;
+use \Exception;
 use App\libs\Request;
 use App\libs\Response;
+use App\libs\controller;
 use App\models\Inventory;
 use App\models\Stockpile;
-use App\services\InventoryService;
 use App\services\SessionService;
-use App\services\TemplateFetcherService;
-use \Exception;
 use Respect\Validation\Validator;
+use App\services\InventoryService;
+use App\libs\TemplateFetcher;
 
 class StockpileController extends controller
 {
@@ -122,7 +122,7 @@ class StockpileController extends controller
         $data = array();
 
         $data['stockpile'] = $this->get();
-        $template = TemplateFetcherService::loadTemplate('stockpile', $data);
+        $template = TemplateFetcher::loadTemplate('stockpile', $data);
         Response::addTemplate("stockpile", $template);
     }
 }

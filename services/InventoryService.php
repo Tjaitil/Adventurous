@@ -25,7 +25,7 @@ class InventoryService
     /**
      * Get inventory
      *
-     * @return void
+     * @return Collection
      */
     public function getInventory()
     {
@@ -60,6 +60,10 @@ class InventoryService
     public function hasEnoughAmount(string $name, int $amount)
     {
         $item_data = $this->findItem($name);
+
+        if ($this->checkSkipInventory()) {
+            return true;
+        }
         if ($item_data === null || $item_data->amount < $amount) {
             return false;
         } else {
@@ -114,5 +118,13 @@ class InventoryService
             }
         }
         return $this;
+    }
+
+    public function checkSkipInventory()
+    {
+        if (boolval($_ENV['skip_inventory']) === true) {
+            return true;
+        }
+        return false;
     }
 }

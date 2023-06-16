@@ -2,8 +2,9 @@ import { sidebar } from './clientScripts/sidebar';
 import { itemTitle } from './utilities/itemTitle.js';
 import { inventorySidebarMob } from './utilities/inventoryToggle.js';
 import { ajaxP } from './ajax.js';
-import { clientOverlayInterface } from './clientScripts/clientOverlayInterface.js';
+import { ClientOverlayInterface } from './clientScripts/clientOverlayInterface.js';
 // scriptLoader.loadScript(['itemTitle', 'uppercase', 'inventoryToggle'], 'utility');
+// TODO: Remove this file
 const generalProperties = {
     computerDevice: true,
     setDeviceType() {
@@ -14,6 +15,7 @@ const generalProperties = {
 };
 window.addEventListener("load", () => generalInit());
 function generalInit() {
+    console.log('init');
     generalProperties.setDeviceType();
     itemTitle.init(generalProperties.computerDevice);
     // document.getElementById("help_button").addEventListener("click", () => helpContainer.toggle());
@@ -177,7 +179,7 @@ function checkCombatCalculator() {
         if (response[0] !== false) {
             console.log(response[1]);
             let responseText = response[1];
-            clientOverlayInterface.show(responseText.html);
+            ClientOverlayInterface.show(responseText.html);
         }
     });
 }

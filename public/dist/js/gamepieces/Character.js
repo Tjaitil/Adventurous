@@ -1,11 +1,12 @@
 import { BaseStaticGameObject } from "./BaseStaticGameObject.js";
 export class Character extends BaseStaticGameObject {
-    width = 38;
-    height = 38;
+    width = 42;
+    height = 42;
     conversation;
-    displayName;
     constructor(initCharacterData) {
         super(initCharacterData);
-        this.displayName = initCharacterData.displayName;
+        this.y += 6;
+        this.diameterUp += 6;
+        this.displayName = initCharacterData.displayName.replace('_', ' ');
     }
 }

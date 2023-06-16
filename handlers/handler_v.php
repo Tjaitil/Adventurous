@@ -1,28 +1,71 @@
 <?php
-    require('../libs/handler.php');
-    $handler = new handler(true);
-    $handler->sessionCheck(true);
-    
-    // Switch to map custom building names to views
-    switch($_GET['building']) {
-        case 'adventure base':
-            $_GET['building'] = 'adventures';
-            break;
-        case 'stockpile desert':
-            $_GET['building'] = 'stockpile';
-            break;
-        default: 
-            
-            break;
-    }
-    $controller = $handler->loadController(str_replace(" ", "", $_GET['building']));
-    if(is_object($controller)) {
-        $controller->index();
-    }
-    else {
-        $errorHandler = new errorhandler();
-        $errorHandler->reportError(array($_SESSION['username'], "building not found, " . $_GET['building']));
-        http_response_code(404);
-        return false;
-    }
-?>
+
+use App\controllers\ArcheryShopController;
+use App\controllers\ArmoryController;
+use App\controllers\ArmyCampController;
+use App\controllers\ArmymissionsController;
+use App\controllers\CityCentreController;
+use App\controllers\CropsController;
+use App\controllers\MerchantController;
+use App\controllers\MineController;
+use App\controllers\SmithyController;
+use App\controllers\StockpileController;
+use App\libs\database;
+use App\libs\DependencyContainer;
+use App\libs\handler;
+use App\libs\Logger;
+use App\libs\App;
+
+
+require '../vendor/autoload.php';
+
+
+$root = $_SERVER["PWD"] ?? dirname(__FILE__, 2) . '/';
+
+require('../libs/handler.php');
+require('../config/GameConstants.php');
+require('../root/routes.php');
+App::getInstance()->boot();
+new handler();
+
+database::getInstance()->openConn();
+
+$building = isset($_GET['building']) ? strtolower($_GET['building']) : null;
+
+// Switch to map custom building names to views
+switch ($building) {
+    case 'adventure base':
+        $building = 'adventures';
+        break;
+    case 'stockpile desert':
+        $building = 'stockpile';
+        break;
+    case 'merchant desert':
+        $building = 'merchant';
+        break;
+    default:
+
+        break;
+}
+
+$controller_mapping = [
+    'armycamp' => ArmyCampController::class,
+    'stockpile' => StockpileController::class,
+    'merchant' => MerchantController::class,
+    'crops' => CropsController::class,
+    'mine' => MineController::class,
+    'citycentre' => CityCentreController::class,
+    'armory' => ArmoryController::class,
+    'armymission' => ArmymissionsController::class,
+    'archeryshop' => ArcheryShopController::class,
+    'smithy' => SmithyController::class,
+];
+
+if (is_null($building) || !array_key_exists($building, $controller_mapping)) {
+    Logger::log("Building not found: $building");
+    http_response_code(422);
+} else {
+    $dependencyContainer = DependencyContainer::getInstance();
+    $controller = $dependencyContainer->get($controller_mapping[$building]);
+    $controller->index(...$dependencyContainer->getMethodParameters($controller, 'index'));
+}

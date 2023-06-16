@@ -1,7 +1,7 @@
             armory.css|armory.js|
             <?php
 
-            use App\services\TemplateFetcherService;
+            use App\libs\TemplateFetcher;
             ?>
             <h1 class="page_title"> Armory </h1>
             <button> Back to army camp</button>
@@ -12,7 +12,7 @@
                 <div id="put_on" class="mb-1">
                     <?php
 
-                    echo TemplateFetcherService::loadTemplate("select_item", [
+                    echo TemplateFetcher::loadTemplate("select_item", [
                         "show_amount_input" => true,
                         "selected_amount_label" => "Amount of arrows/knives"
                     ]);
@@ -36,7 +36,7 @@
                 </div>
                 <div id="warrior_container">
                     <?php
-                    echo TemplateFetcherService::loadTemplate("armory", $this->data['warrior_armory']);
+                    echo TemplateFetcher::loadTemplate("armory", $this->data['warrior_armory']);
                     ?>
                 </div>
             </div>

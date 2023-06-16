@@ -2,18 +2,18 @@
 
 namespace App\controllers;
 
-use App\libs\controller;
-use App\libs\response;
-use App\models\Inventory;
 use App\models\Item;
+use App\libs\response;
+use App\libs\controller;
+use App\models\Inventory;
 use App\services\SessionService;
-use App\services\TemplateFetcherService;
+use App\libs\TemplateFetcher;
 
 class InventoryController extends controller
 {
 
     public function __construct(
-        private TemplateFetcherService $templateFetcherService,
+        private TemplateFetcher $TemplateFetcher,
         private Inventory $inventory,
         private SessionService $sessionService
     ) {
@@ -23,7 +23,7 @@ class InventoryController extends controller
     public function get()
     {
         $data = $this->inventory->all()->where('username', $this->sessionService->getCurrentUsername());
-        $inventory_template = $this->templateFetcherService->loadTemplate('inventory', $data);
+        $inventory_template = $this->TemplateFetcher->loadTemplate('inventory', $data);
         response::addTemplate("inventory", $inventory_template);
     }
 

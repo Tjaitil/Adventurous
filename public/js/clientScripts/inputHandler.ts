@@ -8,33 +8,34 @@ import { gameLogger } from "../utilities/gameLogger.js";
 import { conversation } from "./conversation.js";
 import { GamePieces } from "./gamePieces.js";
 import { Building } from "../gamepieces/Building.js";
+import { HUD } from './HUD.js';
 
 
 export const inputHandler = {
     buildingMatch: <undefined | Building>undefined,
+    buildingMatchUIChanged: false,
     checkBuilding(mouseinputX = 0, mouseinputY = 0) {
         this.buildingMatch = undefined;
-        if (Game.properties.inBuilding != true && Game.properties.device == "pc") {
-            for (let i = 0, n = GamePieces.buildings.length; i < n; i++) {
-                let object = GamePieces.buildings[i];
-                // TODO: Add support for mobile
-                if (
-                    GamePieces.player.ypos > object.diameterUp &&
-                    GamePieces.player.ypos < object.diameterDown &&
-                    GamePieces.player.xpos > object.diameterLeft &&
-                    GamePieces.player.xpos < object.diameterRight &&
-                    Math.abs(GamePieces.player.ypos - object.diameterDown) < 32
-                ) {
-                    this.buildingMatch = object;
-                    break;
-                }
+        for (let i = 0, n = GamePieces.nearBuildings.length; i < n; i++) {
+            let object = GamePieces.buildings[i];
+            if (
+                GamePieces.player.ypos > object.diameterUp &&
+                GamePieces.player.ypos < object.diameterDown &&
+                GamePieces.player.xpos > object.diameterLeft &&
+                GamePieces.player.xpos < object.diameterRight &&
+                Math.abs(GamePieces.player.ypos - object.diameterDown) < 32
+            ) {
+                this.buildingMatch = object;
+                break;
             }
         }
         if (this.buildingMatch) {
-            document.getElementById("control_text_building").innerHTML =
+            HUD.elements.control_text_building =
                 controls.enterText + " " + this.mapBuildingName(this.buildingMatch.displayName);
-        } else {
-            document.getElementById("control_text_building").innerHTML = controls.enterButton;
+            this.buildingMatchUIChanged = true;
+        } else if (this.buildingMatchUIChanged) {
+            HUD.elements.control_text_building = controls.enterButton;
+            this.buildingMatchUIChanged = false;
         }
     },
     interactBuilding() {
@@ -64,8 +65,8 @@ export const inputHandler = {
     currentBuildingModule: undefined,
     async fetchBuilding(building: string) {
         building = this.mapBuildingName(building.trim());
-
         Game.properties.inBuilding = true;
+        Game.properties.building = building;
 
         conversation.endConversation();
 
@@ -82,7 +83,6 @@ export const inputHandler = {
                 let html = dataArray[2];
                 let link;
                 if (css.length > 2 || css !== "#") {
-                    Game.properties.building = building;
                     link = document.createElement("link");
                     link.type = "text/css";
                     link.rel = "stylesheet";
@@ -94,11 +94,14 @@ export const inputHandler = {
                 console.log(building);
                 const src = '/public/dist/js/buildingScripts/';
                 const module = await import(src + script).then((data) => {
-                    console.log(data);
                     this.currentBuildingModule = data;
-                    if (this.currentBuildingModule.default.init) {
+
+                    if (typeof this.currentBuildingModule.default === "function") {
+                        new this.currentBuildingModule.default();
+                    } else if (this.currentBuildingModule.default.init) {
                         this.currentBuildingModule.default.init();
                     }
+
                 });
             })
             .catch(error => {
@@ -109,37 +112,39 @@ export const inputHandler = {
             })
         return building;
     },
-    characterMatched: <undefined | Character>null,
+    characterMatch: <undefined | Character>null,
+    characterMatchUIChanged: false,
     checkCharacter() {
-        let characterMatch = null;
-
-        for (let i = 0, n = GamePieces.characters.length; i < n; i++) {
+        this.characterMatch = undefined;
+        for (let i = 0, n = GamePieces.nearCharacters.length; i < n; i++) {
             if (
                 Math.abs(GamePieces.player.xpos - GamePieces.characters[i].x) < 32 &&
                 Math.abs(GamePieces.player.ypos - GamePieces.characters[i].y) < 32 &&
                 GamePieces.characters[i].type === "character"
             ) {
-                characterMatch = this.characterMatched = GamePieces.characters[i];
+                this.characterMatch = GamePieces.characters[i];
                 break;
             }
         }
 
-        if (characterMatch) {
-            document.getElementById("control_text_conversation").innerHTML =
-                controls.personText + " " + this.characterMatched.displayName;
-        } else {
-            document.getElementById("control_text_conversation").innerHTML = controls.personButton;
+        if (this.characterMatch) {
+            HUD.elements.control_text_conversation =
+                controls.personText + " " + this.characterMatch.displayName;
+            this.characterMatchUIChanged = true;
+        } else if (this.characterMatchUIChanged) {
+            HUD.elements.control_text_conversation = controls.personButton;
+            this.characterMatchUIChanged = false;
         }
     },
     interactCharacter() {
-        if (this.characterMatched === undefined) return;
+        if (this.characterMatch === undefined) return;
 
-        if (this.characterMatched.src.split(".png")[0] === "hassen") {
+        if (this.characterMatch.src.split(".png")[0] === "hassen") {
             tutorial.checkStep();
-        } else if (tutorial.onGoing && this.characterMatched.src.includes("tutorial_sailor")) {
+        } else if (tutorial.onGoing && this.characterMatch.src.includes("tutorial_sailor")) {
             gameLogger.addMessage("That person is not interested in talking to you now", true);
         } else {
-            conversation.loadConversation(this.characterMatched.displayName, "", false);
+            conversation.loadConversation(this.characterMatch.displayName, "", false);
         }
     },
 };

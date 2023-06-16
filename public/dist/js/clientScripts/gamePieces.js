@@ -1,10 +1,11 @@
 import { inputHandler } from "./inputHandler.js";
 import { BaseStaticGameObject } from "../gamepieces/BaseStaticGameObject.js";
 import { Building } from "../gamepieces/Building.js";
-import { Character } from "../gamePieces/Character.js";
-import { DaqloonFightingArea } from "../GamePieces/DaqloonFightingArea.js";
+import { Character } from "../gamepieces/Character.js";
+import { DaqloonFightingArea } from "../gamepieces/DaqloonFightingArea.js";
 import { Player } from "../gamepieces/Player.js";
 import viewport from "./viewport.js";
+import { HUD } from "./HUD.js";
 var gamePiecesTypes;
 (function (gamePiecesTypes) {
     gamePiecesTypes[gamePiecesTypes["character"] = 0] = "character";
@@ -22,6 +23,8 @@ export const GamePieces = {
     daqloon_fighting_area: undefined,
     visibleObjects: [],
     nearObjects: [],
+    nearCharacters: [],
+    nearBuildings: [],
     player: new Player(),
     reset() {
         this.objects = [];
@@ -40,11 +43,12 @@ export const GamePieces = {
         if (daqloonFightingAreas !== undefined && daqloonFightingAreas.length > 0) {
             this.daqloon_fighting_area = new DaqloonFightingArea(daqloonFightingAreas[0]);
             this.daqloon = this.daqloon_fighting_area.loadDaqloons();
+            this.daqloon_fighting_area.findHuntingDaqloon();
             // checkDaqloon(GamePieces.daqloon_fighting_area.daqloon_amount);
         }
         else {
             this.daqloon = [];
-            document.getElementById("HUD_hunted_locater").innerHTML = "";
+            HUD.elements.huntedLocator.innerHTML = "";
         }
     },
     loadStaticPieces(initObjects) {
@@ -65,31 +69,6 @@ export const GamePieces = {
             }
             this.objects.push(instantiatedObject);
         });
-        // for(let i = 0, n = GamePieces.objects.length; i < n; i++) {
-        //     if (GamePieces.objects[i].src != undefined && GamePieces.objects[i].src.length > 1) {
-        //         if (GamePieces.objects[i].type === 'character') {
-        //             GamePieces.objects[i].width = 38;
-        //             GamePieces.objects[i].width = 38;
-        //             GamePieces.objects[i].height = 38;
-        //             GamePieces.objects[i].x -= 6;
-        //             GamePieces.objects[i].y -= 6;
-        //         }
-        //         if (GamePieces.objects[i].src.indexOf('.png') == -1) GamePieces.objects[i].src += '.png';
-        //         GamePieces.objects[i].sprite.src = "public/images/" + GamePieces.objects[i].src;
-        //     }
-        //     GamePieces.objects[i].width *= viewport.scale;
-        //     GamePieces.objects[i].height *= viewport.scale;
-        //     GamePieces.objects[i].drawX = Math.round(GamePieces.objects[i].x - viewport.offsetX);
-        //     GamePieces.objects[i].drawY = Math.round(GamePieces.objects[i].y - viewport.offsetY);
-        //     if (GamePieces.objects[i].type == "building") {
-        //         let object = GamePieces.objects[i] as ICharacter;
-        //         GamePieces.buildings.push(GamePieces.objects[i]);
-        //     }
-        //     else if (GamePieces.objects[i].type == "character") {
-        //         let object = GamePieces.objects[i] as ICharacter;
-        //         GamePieces.characters.push(object);
-        //     }
-        // }
         GamePieces.objects.sort((a, b) => {
             return a.diameterDown - b.diameterDown;
         });
@@ -100,33 +79,25 @@ export const GamePieces = {
     },
     drawStaticPieces() {
         // buildingMatch variable is to check if there is at building that the player can enter
-        let buildingMatch = false;
-        let personMatch = false;
-        let person = null;
         viewport.resetObjectLayer();
-        // console.log('x', GamePieces.player.xMovement);
-        for (let i = 0, n = GamePieces.visibleObjects.length; i < n; i++) {
-            // console.log(GamePieces.visibleObjects[i]);
-            if (GamePieces.visibleObjects[i].visible === true &&
-                GamePieces.visibleObjects[i].type !== "figure" &&
-                ["desert_dune", "nc_object"].indexOf(GamePieces.visibleObjects[i].type) === -1 &&
-                GamePieces.visibleObjects[i].src.length > 1) {
-                let drawContext;
-                // if(GamePieces.visibleObjects[i].type === "building") console.log(GamePieces.visibleObjects[i]);
-                // If building is behind player, then draw on the first canvas instead of the third
-                if (GamePieces.visibleObjects[i].diameterDown < GamePieces.player.diameterDown) {
-                    drawContext = "background";
-                }
-                else {
-                    drawContext = "frontObjects";
-                }
-                if (GamePieces.visibleObjects[i].type === "character") {
-                    // drawContext.imageSmoothingEnabled = false;
-                    viewport.drawObject(drawContext, GamePieces.visibleObjects[i].sprite, GamePieces.visibleObjects[i].drawX - GamePieces.player.xMovement, GamePieces.visibleObjects[i].drawY - GamePieces.player.yMovement, GamePieces.visibleObjects[i].width, GamePieces.visibleObjects[i].height);
-                }
-                else {
-                    viewport.drawObject(drawContext, GamePieces.visibleObjects[i].sprite, Math.round(GamePieces.visibleObjects[i].drawX - GamePieces.player.xMovement), Math.round(GamePieces.visibleObjects[i].drawY - GamePieces.player.yMovement), GamePieces.visibleObjects[i].width, GamePieces.visibleObjects[i].height);
-                }
+        for (const GamePiece of GamePieces.visibleObjects) {
+            let drawContext;
+            // if(GamePiece.type === "building") GamePiece;
+            // If building is behind player, then draw on the first canvas instead of the third
+            if (GamePiece.diameterDown < GamePieces.player.diameterDown) {
+                drawContext = "background";
+            }
+            else {
+                drawContext = "frontObjects";
+            }
+            if (GamePiece.type === "character") {
+                // drawContext.imageSmoothingEnabled = false;
+                viewport.drawObject(drawContext, GamePiece.sprite, GamePiece.drawX - GamePieces.player.xMovement, GamePiece.drawY - GamePieces.player.yMovement, GamePiece.width, GamePiece.height);
+                viewport.layer.text.font = "30px Comic Sans MS";
+                viewport.layer.frontObjects.fillText(GamePiece.displayName, GamePiece.drawX - GamePieces.player.xMovement, GamePiece.drawY - GamePieces.player.yMovement);
+            }
+            else {
+                viewport.drawObject(drawContext, GamePiece.sprite, Math.round(GamePiece.drawX - GamePieces.player.xMovement), Math.round(GamePiece.drawY - GamePieces.player.yMovement), GamePiece.width, GamePiece.height);
             }
         }
         inputHandler.checkCharacter();
@@ -145,8 +116,6 @@ export const GamePieces = {
                     GamePieces.objects[i].height / 2 -
                     GamePieces.player.yMovement / viewport.scale);
             }
-            // for(let i = 0; i < GamePieces.daqloon_fighting_area.length; i++) {
-            // }
         }
     },
     drawDaqloons() {

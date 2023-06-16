@@ -1,72 +1,96 @@
 <?php
+
+namespace App\models;
+
+use App\libs\model;
+use App\resources\WarriorResource;
+use \PDO;
+
+/**
+ * @deprecated
+ */
 class Warriors_model extends model
 {
-    public $username;
-    public $session;
-
-    private $_data;
+    private $data;
 
     /**
      * Construct
      *
-     * @param array $session Session array
-     * @param null|Database $db Provided DB if its loaded by another model or 
      */
-    function __construct($session, Database $db = null)
+    function __construct()
     {
-        if (!is_object($db)) {
-            parent::__construct(true);
-            $this->db = $this->db;
-        } else {
-            $this->db = $db;
-        }
-        parent::__construct();
-        $this->username = $session['username'];
-        $this->session = $session;
+        parent::__construct('warriors');
     }
 
     /**
-     * Get all available warriors
-     * 
-     * @param bool $js Called by ajax or not
-     * @return html|array Html template of warriors or array containing data
+     * Create new warrior
+     *
+     * @param WarriorResource $warriorResource
+     *
+     * @return void
      */
-    public function getAvailableWarriors($js = false)
+    public function create(WarriorResource $warriorResource)
     {
         $param_username = $this->username;
-        $sql = "SELECT DISTINCT 
-            a.warrior_id, a.helm, a.ammunition, a.ammunition_amount, a.left_hand, 
-            a.body, a.right_hand, a.legs, a.boots, b.type, 
-            c.stamina_level, c.stamina_xp, c.technique_level, c.technique_xp, 
-            c.precision_level, c.precision_xp, c.strength_level, c.strength_xp,
-                (SELECT SUM(attack) 
-                 FROM armory_items_data 
-                 WHERE item 
-                 IN (a.helm, a.ammunition, a.left_hand, a.body, a.right_hand, a.legs, a.boots)) 
-                 AS attack, 
-                 (SELECT SUM(defence) 
-                 FROM armory_items_data 
-                 WHERE item 
-                 IN (a.helm, a.ammunition, a.left_hand, a.body, a.right_hand, a.legs, a.boots)) 
-                 AS defence 
-            FROM warrior_armory as a 
-            LEFT JOIN warriors as b
-            ON a.warrior_id = b.warrior_id and a.username = b.username 
-            JOIN warriors_levels as c
-            ON a.warrior_id = c.warrior_id and b.username = c.username 
-            WHERE a.username=:username
-            AND b.fetch_report=0 AND b.training_type='none'
-            AND b.army_mission=0";
+        $param_warrior_id = $warriorResource->warrior_id;
+        $param_type = $warriorResource->type;
+
+        $sql = "INSERT INTO warriors (username, warrior_id, type)
+                VALUES(:username, :warrior_id, :type)";
         $stmt = $this->db->conn->prepare($sql);
         $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+        $stmt->bindParam(":warrior_id", $param_warrior_id, PDO::PARAM_INT);
+        $stmt->bindParam(":type", $param_type, PDO::PARAM_STR);
         $stmt->execute();
-        $this->_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
-        if ($js === false) {
-            return $this->_data;
-        } else {
-            $this->outputHtmlTemplate();
-        }
+    public function find(array $warrior_ids, string $username)
+    {
+        $query_array = $warrior_ids;
+        $in  = str_repeat('?,', count($warrior_ids) - 1) . '?';
+        array_push($query_array, $username);
+
+        $sql = "SELECT * FROM warriors
+                WHERE warrior_id IN ($in) AND username=?";
+        $stmt = $this->db->conn->prepare($sql);
+
+        $stmt->execute($query_array);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $result === false ? [] : $result;
+    }
+
+    /**
+     * Get warriorLevels based on warrior_ids
+     *
+     * @param array $warrior_ids
+     * @param string $username
+     *
+     * @return void
+     */
+    public function warriorLevels(array $warrior_ids, string $username)
+    {
+        return $this->select()
+            ->addQueryData()
+            ->whereIn('warrior_id', $warrior_ids)
+            ->where('username', [$username])
+            ->get();
+    }
+
+    /**
+     * Add where statement with warrior_ids and username
+     *
+     * @param string $statement
+     * @param array $data
+     * @param string $username
+     *
+     * @return self
+     */
+    public function whereWarriorsAndUsername(string $statement, array $data, string $username)
+    {
+        $this->whereIn($statement, $data);
+        $this->statement .= " AND username='{$username}'";
+        return $this;
     }
 
     /**
@@ -75,9 +99,9 @@ class Warriors_model extends model
      * @param bool $js Called by ajax or not
      * @param int[] $selected An array containing specified warrior ids
      * @param bool $available Bool to get only available warriors 
-     * @return html|array Html template of warriors or array containing data
+     * @return array Html template of warriors or array containing data
      */
-    public function getSelectedWarriors($js = false, $selected = [], $available = false)
+    public function getSelected($js = false, $selected = [], $available = false)
     {
         $query_array = $selected;
         $in  = str_repeat('?,', count($query_array) - 1) . '?';
@@ -86,6 +110,7 @@ class Warriors_model extends model
         $sql = "SELECT DISTINCT 
         a.warrior_id, a.helm, a.ammunition, a.ammunition_amount, a.left_hand, 
         a.body, a.right_hand, a.legs, a.boots, b.type, 
+        b.training_countdown, b.fetch_report, b.army_mission,
         c.stamina_level, c.stamina_xp, c.technique_level, c.technique_xp, 
         c.precision_level, c.precision_xp, c.strength_level, c.strength_xp,
             (SELECT SUM(attack) 
@@ -104,19 +129,15 @@ class Warriors_model extends model
         JOIN warriors_levels as c
         ON a.warrior_id = c.warrior_id and b.username = c.username
         WHERE a.warrior_id IN ($in) AND a.username=?";
-        if($available === true) {
+        if ($available === true) {
             $sql .= "AND b.fetch_report=0 AND b.training_type='none'
             AND b.army_mission=0";
         }
         $stmt = $this->db->conn->prepare($sql);
         $stmt->execute($query_array);
-        $this->_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $this->data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        if ($js === false) {
-            return $this->_data;
-        } else {
-            $this->outputHtmlTemplate();
-        }
+        return $this->data;
     }
 
     /**
@@ -132,7 +153,7 @@ class Warriors_model extends model
      * @param Int[] $selected An array containing specified warrior ids
      * @return mixed
      */
-    public function updateSelectedWarriors($statements, $selected = [])
+    public function updateSelected($statements, $selected = [])
     {
         $query_array = $selected;
         $in  = str_repeat('?,', count($selected) - 1) . '?';
@@ -155,13 +176,14 @@ class Warriors_model extends model
      * @param array $warrior_data Array of data for each warrior
      * @return void
      */
-    public function updateSelectedWarriorsXP($warrior_data) {
+    public function updateSelectedWarriorsXP($warrior_data)
+    {
 
         foreach ($warrior_data as $key) {
             $warrior_melee_check = $key['type'] === "melee";
 
             $sql = "UPDATE warriors_levels SET stamina_xp=:stamina_xp, technique_xp=:technique_xp,";
-            if($warrior_melee_check) {
+            if ($warrior_melee_check) {
                 $sql .= " strength_xp=:strength_xp ";
             } else {
                 $sql .= " precision_xp=:precision_xp ";
@@ -178,7 +200,7 @@ class Warriors_model extends model
             $stmt->bindParam(":technique_xp", $param_technique_xp, PDO::PARAM_INT);
 
             // Determine which type of warrior
-            if($warrior_melee_check) {
+            if ($warrior_melee_check) {
                 $stmt->bindParam(":strength_xp", $param_strength_xp, PDO::PARAM_INT);
             } else {
                 $stmt->bindParam(":precision_xp", $param_precision_xp, PDO::PARAM_INT);
@@ -195,10 +217,10 @@ class Warriors_model extends model
      *
      * @return html Template
      */
-    public function outputHtmlTemplate()
+    public function outputHtmlTemplate($warrior_data)
     {
         ob_start();
-        get_template('warrior_select', $this->_data, true);
+        get_template('warrior_select', $this->data, true);
         $this->response->addTo("html", ob_get_clean(), array("index" => "warriors"));
     }
 
@@ -208,7 +230,8 @@ class Warriors_model extends model
      * @param int $mission_id
      * @return array Array of warrior id's
      */
-    public function getArmyMissionWarriors($mission_id) {
+    public function getArmyMissionWarriors($mission_id)
+    {
         $sql = "SELECT warrior_id FROM warriors WHERE army_mission=:mission_id";
         $stmt = $this->db->conn->prepare($sql);
         $stmt->bindParam(":mission_id", $mission_id, PDO::PARAM_INT);

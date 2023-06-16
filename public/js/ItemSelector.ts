@@ -55,13 +55,14 @@ export class ItemSelector {
     private static container: HTMLElement;
     private static selectedWrapper: HTMLElement;
     private static selectedItemAmountInput: HTMLInputElement;
-    private static isSelectedAmountInputVisible: boolean = false;
+    private static isSelectedAmountInputVisible: boolean = true;
 
 
     public static setup() {
         this.container = document.getElementById("selected-item-container");
         this.selectedWrapper = document.getElementById("selected");
         this.selectedItemAmountInput = document.getElementById("selected-item-amount") as HTMLInputElement;
+        this.addSelectEventToInventory();
     }
 
     public static get isEventSet() {
@@ -138,6 +139,9 @@ export class ItemSelector {
     }
 
     public static get selected(): { name: string, amount: number } {
+        if (this.selectedWrapper.getElementsByTagName("figure").length === 0) {
+            gameLogger.addMessage("Please select a valid item", true);
+        }
         let name = this.selectedWrapper.querySelectorAll("figcaption")[0].innerHTML.toLowerCase().trim();
         // Is input visible?
         if (this.isSelectedAmountInputVisible) {
@@ -150,12 +154,19 @@ export class ItemSelector {
 
     public static hideSelectedAmountInput() {
         this.isSelectedAmountInputVisible = false;
-        document.getElementById("selected_item_amount_wrapper").style.display = "none";
+        this.selectedItemAmountInput.style.display = "none";
     }
 
     public static showSelectedAmountInput() {
         this.isSelectedAmountInputVisible = true;
-        document.getElementById("selected_item_amount_wrapper").style.display = "block";
+        this.selectedItemAmountInput.style.display = "block";
+    }
+
+    public static clearContainer() {
+        this.selectedWrapper.innerHTML = "";
+        if (this.isSelectedAmountInputVisible) {
+            this.selectedItemAmountInput.value = "0";
+        }
     }
 
 }

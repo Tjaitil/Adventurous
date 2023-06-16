@@ -12,7 +12,7 @@
                 if($key['role'] !== "warrior"): ?>
                     <img class="item_img" src="<?php echo constant('ROUTE_IMG') . $src .'.png';?>"/></td>
                 <?php endif;?>
-        <td <?php if($key['provided'] === $key['amount']) echo 'class="able-color"';?>>
+        <td class="provided-amount" <?php if($key['provided'] === $key['amount']) echo 'class="able-color"';?>>
             <?php echo $key['provided'], '/', $key['amount'];?>
         </td>
     </tr>

@@ -12,11 +12,11 @@ use App\services\ArmoryService;
 use App\services\SessionService;
 use App\services\InventoryService;
 use App\services\SkillsService;
-use App\services\TemplateFetcherService;
 use App\services\UnlockableMineralsService;
 use App\services\WarriorService;
 use Illuminate\Database\Eloquent\Collection;
 use Respect\Validation\Validator;
+use App\libs\TemplateFetcher;
 
 class ArmoryController extends controller
 {
@@ -26,7 +26,7 @@ class ArmoryController extends controller
         private WarriorService $warriorService,
         private InventoryService $inventoryService,
         private ArmoryService $armoryService,
-        private TemplateFetcherService $templateFetcherService,
+        private TemplateFetcher $TemplateFetcher,
         private SessionService $sessionService,
         private WarriorsArmory $warriorsArmory,
         private ArmoryItemsData $armoryItemsData,
@@ -181,7 +181,7 @@ class ArmoryController extends controller
         $resource = new WarriorArmoryResource($warrior);
         return Response::addTemplate(
             'warrior_armory',
-            $this->templateFetcherService->loadTemplate('armory', [$resource->toArray()])
+            $this->TemplateFetcher->loadTemplate('armory', [$resource->toArray()])
         )->setStatus(200);
     }
 }

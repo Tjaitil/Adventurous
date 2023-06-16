@@ -1,4 +1,3 @@
-import { newLevel } from "./levelup.js";
 import { gameLogger } from "./utilities/gameLogger.js";
 // scriptLoader.loadScript(["gameLogger"], "utility");
 function validJSON(str) {
@@ -100,12 +99,17 @@ export async function ajaxP(data, callback, log = true) {
     ajaxRequest.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     ajaxRequest.send(data);
 }
-export function checkResponse(responseText) {
-    if (typeof responseText.levelUP !== "undefined" && Object.keys(responseText.levelUP).length > 0) {
-        newLevel.update(responseText.levelUP);
+export function checkResponse(response) {
+    // if (typeof response.levelUp !== undefined &&
+    //     Object.keys(response.levelUp ?? {}).length > 0) {
+    //     LevelManager.update(response.levelUp);
+    // }
+    if (typeof response.gameMessage !== "undefined") {
+        gameLogger.addMessage(response.gameMessage);
+        gameLogger.logMessages();
     }
-    if (typeof responseText.gameMessages !== "undefined") {
-        gameLogger.addMessage(responseText.gameMessages);
+    else if (typeof response.errorGameMessage !== "undefined") {
+        gameLogger.addMessage(response.errorGameMessage);
         gameLogger.logMessages();
     }
 }

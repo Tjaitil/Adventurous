@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property StoreItemResource[] $list
+ * @property bool $infinite_amount
  */
 class StoreResource extends Resource
 {
@@ -15,6 +16,7 @@ class StoreResource extends Resource
     {
         parent::__construct([
             "list" => [],
+            "inifinite_amount" => false,
         ], $resource);
     }
 

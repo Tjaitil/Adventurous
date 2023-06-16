@@ -34,9 +34,9 @@ export const pauseManager = {
         Game.setGameState('pause');
     },
     resumeGame(first = false) {
-        // if(["pause"].includes(game.properties.gameState)) {
-        //     viewport.resetTextLayer();
-        // }
+        if (["pause"].includes(Game.properties.gameState)) {
+            viewport.resetTextLayer();
+        }
         Game.setGameState('playing');
         Game.properties.requestId = window.requestAnimationFrame(Game.update);
     }

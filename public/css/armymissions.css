@@ -1,27 +1,21 @@
 #mission {
     position: relative;
 }
-#mission_enabled {
-    position: absolute;
+#new-mission-selected-container {
     margin: 0 auto;
-    top: 0px;
-    left: 0px;
-    right: 0px;
-    bottom: 0px;
-    background: radial-gradient(var(--layoutBgColor), var(--layoutBgColorShadowPerc), var(--layoutBgColorShadow));
-    border: 1px solid var(--borderColor);
-    width: 500px;
-    height: auto;
     visibility: hidden;
     padding: 10px;
-    z-index: 2;
-    border-radius: 20px;
+    display: none;
 }
-#mission_enabled_button button:first-of-type {
+#new-mission-selected-container-toggled {
+    display: block;
+    visibility: visible;
+}
+#new-mission-selected-container-button button:first-of-type {
     position: absolute;
     right: 5px;
 }
-#mission_enabled button {
+#new-mission-selected-container button {
     background-color: #8B4513;
     color: white;
     border-radius: 5px;
@@ -34,12 +28,45 @@
     padding-left: 2rem;
     margin-top: 2rem;
 }
-.mission-info-container {
-    display: flex;
-    align-items: flex-start;
+.mission-info {
+    max-width: 400px;
+    margin-inline: auto;
 }
-.mission-info-container > p {
+.missions-container {
+    display: grid;
+    justify-content: center;
+    gap: 0.5rem;
+    grid-template-columns: repeat(auto-fill, 400px);
+}
+.mission-info-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+.mission-info-wrapper > * {
     flex-basis: 50%;
     text-align: left;
     max-width: 200px;
 }
+.mission-info-wrapper p {
+    margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
+}
+#mission-tab-toggle-outer-container {
+    list-style-type: none;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+}
+#mission-tabs-outer-container {
+    position: relative;
+}
+.mission-tab {
+    display: none;
+}
+.mission-tab-visible {
+    display: block;
+}
+

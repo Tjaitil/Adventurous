@@ -8,8 +8,7 @@
         $page = str_replace('.php', '', $page);
         
         if($url[0] == $page) {
-            header("Location: /main");        
+            // header("Location: /main");        
         }
         return $url;
     }
-?>

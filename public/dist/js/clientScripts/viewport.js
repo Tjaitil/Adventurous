@@ -1,5 +1,8 @@
 import { GamePieces } from "./gamePieces.js";
 import { Game } from "../advclient.js";
+import { Character } from "../gamepieces/Character.js";
+import { Building } from "../gamepieces/Building.js";
+import { NonDrawingTypes } from "../gamepieces/NonDrawingTypes.js";
 // TODO: Convert to class
 export const viewport = {
     counter: 0,
@@ -20,6 +23,7 @@ export const viewport = {
         sprite: null,
         frontObjects: null,
         text: null,
+        hud: null,
     },
     layer: {
         background: null,
@@ -27,6 +31,7 @@ export const viewport = {
         sprite: null,
         frontObjects: null,
         text: null,
+        hud: null,
     },
     setInitalDimensions() {
         let screen = window.screen;
@@ -59,17 +64,19 @@ export const viewport = {
     setup(layers) {
         // Set layers and elements
         this.setInitalDimensions();
-        this.layer.background = layers[0].getContext("2d");
+        this.layer.background = layers.background.getContext("2d");
         this.layer.background.fillStyle = "black";
-        this.elements.background = layers[0];
-        this.layer.player = layers[1].getContext("2d");
-        this.elements.player = layers[1];
-        this.layer.sprite = layers[2].getContext("2d");
-        this.elements.sprite = layers[2];
-        this.layer.frontObjects = layers[3].getContext("2d");
-        this.elements.frontObjects = layers[3];
-        this.layer.text = layers[4].getContext("2d");
-        this.elements.text = layers[4];
+        this.elements.background = layers.background;
+        this.layer.player = layers.player.getContext("2d");
+        this.elements.player = layers.player;
+        this.layer.sprite = layers.sprite.getContext("2d");
+        this.elements.sprite = layers.sprite;
+        this.layer.frontObjects = layers.frontObjects.getContext("2d");
+        this.elements.frontObjects = layers.frontObjects;
+        this.layer.text = layers.text.getContext("2d");
+        this.elements.text = layers.text;
+        this.layer.hud = layers.hud.getContext("2d");
+        this.elements.hud = layers.hud;
         this.elements.background.width = this.width;
         this.elements.background.height = this.height;
         this.elements.background.style.left = this.left + "px";
@@ -85,10 +92,14 @@ export const viewport = {
         this.elements.text.width = this.width;
         this.elements.text.height = this.height;
         this.elements.text.style.left = this.left + "px";
+        this.elements.hud.width = this.width;
+        this.elements.hud.height = this.height;
+        this.elements.hud.style.left = this.left + "px";
         this.layer.background.scale(this.zoom, this.zoom);
         this.layer.player.scale(this.zoom, this.zoom);
         this.layer.sprite.scale(this.zoom, this.zoom);
         this.layer.frontObjects.scale(this.zoom, this.zoom);
+        this.layer.hud.scale(this.zoom, this.zoom);
     },
     adjustViewport(xbase, ybase, src) {
         this.playerCanvasX = Math.floor(this.width / 2 - 45);
@@ -106,8 +117,10 @@ export const viewport = {
         this.layer.background.drawImage(this.worldImage, this.offsetX + xMovement, this.offsetY + yMovement, this.width, this.height, 0, 0, this.width, this.height);
     },
     drawPlayer(canvasSprite) {
-        this.layer.player.clearRect(0, 0, this.width, this.height);
         this.layer.player.drawImage(canvasSprite.img, canvasSprite.spriteX, canvasSprite.spriteY, canvasSprite.sWidth, canvasSprite.sHeight, this.playerCanvasX, this.playerCanvasY, canvasSprite.width, canvasSprite.height);
+    },
+    resetPlayerLayer() {
+        this.layer.player.clearRect(0, 0, this.width, this.height);
     },
     resetObjectLayer() {
         this.layer.frontObjects.clearRect(0, 0, this.width, this.height);
@@ -146,6 +159,10 @@ export const viewport = {
         this.layer.player.fillStyle = "orange";
         this.layer.player.fillRect(10, 60, 100 - (100 - cooldown), 10);
     },
+    drawBlockCoolDown(cooldown) {
+        this.layer.player.fillStyle = "red";
+        this.layer.player.fillRect(10, 90, 100 - (100 - cooldown), 10);
+    },
     drawDaqloonHealthbar(fillstyle, x, y, width, height) {
         this.layer.sprite.fillStyle = fillstyle;
         this.layer.sprite.fillRect(x, y, width, height);
@@ -153,14 +170,26 @@ export const viewport = {
     checkViewportGamePieces(first = false) {
         // If player has moved a certain amount of pixels update object that will be drawn
         if (Math.abs(GamePieces.player.xTracker) > 100 || Math.abs(GamePieces.player.yTracker) > 100 || first == true) {
-            GamePieces.visibleObjects = GamePieces.nearObjects = GamePieces.objects.filter((object) => {
+            GamePieces.nearObjects = GamePieces.objects.filter((object) => {
                 return ((Math.abs(object.diameterRight - GamePieces.player.xpos) <= this.width + 50 ||
                     Math.abs(object.diameterLeft - GamePieces.player.xpos) <= this.width + 50) &&
                     (Math.abs(object.diameterUp - GamePieces.player.ypos) <= this.height + 50 ||
                         Math.abs(object.diameterDown - GamePieces.player.ypos) <= this.height + 50));
             });
-            // Visible object is only the objects that are visible
-            // GamePieces.visibleObjects = GamePieces.nearObjects.filter((object) => object.type);
+            GamePieces.nearBuildings = [];
+            GamePieces.nearCharacters = [];
+            GamePieces.visibleObjects = [];
+            GamePieces.nearObjects.forEach((object) => {
+                if (object instanceof Character && object.type === "character") {
+                    GamePieces.nearCharacters.push(object);
+                }
+                else if (object instanceof Building && object.type === "building") {
+                    GamePieces.nearBuildings.push(object);
+                }
+                if (!NonDrawingTypes.includes(object.type) && object.visible) {
+                    GamePieces.visibleObjects.push(object);
+                }
+            });
             GamePieces.player.xTracker = 0;
             GamePieces.player.yTracker = 0;
         }

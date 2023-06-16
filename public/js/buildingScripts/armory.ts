@@ -12,7 +12,6 @@ const armoryModule = {
             inputHandler.fetchBuilding('armycamp');
         });
         ItemSelector.setup();
-        ItemSelector.addSelectEventToInventory();
         ItemSelector.hideSelectedAmountInput();
         this.addClickEvents("all");
         document.getElementById("put_on_button").addEventListener("click", () => this.wearArmor());
