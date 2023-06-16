@@ -3,10 +3,17 @@
             <div id="trades">
                 <p id="trades_countdown">New merchant offers in <span id="trades_countdown_time"></span></p>
                 <p class="help mb-1 mt-1">Beware that diplomacy relation to places can affect prices. Difference will be displayed in
-                parenthesis. Trading in adventure locations will affect diplomacy relation</p>
+                    parenthesis. Trading in adventure locations will affect diplomacy relation</p>
                 <div id="merchant-offer-container" class="div_content div_content_dark">
-                    <div id="merchant-offer-list" class=".pb-05">
-                        <?php get_template('merchantOffers', $this->data['offers'], true); ?>
+                    <div id="merchant-offer-list" class="pb-05">
+                        <?php get_template(
+                            'merchantOffers',
+                            [
+                                'location' => $this->data['location'],
+                                'offers' => $this->data['offers'],
+                            ],
+                            true
+                        ); ?>
                     </div>
                     <div id="merchant-offer-selected" class="div_content_dark">
                         <div id="do_trade" class="div_content_dark">

@@ -2,12 +2,17 @@ import { GamePieces } from "./gamePieces.js";
 import { tutorial } from "./tutorial.js";
 import { ProgressBar } from "../progressBar.js";
 import viewport from "./viewport.js";
+import { itemTitle } from "../utilities/itemTitle.js";
+import { clientSettings } from "./clientSettings.js";
+import { clientHelpContainer } from "./help.js";
 
 export const HUD = {
     container: null,
     elements: {
         // controlText: new HTMLElement(),
         controlText: null,
+        control_text_building: null,
+        control_text_conversation: null,
         // hungerProgressBar: new HTMLElement(),
         hungerProgressBar: null as ProgressBar,
         // healthProgressBar: new HTMLElement(),
@@ -23,6 +28,9 @@ export const HUD = {
         tutorialProgressBar: null as ProgressBar,
     },
     setup(width: number, height: number, top: number, left: number) {
+
+        itemTitle.init(true);
+
         // Setup game_hud container;
         let container = document.getElementById("game_hud");
         container.style.top = top + "px";
@@ -111,6 +119,9 @@ export const HUD = {
         mapContainer.style.top = top + "px";
         mapContainer.style.left = "98%";
 
+        this.elements.control_text_conversation = document.getElementById("control_text_conversation");
+        this.elements.control_text_building = document.getElementById("control_text_building");
+
         // Assign width to log_2 equal to canvas width
         document.getElementById("log_2").style.width = width + "px";
         /* If screen is less than 830 set sidebar to be the same top as inventory so that the two are aligned
@@ -124,6 +135,9 @@ export const HUD = {
             cont_exit_button.style.margin = "0 auto";
             cont_exit_button.style.marginBottom = "20px";
         }
+
+        clientHelpContainer.init();
+        clientSettings.init();
     },
     makeTutorialHUD() {
         let tutorial_progressContainer = document.createElement("div");

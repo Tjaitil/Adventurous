@@ -3,18 +3,46 @@ import { checkInventoryStatus } from "../clientScripts/inventory.js";
 import { commonMessages, gameLogger } from "./gameLogger.js";
 import { itemTitle } from "./itemTitle.js";
 import { jsUcWords } from "./uppercase.js";
+import { StoreSkillRequirements } from './StoreSkillRequirements.js';
 
 const storeContainer = {
     storeItems: [] as StoreItemResource[],
+    selectedTadeWrapper: HTMLElement = null,
+    requirementsWrapper: HTMLElement = null,
+    itemInformationWrapper: HTMLElement = null,
+    skillRequirementsWrapper: HTMLElement = null,
+    doTradeButton: HTMLButtonElement = null,
+    SelectedTradeContainer: HTMLElement = null,
+    noTradeSelectedWrapper: HTMLElement = null,
+    storeItemList: HTMLElement = null,
+    storeContainer: HTMLElement = null,
+
+    init() {
+        this.selectedTadeWrapper = document.getElementById("store-container-selected-trade");
+        this.requirementsWrapper = document.getElementById("store-container-item-requirements");
+        this.itemInformationWrapper = document.getElementById("store-container-item-information");
+        this.skillRequirementsWrapper = document.querySelectorAll("#store-container-item-selected .skill-requirements")[0] as HTMLElement;
+        this.doTradeButton = document.getElementById("store-container-item-event-button") as HTMLButtonElement;
+        this.SelectedTradeContainer = document.getElementById("store-container-do-trade");
+        this.noTradeSelectedWrapper = document.getElementById("store-container-no-trade-selected");
+        this.storeItemList = document.getElementById("store-container-item-list");
+        this.storeContainer = document.getElementById("store-container-item-wrapper");
+        this.adjustStoreItemListHeight();
+    },
+
+    adjustStoreItemListHeight() {
+        let height = this.storeContainer.clientHeight;
+        this.storeItemList.style.maxHeight = height + "px";
+    },
 
     setStoreItems(items: StoreItemResource[]) {
         this.storeItems = items;
     },
 
     addSelectedItemButtonEvent(func: CallableFunction, text: string) {
-        document.getElementById("store-container-item-event-button").addEventListener("click", () => func());
+        this.doTradeButton.addEventListener("click", () => func());
         // Custom text for button
-        if (text) document.getElementById("store-container-item-event-button").innerHTML = text;
+        if (text) this.doTradeButton.innerHTML = text;
     },
 
     addSelectTrade() {
@@ -23,8 +51,14 @@ const storeContainer = {
     },
 
     selectTrade(event: Event) {
-        document.getElementById("store-container-selected-trade").innerHTML = "";
-        document.getElementById("store-container-do-trade").querySelectorAll("button")[0].disabled = false;
+        itemTitle.resetItemTooltip();
+        this.SelectedTradeContainer.style.display = "block";
+        this.noTradeSelectedWrapper.style.display = "none";
+        this.selectedTadeWrapper.innerHTML = "";
+        this.doTradeButton.disabled = false;
+        this.requirementsWrapper.innerHTML = "";
+        this.itemInformationWrapper.innerHTML = "";
+        this.skillRequirementsWrapper.innerHTML = "";
 
         let eventElement = <HTMLElement>event.currentTarget;
         let elementDiv = eventElement.closest(".store-container-item");
@@ -41,15 +75,18 @@ const storeContainer = {
         document.getElementById("store-container-selected-trade").appendChild(figure);
         document.getElementById("store-contaniner-trade-price").querySelectorAll("span")[0].innerHTML = price + " ";
 
-        let itemAmountElement = <HTMLInputElement>document.getElementById("store-container-selected-trade")
+        let itemAmountElement = <HTMLInputElement>this.selectedTadeWrapper
             .querySelectorAll(".item_amount")[0];
         // Hide item amount on selectd item by default
         if (itemAmountElement) {
             itemAmountElement
                 .style.visibility = "none";
         }
+
         this.checkHasRequirements(item);
         this.checkItemMultiplier(itemData);
+        this.checkSkillRequirement(itemData);
+        this.checkItemHasInformation(itemData);
     },
 
     checkHasRequirements(item: string) {
@@ -71,7 +108,7 @@ const storeContainer = {
             return false;
         }
 
-        let item = document.getElementById("store-container-selected-trade")
+        let item = this.selectedTadeWrapper
             .querySelectorAll("figcaption")[0]
             .innerHTML
             .toLowerCase()
@@ -93,9 +130,16 @@ const storeContainer = {
         }
     },
 
+    checkSkillRequirement(item: StoreItemResource) {
+        if (item.skill_requirements.length > 0) {
+            let skillRequirementsWrapper = document.getElementsByClassName("skill-requirements")[0] as HTMLElement;
+            let skillRequirements = new StoreSkillRequirements(skillRequirementsWrapper, item.skill_requirements);
+            skillRequirements.clearContainer();
+            skillRequirements.generateContainer();
+        }
+    },
+
     clearRequirementContainer() {
-        this.checkItemTooltip();
-        document.getElementById("store-container-item-requirements").innerHTML = "";
     },
 
     addRequirementEvent(funcName: CallableFunction) {
@@ -127,7 +171,13 @@ const storeContainer = {
         // Add itemtitle events
         div.addEventListener("mouseenter", (event) => itemTitle.show(event));
         div.addEventListener("mouseleave", () => itemTitle.hide());
-        document.getElementById("store-container-item-requirements").append(div);
+        this.requirementsWrapper.appendChild(div);
+    },
+
+    checkItemHasInformation(itemData: StoreItemResource) {
+        if (itemData.information) {
+            this.itemInformationWrapper.innerHTML = itemData.information
+        }
     },
 
     /** Check if item creates a set amount  */
@@ -139,7 +189,7 @@ const storeContainer = {
             span.innerHTML = "" + itemData.item_multiplier;
             span.style.visibility = "visible";
 
-            document.getElementById("store-container-selected-trade").appendChild(span);
+            this.selectedTadeWrapper.appendChild(span);
         }
     },
     checkItemTooltip() {

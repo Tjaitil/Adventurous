@@ -1,6 +1,6 @@
 import { gameLogger } from './utilities/gameLogger.js';
 import { jsUcfirst } from './utilities/uppercase.js';
-export const newLevel = {
+export const LevelManager = {
     skillElement: null,
     skillData: null,
     highLightIndex: 0,
@@ -10,6 +10,16 @@ export const newLevel = {
         miner: 2,
         trader: 3,
         warrior: 4,
+    },
+    getMinerLevel() {
+    },
+    getFarmerlevel() {
+    },
+    getAdventurerLevel() {
+    },
+    getTraderLevel() {
+    },
+    getWarriorLevel() {
     },
     update(levelData) {
         if (!Object.keys(levelData))

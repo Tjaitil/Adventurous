@@ -1,5 +1,6 @@
 import { StaticGameObject } from "../types/gamepieces/StaticGameObject.js";
 import viewport from "../clientScripts/viewport.js";
+import { NonDrawingTypes } from "./NonDrawingTypes.js";
 
 export class BaseStaticGameObject implements StaticGameObject {
     public type: string;
@@ -48,6 +49,9 @@ export class BaseStaticGameObject implements StaticGameObject {
         this.sprite = new Image(this.width, this.height);
 
         this.sprite.src = "public/images/" + this.src;
+        if (!this.src && !NonDrawingTypes.includes(this.type)) {
+            console.error("No image source found for " + initObjectData);
+        }
         // check source for missing format
         if (this.sprite.src.includes(".png") === false) this.sprite.src += ".png";
     }

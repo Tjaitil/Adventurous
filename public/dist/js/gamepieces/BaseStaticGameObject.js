@@ -1,4 +1,5 @@
 import viewport from "../clientScripts/viewport.js";
+import { NonDrawingTypes } from "./NonDrawingTypes.js";
 export class BaseStaticGameObject {
     type;
     sprite;
@@ -16,6 +17,7 @@ export class BaseStaticGameObject {
     height;
     noCollision;
     id;
+    displayName;
     constructor(initObjectData) {
         this.visible = initObjectData.visible;
         this.type = initObjectData.type;
@@ -31,9 +33,15 @@ export class BaseStaticGameObject {
         this.id = initObjectData.id;
         this.drawX = Math.round(initObjectData.x - viewport.offsetX);
         this.drawY = Math.round(initObjectData.y - viewport.offsetY);
+        if (this.src) {
+            this.displayName = this.src.split(".png")[0];
+        }
         this.noCollision = initObjectData.noCollision;
         this.sprite = new Image(this.width, this.height);
         this.sprite.src = "public/images/" + this.src;
+        if (!this.src && !NonDrawingTypes.includes(this.type)) {
+            console.error("No image source found for " + initObjectData);
+        }
         // check source for missing format
         if (this.sprite.src.includes(".png") === false)
             this.sprite.src += ".png";

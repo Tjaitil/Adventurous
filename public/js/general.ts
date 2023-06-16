@@ -6,10 +6,10 @@ import { inventorySidebarMob } from './utilities/inventoryToggle.js';
 import { jsUcfirst } from "./utilities/uppercase.js";
 import viewport from './clientScripts/viewport.js';
 import { ajaxP } from './ajax.js';
-import { clientOverlayInterface } from './clientScripts/clientOverlayInterface.js';
+import { ClientOverlayInterface } from './clientScripts/clientOverlayInterface.js';
 
 // scriptLoader.loadScript(['itemTitle', 'uppercase', 'inventoryToggle'], 'utility');
-
+// TODO: Remove this file
 
 const generalProperties = {
     computerDevice: true,
@@ -21,6 +21,7 @@ const generalProperties = {
 };
 window.addEventListener("load", () => generalInit());
 function generalInit() {
+    console.log('init');
     generalProperties.setDeviceType();
     itemTitle.init(generalProperties.computerDevice);
     // document.getElementById("help_button").addEventListener("click", () => helpContainer.toggle());
@@ -49,7 +50,7 @@ function generalInit() {
         let linksDiv = document.querySelectorAll(".top_bar");
         linksDiv.forEach((element, index) => {
             // If the device is mobile the first a is not displayed
-            if(linksDiv.length - 1 === index) return;
+            if (linksDiv.length - 1 === index) return;
             if (element.querySelectorAll("a")[0].style.display != "none") {
                 element.querySelectorAll("a")[0].setAttribute("target", "_blank");
             }
@@ -120,7 +121,7 @@ const mainContentHelpContainer = {
     helpElement: null,
     toggled: false,
     toggle() {
-        if(this.toggled === false) {
+        if (this.toggled === false) {
             this.helpElement.style.height = "250px";
             this.toggled = true;
         }
@@ -190,12 +191,12 @@ function getAdventure() {
 
 function checkCombatCalculator() {
     let data = "model=combatTest" + "&method=test";
-    ajaxP(data, function(response) {
-        if(response[0] !== false) {
+    ajaxP(data, function (response) {
+        if (response[0] !== false) {
             console.log(response[1]);
             let responseText = response[1];
 
-            clientOverlayInterface.show(responseText.html);
+            ClientOverlayInterface.show(responseText.html);
         }
     });
 }

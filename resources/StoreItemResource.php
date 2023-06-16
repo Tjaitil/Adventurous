@@ -2,6 +2,7 @@
 
 namespace App\resources;
 
+use App\models\SkillRequirement;
 
 /**
  * @property string $name
@@ -12,6 +13,7 @@ namespace App\resources;
  * @property int $item_multiplier Item amount to be multiplied when crafting. Default is 1
  * @property int $adjusted_store_value Store value adjustment. Default is 0
  * @property int $adjusted_difference Difference between adjusted store value and original store value. Default is 0
+ * @property SkillRequirementResource[] $skill_requirements
  */
 class StoreItemResource extends Resource
 {
@@ -20,13 +22,14 @@ class StoreItemResource extends Resource
     {
         parent::__construct([
             "name" => "",
-            "amount" => "",
+            "amount" => 0,
             "store_value" => "",
             "sell_value" => "",
             "required_items" => [],
             "item_multiplier" => 0,
             "adjusted_store_value" => 0,
             "adjusted_difference" => 0,
+            "skill_requirements" => []
         ], $resource);
     }
 
@@ -50,7 +53,12 @@ class StoreItemResource extends Resource
             }
         }
 
-
+        $skill_requirements = [];
+        if (\is_array($this->skill_requirements) && count($this->skill_requirements) > 0) {
+            foreach ($this->skill_requirements as $key => $value) {
+                array_push($skill_requirements, $value->toArray());
+            }
+        }
         return [
             "name" => $this->name,
             "amount" => $this->amount,
@@ -60,6 +68,7 @@ class StoreItemResource extends Resource
             "adjusted_store_value" => $this->adjusted_store_value,
             "adjusted_difference" => $this->adjusted_difference,
             "item_multiplier" => $this->item_multiplier,
+            "skill_requirements" => $skill_requirements
         ];
     }
 
@@ -67,6 +76,8 @@ class StoreItemResource extends Resource
     {
         if (isset($data['item'])) {
             $data['name'] = $data['item'];
+        } else if (isset($data['required_item'])) {
+            $data['name'] = $data['required_item'];
         }
 
         if (!isset($data['item_multiplier'])) {
@@ -85,6 +96,13 @@ class StoreItemResource extends Resource
                     $data['required_items'],
                     new StoreItemResource($value)
                 );
+            }
+        }
+        if (isset($data['skill_requirements']) && \is_array($data['skill_requirements'])) {
+            $items = $data['skill_requirements'];
+            $data['skill_requirements'] = [];
+            foreach ($items as $key => $value) {
+                array_push($data['skill_requirements'], new SkillRequirementResource($value));
             }
         }
 

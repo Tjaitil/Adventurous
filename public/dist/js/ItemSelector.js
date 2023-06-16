@@ -49,11 +49,12 @@ export class ItemSelector {
     static container;
     static selectedWrapper;
     static selectedItemAmountInput;
-    static isSelectedAmountInputVisible = false;
+    static isSelectedAmountInputVisible = true;
     static setup() {
         this.container = document.getElementById("selected-item-container");
         this.selectedWrapper = document.getElementById("selected");
         this.selectedItemAmountInput = document.getElementById("selected-item-amount");
+        this.addSelectEventToInventory();
     }
     static get isEventSet() {
         return this.eventStatus;
@@ -118,6 +119,9 @@ export class ItemSelector {
         }
     }
     static get selected() {
+        if (this.selectedWrapper.getElementsByTagName("figure").length === 0) {
+            gameLogger.addMessage("Please select a valid item", true);
+        }
         let name = this.selectedWrapper.querySelectorAll("figcaption")[0].innerHTML.toLowerCase().trim();
         // Is input visible?
         if (this.isSelectedAmountInputVisible) {
@@ -130,11 +134,17 @@ export class ItemSelector {
     }
     static hideSelectedAmountInput() {
         this.isSelectedAmountInputVisible = false;
-        document.getElementById("selected_item_amount_wrapper").style.display = "none";
+        this.selectedItemAmountInput.style.display = "none";
     }
     static showSelectedAmountInput() {
         this.isSelectedAmountInputVisible = true;
-        document.getElementById("selected_item_amount_wrapper").style.display = "block";
+        this.selectedItemAmountInput.style.display = "block";
+    }
+    static clearContainer() {
+        this.selectedWrapper.innerHTML = "";
+        if (this.isSelectedAmountInputVisible) {
+            this.selectedItemAmountInput.value = "0";
+        }
     }
 }
 export const selectItemEvent = {

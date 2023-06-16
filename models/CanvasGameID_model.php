@@ -71,9 +71,8 @@
         $session_id = $stmt->fetch(PDO::FETCH_OBJ)->session_id;
         if($_SESSION['session_id'] !== $session_id) {
             $_SESSION['outdatedSessionID'] = true;
-            header("Location: /logout");
+            // header("Location: /logout");
             exit();
         }
     }
 }
-?>

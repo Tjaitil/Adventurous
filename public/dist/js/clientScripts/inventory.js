@@ -48,6 +48,10 @@ export async function updateInventory(page = false, addSelect = false) {
         }
     });
 }
+/**
+ *
+ * @deprecated
+ */
 export function checkInventoryStatus() {
     // Fetch items amount
     let items = document.getElementsByClassName("inventory_item");
@@ -64,10 +68,14 @@ export function checkInventoryStatus() {
 }
 export class Inventory {
     static items;
+    static itemsAmount;
     static update() {
         AdvApi.get("/inventory")
             .then(data => {
             document.getElementById("inventory").innerHTML = data["html"]["inventory"];
+            let items = document.getElementsByClassName("inventory_item");
+            this.itemsAmount = items.length;
+            this.isFull() ? this.styleSpaceIndicator("full") : this.styleSpaceIndicator("");
             if (getClientPageTitle() == "Stockpile") {
                 let figures = document.getElementById("inventory").querySelectorAll("figure");
                 figures.forEach(element => element.addEventListener('click', inputHandler.currentBuildingModule.show_menu));
@@ -81,6 +89,19 @@ export class Inventory {
                 ItemSelector.addSelectEventToInventory();
             }
         });
+    }
+    static isFull() {
+        return this.itemsAmount === 18;
+    }
+    static styleSpaceIndicator(status) {
+        let inventoryStatusElement = document.getElementById("inventory-status");
+        // Adjust color according to inventory status
+        if (status === "full") {
+            inventoryStatusElement.classList.add("not-able-color");
+        }
+        else {
+            inventoryStatusElement.classList.remove("not-able-color");
+        }
     }
 }
 export const itemPrices = {

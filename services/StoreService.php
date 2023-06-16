@@ -10,10 +10,10 @@ use Illuminate\Database\Eloquent\Model;
 class StoreService
 {
 
-    public StoreBuilder $storeBuilder;
-
-    public function __construct(StoreBuilder $storeBuilder)
-    {
+    public function __construct(
+        public StoreBuilder $storeBuilder,
+        protected SkillsService $skillsService
+    ) {
         $this->storeBuilder = $storeBuilder::create();
     }
 
@@ -73,7 +73,7 @@ class StoreService
             }
         }
 
-        return $matches[0];
+        return (object) $matches[0];
     }
 
     /**
@@ -145,6 +145,36 @@ class StoreService
             return true;
         }
     }
+
+    /**
+     * Check if the user has skill requirements
+     * 
+     */
+    public function hasSkillRequirements(string $item)
+    {
+        $result = false;
+        $match = false;
+
+        $item = $this->getStoreItem($item);
+        if (!isset($item->skill_requirements)) return true;
+
+        foreach ($item->skill_requirements as $key => $value) {
+            $skill = $value->skill;
+            $level = $value->level;
+
+            if ($this->skillsService->hasRequiredLevel($level, $skill)) {
+                $result = true;
+                $match = true;
+            } else {
+                $match = false;
+                $result = false;
+            }
+        }
+
+        if ($match) return true;
+        else return $result;
+    }
+
 
     /**
      * Calculate new price of item. Will be 5 percent if value is over 1500

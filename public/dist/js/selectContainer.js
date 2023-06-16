@@ -1,6 +1,6 @@
 import { Game } from "./advclient.js";
 import { ajaxJS } from "./ajax.js";
-import { clientOverlayInterface } from "./clientScripts/clientOverlayInterface.js";
+import { ClientOverlayInterface } from "./clientScripts/clientOverlayInterface.js";
 import { jsUcfirst } from "./utilities/uppercase.js";
 const skillContainer = {
     typeData: {},
@@ -32,7 +32,7 @@ const skillContainer = {
         clone.removeAttribute("onclick");
         let item = targetElement.getAttribute("alt");
         let className;
-        if (clientOverlayInterface.getInterfacePageTitle() === "crops") {
+        if (ClientOverlayInterface.getInterfacePageTitle() === "crops") {
             className = "crop_type";
         }
         else {

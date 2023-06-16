@@ -7,8 +7,8 @@ import { GamePieces } from "../clientScripts/gamePieces.js";
 import { HUD } from "../clientScripts/HUD.js";
 
 export class Player implements MovingGameObject {
-    width = 32 * 1.05;
-    height = 32 * 1.05;
+    width = 36;
+    height = 36;
     speedX = 0;
     speedY = 0;
     speed = 1.5;
@@ -22,6 +22,9 @@ export class Player implements MovingGameObject {
     drawY: 0;
     src: "";
     sprite = new Image(96, 128);
+    headSprite = new Image(32, 224);
+    bodySprite = new Image(32, 224);
+    legsSprite = new Image(32, 224);
     spriteAttack = new Image(114, 32);
     type: "player";
     visible: true;
@@ -32,7 +35,7 @@ export class Player implements MovingGameObject {
     left: DirectionBlockedCheck;
     down: DirectionBlockedCheck;
     right: DirectionBlockedCheck;
-    playerSize = 32 * 1.05;
+    playerSize = 36;
     diameterUp = this.y;
     diameterRight = this.x + this.width - 5;
     diameterDown = this.y + 28;
@@ -58,19 +61,36 @@ export class Player implements MovingGameObject {
     combat = false;
     attackDamage = 10;
     cooldown = 0;
+    combatActions = {
+        attack: false,
+        block: false,
+    };
+    combatActionsAnimationStarted = {
+        attack: false,
+        block: false,
+    };
+    isInCombatAction = false;
+    cooldowns = {
+        block: 0,
+    };
     movementSpeed = 60;
+    currentAnimation: string = "idle";
     health = 100;
     regenerateCoundown = false;
     newDirection: string;
     // imageFix to adjust character sprite not being in 32 x 32 format
     imageFix = 0;
     noCollision = true;
+    ranged = true;
 
     setup() {
         this.setHuntedStatus(false);
         this.draw();
         this.sprite.src = "public/images/character1.png";
         this.spriteAttack.src = "public/images/character attack2.png";
+        this.headSprite.src = "public/images/character head.png";
+        this.bodySprite.src = "public/images/character body.png";
+        this.legsSprite.src = "public/images/character legs.png";
         this.diameterUp = this.y;
         this.diameterRight = this.x + this.width - 5;
         this.diameterDown = this.y + 28;
@@ -89,6 +109,10 @@ export class Player implements MovingGameObject {
         this.diameterDown = this.y + this.height;
         this.diameterLeft = this.x;
         this.setup();
+    }
+
+    setIsInCombatAction(status) {
+        this.isInCombatAction = status;
     }
 
     checkPosition() {
@@ -145,7 +169,7 @@ export class Player implements MovingGameObject {
             }
             setTimeout(
                 () =>
-                    Game.loadWorld({
+                    Game.setWorld({
                         method: "changeMap",
                         newxBase: newX,
                         newyBase: newY,
@@ -156,26 +180,11 @@ export class Player implements MovingGameObject {
         HUD.elements.healthProgressBar.setCurrentValue(this.health);
     }
 
-    draw() {
-        let drawImage = this.sprite;
-        let spriteX;
-        let spriteY;
-
-        // Determine which image and calculate spriteX and spriteY there after
-        if (this.combat === true) {
-            drawImage = this.spriteAttack;
-            spriteX = 41 * this.loopIndex + this.imageFix;
-            spriteY = 38 * this.indexY;
-        } else {
-            drawImage = this.sprite;
-            spriteX = this.indexX * this.loopIndex;
-            spriteY = this.indexY;
-        }
-
+    drawHead() {
         viewport.drawPlayer({
-            img: drawImage,
-            spriteX,
-            spriteY,
+            img: this.headSprite,
+            spriteX: this.indexX * this.loopIndex,
+            spriteY: 0,
             sWidth: 32,
             sHeight: 32,
             width: this.playerSize,
@@ -183,17 +192,78 @@ export class Player implements MovingGameObject {
         });
     }
 
+    drawBody() {
+        viewport.drawPlayer({
+            img: this.bodySprite,
+            spriteX: this.indexX * this.loopIndex,
+            spriteY: 0,
+            sWidth: 32,
+            sHeight: 32,
+            width: this.playerSize,
+            height: this.playerSize,
+        });
+    }
+
+    drawLegs() {
+        viewport.drawPlayer({
+            img: this.legsSprite,
+            spriteX: this.indexX * this.loopIndex,
+            spriteY: 0,
+            sWidth: 32,
+            sHeight: 32,
+            width: this.playerSize,
+            height: this.playerSize,
+        });
+    }
+
+    draw() {
+        viewport.resetPlayerLayer();
+        this.drawLegs();
+        this.drawBody();
+        this.drawHead();
+
+        // let drawImage = this.sprite;
+        // let spriteX;
+        // let spriteY;
+
+        // // Determine which image and calculate spriteX and spriteY there after
+        // if (this.combat === true) {
+        //     drawImage = this.spriteAttack;
+        //     spriteX = 41 * this.loopIndex + this.imageFix;
+        //     spriteY = 38 * this.indexY;
+        // } else {
+        //     drawImage = this.sprite;
+        //     spriteX = this.indexX * this.loopIndex;
+        //     spriteY = this.indexY;
+        // }
+
+        // viewport.drawPlayer({
+        //     img: drawImage,
+        //     spriteX,
+        //     spriteY,
+        //     sWidth: 32,
+        //     sHeight: 32,
+        //     width: this.playerSize,
+        //     height: this.playerSize,
+        // });
+    }
+
     drawCooldown() {
         this.cooldown -= 3;
         viewport.drawAttackCoolDown(this.cooldown);
     }
 
-    setHuntedStatus(status) {
+    drawBlock() {
+        this.cooldowns.block -= 3;
+        viewport.drawBlockCoolDown(this.cooldowns.block);
+    }
+
+    setHuntedStatus(status: boolean) {
         this.hunted = status;
         if (this.hunted === true) {
-            document.getElementById("HUD_hunted_icon").style.visibility = "visible";
+            HUD.elements.huntedIcon.style.visibility = "visible";
         } else {
-            document.getElementById("HUD_hunted_icon").style.visibility = "hidden";
+            HUD.elements.huntedIcon.style.visibility = "hidden";
         }
     }
 
@@ -206,15 +276,15 @@ export class Player implements MovingGameObject {
     }
 
     newPos(newPos = true) {
-        if (this.health < 100 && this.regenerateCoundown === false) {
-            this.regenerateCoundown = true;
-            setTimeout(() => this.regenerateHealth(), 7000);
-        }
+        // if (this.health < 100 && this.regenerateCoundown === false) {
+        //     this.regenerateCoundown = true;
+        //     setTimeout(() => this.regenerateHealth(), 7000);
+        // }
         this.up = "";
         this.left = "";
         this.down = "";
         this.right = "";
-        //drawing starts at x (diameterLeft) and y (diameterUp) line
+        // //drawing starts at x (diameterLeft) and y (diameterUp) line
         if (newPos !== false) {
             this.xpos = Game.properties.xbase + this.xMovement;
             this.ypos = Game.properties.ybase + this.yMovement;
@@ -227,7 +297,8 @@ export class Player implements MovingGameObject {
             this.diameterDown = this.ypos + this.height;
             this.diameterLeft = this.xpos + 4;
         }
-        if (this.combat === true) {
+        this.determineDirection();
+        if (this.combat === true && !this.ranged && this.combatActions.attack) {
             let newDirection = "none";
             if (controls.playerDown === true) {
                 newDirection = "down";
@@ -263,7 +334,7 @@ export class Player implements MovingGameObject {
                             (this.direction === "up" &&
                                 GamePieces.daqloon[i].y < this.ypos &&
                                 Math.abs(GamePieces.daqloon[i].x - this.xpos) < 30 &&
-                                Math.abs(GamePieces.daqloon[i].y - this.ypos) < 30) ||
+                                Math.abs(GamePieces.daqloon[i].diameterDown - this.ypos) < 16) ||
                             (this.direction === "down" &&
                                 Math.abs(GamePieces.daqloon[i].x - this.xpos) < 64 &&
                                 Math.abs(GamePieces.daqloon[i].y - this.ypos + 32) < 60)
@@ -277,7 +348,7 @@ export class Player implements MovingGameObject {
                         }
                     }
                 }
-                this.draw();
+                // this.draw();
                 this.loopIndex++;
                 // Attack is finished on attackLoop 2
                 if (this.attackLoop === 1) {
@@ -291,53 +362,32 @@ export class Player implements MovingGameObject {
                 if (this.loopIndex > 3) {
                     this.loopIndex = 0;
                 }
-                this.draw();
+                // this.draw();
                 this.loopIndex++;
             }
+        } else if (this.combatActions.block) {
+            if (this.combatActionsAnimationStarted.block === false) {
+                this.combatActionsAnimationStarted.block = true;
+                this.cooldowns.block = 100;
+            } else if (this.cooldowns.block <= 0) {
+                this.combatActionsAnimationStarted.block = false;
+            } else if (Game.isGameDuration(60)) {
+                console.log('block down');
+                this.combatActions.block = false;
+            }
+            this.draw();
         } else {
-            let newdirection = "none";
-            if (controls.playerLeft == true && controls.playerDown == true) {
-                newdirection = "left, down";
-            }
-            if (controls.playerRight == true && controls.playerUp == false && controls.playerDown == false) {
-                newdirection = "right";
-                this.indexY = 32;
-            }
-            if (controls.playerLeft == true && controls.playerUp == false && controls.playerDown == false) {
-                newdirection = "left";
-                this.indexY = 64;
-            }
-            if (controls.playerDown == true) {
-                newdirection = "right, down";
-                this.indexY = 0;
-            }
-            if (controls.playerUp == true) {
-                newdirection = "right, up";
-                this.indexY = 96;
-            }
-            if (controls.playerRight == true && controls.playerUp == false && controls.playerDown == false) {
-                newdirection = "right";
-                this.indexY = 32;
-            }
-            if (
-                controls.playerUp == false &&
-                controls.playerLeft == false &&
-                controls.playerRight == false &&
-                controls.playerDown == false
-            ) {
-                newdirection = "none";
-            }
-            if (newdirection != "none" && (this.oldYbase != this.ypos || this.oldXbase != this.xpos)) {
-                if (newdirection != "none" && Game.properties.duration % 10 === 0) {
+            if (this.newDirection != "none" && (this.oldYbase != this.ypos || this.oldXbase != this.xpos)) {
+                if (this.newDirection != "none" && Game.isGameDuration(10)) {
                     this.draw();
                     this.loopIndex++;
-                } else if (newdirection != this.direction) {
+                } else if (this.newDirection != this.direction) {
                     this.loopIndex = 1;
-                    this.direction = newdirection;
+                    this.direction = this.newDirection;
                     this.draw();
                     this.loopIndex++;
                 }
-                if (this.loopIndex == 5 && newdirection != "none") {
+                if (this.loopIndex == 5 && this.newDirection != "none") {
                     this.loopIndex = 1;
                 }
                 this.counter++;
@@ -345,13 +395,53 @@ export class Player implements MovingGameObject {
             } else {
                 this.loopIndex = 0;
                 this.draw();
+
                 this.animationEnd = true;
             }
         }
+
         if (this.cooldown > 0) {
             this.drawCooldown();
         }
+        if (this.cooldowns.block > 0) {
+            this.drawBlock();
+        }
         this.oldYbase = this.ypos;
         this.oldXbase = this.xpos;
+    }
+
+    determineDirection() {
+        this.newDirection = "none";
+        if (controls.playerLeft == true && controls.playerDown == true) {
+            this.newDirection = "left, down";
+        }
+        if (controls.playerRight == true && controls.playerUp == false && controls.playerDown == false) {
+            this.newDirection = "right";
+            this.indexY = 32;
+        }
+        if (controls.playerLeft == true && controls.playerUp == false && controls.playerDown == false) {
+            this.newDirection = "left";
+            this.indexY = 64;
+        }
+        if (controls.playerDown == true) {
+            this.newDirection = "right, down";
+            this.indexY = 0;
+        }
+        if (controls.playerUp == true) {
+            this.newDirection = "right, up";
+            this.indexY = 96;
+        }
+        if (controls.playerRight == true && controls.playerUp == false && controls.playerDown == false) {
+            this.newDirection = "right";
+            this.indexY = 32;
+        }
+        if (
+            controls.playerUp == false &&
+            controls.playerLeft == false &&
+            controls.playerRight == false &&
+            controls.playerDown == false
+        ) {
+            this.newDirection = "none";
+        }
     }
 }

@@ -6,7 +6,7 @@ import { gameLogger } from "../utilities/gameLogger.js";
 import { GamePieces } from "./gamePieces.js";
 import viewport from "./viewport.js";
 import { jsUcfirst } from "../utilities/uppercase.js";
-import { clientOverlayInterface } from "./clientOverlayInterface.js";
+import { ClientOverlayInterface } from "./clientOverlayInterface.js";
 addEventListener("load", function () {
     conversation.conversationDiv = document.getElementById("conversation").querySelectorAll("ul")[0];
     document
@@ -73,7 +73,7 @@ export const conversation = {
         this.end = false;
         this.persons = [];
         // Close news to prevent players having conversation and also being in building
-        clientOverlayInterface.hide();
+        ClientOverlayInterface.hide();
         // If index is undefined, set it to false
         index == undefined ? (this.index = false) : (this.index = index);
         let h = document.createElement("h2");

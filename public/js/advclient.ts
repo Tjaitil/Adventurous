@@ -19,6 +19,7 @@ import { GameProperties, loadWorldParamters } from "./types/Advclient.js";
 import { GetWorldResponse } from './types/responses/WorldLoaderResponse';
 import { getRandomInteger } from "./utilities/getRandomInteger.js";
 import { jsUcWords } from "./utilities/uppercase.js";
+import { LevelManager } from './LevelManager.js';
 
 const CookieTicket = {
     checkCookieTicket(cookieNoob = "getOut") {
@@ -108,6 +109,23 @@ export class Game {
         inBuilding: false,
         checkingPerson: "none",
         delta: 0,
+        assetsPath: "public/images/",
+    }
+
+    public static getProperty(val: keyof GameProperties) {
+        return this.properties[val];
+    }
+
+    /**
+     * Threshold 60 will be around 1 second
+     * @returns boolean
+     */
+    public static isGameDuration(threshold: number) {
+        if (this.properties.duration % threshold === 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public static setGameState(state: string) {
@@ -115,7 +133,7 @@ export class Game {
         if (["playing", "conversation", "loading", "help", "map", "pause"].indexOf(state) === -1) {
             return false;
         }
-        Game.properties.gameState = state;
+        this.properties.gameState = state;
     }
 
     public static async getWorld() {
@@ -179,22 +197,16 @@ export class Game {
         if (parameters.newxBase) {
             // Legge til xbase i JSON map filene
             Game.properties.xbase = parameters.newxBase;
+        } else if (startPoints.length > 0) {
+            Game.properties.xbase = startPoints[0].x;
         }
-        // else if (startPoints.length > 0) {
-        //     Game.properties.xbase = startPoints[0].x;
-        // } 
-        else {
-            Game.properties.xbase = 2500;
-        }
+
         if (parameters.newyBase) {
             // Legge til ybase i JSON map filene
             Game.properties.ybase = parameters.newyBase;
         }
-        //  else if (startPoints.length > 0) {
-        //     Game.properties.ybase = startPoints[0].y;
-        // } 
-        else {
-            Game.properties.ybase = 2952;
+        else if (startPoints.length > 0) {
+            Game.properties.ybase = startPoints[0].y;
         }
 
         let worldMapSrc = "public/images/" + Game.properties.currentMap + ".png";
@@ -264,15 +276,19 @@ export class Game {
         sidebar.addClickEvent();
         ClientOverlayInterface.setup();
 
-        viewport.setup([
-            <HTMLCanvasElement>document.getElementById("game_canvas"),
-            <HTMLCanvasElement>document.getElementById("game_canvas2"),
-            <HTMLCanvasElement>document.getElementById("game_canvas3"),
-            <HTMLCanvasElement>document.getElementById("game_canvas4"),
-            <HTMLCanvasElement>document.getElementById("text_canvas"),
-        ]);
+        viewport.setup({
+            background: document.getElementById("game_canvas") as HTMLCanvasElement,
+            player: document.getElementById("game_canvas2") as HTMLCanvasElement,
+            frontObjects: document.getElementById("game_canvas4") as HTMLCanvasElement,
+            sprite: document.getElementById("game_canvas3") as HTMLCanvasElement,
+            text: document.getElementById("text_canvas") as HTMLCanvasElement,
+            hud: document.getElementById("hud_canvas") as HTMLCanvasElement,
+
+        });
         // Initial loading screen
         loadingCanvas.loadingScreen();
+
+        LevelManager.get();
 
         setTimeout(() => {
             document.getElementById("client-container").style.opacity = "" + 1;
@@ -299,44 +315,42 @@ export class Game {
 
     public static update(timestamp, first = false) {
         Game.properties.delta = (timestamp - Game.properties.timestamp) / 1000 / viewport.zoom;
-
-        if (GamePieces.player.travel === true) return false;
-
-        // Calculate the number of seconds passed since the last frame
-        let secondsPassed = (timestamp - Game.properties.timestamp) / 1000;
-        Game.properties.timestamp = timestamp;
-        // Calculate fps
-        if (!FPS_TRACKER[Math.round(1 / secondsPassed)]) {
-            FPS_TRACKER[Math.round(1 / secondsPassed)] = 1;
-        } else {
-            FPS_TRACKER[Math.round(1 / secondsPassed)]++;
-        }
-
         if (Game.properties.delta > 0.08) {
             Game.properties.delta = Math.round(0.16 / viewport.zoom) * 2;
         }
         Game.properties.timestamp = timestamp;
+        // Calculate the number of seconds passed since the last frame
+        // let secondsPassed = (timestamp - Game.properties.timestamp) / 1000;
+        // Calculate fps
+        // if (!FPS_TRACKER[Math.round(1 / secondsPassed)]) {
+        //     FPS_TRACKER[Math.round(1 / secondsPassed)] = 1;
+        // } else {
+        //     FPS_TRACKER[Math.round(1 / secondsPassed)]++;
+        // }
+        // console.log("FPS: " + Math.round(1 / secondsPassed));
+
         if (Game.properties.gameState !== "playing") {
             return false;
         }
-        GamePieces.player.speedX = 0;
-        GamePieces.player.speedY = 0;
 
         if (controls.playerLeft === true) {
             GamePieces.player.speedX = -GamePieces.player.speed;
-        }
-        if (controls.playerRight === true) {
+        } else if (controls.playerRight === true) {
             GamePieces.player.speedX = GamePieces.player.speed;
+        } else {
+            GamePieces.player.speedX = 0;
         }
         if (controls.playerUp === true) {
             GamePieces.player.speedY = -GamePieces.player.speed;
-        }
-        if (controls.playerDown === true) {
+        } else if (controls.playerDown === true) {
             GamePieces.player.speedY = GamePieces.player.speed;
+        } else {
+            GamePieces.player.speedY = 0;
+
         }
         viewport.resetSpriteLayer();
         if (
-            (GamePieces.player.speedX != 0 || GamePieces.player.speedY != 0) &&
+            // (GamePieces.player.speedX != 0 || GamePieces.player.speedY != 0) &&
             Game.properties.inBuilding == false &&
             conversation.active === false
         ) {

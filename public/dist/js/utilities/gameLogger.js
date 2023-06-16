@@ -25,6 +25,7 @@ export const gameLogger = {
         if (this.messages.length === 0)
             return false;
         // Start new loop only if none is set
+        console.log(this.currentlyLogging);
         if (!this.currentlyLogging) {
             this.clientLog();
         }
@@ -62,14 +63,17 @@ export const gameLogger = {
         }
     },
     clientLog() {
+        console.log('clientlog');
         let message = this.messages[this.currentIndex];
         let div = document.getElementById("log_2");
         div.innerHTML = message;
         div.style.opacity = "1";
         div.style.height = "50px";
         div.style.top = window.pageYOffset + 5 + "px";
-        this.mainLog();
+        // TODO: Fix main log
+        // this.mainLog();
         setTimeout(() => {
+            console.log('log_2');
             document.getElementById("log_2").style.height = "4px";
         }, 3700);
         setTimeout(() => {

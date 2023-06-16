@@ -26,6 +26,8 @@ class App
 
     public function boot()
     {
+        require_once(ROUTE_ROOT . constant('ROUTE_HELPER') . 'general_helpers.php');
+
         Dotenv::createImmutable(__DIR__ . '/../')->load();
         database::getInstance()->openConn();
     }

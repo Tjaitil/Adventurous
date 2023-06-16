@@ -5,7 +5,6 @@
  * @var boolean $data.show_amount_input
  * @var string $data.selected_amount_label
  */
-
 ?>
 <div id="selected-item-data-wrapper">
     <div id="selected" class="mt-1 mb-1">

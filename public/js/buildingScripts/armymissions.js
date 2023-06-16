@@ -1,122 +1,291 @@
-    if(document.getElementById("news_content").children[2] != null) {
-        getCountdown();
-        document.getElementById("current_mission").querySelectorAll("button")[0].addEventListener("click", cancelMission);
-        document.getElementById("news_content_main_content").querySelectorAll("button")[0].addEventListener("click", function() {
-            inputHandler.fetchBuilding('armycamp'); 
-        });
-        addWarriorEvents();
-    }
-    function getCountdown() {
-        var data = "model=ArmyMissions" + "&method=getCountdown";
-        ajaxG(data, function(response) {
-            if(response[0] != false) {
-                let responseText = response[1];
-                var time = responseText.date * 1000;
-                var mission = responseText.mission;
-                var x = setInterval (function() {
-                    let now = new Date().getTime();
-                    let distance = time - now;
-                    let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    let seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                    if(document.getElementById("time") == null) {
-                        clearInterval(x);
-                    }
-                    else {
-                        document.getElementById("current_mission").querySelectorAll("button")[0].style.display = "";
-                        document.getElementById("time").innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
-                    }
-                    if(distance < 0 && mission != 0){
-                        clearInterval(x);
-                        var btn = document.createElement("BUTTON");
-                        var t = document.createTextNode("Mission report");
-                        btn.appendChild(t);
-                        btn.addEventListener("click", updateMission);
-                        document.getElementById('current_mission').appendChild(btn);
-                        document.getElementById("current_mission").querySelectorAll("button")[0].style.display = "none";
-                        document.getElementById("time").innerHTML = "Finished";
-                    }
-                    else if (distance < 0) {
-                        clearInterval(x);
-                        document.getElementById("time").innerHTML = "None";
-                        document.getElementById("current_mission").querySelectorAll("button")[0].style.display = "none";
-                        if(document.getElementById("current_mission").querySelectorAll("button")[1] !== undefined) {
-                            document.getElementById("current_mission").removeChild(document.getElementById("current_mission").querySelectorAll("button")[1]);
-                        }
-                    }
-                }, 1000);
-            }
-        });
-    }
-    function prepareMission(tr_id, mission_id) {
-        var tr = tr_id.parentNode.parentNode;
-        let tds = [...tr.children];
-        tds.pop();
-        let infoContainers = document.getElementsByClassName("mission-info-container");
-        tds.forEach((element, i) => infoContainers[i].children[1].innerHTML = element.innerHTML); 
-        document.getElementById("mission_enabled").style.visibility = "visible";       
-    }
-    function exit() {
-        let ele = document.getElementById("mission_enabled");
-        ele.style.visibility = "hidden";
-        document.getElementById("mission_table").innerHTML = "";
-        // Loop through children and find warriors_container and remove it
-        for(let i = 0; i < ele.children.length; i++) {
-            if(ele.children[i].id === "warriors_container") {
-                ele.removeChild(ele.children[i]);
-                break;
-            }
-        }
-    }
-    function doMission() {
-        // warriorSelect.js
-        var warrior_check = warriorsCheck();
-        // Send array with warriors id and mission id to model
-        if(warrior_check.length == 0) {
-            gameLogger.addMessage("Please select warriors!");
-            gameLogger.logMessages();
-            return false;
-        }
-        let mission_id = document.getElementById("mission_table").querySelectorAll("tr")[0].id;
-        let data = "model=SetArmymission" + "&method=setMission" + "&mission_id=" + mission_id + "&warrior_check=" + warrior_check;
-        ajaxP(data, function(response) {
-            console.log(response);
-            if(response[0] != false) {
-                getCountdown();
-                updateCountdownTab();
-                updateHunger(response.newHunger);
-                document.getElementById("mission_table").innerHTML = "";
-                document.getElementById("warriors_container").innerHTML = "";
-                document.getElementById("mission_enabled").style.visibility = "hidden";
-            }
-        });
-    }
-    function cancelMission() {
-        var data = "model=UpdateArmymission" + "&method=cancelMission";
-        ajaxP(data, function(response) {
-            if(response[0] != false) {
-                getCountdown();
-                updateCountdownTab();
-            }
-        });
-    }
-    function updateMission() {
-        var data = "model=UpdateArmymission" + "&method=updateMission";
-        ajaxP(data, function (response) {
-            console.log(response);
-            if(response[0] !== false) {
-                let responseText = response[1];
-                let ele = document.getElementById("mission_enabled");
-                for(let i = 0; i < ele.children.length; i++) {
-                    if(["cont_exit", "battle_result"].indexOf(ele.children[i].className) === -1) {
-                        ele.children[i].style.display = "none";
-                    }
-                }
-                document.getElementById("battle_result").innerHTML = responseText[0];
-                document.getElementById("battle_result").style.display = "";
-                document.getElementById("mission_enabled").style.visibility = "visible";
-                updateInventory();
-                getCountdown();
-            }
-        });
-    }
+// import countdown from "../utilities/countdown.js";
+// import warriorSelect from "../utilities/warriorSelect.js";
+// import createHTMLNode from "../utilities/createHTMLNode.js";
+// import { inputHandler } from "../clientScripts/inputHandler.js";
+// import { gameLogger } from "../utilities/gameLogger.js";
+// import { ajaxP } from "../ajax.js";
+
+// const armyMissionModule = {
+//     init() {
+//         document.getElementById("navigate-army-camp").addEventListener("click", function () {
+//             inputHandler.fetchBuilding("armycamp");
+//         });
+
+//         document
+//             .getElementById("new_missions")
+//             .querySelectorAll(".mission-info")
+//             .forEach((element) => element.addEventListener("click", (event) => this.prepareMission(event)));
+
+//         [...document.getElementsByClassName("mission-tab-toggle")].forEach((element) =>
+//             element.addEventListener("click", (event) => this.toggleTab(event.currentTarget))
+//         );
+
+//         document.getElementById("mission-enabled-do").addEventListener("click", () => this.doMission());
+//         this.prepareMissionWrapper = document.getElementById("new-mission-selected-container");
+//         this.createInitMissionData();
+//         this.missions = [];
+//         warriorSelect.addWarriorEvents();
+//     },
+//     prepareMissionWrapper: undefined,
+//     toggleNewMissionSelected(toggleVisible) {
+//         if (toggleVisible) {
+//             this.prepareMissionWrapper.style.visibility = "visible";
+//             this.prepareMissionWrapper.style.display = "block";
+//         } else {
+//             this.prepareMissionWrapper.style.visibility = "hidden";
+//             this.prepareMissionWrapper.style.display = "none";
+//         }
+//     },
+//     selectedTab: 0,
+//     toggleTab(button) {
+//         if (!button.dataset.missionTabToggle) return false;
+
+//         let number = button.dataset.missionTabToggle;
+//         // Toggle tab with number in data attribute
+//         [...document.getElementsByClassName("mission-tab")].forEach((element: HTMLElement) => {
+//             if (element.dataset.missionTab === number) {
+//                 element.classList.add("mission-tab-visible");
+//             } else {
+//                 element.classList.remove("mission-tab-visible");
+//             }
+//         });
+//         newsContentSidebar.adjustMainContentHeight();
+//     },
+//     missions: [],
+//     createInitMissionData() {
+//         const locateTabElement = (missionID) =>
+//             [...document.getElementsByClassName("mission-tab")].find(
+//                 (element: HTMLElement) => element.dataset.missionId === missionID
+//             ) ?? undefined;
+
+//         let data = "model=ArmyMissions" + "&method=getCountdowns";
+//         ajaxG(data, (response) => {
+//             if (response[0] != false) {
+//                 let responseText = response[1];
+//                 if (Array.isArray(responseText.countdowns)) {
+//                     responseText.countdowns.forEach((element, index) => {
+//                         // Create mission object
+//                         this.initNewMissionObject({
+//                             missionID: element.mission_id,
+//                             endtime: element.datetime,
+//                             tabElement: locateTabElement(element.mission_id),
+//                         });
+//                     });
+//                 }
+//                 updateCountdownTab();
+//             }
+//         });
+//     },
+//     prepareMission(event) {
+//         let missionContainer = event.currentTarget.cloneNode(true);
+
+//         this.prepareMissionWrapper.replaceChild(
+//             missionContainer,
+//             this.prepareMissionWrapper.querySelectorAll("div")[0]
+//         );
+//         this.toggleNewMissionSelected(true);
+//     },
+//     initNewMissionObject($init_data: InitArmyMissionData) {
+//         // Create mission object
+//         let missionObject = new ArmyMission({
+//             missionID: $init_data.missionID,
+//             endTime: $init_data.endTime ? $init_data.endTime : false,
+//             tabElement: $init_data.tabElement,
+//         });
+//         missionObject.addEvents();
+//         this.missions.push(missionObject);
+//         missionObject.calculateCountdown();
+//     },
+//     doMission() {
+//         let warriors = warriorSelect.warriorsCheck();
+//         // Send array with warriors id and mission id to model
+//         if (!warriors || warriors.length === 0) {
+//             gameLogger.addMessage("Please select warriors!", true);
+//             return false;
+//         }
+
+//         let mission_id = document.getElementById("new-mission-selected-container").querySelectorAll(".mission-info")[0]
+//             .dataset.missionId;
+//         if (!mission_id) return false;
+//         let data =
+//             "model=ArmyMissionsRessource" +
+//             "&method=set" +
+//             "&mission_id=" +
+//             mission_id +
+//             "&warriors=" +
+//             JSON.stringify(warriors);
+//         ajaxP(data, (response) => {
+//             console.log(response);
+//             if (response[0] != false) {
+//                 let responseText = response[1];
+//                 updateHunger(response.newHunger);
+//                 updateCountdownTab();
+
+//                 // Update warriors
+//                 warriorSelect.getAvailableWarriors();
+
+//                 // Insert HTML templates
+//                 let missionTabIndex;
+//                 let outer_container;
+//                 let tabElement;
+//                 if (document.getElementById("mission-tabs-outer-container")) {
+//                     outer_container = document.getElementById("mission-tabs-outer-container");
+//                     let containerChildren = outer_container.querySelectorAll("mission-tab-toggle").length;
+//                     missionTabIndex = containerChildren - 1;
+//                 }
+
+//                 // Add html and calculate mission tab data
+//                 if (responseText.html[0] !== undefined) {
+//                     const node = createHTMLNode(responseText.html[0]);
+
+//                     tabElement = document.getElementById("mission-tabs-outer-container").appendChild(node);
+//                     tabElement.setAttribute("data-mission-tab", missionTabIndex);
+//                 }
+//                 if (
+//                     responseText.html[1] !== undefined &&
+//                     document.getElementById("mission-tab-toggle-outer-container")
+//                 ) {
+//                     // Create node
+//                     const node = createHTMLNode(responseText.html[1]);
+
+//                     node.setAttribute("data-mission-tab-toggle", missionTabIndex);
+
+//                     document.getElementById("mission-tab-toggle-outer-container").appendChild(node);
+//                 }
+//                 console.log(tabElement);
+//                 // Init  new Mission
+//                 this.initNewMissionObject({
+//                     missionID: mission_id,
+//                     tabElement,
+//                 });
+
+//                 this.toggleNewMissionSelected(false);
+//             }
+//         });
+//     },
+// };
+
+// interface InitArmyMissionData {
+//     tabElement?: HTMLButtonElement;
+//     missionID?: number;
+//     endTime?: boolean | number;
+// }
+
+// class ArmyMission {
+//     // tabElement = null;
+//     // missionID = undefined;
+//     // getReportButton = undefined;
+//     // cancelMissionReportButton = undefined;
+//     // timeContainer = undefined;
+//     // intervalID = null;
+//     // endTime = undefined;
+//     private tabElement: InitArmyMissionData["tabElement"];
+//     public missionID: InitArmyMissionData["missionID"];
+//     public getReportButton?: HTMLButtonElement;
+//     public cancelMissionReportButton?: HTMLElement;
+//     public timeContainer: HTMLElement;
+//     private intervalID: null | number;
+//     private endTime: InitArmyMissionData["endTime"];
+
+//     constructor($init_data: InitArmyMissionData) {
+//         this.tabElement = $init_data.tabElement;
+//         this.missionID = $init_data.missionID;
+//         this.endTime = $init_data.endTime;
+//         if (this.tabElement) {
+//             this.timeContainer = <HTMLElement>$init_data.tabElement.querySelectorAll(".mission-countdown")[0];
+//             this.cancelMissionReportButton = <HTMLElement>(
+//                 $init_data.tabElement.querySelectorAll(".current-mission-cancel")[0]
+//             );
+//             this.cancelMissionReportButton = <HTMLElement>(
+//                 $init_data.tabElement.querySelectorAll(".current-mission-get-report")[0]
+//             );
+//         }
+//     }
+
+//     addEvents() {
+//         this.getReportButton.addEventListener("click", () => this.updateMission());
+//         this.cancelMissionReportButton.addEventListener("click", () => this.cancelMission());
+//     }
+
+//     cancelMission() {
+//         let data = "model=ArmyMissionsRessource" + "&method=cancel" + "&mission_id=" + this.missionID;
+//         ajaxP(data, (response) => {
+//             if (response[0] != false) {
+//                 this.destroy();
+
+//                 // Update selected warriors
+//                 warriorSelect.getAvailableWarriors();
+//             }
+//         });
+//     }
+//     updateMission() {
+//         let data = "model=ArmyMissionsRessource" + "&method=update" + "&mission_id=" + this.missionID;
+//         ajaxP(data, (response) => {
+//             if (response[0] !== false) {
+//                 let responseText = response[1];
+
+//                 // Combat is currently disabled
+
+//                 // if(responseText.mission_combat) {
+//                 //     document.getElementById("battle_result").innerHTML = responseText[0];
+//                 //     document.getElementById("battle_result").style.display = "";
+//                 // }
+
+//                 // Update selected warrors
+//                 warriorSelect.getAvailableWarriors();
+
+//                 updateInventory();
+//                 this.destroy();
+//             }
+//         });
+//     }
+
+//     calculateCountdown() {
+//         // Calculate mission countdown
+//         this.endTime = this.endTime * 1000;
+//         this.intervalID = setInterval(() => {
+//             let { remainder, hours, minutes, seconds } = countdown.calculate(this.endTime);
+//             if (!document.getElementById("new_missions")) {
+//                 clearInterval(this.intervalID);
+//                 return false;
+//             }
+//             console.log(this.cancelMissionReportButton);
+//             if (remainder < 0 && this.missionID != 0) {
+//                 clearInterval(this.intervalID);
+//                 this.cancelMissionReportButton.style.display = "none";
+//                 this.getReportButton.style.display = "inline-block";
+//                 this.timeContainer.innerHTML = "Finished";
+//             } else if (remainder < 0) {
+//                 clearInterval(this.intervalID);
+//                 this.timeContainer.innerHTML = "None";
+//                 this.getReportButton.style.display = "none";
+//                 this.cancelMissionReportButton.style.display = "none";
+//             } else {
+//                 this.cancelMissionReportButton.style.display = "inline-block";
+//                 this.getReportButton.style.display = "none";
+//                 this.timeContainer.innerHTML = "Time left " + hours + "h " + minutes + "m " + seconds + "s ";
+//             }
+//         }, 1000);
+//     }
+
+//     getCountdown() {
+//         if (!this.missionID) return;
+//         // Fetch a missions countdown
+//         let data = "model=ArmyMissions" + "&method=getCountdowns" + "&mission_id=" + this.missionID;
+//         ajaxG(data, (response) => {
+//             if (response[0] != false) {
+//                 let responseText = response[1];
+//                 this.endTime = responseText.countdowns[0].datetime * 1000;
+//                 this.calculateCountdown(responseText);
+//             }
+//         });
+//     }
+
+//     destroy() {
+//         // Destroy
+//         clearInterval(this.intervalID);
+//         this.tabElement.innerHTML = "<p>Mission finished</p>";
+//     }
+// }
+
+// export default armyMissionModule;

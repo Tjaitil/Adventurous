@@ -1,9 +1,14 @@
+import { AdvApi } from './AdvApi.js';
 import { ajaxJS } from "./ajax.js";
 window.addEventListener("DOMContentLoaded", () => {
-    // updateCountdownTab();
-    setTimeout(updateCountdownTab, 120000);
+    setTimeout(getProfienciesStatus, 120000);
     setTimeout(updateDiplomacyTab, 120000);
 });
+function getProfienciesStatus() {
+    AdvApi.get('profiencystatus/get').then((data) => {
+        document.getElementById("tab_2").innerHTML = data.html.profiency_status_template;
+    });
+}
 function updateCountdownTab() {
     let data = "model=ProfiencyStatus" + "&method=get";
     ajaxJS(data, function (response) {

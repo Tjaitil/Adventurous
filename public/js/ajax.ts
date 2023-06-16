@@ -1,4 +1,5 @@
-import { newLevel } from "./levelup.js";
+import { LevelManager } from "./LevelManager.js";
+import { advAPIResponse } from "./types/responses/AdvResponse.js";
 import { gameLogger } from "./utilities/gameLogger.js";
 
 // scriptLoader.loadScript(["gameLogger"], "utility");
@@ -97,18 +98,19 @@ export async function ajaxP(data, callback, log = true) {
     ajaxRequest.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     ajaxRequest.send(data);
 }
-export function checkResponse(responseText) {
-    if (typeof responseText.levelUP !== "undefined" && Object.keys(responseText.levelUP).length > 0) {
-        newLevel.update(responseText.levelUP);
-    }
-    if (typeof responseText.gameMessages !== "undefined") {
-        gameLogger.addMessage(responseText.gameMessages);
+export function checkResponse(response: advAPIResponse) {
+    // if (typeof response.levelUp !== undefined &&
+    //     Object.keys(response.levelUp ?? {}).length > 0) {
+    //     LevelManager.update(response.levelUp);
+    // }
+    if (typeof response.gameMessage !== "undefined") {
+        gameLogger.addMessage(response.gameMessage);
+        gameLogger.logMessages();
+    } else if (typeof response.errorGameMessage !== "undefined") {
+        gameLogger.addMessage(response.errorGameMessage);
         gameLogger.logMessages();
     }
 }
-
-
-
 
 // const response = await fetch("./handlers/handler_p.php", {
 //     method: "POST",

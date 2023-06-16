@@ -1,6 +1,6 @@
 import { Game } from "../advclient.js";
 import { loadSprite } from "../clientScripts/spritesContainer.js";
-import { GamePieces } from "../clientScripts/GamePieces.js";
+import { GamePieces } from "../clientScripts/gamePieces.js";
 import viewport from "../clientScripts/viewport.js";
 import { ajaxP } from "../ajax.js";
 import { updateInventory } from "../clientScripts/inventory.js";

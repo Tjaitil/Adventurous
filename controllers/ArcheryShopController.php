@@ -7,12 +7,12 @@ use App\libs\controller;
 use App\libs\Logger;
 use App\libs\Request;
 use App\libs\Response;
-use App\models\ArcheryShop_model;
 use App\models\ArcheryShopData;
 use App\services\InventoryService;
 use App\services\SessionService;
 use App\services\SkillsService;
 use App\services\StoreService;
+use App\validators\ValidateStoreTrade;
 use GameConstants;
 
 
@@ -22,7 +22,6 @@ class ArcheryShopController extends controller
 
     function __construct(
         private StoreService $storeService,
-        private ArcheryShop_model $archeryShop_model,
         private InventoryService $inventoryService,
         private SessionService $sessionService,
         private ArcheryShopData $archeryShopData,
@@ -79,6 +78,8 @@ class ArcheryShopController extends controller
         $item = $request->getInput('item');
         $amount = $request->getInput('amount');
 
+        ValidateStoreTrade::validate($request);
+
         $item_data = $this->archeryShopData->where('item', $item)->first();
         $item_data = $mapRequiredDataAction->handle([$item_data->toArray()]);
 
@@ -94,8 +95,8 @@ class ArcheryShopController extends controller
         $item = $this->storeService->getStoreItem($item);
 
         // Check that user has required level
-        if (!$skillsService->hasRequiredLevel($item_data[0]['required_level'], GameConstants::MINER_SKILL_NAME)) {
-            return $skillsService->logNotRequiredLevel(GameConstants::MINER_SKILL_NAME);
+        if (!$skillsService->hasRequiredLevel($item_data[0]['required_level'], MINER_SKILL_NAME)) {
+            return $skillsService->logNotRequiredLevel(MINER_SKILL_NAME);
         }
 
         foreach ($item->required_items as $key => $value) {
@@ -107,14 +108,14 @@ class ArcheryShopController extends controller
             }
         }
 
-        if (!$this->inventoryService->hasEnoughAmount(GameConstants::CURRENCY, $item->store_value)) {
-            return $this->inventoryService->logNotEnoughAmount(GameConstants::CURRENCY);
+        if (!$this->inventoryService->hasEnoughAmount(CURRENCY, $item->store_value)) {
+            return $this->inventoryService->logNotEnoughAmount(CURRENCY);
         }
 
         $price = $item->store_value;
 
-        if ($this->sessionService->isProfiency(GameConstants::MINER_SKILL_NAME)) {
-            $price *= (1 - GameConstants::MINER_STORE_DISCOUNT);
+        if ($this->sessionService->isProfiency(MINER_SKILL_NAME)) {
+            $price *= (1 - MINER_STORE_DISCOUNT);
         }
 
         foreach ($item->required_items as $key => $value) {

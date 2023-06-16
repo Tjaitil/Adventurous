@@ -7,8 +7,8 @@ export interface ICharacter extends StaticGameObject {
 }
 
 export class Character extends BaseStaticGameObject implements ICharacter {
-    width: number = 38;
-    height: number = 38;
+    width: number = 42;
+    height: number = 42;
     conversation: boolean;
 
     constructor(initCharacterData: ICharacter) {

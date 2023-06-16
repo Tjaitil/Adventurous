@@ -46,13 +46,13 @@
                 return false;
             }
             $this->adventure_data['adventure_id'] = $adventure_id;
-            $combat_model = $this->loadModel('combat', true, true);
+            $Combat_model = $this->loadModel('Combat', true, true);
             if($this->adventure_data['battle_result'] == 0) {
-                $combat_model->calculate(array("route" => "adventure", "difficulty" => $this->adventure_data['difficulty']));
+                $Combat_model->calculate(array("route" => "adventure", "difficulty" => $this->adventure_data['difficulty']));
             }
             else {
                 // Fetch data
-                $combat_model->getStatistics(true);
+                $Combat_model->getStatistics(true);
             }
             $role = array_search($this->username, $this->adventure_data);
             if($role === false) {

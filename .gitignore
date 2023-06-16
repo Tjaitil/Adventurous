@@ -42,3 +42,6 @@ Thumbs.db
 
 vendor
 .phpunit.result.cache
+
+#Compiled JS 
+public/dist/js

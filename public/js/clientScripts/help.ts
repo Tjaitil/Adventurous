@@ -1,16 +1,15 @@
 import { Game } from '../advclient.js';
 
-window.addEventListener('load', function() {  
-    clientHelpContainer.element = document.getElementById("client_help_container");
-    clientHelpContainer.element.querySelectorAll(".cont_exit")[0].addEventListener("click", () => clientHelpContainer.toggle());
-    document.getElementById("HUD_help_button").addEventListener("click", () => clientHelpContainer.toggle());
-});
-
 export const clientHelpContainer = {
+    init() {
+        clientHelpContainer.element = document.getElementById("client_help_container");
+        clientHelpContainer.element.querySelectorAll(".cont_exit")[0].addEventListener("click", () => clientHelpContainer.toggle());
+        document.getElementById("HUD_help_button").addEventListener("click", () => clientHelpContainer.toggle());
+    },
     toggled: false,
     element: null,
     toggle() {
-        if(this.toggled === false) {
+        if (this.toggled === false) {
             this.element.style.visibility = "visible";
             Game.setGameState('help');
         }

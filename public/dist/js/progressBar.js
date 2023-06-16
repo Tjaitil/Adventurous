@@ -38,12 +38,17 @@ export class ProgressBar {
         this.maxValue = initialValues.maxValue;
         this.calculateProgress();
     }
-    /**
-     * Set current value
-     * @param setNewValue
-     */
+    get isFinished() {
+        return this.progressIndicator === 100;
+    }
     setCurrentValue(newVal) {
+        this.currentValueElement.innerHTML = newVal + "";
         this.currentValue = newVal;
+        this.calculateProgress();
+    }
+    setMaxValue(newVal) {
+        this.maxValue = newVal;
+        this.maxValueElement.innerHTML = newVal + "";
         this.calculateProgress();
     }
     toggleFinishedClassValue(toggled) {
@@ -52,15 +57,16 @@ export class ProgressBar {
     calculateProgress() {
         if (this.progressBarElement == null)
             return false;
-        this.progressIndicator = this.progressIndicator = (this.currentValue / this.maxValue) * 100;
+        this.progressBarElement.querySelectorAll(".progressBar")[0].classList.remove("progressFinished");
+        this.progressIndicator = (this.currentValue / this.maxValue) * 100;
+        if (this.progressIndicator > 100) {
+            this.progressIndicator = 100;
+        }
         let shadowLength = this.progressIndicator + 0.5;
         this.progressElement.getBoundingClientRect();
         if (this.progressIndicator >= 100 && this.finishedClassToggled === true) {
             this.progressIndicator = 100;
             this.progressBarElement.querySelectorAll(".progressBar")[0].classList.add("progressFinished");
-        }
-        else {
-            this.progressBarElement.querySelectorAll(".progressBar")[0].removeAttribute(".progressFinished");
         }
         // Update values
         this.progressElement.style.width = this.progressIndicator + "%";

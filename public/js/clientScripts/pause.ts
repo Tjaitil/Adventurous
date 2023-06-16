@@ -5,12 +5,12 @@ import viewport from './viewport.js';
 
 export const pauseManager = {
     togglePause() {
-        if(Game.properties.gameState === 'playing')  {
+        if (Game.properties.gameState === 'playing') {
             this.pauseGame();
-        }   
+        }
         else {
             this.resumeGame();
-        } 
+        }
     },
     pauseGame() {
         if (document.getElementById("conversation_container").style.visibility == "visible" || Game.properties.inBuilding == true) {
@@ -36,9 +36,9 @@ export const pauseManager = {
         Game.setGameState('pause');
     },
     resumeGame(first = false) {
-        // if(["pause"].includes(game.properties.gameState)) {
-        //     viewport.resetTextLayer();
-        // }
+        if (["pause"].includes(Game.properties.gameState)) {
+            viewport.resetTextLayer();
+        }
         Game.setGameState('playing');
         Game.properties.requestId = window.requestAnimationFrame(Game.update);
     }

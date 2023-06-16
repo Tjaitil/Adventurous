@@ -22,7 +22,7 @@ export const gameTravel = {
         else {
             startPointType = false;
         }
-        setTimeout(() => Game.loadWorld({
+        setTimeout(() => Game.setWorld({
             method: "changeMap",
             newDestination: destination.toLowerCase(),
             startPointType

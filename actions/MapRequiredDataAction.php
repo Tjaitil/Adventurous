@@ -14,9 +14,9 @@ class MapRequiredDataAction
             );
             if ($index !== false) {
                 $mapped_data[$index]['required_items'][] =
-                    array("amount" => $value['amount'], "item" => $value['required_item']);
+                    ["amount" => $value['amount'], "item" => $value['required_item'], ...$value];
             } else {
-                $value['required_items'][] = array("amount" => $value['amount'], "item" => $value['required_item']);
+                $value['required_items'][] = ["amount" => $value['amount'], "item" => $value['required_item'], ...$value];
                 array_push($mapped_data, $value);
             }
         }

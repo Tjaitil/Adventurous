@@ -1,5 +1,4 @@
 #calculator {
-
 }
 #calc_result {
     visibility: hidden;
@@ -25,7 +24,10 @@
 .info img {
     width: 30%;
     height: 30%;
-    float:left;
+    float: left;
+}
+.warrior-selected {
+    border: 3px ridge #5f4121;
 }
 .warrior-info-container {
     display: flex;
@@ -35,7 +37,7 @@
     flex-basis: 50%;
 }
 .warrior-info-container > p {
-    flex-basis: 30%
+    flex-basis: 30%;
 }
 .warrior_level_up {
     height: 30px;
@@ -68,7 +70,7 @@
 }
 .skill_bar2 {
     width: 0%;
-    height:100%;
+    height: 100%;
     background-color: #ff9900;
     position: absolute;
     top: 0px;
@@ -89,15 +91,14 @@
 #transfer {
     display: none;
 }
-#heal {
-    display: none;
-}
 #rest {
     display: none;
 }
-#training {
+
+.action-additional-div {
     display: none;
 }
+
 #multiple-warrior-action-warning {
     visibility: hidden;
 }
