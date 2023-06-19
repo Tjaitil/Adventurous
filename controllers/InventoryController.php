@@ -22,9 +22,11 @@ class InventoryController extends controller
 
     public function get()
     {
-        $data = $this->inventory->all()->where('username', $this->sessionService->getCurrentUsername());
+        $data = $this->inventory
+            ->all()
+            ->where('username', $this->sessionService->getCurrentUsername())->toArray();
         $inventory_template = $this->TemplateFetcher->loadTemplate('inventory', $data);
-        response::addTemplate("inventory", $inventory_template);
+        return response::addTemplate("inventory", $inventory_template);
     }
 
     public function getPrices()
