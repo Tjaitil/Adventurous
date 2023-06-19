@@ -75,8 +75,9 @@ class HungerService
         $this->getHungerData();
 
         switch ($action) {
-            case 'skill':
-                $this->hunger_data['hunger'] - 15;
+            case HUNGER_SKILL_ACTION:
+                // TODO: Decrease hunger
+                // $this->hunger_data['hunger'] - 15;
             default:
                 # code...
                 break;

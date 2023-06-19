@@ -77,7 +77,7 @@ const MINE_LOCATIONS = [
     "snerpiir",
 ];
 
-const SKILL_ACTION = [
+const SKILL_ACTIONS = [
     "mine",
     "crops"
 ];
@@ -132,3 +132,5 @@ const WARRIOR_TRAINING_TYPES = [
 
 const MAX_INVENTORY_AMOUNT = 18;
 const MAX_STOCKPILE_AMOUNT = 60;
+
+const HUNGER_SKILL_ACTION = 'skill_action';
