@@ -14,11 +14,6 @@ import { HUD } from "./HUD.js";
 
 export type gameObjectTypes = Character | Building | BaseStaticGameObject;
 
-enum gamePiecesTypes {
-    "character",
-    "building",
-}
-
 let draw = false;
 
 // TODO: Create class
