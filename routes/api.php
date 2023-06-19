@@ -8,6 +8,7 @@ use App\controllers\BakeryController;
 use App\controllers\CityCentreController;
 use App\controllers\CropsController;
 use App\controllers\InventoryController;
+use App\controllers\MineController;
 use App\controllers\ProfiencyStatusController;
 use App\controllers\SmithyController;
 use App\controllers\StockpileController;
@@ -37,9 +38,10 @@ Route::post('/crops/generate', [CropsController::class, "generateSeed"]);
 Route::get('/crops/data', [CropsController::class, "getData"]);
 Route::get('/crops/countdown', [CropsController::class, "getCountdown"]);
 
-Route::get('/mine/start', [MineController::class, "start"]);
 Route::get('/mine/countdown', [MineController::class, "getCountdown"]);
-Route::get('/mine/end', [MineController::class, "endMining"]);
+Route::post('/mine/start', [MineController::class, "start"]);
+Route::post('/mine/end', [MineController::class, "endMining"]);
+Route::get('/mine/data', [MineController::class, "getViewData"]);
 
 Route::get('/stockpile/{item}', [StockpileController::class, "show"]);
 Route::post('/stockpile/{item}', [StockpileController::class, "update"]);

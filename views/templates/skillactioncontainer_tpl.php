@@ -22,7 +22,7 @@
         <div id="select">
             <?php
             foreach ($data['action_items'] as $key) :
-                $type = isset($key['crop_type']) ? $key['crop_type'] : $key['mineral_type'];
+                $type = isset($key['crop_type']) ? $key['crop_type'] : $key['mineral_type'] . ' ore';
             ?>
 
                 <img class="item-type" src="
@@ -32,7 +32,7 @@
         <div id="data_container" class="px-1">
             <div id="data">
                 <?php if ($data['show_permits']) : ?>
-                    <p id="total_permits"> Your total permits: <?php echo $data['permits']; ?></p>
+                    <p> Your total permits: <span id="total_permits"><?php echo $data['permits']; ?></span></p>
                 <?php endif; ?>
                 <figure id="selected_item"></figure>
                 <form id="data_form">
@@ -47,8 +47,13 @@
                     <input type="text" name="level" readonly />
                     <label for="experience">Experience</label>
                     <input type="text" name="experience" readonly />
-                    <label for="seeds">Seeds</label>
-                    <input type="text" name="seeds" readonly />
+                    <?php if ($data['show_permits']) : ?>
+                        <label for="permits">Permit costs</label>
+                        <input type="text" name="permits" readonly />
+                    <?php else : ?>
+                        <label for="seeds">Seeds</label>
+                        <input type="text" name="seeds" readonly />
+                    <?php endif; ?>
                     <label for="workforce">Select workers (max)</label>
                     <div class="me-auto">
                         <input name="workforce_amount" id="workforce_amount" type="number" min="0" required />

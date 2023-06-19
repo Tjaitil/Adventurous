@@ -18,7 +18,6 @@ use App\services\SessionService;
 use App\services\SkillsService;
 use Carbon\Carbon;
 use Respect\Validation\Validator;
-use GameConstants;
 
 class MineController extends controller
 {
@@ -37,7 +36,8 @@ class MineController extends controller
     }
     public function index()
     {
-        $this->data['action_items'] = Mineral::all();
+        $this->getViewData();
+        $this->data['action_items'] = Mineral::all()->sortBy('miner_level')->values();
         $this->data['workforce_data'] = MinerWorkforce::where('username', $this->sessionService->getCurrentUsername())
             ->first()
             ->toArray();
@@ -49,8 +49,19 @@ class MineController extends controller
     }
 
 
-    // TODO: create getData function
 
+    public function getViewData()
+    {
+        $this->data['minerals'] = Mineral::all()->sortBy('miner_level')->values();
+        $this->data['workforce_data'] = MinerWorkforce::where('username', $this->sessionService->getCurrentUsername())
+            ->first()
+            ->toArray();
+
+        $this->data['permits'] = Miner::select('permits')->where('username', $this->sessionService->getCurrentUsername())
+            ->first()->permits;
+
+        return Response::setData($this->data);
+    }
 
     /**
      * Get countdown for one location
@@ -63,23 +74,31 @@ class MineController extends controller
             ->where('location', $this->sessionService->getCurrentLocation())
             ->first();
 
-        $minerResource = [
-            ...$Miner->toArray(),
-            'mining_countdown' => $Miner->mining_countdown->timestamp,
-        ];
+        if (!is_null($Miner)) {
+            $minerResource = [
+                ...$Miner->toArray(),
+                'mining_countdown' => $Miner->mining_countdown->timestamp,
+            ];
+        }
 
         return Response::setData($Miner ? $minerResource : []);
     }
 
 
 
+    /**
+     *
+     * @param Request $request
+     *
+     * @return void
+     */
     public function start(Request $request)
     {
-        $type = $request->getInput('type');
+        $type = $request->getInput('mineral_ore');
         $workforce = $request->getInput('workforce_amount');
 
         $request->validate([
-            'type' => Validator::stringVal()->notEmpty(),
+            'mineral_ore' => Validator::stringVal()->notEmpty(),
             'workforce_amount' => Validator::intVal()->min(1)
         ]);
 
@@ -92,18 +111,22 @@ class MineController extends controller
             return $this->hungerService->logHungerTooLow();
         }
 
-        $Mineral = Mineral::where('mineral_type', $type)
-            ->where('location', $location)
+        $Mineral = Mineral::where('mineral_ore', $type)
             ->first();
 
         if (is_null($Mineral)) {
             return Response::addMessage('Unvalid mineral')->setStatus(422);
+        } else if ($Mineral->location !== $location) {
+            return Response::addMessage("You are in the wrong location to mine this mineral")->setStatus(422);
+        } else if (!$this->skillsService->hasRequiredLevel($Mineral->miner_level, 'miner')) {
+            return Response::addMessage("You don't have the required level to mine this mineral")->setStatus(422);
         }
 
         $Miner = Miner::where('username', $this->sessionService->getCurrentUsername())
-            ->where('location', $location);
+            ->where('location', $location)
+            ->first();
 
-        $MinerWorkforce = MinerWorkforce::where('location', $location)
+        $MinerWorkforce = MinerWorkforce::where('username', $this->sessionService->getCurrentUsername())
             ->first();
 
         if (is_null($MinerWorkforce)) {
@@ -124,20 +147,20 @@ class MineController extends controller
 
         $new_workforce_amount = $MinerWorkforce->avail_workforce - $workforce;
 
-        // Check if user has the specified workforce
         if (
             $new_workforce_amount < 0
         ) {
             return Response::addMessage("You don't have enough workers ready")->setStatus(422);
         }
 
+        $this->hungerService->setNewHunger(SKILL_ACTION);
         $addTime = $Mineral->time - (0.1 * $MinerWorkforce->efficiency_level + $workforce * 0.05);
 
-        $Miner->mining_type = $type;
+        $Miner->mineral_type = $type;
         $Miner->mining_countdown = Carbon::now()->addSeconds($addTime);
         $Miner->save();
 
-        $location_table = $location . "_workforce";
+        $location_table = MinerWorkforce::getLocationTable($location);
 
         $MinerWorkforce->avail_workforce = $new_workforce_amount;
         $MinerWorkforce->{$location_table} = $workforce;
@@ -145,12 +168,13 @@ class MineController extends controller
 
         return Response::addMessage("You have started mining for $type")
             ->setData([
-                'availWorkforce' => $new_workforce_amount,
+                'avail_workforce' => $new_workforce_amount,
                 'new_permits' => $new_permits,
                 'new_hunger' => $this->hungerService->getHunger(),
             ])
             ->setStatus(200);
     }
+
 
 
     /**
@@ -162,37 +186,37 @@ class MineController extends controller
     public function endMining(Request $request)
     {
 
-        $is_cancelling = $request->getInput('isCancelling');
+        $is_cancelling = $request->getInput('is_cancelling');
 
         $request->validate([
-            'isCancelling' => Validator::boolVal()
+            'is_cancelling' => Validator::boolVal()
         ]);
 
         $location = $this->sessionService->getCurrentLocation();
+        $location_table = MinerWorkforce::getLocationTable($location);
 
         $MinerWorkforce = MinerWorkforce::where('username', $this->sessionService->getCurrentUsername())
-            ->where('location', $location)
             ->first();
 
         if (is_null($MinerWorkforce)) {
             return Response::addMessage("Unvalid Miner location")->setStatus(422);
         }
 
+        $Miner = Miner::where('username', $this->sessionService->getCurrentUsername())
+            ->where('location', $location)
+            ->first();
+
         $Mineral = Mineral::where('location', $location)
-            ->where('mineral_type', $MinerWorkforce->mineral_type)
+            ->where('mineral_ore', $Miner->mineral_type)
             ->first();
 
         if (is_null($Mineral)) {
             return Response::addMessage("Unvalid Mineral")->setStatus(422);
         }
 
-        $Miner = Miner::where('username', $this->sessionService->getCurrentUsername())
-            ->where('location', $location)
-            ->first();
-
         if (
             Carbon::now()->isAfter($Miner->mining_countdown) &&
-            $Miner->mining_countdown &&
+            $Miner->mineral_type &&
             $is_cancelling
         ) {
             return Response::addMessage("Why quit mining that is already finished")->setStatus(422);
@@ -200,13 +224,11 @@ class MineController extends controller
             return Response::addMessage("The mining is not yet finished")->setStatus(422);
         }
 
-        $location_table = $location . "_workforce";
-
-        $MinerWorkforce->{$location_table} = 0;
         $MinerWorkforce->avail_workforce += $MinerWorkforce->{$location_table};
+        $MinerWorkforce->{$location_table} = 0;
         $MinerWorkforce->save();
 
-        $Miner->mining_type = null;
+        $Miner->mineral_type = null;
         $Miner->save();
 
         if (!$is_cancelling) {
@@ -218,10 +240,12 @@ class MineController extends controller
             $this->skillsService
                 ->updateMinerXP($Mineral->experience)
                 ->updateSkills();
+            Response::addMessage("You have finished mining " . $Mineral->mineral_type);
+        } else {
+            Response::addMessage("You have cancelled mining");
         }
 
-        return Response::addMessage("You have finished mining " . $Mineral->mineral_type)
-            ->setData(['available_workforce' => $MinerWorkforce->avail_workforce])
+        return Response::setData(['avail_workforce' => $MinerWorkforce->avail_workforce])
             ->setStatus(200);
     }
 

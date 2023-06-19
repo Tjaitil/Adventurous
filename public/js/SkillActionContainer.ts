@@ -1,29 +1,32 @@
-import { MineralResource } from './types/MineResource';
-import { GetSkillActionDataRequest } from './types/requests/SkillActionContainerRequests';
 import { AdvApi } from "./AdvApi.js";
 import { Game } from "./advclient.js";
-import { ClientOverlayInterface } from "./clientScripts/clientOverlayInterface.js";
-import { jsUcfirst } from "./utilities/uppercase.js";
+import { jsUcWords, jsUcfirst } from "./utilities/uppercase.js";
 import { CropResource } from './types/CropResource';
 import { LevelManager } from './LevelManager.js';
 import countdown from './utilities/countdown.js';
+import { advAPIResponse } from './types/responses/AdvResponse';
+import { ClientOverlayInterface } from './clientScripts/clientOverlayInterface.js';
 
 export class SkillActionContainer {
     private typeData = <CropResource[] | MineralResource[]>[];
     public workforceData: {};
     private workforceElement = <HTMLInputElement>document.getElementById("workforce_amount");
     public intervalID: number;
-    public cancelActionButton = <HTMLElement>null;
-    public startActionButton = <HTMLElement>null;
-    public finishActionButton = <HTMLElement>null;
-    public infoActionElement = <HTMLElement>null;
+    public cancelActionButton = <HTMLElement>document.getElementById("cancel-action");
+    public startActionButton = <HTMLElement>document.getElementById("do-action");
+    public finishActionButton = <HTMLElement>document.getElementById("finish-action");
+    public infoActionElement = <HTMLElement>document.getElementById("info-action-element");
+    public countdownElement = <HTMLElement>document.getElementById("time");
+    public countdownCancelledManually: boolean = false;
 
-    constructor() {
-        this.cancelActionButton = document.getElementById("cancel-action");
-        this.startActionButton = document.getElementById("do-action");
-        this.finishActionButton = document.getElementById("finish-action");
-        this.infoActionElement = document.getElementById("info-action-element");
+    public actionText: string;
+    public noActionText: string;
 
+    public selectedActionType = <HTMLInputElement>document.getElementById("selected-action-type");
+
+    constructor(actionText: string, noActionText: string) {
+        this.actionText = actionText;
+        this.noActionText = noActionText;
     }
 
     public addSelectEvent() {
@@ -40,8 +43,7 @@ export class SkillActionContainer {
     }
 
     public getSelectedType(): string {
-        let selected_type = <HTMLInputElement>document.getElementById("selected-action-type");
-        return selected_type.value;
+        return this.selectedActionType.value;
     }
 
     public setAvailableWorkforce(amount: number) {
@@ -55,13 +57,8 @@ export class SkillActionContainer {
         let clone = targetElement.cloneNode(true);
         clone.removeAttribute("onclick");
         let item = targetElement.getAttribute("alt");
-        let className;
-        if (ClientOverlayInterface.getInterfacePageTitle() === "crops") {
-            className = "selected-action-type";
-        } else {
-            className = "selected-action-type";
-        }
-        [...document.getElementsByClassName(className)].forEach((element) => {
+
+        [...document.getElementsByClassName("item-type")].forEach((element) => {
             if (targetElement === element) {
                 element.classList.add("item_selected");
             } else {
@@ -73,8 +70,8 @@ export class SkillActionContainer {
         let div = document.getElementById("data_form");
         div.style.visibility = "visible";
         document.getElementById("data").style.visibility = "visible";
-        let div_inputs = div.querySelectorAll("input");
-        div_inputs[0].value = item
+        this.selectedActionType.value = jsUcWords(item);
+
 
         let baseReduction;
         let perWorkforce;
@@ -90,6 +87,7 @@ export class SkillActionContainer {
         if (Game.getProperty("building") === "crops") {
             let data = this.typeData as CropResource[];
             matchedType = data.find((type) => type.crop_type === item);
+            if (matchedType === undefined) return;
 
             let seedInputField = <HTMLInputElement>document.getElementsByName("seeds")[0];
 
@@ -100,7 +98,8 @@ export class SkillActionContainer {
             level = LevelManager.getFarmerlevel();
         } else if (Game.getProperty("building") === "mine") {
             let data = this.typeData as MineralResource[];
-            matchedType = data.find((type) => type.mineral_type === item);
+            matchedType = data.find((type) => type.mineral_ore === item);
+            if (matchedType === undefined) return;
 
             let permitsInputField = <HTMLInputElement>document.getElementsByName("permits")[0];
             permitsInputField.value = matchedType.permit_cost + "";
@@ -109,7 +108,7 @@ export class SkillActionContainer {
 
             level = LevelManager.getMinerLevel();
         } else {
-            console.log("Error: No building selected");
+            console.error("Error: No building selected");
             return;
         }
 
@@ -137,9 +136,6 @@ export class SkillActionContainer {
             selectedFigure.appendChild(clone);
         } else {
             let img = <HTMLImageElement>selectedFigure.children[0];
-            if (Game.getProperty("building") === "mine") {
-                item = item + " ore";
-            }
             img.src = "public/images/" + item + ".png";
             img.alt = item;
             img.style.border = "";
@@ -150,16 +146,10 @@ export class SkillActionContainer {
 
         AdvApi.get<GetSkillActionDataRequest>(url).then((response) => {
             this.workforceData = response.data.workforce_data;
-            this.typeData = response.data.crops;
             if (Game.getProperty("building") === "crops") {
-                console.log(this);
-                // for (let i = 0; i < response.data.crops.length; i++) {
-                //     this.typeData[response.data.crops[i].crop_type] = response.data.crops[i];
-                // }
+                this.typeData = response.data.crops;
             } else {
-                // for (let i = 0; i < response.data.minerals.length; i++) {
-                //     this.typeData[response.data.minerals[i]["mineral_type"]] = response["mineral"][i];
-                // }
+                this.typeData = response.data.minerals;
             }
             document
                 .getElementById("workforce_amount")
@@ -168,41 +158,74 @@ export class SkillActionContainer {
     }
 
 
-    public startCountdownAndUpdateUI({ actionText, noActionText, endTime, type }: SkillActionCountdownData) {
+    public startCountdownAndUpdateUI({ endTime, type }: SkillActionCountdownData) {
+
+        this.countdownCancelledManually = false;
 
         this.intervalID = setInterval(() => {
             let { remainder, hours, minutes, seconds } = countdown.calculate(endTime);
-
-            if (document.getElementById("time") == null) {
-
+            if (this.countdownCancelledManually) {
                 clearInterval(this.intervalID);
-            } else if (remainder < 0 && type) {
-
+                return;
+            }
+            if (remainder < 0 && type) {
                 clearInterval(this.intervalID);
                 this.cancelActionButton.style.display = "none";
                 this.finishActionButton.style.display = "inline-block";
-                document.getElementById("time").innerHTML = "";
-            } else if (remainder < 0) {
-
+                this.infoActionElement.innerHTML = "Finished";
+                this.countdownElement.innerHTML = "";
+            } else if (remainder < 0 || !type) {
+                this.countdownCancelledManually = true;
                 clearInterval(this.intervalID);
                 this.cancelActionButton.style.display = "none";
                 this.finishActionButton.style.display = "none";
-                this.infoActionElement.innerHTML = actionText;
-                document.getElementById("time").innerHTML = "";
+                this.infoActionElement.innerHTML = this.noActionText;
+                this.countdownElement.innerHTML = "";
             } else {
-
-                document.getElementById("cancel_action").style.display = "inline-block";
+                this.cancelActionButton.style.display = "inline-block";
                 this.finishActionButton.style.display = "none";
-                this.infoActionElement.innerHTML = noActionText;
-                document.getElementById("time").innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
+                this.infoActionElement.innerHTML = this.actionText + " " + jsUcWords(type);
+                this.countdownElement.innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
             }
         }, 1000);
+
+        setTimeout(() => ClientOverlayInterface.adjustWrapperHeight(), 1100);
     }
+
+    public clearCountdownAndUpdateUI() {
+        this.countdownCancelledManually = true;
+        clearInterval(this.intervalID);
+        this.cancelActionButton.style.display = "none";
+        this.finishActionButton.style.display = "none";
+        this.infoActionElement.innerHTML = this.noActionText;
+        this.countdownElement.innerHTML = "";
+    }
+
 };
 
 export interface SkillActionCountdownData {
-    actionText: string,
-    noActionText: string,
     endTime: number,
     type: string
+}
+
+export interface GetSkillActionDataRequest extends advAPIResponse {
+    data: {
+        workforce_data: {
+            avail_workforce: number;
+        };
+        crops: CropResource[];
+        minerals: [];
+    }
+}
+
+export interface MineralResource {
+    mineral_type: string;
+    mineral_ore: string;
+    miner_level: number;
+    experience: number;
+    time: number;
+    min_per_period: number;
+    max_per_period: number;
+    permit_cost: number;
+    location: string;
 }

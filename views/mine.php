@@ -1,4 +1,4 @@
-|mine.js|
+#|mine.js|
 <h1 class="page_title">Mine</h1>
 
 <div id="mine">
