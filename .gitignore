@@ -45,3 +45,5 @@ vendor
 
 #Compiled JS 
 public/dist/js
+
+_ide_helper.*
