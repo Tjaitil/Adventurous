@@ -1,3 +1,9 @@
+            <?php
+
+            use App\libs\TemplateFetcher;
+
+            ?>
+            <div class="log_3"></div>
             <script>
                 window.addEventListener("load", () => {
                     var x = setInterval(function() {
@@ -19,8 +25,11 @@
                 <h1>Loading client</h1>
                 <h1>...</h1>
             </div>
+
             <div id="client-container">
-                <?php require(constant('ROUTE_VIEW') . 'layout.php'); ?>
+                <?php
+
+                require(constant('ROUTE_VIEW') . 'layout.php'); ?>
                 <div id="conversation_container" class="div_content">
                     <img class="cont_exit" src="<?php echo constant("ROUTE_IMG") . 'exit.png'; ?>" />
                     <h3 id="conversation_header"></h3>
@@ -42,6 +51,7 @@
                     <canvas id="game_canvas3" width="700" height="400"></canvas>
                     <canvas id="game_canvas4" width="700" height="400"></canvas>
                     <canvas id="text_canvas" width="700" height="400"></canvas>
+                    <canvas id="hud_canvas" width="700" height="400"></canvas>
                 </div>
                 <div id="client_help_container" class="div_content div_content_dark">
                     <div id="client_help_content">
@@ -73,6 +83,7 @@
                         </label>
                     </div>
                 </div>
+
                 <div id="game_hud">
                     <div id="hunger_progressBar" class="progressBarContainer">
                         <div class="progressBarOverlayShadow">
@@ -80,7 +91,7 @@
                         <div class="progressBarOverlay">
                         </div>
                         <div class="progressBar">
-                            <span class="progressBar_currentValue"><?php echo $_SESSION['gamedata']['hunger']; ?></span>
+                            <span class="progressBar_currentValue"><?php echo $data['hunger_data']['hunger']; ?></span>
                             &nbsp/&nbsp
                             <span class="progressBar_maxValue">100</span>
                         </div>
@@ -107,8 +118,8 @@
                         <p class="extendedControls">C - Toggle Attack Mode</p>
                         <p class="extendedControls">P - Pause</p>
                         <p>A - Attack</p>
-                        <p id="control_text_building">E</p>
-                        <p id="control_text_conversation">W</p>
+                        <p id="control_text_building">E -</p>
+                        <p id="control_text_conversation">W -</p>
                     </div>
                 </div>
                 <div id="game_text">
@@ -147,32 +158,26 @@
                         $y = 1;
                         $x = 1;
                         for ($i = 0; $i < 90; $i++) : ?>
-                            <img class="world_img" alt="map img" src="<?php echo constant("ROUTE_IMG") . $x . '.' . $y . 'm.png'; ?>" />
-                        <?php $x++;
+                            <img class="world_img" alt="map img" src="<?php echo constant("ROUTE_IMG") . $x . '.' . $y . 'm.png'; ?>">
+                        <?php
+                            $x++;
                             if ($x == 10) {
                                 $x = 1;
                                 $y++;
                             }
-                        endfor; ?>
+                        endfor;
+                        ?>
                     </div>
                 </div>
                 <div id="inv_toggle_button_container">
                     <button id="inv_toggle_button"> INV </button>
                 </div>
                 <div id="inventory">
-                    <?php require(constant('ROUTE_VIEW') . '/inventory.php'); loadInventory();?>
+                    <?php fetchTemplate('inventory', $data['inventory']); ?>
                 </div>
                 <div id="control">
                     <button id="control_button"></button>
                 </div>
             </div>
-            <script src="<?php echo constant('ROUTE_JS') . '/clientScripts/UISetup.js'; ?>"></script>
-            <script src="<?php echo constant('ROUTE_JS') . '/clientScripts/viewport.js'; ?>"></script>
-            <script src="<?php echo constant('ROUTE_JS') . 'advclient.js'; ?>"></script>
-            <script src="<?php echo constant('ROUTE_JS') . '/clientScripts/gamePieces.js'; ?>"></script>
-            <script src="<?php echo constant('ROUTE_JS') . 'sidebar.js'; ?>"></script>
-            <script src="<?php echo constant('ROUTE_JS') . 'artefact.js'; ?>"></script>
-            <script src="<?php echo constant("ROUTE_JS") . 'selectitem.js'; ?>"></script>
-            <script src="<?php echo constant('ROUTE_JS') . 'progressbar.js'; ?>"></script>
-            <script src="<?php echo constant('ROUTE_JS') . 'levelup.js'; ?>"></script>
-            <script src="<?php echo constant('ROUTE_JS') . '/clientScripts/clientSettings.js'; ?>"></script>
+            <script defer src="<?php echo constant('ROUTE_JS') . 'advclient.js'; ?>" type="module"></script>
+            <script defer src="<?php echo constant('ROUTE_JS') . 'clientScripts/getXp.js'; ?>" type="module"></script>

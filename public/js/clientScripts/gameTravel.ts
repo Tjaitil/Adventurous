@@ -25,20 +25,20 @@ export const gameTravel: IgameTravel = {
         if (tutorial.onGoing) tutorial.exitTutorial();
 
         let startPointType = false;
-        
+
         // If character is sailor then draw player at dock
-        if(characterName.indexOf("sailor")) {
+        if (characterName.indexOf("sailor")) {
             startPointType = true;
         } else {
             startPointType = false;
         }
 
-        setTimeout(() => Game.loadWorld({
+        setTimeout(() => Game.setWorld({
             method: "changeMap",
             newDestination: destination.toLowerCase(),
             startPointType
         }), 16000);
-        
+
         this.intervalID = setInterval(() => {
             if (gameTravel.seconds <= 0) {
                 clearInterval(gameTravel.intervalID);

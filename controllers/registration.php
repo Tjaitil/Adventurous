@@ -11,10 +11,10 @@
         
         public function index() {
             if($_SERVER['REQUEST_METHOD'] === "POST") {
-                $this->loadModel('Registration', false);
+                // // $this->loadModel('Registration', false);
                 $this->post();
             }
-            $this->renderWE('registration', 'Registration', false, $this->error);
+                $this->renderWE('registration', 'Registration', false, $this->error);
         }
         
         public function post() {
@@ -58,4 +58,3 @@
                 }
         }
     }
-?>

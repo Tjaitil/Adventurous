@@ -1,10 +1,13 @@
-import { selectItemEvent } from '../selectitem.js';
-import { ajaxG } from '../ajax.js';
+import { ItemPricesResponse } from './../types/responses/PricesResponse';
+import { ItemSelector } from '../ItemSelector.js';
 import { itemTitle } from '../utilities/itemTitle.js';
 import { inputHandler } from './inputHandler.js';
 import { getClientPageTitle } from '../utilities/getClientPageTitle.js';
 import { AdvApi } from '../AdvApi.js';
 
+/**
+ * @deprecated
+ */
 export async function getInventory() {
     AdvApi.get("/inventory")
         .then(data => {
@@ -21,13 +24,17 @@ export async function getInventory() {
                 itemTitle.addTitleEvent();
             }
             itemPrices.get();
-            if (selectItemEvent.selectItemStatus == true) {
-                selectItemEvent.addSelectEvent();
+            if (ItemSelector.isEventSet) {
+                ItemSelector.addSelectEventToInventory();
             }
             // document.getElementById("inv_toggle_button").addEventListener("click", inventorySidebarMob.toggleInventory);
         })
 }
 
+/**
+ * 
+ * @deprecated
+ */
 export async function updateInventory(page = false, addSelect = false) {
     await fetch("handlers/handlerf.php?file=inventory")
         .then(response => response.text())
@@ -45,13 +52,16 @@ export async function updateInventory(page = false, addSelect = false) {
                 itemTitle.addTitleEvent();
             }
             itemPrices.get();
-            if (selectItemEvent.selectItemStatus == true) {
-                selectItemEvent.addSelectEvent();
+            if (ItemSelector.isEventSet) {
+                ItemSelector.addSelectEventToInventory();
             }
-            // document.getElementById("inv_toggle_button").addEventListener("click", inventorySidebarMob.toggleInventory);
         })
 }
 
+/**
+ * 
+ * @deprecated
+ */
 export function checkInventoryStatus() {
     // Fetch items amount
     let items = document.getElementsByClassName("inventory_item");
@@ -70,12 +80,15 @@ export function checkInventoryStatus() {
 
 
 export class Inventory {
-    static items: HTMLElement[];
-
+    private static items: HTMLElement[];
+    private static itemsAmount: number;
     static update() {
         AdvApi.get("/inventory")
             .then(data => {
                 document.getElementById("inventory").innerHTML = data["html"]["inventory"];
+                let items = document.getElementsByClassName("inventory_item");
+                this.itemsAmount = items.length;
+                this.isFull() ? this.styleSpaceIndicator("full") : this.styleSpaceIndicator("");
 
                 if (getClientPageTitle() == "Stockpile") {
                     let figures = document.getElementById("inventory").querySelectorAll("figure");
@@ -88,26 +101,40 @@ export class Inventory {
                     itemTitle.addTitleEvent();
                 }
                 itemPrices.get();
-                if (selectItemEvent.selectItemStatus == true) {
-                    selectItemEvent.addSelectEvent();
+
+                if (ItemSelector.isEventSet) {
+                    ItemSelector.addSelectEventToInventory();
                 }
-                // document.getElementById("inv_toggle_button").addEventListener("click", inventorySidebarMob.toggleInventory);
             })
     }
 
+    static isFull() {
+        return this.itemsAmount === 18;
+    }
 
+    static styleSpaceIndicator(status: "full" | "") {
+        let inventoryStatusElement = document.getElementById("inventory-status");
+        // Adjust color according to inventory status
+        if (status === "full") {
+            inventoryStatusElement.classList.add("not-able-color");
+        } else {
+            inventoryStatusElement.classList.remove("not-able-color");
+        }
+    }
 
 }
 
-
-
+interface ItemPrice {
+    name: string;
+    store_value: number;
+}
 export const itemPrices = {
-    prices: [],
+    prices: <ItemPrice[]>[],
     findItem(itemName) {
         let item = itemName.toLowerCase();
 
         let array = this.prices.filter((element) => {
-            if (element.item === item) return element.store_value;
+            if (element.name === item) return element.store_value;
         });
         if (array.length > 0) {
             return array[0].store_value;
@@ -117,9 +144,8 @@ export const itemPrices = {
         }
     },
     get() {
-        let data = "model=Item" + "&method=getPrices";
-        ajaxG(data, function (response) {
-            itemPrices.prices = response[1].prices;
-        });
+        AdvApi.get<ItemPricesResponse>("/inventory/prices").then(response => {
+            this.prices = response.prices;
+        }).catch(() => false);
     }
 }

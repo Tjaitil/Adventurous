@@ -58,9 +58,15 @@
                                 <button> Toggle invite only</button>
                             </div>
                         <?php endif;?>
-                        <button name="leave_adventure"> Leave adventure </button>
+                        <button id="adventure-leave-event"> Leave adventure </button>
                     </div>
-                    <div id="report"></div>
+                    <div id="report">
+                        <p id="time"></p>
+                        <button id="adventure-get-report-event">
+                            Get adventure <br>
+                            report
+                        </button>
+                    </div>
                     <div id="requirements">
                         <table>
                             <thead>
@@ -79,7 +85,7 @@
                                 case 'warrior': ?>
                                 <p>Selected warriors: <span id="selected_warrior_amount">0</span></p>
                                 <?php get_template('warrior_select', $this->data['adventure']['warriors'], true);?>
-                              <button> Provide </button>
+                              <button class="adventure-provide-button">Provide</button>
                           <?php break; ?>
                           <?php
                               case 'miner':
@@ -89,7 +95,7 @@
                               </div>
                               <label for="quantity"> Select how many </label>
                               <input id="selected_amount" name="quantity" type="number" min="0"/>
-                              <button> Provide </button>
+                              <button class="adventure-provide-button">Provide</button>
                           <?php break; ?>
                           <?php endswitch;?>
                         <?php endif;?>
@@ -125,7 +131,7 @@
                     <label for="other_invite"> Can other players invite? </label>
                     <input type="checkbox" name="invite_only"/></br>
                     <p> Note that certain adventures demand that the trader has a certain diplomacy relation! </p>
-                    <button type="button" name="start_adventure"> Go on adventure </button>
+                    <button type="button" id="adventure-start-event"name="start_adventure"> Go on adventure </button>
                 </form>
                 <?php if(!empty($this->error['adventureErr'])):?>
                     <script>alert('Finish your adventure before taking a new one!');</script>

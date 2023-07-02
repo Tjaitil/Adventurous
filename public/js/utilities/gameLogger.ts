@@ -9,8 +9,8 @@ export const gameLogger = {
     currentlyLogging: false,
     currentIndex: 0,
     addMessage(message, instantLog = false) {
-        if(Array.isArray(message)) {
-            for(let i = 0; i < message.length; i++) {
+        if (Array.isArray(message)) {
+            for (let i = 0; i < message.length; i++) {
                 this.messages.push(message[i]);
             }
         }
@@ -18,14 +18,16 @@ export const gameLogger = {
             this.messages.push(message);
         }
         // Use to start this.logMessages instead of having to call it directly in another file 
-        if(instantLog) this.logMessages();
+        if (instantLog) this.logMessages();
     },
     logMessages() {
-        if(this.messages.length === 0) return false;
+        if (this.messages.length === 0) return false;
         // Start new loop only if none is set
-        if(!this.currentlyLogging) {
-           this.clientLog();
-        } 
+
+        console.log(this.currentlyLogging);
+        if (!this.currentlyLogging) {
+            this.clientLog();
+        }
         this.currentlyLogging = true;
     },
     mainLog() {
@@ -40,11 +42,11 @@ export const gameLogger = {
         let message = this.messages[this.currentIndex];
         let tr = document.createElement("TR");
         let td = document.createElement("TD");
-        if(message.indexOf("ERROR") != -1) {
+        if (message.indexOf("ERROR") != -1) {
             message = message.split("ERROR")[1].trim();
             td.className = "error_log";
         }
-        if(message.search("\\[") == -1) {
+        if (message.search("\\[") == -1) {
             var d = new Date();
             var time = "[" + addZero(d.getHours()) + ":" + addZero(d.getMinutes()) + ":" + addZero(d.getSeconds()) + "] ";
             message = time + message;
@@ -61,18 +63,21 @@ export const gameLogger = {
         }
     },
     clientLog() {
+        console.log('clientlog');
         let message = this.messages[this.currentIndex];
         let div = document.getElementById("log_2");
         div.innerHTML = message;
         div.style.opacity = "1";
         div.style.height = "50px";
         div.style.top = window.pageYOffset + 5 + "px";
-        this.mainLog();
+        // TODO: Fix main log
+        // this.mainLog();
         setTimeout(() => {
+            console.log('log_2');
             document.getElementById("log_2").style.height = "4px";
         }, 3700);
         setTimeout(() => {
-            if(this.currentIndex !== this.messages.length - 1) {
+            if (this.currentIndex !== this.messages.length - 1) {
                 this.currentIndex++;
                 this.clientLog();
             } else {

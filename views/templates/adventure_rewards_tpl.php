@@ -1,45 +1,40 @@
-    <h3 class="page_title"> Adventure rewards </h3>
+    <h1 class="page_title">Adventure rewards</h1>
     <div id="adventure_report">
-        <p><button> << Back to adventures</button></p>
+        <button id="adventure-navigate-back"><< Back to adventures</button>
         <div id="adventure_rewards">
             <h3> You have finished an adventure! </h3>
             <p> Rewards: </p>
-    <?php foreach($data['rewards'] as $key): ?>
-            <div class="item">    
-                <figure onclick="show_title(this, false);">
-                    <img src="<?php echo constant('ROUTE_IMG') . $key['item'] . '.png';?>" />
-                    <figcaption class="tooltip"><?php echo ucwords($key['item']);?></figcaption>
-                </figure>
-                <span class="item_amount"><? echo $key['amount'];?></span>
-            </div>
-        <?php endforeach; ?>
-        <div id="item_tooltip">
-            <ul>
-                <li></li>
-            </ul>
+            <?php foreach ($data['rewards'] as $key) : ?>
+                <div class="item">
+                    <figure onclick="show_title(this, false);">
+                        <img src="<?php echo constant('ROUTE_IMG') . $key['item'] . '.png'; ?>" />
+                        <figcaption class="tooltip"><?php echo ucwords($key['item']); ?></figcaption>
+                    </figure>
+                    <span class="item_amount"><? echo $key['amount']; ?></span>
+                </div>
+            <?php endforeach; ?>
         </div>
-        </div>
-        <?php if($data['stockpile_insert'] === 'true'): ?>
-            <p> NOTE: One or more of your rewards are inserted directly into your stockpile </p>
-        <?php endif;?>
-            <table id="adventure_stats"s>
-                <thead>
-                    <tr>
-                        <td> Location: </td>
-                        <td> Difficulty: </td>
-                        <td> Role: </td>
-                        <td> Xp Gained </td>
-                    </tr>
-                </thead>
+        <?php if ($data['stockpile_insert'] === 'true') : ?>
+            <p>NOTE: One or more of your rewards are inserted directly into your stockpile</p>
+        <?php endif; ?>
+        <table id="adventure_stats" s>
+            <thead>
                 <tr>
-                    <td><?php echo ucfirst($data['adventure_data']['location']);?></td>
-                    <td><?php echo $data['adventure_data']['difficulty'];?></td>
-                    <td><?php echo ucfirst($data['adventure_data']['role']);?></td>
-                    <td><?php echo $data['adventure_data']['user_xp'];?></td>
+                    <td> Location: </td>
+                    <td> Difficulty: </td>
+                    <td> Role: </td>
+                    <td> Xp Gained </td>
                 </tr>
-            </table>
+            </thead>
+            <tr>
+                <td><?php echo ucfirst($data['adventure_data']['location']); ?></td>
+                <td><?php echo $data['adventure_data']['difficulty']; ?></td>
+                <td><?php echo ucfirst($data['adventure_data']['role']); ?></td>
+                <td><?php echo $data['adventure_data']['user_xp']; ?></td>
+            </tr>
+        </table>
         <table id="battle_stats">
-            <caption>Battle result: <?php echo $data['statistics']['result'];?></caption>
+            <caption>Battle result: <?php echo $data['statistics']['result']; ?></caption>
             <thead>
                 <tr>
                     <td> </td>
@@ -63,7 +58,7 @@
                 <td><?php echo $data['statistics']['daqloon_combo']; ?></td>
             </tr>
         </table>
-        <?php if(count($data['warrior_xp']) > 0): ?>
+        <?php if (count($data['warrior_xp']) > 0) : ?>
             <table id="warriors_levels">
                 <thead>
                     <tr>
@@ -73,16 +68,16 @@
                         <td> Precision xp </td>
                         <td> Strength xp </td>
                     </tr>
-                    <?php foreach($data['warrior_xp'] as $key): ?>
+                    <?php foreach ($data['warrior_xp'] as $key) : ?>
                         <tr>
-                            <td><?php echo $key['warrior_id'];?></td>
-                            <td><?php echo $key['stamina_xp'];?></td>
-                            <td><?php echo $key['technique_xp'];?></td>
-                            <td><?php echo $key['precision_xp'];?></td>
-                            <td><?php echo $key['strength_xp'];?></td>
+                            <td><?php echo $key['warrior_id']; ?></td>
+                            <td><?php echo $key['stamina_xp']; ?></td>
+                            <td><?php echo $key['technique_xp']; ?></td>
+                            <td><?php echo $key['precision_xp']; ?></td>
+                            <td><?php echo $key['strength_xp']; ?></td>
                         </tr>
-                    <?php endforeach;?>
+                    <?php endforeach; ?>
                 </thead>
             </table>
-        <?php endif;?>
+        <?php endif; ?>
     </div>

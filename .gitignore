@@ -39,3 +39,11 @@ ehthumbs.db
 Thumbs.db
 .vscode
 .htaccess
+
+vendor
+.phpunit.result.cache
+
+#Compiled
+public/dist/*
+
+_ide_helper.*

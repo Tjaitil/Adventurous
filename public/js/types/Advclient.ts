@@ -1,6 +1,6 @@
 import { DaqloonFightingArea } from "./../gamepieces/DaqloonFightingArea";
 import { Building } from "./../gamepieces/Building";
-import { HUD } from "./../clientScripts/HUD";
+import { HUD } from "./../clientScripts/HUD.js";
 import { StaticGameObject } from "./gamepieces/StaticGameObject";
 
 export interface GameProperties {
@@ -18,6 +18,7 @@ export interface GameProperties {
     inBuilding: boolean;
     checkingPerson: string;
     delta: number;
+    assetsPath: string;
 }
 
 export interface loadWorldParamters {

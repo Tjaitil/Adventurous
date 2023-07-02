@@ -1,23 +1,25 @@
 import { StaticGameObject } from "../types/gamepieces/StaticGameObject.js";
 import viewport from "../clientScripts/viewport.js";
+import { NonDrawingTypes } from "./NonDrawingTypes.js";
 
 export class BaseStaticGameObject implements StaticGameObject {
-    type: string;
-    sprite: HTMLImageElement;
-    src: string;
-    drawX: number;
-    drawY: number;
-    visible: boolean;
-    diameterUp: number;
-    diameterLeft: number;
-    diameterRight: number;
-    diameterDown: number;
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    noCollision: boolean;
-    id: boolean;
+    public type: string;
+    public sprite: HTMLImageElement;
+    public src: string;
+    public drawX: number;
+    public drawY: number;
+    public visible: boolean;
+    public diameterUp: number;
+    public diameterLeft: number;
+    public diameterRight: number;
+    public diameterDown: number;
+    public x: number;
+    public y: number;
+    public width: number;
+    public height: number;
+    public noCollision: boolean;
+    public id: boolean;
+    public displayName: string;
 
     constructor(initObjectData: StaticGameObject) {
         this.visible = initObjectData.visible;
@@ -39,10 +41,17 @@ export class BaseStaticGameObject implements StaticGameObject {
         this.drawX = Math.round(initObjectData.x - viewport.offsetX);
         this.drawY = Math.round(initObjectData.y - viewport.offsetY);
 
+        if (this.src) {
+            this.displayName = this.src.split(".png")[0];
+        }
+
         this.noCollision = initObjectData.noCollision;
         this.sprite = new Image(this.width, this.height);
 
         this.sprite.src = "public/images/" + this.src;
+        if (!this.src && !NonDrawingTypes.includes(this.type)) {
+            console.error("No image source found for " + initObjectData);
+        }
         // check source for missing format
         if (this.sprite.src.includes(".png") === false) this.sprite.src += ".png";
     }

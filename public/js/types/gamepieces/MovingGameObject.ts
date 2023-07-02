@@ -16,6 +16,7 @@ export interface MovingGameObject extends GameObject {
     down: DirectionBlockedCheck;
     left: DirectionBlockedCheck;
     movementSpeed: number;
+    currentAnimation: string;
 }
 
 export type MovingGameObjectTypes = Player | Daqloon;

@@ -14,7 +14,7 @@ export const controls = {
     actionText: "Press x",
     enterText: "E - Enter building",
     enterButton: "E -",
-    personText: "W - talk to ",
+    personText: "W - Talk to ",
     personButton: "W -",
     device: "pc",
     w: null,
@@ -210,7 +210,7 @@ export const controls = {
             this.actionText = "Press x";
             this.enterText = "E - Enter building";
             this.enterButton = "E -";
-            this.personText = "W - talk to ";
+            this.personText = "W - Talk to ";
             this.personButton = "W -";
             this.device = "pc";
         } else {
@@ -305,8 +305,16 @@ export const controls = {
                         break;
                     case 65:
                         // A
-                        if (GamePieces.player.cooldown <= 0 && GamePieces.player.combat === true)
+                        if (GamePieces.player.cooldown <= 0 && GamePieces.player.combat === true) {
+                            GamePieces.player.combatActions.attack = true;
                             GamePieces.player.attack = true;
+                        }
+                        break;
+                    case 81:
+                        // Q
+                        if (GamePieces.player.cooldowns.block <= 0) {
+                            GamePieces.player.combatActions.block = true;
+                        }
                         break;
                     case 67:
                         // C

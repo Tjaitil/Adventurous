@@ -14,7 +14,6 @@
     width: 0%;
     max-width: 180px;
     position: absolute;
-    top: 53px;
     left: 0px;
     height: auto;
     padding: 1rem;
@@ -96,7 +95,7 @@
     border-radius: 10px;
 }
 #close_map_wrapper {
-    position: relative;    
+    position: relative;
 }
 #map_type_toggle_container {
     position: relative;

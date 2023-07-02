@@ -1,18 +1,85 @@
 <?php
+
+namespace App\models;
+
+use App\libs\model;
+use \DateTime;
+use \Exception;
+use PDO;
+use TraderAssignmentResource;
+
 class Trader_model extends model
 {
-    public $username;
-    public $session;
     public $assignment_types;
 
-    function __construct($session)
+    function __construct()
     {
         parent::__construct();
-        $this->username = $session['username'];
-        $this->session = $session;
-        $this->assignment_types = $assignment_types = restore_file('trader_assignment_types', true);
-        $this->commonModels(true, false, true);
+        // $this->assignment_types = $assignment_types = restore_file('trader_assignment_types', true);
+        // $this->commonModels(true, false, true);
     }
+
+    public function all()
+    {
+    }
+
+    /**
+     * Find trader data for specific user
+     *
+     * @return array
+     */
+    public function find()
+    {
+        $param_username = $this->username;
+        $sql = "SELECT assignment_id, cart, cart_amount, delivered,
+                (SELECT capasity FROM travelbureau_carts WHERE item= cart) as cart_capasity,
+                trading_countdown
+                FROM trader WHERE username=:username";
+        $stmt = $this->db->conn->prepare($sql);
+        $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+        $stmt->execute();
+
+        $results = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $results === false ? [] : $results;
+    }
+
+    public function update(TraderAssignmentResource $traderAssignmentResource)
+    {
+
+        $param_id = $traderAssignmentResource->assignment_id;
+        $param_cart_amount = $traderAssignmentResource->cart_amount;
+        $param_trading_countdown = $traderAssignmentResource->trading_countdown;
+        $param_deliverd = $traderAssignmentResource->delivered;
+
+        $sql = "UPDATE trader 
+                SET assignment_id=:assignment_id, cart_amount=:cart_amount, 
+                    delivered=:delivered, trading_countdown=:trading_countdown 
+                WHERE username=:username";
+        $stmt = $this->db->conn->prepare($sql);
+
+        $stmt->bindParam(":assignment_id", $param_id, PDO::PARAM_INT);
+        $stmt->bindParam(":trading_countdown", $param_trading_countdown, PDO::PARAM_STR);
+        $stmt->bindParam(":cart_amount", $param_cart_amount, PDO::PARAM_INT);
+        $stmt->bindParam(":delivered", $param_deliverd, PDO::PARAM_INT);
+        $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+
+        $param_username = $this->username;
+        $stmt->execute();
+    }
+
+    public function endAssignment()
+    {
+        $sql = "UPDATE trader SET assignment_id=0, delivered=0, cart_amount=0
+                WHERE username=:username";
+
+        $stmt = $this->db->conn->prepare($sql);
+        $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+        $param_username = $this->username;
+        $stmt->execute();
+    }
+
+
     private function getAssignmentTypeData($type)
     {
         $assignment_type = array_values(array_filter($this->assignment_types, function ($key) use ($type) {
@@ -27,11 +94,11 @@ class Trader_model extends model
         // Function to set a new trader assignment
 
         $assignment_id = $POST['assignment_id'];
-        
+
         if ($this->hungerModel->checkHunger()) {
             $this->response->addTo("errorGameMessage", $this->hungerModel->getHungerError());
             return false;
-        } 
+        }
 
         $param_username = $this->username;
         $sql = "SELECT assignment_id, cart, (SELECT capasity FROM travelbureau_carts WHERE type= cart) as capasity  
@@ -43,13 +110,15 @@ class Trader_model extends model
         if ($row['assignment_id'] > 0) {
             $this->response->addTo(
                 'errorGameMessage',
-                "Finish your assignment before taking a new one");
+                "Finish your assignment before taking a new one"
+            );
             return false;
         }
         if ($row['cart'] == 'none') {
             $this->response->addTo(
                 'errorGameMessage',
-                "You don't have a cart. Go buy one at a travel bureau!");
+                "You don't have a cart. Go buy one at a travel bureau!"
+            );
             return false;
         }
         $param_assignment_id = $assignment_id;
@@ -58,7 +127,7 @@ class Trader_model extends model
         $stmt->bindParam(":assignment_id", $param_assignment_id, PDO::PARAM_STR);
         $stmt->execute();
         $assignment_data = $stmt->fetch(PDO::FETCH_ASSOC);
-        if(!$stmt->rowCount() > 0) {
+        if (!$stmt->rowCount() > 0) {
             $this->response->addTo("errorGameMessage", "Something unexpected happened, please try again");
             return false;
         }
@@ -131,7 +200,8 @@ class Trader_model extends model
         $this->response->addTo("html", ob_get_clean());
         $this->response->addTo("data", $this->hungerModel->getHunger(), array("index" => "newHunger"));
     }
-    public function pickUp() {
+    public function pickUp()
+    {
         $param_username = $this->username;
         $sql = "SELECT t.assignment_id, t.cart, t.cart_amount, t.delivered, ta.assignment_amount, ta.assignment_type, ta.base
                     FROM trader AS t INNER JOIN trader_assignments AS ta ON ta.assignment_id = t.assignment_id
@@ -190,7 +260,8 @@ class Trader_model extends model
         $this->response->addTo('gameMessage', "You have picked up " . $cart_space . " items");
         $this->response->addTo('data', $param_cart_amount, array("index" => "cartAmount"));
     }
-    public function deliver() {
+    public function deliver()
+    {
 
         $param_username = $this->username;
         $sql = "SELECT t.assignment_id, t.cart_amount, t.delivered, ta.assignment_amount, ta.cargo, ta.assignment_type,
@@ -316,7 +387,8 @@ class Trader_model extends model
         } else {
             $this->response->addTo("data", false, array("index" => "assignment_finished"));
             $this->response->addTo("data", $delivered, array("index" => "delivered"));
-            $this->response->addTo("gameMessage",
+            $this->response->addTo(
+                "gameMessage",
                 "You have delivered: {$row['cart_amount']}, Total: {$param_delivered}. Gained
             {$experience} trader experience"
             );

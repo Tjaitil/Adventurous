@@ -7,14 +7,14 @@ export interface ICharacter extends StaticGameObject {
 }
 
 export class Character extends BaseStaticGameObject implements ICharacter {
-    width: number = 38;
-    height: number = 38;
+    width: number = 42;
+    height: number = 42;
     conversation: boolean;
-    displayName: string;
 
     constructor(initCharacterData: ICharacter) {
         super(initCharacterData);
-
-        this.displayName = initCharacterData.displayName;
+        this.y += 6;
+        this.diameterUp += 6;
+        this.displayName = initCharacterData.displayName.replace('_', ' ');
     }
 }

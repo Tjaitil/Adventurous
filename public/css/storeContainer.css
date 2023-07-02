@@ -72,3 +72,7 @@
 #store-container-item-selected .item .item_amount {
     color: var(--textColor);
 }
+
+#store-container-do-trade {
+    display: none;
+}

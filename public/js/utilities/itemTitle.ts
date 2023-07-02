@@ -38,8 +38,8 @@ export const itemTitle = {
     },
     addItemClassEvents() {
         // Add events on specific pages
-        if(["merchant", "zinsstore"].indexOf(Game.properties.building) !== -1) return false;
-        console.log(document.getElementById("news_content_main_content"));
+        if (["merchant", "zinsstore"].indexOf(Game.properties.building) !== -1) return false;
+        document.getElementById("news_content_main_content");
         let itemDivs = document.getElementById("news_content_main_content").querySelectorAll(".item");
         itemDivs.forEach(element => {
             element.addEventListener('mouseenter', event => itemTitle.show(event));
@@ -49,9 +49,12 @@ export const itemTitle = {
     show(event) {
         let element = event.target.closest("div");
         this.currentTitle = element;
+        if (!element.getElementsByTagName("figcaption")[0]) {
+            return false;
+        }
         let item = element.getElementsByTagName("figcaption")[0].innerHTML;
         let menu = document.getElementById("item_tooltip");
-        if(menu.children[0].children[0].innerHTML === item && menu.style.visibility !== "hidden") {
+        if (menu.children[0].children[0].innerHTML === item && menu.style.visibility !== "hidden") {
             return false;
         }
         // Insert item name at the first li
@@ -61,13 +64,13 @@ export const itemTitle = {
         let menuTop;
         let menuFirstChild = <HTMLElement>menu.children[0];
         let textChild = <HTMLElement>menuFirstChild.children[0];
-        document.getElementById("tooltip_item_price").innerHTML = itemPrices.findItem(item);
+        document.getElementById("tooltip_item_price").innerHTML = itemPrices.findItem(item) + "";
         if (element.className == "inventory_item") {
             document.getElementById("inventory").insertBefore(menu,
                 document.getElementById("inventory").querySelectorAll(".inventory_item")[0]);
             // menuTop = element.offsetTop + 30;
             menuTop = element.offsetTop - 15;
-            
+
             menuFirstChild.style.top = menuTop + "px";
             textChild.style.textAlign = "center";
             if (item.length < 8) {
@@ -90,9 +93,9 @@ export const itemTitle = {
         this.currentTitle = null;
     },
     resetItemTooltip() {
-        if(document.getElementById("news_content_main_content").querySelectorAll("#item_tooltip").length > 0) {
+        if (document.getElementById("news_content_main_content").querySelectorAll("#item_tooltip").length > 0) {
             document.getElementById("inventory").insertBefore(document.getElementById("item_tooltip"),
-            document.getElementById("inventory").querySelectorAll(".inventory_item")[0]);
+                document.getElementById("inventory").querySelectorAll(".inventory_item")[0]);
         }
     }
 };

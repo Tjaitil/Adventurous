@@ -10,13 +10,15 @@ canvas {
     position: absolute;
 }
 #client-loading-container h1 {
-    flex-basis:  50%;
+    flex-basis: 50%;
 }
 #client-container {
     opacity: 0;
     transition: opacity 0.5s ease-in;
 }
-button:focus {outline:0;}
+button:focus {
+    outline: 0;
+}
 #loading_message {
     margin-top: 20px;
 }
@@ -31,8 +33,8 @@ button:focus {outline:0;}
     z-index: 10;
 }
 #canvas_border::before {
-    content: '';
-    border: 3px solid rgba(0,0,0, 0.6);
+    content: "";
+    border: 3px solid rgba(0, 0, 0, 0.6);
     width: calc(100% + 4px);
     height: calc(100% + 4px);
     position: absolute;
@@ -46,7 +48,7 @@ canvas {
     left: 0px;
     image-rendering: -moz-crisp-edges;
     image-rendering: -webkit-crisp-edges;
-    image-rendering: pixelated; 
+    image-rendering: pixelated;
     image-rendering: crisp-edges;
 }
 #text_canvas {
@@ -144,7 +146,7 @@ canvas {
     box-sizing: border-box;
 }
 .HUD-icon {
-    cursor:pointer;
+    cursor: pointer;
 }
 /*button {
     background-color: #f2e6d9;
@@ -162,8 +164,12 @@ canvas {
 #map img {
     color: white;
 }*/
-
-button:focus {outline:0;}
+#game_canvas2_2 {
+    position: relative;
+}
+button:focus {
+    outline: 0;
+}
 @media all and (max-width: 830px) {
     #news_content {
         width: 98%;
