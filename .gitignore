@@ -44,6 +44,7 @@ vendor
 .phpunit.result.cache
 
 #Compiled
+cache/*
 public/dist/*
 
 _ide_helper.*

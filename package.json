@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "build": "tsc --build",
-    "watch": "tsc --watch & npx tailwindcss -i ./public/css/input.css -o ./public/dist/css/output.css --watch"
+    "tscWatch": "tsc --watch",
+    "cssWatch": "npx tailwindcss -i ./public/css/input.css -o ./public/dist/css/output.css --watch"
   },
   "devDependencies": {
     "tailwindcss": "^3.3.2",
