@@ -2,6 +2,7 @@
 
 namespace App\builders;
 
+use App\enums\GameLocations;
 use App\resources\CountdownResource;
 use App\resources\TimeResource;
 use App\resources\WarriorLevelsResource;
@@ -170,7 +171,7 @@ class WarriorBuilder
      */
     public function setLocation(string $location)
     {
-        if (array_search($location, GameConstants::WARRIOR_LOCATIONS) !== false) {
+        if (array_search($location, GameLocations::getWarriorLocations()) !== false) {
             $this->resource->location = $location;
             return $this;
         }

@@ -12,6 +12,7 @@ use App\models\FarmerWorkforce;
 use App\services\CountdownService;
 use App\services\HungerService;
 use App\services\InventoryService;
+use App\services\LocationService;
 use App\services\SessionService;
 use App\services\SkillsService;
 use Carbon\Carbon;
@@ -27,7 +28,8 @@ class CropsController extends controller
         private SkillActionBuilder $skillActionBuilder,
         private SessionService $sessionService,
         private HungerService $hungerService,
-        private SkillsService $skillsService
+        private SkillsService $skillsService,
+        private LocationService $locationService
     ) {
         parent::__construct();
     }
@@ -102,7 +104,7 @@ class CropsController extends controller
         $location = $this->sessionService->getCurrentLocation();
 
         // Check if user is in right location
-        if (!$this->sessionService->isValidCropsLocation($location)) {
+        if (!$this->locationService->isCropsLocation($location)) {
             return Response::addMessage("You are in the wrong location to grow crops")->setStatus(422);
         } else if ($this->hungerService->isHungerTooLow()) {
             return $this->hungerService->logHungerTooLow();
@@ -179,7 +181,7 @@ class CropsController extends controller
         ]);
 
         $location = $this->sessionService->getCurrentLocation();
-        if (!$this->sessionService->isValidCropsLocation($location)) {
+        if (!$this->locationService->isCropsLocation($location)) {
             return Response::addMessage("You are in the wrong location to grow crops")->setStatus(422);
         }
 

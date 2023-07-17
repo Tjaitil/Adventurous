@@ -2,25 +2,9 @@
 
 class GameConstants
 {
-
-    public const WARRIOR_LOCATIONS = [
-        "cruendo",
-        "tasnobil",
-    ];
-
     public const WARRIOR_TYPES = [
         "melee",
         "ranged"
-    ];
-
-    public const CROP_LOCATIONS = [
-        "krasnur",
-        "towhar",
-    ];
-
-    public const MINE_LOCATIONS = [
-        "golbak",
-        "snerpiir",
     ];
 
     public const SKILL_ACTION = [
@@ -49,32 +33,14 @@ class GameConstants
 
     public const CURRENCY = "gold";
 
-    public const DIPLOMACY_LOCATIONS = ["hirtam", "pvitul", "khanz", "ter", "fansalplains"];
-
     public const DATE_FORMAT = "Y-m-d H:i:s";
 
     public const MINER_STORE_DISCOUNT = 0.20;
 }
 
-
-const WARRIOR_LOCATIONS = [
-    "cruendo",
-    "tasnobil",
-];
-
 const WARRIOR_TYPES = [
     "melee",
     "ranged"
-];
-
-const CROP_LOCATIONS = [
-    "krasnur",
-    "towhar",
-];
-
-const MINE_LOCATIONS = [
-    "golbak",
-    "snerpiir",
 ];
 
 const SKILL_ACTIONS = [

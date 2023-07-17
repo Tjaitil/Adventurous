@@ -2,6 +2,7 @@
 
 namespace App\services;
 
+use App\enums\GameLocations;
 use App\models\CityRelation;
 use App\models\Diplomacy;
 
@@ -12,25 +13,12 @@ class DiplomacyService
     public function __construct(
         protected Diplomacy $Diplomacy,
         protected CityRelation $CityRelation,
-        protected SessionService $sessionService
+        protected SessionService $sessionService,
+        protected LocationService $locationService
     ) {
     }
 
-    /**
-     * Check if provided location is a diplomacy location
-     *
-     * @param string $location
-     *
-     * @return bool
-     */
-    public function isDiplomacyLocation($location)
-    {
-        if (in_array($location, CROP_LOCATIONS)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+
 
     /**
      * Set new diplomacy for a location
@@ -46,8 +34,8 @@ class DiplomacyService
 
         $Diplomacy = $this->Diplomacy->where('username', $this->sessionService->getCurrentUsername());
 
-        for ($i = 0; $i < count(DIPLOMACY_LOCATIONS); $i++) {
-            $location = DIPLOMACY_LOCATIONS[$i];
+        for ($i = 0; $i < count(GameLocations::getDiplomacyLocations()); $i++) {
+            $location = GameLocations::getDiplomacyLocations()[$i];
 
             $location_relation = floatval($this->CurrentCityRelations[$location]);
 
@@ -68,6 +56,8 @@ class DiplomacyService
         $Diplomacy->save();
     }
 
+
+
     /**
      * Calculate new merchant price
      *
@@ -78,6 +68,9 @@ class DiplomacyService
      */
     public function calculateNewMerchantPrice($price, $location)
     {
+        if (!$this->locationService->isDiplomacyLocation($location)) {
+            return 0;
+        }
 
         $diplomacy_price_adjust = 1;
         $location = str_replace("-", "", $location);

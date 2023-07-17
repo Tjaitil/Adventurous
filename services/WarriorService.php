@@ -4,6 +4,7 @@ namespace App\services;
 
 use App\actions\MergeIntoSubArrayAction;
 use App\builders\WarriorBuilder;
+use App\enums\GameLocations;
 use App\libs\Response;
 use App\models\Warriors;
 use App\models\Warriors_model;
@@ -237,7 +238,7 @@ class WarriorService
      */
     public function isValidWarriorLocation(string $location)
     {
-        if (!in_array($location, \WARRIOR_LOCATIONS)) {
+        if (!in_array($location, GameLocations::getWarriorLocations())) {
             return false;
         }
 

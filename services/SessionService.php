@@ -3,8 +3,6 @@
 namespace App\services;
 
 use App\models\UserData;
-use \Exception;
-use \GameConstants;
 
 
 /**
@@ -16,6 +14,7 @@ class SessionService
 
     private $default = [];
     private UserData $data;
+    // TODO: Move this into enum
     protected $location_maps = array(
         "2.6" => "tasnobil",
         "3.5" => "golbak",
@@ -43,47 +42,9 @@ class SessionService
         $this->data = $this->userData_model->find();
     }
 
-    public function isValidCropsLocation(string $location)
-    {
-        return (in_array($location, GameConstants::CROP_LOCATIONS));
-    }
-
     public function getCurrentUsername()
     {
         return $this->data->username;
-    }
-
-    /**
-     * Is user in a valid miner location
-     *
-     * @param string $location
-     * @throws Exception If user is in a valid miner location
-     *
-     * @return bool
-     */
-    public function isValidMineLocation(string $location)
-    {
-
-        return (in_array($location, GameConstants::MINE_LOCATIONS));
-    }
-
-    /**
-     * Check if user is in diplomacy location
-     *
-     * @param string|null $location Provided location or check session otherwise
-     * @param bool $throw Determmine wether exception should be thrown
-     * 
-     *
-     * @return bool
-     */
-    public function isDiplomacyLocation(?string $location = null)
-    {
-        $location = (!is_null($location)) ? $location : $this->getCurrentLocation();
-        if (!in_array($location, GameConstants::DIPLOMACY_LOCATIONS)) {
-            return false;
-        } else {
-            return true;
-        }
     }
 
     public function getCurrentMap()
