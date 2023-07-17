@@ -30,11 +30,11 @@ export const inputHandler = {
             }
         }
         if (this.buildingMatch) {
-            HUD.elements.control_text_building =
+            HUD.elements.control_text_building.innerHTML =
                 controls.enterText + " " + this.mapBuildingName(this.buildingMatch.displayName);
             this.buildingMatchUIChanged = true;
-        } else if (this.buildingMatchUIChanged) {
-            HUD.elements.control_text_building = controls.enterButton;
+        } else if (this.buildingMatchUIChanged && !this.buildingMatch) {
+            HUD.elements.control_text_building.innerHTML = controls.enterButton;
             this.buildingMatchUIChanged = false;
         }
     },
@@ -91,7 +91,6 @@ export const inputHandler = {
                 }
                 ClientOverlayInterface.show(html);
                 itemTitle.addItemClassEvents();
-                console.log(building);
                 const src = '/public/dist/js/buildingScripts/';
                 const module = await import(src + script).then((data) => {
                     this.currentBuildingModule = data;
@@ -118,21 +117,21 @@ export const inputHandler = {
         this.characterMatch = undefined;
         for (let i = 0, n = GamePieces.nearCharacters.length; i < n; i++) {
             if (
-                Math.abs(GamePieces.player.xpos - GamePieces.characters[i].x) < 32 &&
-                Math.abs(GamePieces.player.ypos - GamePieces.characters[i].y) < 32 &&
+                Math.abs(GamePieces.player.xpos - GamePieces.nearCharacters[i].x) < 32 &&
+                Math.abs(GamePieces.player.ypos - GamePieces.nearCharacters[i].y) < 32 &&
                 GamePieces.characters[i].type === "character"
             ) {
-                this.characterMatch = GamePieces.characters[i];
+                this.characterMatch = GamePieces.nearCharacters[i];
                 break;
             }
         }
 
         if (this.characterMatch) {
-            HUD.elements.control_text_conversation =
+            HUD.elements.control_text_conversation.innerHTML =
                 controls.personText + " " + this.characterMatch.displayName;
             this.characterMatchUIChanged = true;
-        } else if (this.characterMatchUIChanged) {
-            HUD.elements.control_text_conversation = controls.personButton;
+        } else if (this.characterMatchUIChanged && !this.characterMatch) {
+            HUD.elements.control_text_conversation.innerHTML = controls.personButton;
             this.characterMatchUIChanged = false;
         }
     },
