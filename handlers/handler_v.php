@@ -59,6 +59,7 @@ $controller_mapping = [
     'armymission' => ArmymissionsController::class,
     'archeryshop' => ArcheryShopController::class,
     'smithy' => SmithyController::class,
+    'trader' => MerchantController::class,
 ];
 
 if (is_null($building) || !array_key_exists($building, $controller_mapping)) {
