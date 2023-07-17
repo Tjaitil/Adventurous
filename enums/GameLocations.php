@@ -13,6 +13,10 @@ enum GameLocations: string
     case TOWHAR_LOCATION = "towhar";
     case GOLBAK_LOCATION = "golbak";
     case FAGNA_LOCATION = "fagna";
+    case CRUENDO_LOCATION = "cruendo";
+    case SNERPIIR_LOCATION = "snerpiir";
+    case TASNOBIL_LOCATION = "tasnobil";
+
 
 
     /**
@@ -22,11 +26,11 @@ enum GameLocations: string
     public static function getDiplomacyLocations()
     {
         return [
-            self::HIRTAM_LOCATION,
-            self::PVITUL_LOCATION,
-            self::KHANZ_LOCATION,
-            self::TER_LOCATION,
-            self::FANSALPLAINS_LOCATION
+            self::HIRTAM_LOCATION->value,
+            self::PVITUL_LOCATION->value,
+            self::KHANZ_LOCATION->value,
+            self::TER_LOCATION->value,
+            self::FANSALPLAINS_LOCATION->value,
         ];
     }
 
@@ -39,8 +43,8 @@ enum GameLocations: string
     public static function getWarriorLocations()
     {
         return [
-            self::KRASNUR_LOCATION,
-            self::TOWHAR_LOCATION,
+            self::KRASNUR_LOCATION->value,
+            self::TASNOBIL_LOCATION->value,
         ];
     }
 
@@ -53,8 +57,8 @@ enum GameLocations: string
     public static function getCropLocations()
     {
         return [
-            self::KRASNUR_LOCATION,
-            self::TOWHAR_LOCATION,
+            self::KRASNUR_LOCATION->value,
+            self::TOWHAR_LOCATION->value,
         ];
     }
 
@@ -67,8 +71,8 @@ enum GameLocations: string
     public static function getMineLocations()
     {
         return [
-            self::GOLBAK_LOCATION,
-            self::FAGNA_LOCATION,
+            self::GOLBAK_LOCATION->value,
+            self::FAGNA_LOCATION->value,
         ];
     }
 }
