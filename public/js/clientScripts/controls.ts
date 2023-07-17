@@ -12,7 +12,7 @@ export const controls = {
     playerRight: false,
     playerDown: false,
     actionText: "Press x",
-    enterText: "E - Enter building",
+    enterText: "E - Enter",
     enterButton: "E -",
     personText: "W - Talk to ",
     personButton: "W -",
