@@ -2,18 +2,50 @@
 
 namespace App\libs;
 
+use eftec\bladeone\BladeOne;
+
+
 class controller
 {
     protected $model;
     protected $controller;
+    protected BladeOne $bladeRender;
 
     public function __construct()
     {
+        $this->bootBladeRendering();
     }
+
+
+
+    public function bootBladeRendering()
+    {
+        $views = ROUTE_ROOT . 'views';
+        $cache = ROUTE_ROOT . 'cache';
+        $this->bladeRender = new BladeOne($views, $cache, BladeOne::MODE_DEBUG); // MODE_DEBUG allows to pinpoint troubles.
+
+        $this->bladeRender->directiveRT('class', function ($expression) {
+
+            $classes = [];
+            foreach ($expression as $key => $value) {
+                if (\is_numeric($key)) {
+                    $classes[] = $value;
+                } elseif ($value == true) {
+                    $classes[] = $key;
+                }
+            }
+            echo "class=\"" . implode(' ', $classes) . "\"";
+        });
+    }
+
+
 
     // Render site
     public function render($name, $title, $data, $up = false, $ajax = false)
     {
+        foreach ($data as $key => $value) {
+            ${"$key"} = $value;
+        }
 
         if ($ajax == false) {
             if ($up !== false) {
@@ -25,6 +57,9 @@ class controller
             require('../' . constant('ROUTE_VIEW') . $name . '.php');
         }
     }
+
+
+
     //Render site with error Array   
     public function renderWE($name, $title, $gamedata, $data, $up = false)
     {
@@ -38,6 +73,8 @@ class controller
             }
         }
     }
+
+
 
     public function loadModel($name, $db, $secondaryModel = false)
     {
@@ -61,6 +98,9 @@ class controller
         }
         // }
     }
+
+
+
     public function loadController($controllerName)
     {
         $controllerName  = strtolower($controllerName);
