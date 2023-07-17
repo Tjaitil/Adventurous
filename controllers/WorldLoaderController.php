@@ -2,11 +2,11 @@
 
 namespace App\controllers;
 
+use App\enums\GameMaps;
 use App\libs\controller;
 use App\libs\Request;
 use App\libs\Response;
 use App\models\UserData;
-use App\models\UserData_model;
 use App\services\SessionService;
 
 class WorldLoaderController extends controller
@@ -15,17 +15,10 @@ class WorldLoaderController extends controller
     public $session;
     private $object_array = array();
     private $map;
-    protected $maps = array(
-        "tasnobil" => 2.6,
-        "golbak" => 3.5, "krasnur" => 3.6, "towhar" => 5.7, "fagna" => 7.5, "cruendo" => 6.6,
-        "ter" => 6.3, "snerpiir" => 5.5, "pvitul" => 2.9, "hirtam" => 4.9, "khanz" => 8.2,
-        "fansal-plains" => 4.3
-    );
     private $changed_location;
     private $objectCollisionData = array();
-    private $map_location = "";
 
-    function __construct(private UserData_model $userData_model, private SessionService $sessionService)
+    function __construct(private SessionService $sessionService)
     {
         parent::__construct();
         $buildingsArray = json_decode(file_get_contents(\ROUTE_ROOT . 'gamedata/buildings.json'), true);
@@ -39,6 +32,8 @@ class WorldLoaderController extends controller
         $this->objectCollisionData = array_merge($buildingsArray, $landscapeArray);
     }
 
+
+
     /**
      * Change location
      *
@@ -49,18 +44,20 @@ class WorldLoaderController extends controller
     public function changeMap(Request $request)
     {
         $is_new_map_string = $request->getInput('is_new_map_string');
-
+        $new_destination = null;
         if ($is_new_map_string) {
-            $s = $request->getInput('new_destination');
+            $new_destination = $request->getInput('new_destination');
+
             // Find the map in the index
             $match = false;
-            foreach ($this->maps as $key => $value) {
-                if ($key === $s) {
-                    $this->session['map_location'] = $this->map = $value;
+            foreach (GameMaps::locationMapping() as $map => $destination) {
+                if ($new_destination === $destination) {
                     $match = true;
+                    $this->map = $map;
                     break;
                 }
             }
+
             // If match isn't true, it means that the destination does not exists
             if ($match !== true) {
                 return Response::addMessage("The place you are trying to reach doesn't exists")->setStatus(422);
@@ -88,32 +85,29 @@ class WorldLoaderController extends controller
             } elseif ($newMap['newY'] != 0) {
                 $split_array[1] += $newMap['newY'];
             }
-            $this->map = implode('.', $split_array);
-            // If there is amatch in $this->maps it means the player has reached a new destination
-            if (in_array($this->map, $this->maps)) {
-                $new_location = "";
-                foreach ($this->maps as $key => $value) {
-                    if ($value == $this->map) {
-                        $new_location = $key;
-                        break;
-                    }
-                }
-            } else {
-                // TODO: Error handling when world is not found
+
+            $this->map = $newMap = \implode('.', $split_array);
+
+            if (!in_array($newMap, GameMaps::getMaps())) {
+                return Response::addMessage("The place you are trying to reach doesn't exists")->setStatus(422);
             }
+
+            $new_destination = GameMaps::locationMapping()[$newMap] ?? null;
+
+            $this->map = $newMap;
         }
 
-        $User_data = UserData::where('username', [$this->sessionService->getCurrentUsername()])->first();
-        $User_data->map_location = $this->map;
-        $User_data->save();
+        $UserData = UserData::where('username', [$this->sessionService->getCurrentUsername()])->first();
+        $UserData->map_location = $this->map;
+        if ($new_destination) {
+            $UserData->location = $new_destination;
+        }
+        $UserData->save();
 
         $this->loadWorld();
     }
-    public function locationName()
-    {
-        switch ($this->session['map_location']) {
-        }
-    }
+
+
 
     /**
      * Load world
@@ -122,9 +116,12 @@ class WorldLoaderController extends controller
      */
     public function loadWorld()
     {
-        $data = $this->userData_model->find();
+        $UserData = UserData::where('username', $this->sessionService->getCurrentUsername())->first();
+        if (is_null($UserData)) {
+            return Response::addMessage("User not found")->setStatus(403);
+        }
 
-        $this->map = $data['map_location'];
+        $this->map = $UserData->map_location;
         if (!file_exists('../gamedata/' . $this->map . '.json')) {
             $this->session['map_location'] = '3.5';
         }
@@ -142,6 +139,11 @@ class WorldLoaderController extends controller
     }
 
 
+
+    /**
+     * 
+     * @return void 
+     */
     public function loadObjects()
     {
         $string = json_decode(file_get_contents(\ROUTE_ROOT . 'gamedata/' . $this->map . '.json'), true);
@@ -258,22 +260,14 @@ class WorldLoaderController extends controller
         }
         $this->object_array = $objects;
     }
-    private function getMapTitle()
-    {
-        $search = array_search($this->map, $this->maps);
-        if ($search) {
-            // $this->mapTitle = $this->maps[$search];
-        } else {
-            switch ($this->map) {
-                case 5.7:
-                    # code...
-                    break;
-                default:
-                    # code...
-                    break;
-            }
-        }
-    }
+
+
+
+    /**
+     * 
+     * @param mixed $object 
+     * @return mixed 
+     */
     private function setupBuilding($object)
     {
         switch ($object['src']) {
@@ -295,6 +289,14 @@ class WorldLoaderController extends controller
         }
         return $object;
     }
+
+
+
+    /**
+     * 
+     * @param mixed $object 
+     * @return mixed 
+     */
     private function setupCharacter($object)
     {
         // Check conversation
@@ -335,6 +337,14 @@ class WorldLoaderController extends controller
         $object['displayName'] = $display_name;
         return $object;
     }
+
+
+
+    /**
+     * 
+     * @param mixed $object 
+     * @return mixed 
+     */
     private function checkRotation($object)
     {
         if ($object['rotation'] !== 0) {

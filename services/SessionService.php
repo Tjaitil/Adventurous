@@ -2,6 +2,7 @@
 
 namespace App\services;
 
+use App\enums\GameMaps;
 use App\models\UserData;
 
 
@@ -14,24 +15,9 @@ class SessionService
 
     private $default = [];
     private UserData $data;
-    // TODO: Move this into enum
-    protected $location_maps = array(
-        "2.6" => "tasnobil",
-        "3.5" => "golbak",
-        "5.7" => "towhar",
-        "7.5" => "fagna",
-        "6.6" => "cruendo",
-        "6.3" => "ter",
-        "5.5" => "snerpiir",
-        "2.9" => "pvitul",
-        "4.9" => "hirtam",
-        "8.2" => "khanz",
-        "4.3" => "fansal-plains"
-    );
 
     public function __construct(private UserData $userData)
     {
-        $_SESSION['username'] = 'tjaitil';
         $this->default = $_SESSION;
 
         $this->data = $this->userData->where('username', $this->default['username'])->first();
@@ -67,7 +53,7 @@ class SessionService
      */
     public function getCurrentLocation()
     {
-        return $this->location_maps[\strval($this->data->map_location)] ?? "";
+        return GameMaps::locationMapping()[$this->data->map_location] ?? "";
     }
 
     /**

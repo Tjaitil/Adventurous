@@ -4,7 +4,7 @@ namespace App\controllers;
 
 use App\libs\controller;
 use App\models\Diplomacy;
-use App\models\UserData_model;
+use App\models\UserData;
 use App\models\UserLevels;
 use App\services\HungerService;
 use App\services\InventoryService;
@@ -22,7 +22,6 @@ class AdvclientController extends controller
         private InventoryService $inventoryService,
         private SessionService $sessionService,
         private ProfiencyService $profiencyService,
-        private UserData_model $userData_model,
         private Diplomacy $diplomacy
     ) {
         parent::__construct();
@@ -34,7 +33,7 @@ class AdvclientController extends controller
         // TODO: Fix this
         $_SESSION['gamedata']['inventory'] = [];
 
-        $user_data = $this->userData_model->find($this->sessionService->username);
+        $user_data = UserData::where('username', $this->sessionService->getCurrentUsername())->first()->toArray();
 
         $this->render(
             'advclient',
