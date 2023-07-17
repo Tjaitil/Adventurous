@@ -23,10 +23,9 @@ use App\libs\TemplateFetcher;
 <div id="sidebar">
     <button id="sidebar_button_toggle" class="sidebar_button">
         << </button>
-            <p><?php
-
-                echo ucfirst($_SESSION['username']); ?></p>
+            <p><?php echo ucfirst($_SESSION['username']); ?></p>
             <p class="mt-1 mb-1"><?php echo ucfirst($data['profiency']); ?></p>
+            <p><?php echo ucwords($data['location']); ?></p>
             <button class="sidebar_button">Adventure
                 <?php
                 // echo ($this->data['adventure']['adventure_data']['notification'] == 1) ? '(!)' : "" 
