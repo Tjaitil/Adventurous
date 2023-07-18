@@ -33,6 +33,7 @@ final class database
         $this->DB_USERNAME  = $_SERVER["DB_USERNAME"];
         $this->DB_NAME = $_SERVER["DB_NAME"];
         $this->DB_PASS = $_SERVER["DB_PASS"];
+        $this->testing = $_SERVER["TESTING"] == "true";
         $this->openConn();
     }
 
@@ -65,7 +66,7 @@ final class database
 
 
         if ($this->testing) {
-            DB::beginTransaction();
+            DB::connection()->beginTransaction();
         }
 
         try {
@@ -84,7 +85,16 @@ final class database
 
     public function rollBack()
     {
-        DB::rollBack();
+        if ($this->testing) {
+            DB::connection()->rollBack();
+        }
+    }
+
+    public function rollbackIfTest()
+    {
+        if ($this->testing) {
+            $this->rollBack();
+        }
     }
 
     public function closeConn()
