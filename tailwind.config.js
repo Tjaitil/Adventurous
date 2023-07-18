@@ -3,7 +3,7 @@ export default {
     content: [
         "./views/**/*.{html,php,blade.php}",
         "./views/templates/*.php",
-        "./public/js/**/*.js",
+        "./public/js/**/*.ts",
     ],
     theme: {
         extend: {
