@@ -4,18 +4,18 @@ namespace App\models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property string $city
+ * @property float $hirtam
+ * @property float $pvitul
+ * @property float $khanz
+ * @property float $ter
+ * @property float $fansalplains
+ * @mixin \Eloquent
+ */
 class CityRelation extends Model
 {
-    protected $timestamps = false;
+    public $timestamps = false;
 
     protected $table = 'city_relations';
-
-    protected $fillable = [
-        'city',
-        'hirtam',
-        'pvitul',
-        'khanz',
-        'ter',
-        'fansalplains'
-    ];
 }
