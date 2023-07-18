@@ -3,6 +3,7 @@
 namespace App\handlers;
 
 use App\controllers\conversation;
+use App\libs\App;
 use App\libs\DependencyContainer;
 use App\libs\handler;
 
@@ -10,6 +11,9 @@ require '../vendor/autoload.php';
 require('../libs/handler.php');
 $handler = new handler(true);
 $handler->sessionCheck(true);
+App::getInstance()->boot();
+
+// TODO: Rewrite this 
 if (!strlen($_POST['person']) > 0) {
     echo "ERROR";
     return false;

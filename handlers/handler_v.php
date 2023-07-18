@@ -15,7 +15,7 @@ use App\libs\DependencyContainer;
 use App\libs\handler;
 use App\libs\Logger;
 use App\libs\App;
-
+use App\libs\session;
 
 require '../vendor/autoload.php';
 
@@ -27,6 +27,7 @@ require('../config/GameConstants.php');
 require('../root/routes.php');
 App::getInstance()->boot();
 new handler();
+$session = new session();
 
 database::getInstance()->openConn();
 
