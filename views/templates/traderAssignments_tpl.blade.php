@@ -31,7 +31,7 @@
                 {{ ucfirst($value->base) . ' ' . '->' . ' ' . ucfirst($value->destination) }}
             </p>
             @component('components.skillIcon', [
-                'skill' => \TRADER_SKILL_NAME,
+                'skill' => \App\Enums\SkillNames::TRADER->value,
                 'show_able_color' => true,
                 'level' => $value->type->required_level,
                 'has_required_level' => $has_required_level,

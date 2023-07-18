@@ -1,5 +1,6 @@
 <?php
 
+use App\enums\SkillNames;
 use App\resources\SkillActionResource;
 use App\resources\TraderAssignmentResource;
 use Carbon\Carbon;
@@ -14,7 +15,7 @@ use Carbon\Carbon;
 
 function generateStatusSection(array $skillActionResource)
 {
-    if ($skillActionResource['skill'] === FARMER_SKILL_NAME) {
+    if ($skillActionResource['skill'] === SkillNames::FARMER->value) {
         $type = 'crop_type';
     } else {
         $img_src_ending = ' ore.png';

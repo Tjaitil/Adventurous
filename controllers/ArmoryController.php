@@ -2,6 +2,7 @@
 
 namespace App\controllers;
 
+use App\enums\SkillNames;
 use App\libs\controller;
 use App\libs\Request;
 use App\libs\Response;
@@ -140,8 +141,8 @@ class ArmoryController extends controller
                 return $this->unlockableMineralsService->logNotUnlockedMineral($mineral);
             }
 
-            if (!$this->skillsService->hasRequiredLevel($item_data->level, \WARRIOR_SKILL_NAME)) {
-                return $this->skillsService->logNotRequiredLevel(\WARRIOR_SKILL_NAME);
+            if (!$this->skillsService->hasRequiredLevel($item_data->level, SkillNames::WARRIOR->value)) {
+                return $this->skillsService->logNotRequiredLevel(SkillNames::WARRIOR->value);
             }
 
             if (!$this->inventoryService->hasEnoughAmount($item, $amount)) {

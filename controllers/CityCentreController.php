@@ -3,6 +3,7 @@
 namespace App\controllers;
 
 use App\builders\WorkforceBuilder;
+use App\enums\SkillNames;
 use App\libs\controller;
 use App\libs\Request;
 use App\libs\Response;
@@ -41,11 +42,11 @@ class CityCentreController extends controller
         $skill = $request->getInput('skill');
 
         $request->validate([
-            'skill' => Validator::in([FARMER_SKILL_NAME, MINER_SKILL_NAME])
+            'skill' => Validator::in([SkillNames::FARMER->value, SkillNames::MINER->value])
         ]);
 
         $skills = UserLevels::all()->where('username', $this->sessionService->getCurrentUsername());
-        if ($skill === \FARMER_SKILL_NAME) {
+        if ($skill === SkillNames::FARMER->value) {
             $data = $this->farmerWorkforce_model->all();
             $level = $skills['farmer_level'];
         } else {

@@ -3,6 +3,7 @@
 namespace App\controllers;
 
 use App\actions\MapRequiredDataAction;
+use App\enums\SkillNames;
 use App\libs\controller;
 use App\libs\Logger;
 use App\libs\Request;
@@ -32,7 +33,7 @@ class ArcheryShopController extends controller
     public function index()
     {
         $data['store_items'] = $this->makeArcherShopStore();
-        $data['discount'] = $this->sessionService->isProfiency(GameConstants::MINER_SKILL_NAME) ? GameConstants::MINER_STORE_DISCOUNT * 100 : 0;
+        $data['discount'] = $this->sessionService->isProfiency(SkillNames::MINER->value) ? GameConstants::MINER_STORE_DISCOUNT * 100 : 0;
 
         $this->render('archeryshop', 'Archery Shop', $data, true, true);
     }
@@ -45,7 +46,7 @@ class ArcheryShopController extends controller
             ["list" => $data]
         );
 
-        if ($this->sessionService->isProfiency(GameConstants::MINER_SKILL_NAME)) {
+        if ($this->sessionService->isProfiency(SkillNames::MINER->value)) {
             $this->storeService->storeBuilder->setAdjustedStoreValue(GameConstants::MINER_STORE_DISCOUNT);
         }
 
@@ -95,8 +96,8 @@ class ArcheryShopController extends controller
         $item = $this->storeService->getStoreItem($item);
 
         // Check that user has required level
-        if (!$skillsService->hasRequiredLevel($item_data[0]['required_level'], MINER_SKILL_NAME)) {
-            return $skillsService->logNotRequiredLevel(MINER_SKILL_NAME);
+        if (!$skillsService->hasRequiredLevel($item_data[0]['required_level'], SkillNames::MINER->value)) {
+            return $skillsService->logNotRequiredLevel(SkillNames::MINER->value);
         }
 
         foreach ($item->required_items as $key => $value) {
@@ -114,7 +115,7 @@ class ArcheryShopController extends controller
 
         $price = $item->store_value;
 
-        if ($this->sessionService->isProfiency(MINER_SKILL_NAME)) {
+        if ($this->sessionService->isProfiency(SkillNames::MINER->value)) {
             $price *= (1 - MINER_STORE_DISCOUNT);
         }
 

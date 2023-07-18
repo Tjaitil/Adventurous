@@ -12,13 +12,6 @@ class GameConstants
         "crops"
     ];
 
-    public const SKILLS = [
-        "crops",
-        "miner",
-        "trader",
-        "warrior",
-    ];
-
     public const WRONG_LOCATION_ERROR = "You are in the wrong location!";
 
     public const TRADER_SKILL_NAME = "trader";
@@ -46,24 +39,6 @@ const WARRIOR_TYPES = [
 const SKILL_ACTIONS = [
     "mine",
     "crops"
-];
-
-const TRADER_SKILL_NAME = "trader";
-
-const MINER_SKILL_NAME = "miner";
-
-const FARMER_SKILL_NAME = "farmer";
-
-const WARRIOR_SKILL_NAME = "warrior";
-
-const ADVENTURER_SKILL_NAME = "adventurer";
-
-const SKILLS = [
-    TRADER_SKILL_NAME,
-    FARMER_SKILL_NAME,
-    WARRIOR_SKILL_NAME,
-    MINER_SKILL_NAME,
-    ADVENTURER_SKILL_NAME
 ];
 
 const WRONG_LOCATION_ERROR = "You are in the wrong location!";

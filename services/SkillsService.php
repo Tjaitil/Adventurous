@@ -4,6 +4,7 @@ namespace App\services;
 
 use App\actions\CanLevelUpAction;
 use App\builders\SkillsBuilder;
+use App\enums\SkillNames;
 use App\libs\Response;
 use App\models\LevelData;
 use App\models\UserLevels;
@@ -111,25 +112,25 @@ class SkillsService
         if ($this->canLevelUpAction->handle($this->userLevels->farmer_xp, $this->userLevels->farmer_next_level_xp)) {
 
             $this->userLevels->farmer_level = $this->getNextLevelFromExperience($this->userLevels->farmer_xp);
-            Response::addLevelUP(\FARMER_SKILL_NAME, $this->userLevels->farmer_level);
+            Response::addLevelUP(SkillNames::FARMER->value, $this->userLevels->farmer_level);
         }
 
         if ($this->canLevelUpAction->handle($this->userLevels->miner_xp, $this->userLevels->miner_next_level_xp)) {
 
             $this->userLevels->miner_level = $this->getNextLevelFromExperience($this->userLevels->miner_xp);
-            Response::addLevelUP(\MINER_SKILL_NAME, $this->userLevels->miner_level);
+            Response::addLevelUP(SkillNames::MINER->value, $this->userLevels->miner_level);
         }
 
         if ($this->canLevelUpAction->handle($this->userLevels->trader_xp, $this->userLevels->trader_next_level_xp)) {
 
             $this->userLevels->trader_level = $this->getNextLevelFromExperience($this->userLevels->trader_xp);
-            Response::addLevelUP(\TRADER_SKILL_NAME, $this->userLevels->trader_level);
+            Response::addLevelUP(SkillNames::TRADER->value, $this->userLevels->trader_level);
         }
 
         if ($this->canLevelUpAction->handle($this->userLevels->warrior_xp, $this->userLevels->warrior_next_level_xp)) {
 
             $this->userLevels->warrior_level = $this->getNextLevelFromExperience($this->userLevels->warrior_xp);
-            Response::addLevelUP(\WARRIOR_SKILL_NAME, $this->userLevels->warrior_level);
+            Response::addLevelUP(SkillNames::WARRIOR->value, $this->userLevels->warrior_level);
         }
     }
 

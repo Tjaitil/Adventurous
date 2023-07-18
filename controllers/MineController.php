@@ -14,6 +14,7 @@ use App\models\MinerWorkforce;
 use App\services\CountdownService;
 use App\services\HungerService;
 use App\services\InventoryService;
+use App\services\LocationService;
 use App\services\SessionService;
 use App\services\SkillsService;
 use Carbon\Carbon;
@@ -30,7 +31,8 @@ class MineController extends controller
         private WorkforceBuilder $workforceBuilder,
         private SessionService $sessionService,
         private SkillsService $skillsService,
-        private HungerService $hungerService
+        private HungerService $hungerService,
+        private LocationService $locationService
     ) {
         parent::__construct();
     }
@@ -105,7 +107,7 @@ class MineController extends controller
         $location = $this->sessionService->getCurrentLocation();
 
         // Check if user is in right location
-        if (!$this->sessionService->isValidMineLocation($location)) {
+        if (!$this->locationService->isMineLocation($location)) {
             return Response::addMessage("You are in the wrong location to mine minerals")->setStatus(422);
         } else if ($this->hungerService->isHungerTooLow()) {
             return $this->hungerService->logHungerTooLow();

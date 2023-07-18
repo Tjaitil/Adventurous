@@ -3,6 +3,7 @@
 namespace App\controllers;
 
 use App\actions\MapRequiredDataAction;
+use App\enums\SkillNames;
 use App\libs\controller;
 use App\libs\Logger;
 use App\libs\Request;
@@ -33,7 +34,7 @@ class SmithyController extends controller
     {
 
         $data['store_items'] = $this->makeShop();
-        $data['discount'] = $this->discount = $this->sessionService->isProfiency(GameConstants::MINER_SKILL_NAME) ? GameConstants::MINER_STORE_DISCOUNT * 100 : 0;
+        $data['discount'] = $this->discount = $this->sessionService->isProfiency(SkillNames::MINER->value) ? GameConstants::MINER_STORE_DISCOUNT * 100 : 0;
 
         $this->render('smithy', 'Smithy', $data, true, true);
     }
@@ -56,7 +57,7 @@ class SmithyController extends controller
             ["list" => $item]
         );
 
-        if ($this->sessionService->isProfiency(GameConstants::MINER_SKILL_NAME)) {
+        if ($this->sessionService->isProfiency(SkillNames::MINER->value)) {
             $this->storeService->storeBuilder->setAdjustedStoreValue(GameConstants::MINER_STORE_DISCOUNT);
         }
 
@@ -102,7 +103,7 @@ class SmithyController extends controller
 
         // Check that user has required level
         if (!$this->storeService->hasSkillRequirements($item->name)) {
-            return $skillsService->logNotRequiredLevel(MINER_SKILL_NAME);
+            return $skillsService->logNotRequiredLevel(SkillNames::MINER->value);
         }
 
         foreach ($item->required_items as $key => $value) {
@@ -120,7 +121,7 @@ class SmithyController extends controller
 
         $price = $item->store_value;
 
-        if ($this->sessionService->isProfiency(MINER_SKILL_NAME)) {
+        if ($this->sessionService->isProfiency(SkillNames::MINER->value)) {
             $price *= (1 - MINER_STORE_DISCOUNT);
         }
 

@@ -2,6 +2,7 @@
 
 namespace App\controllers;
 
+use App\enums\SkillNames;
 use App\libs\Request;
 use App\libs\Response;
 use App\libs\controller;
@@ -141,8 +142,7 @@ class TraderAssignmentController extends controller
                         $TraderAssignment->type->diplomacy_percentage
                     );
                 } else {
-                    // TODO: Remove trader_skill_name constant
-                    if ($this->sessionService->isProfiency(TRADER_SKILL_NAME)) {
+                    if ($this->sessionService->isProfiency(SkillNames::TRADER->value)) {
                         $item = $TraderAssignment->cargo;
                         $amount = $TraderAssignment->type->item_reward_amount;
                     } else {
