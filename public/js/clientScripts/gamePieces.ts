@@ -107,12 +107,15 @@ export const GamePieces = {
                     GamePiece.width,
                     GamePiece.height
                 );
-                viewport.layer.text.font = "30px Comic Sans MS";
-                viewport.layer.frontObjects.fillText(
-                    GamePiece.displayName,
-                    GamePiece.drawX - GamePieces.player.xMovement,
-                    GamePiece.drawY - GamePieces.player.yMovement,
-                );
+                // TODO: Fix a better solution for this
+                // viewport.layer.text.font = "30px Comic Sans MS";
+                // viewport.layer.frontObjects.fillText(
+                //     GamePiece.displayName,
+                //     (GamePiece.drawX - GamePieces.player.xMovement) +
+                //     (GamePiece.width / 2) -
+                //     ((GamePiece.displayName.length / 2) * 5),
+                //     GamePiece.drawY - GamePieces.player.yMovement,
+                // );
             } else {
                 viewport.drawObject(
                     drawContext,
