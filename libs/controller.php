@@ -113,4 +113,9 @@ class controller
             // $this->errorReport($controllerFile . "doesn't exists");
         }
     }
+
+    public function __destruct()
+    {
+        database::getInstance()->rollbackIfTest();
+    }
 }
