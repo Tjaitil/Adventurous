@@ -172,16 +172,9 @@ body img {
     align-content: center;
     margin-inline: auto;
 }
-header {
-    grid-area: header;
-    grid-column: 1 / span 2;
-    grid-row: 1 / 2;
-}
 section {
     /*background: radial-gradient(#f2e6d9 50%, #986834);*/
     /*background: radial-gradient(#a9753d 75%, #4b341b);*/
-    grid-area: section;
-    grid-row: 2 / 3;
     background: radial-gradient(
         var(--layoutBgColor),
         var(--layoutBgColorShadowPerc),
@@ -199,15 +192,7 @@ section {
     font-weight: 200;
     position: relative;
 }
-aside {
-    grid-area: aside;
-    grid-column: 1 / 2;
-    grid-row: 2 / 3;
-}
 footer {
-    grid-area: footer;
-    grid-column: 2 / 3;
-    grid-row: 3 / 3;
     color: white;
     background: radial-gradient(
         var(--layoutBgColor),
@@ -706,7 +691,6 @@ button:focus {
 }
 .inventory_item {
     display: inline-block;
-    float: left;
     max-width: 104px;
     min-width: 60px;
     width: 30%;
