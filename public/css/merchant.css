@@ -24,13 +24,13 @@
     grid-template-columns: repeat(auto-fit, minmax(104px, 125px));
     border: none;
 }
-#trades_container, #do_trade {
+#trades_container,
+#do_trade {
     color: var(--textColor);
 }
 .item .gold {
     width: 30px;
     height: 30px;
-
 }
 #trades .item {
     height: 125px;
@@ -51,7 +51,7 @@
 }
 #trade_sign {
     float: left;
-    line-height: 5
+    line-height: 5;
 }
 #trades_wrapper {
     display: flex;
@@ -118,24 +118,4 @@
 }
 .merchant-offer span {
     text-align: left;
-}
-#trader_assignments_container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, 180px);
-    gap: 1rem;
-}
-.trader_assignment {
-    display: flex;
-    flex-direction: column;
-    max-width: 180px;
-    padding-bottom: 0.5rem;
-}
-.trader_assignment_locked {
-    filter: grayscale(60%);
-}
-.trader_assignment p {
-    margin-block: 0.5rem;
-}
-.selected_trader_assignment {
-    filter: brightness(1.5);
 }

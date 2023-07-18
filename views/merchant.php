@@ -6,14 +6,16 @@
                     parenthesis. Trading in adventure locations will affect diplomacy relation</p>
                 <div id="merchant-offer-container" class="div_content div_content_dark">
                     <div id="merchant-offer-list" class="pb-05">
-                        <?php get_template(
-                            'merchantOffers',
-                            [
-                                'location' => $this->data['location'],
-                                'offers' => $this->data['offers'],
-                            ],
-                            true
-                        ); ?>
+                        <?php
+                        //  get_template(
+                        //     'merchantOffers',
+                        //     [
+                        //         'location' => $this->data['location'],
+                        //         'offers' => $this->data['offers'],
+                        //     ],
+                        //     true
+                        // ); 
+                        ?>
                     </div>
                     <div id="merchant-offer-selected" class="div_content_dark">
                         <div id="do_trade" class="div_content_dark">
@@ -36,14 +38,25 @@
                 </p>
             </div>
             <div id="trader_assignments">
-                <div id="traderAssignment_current" class="content_div mb-2">
-                    <p class="traderAssignment_fullColumn mb-0"> Current trader assignment details </p>
-                    <?php get_template('traderAssignment', $this->data['trader_data'], true); ?>
-                </div>
+                <?php
+                echo $this->bladeRender->run('templates.traderAssignment_tpl', ['CurrentAssignment' => $CurrentAssignment, 'Trader' => $Trader]);
+                ?>
                 <p id="trader_assignments_countdown">New trader assignments in <span id="trader_assignments_countdown_time"></span></p>
-                <h4>Select your assignment below. Greyed out assignments are locked</h4>
-                <div id="trader_assignments_container">
-                    <?php get_template('assignment', $this->data['trader_assignments'], true); ?>
+                <h3 class="text-lg">Select your assignment below. Greyed out assignments are locked</h3>
+                <div class="mb-4">
+                    <h4 class="font-bold">Assignments available in this location</h4>
+                    <button type="button" id="start_trader_assignment" class="mt-1 mb-1">Do Assigment</button>
+                    <div id="trader_assignments_container ">
+                        <?php
+                        echo $this->bladeRender->run('templates.traderAssignments_tpl', ['Assignments' => $CurrentLocationAssignments, 'current_location' => $current_location, 'trader_level' => $trader_level]);
+                        ?>
+                    </div>
                 </div>
-                <button type="button" id="start_trader_assignment" class="mt-1 mb-1">Do Assigment</button>
-            </div>
+                <div>
+                    <h3 class="font-bold">Assignments available in other locations</h3>
+                    <div id="trader_assignments_container">
+                        <?php
+                        echo $this->bladeRender->run('templates.traderAssignments_tpl', ['Assignments' => $OtherAssignments, 'current_location' => $current_location, 'trader_level' => $trader_level]);
+                        ?>
+                    </div>
+                </div>

@@ -74,6 +74,11 @@ export class ProgressBar {
         this.finishedClassToggled = toggled;
     }
 
+    getProgressValuesFromElement() {
+        this.currentValue = parseInt(this.currentValueElement.innerHTML);
+        this.maxValue = parseInt(this.maxValueElement.innerHTML);
+    }
+
     public calculateProgress() {
         if (this.progressBarElement == null) return false;
 

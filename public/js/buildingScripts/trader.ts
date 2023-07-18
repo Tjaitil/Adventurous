@@ -1,13 +1,14 @@
 import { ClientOverlayInterface } from './../clientScripts/clientOverlayInterface.js';
-import { Inventory, checkInventoryStatus } from './../clientScripts/inventory.js';
+import { Inventory } from './../clientScripts/inventory.js';
 import { ProgressBar } from './../progressBar.js';
-import { AssignmentCountdownResponse, AssignmentDeliverResponse, AssignmentPickupResponse } from '../types/responses/TraderResponses.js';
 import { AdvApi } from './../AdvApi.js';
 import countdown from "../utilities/countdown.js";
-import { commonMessages, gameLogger } from '../utilities/gameLogger.js';
+import { gameLogger } from '../utilities/gameLogger.js';
+import { advAPIResponse } from '../types/responses/AdvResponse.js';
+import { updateHunger } from '../clientScripts/hunger.js';
 
 const traderModule = {
-    selected: null,
+    selectedAssigmentID: null,
     progressBar: null as ProgressBar,
     init() {
         document
@@ -21,17 +22,29 @@ const traderModule = {
         );
 
         this.getTraderAssignmentCountdown();
+        this.setupProgressBar();
+    },
+    setupProgressBar() {
+        let traderAssignmentProgressBar = document.getElementById("traderAssignment_progressBar");
         // Check if active trader assignment
-        if (document.getElementById("traderAssignment_progressBar")) {
+        if (traderAssignmentProgressBar) {
             // Calculate progress
-            this.progressBar = new ProgressBar(document.getElementById("traderAssignment_progressBar"),
+            this.progressBar = new ProgressBar(traderAssignmentProgressBar,
                 { currentValue: 0, maxValue: 0, }, false)
-            document
-                .getElementById("traderAssignment-pick-up")
-                .addEventListener("click", () => this.pickUp());
-            document
-                .getElementById("traderAssignment-deliver")
-                .addEventListener("click", () => this.deliver());
+            this.progressBar.getProgressValuesFromElement();
+            this.addClickEvents();
+            this.progressBar.calculateProgress();
+        }
+    },
+    addClickEvents() {
+        let pickupButton = document.getElementById("traderAssignment-pick-up");
+        let deliverButton = document.getElementById("traderAssignment-deliver");
+        if (pickupButton) {
+            pickupButton.addEventListener("click", () => this.pickUp());
+        }
+
+        if (deliverButton) {
+            deliverButton.addEventListener("click", () => this.deliver());
         }
     },
     getTraderAssignmentCountdown() {
@@ -62,7 +75,7 @@ const traderModule = {
                         hours + "h " + minutes + "m " + seconds + "s ";
                 }
             }, 1000);
-        });
+        }).catch(() => false);
     },
     selectTrade(event) {
         let target = event.currentTarget;
@@ -72,14 +85,10 @@ const traderModule = {
                     element === target &&
                     !element.classList.contains("trader_assignment_locked")
                 ) {
-                    element.classList.add("selected_trader_assignment");
-                    if (element.querySelectorAll(".trader_assignment_id")[0]) {
-                        this.selected = element
-                            .querySelectorAll(".trader_assignment_id")[0]
-                            .innerHTML.trim();
-                    }
+                    element.classList.add("brightness-150");
+                    this.selectedAssigmentID = element.querySelectorAll(".trader_assignment_id")[0].innerHTML.trim() ?? null;
                 } else {
-                    element.classList.remove("selected_trader_assignment");
+                    element.classList.remove("brightness-150");
                 }
             }
         );
@@ -87,80 +96,96 @@ const traderModule = {
     newAssignment() {
         if (document.getElementById("traderAssignment_progressBar")) {
             gameLogger.addMessage("You already have an assigment", true);
-        } else if (this.selected === null || !this.selected) {
+        } else if (this.selectedAssigmentID === null || !this.selectedAssigmentID) {
             gameLogger.addMessage("This assignment is locked", true);
             return false;
         }
 
         let data = {
-            assignment_id: this.selectTrade
+            assignment_id: this.selectedAssigmentID
         };
 
-        AdvApi.post("/trader/assignment/new", data).then((response) => {
-            // updateHunger(responseText.newHunger);
+        AdvApi.post<AssigmnentNewResponse>("/trader/assignment/new", data).then((response) => {
+            updateHunger(0);
 
             // TODO: Fix this once tab has been resolved
             // updateCountdownTab();
 
-            this.updateAssignmentInterface(
-                response.html.hasOwnProperty("assigmment") ?
-                    response.html.assignment :
-                    ""
-            );
-
-            this.progressBar.calculateProgress();
+            this.updateAssignmentInterface(response.html.TraderAssignment);
+            this.setupProgressBar();
             ClientOverlayInterface.adjustWrapperHeight();
-
-            document
-                .getElementById("traderAssignment-pick-up")
-                .addEventListener("click", () => this.pickUp());
-            document
-                .getElementById("traderAssignment-deliver")
-                .addEventListener("click", () => this.deliver());
-        })
+            this.addClickEvents();
+        }).catch(() => false);
     },
     pickUp() {
+        let data: AssignmentUpdateRequest = {
+            is_delivering: false,
+        }
 
-        AdvApi.post<AssignmentPickupResponse>('/trader/assignment/update', {}).then((response) => {
+        AdvApi.post<AssignmentPickupResponse>('/trader/assignment/update', data).then((response) => {
             // TODO: Fix this once countdowntab has been resolved
             // updateCountdownTab();
             document.getElementById(
-                "traderAssignment_cart_amount"
+                "traderAssignment-cart-amount"
             ).innerHTML = "" + response.data.cartAmount;
-        });
+        }).catch(() => false);
     },
     deliver() {
-        if (checkInventoryStatus()) {
-            gameLogger.addMessage(commonMessages.inventoryFull, true);
-            return false;
+        let data: AssignmentUpdateRequest = {
+            is_delivering: true
         }
 
-        AdvApi.post<AssignmentDeliverResponse>('/trader/assignment/update', {}).then((response) => {
+        AdvApi.post<AssignmentDeliverResponse>('/trader/assignment/update', data).then((response) => {
             // updateCountdownTab();
             if (response.data.isAssignmentFinished === true) {
-                // Update trader assigment div with new assignment
-                document.getElementById(
-                    "traderAssignment_current"
-                ).innerHTML =
-                    response.html.hasOwnProperty("assigmment") ?
-                        response.html.assignment :
-                        "";
-
+                this.updateAssignmentInterface(response.html.TraderAssignment);
                 Inventory.update();
                 ClientOverlayInterface.adjustWrapperHeight();
             } else {
                 document.getElementById(
-                    "traderAssignment_cart_amount"
+                    "traderAssignment-cart-amount"
                 ).innerHTML = "" + 0;
-
-                // Fix this
                 this.progressBar.setCurrentValue(response.data.delivered);
-
             }
-        });
+        }).catch(() => false);
     },
     updateAssignmentInterface(html: string) {
-        document.getElementById("traderAssignment_current").innerHTML = html;
+        let div = document.createElement("div");
+        div.innerHTML = html;
+
+        document.getElementById("traderAssignment_current").replaceWith(div.children[0]);
     }
 };
 export default traderModule;
+
+interface AssignmentUpdateRequest {
+    is_delivering: boolean;
+}
+
+interface AssignmentCountdownResponse extends advAPIResponse {
+    data: {
+        traderAssigmentCountdown: number;
+    }
+}
+
+interface AssigmnentNewResponse extends advAPIResponse {
+    html: {
+        TraderAssignment: string;
+    }
+}
+
+interface AssignmentDeliverResponse extends advAPIResponse {
+    data: {
+        isAssignmentFinished: boolean;
+        delivered: number;
+    },
+    html: {
+        TraderAssignment: string;
+    }
+}
+
+interface AssignmentPickupResponse extends advAPIResponse {
+    data: {
+        cartAmount: number;
+    }
+}

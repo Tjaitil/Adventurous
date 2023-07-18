@@ -15,6 +15,11 @@ use App\services\CountdownService;
 use App\services\DiplomacyService;
 use App\services\InventoryService;
 use App\libs\TemplateFetcher;
+use App\models\Trader;
+use App\models\TraderAssignment;
+use App\services\LocationService;
+use App\services\SkillsService;
+use Carbon\Carbon;
 
 class MerchantController extends controller
 {
@@ -25,8 +30,10 @@ class MerchantController extends controller
         private Merchant_model $merchant_model,
         private StoreService $storeService,
         private SessionService $sessionService,
+        private LocationService $locationService,
         private DiplomacyService $diplomacyService,
-        private TemplateFetcher $TemplateFetcher
+        private TemplateFetcher $TemplateFetcher,
+        private SkillsService $skillsService
     ) {
         parent::__construct();
     }
@@ -38,7 +45,7 @@ class MerchantController extends controller
         $this->storeService->makeStore(["list" => $this->data['offers']]);
         $store_items = $this->storeService->storeBuilder->build()->list;
         $offers = $store_items;
-        if ($this->sessionService->isDiplomacyLocation($this->sessionService->getLocation(), false)) {
+        if ($this->locationService->isDiplomacyLocation($this->sessionService->getLocation(), false)) {
             foreach ($store_items as $key => $value) {
                 $adjusted_price = $this->diplomacyService->calculateNewMerchantPrice(
                     $value->store_value,
@@ -55,7 +62,25 @@ class MerchantController extends controller
         $this->storeService->makeStore(["list" => $offers]);
         $this->data['offers'] = $this->storeService->storeBuilder->build()->toArray();
 
-        $this->data['location'] = $this->sessionService->getCurrentLocation();
+
+        $Trader = Trader::where('username', $this->sessionService->getCurrentUsername())->first();
+
+        $this->data['trader'] = $Trader;
+        $CurrentAssignment = $Trader->traderAssignment;
+
+        // $TraderAssignments = TraderAssignment::where('date_inserted', '>=', Carbon::now()->subHours(4))
+        $TraderAssignments = TraderAssignment::with('type')->get();
+
+        $current_location_assignments = [];
+        $other_assignments = [];
+
+        $TraderAssignments->each(function (TraderAssignment $assignment) use (&$current_location_assignments, &$other_assignments) {
+            if ($assignment->base == $this->sessionService->getCurrentLocation()) {
+                $current_location_assignments[] = $assignment;
+            } else {
+                $other_assignments[] = $assignment;
+            }
+        });
 
         // $timestamp = $countdownService->getTimestamp(new DateTime(
         //     $this->data['merchantTimes']['date_inserted']
@@ -66,7 +91,23 @@ class MerchantController extends controller
         //     $this->merchant_model->makeTrades();
         // }
 
-        $this->render('merchant', 'Merchant', $this->data, true, true);
+        $this->render(
+            'merchant',
+            'Merchant',
+            [
+                'CurrentAssignment' => $CurrentAssignment ?? null,
+                'current_location' => $this->sessionService->getCurrentLocation(),
+                'CurrentLocationAssignments' => $current_location_assignments,
+                'OtherAssignments' => $other_assignments,
+                'merchant' => $this->data,
+                'Trader' => $Trader,
+                'offers' => $this->storeService->storeBuilder->build()->toArray(),
+                'location' => $this->sessionService->getCurrentLocation(),
+                'trader_level' => $this->skillsService->userLevels->trader_level
+            ],
+            true,
+            true
+        );
     }
 
     /**
@@ -123,7 +164,7 @@ class MerchantController extends controller
         $store_item = $this->storeService->getStoreItem('item');
 
         // If user is in a diplomacy location
-        if ($this->sessionService->isDiplomacyLocation($this->sessionService->getLocation(), false)) {
+        if ($this->locationService->isDiplomacyLocation($this->sessionService->getLocation(), false)) {
             $new_diplomacy_merchant_price = $this->diplomacyService->calculateNewMerchantPrice(
                 $store_item->store_value,
                 $buy,
@@ -164,7 +205,7 @@ class MerchantController extends controller
         $item->amount = $store_item->amount - $amount;
         $item->save();
 
-        if ($this->sessionService->isDiplomacyLocation($this->sessionService->getLocation(), false)) {
+        if ($this->locationService->isDiplomacyLocation($this->sessionService->getLocation(), false)) {
             // Update diplomacy
             $this->diplomacyService->setNewDiplomacy($this->sessionService->getLocation(), 10);
         }
