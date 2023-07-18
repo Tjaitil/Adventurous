@@ -3,15 +3,18 @@
 namespace App\controllers;
 
 use App\libs\controller;
+use App\services\SessionService;
 
+// TODO: Rewrite this
 class conversation extends controller
 {
     public $index;
     public $text;
     public $POST;
     public $file;
-    function __construct()
+    function __construct(private SessionService $sessionService)
     {
+
         if (isset($_SESSION['conversation']['conv_index'])) {
             $this->index = $_SESSION['conversation']['conv_index'];
         } else {
@@ -173,7 +176,7 @@ class conversation extends controller
             }
             // If location is current and the current person is pesr or sailor
             if ((strpos($this->index, "sl") !== false || strpos($this->index, "pr") !== false) &&
-                strpos(strtolower($active_conversation[$key]), $_SESSION['gamedata']['location'])
+                strpos(strtolower($active_conversation[$key]), $this->sessionService->getCurrentLocation()) !== false
             ) {
                 unset($active_conversation[$key]);
             }
