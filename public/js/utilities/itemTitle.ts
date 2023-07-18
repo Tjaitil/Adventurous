@@ -42,6 +42,8 @@ export const itemTitle = {
         document.getElementById("news_content_main_content");
         let itemDivs = document.getElementById("news_content_main_content").querySelectorAll(".item");
         itemDivs.forEach(element => {
+            if (element.classList.contains("no-tooltip")) return false;
+
             element.addEventListener('mouseenter', event => itemTitle.show(event));
             element.addEventListener('mouseleave', event => itemTitle.hide());
         });
@@ -82,14 +84,16 @@ export const itemTitle = {
         }
         else {
             let elementParent = element.closest("div");
-            let firstChild = elementParent.children[0];
             elementParent.appendChild(menu);
             menuFirstChild.style.left = 10 + "px";
             menuFirstChild.style.top = 55 + "px";
         }
     },
     hide() {
-        document.getElementById("item_tooltip").style.visibility = "hidden";
+        let tooltip = document.getElementById("item_tooltip");
+        if (tooltip) {
+            document.getElementById("item_tooltip").style.visibility = "hidden";
+        }
         this.currentTitle = null;
     },
     resetItemTooltip() {
