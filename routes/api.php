@@ -19,6 +19,7 @@ use App\libs\App;
 use App\libs\Response;
 use App\libs\Route;
 use App\libs\Router;
+use App\controllers\TraderAssignmentController;
 
 App::getInstance()->boot();
 require(ROUTE_ROOT . 'vendor/autoload.php');
@@ -55,7 +56,7 @@ Route::post('/merchant/trade', [MerchantController::class]);
 
 Route::get('/trader/assignments', []);
 Route::post('/trader/assignment/new', [TraderAssignmentController::class, "newAssignment"]);
-Route::post('/trader/assignment/update', [TraderAssignmentController::class, "deliver"]);
+Route::post('/trader/assignment/update', [TraderAssignmentController::class, "updateAssignment"]);
 Route::post('/trader/assignment/countdown', [TraderAssignmentController::class, "getAssignmentCountdown"]);
 
 Route::post('/smithy/smith', [SmithyController::class, "smithItem"]);
