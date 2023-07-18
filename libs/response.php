@@ -61,13 +61,13 @@ final class Response
 
     public static function addMessage(string $message)
     {
-        static::$data['message'][] = $message;
+        static::$data['gameMessage'][] = $message;
         return new static();
     }
 
     public static function addErrorMessage(string $message)
     {
-        static::$data['message'][] = $message;
+        static::$data['gameMessage'][] = $message;
         return new static;
     }
 
