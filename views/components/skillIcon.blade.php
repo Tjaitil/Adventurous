@@ -1,3 +1,11 @@
+@php
+    /**
+     * @param string $skill
+     * @param int $level
+     * @param bool $has_required_level
+     * @param bool $show_able_color
+     */
+@endphp
 <p @class([
     'not-able-color' => !$has_required_level && $show_able_color,
     'able-color' => $has_required_level && $show_able_color,
