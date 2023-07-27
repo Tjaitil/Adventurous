@@ -17,8 +17,8 @@ export class AdvApi {
         return fetch(this.route + url, requestInfo)
             .then((res) => {
                 if (!res.ok) {
-                    return res.json().then((data: { message: string }) => {
-                        return Promise.reject(new Error(data.message));
+                    return res.json().then((data) => {
+                        return Promise.reject(data);
                     });
                 }
                 return res.json();
@@ -27,11 +27,9 @@ export class AdvApi {
                 checkResponse(data);
                 return data;
             })
-            .catch((error) => {
-                console.log(error);
-                gameLogger.addMessage(error, true);
-                checkResponse(error);
-                return Promise.reject(new Error(error));
+            .catch((errorMessage) => {
+                checkResponse(errorMessage);
+                return Promise.reject(errorMessage);
             });
     }
 
