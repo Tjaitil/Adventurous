@@ -1,0 +1,89 @@
+import { itemTitle } from "./itemTitle.js";
+import { jsUcWords } from "./uppercase.js";
+
+export class ItemElement {
+    private element: HTMLElement = null;
+    private imageElement: HTMLImageElement = null;
+    private amountElement: HTMLElement = null;
+    private nameElement: HTMLElement = null;
+
+    constructor(element?: HTMLElement | Element | Node, initalItem?: Item, options?: ItemOptions) {
+
+        let showTooltip = options?.showTooltip || false;
+
+        if (initalItem) {
+            this.element = document.createElement("div");
+            this.element.classList.add("item");
+
+            let figure = document.createElement("figure");
+            figure.appendChild(document.createElement("img"));
+
+            this.nameElement = document.createElement("figcaption");
+            this.nameElement.classList.add("tooltip");
+            figure.appendChild(this.nameElement);
+            this.element.appendChild(figure);
+            this.imageElement = figure.querySelector("img")[0];
+
+            let span = document.createElement("span");
+            span.classList.add("item_amount");
+            this.element.appendChild(span);
+            this.element.querySelectorAll("figcaption")[0].innerHTML = jsUcWords(initalItem.name);
+            this.element.querySelectorAll("img")[0].src = "public/images/" + initalItem.name + ".png";
+            this.element.querySelectorAll(".item_amount")[0].innerHTML = "" + initalItem.amount;
+            this.element.classList.add(initalItem.className);
+
+            this.element.addEventListener("mouseenter", (event) => itemTitle.show(event));
+            this.element.addEventListener("mouseleave", () => itemTitle.hide());
+        } else {
+            this.element = <HTMLElement>element;
+            if (!this.element) throw new Error(`Element not found`);
+
+            this.imageElement = this.element.querySelectorAll("img")[0];
+            this.amountElement = <HTMLElement>this.element.querySelectorAll(".item_amount")[0];
+            this.nameElement = <HTMLElement>this.element.querySelectorAll("figcaption")[0];
+        }
+
+        if (!showTooltip) {
+            this.element.classList.add("no-tooltip");
+        }
+
+    }
+
+    public setClass(className: string) {
+        this.element.classList.add(className);
+    }
+
+    public replaceItem(item: string, amount: number) {
+        this.imageElement.src = "public/images/" + item + ".png";
+        this.amountElement.innerText = amount.toString();
+        this.nameElement.innerText = jsUcWords(item);
+    }
+
+    get item(): string {
+        return this.element.querySelectorAll("figcaption")[0].innerText.trim().toLowerCase();
+
+    }
+
+    get amount(): number {
+        return parseInt(this.amountElement.innerText);
+    }
+
+    get HTMLElement(): HTMLElement {
+        return this.element;
+    }
+}
+
+export function getItemFromID(id: string) {
+
+}
+
+interface Item {
+    name: string;
+    amount: number;
+    className?: string;
+    id?: string;
+}
+
+interface ItemOptions {
+    showTooltip: boolean;
+}
