@@ -33,7 +33,6 @@ export class ClientOverlayInterface {
         this.outerContainer.style.top = viewport.elements.background.offsetTop + "px";
         this.shadowContainer.style.visibility = "visible";
         this.outerContainer.style.visibility = "visible";
-        console.log(content);
 
         if (typeof content === "object") {
             let element = content as HTMLElement;
@@ -143,7 +142,6 @@ export class ClientOverlayInterface {
             // } else {
             // }
 
-            console.log(this.wrapper.querySelectorAll("div"));
             this.wrapper.style.height = this.wrapper.querySelectorAll("div")[0].offsetHeight + 40 + "px";
             this.wrapper.querySelectorAll("div")[0].getBoundingClientRect();
             this.wrapper.style.width = "100%";
