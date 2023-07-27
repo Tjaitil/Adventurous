@@ -1,13 +1,12 @@
-import { StoreItemResource } from './../types/StoreItemResource';
-import { checkInventoryStatus } from "../clientScripts/inventory.js";
-import { commonMessages, gameLogger } from "./gameLogger.js";
+import { gameLogger } from "./gameLogger.js";
 import { itemTitle } from "./itemTitle.js";
-import { jsUcWords } from "./uppercase.js";
 import { StoreSkillRequirements } from './StoreSkillRequirements.js';
+import { SkillRequirementResource } from '../types/SkillRequirementResource';
+import { ItemElement } from "./ItemElement.js";
 
 const storeContainer = {
     storeItems: [] as StoreItemResource[],
-    selectedTadeWrapper: HTMLElement = null,
+    selectedTradeWrapper: HTMLElement = null,
     requirementsWrapper: HTMLElement = null,
     itemInformationWrapper: HTMLElement = null,
     skillRequirementsWrapper: HTMLElement = null,
@@ -18,7 +17,7 @@ const storeContainer = {
     storeContainer: HTMLElement = null,
 
     init() {
-        this.selectedTadeWrapper = document.getElementById("store-container-selected-trade");
+        this.selectedTradeWrapper = document.getElementById("store-container-selected-trade");
         this.requirementsWrapper = document.getElementById("store-container-item-requirements");
         this.itemInformationWrapper = document.getElementById("store-container-item-information");
         this.skillRequirementsWrapper = document.querySelectorAll("#store-container-item-selected .skill-requirements")[0] as HTMLElement;
@@ -52,9 +51,9 @@ const storeContainer = {
 
     selectTrade(event: Event) {
         itemTitle.resetItemTooltip();
-        this.SelectedTradeContainer.style.display = "block";
+        this.SelectedTradeContainer.style.display = "flex";
         this.noTradeSelectedWrapper.style.display = "none";
-        this.selectedTadeWrapper.innerHTML = "";
+        this.selectedTradeWrapper.innerHTML = "";
         this.doTradeButton.disabled = false;
         this.requirementsWrapper.innerHTML = "";
         this.itemInformationWrapper.innerHTML = "";
@@ -62,7 +61,13 @@ const storeContainer = {
 
         let eventElement = <HTMLElement>event.currentTarget;
         let elementDiv = eventElement.closest(".store-container-item");
-        let item = elementDiv.querySelectorAll("figcaption")[0].innerHTML.trim().toLowerCase();
+
+
+        let itemElement = new ItemElement(elementDiv.querySelectorAll(".item")[0].cloneNode(true), undefined, {
+            showTooltip: true
+        });
+
+        let item = itemElement.item;
         let itemData = this.storeItems.find((element) => element.name === item);
 
         let price = itemData.adjusted_store_value
@@ -72,10 +77,10 @@ const storeContainer = {
         elementDiv.querySelectorAll(".store-container-item-price")[0].innerHTML.trim();
         let figure = elementDiv.querySelectorAll("figure")[0].cloneNode(true);
 
-        document.getElementById("store-container-selected-trade").appendChild(figure);
+        this.selectedTradeWrapper.appendChild(itemElement.HTMLElement);
         document.getElementById("store-contaniner-trade-price").querySelectorAll("span")[0].innerHTML = price + " ";
 
-        let itemAmountElement = <HTMLInputElement>this.selectedTadeWrapper
+        let itemAmountElement = <HTMLInputElement>this.selectedTradeWrapper
             .querySelectorAll(".item_amount")[0];
         // Hide item amount on selectd item by default
         if (itemAmountElement) {
@@ -92,23 +97,21 @@ const storeContainer = {
     checkHasRequirements(item: string) {
         let itemData = this.storeItems.find((element) => element.name === item);
         if (itemData && itemData.required_items.length > 0) {
-            this.clearRequirementContainer();
-            itemData.required_items.forEach((element) =>
-                this.addRequirement(
-                    element.name,
-                    element.amount,
-                    element.name)
-            );
+            itemData.required_items.forEach((element) => {
+
+                let requirement = new ItemElement(undefined, {
+                    amount: element.amount,
+                    name: element.name,
+                    className: "store-container-item-requirement"
+                });
+                this.requirementsWrapper.appendChild(requirement.HTMLElement);
+            });
         }
     },
 
     getSelectedTrade(): { item: string, amount: number } | false {
-        if (checkInventoryStatus()) {
-            gameLogger.addMessage(commonMessages.inventoryFull, true);
-            return false;
-        }
 
-        let item = this.selectedTadeWrapper
+        let item = this.selectedTradeWrapper
             .querySelectorAll("figcaption")[0]
             .innerHTML
             .toLowerCase()
@@ -139,39 +142,11 @@ const storeContainer = {
         }
     },
 
-    clearRequirementContainer() {
-    },
-
     addRequirementEvent(funcName: CallableFunction) {
         if (!funcName && funcName.length === 0) return false;
         [...document.getElementsByClassName("store-container-item")].forEach(element =>
             element.addEventListener("click", event => funcName(event)));
 
-    },
-
-    addRequirement(name: string, amount: number, imgSrc: string) {
-        let div = document.createElement("div");
-        div.classList.add("item");
-
-        let figure = document.createElement("figure");
-        figure.appendChild(document.createElement("img"));
-
-        let figcaption = document.createElement("figcaption");
-        figcaption.classList.add("tooltip");
-        figure.appendChild(figcaption);
-        div.appendChild(figure);
-
-        let span = document.createElement("span");
-        span.classList.add("item_amount");
-        div.appendChild(span);
-        div.querySelectorAll("figcaption")[0].innerHTML = jsUcWords(name);
-        div.querySelectorAll("img")[0].src = "public/images/" + imgSrc + ".png";
-        div.querySelectorAll(".item_amount")[0].innerHTML = "" + amount;
-
-        // Add itemtitle events
-        div.addEventListener("mouseenter", (event) => itemTitle.show(event));
-        div.addEventListener("mouseleave", () => itemTitle.hide());
-        this.requirementsWrapper.appendChild(div);
     },
 
     checkItemHasInformation(itemData: StoreItemResource) {
@@ -189,9 +164,10 @@ const storeContainer = {
             span.innerHTML = "" + itemData.item_multiplier;
             span.style.visibility = "visible";
 
-            this.selectedTadeWrapper.appendChild(span);
+            this.selectedTradeWrapper.appendChild(span);
         }
     },
+
     checkItemTooltip() {
         if (document.getElementById("news_content_main_content").querySelectorAll("#item_tooltip").length > 0) {
             itemTitle.resetItemTooltip();
@@ -199,3 +175,16 @@ const storeContainer = {
     }
 }
 export default storeContainer;
+
+export interface StoreItemResource {
+    name: string;
+    amount: number
+    store_value: number;
+    sell_value: number;
+    required_items: StoreItemResource[];
+    item_multiplier: number;
+    adjusted_store_value: number;
+    adjusted_difference: number;
+    skill_requirements: SkillRequirementResource[]
+    information: string;
+}

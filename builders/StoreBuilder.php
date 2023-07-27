@@ -21,7 +21,7 @@ class StoreBuilder
     /**
      * Set infinite item amount
      *
-     * @return void
+     * @return self
      */
     public function setInfiniteAmount(bool $infinite_amount)
     {
@@ -95,7 +95,7 @@ class StoreBuilder
      *
      * @param StoreItemResource[] $list
      *
-     * @return void
+     * @return self
      */
     public function setList($list)
     {

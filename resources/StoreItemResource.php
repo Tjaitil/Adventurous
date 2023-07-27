@@ -77,7 +77,7 @@ class StoreItemResource extends Resource
         if (isset($data['item'])) {
             $data['name'] = $data['item'];
         } else if (isset($data['required_item'])) {
-            $data['name'] = $data['required_item'];
+            $data['name'] = trim($data['required_item']);
         }
 
         if (!isset($data['item_multiplier'])) {

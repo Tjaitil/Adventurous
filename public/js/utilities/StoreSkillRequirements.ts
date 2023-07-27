@@ -19,8 +19,9 @@ export class StoreSkillRequirements {
 
             let img = document.createElement("img");
             img.src = "public/images/" + element.skill + " icon.png";
-            img.width = 32;
-            img.height = 32;
+            img.width = 48;
+            img.height = 48;
+            img.style.marginInline = "auto";
             wrapper.appendChild(img);
 
             let span = document.createElement("span");
