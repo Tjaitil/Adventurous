@@ -20,6 +20,7 @@ use App\libs\Response;
 use App\libs\Route;
 use App\libs\Router;
 use App\controllers\TraderAssignmentController;
+use App\controllers\TravelBureauController;
 
 App::getInstance()->boot();
 require(ROUTE_ROOT . 'vendor/autoload.php');
@@ -66,7 +67,7 @@ Route::get('/archeryshop/get', [ArcheryShopController::class, "getItems"]);
 Route::post('/archeryshop/fletch', [ArcheryShopController::class, "fletchItem"]);
 
 Route::post('/travelbureau/buy', [TravelBureauController::class, "buyCart"]);
-Route::get('/travelbureau/get', [TravelBureauController::class, "get"]);
+Route::get('/travelbureau/store', [TravelBureauController::class, "getStoreItems"]);
 
 Route::post('/armory/add', [ArmoryController::class, "add"]);
 Route::post('/armory/remove', [ArmoryController::class, "remove"]);

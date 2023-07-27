@@ -10,6 +10,7 @@ use App\controllers\MerchantController;
 use App\controllers\MineController;
 use App\controllers\SmithyController;
 use App\controllers\StockpileController;
+use App\controllers\TravelBureauController;
 use App\libs\database;
 use App\libs\DependencyContainer;
 use App\libs\handler;
@@ -44,6 +45,9 @@ switch ($building) {
     case 'merchant desert':
         $building = 'merchant';
         break;
+    case 'travel bureau':
+        $building = 'travelbureau';
+        break;
     default:
 
         break;
@@ -61,6 +65,7 @@ $controller_mapping = [
     'archeryshop' => ArcheryShopController::class,
     'smithy' => SmithyController::class,
     'trader' => MerchantController::class,
+    'travelbureau' => TravelBureauController::class,
 ];
 
 if (is_null($building) || !array_key_exists($building, $controller_mapping)) {

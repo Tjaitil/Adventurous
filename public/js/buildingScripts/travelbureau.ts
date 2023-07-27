@@ -1,31 +1,49 @@
-import { AdvApi } from "../AdvApi";
-import { Inventory } from "../clientScripts/inventory";
-import { itemTitle } from "../utilities/itemTitle";
+import { AdvApi } from "../AdvApi.js";
+import { Inventory } from "../clientScripts/inventory.js";
+import { advAPIResponse } from "../types/responses/AdvResponse.js";
+import { StoreItemResponse } from "../types/responses/StoreItemResponse.js";
+import { ItemElement } from "../utilities/ItemElement.js";
+import storeContainer from "../utilities/storeContainer.js";
 
 const travelBureauModule = {
-    init() {
-        [...document.getElementsByClassName("travel_burea_buy_event")].forEach(element =>
-            element.addEventListener("click", event => this.buyItem(event))
-        );
+    async init() {
+        await this.getData().then(() => {
+            storeContainer.init();
+            storeContainer.addSelectTrade();
+            storeContainer.addSelectedItemButtonEvent(this.buyItem, 'Buy');
+        });
     },
-    buyItem(event) {
-        let itemContainer = event.currentTarget.closest(".cart-container-item")
-            .querySelectorAll(".cart-container-item-type")[0];
-        if (!itemContainer) return false;
-        let item = itemContainer.innerHTML.trim();
+    async getData() {
+        AdvApi.get<StoreItemResponse>('/travelbureau/store').then((response) => {
+            storeContainer.setStoreItems(response.data.store_items);
+        }).then(() => false);
+    },
+    buyItem() {
+        let { item, amount } = storeContainer.getSelectedTrade() || {};
 
-        let data = {
+        let data: BuyCartRequest = {
             item
         }
 
-        AdvApi.post('/travelbureau/buy', data).then((response) => {
+        let currentCartItem = new ItemElement(document.getElementById("current-cart"), null, { showTooltip: false });
+
+        AdvApi.post<BuyCartResponse>('/travelbureau/buy', data).then((response) => {
             Inventory.update();
-            let responseText = response[1];
-            itemContainer.innerHTML = responseText.cart;
-        })
+            currentCartItem.replaceItem(response.data.new_cart, 1);
+        }).then(() => false);
     },
     onClose() {
-        itemTitle.resetItemTooltip();
+        storeContainer.checkItemTooltip();
     }
 }
 export default travelBureauModule;
+
+interface BuyCartRequest {
+    item: string;
+}
+
+interface BuyCartResponse extends advAPIResponse {
+    data: {
+        new_cart: string;
+    }
+}

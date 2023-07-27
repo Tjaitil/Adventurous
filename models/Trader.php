@@ -12,10 +12,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon $trading_countdown
  * @property int $delivered
  * @property int $cart_amount
- * @property string $cart
  * @property int $assignment_id
+ * @property int $cart_id
  * @property TraderAssignment $traderAssignment
- * @property TravelBureauCart $cartData
+ * @property TravelBureauCart $cart
  * @mixin \Eloquent
  */
 class Trader extends Model
@@ -31,8 +31,8 @@ class Trader extends Model
         return $this->hasOne(TraderAssignment::class, 'id', 'assignment_id');
     }
 
-    public function cartData()
+    public function cart()
     {
-        return $this->hasOne(TravelBureauCart::class, 'item', 'cart');
+        return $this->hasOne(TravelBureauCart::class, 'id', 'cart_id');
     }
 }

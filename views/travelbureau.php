@@ -1,34 +1,20 @@
             travelbureau.css|travelbureau.js|
-            <?php 
-                // Get required templates
-                get_template('createItem', null, true); 
-            ?>
             <h1 class="page_title"><?php echo $title; ?></h1>
             <div id="cart_shop">
-                <p> Your current cart: <?php echo $this->data['cart'];?></p>
-                <div id="cart-container">
-                    <?php foreach ($this->data['cart_shop'] as $key) : ?>
-                        <div class="cart-container-item div_content div_content_dark p1">
-                            <div class="dark-image-container">
-                                <img src="<?php echo constant('ROUTE_IMG') . $key['wheel'] . ' cart.png'; ?>" />
-                            </div>
-                            <div>
-                                <p class="cart-container-item-type"><?php echo ucfirst($key['type']);?></p>
-                                <p><?php echo $key['capasity']; ?> capasity</p>
-                                <h4>Required</h4>
-                                <div class="d-flex justify-center">
-                                <?php 
-                                    $data = array(
-                                        ["item" => $key['wheel'] . ' bar', "amount" => $key['mineral_amount']],
-                                        ["item" => $key['wood'] . ' logs', "amount" => $key['wood_amount']]
-                                    );
-                                    createItem($data);
-                                    ?>
-                                </div>
-                                <p><?php echo ucfirst($key['price']);?><img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.png'; ?>" /></p>
-                                <button class="travel_burea_buy_event">Make</button>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
+                <div class="mb-2">
+                    <p class="mb-0">Your current cart</p>
+                    <?php
+                    echo $this->bladeRender->run('components.item', ['name' => $current_cart->name, 'show_tooltip' => false, 'id' => 'current-cart', 'show_amount' => false]);
+                    ?>
                 </div>
+                <?php
+                echo $this->bladeRender->run('components.storeContainer', [
+                    'store_items' => $store_items,
+                    'options' => [
+                        'item_requirements' => true,
+                        'item_information' => true,
+                        'input_amount' => false,
+                    ]
+                ]);
+                ?>
             </div>

@@ -71,7 +71,7 @@ class TraderAssignmentController extends controller
 
         $Trader->assignment_id = $assignment_id;
         $Trader->trading_countdown = Carbon::now()->addMinutes($TraderAssignment->assignment_time);
-        $Trader->cart_amount = $Trader->cartData->capasity;
+        $Trader->cart_amount = $Trader->cart->capasity;
         $Trader->save();
 
         $this->skillsService->updateTraderXP($TraderAssignment->type->xp_started)->updateSkills();
@@ -176,7 +176,7 @@ class TraderAssignmentController extends controller
 
             Response::setData($return_data);
         } else {
-            if ($Trader->cart_amount === $Trader->cartData->capasity) {
+            if ($Trader->cart_amount === $Trader->cart->capasity) {
                 return Response::addMessage("Your cart is full. Empty before picking up")->setStatus(422);
             }
 
@@ -188,7 +188,7 @@ class TraderAssignmentController extends controller
                 return Response::addMessage("You are in the wrong location to pick up items")->setStatus(422);
             }
 
-            $Trader->cart_amount = $Trader->cartData->capasity;
+            $Trader->cart_amount = $Trader->cart->capasity;
 
             $return_data = [
                 "cartAmount" => $Trader->cart_amount,

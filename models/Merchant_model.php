@@ -7,6 +7,9 @@ use DateTime;
 use Exception;
 use PDO;
 
+/**
+ * @deprecated
+ */
 class Merchant_model extends model
 {
     private $locations = array(
