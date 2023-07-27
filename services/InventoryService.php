@@ -97,11 +97,15 @@ class InventoryService
         if (count($this->inventory_items) === 0) {
             $this->getInventory();
         }
-
         $InventoryItem = $this->findItem($item);
-        if (count($this->inventory_items) >= 18 && !$InventoryItem) {
+
+        $new_amount = $InventoryItem->amount + $amount;
+
+        if (count($this->inventory_items) >= 18 && !$InventoryItem && $new_amount > 0) {
+
             throw new Exception("Inventory is full!");
         } else if ($InventoryItem === null) {
+
             Inventory::create([
                 'item' => $item,
                 'amount' => $amount,
@@ -109,10 +113,11 @@ class InventoryService
             ]);
         } else {
 
-            $new_amount = $InventoryItem->amount + $amount;
             if ($new_amount <= 0) {
+
                 $InventoryItem->delete();
             } else {
+
                 $InventoryItem->amount = $new_amount;
                 $InventoryItem->save();
             }
