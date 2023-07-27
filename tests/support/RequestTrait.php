@@ -8,14 +8,15 @@ use GuzzleHttp\Psr7\Response;
 
 trait RequestTrait
 {
-    public Response $response;
+    public static ?Response $response;
     protected ?Client $client;
+    public int $statusCode = 0;
 
     protected function configureClient()
     {
         if (!isset($this->client)) {
             $this->client = new Client([
-                'base_uri' => 'http://localhost:8888',
+                'base_uri' => "http://localhost:8080",
                 'cookies' => true
             ]);
         }
@@ -25,7 +26,9 @@ trait RequestTrait
     {
         $this->configureClient();
         try {
-            return $this->response = $this->client->{$method}($url, ['form_params' => $data, 'http_errors' => false]);
+            $this->response = $this->client->{$method}($url, ['json' => $data, 'http_errors' => false]);
+            $this->statusCode = $this->response->getStatusCode();
+            return $this->response;
         } catch (RequestException $ex) {
             return $ex->getResponse()->getBody()->getContents();
         }

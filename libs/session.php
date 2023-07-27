@@ -9,6 +9,9 @@ class session
     function __construct()
     {
         session_start();
+        if ($_ENV['MOCKING']) {
+            $_SESSION['username'] = $_ENV['TEST_USER'];
+        }
     }
     public function setSession($username, $loggedin)
     {
