@@ -19,7 +19,7 @@ class TravelBureauController extends controller
         private InventoryService $inventoryService,
         private SessionService $sessionService,
     ) {
-        parent::__construct();
+        parent::__construct(true);
     }
 
 
