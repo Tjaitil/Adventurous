@@ -3,7 +3,6 @@
 namespace App\tests\support;
 
 use App\libs\database;
-use App\libs\session;
 use Dotenv\Dotenv;
 
 trait MockApp
@@ -11,12 +10,21 @@ trait MockApp
     public static $isConfigured = false;
     public static $username = "";
 
+
+
+    /**
+     * 
+     * @return void 
+     * @throws \Dotenv\Exception\InvalidPathException 
+     * @throws \Dotenv\Exception\InvalidEncodingException 
+     * @throws \Dotenv\Exception\InvalidFileException 
+     * @throws \Throwable 
+     */
     public static function setEnv()
     {
         if (self::$isConfigured) {
             return;
         }
-
 
         require('root/routes.php');
         $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
@@ -26,10 +34,5 @@ trait MockApp
 
         self::$isConfigured = true;
         database::getInstance()->openConn();
-    }
-
-    protected function tearDown(): void
-    {
-        database::getInstance()->rollBack();
     }
 }

@@ -9,13 +9,22 @@ class Request
 {
     private $data = [];
 
-    private $method;
+    private string $method;
 
     public function __construct()
     {
         $this->setRequestMethod();
     }
 
+
+
+    /**
+     * Validate request input
+     * 
+     * @param array $rules 
+     * @return void 
+     * @throws \Exception 
+     */
     public function validate(array $rules)
     {
         foreach ($rules as $key => $value) {
@@ -26,6 +35,8 @@ class Request
             v::key($key, $value)->check($this->data);
         }
     }
+
+
 
     /**
      * Retrieve user input
@@ -41,6 +52,8 @@ class Request
         return $this->data[$key] ?? null;
     }
 
+
+
     /**
      * Set request method and get data based on method
      *
@@ -51,20 +64,21 @@ class Request
         switch ($_SERVER['REQUEST_METHOD']) {
             case 'POST':
                 $this->method = "POST";
-                $data = json_decode(file_get_contents("php://input"), true);
-                $this->setRequestData($data);
+                $this->setRequestData($this->readRequestData());
+
                 break;
             case 'GET':
                 $this->method = "GET";
-                $this->setRequestData($_GET);
+                $this->readRequestData($_GET);
                 break;
             case 'PUT':
                 $this->method = "PUT";
-                $data = json_decode(file_get_contents("php://input"), true);
-                $this->setRequestData($data);
+                $this->setRequestData($this->readRequestData());
                 break;
         }
     }
+
+
 
     /**
      * Set request data
@@ -77,5 +91,21 @@ class Request
         foreach ($requestData as $key => $value) {
             $this->data[$key] = $value;
         }
+    }
+
+
+
+    /**
+     * @return array
+     */
+    private function readRequestData()
+    {
+        $data = json_decode(file_get_contents("php://input"), true);
+        if (App::getInstance()->getIsMocking()) {
+            if ($this->method === "POST") {
+                $data = $_POST;
+            }
+        }
+        return $data;
     }
 }

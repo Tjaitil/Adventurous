@@ -19,12 +19,20 @@ final class database
     private $DB_USERNAME;
     private $DB_PASS;
 
-    private $testing = false;
+    private $inTransaction = false;
 
+
+
+    /**
+     * 
+     * @return static 
+     */
     public static function getSelf()
     {
         return new static();
     }
+
+
 
     /** */
     private function __construct()
@@ -33,9 +41,10 @@ final class database
         $this->DB_USERNAME  = $_SERVER["DB_USERNAME"];
         $this->DB_NAME = $_SERVER["DB_NAME"];
         $this->DB_PASS = $_SERVER["DB_PASS"];
-        $this->testing = $_SERVER["TESTING"] == "true";
         $this->openConn();
     }
+
+
 
     /**
      * Create new database connection
@@ -58,18 +67,20 @@ final class database
         ]);
 
 
+
         // Make this Capsule instance available globally via static methods... (optional)
         $capsule->setAsGlobal();
 
         // Setup the Eloquent ORM... (optional; unless you've used setEventDispatcher())
         $capsule->bootEloquent();
 
-
-        if ($this->testing) {
+        if (App::getInstance()->getIsRollbackMode()) {
             DB::connection()->beginTransaction();
         }
 
         try {
+
+            // TODO: This is not the same connection as the one above. Fix
             $this->conn = new PDO(
                 "mysql:host=" . $this->DB_SERVER . ";dbname=" . $this->DB_NAME,
                 $this->DB_USERNAME,
@@ -83,24 +94,53 @@ final class database
         }
     }
 
-    public function rollBack()
+
+
+    public function beginTransaction()
     {
-        if ($this->testing) {
-            DB::connection()->rollBack();
+        if ($this->inTransaction) {
+            return;
         }
+        DB::connection()->beginTransaction();
+        $this->inTransaction = true;
     }
 
+
+
+    /**
+     * 
+     * @return void 
+     */
+    public function rollBack()
+    {
+        DB::connection()->rollBack();
+    }
+
+
+
+    /**
+     * 
+     * @return void 
+     */
     public function rollbackIfTest()
     {
-        if ($this->testing) {
+        if (App::getInstance()->getIsMocking() || App::getInstance()->getIsRollbackMode()) {
             $this->rollBack();
         }
     }
 
+
+
+    /**
+     * 
+     * @return void 
+     */
     public function closeConn()
     {
         unset($this->conn);
     }
+
+
 
     /**
      * Get database instance

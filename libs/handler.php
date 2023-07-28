@@ -6,19 +6,19 @@ use \autoloader;
 
 class handler
 {
-    private $parent_dir = '../';
+    private $parent_dir = "";
+
     function __construct($model = false)
     {
+        $this->parent_dir = $_SERVER["PWD"] ?? dirname(__FILE__, 2) . '/';
         require_once($this->parent_dir . '/root/routes.php');
-        require_once($this->parent_dir . 'root/autoloader.php');
-        require_once($this->parent_dir . 'root/config.php');
-        require_once($this->parent_dir . 'config/GameConstants.php');
+        require_once($this->parent_dir . '/root/autoloader.php');
+        require_once($this->parent_dir . '/root/config.php');
 
         $autoloader = new autoloader();
         spl_autoload_register(array($autoloader, 'libsLoader'));
         spl_autoload_register(array($autoloader, 'modelLoader'));
         spl_autoload_register(array($autoloader, 'controllerLoader'));
-        require_once($this->parent_dir . constant('ROUTE_HELPER') . 'general_helpers.php');
 
         // If ajax call is to get a file or session data
         if ($model === true) {

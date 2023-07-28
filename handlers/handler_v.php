@@ -18,14 +18,11 @@ use App\libs\Logger;
 use App\libs\App;
 use App\libs\session;
 
-require '../vendor/autoload.php';
-
-
 $root = $_SERVER["PWD"] ?? dirname(__FILE__, 2) . '/';
 
-require('../libs/handler.php');
-require('../config/GameConstants.php');
-require('../root/routes.php');
+require($root . '/root/routes.php');
+require_once(ROUTE_ROOT . '/vendor/autoload.php');
+
 App::getInstance()->boot();
 new handler();
 $session = new session();
@@ -75,4 +72,5 @@ if (is_null($building) || !array_key_exists($building, $controller_mapping)) {
     $dependencyContainer = DependencyContainer::getInstance();
     $controller = $dependencyContainer->get($controller_mapping[$building]);
     $controller->index(...$dependencyContainer->getMethodParameters($controller, 'index'));
+    http_response_code(200);
 }

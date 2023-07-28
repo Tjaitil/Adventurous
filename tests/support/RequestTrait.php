@@ -2,45 +2,95 @@
 
 namespace App\tests\support;
 
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Response;
+use App\libs\session;
+use App\tests\support\TestResponse as Response;
+use Exception;
 
 trait RequestTrait
 {
-    public static ?Response $response;
-    protected ?Client $client;
-    public int $statusCode = 0;
+    public ?Response $response = null;
+    private $POST_METHOD = "POST";
+    private $GET_METHOD = "GET";
 
-    protected function configureClient()
-    {
-        if (!isset($this->client)) {
-            $this->client = new Client([
-                'base_uri' => "http://localhost:8080",
-                'cookies' => true
-            ]);
-        }
-    }
 
+
+    /**
+     * 
+     * @param string $method 
+     * @param string $url 
+     * @param array|null $data 
+     * @return string|void 
+     */
     protected function callMethod(string $method, string $url, array $data = null)
     {
-        $this->configureClient();
         try {
-            $this->response = $this->client->{$method}($url, ['json' => $data, 'http_errors' => false]);
-            $this->statusCode = $this->response->getStatusCode();
-            return $this->response;
-        } catch (RequestException $ex) {
-            return $ex->getResponse()->getBody()->getContents();
+            if ($method === $this->POST_METHOD) {
+                $_POST = $data;
+            } else if ($method === $this->GET_METHOD) {
+                $_GET = $data;
+            } else {
+                throw new Exception("Method not allowed");
+            }
+
+            $_SERVER['REQUEST_URI'] = $url;
+            $_SERVER['REQUEST_METHOD'] = $method;
+
+            $this->mockRequest($url);
+
+            $_POST = [];
+            $_GET = [];
+        } catch (Exception $ex) {
+            return $ex->getMessage();
         }
     }
 
-    public function get(string $url): Response
+
+
+    /**
+     * Will strip query string from url and pass it as data'
+     *
+     * @param string $url
+     *
+     * @return void
+     */
+    public function get(string $url)
     {
-        return $this->callMethod('get', $url);
+        $data = \parse_url($url)['query'];
+        \parse_str($data, $data);
+        $this->callMethod($this->GET_METHOD, $url, $data ?? null);
     }
 
-    public function post(string $url, array $data): Response
+
+
+    /**
+     * 
+     * @param string $url 
+     * @param array $data 
+     * @return void 
+     */
+    public function post(string $url, array $data)
     {
-        return $this->callMethod('post', $url, $data);
+        $this->callMethod($this->POST_METHOD, $url, $data);
+    }
+
+
+
+    /**
+     * 
+     * @param string $url
+     */
+    private function mockRequest(string $url)
+    {
+        new session();
+
+        \ob_start();
+        if (strpos($url, 'api') !== false) {
+            require_once(constant('ROUTE_ROOT') . 'index.php');
+        } else if (strpos($url, 'handler_v') !== false) {
+            require_once(constant('ROUTE_ROOT') . 'handlers/handler_v.php');
+        }
+
+        $ob_output = \ob_get_clean();
+        $this->response = new Response($ob_output);
     }
 }

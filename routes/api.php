@@ -15,16 +15,13 @@ use App\controllers\StockpileController;
 use App\controllers\UserLevelsController;
 use App\controllers\WorldLoaderController;
 use App\controllers\ZinsstoreController;
-use App\libs\App;
 use App\libs\Response;
 use App\libs\Route;
 use App\libs\Router;
 use App\controllers\TraderAssignmentController;
 use App\controllers\TravelBureauController;
 
-App::getInstance()->boot();
 require(ROUTE_ROOT . 'vendor/autoload.php');
-
 
 $uri = urldecode(str_replace('/api', '',  $_SERVER['REQUEST_URI']));
 
@@ -99,8 +96,4 @@ Route::post('/armycamp/healWarrior', [ArmyCampController::class, "healWarrior"])
 Route::get('/userlevels', [UserLevelsController::class, "getLevels"]);
 
 $match = Router::getInstance()->matchRoute($_SERVER['REQUEST_METHOD'], $uri);
-
-if (!$match) {
-    http_response_code(400);
-}
 echo Response::get();
