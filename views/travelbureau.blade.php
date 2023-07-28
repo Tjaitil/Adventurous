@@ -3,18 +3,22 @@
             <div id="cart_shop">
                 <div class="mb-2">
                     <p class="mb-0">Your current cart</p>
-                    <?php
-                    echo $this->bladeRender->run('components.item', ['name' => $current_cart->name, 'show_tooltip' => false, 'id' => 'current-cart', 'show_amount' => false]);
-                    ?>
+                    @component('components.item', [
+                        'name' => $current_cart->name,
+                        'show_tooltip' => false,
+                        'id' => 'current-cart',
+                        'show_amount' => false,
+                    ])
+                        ;
+                    @endcomponent
                 </div>
-                <?php
-                echo $this->bladeRender->run('components.storeContainer', [
+                @component('components.storeContainer', [
                     'store_items' => $store_items,
                     'options' => [
                         'item_requirements' => true,
                         'item_information' => true,
                         'input_amount' => false,
-                    ]
-                ]);
-                ?>
+                    ],
+                ])
+                @endcomponent
             </div>

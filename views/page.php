@@ -19,7 +19,13 @@
             <script src=" <?php echo constant('ROUTE_JS') . $name . '.js'; ?>">
             </script>
         <?php endif; ?>
-        <?php require(constant('ROUTE_VIEW') . $name . '.php'); ?>
+        <?php
+        if ($this->viewBlade) {
+            echo $this->bladeRender->run($name, $data);
+        } else {
+            require(constant('ROUTE_VIEW') . $name . '.php');
+        }
+        ?>
     </section>
     <?php if (array_search($name, array("gameguide", "profile", "error", "main", "highscores", "news", "messages")) === false) : ?>
         <aside class="col-span-1 col-start-1 row-start-2">

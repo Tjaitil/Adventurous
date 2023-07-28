@@ -10,9 +10,11 @@ class controller
     protected $model;
     protected $controller;
     protected BladeOne $bladeRender;
+    public $viewBlade = false;
 
-    public function __construct()
+    public function __construct($viewBlade = false)
     {
+        $this->viewBlade = $viewBlade;
         $this->bootBladeRendering();
     }
 
@@ -49,18 +51,26 @@ class controller
 
         if ($ajax == false) {
             if ($up !== false) {
-                require('../' . constant('ROUTE_VIEW') . 'page.php');
+                require(constant('ROUTE_ROOT') . constant('ROUTE_VIEW') . 'page.php');
             } else {
                 require(constant('ROUTE_VIEW') . 'page.php');
             }
         } else {
-            require('../' . constant('ROUTE_VIEW') . $name . '.php');
+            $data['title'] = $title;
+            if ($this->viewBlade) {
+                echo $this->bladeRender->run($name, $data);
+            } else {
+                require(constant('ROUTE_ROOT') . constant('ROUTE_VIEW') . $name . '.php');
+            }
         }
     }
 
 
 
     //Render site with error Array   
+    /**
+     * @deprecated version
+     */
     public function renderWE($name, $title, $gamedata, $data, $up = false)
     {
         if ($up !== false) {
