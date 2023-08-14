@@ -38,10 +38,9 @@ class App
         require_once(ROUTE_ROOT . constant('ROUTE_HELPER') . 'general_helpers.php');
 
         Dotenv::createImmutable(__DIR__ . '/../')->load();
+        $this->isMocking = $_SERVER["MOCKING"] == "true";
+        $this->isRollbackMode = $_SERVER["ROLLBACK_MODE"] == "true";
         database::getInstance()->openConn();
-
-        $this->isMocking = $isMocking = $_SERVER["MOCKING"] == "true";
-        $this->isRollbackMode = $isRollbackMode = $_SERVER["ROLLBACK_MODE"] == "true";
     }
 
 

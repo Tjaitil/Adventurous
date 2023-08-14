@@ -5,11 +5,17 @@ namespace App\tests\support;
 class TestResponse
 {
     public int $statusCode = 200;
-    public string|null $body = "";
+    public mixed $body;
 
-    public function __construct(string|null $response = "")
+
+    /**
+     * 
+     * @param string|null $response
+     */
+    public function __construct($response = "")
     {
         $this->statusCode = http_response_code();
-        $this->body = \json_encode($response);
+
+        $this->body = $response;
     }
 }

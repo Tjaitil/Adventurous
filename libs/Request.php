@@ -10,6 +10,7 @@ class Request
     private $data = [];
 
     private string $method;
+    private string $uri;
 
     public function __construct()
     {
@@ -64,18 +65,15 @@ class Request
         switch ($_SERVER['REQUEST_METHOD']) {
             case 'POST':
                 $this->method = "POST";
-                $this->setRequestData($this->readRequestData());
-
                 break;
             case 'GET':
                 $this->method = "GET";
-                $this->readRequestData($_GET);
                 break;
             case 'PUT':
                 $this->method = "PUT";
-                $this->setRequestData($this->readRequestData());
                 break;
         }
+        $this->setRequestData($this->readRequestData());
     }
 
 
@@ -104,8 +102,16 @@ class Request
         if (App::getInstance()->getIsMocking()) {
             if ($this->method === "POST") {
                 $data = $_POST;
+            } else if ($this->method === "GET") {
+                $data = $_GET;
             }
         }
         return $data;
+    }
+
+
+    public function setUri(string $uri)
+    {
+        $this->uri = $uri;
     }
 }

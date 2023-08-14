@@ -2,13 +2,16 @@
 
 namespace App\tests\support;
 
+use App\libs\App;
 use App\libs\database;
+use App\models\UserData;
 use Dotenv\Dotenv;
 
 trait MockApp
 {
     public static $isConfigured = false;
     public static $username = "";
+    public static $user_id = 0;
 
 
 
@@ -27,12 +30,10 @@ trait MockApp
         }
 
         require('root/routes.php');
-        $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
-        $dotenv->load();
-
-        self::$username = $_ENV['TEST_USER'];
+        App::getInstance()->boot();
 
         self::$isConfigured = true;
-        database::getInstance()->openConn();
+        self::$username = $_ENV['TEST_USER'];
+        self::$user_id = UserData::where('username', self::$username)->first()->id ?? 0;
     }
 }

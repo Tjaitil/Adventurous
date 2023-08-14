@@ -1,12 +1,12 @@
 <?php
 
-use App\Controller\HungerController;
 use App\controllers\ArcheryShopController;
 use App\controllers\ArmoryController;
 use App\controllers\ArmyCampController;
 use App\controllers\BakeryController;
 use App\controllers\CityCentreController;
 use App\controllers\CropsController;
+use App\controllers\HungerController;
 use App\controllers\InventoryController;
 use App\controllers\MineController;
 use App\controllers\ProfiencyStatusController;
@@ -24,6 +24,9 @@ use App\controllers\TravelBureauController;
 require(ROUTE_ROOT . 'vendor/autoload.php');
 
 $uri = urldecode(str_replace('/api', '',  $_SERVER['REQUEST_URI']));
+Response::clear();
+http_response_code(200);
+
 
 Route::get('/world', [WorldLoaderController::class, "loadWorld"]);
 Route::post('/world/change', [WorldLoaderController::class, "changeMap"]);
@@ -74,8 +77,9 @@ Route::get('/bakery/make', [BakeryController::class, "makeItem"]);
 
 Route::post('/tavern/recruit', [TavernController::class, "recruitPersonell"]);
 
+Route::get('/hunger/get', [HungerController::class, "getHunger"]);
 Route::get('/hunger/item/get', [HungerController::class, "getHealData"]);
-Route::post('/hunger/restore', [HungerController::class, "restoreHunger"]);
+Route::post('/hunger/restore', [HungerController::class, "restoreHealth"]);
 
 Route::get('/citycentre/upgradeEfficiency', [CityCentreController::class, "upgradeEfficiency"]);
 
@@ -96,4 +100,5 @@ Route::post('/armycamp/healWarrior', [ArmyCampController::class, "healWarrior"])
 Route::get('/userlevels', [UserLevelsController::class, "getLevels"]);
 
 $match = Router::getInstance()->matchRoute($_SERVER['REQUEST_METHOD'], $uri);
+
 echo Response::get();

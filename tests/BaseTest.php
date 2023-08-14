@@ -2,7 +2,7 @@
 
 namespace App\tests;
 
-use App\libs\database;
+use App\libs\DependencyContainer;
 use App\tests\support\DatabaseTest;
 use App\tests\support\MockApp;
 use App\tests\support\RequestTrait;
@@ -25,5 +25,6 @@ class BaseTest extends TestCase
     protected function tearDown(): void
     {
         $this->rollbackTransaction();
+        DependencyContainer::getInstance()->clear();
     }
 }

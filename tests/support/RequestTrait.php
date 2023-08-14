@@ -53,10 +53,11 @@ trait RequestTrait
      *
      * @return void
      */
-    public function get(string $url)
+    public function get(string $url, array $data = [])
     {
-        $data = \parse_url($url)['query'];
-        \parse_str($data, $data);
+        $url_data = \parse_url($url)['query'];
+        \parse_str($url_data, $url_data);
+        $data = array_merge($data, $url_data);
         $this->callMethod($this->GET_METHOD, $url, $data ?? null);
     }
 
@@ -84,12 +85,11 @@ trait RequestTrait
         new session();
 
         \ob_start();
-        if (strpos($url, 'api') !== false) {
-            require_once(constant('ROUTE_ROOT') . 'index.php');
+        if (strpos($url, 'api') != false) {
+            require(constant('ROUTE_ROOT') . 'index.php');
         } else if (strpos($url, 'handler_v') !== false) {
-            require_once(constant('ROUTE_ROOT') . 'handlers/handler_v.php');
+            require(constant('ROUTE_ROOT') . 'handlers/handler_v.php');
         }
-
         $ob_output = \ob_get_clean();
         $this->response = new Response($ob_output);
     }

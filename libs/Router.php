@@ -4,12 +4,6 @@ namespace App\libs;
 
 use \Exception;
 
-/**
- * @property class $currentRoute
- * @property array $routes
- * @property RegisteredRoute $matchedRoute
- * @property Request $request
- */
 class Router
 {
 
@@ -19,11 +13,14 @@ class Router
     protected $currentRoute;
     protected array $routes;
     protected RegisteredRoute $matchedRoute;
-    protected Request $request;
+    public ?Request $request = null;
+    protected ?Request $lastRequest = null;
 
     private function __construct()
     {
     }
+
+
 
     /**
      * Get instance of self
@@ -38,6 +35,8 @@ class Router
         return self::$instance;
     }
 
+
+
     /**
      * Get routes registered on base_uri
      *
@@ -51,6 +50,12 @@ class Router
     }
 
 
+
+    /**
+     * 
+     * @param string $uri 
+     * @return bool 
+     */
     protected function stripURLParams(string $uri)
     {
         if (strpos($uri, '')) {
@@ -62,6 +67,8 @@ class Router
         }
     }
 
+
+
     /**
      * Get first path after /api/ 
      *
@@ -71,6 +78,8 @@ class Router
     {
         return '/' . explode('/', $this->targetURI)[1];
     }
+
+
 
     /**
      * Register route on base URI
@@ -83,6 +92,8 @@ class Router
     {
         $this->routes[$route->getBaseURI()][] = $route;
     }
+
+
 
     /**
      * Check class and method route registered on route
@@ -103,6 +114,8 @@ class Router
         $this->runRoute();
     }
 
+
+
     /**
      * Set Matched route
      *
@@ -115,8 +128,10 @@ class Router
         $this->matchedRoute = $route;
     }
 
+
+
     /**
-     * Undocumented function
+     * 
      *
      * @param string $method request Method
      * @param string $uri request uri
@@ -157,13 +172,17 @@ class Router
             if ($matched_route === null) throw new Exception("Not found");
             $this->setMatchedRoute($matched_route);
             $this->checkRoute();
+
+            $this->cleanUpAfterRequest();
         } catch (Exception $e) {
-            database::getInstance()->rollBack();
+            database::getInstance()->rollbackIfTest();
             return Response::addMessage($e->getMessage())->setStatus(404);
         }
 
         return $matched_route !== null ? true : false;
     }
+
+
 
     /**
      * Run current route
@@ -178,17 +197,16 @@ class Router
         $class_name = $this->matchedRoute->getClassName();
         $class_method = $this->matchedRoute->getClassMethodName();
 
-        $request = $this->getRequest($this->matchedRoute->getMethod());
+        $request = $this->getRequest();
 
         // Get instance of DepedencyContainer
         $DependencyContainer = DependencyContainer::getInstance();
-
-        $DependencyContainer->set('Request', $request);
 
         $class = $DependencyContainer->get($class_name);
 
         $class->$class_method(...$DependencyContainer->getMethodParameters($class, $class_method));
     }
+
 
 
     /**
@@ -202,6 +220,8 @@ class Router
     {
         return count(explode("/", $path));
     }
+
+
 
     /**
      * Find wildcardParam in URL
@@ -224,6 +244,14 @@ class Router
         ];
     }
 
+
+
+    /**
+     * 
+     * @param string $path1 
+     * @param string $path2 
+     * @return true 
+     */
     private function comparePaths(string $path1, string $path2)
     {
 
@@ -242,16 +270,27 @@ class Router
         return $only_wildard_matches;
     }
 
+
+
     /**
      * Get Request Class
      *
      * @return Request
      */
-    protected function getRequest()
+    public function getRequest()
     {
-        if (!isset($this->request)) {
+        if (\is_null($this->request)) {
             $this->request = new Request();
+            $this->request->setUri($this->targetURI);
         }
         return $this->request;
+    }
+
+
+
+    protected function cleanUpAfterRequest()
+    {
+        $this->lastRequest = $this->request;
+        $this->request = null;
     }
 }

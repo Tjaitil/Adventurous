@@ -4,7 +4,7 @@ namespace App\libs;
 
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\Capsule\Manager as DB;
-
+use Illuminate\Database\Connection;
 use \PDO;
 use \PDOException;
 
@@ -13,6 +13,7 @@ final class database
     private static $instance = null;
 
     public PDO $conn;
+    public ?Connection $connection = null;
 
     private $DB_SERVER;
     private $DB_NAME;
@@ -53,29 +54,27 @@ final class database
      */
     public function openConn()
     {
-        $capsule = new Capsule;
+        if (\is_null($this->connection)) {
+            $capsule = new Capsule;
 
-        $capsule->addConnection([
-            'driver' => 'mysql',
-            'host' => $_SERVER["DB_SERVER"],
-            'database' => $_SERVER["DB_NAME"],
-            'username' => $_SERVER["DB_USERNAME"],
-            'password' => $_SERVER["DB_PASS"],
-            'charset' => 'utf8',
-            'collation' => 'utf8_unicode_ci',
-            'prefix' => '',
-        ]);
+            $capsule->addConnection([
+                'driver' => 'mysql',
+                'host' => $_SERVER["DB_SERVER"],
+                'database' => $_SERVER["DB_NAME"],
+                'username' => $_SERVER["DB_USERNAME"],
+                'password' => $_SERVER["DB_PASS"],
+                'charset' => 'utf8',
+                'collation' => 'utf8_unicode_ci',
+                'prefix' => '',
+            ]);
 
-
-
-        // Make this Capsule instance available globally via static methods... (optional)
-        $capsule->setAsGlobal();
-
-        // Setup the Eloquent ORM... (optional; unless you've used setEventDispatcher())
-        $capsule->bootEloquent();
+            $capsule->setAsGlobal();
+            $capsule->bootEloquent();
+            $this->connection = DB::connection();
+        }
 
         if (App::getInstance()->getIsRollbackMode()) {
-            DB::connection()->beginTransaction();
+            $this->beginTransaction();
         }
 
         try {
@@ -113,7 +112,12 @@ final class database
      */
     public function rollBack()
     {
+        if (!$this->inTransaction) {
+            return;
+        }
+
         DB::connection()->rollBack();
+        $this->inTransaction = false;
     }
 
 

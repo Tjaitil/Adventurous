@@ -130,8 +130,12 @@ class DependencyContainer
     private function resolveParams(ReflectionParameter $param)
     {
         if ($type = $param->getType()) {
-            $instance = $this->get($type->getName());
+
             try {
+                $instance = $this->get($type->getName());
+                if ($type->getName() === "App\libs\Request") {
+                    $instance = Router::getInstance()->getRequest();
+                }
                 $this->set($type->getName(), $instance);
             } catch (\Exception $e) {
                 throw new Exception("Could not resolve param " . $param->getName() . $e->getMessage());
@@ -155,5 +159,16 @@ class DependencyContainer
             $params[] = $this->resolveParams($param);
         }
         return $params ?? [];
+    }
+
+
+    /**
+     * Clear all services
+     * 
+     * @return void 
+     */
+    public function clear()
+    {
+        $this->services = [];
     }
 }
