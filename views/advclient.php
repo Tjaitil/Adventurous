@@ -91,7 +91,7 @@
                         <div class="progressBarOverlay">
                         </div>
                         <div class="progressBar">
-                            <span class="progressBar_currentValue"><?php echo $data['hunger_data']['hunger']; ?></span>
+                            <span class="progressBar_currentValue"><?php echo $current_hunger; ?></span>
                             &nbsp/&nbsp
                             <span class="progressBar_maxValue">100</span>
                         </div>

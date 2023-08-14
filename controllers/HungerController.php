@@ -3,31 +3,53 @@
 namespace App\controllers;
 
 use App\libs\controller;
-use App\models\Bakery_model;
-use App\models\Hunger_model;
 use Respect\Validation\Validator;
 use App\libs\Request;
 use App\libs\Response;
+use App\models\HealingItem;
+use App\models\Hunger;
+use App\services\HungerService;
 use App\services\InventoryService;
-use \Exception;
-use \GameConstants;
+use App\services\SessionService;
 
 class HungerController extends controller
 {
     public function __construct(
-        private Bakery_model $bakery_model,
-        private Hunger_model $hunger_model,
         private InventoryService $inventoryService,
+        private SessionService $sessionService,
+        private HungerService $hungerService,
     ) {
         parent::__construct();
     }
+
+
+
+    /**
+     * Get hunger
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function getHunger(Request $request)
+    {
+        $Hunger = Hunger::where('user_id', $this->sessionService->user_id())->first();
+
+        if (!$Hunger instanceof Hunger) {
+            return Response::addMessage("Unvalid user")->setStatus(400);
+        }
+
+        return Response::addData('current_hunger', $Hunger->current);
+    }
+
+
 
     /**
      * Restore hunger
      *
      * @param Request $request
      *
-     * @return void
+     * @return Response
      */
     public function restoreHealth(Request $request)
     {
@@ -39,33 +61,30 @@ class HungerController extends controller
             'amount' => Validator::intVal(),
         ]);
 
-
-        try {
-            $item_data = $this->bakery_model->find($item);
-
-            if (count($item_data) === 0) {
-                return Response::addMessage("That item does not heal you")->setStatus(422);
-            }
-
-            if (!$this->inventoryService->hasEnoughAmount(GameConstants::CURRENCY, $item_data['cost'] * $amount)) {
-                return $this->inventoryService->logNotEnoughAmount(GameConstants::CURRENCY);
-            } else if (!$this->inventoryService->hasEnoughAmount($item, $amount)) {
-                return $this->inventoryService->logNotEnoughAmount($item);
-            }
-
-            $hunger = $this->hunger_model->get();
-
-            $new_hunger = $hunger + ($item_data['heal'] * $amount);
-
-            if ($new_hunger > 100) {
-                $new_hunger = 100;
-            }
-
-            $this->hunger_model->update($new_hunger);
-        } catch (Exception $e) {
-            return Response::addMessage($e->getMessage());
+        if ($this->inventoryService->hasEnoughAmount($item, $amount) === false) {
+            return Response::addMessage("You do not have enough of that item")->setStatus(422);
         }
+
+        if ($this->hungerService->getCurrentHunger() >= 100) {
+            return Response::addMessage("You are already at max health")->setStatus(422);
+        }
+
+        $HealingItem = HealingItem::where('item', $item)->first();
+
+        if (!$HealingItem instanceof HealingItem) {
+            return Response::addMessage("That item does not heal you")->setStatus(422);
+        }
+
+        $this->hungerService->decreaseHunger($amount);
+
+        $this->inventoryService->edit($item, -$amount);
+
+        return Response::addMessage("You have been healed")
+            ->addData('hunger', $this->hungerService->getCurrentHunger())
+            ->setStatus(200);
     }
+
+
 
     /**
      * Get heal data for item
@@ -82,8 +101,8 @@ class HungerController extends controller
             'item' => Validator::stringVal()->notEmpty()
         ]);
 
-        $item_data = $this->bakery_model->find($item);
+        $HealingItem = HealingItem::where('item', $item)->first();
 
-        return Response::addData('heal', $item_data['health'] ?? 0);
+        return Response::addData('heal', $HealingItem->heal ?? 0);
     }
 }

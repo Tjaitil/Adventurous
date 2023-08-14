@@ -42,7 +42,7 @@ class AdvclientController extends controller
                 'location' => $user_data['location'],
                 'levels' => UserLevels::where('username', $this->sessionService->getCurrentUsername())->first()->toArray(),
                 'profiency' => $user_data['profiency'],
-                'hunger_data' => $this->hungerService->getHungerData(),
+                'current_hunger' => $this->hungerService->getCurrentHunger(),
                 'inventory' => $this->inventoryService->getInventory()->toArray(),
                 'profiency_status' => $this->profiencyService->calculateProfienciesStatuses(),
                 'diplomacy_data' => $this->diplomacy->where('username', $this->sessionService->getCurrentUsername())->get()->toArray(),

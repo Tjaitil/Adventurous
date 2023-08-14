@@ -172,7 +172,7 @@ class MineController extends controller
             ->setData([
                 'avail_workforce' => $new_workforce_amount,
                 'new_permits' => $new_permits,
-                'new_hunger' => $this->hungerService->getHunger(),
+                'new_hunger' => $this->hungerService->getCurrentHunger(),
             ])
             ->setStatus(200);
     }

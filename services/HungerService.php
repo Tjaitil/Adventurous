@@ -3,31 +3,31 @@
 namespace App\services;
 
 use App\libs\Response;
-use App\models\Hunger_model;
+use App\models\Hunger;
 
 class HungerService
 {
 
-    private Hunger_model $hunger_model;
+    private Hunger $Hunger;
 
-    private $hunger_data = null;
-
-
-    public function __construct(Hunger_model $hunger_model)
+    public function __construct(private SessionService $sessionService)
     {
-        $this->hunger_model = $hunger_model;
+        $this->Hunger = Hunger::find($this->sessionService->user_id());
     }
+
+
 
     /**
      * Get hunger
      *
      * @return int
      */
-    public function getHunger()
+    public function getCurrentHunger()
     {
-        $this->getHungerData();
-        return $this->hunger_data['hunger'];
+        return $this->Hunger->current;
     }
+
+
 
     /**
      * Get hunger data
@@ -36,11 +36,10 @@ class HungerService
      */
     public function getHungerData()
     {
-        if (is_null($this->hunger_data)) {
-            $this->hunger_data = $this->hunger_model->get();
-        }
-        return $this->hunger_data;
+        return $this->Hunger;
     }
+
+
 
     /**
      * Check if hunger is too low for action
@@ -49,19 +48,25 @@ class HungerService
      */
     public function isHungerTooLow()
     {
-        $this->getHungerData();
-
-        if ($this->hunger_data['hunger'] < 10) {
+        if ($this->Hunger->current < 10) {
             return true;
         } else {
             return false;
         }
     }
 
+
+
+    /**
+     * 
+     * @return Response 
+     */
     public function logHungerTooLow()
     {
-        return Response::addMessage("Your hunger is too low")->setStatus(422);
+        return Response::addMessage("Your hunger bar is too low")->setStatus(422);
     }
+
+
 
     /**
      * Set new hunger based on action
@@ -70,19 +75,56 @@ class HungerService
      *
      * @return void
      */
-    public function setNewHunger($action)
+    public function setNewHunger(string $action)
     {
-        $this->getHungerData();
-
         switch ($action) {
             case HUNGER_SKILL_ACTION:
                 // TODO: Decrease hunger
-                // $this->hunger_data['hunger'] - 15;
+                $this->decreaseHunger(10);
             default:
                 # code...
                 break;
         }
+    }
 
-        $this->hunger_model->update($this->hunger_data['hunger']);
+
+
+    /**
+     * 
+     * @param int $new_hunger 
+     * @return void 
+     */
+    public function updateHunger(int $new_hunger)
+    {
+        $this->Hunger->current = $new_hunger;
+        if ($this->Hunger->current > 100) {
+            $this->Hunger->current = 100;
+        }
+
+        $this->Hunger->save();
+    }
+
+
+
+    /**
+     * 
+     * @param int $amount 
+     * @return void 
+     */
+    public function decreaseHunger(int $amount)
+    {
+        $this->updateHunger($this->Hunger->current + $amount);
+    }
+
+
+
+    /**
+     * 
+     * @param int $amount 
+     * @return void 
+     */
+    public function increaseHunger(int $amount)
+    {
+        $this->updateHunger($this->Hunger->current - $amount);
     }
 }

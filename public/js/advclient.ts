@@ -301,7 +301,6 @@ export class Game {
         this.getWorld();
         HUD.setup(viewport.width, viewport.height, viewport.top, viewport.left);
         controls.checkDeviceType();
-        // getHunger();
         itemPrices.get();
         // CookieTicket.checkCookieTicket("checkMeOut");
     }
