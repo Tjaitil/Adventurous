@@ -14,7 +14,6 @@ class InventoryService
 {
     private $inventory_items = [];
 
-
     public function __construct(
         protected Inventory $inventory,
         protected SessionService $sessionService
@@ -29,7 +28,7 @@ class InventoryService
      */
     public function getInventory()
     {
-        return $this->inventory_items = $this->inventory->all()->where('username', $this->sessionService->getCurrentUsername());
+        return $this->inventory_items = $this->inventory->all()->where('username', $this->sessionService->user());
     }
 
     /**
@@ -42,6 +41,8 @@ class InventoryService
      */
     public function findItem(string $item)
     {
+        $this->getInventory();
+
         $item = $this->inventory_items->first(function ($value, $key) use ($item) {
             return $value->item === $item;
         });
@@ -61,9 +62,9 @@ class InventoryService
     {
         $item_data = $this->findItem($name);
 
-        if ($this->checkSkipInventory()) {
-            return true;
-        }
+        // if ($this->checkSkipInventory()) {
+        //     return true;
+        // }
         if ($item_data === null || $item_data->amount < $amount) {
             return false;
         } else {
@@ -99,9 +100,9 @@ class InventoryService
         }
         $InventoryItem = $this->findItem($item);
 
-        $new_amount = $InventoryItem->amount + $amount;
+        $new_amount = (is_null($InventoryItem)) ? $amount : $InventoryItem->amount + $amount;
 
-        if (count($this->inventory_items) >= 18 && !$InventoryItem && $new_amount > 0) {
+        if ($this->inventory_items->count() >= 18 && !$InventoryItem && $new_amount > 0) {
 
             throw new Exception("Inventory is full!");
         } else if ($InventoryItem === null) {
