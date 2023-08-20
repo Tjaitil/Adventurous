@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @param StoreItemResource[] $store_items
+ * @param StoreResource[] $store_resource
  * @param array
  * $options = [
  *  'item_requirements' => (boolean) Add requirements container. Optional.
@@ -12,9 +12,10 @@
  */
 ?>
 @component('components.BorderInterfaceContainer')
-    <div id="store-container-item-wrapper" class="relative flex flex-row box-border max-w-500px min-h-250px mx-auto">
+    <div id="store-container-item-wrapper"
+        class="relative flex flex-row box-border max-w-500px  min-h-[250px] max-h-[500px] mx-auto">
         @component('components.store.storeItemList', [
-            'store_items' => $store_items,
+            'store_items' => $store_resource->store_items,
             'options' => $options,
             'show_tooltip' => true,
         ])

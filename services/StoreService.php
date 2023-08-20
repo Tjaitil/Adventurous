@@ -19,8 +19,15 @@ class StoreService
 
     public function makeStore(array $items)
     {
+        if (isset($items['list'])) {
+            $items['store_items'] = $items['list'];
+        }
+
         $this->storeBuilder = $this->storeBuilder::create($items);
+        return $this;
     }
+
+
 
     /**
      * Get store item
@@ -32,7 +39,7 @@ class StoreService
     public function isStoreItem(string $name)
     {
         $matches = [];
-        foreach ($this->storeBuilder->build()->list as $key => $item) {
+        foreach ($this->storeBuilder->build()->store_items as $key => $item) {
             if ($item->name === $name) {
                 array_push($matches, $item->toResource());
             }
@@ -67,7 +74,7 @@ class StoreService
     {
         $matches = [];
 
-        foreach ($this->storeBuilder->build()->list as $key => $item) {
+        foreach ($this->storeBuilder->build()->store_items as $key => $item) {
             if ($item->name === $name) {
                 array_push($matches, $item->toResource());
             }
@@ -99,7 +106,8 @@ class StoreService
     public function calculateItemCost(string $item, int $amount)
     {
         $item = $this->getStoreItem($item);
-        $price = $amount * $item->store_value;
+        $item_price = ($item->store_value !== $item->adjusted_store_value) ? $item->adjusted_store_value : $item->store_value;
+        $price = $amount * $item_price;
 
         return $price;
     }
@@ -197,5 +205,16 @@ class StoreService
         }
 
         return $new_price;
+    }
+
+    public function applyIfsDiscount(int $price, int $discount)
+    {
+        $discounted_price = $price * (1 - ($discount / 100));
+
+        return $discounted_price;
+    }
+
+    public function getDiscountAsPercentage()
+    {
     }
 }

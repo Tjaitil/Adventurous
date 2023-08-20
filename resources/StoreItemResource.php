@@ -11,7 +11,7 @@ use App\models\SkillRequirement;
  * @property int $sell_value
  * @property StoreItemResource[] $required_items
  * @property int $item_multiplier Item amount to be multiplied when crafting. Default is 1
- * @property int $adjusted_store_value Store value adjustment. Default is 0
+ * @property int $adjusted_store_value Store value adjustment. Default is same price as store_value
  * @property int $adjusted_difference Difference between adjusted store value and original store value. Default is 0
  * @property SkillRequirementResource[] $skill_requirements
  */
@@ -23,7 +23,7 @@ class StoreItemResource extends Resource
         parent::__construct([
             "name" => "",
             "amount" => 0,
-            "store_value" => "",
+            "store_value" => 0,
             "sell_value" => "",
             "required_items" => [],
             "item_multiplier" => 0,
@@ -86,6 +86,7 @@ class StoreItemResource extends Resource
 
         if (isset($data['price'])) {
             $data['store_value'] = $data['price'];
+            $data['adjusted_store_value'] = $data['price'];
         }
 
         if (isset($data['required_items'])) {

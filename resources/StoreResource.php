@@ -6,8 +6,11 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property StoreItemResource[] $list
+ * @property StoreItemResource[] $store_items
  * @property bool $infinite_amount
+ * @property string $store_name
+ * @property float $discount
+ * @property int $discount_as_percentage
  */
 class StoreResource extends Resource
 {
@@ -15,41 +18,58 @@ class StoreResource extends Resource
     public function __construct($resource = null)
     {
         parent::__construct([
-            "list" => [],
+            "name" => "",
+            "discount" => 1.00,
+            "store_items" => [],
             "inifinite_amount" => false,
         ], $resource);
     }
 
+
+
+    /**
+     * 
+     * @param array $data 
+     * @return array 
+     */
     public static function mapping(array $data): array
     {
-        if ($data['list'] instanceof Collection) {
-            $data['list'] = $data['list']->toArray();
+        if ($data['store_items'] instanceof Collection) {
+            $data['store_items'] = $data['store_items']->toArray();
         }
 
-        $data["list"] = array_map(function ($item) {
+        $data["store_items"] = array_map(function ($item) {
             if ($item instanceof Model) {
                 $item = $item->toArray();
             }
             return new StoreItemResource($item);
-        }, $data["list"]);
+        }, $data["store_items"]);
 
 
         return $data;
     }
 
+
+
     /**
      * Convert resource to an array
      *
-     * @return array
+     * @return StoreResource
      */
     public function toArray(): array
     {
-        $list = [];
+        $store_items = [];
 
-        foreach ($this->list as $key => $item) {
-            array_push($list, $item->toArray());
+        foreach ($this->store_items as $key => $item) {
+            array_push($store_items, $item->toArray());
         }
 
-        return $list;
+        return [
+            'store_items' => $store_items,
+            'store_name' => $this->store_name,
+            'discount' => $this->discount,
+            'discount_as_percentage' => 0,
+            'infinite_amount' => $this->infinite_amount,
+        ];
     }
 }
