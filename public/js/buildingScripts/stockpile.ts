@@ -1,6 +1,6 @@
 import { AdvApi } from './../AdvApi.js';
 import { ClientOverlayInterface } from "../clientScripts/clientOverlayInterface.js";
-import { getInventory, updateInventory } from "../clientScripts/inventory.js";
+import { Inventory } from "../clientScripts/inventory.js";
 import { itemTitle } from "../utilities/itemTitle.js";
 
 const menubarToggle = {
@@ -195,7 +195,7 @@ const stockpileModule = {
 			document.getElementById("stck_menu").style.visibility = "hidden";
 
 			stckMenuInput.value = "";
-			getInventory();
+			Inventory.update();
 			ClientOverlayInterface.adjustWrapperHeight();
 		}).catch((error) => {
 			return;
