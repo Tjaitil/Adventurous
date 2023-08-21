@@ -1,5 +1,4 @@
-            travelbureau.css|travelbureau.js|
-            <h1 class="page_title"><?php echo $title; ?></h1>
+            <h1 class="page_title">{{ $title }}</h1>
             <div id="cart_shop">
                 <div class="mb-2">
                     <p class="mb-0">Your current cart</p>

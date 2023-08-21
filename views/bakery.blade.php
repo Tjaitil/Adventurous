@@ -1,5 +1,4 @@
-#|bakery.js|
-<h1 class="page_title">Bakery</h1>
+<h1 class="page_title">{{ $title }}</h1>
 <div id="bakery">
     @component('components.help')
         <p>Here you can make food to decrease your hunger.

@@ -11,7 +11,43 @@ import { Building } from "../gamepieces/Building.js";
 import { HUD } from './HUD.js';
 
 
-export const inputHandler = {
+enum Buildings {
+    BAKERY = "bakery",
+    TRAVELBUREAU = "travelbureau",
+}
+
+type BuildingName = `${Buildings}`;
+
+interface BuildingAssetsTypes {
+    stylesheets?: string[];
+    script: string;
+}
+type BuildingAssetsRecord = Record<Buildings, BuildingAssetsTypes>;
+
+interface IInputHandler {
+    buildingAssetsRecord: BuildingAssetsRecord;
+    buildingMatch: undefined | Building;
+    buildingMatchUIChanged: boolean;
+    checkBuilding(mouseinputX?: number, mouseinputY?: number): void;
+    interactBuilding(): void;
+    mapBuildingName(name: string): string;
+    currentBuildingModule: any;
+    fetchBuilding(building: string): Promise<string>;
+    characterMatch: undefined | Character;
+    characterMatchUIChanged: boolean;
+    checkCharacter(): void;
+    interactCharacter(): void;
+}
+
+export const inputHandler: IInputHandler = {
+    buildingAssetsRecord: {
+        [Buildings.BAKERY]: {
+            "script": "bakery.js"
+        },
+        [Buildings.TRAVELBUREAU]: {
+            "script": "travelbureau.js"
+        }
+    },
     buildingMatch: <undefined | Building>undefined,
     buildingMatchUIChanged: false,
     checkBuilding(mouseinputX = 0, mouseinputY = 0) {
@@ -77,12 +113,26 @@ export const inputHandler = {
                 return response.text();
             })
             .then(async (data) => {
-                let dataArray = data.split("|");
-                let css = dataArray[0].trim();
-                let script = dataArray[1];
-                let html = dataArray[2];
+                let script: string;
+                let css;
+                let html: string;
                 let link;
-                if (css.length > 2 || css !== "#") {
+
+                if (this.buildingAssetsRecord[building]) {
+                    let buildingName = building as BuildingName;
+                    script = this.buildingAssetsRecord[buildingName].script;
+                    css = this.buildingAssetsRecord[buildingName].stylesheets;
+                    html = data;
+                } else {
+
+                    let dataArray = data.split("|");
+                    css = dataArray[0].trim();
+                    script = dataArray[1];
+                    html = dataArray[2];
+                }
+
+                // Support this until all buildings are updated
+                if (css && (css.length > 2 || css !== "#")) {
                     link = document.createElement("link");
                     link.type = "text/css";
                     link.rel = "stylesheet";
@@ -92,6 +142,10 @@ export const inputHandler = {
                 ClientOverlayInterface.show(html);
                 itemTitle.addItemClassEvents();
                 const src = '/public/dist/js/buildingScripts/';
+                if (script.length === 0) {
+                    gameLogger.addMessage("Building could not be retrieved", true);
+                    return;
+                }
                 const module = await import(src + script).then((data) => {
                     this.currentBuildingModule = data;
 
