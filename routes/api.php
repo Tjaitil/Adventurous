@@ -72,8 +72,10 @@ Route::get('/travelbureau/store', [TravelBureauController::class, "getStoreItems
 Route::post('/armory/add', [ArmoryController::class, "add"]);
 Route::post('/armory/remove', [ArmoryController::class, "remove"]);
 
-Route::post('/bakery/get', [BakeryController::class, "get"]);
-Route::get('/bakery/make', [BakeryController::class, "makeItem"]);
+Route::get('/bakery', [BakeryController::class, "index"]);
+Route::get('/bakery/get', [BakeryController::class, "get"]);
+Route::post('/bakery/make', [BakeryController::class, "makeItem"]);
+Route::get('/bakery/store', [BakeryController::class, "getStoreItems"]);
 
 Route::post('/tavern/recruit', [TavernController::class, "recruitPersonell"]);
 

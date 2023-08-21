@@ -2,49 +2,53 @@
 
 namespace App\controllers;
 
-use App\actions\MapRequiredDataAction;
 use App\libs\controller;
 use App\libs\Request;
 use App\libs\Response;
-use App\models\Bakery_model;
+use App\models\HealingItem;
+use App\resources\StoreResource;
 use App\services\InventoryService;
+use App\services\SessionService;
+use App\services\StoreDiscountService;
 use App\services\StoreService;
-use GameConstants;
-use Exception;
+use App\validators\ValidateStoreTrade;
 
 class BakeryController extends controller
 {
-    public $data = [];
 
-    protected InventoryService $inventoryService;
-    protected Bakery_model $bakery_model;
-    protected StoreService $storeService;
-    protected MapRequiredDataAction $mapRequiredDataAction;
-
+    /**
+     * 
+     * @param InventoryService $inventoryService 
+     * @param StoreService $storeService 
+     * @param SessionService $sessionService 
+     * @param StoreDiscountService $storeDiscountService 
+     * @return void 
+     */
     function __construct(
-        InventoryService $inventoryService,
-        Bakery_model $bakery_model,
-        StoreService $storeService,
-        MapRequiredDataAction $mapRequiredDataAction,
+        protected InventoryService $inventoryService,
+        protected StoreService $storeService,
+        protected SessionService $sessionService,
+        protected StoreDiscountService $storeDiscountService,
     ) {
-        parent::__construct();
-        $this->inventoryService = $inventoryService;
-        $this->bakery_model = $bakery_model;
-        $this->storeService = $storeService;
-        $this->mapRequiredDataAction = $mapRequiredDataAction;
+        parent::__construct(true);
     }
 
-
+    /**
+     * 
+     * @return void 
+     */
     public function index()
     {
-        $this->loadModel('Bakery', true);
-        $this->data = $this->model->getData();
-        $this->render('bakery', 'Bakery', $this->data, true, true);
+        $this->render('bakery', 'Bakery', ['store_resource' => $this->makeShop()], true, true);
     }
 
-    public function get()
+    /**
+     * 
+     * @return Response 
+     */
+    public function getStoreItems()
     {
-        return Response::setData($this->mapRequiredDataAction->handle($this->bakery_model->all()));
+        return Response::addData("store_items", $this->makeShop()->toArray()['store_items'])->setStatus(200);
     }
 
     /**
@@ -58,36 +62,59 @@ class BakeryController extends controller
     {
 
         $item = $request->getInput('item');
-        $amount = $request->getInput('amount');
+        $amount = intval($request->getInput('amount'));
 
-        try {
-            $this->storeService->makeStore(
-                ["list" => $this->mapRequiredDataAction->handle($this->bakery_model->find($item))]
-            );
-            if ($this->storeService->isStoreItem($item)) {
-                return $this->storeService->logNotStoreItem($item);
-            }
+        ValidateStoreTrade::validate($request);
 
-            $item = $this->storeService->getStoreItem($item);
+        $store_item = HealingItem::with('requiredItems')->where('bakery_item', 1)->get();
 
-            foreach ($item->required_items as $key => $value) {
-                if ($this->inventoryService->hasEnoughAmount($value->name, $value->required_amount * $amount)) {
-                    return $this->inventoryService->logNotEnoughAmount($value->name);
-                    break;
-                }
-            }
+        $this->storeService->makeStore(
+            ["store_items" => $store_item]
+        )
+            ->storeBuilder
+            ->setAdjustedStoreValue($this->storeDiscountService->getDiscount('bakery'));
 
-            foreach ($item as $key => $value) {
-                $this->inventoryService->edit($value->name, $amount);
-            }
-            $this->inventoryService->edit(
-                GameConstants::CURRENCY,
-                $this->storeService->calculateItemCost($item, $amount)
-            );
-
-            return Response::setStatus(200);
-        } catch (Exception $e) {
-            return Response::addMessage($e->getMessage());
+        if (!$this->storeService->isStoreItem($item)) {
+            return $this->storeService->logNotStoreItem($item);
         }
+
+        $store_item = $this->storeService->getStoreItem($item);
+        foreach ($store_item->required_items as $key => $value) {
+            if (!$this->inventoryService->hasEnoughAmount($value->name, $value->amount * $amount)) {
+                return $this->inventoryService->logNotEnoughAmount($value->name);
+                break;
+            }
+        }
+
+        foreach ($store_item->required_items as $key => $value) {
+            $this->inventoryService->edit($value->name, -$amount);
+        }
+
+        if (!$this->inventoryService->hasEnoughAmount(CURRENCY, $store_item->store_value * $amount)) {
+            return $this->inventoryService->logNotEnoughAmount(CURRENCY);
+        } else {
+            $this->inventoryService->edit(CURRENCY, -$store_item->store_value * $amount);
+        }
+
+        $this->inventoryService->edit($item, $amount);
+
+        return Response::setStatus(200);
+    }
+
+    /**
+     * 
+     * @return StoreResource
+     */
+    protected function makeShop()
+    {
+        $BakeryItems = HealingItem::with('requiredItems')->where('bakery_item', 1)->get();
+
+
+        return $this->storeService->makeStore(["store_items" => $BakeryItems])
+            ->storeBuilder
+            ->setAdjustedStoreValue($this->storeDiscountService->getDiscount('bakery'))
+            ->setStoreName('bakery')
+            ->setInfiniteAmount(true)
+            ->build();
     }
 }
