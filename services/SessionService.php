@@ -28,11 +28,37 @@ class SessionService
         $this->data = $this->userData_model->find();
     }
 
+    /**
+     * 
+     * @return string 
+     */
+    public function user()
+    {
+        return $this->getCurrentUsername();
+    }
+
+    /**
+     * 
+     * @return int
+     */
+    public function user_id()
+    {
+        return $this->data->id;
+    }
+
+    /**
+     * 
+     * @return string 
+     */
     public function getCurrentUsername()
     {
         return $this->data->username;
     }
 
+    /**
+     * 
+     * @return string 
+     */
     public function getCurrentMap()
     {
         if (!isset($this->data->map_location)) {
@@ -41,6 +67,10 @@ class SessionService
         return $this->data->map_location;
     }
 
+    /**
+     * 
+     * @return string 
+     */
     public function getLocation()
     {
         return $this->data->location;
