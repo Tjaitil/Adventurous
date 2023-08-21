@@ -2,13 +2,12 @@
 
 namespace App\resources;
 
-use App\models\SkillRequirement;
 
 /**
  * @property string $name
  * @property int $amount
  * @property int $store_value
- * @property int $sell_value
+ * @property int $merchant_buy_price
  * @property StoreItemResource[] $required_items
  * @property int $item_multiplier Item amount to be multiplied when crafting. Default is 1
  * @property int $adjusted_store_value Store value adjustment. Default is same price as store_value
@@ -24,7 +23,7 @@ class StoreItemResource extends Resource
             "name" => "",
             "amount" => 0,
             "store_value" => 0,
-            "sell_value" => "",
+            "merchant_buy_price" => "",
             "required_items" => [],
             "item_multiplier" => 0,
             "adjusted_store_value" => 0,
@@ -63,7 +62,7 @@ class StoreItemResource extends Resource
             "name" => $this->name,
             "amount" => $this->amount,
             "store_value" => $this->store_value,
-            "sell_value" => $this->sell_value,
+            "merchant_buy_price" => $this->merchant_buy_price,
             "required_items" => $required_items,
             "adjusted_store_value" => $this->adjusted_store_value,
             "adjusted_difference" => $this->adjusted_difference,
@@ -86,7 +85,9 @@ class StoreItemResource extends Resource
 
         if (isset($data['price'])) {
             $data['store_value'] = $data['price'];
-            $data['adjusted_store_value'] = $data['price'];
+        }
+        if (isset($data['store_value'])) {
+            $data['adjusted_store_value'] = $data['store_value'];
         }
 
         if (isset($data['required_items'])) {

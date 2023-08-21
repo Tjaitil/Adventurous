@@ -9,8 +9,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property StoreItemResource[] $store_items
  * @property bool $infinite_amount
  * @property string $store_name
- * @property float $discount
- * @property int $discount_as_percentage
+ * @property float $store_value_modifier
+ * @property int $store_value_modifier_as_percentage
  */
 class StoreResource extends Resource
 {
@@ -19,13 +19,11 @@ class StoreResource extends Resource
     {
         parent::__construct([
             "name" => "",
-            "discount" => 1.00,
+            "store_value_modifier" => 1.00,
             "store_items" => [],
             "inifinite_amount" => false,
         ], $resource);
     }
-
-
 
     /**
      * 
@@ -49,8 +47,6 @@ class StoreResource extends Resource
         return $data;
     }
 
-
-
     /**
      * Convert resource to an array
      *
@@ -67,8 +63,8 @@ class StoreResource extends Resource
         return [
             'store_items' => $store_items,
             'store_name' => $this->store_name,
-            'discount' => $this->discount,
-            'discount_as_percentage' => 0,
+            'store_value_modifier' => $this->store_value_modifier,
+            'store_value_modifier_as_percentage' => 0,
             'infinite_amount' => $this->infinite_amount,
         ];
     }

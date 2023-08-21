@@ -27,8 +27,6 @@ class StoreService
         return $this;
     }
 
-
-
     /**
      * Get store item
      *
@@ -136,6 +134,8 @@ class StoreService
         return;
     }
 
+
+
     /**
      * Check if the store has enough amount
      *
@@ -183,7 +183,6 @@ class StoreService
         else return $result;
     }
 
-
     /**
      * Calculate new price of item. Will be 5 percent if value is over 1500
      *
@@ -205,16 +204,5 @@ class StoreService
         }
 
         return $new_price;
-    }
-
-    public function applyIfsDiscount(int $price, int $discount)
-    {
-        $discounted_price = $price * (1 - ($discount / 100));
-
-        return $discounted_price;
-    }
-
-    public function getDiscountAsPercentage()
-    {
     }
 }

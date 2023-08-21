@@ -13,8 +13,6 @@ class StoreBuilder
         $this->resource = new StoreResource($resource);
     }
 
-
-
     /**
      * 
      * @param mixed $resource 
@@ -24,8 +22,6 @@ class StoreBuilder
     {
         return new static($resource);
     }
-
-
 
     /**
      * Set infinite item amount
@@ -40,8 +36,6 @@ class StoreBuilder
         }
         return $this;
     }
-
-
 
     /**
      * Set available item amount
@@ -61,8 +55,6 @@ class StoreBuilder
         }
     }
 
-
-
     /**
      * Set new store value based on a condition
      *
@@ -81,19 +73,22 @@ class StoreBuilder
         }
     }
 
-
-
     /**
-     * Set new store value based on a percentage modifier
+     * Set new store value based on a decimal modifier
      *
-     * @return void
+     * @return self
      */
-    public function setAdjustedStoreValue(float $percentage_modifier)
+    public function setAdjustedStoreValue(float $decimal_modifier)
     {
+        $this->resource->store_value_modifier = $decimal_modifier;
+        $this->resource->store_value_modifier_as_percentage = $decimal_modifier === 1.00 ? 0 : $decimal_modifier * 100;
+
         foreach ($this->resource->store_items as $key => $item) {
-            $item->adjusted_store_value =  $item->store_value * (1 - $percentage_modifier);
+            $item->adjusted_store_value =  $item->store_value * (1 - $decimal_modifier);
             $item->adjusted_difference = $item->store_value - $item->adjusted_store_value;
         }
+
+        return $this;
     }
 
 
@@ -115,8 +110,6 @@ class StoreBuilder
         return $this;
     }
 
-
-
     /**
      * Set updated list
      *
@@ -130,8 +123,6 @@ class StoreBuilder
         return $this;
     }
 
-
-
     /**
      * Set store name
      *
@@ -144,27 +135,6 @@ class StoreBuilder
         $this->resource->name = $name;
         return $this;
     }
-
-
-
-    /**
-     * Set store discount
-     *
-     * @param float $discount
-     *
-     * @return self
-     */
-    public function setAndApplyDiscount(float $discount)
-    {
-        if ($discount !== 1.00) {
-            $this->resource->discount = $discount;
-            $this->resource->discount_as_percentage = $discount === 1.00 ? 0 : $discount * 100;
-            $this->setAdjustedStoreValue($discount);
-        }
-        return $this;
-    }
-
-
 
     /**
      *
