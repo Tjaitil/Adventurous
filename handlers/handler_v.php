@@ -4,6 +4,7 @@ use App\controllers\ArcheryShopController;
 use App\controllers\ArmoryController;
 use App\controllers\ArmyCampController;
 use App\controllers\ArmymissionsController;
+use App\controllers\BakeryController;
 use App\controllers\CityCentreController;
 use App\controllers\CropsController;
 use App\controllers\MerchantController;
@@ -63,6 +64,7 @@ $controller_mapping = [
     'smithy' => SmithyController::class,
     'trader' => MerchantController::class,
     'travelbureau' => TravelBureauController::class,
+    'bakery' => BakeryController::class,
 ];
 
 if (is_null($building) || !array_key_exists($building, $controller_mapping)) {
