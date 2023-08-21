@@ -7,13 +7,21 @@ use App\libs\Request;
 use App\libs\Response;
 use App\models\Trader;
 use App\models\TravelBureauCart;
+use App\resources\StoreResource;
 use App\services\SessionService;
 use App\services\InventoryService;
 use App\services\StoreService;
 
 class TravelBureauController extends controller
 {
-    public $data;
+
+    /**
+     * 
+     * @param StoreService $storeService 
+     * @param InventoryService $inventoryService 
+     * @param SessionService $sessionService 
+     * @return void 
+     */
     function __construct(
         private StoreService $storeService,
         private InventoryService $inventoryService,
@@ -22,46 +30,38 @@ class TravelBureauController extends controller
         parent::__construct(true);
     }
 
-
-
     public function index()
     {
         $current_cart = Trader::where('username', $this->sessionService->getCurrentUsername())->first()->cart;
-        $store_items = $this->makeShop();
+        $store_resource = $this->makeShop();
 
         $this->render('travelbureau', 'Travel Bureau', [
-            'store_items' => $store_items,
+            'store_resource' => $store_resource,
             'current_cart' => $current_cart
         ], true, true);
     }
 
-
-
     /**
      * 
-     * @return array
+     * @return storeResource
      */
     protected function makeShop()
     {
         $Carts = TravelBureauCart::with('requiredItems', 'skillRequirements')->get();
         $this->storeService->makeStore(["list" => $Carts]);
 
-        return $this->storeService->storeBuilder->setInfiniteAmount(true)
-            ->build()
-            ->toArray();
+        return $this->storeService
+            ->storeBuilder->setInfiniteAmount(true)
+            ->build();
     }
-
-
 
     /**
      * @return Response
      */
     public function getStoreItems()
     {
-        return Response::addData("store_items", $this->makeShop())->setStatus(200);
+        return Response::addData("store_items", $this->makeShop()->toArray()['store_items'])->setStatus(200);
     }
-
-
 
     /**
      * 
@@ -75,7 +75,6 @@ class TravelBureauController extends controller
         $amount = 1;
         $Cart = TravelBureauCart::where('name', $item)->with('requiredItems')->first();
         $Trader = Trader::where('username', $this->sessionService->getCurrentUsername())->first();
-
         if (!$Cart) {
             return Response::setStatus(422)->addMessage("This cart does not exist");
         } else if ($Cart->id === $Trader->cart_id) {
@@ -110,11 +109,16 @@ class TravelBureauController extends controller
             $this->inventoryService->edit($value->name, $value->amount * $amount);
         }
 
-        $this->inventoryService
-            ->edit(
-                CURRENCY,
-                -$this->storeService->calculateItemCost($item_data->name, $amount)
-            );
+        if (!$this->inventoryService->hasEnoughAmount(CURRENCY, $item_data->store_value)) {
+            return $this->inventoryService->logNotEnoughAmount(CURRENCY);
+        } else {
+
+            $this->inventoryService
+                ->edit(
+                    CURRENCY,
+                    -$this->storeService->calculateItemCost($item_data->name, $amount)
+                );
+        }
 
         $Trader->cart_id = $Cart->id;
         $Trader->save();

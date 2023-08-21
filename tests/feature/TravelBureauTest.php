@@ -15,14 +15,14 @@ class TravelBureauTest extends BaseTest
         $this->assertIsString($this->response->body);
     }
 
-    function disabled_test_retrieve_store_items()
+    function test_retrieve_store_items()
     {
         $this->get('/api/travelbureau/store');
         $this->assertEquals(200, $this->response->statusCode);
         $this->assertJson($this->response->body);
     }
 
-    function disabled_test_buy_item()
+    function test_buy_item()
     {
         // TODO: Set this to not be a hardcoded cart
         $required_items = TravelBureauCart::where('name', 'steel cart')->with('requiredItems')->first()->requiredItems;

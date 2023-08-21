@@ -13,7 +13,7 @@
                     @endcomponent
                 </div>
                 @component('components.storeContainer', [
-                    'store_items' => $store_items,
+                    'store_resource' => $store_resource,
                     'options' => [
                         'item_requirements' => true,
                         'item_information' => true,
