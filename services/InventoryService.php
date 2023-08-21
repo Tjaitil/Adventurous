@@ -21,6 +21,8 @@ class InventoryService
         $this->getInventory();
     }
 
+
+
     /**
      * Get inventory
      *
@@ -28,8 +30,11 @@ class InventoryService
      */
     public function getInventory()
     {
+
         return $this->inventory_items = $this->inventory->all()->where('username', $this->sessionService->user());
     }
+
+
 
     /**
      * Find item in inventory
@@ -49,6 +54,8 @@ class InventoryService
 
         return $item;
     }
+
+
 
     /**
      * Check if user has enough of a item
@@ -72,6 +79,8 @@ class InventoryService
         }
     }
 
+
+
     /**
      * Log when user does not have enough amount
      *
@@ -83,6 +92,8 @@ class InventoryService
     {
         return Response::addMessage(sprintf("You don't have enough of %s", $name))->setStatus(400);
     }
+
+
 
     /**
      * Edit item in inventory
@@ -125,6 +136,8 @@ class InventoryService
         }
         return $this;
     }
+
+
 
     public function checkSkipInventory()
     {
