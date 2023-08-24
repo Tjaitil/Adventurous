@@ -76,7 +76,7 @@ class App
         if (php_sapi_name() == "cli") {
             $this->isMocking = true;
         } else {
-            $this->isMocking = true;
+            $this->isMocking = false;
         }
     }
 }
