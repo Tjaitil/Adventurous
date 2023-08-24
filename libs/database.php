@@ -128,7 +128,7 @@ final class database
      */
     public function rollbackIfTest()
     {
-        if (App::getInstance()->getIsMocking() || App::getInstance()->getIsRollbackMode()) {
+        if (App::getInstance()->getIsRollbackMode()) {
             $this->rollBack();
         }
     }

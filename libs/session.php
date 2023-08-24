@@ -9,7 +9,7 @@ class session
     function __construct()
     {
         session_start();
-        if ($_ENV['MOCKING']) {
+        if (App::getInstance()->getIsMocking()) {
             $_SESSION['username'] = $_ENV['TEST_USER'];
         }
     }

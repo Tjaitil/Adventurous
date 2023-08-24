@@ -38,7 +38,7 @@ class App
         require_once(ROUTE_ROOT . constant('ROUTE_HELPER') . 'general_helpers.php');
 
         Dotenv::createImmutable(__DIR__ . '/../')->load();
-        $this->isMocking = $_SERVER["MOCKING"] == "true";
+        $this->determineEnvironment();
         $this->isRollbackMode = $_SERVER["ROLLBACK_MODE"] == "true";
         database::getInstance()->openConn();
     }
@@ -63,5 +63,20 @@ class App
     public function getIsRollbackMode()
     {
         return $this->isRollbackMode;
+    }
+
+
+
+    /**
+     *
+     * @return void
+     */
+    public function determineEnvironment()
+    {
+        if (php_sapi_name() == "cli") {
+            $this->isMocking = true;
+        } else {
+            $this->isMocking = true;
+        }
     }
 }
