@@ -56,8 +56,11 @@ trait RequestTrait
     public function get(string $url, array $data = [])
     {
         $url_data = \parse_url($url)['query'] ?? [];
-        \parse_str($url_data, $url_data);
+        if (\is_string($url_data)) {
+            \parse_str($url_data, $url_data);
+        }
         $data = array_merge($data, $url_data);
+
         $this->callMethod($this->GET_METHOD, $url, $data ?? null);
     }
 
