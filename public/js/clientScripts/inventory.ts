@@ -80,26 +80,26 @@ export function checkInventoryStatus() {
 
 
 export class Inventory {
-    private static items: HTMLElement[];
+    private static itemsElements: Element[];
     private static itemsAmount: number;
-    static update() {
-        AdvApi.get("/inventory")
+    private static isInited: boolean = false;
+
+    static init() {
+        if (this.isInited) return;
+        this.itemsElements = [...document.querySelectorAll(".inventory_item")];
+        this.itemsAmount = this.itemsElements.length;
+        this.isInited = true;
+    }
+
+    static async update() {
+        return AdvApi.get("/inventory")
             .then(data => {
                 document.getElementById("inventory").innerHTML = data["html"]["inventory"];
-                let items = document.getElementsByClassName("inventory_item");
-                this.itemsAmount = items.length;
+                this.itemsElements = [...document.querySelectorAll(".inventory_item")];
+                this.itemsAmount = this.itemsElements.length;
                 this.isFull() ? this.styleSpaceIndicator("full") : this.styleSpaceIndicator("");
 
-                if (getClientPageTitle() == "Stockpile") {
-                    let figures = document.getElementById("inventory").querySelectorAll("figure");
-                    figures.forEach(element =>
-                        element.addEventListener('click', inputHandler.currentBuildingModule.show_menu)
-                    );
-                    itemTitle.removeTitleEvent();
-                }
-                else {
-                    itemTitle.addTitleEvent();
-                }
+                itemTitle.addTitleEvent();
                 itemPrices.get();
 
                 if (ItemSelector.isEventSet) {
@@ -122,6 +122,9 @@ export class Inventory {
         }
     }
 
+    static get items() {
+        return this.itemsElements;
+    }
 }
 
 interface ItemPrice {

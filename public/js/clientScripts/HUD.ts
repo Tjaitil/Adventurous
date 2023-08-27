@@ -5,6 +5,7 @@ import viewport from "./viewport.js";
 import { itemTitle } from "../utilities/itemTitle.js";
 import { clientSettings } from "./clientSettings.js";
 import { clientHelpContainer } from "./help.js";
+import { Inventory } from "./inventory.js";
 
 export const HUD = {
     container: null,
@@ -29,6 +30,7 @@ export const HUD = {
     },
     setup(width: number, height: number, top: number, left: number) {
 
+        Inventory.init();
         itemTitle.init(true);
 
         // Setup game_hud container;
