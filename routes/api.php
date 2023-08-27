@@ -46,7 +46,7 @@ Route::post('/mine/end', [MineController::class, "endMining"]);
 Route::get('/mine/data', [MineController::class, "getViewData"]);
 
 Route::get('/stockpile/{item}', [StockpileController::class, "show"]);
-Route::post('/stockpile/{item}', [StockpileController::class, "update"]);
+Route::post('/stockpile/update', [StockpileController::class, "update"]);
 
 Route::post('/zinsstore', [ZinsstoreController::class, "buy"]);
 
