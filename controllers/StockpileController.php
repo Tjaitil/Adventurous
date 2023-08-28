@@ -2,7 +2,6 @@
 
 namespace App\controllers;
 
-use \Exception;
 use App\libs\Request;
 use App\libs\Response;
 use App\libs\controller;
@@ -11,37 +10,48 @@ use App\models\Stockpile;
 use App\services\SessionService;
 use Respect\Validation\Validator;
 use App\services\InventoryService;
-use App\libs\TemplateFetcher;
+use App\models\UserData;
+use Illuminate\Support\Collection;
 
 class StockpileController extends controller
 {
-    public $data;
-
     function __construct(
         private InventoryService $inventoryService,
-        private Stockpile $stockpile,
         private Inventory $inventory,
         private SessionService $sessionService,
     ) {
 
-        parent::__construct();
+        parent::__construct(true);
     }
 
     public function index()
     {
-        $this->data['stockpile'] =
-            $this->stockpile->where('username', $this->sessionService->getCurrentUsername())
-            ->get()
-            ->toArray();
-        $this->data['max_amount'] = MAX_STOCKPILE_AMOUNT;
-        $this->render('stockpile', 'Stockpile', $this->data, true, true);
+        $Stockpile = $this->get();
+
+        $stockpile_max_amount = UserData::where('username', $this->sessionService->getCurrentUsername())
+            ->first()
+            ->stockpile_max_amount;
+
+        $this->render('stockpile', 'Stockpile', [
+            'Stockpile' => $Stockpile,
+            'max_amount' => $stockpile_max_amount
+        ], true, true);
     }
 
+    /**
+     * 
+     * @return Collection<int, Stockpile>
+     */
     public function get()
     {
-        return $this->stockpile->where('username', $this->sessionService->getCurrentUsername())->get()->toArray();
+        return Stockpile::where('username', $this->sessionService->getCurrentUsername())->get();
     }
 
+    /**
+     * 
+     * @param Request $request 
+     * @return Response
+     */
     public function update(Request $request)
     {
         $item = $request->getInput('item');
@@ -54,24 +64,31 @@ class StockpileController extends controller
             'insert' => Validator::boolVal()
         ]);
 
-        $item_data = $this->stockpile
-            ->where('item', $item)
+        $stockpile_max_amount = UserData::where('username', $this->sessionService->getCurrentUsername())
+            ->first()
+            ->stockpile_max_amount;
+
+        if ($amount === $stockpile_max_amount && $insert === true) {
+            return Response::addMessage('You can\'t store more than $stockpile_max_amount items in your stockpile');
+        }
+
+        $StockpileItem = Stockpile::where('item', $item)
             ->where('username', $this->sessionService->getCurrentUsername())
             ->first();
 
-        $matched_stockpile_item = true;
-
-        if (!isset($item_data->amount)) {
+        if (!$StockpileItem instanceof Stockpile) {
             $matched_stockpile_item = false;
+        } else {
+            $matched_stockpile_item = true;
         }
 
         if ($insert === true || $insert == 1) {
-            $matched_inventory_item = $this->inventoryService->findItem($item);
+            $InventoryItem = $this->inventoryService->findItem($item);
             // Check if the user has the inventory item and correct amount
-            if ($matched_inventory_item === false) {
-                throw new Exception("You don't have the item in your inventory");
-            } else if ($matched_inventory_item['amount'] < $amount) {
-                throw new Exception("You don't have that many in your inventory");
+            if (!$InventoryItem instanceof Inventory) {
+                return Response::addMessage('You don\'t have the item in your inventory')->setStatus(400);
+            } else if ($InventoryItem->amount < $amount) {
+                return Response::addMessage('You don\'t have that many in your inventory')->setStatus(400);
             }
 
 
@@ -85,44 +102,44 @@ class StockpileController extends controller
                     ]
                 );
             } else {
-                $new_stockpile_amount = $item_data->amount + $amount;
-                $item_data->amount = $new_stockpile_amount;
-                $item_data->save();
+                $new_stockpile_amount = $StockpileItem->amount + $amount;
+                $StockpileItem->amount = $new_stockpile_amount;
+                $StockpileItem->save();
             }
 
             $adjust_inventory_item_amount = -$amount;
         } else {
 
             if ($matched_stockpile_item === false) {
-                throw new Exception("You don't have that item in your stockpile");
-            } else if ($item_data->amount < $amount) {
-                throw new Exception("You don't have that many in your stockpile");
+                return Response::addMessage('You don\'t have that item in your stockpile')->setStatus(400);
+            } else if ($StockpileItem->amount < $amount) {
+                return Response::addMessage('You don\'t have that many in your stockpile')->setStatus(400);
             }
 
-            $new_stockpile_amount = $item_data->amount - $amount;
-
             // If stockpile item does not exists, create ite
-            if ($new_stockpile_amount === 0) {
-                $item_data->delete();
+            if ($StockpileItem->amount - $amount === 0) {
+                $StockpileItem->delete();
             } else {
-                $item_data->amount = $new_stockpile_amount;
-                $item_data->save();
+                $StockpileItem->amount = $StockpileItem->amount - $amount;
+                $StockpileItem->save();
             }
 
             $adjust_inventory_item_amount = $amount;
         }
-
         // Update inventory
         $this->inventoryService->edit($item, $adjust_inventory_item_amount);
-        $this->getTemplate();
+        $Stockpile = $this->get();
+        $blade = $this->getTemplate([$Stockpile, $stockpile_max_amount]);
+        return Response::addTemplate("stockpile", $blade);
     }
 
-    public function getTemplate()
+    /**
+     *
+     * @param array $bladeData
+     * @return void
+     */
+    public function getTemplate(array $bladeData)
     {
-        $data = array();
-
-        $data['stockpile'] = $this->get();
-        $template = TemplateFetcher::loadTemplate('stockpile', $data);
-        Response::addTemplate("stockpile", $template);
+        return $this->bladeRender->run('components.stockpile.itemList', ['Stockpile' => $bladeData[0], 'max_amount' => $bladeData[1]]);
     }
 }

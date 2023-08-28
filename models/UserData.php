@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $hunger_date
  * @property string $frajrite_items
  * @property string $wujkin_items
+ * @property string $stockpile_max_amount
  * @mixin \Eloquent
  */
 class UserData extends Model

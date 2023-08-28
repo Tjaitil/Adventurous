@@ -14,6 +14,7 @@ import { HUD } from './HUD.js';
 enum Buildings {
     BAKERY = "bakery",
     TRAVELBUREAU = "travelbureau",
+    STOCKPILE = "stockpile",
 }
 
 type BuildingName = `${Buildings}`;
@@ -46,6 +47,9 @@ export const inputHandler: IInputHandler = {
         },
         [Buildings.TRAVELBUREAU]: {
             "script": "travelbureau.js"
+        },
+        [Buildings.STOCKPILE]: {
+            "script": "stockpile.js",
         }
     },
     buildingMatch: <undefined | Building>undefined,
