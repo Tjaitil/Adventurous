@@ -102,5 +102,3 @@ Route::post('/armycamp/healWarrior', [ArmyCampController::class, "healWarrior"])
 Route::get('/userlevels', [UserLevelsController::class, "getLevels"]);
 
 $match = Router::getInstance()->matchRoute($_SERVER['REQUEST_METHOD'], $uri);
-
-echo Response::get();

@@ -15,6 +15,7 @@ class Router
     protected RegisteredRoute $matchedRoute;
     public ?Request $request = null;
     protected ?Request $lastRequest = null;
+    protected mixed $response;
 
     private function __construct()
     {
@@ -110,8 +111,6 @@ class Router
         } else if (!method_exists($this->matchedRoute->getClassName(), $this->matchedRoute->getClassMethodName())) {
             throw new Exception("Method does not exists");
         }
-
-        $this->runRoute();
     }
 
 
@@ -172,7 +171,8 @@ class Router
             if ($matched_route === null) throw new Exception("Not found");
             $this->setMatchedRoute($matched_route);
             $this->checkRoute();
-
+            $this->runRoute();
+            $this->resolveResponse();
             $this->cleanUpAfterRequest();
         } catch (Exception $e) {
             database::getInstance()->rollbackIfTest();
@@ -197,14 +197,14 @@ class Router
         $class_name = $this->matchedRoute->getClassName();
         $class_method = $this->matchedRoute->getClassMethodName();
 
-        $request = $this->getRequest();
+        $this->getRequest();
 
         // Get instance of DepedencyContainer
         $DependencyContainer = DependencyContainer::getInstance();
 
         $class = $DependencyContainer->get($class_name);
 
-        $class->$class_method(...$DependencyContainer->getMethodParameters($class, $class_method));
+        $this->response = $class->$class_method(...$DependencyContainer->getMethodParameters($class, $class_method));
     }
 
 
@@ -288,9 +288,28 @@ class Router
 
 
 
+    /**
+     * Set request to lastRequest
+     * @return void 
+     */
     protected function cleanUpAfterRequest()
     {
         $this->lastRequest = $this->request;
         $this->request = null;
+    }
+
+
+
+    /**
+     * Resolve response returned from controller
+     * @return void 
+     */
+    protected function resolveResponse()
+    {
+        if ($this->response instanceof Response) {
+            echo $this->response->get();
+        } else {
+            \http_response_code(200);
+        }
     }
 }
