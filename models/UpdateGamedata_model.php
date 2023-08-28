@@ -1,4 +1,8 @@
 <?php
+
+/**
+ * @deprecated
+ */
 class UpdateGamedata_model extends model
 {
     use ModelFactory;
