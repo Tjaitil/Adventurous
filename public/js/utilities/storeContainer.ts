@@ -180,7 +180,7 @@ export interface StoreItemResource {
     name: string;
     amount: number
     store_value: number;
-    sell_value: number;
+    merchant_buy_price: number;
     required_items: StoreItemResource[];
     item_multiplier: number;
     adjusted_store_value: number;

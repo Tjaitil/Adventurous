@@ -43,7 +43,7 @@ class MerchantController extends controller
         $this->data['offers'] = MerchantOffer::where('location', $this->sessionService->getCurrentLocation())->get()->toArray();
 
         $this->storeService->makeStore(["list" => $this->data['offers']]);
-        $store_items = $this->storeService->storeBuilder->build()->list;
+        $store_items = $this->storeService->storeBuilder->build()->store_items;
         $offers = $store_items;
         if ($this->locationService->isDiplomacyLocation($this->sessionService->getLocation(), false)) {
             foreach ($store_items as $key => $value) {
@@ -52,7 +52,7 @@ class MerchantController extends controller
                     $this->sessionService->getCurrentLocation()
                 );
 
-                $value->adjusted_store_value = ($adjusted_price < $value->sell_value) ? $value->sell_value : $adjusted_price;
+                $value->adjusted_store_value = ($adjusted_price < $value->merchant_buy_price) ? $value->merchant_buy_price : $adjusted_price;
             }
             $offers = $store_items;
         }
