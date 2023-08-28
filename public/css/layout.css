@@ -260,7 +260,7 @@ footer {
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
 }
-section input:not([type="radio"]):not([type="checkbox"]) {
+section input:not([type="radio"]):not([type="checkbox"]):not(.custom-input) {
     background-color: #e5cdb3;
     padding: 2px 2px 2px 8px;
     margin: 3px;
@@ -349,7 +349,7 @@ section table:not(#game_messages)::after,
 }
 section table:not(#game_messages) > *,
 .div_content > *,
-#inventory > * {
+#inventory > *:not(#stck_menu) {
     position: relative;
     z-index: 1;
 }
