@@ -2,16 +2,10 @@
 
 namespace App\services;
 
-use App\builders\SkillActionBuilder;
-use App\builders\TimeBuilder;
-use App\builders\TraderAssignmentBuilder;
 use App\libs\Response;
 use App\models\Farmer;
-use App\models\FarmerWorkforce;
-use App\models\FarmerWorkforce_model;
-use App\models\MineWorkforce_model;
-use App\models\Trader_model;
-use App\models\TraderAssignment_model;
+use App\models\Miner;
+use App\models\Trader;
 use App\models\Warriors;
 use App\resources\SkillActionResource;
 use App\services\CountdownService;
@@ -26,17 +20,8 @@ use App\services\CountdownService;
 class ProfiencyService
 {
 
-    public $farm_resources = [];
-    public $mine_resources = [];
-    public $traderassignment_resource;
-    public $warrior_statuses = [];
-
     public function __construct(
         private CountdownService $countdownService,
-        private MineWorkforce_model $mineWorkforce_model,
-        private FarmerWorkforce_model $farmerWorkforce_model,
-        private Trader_model $trader_model,
-        private TraderAssignment_model $traderAssignment_model,
         private WarriorService $warriorService,
         private SessionService $sessionService
     ) {
@@ -49,29 +34,26 @@ class ProfiencyService
      */
     public function calculateProfienciesStatuses()
     {
-        $this->calculateFarmerStatus();
-        $this->calculateMinerStatus();
-        $this->calculateTraderStatus();
-        $this->calculateWarriorStatus();
-
-
         return [
-            'farmer_workforce' =>  FarmerWorkforce::where('username', $this->sessionService->getCurrentUsername())->get(),
-            'farmer_countdowns' =>  Farmer::where('username', $this->sessionService->getCurrentUsername())->get(),
-            'farmer_resources' => $this->farm_resources,
-            'miner_resources' => $this->mine_resources,
-            'trader_assignment' =>  $this->traderassignment_resource,
-            'warrior_statuses' => $this->warrior_statuses,
+            'Farmers' => $this->getFarmerData(),
+            'Trader' => $this->getTraderData(),
+            'Miners' => $this->getMinerData(),
+            'warrior_statuses' => $this->calculateWarriorStatus(),
         ];
     }
 
+    /**
+     * 
+     * @return int[][] 
+     */
     private function calculateWarriorStatus()
     {
         $data = $this->warriorService->warriors_model
             ->select('*')
             ->where('username', [$this->sessionService->getCurrentUsername()])
             ->get();
-        $this->warrior_statuses = [
+
+        return [
             'statuses' => [
                 'finished_training' => 0,
                 'training' => 0,
@@ -98,72 +80,37 @@ class ProfiencyService
         }
     }
 
-    private function calculateFarmerStatus()
+    /**
+     * 
+     * @return Collection<Farmer>|null
+     */
+    private function getFarmerData()
     {
-        foreach (\CROP_LOCATIONS as $key => $value) {
-            $data = [
-                'countdown' => "",
-                'workforce' => $this->farmerWorkforce_model->find($value)
-            ];
 
-            $resource_builder = SkillActionBuilder::create($data);
+        $Farmer = Farmer::with(['workforce'])->where('username', $this->sessionService->user())->get();
 
-            $countdown_builder =
-                TimeBuilder::create($data['countdown'])
-                ->setMinutesLeft(
-                    $this->countdownService->getMinutesLeft($resource_builder->build()->countdown->countdown)
-                )
-                ->setIsDatePassed(
-                    $this->countdownService->hasTimestampPassed($resource_builder->build()->countdown->countdown)
-                );
-
-            $resource_builder
-                ->setCountdown($countdown_builder->build())
-                ->setskill(\FARMER_SKILL_NAME);
-            $this->farm_resources[] = $resource_builder->build()->toArray();
-        }
+        return $Farmer;
     }
 
-    private function calculateMinerStatus()
+    /**
+     * 
+     * @return Collection<Miner>|null
+     */
+    private function getMinerData()
     {
-        // foreach (\MINE_LOCATIONS as $key => $value) {
-        //     $data = [
-        //         'countdown' => $this->mineCountdown_model->find($value),
-        //         'workforce' => $this->mineWorkforce_model->find($value)
-        //     ];
-
-        //     $resource_builder = SkillActionBuilder::create(
-        //         $data
-        //     );
-
-        //     $countdown_builder =
-        //         TimeBuilder::create($this->mineCountdown_model->find($value))
-        //         ->setMinutesLeft(
-        //             $this->countdownService->getMinutesLeft($resource_builder->build()->countdown->countdown)
-        //         )
-        //         ->setIsDatePassed(
-        //             $this->countdownService->hasTimestampPassed($resource_builder->build()->countdown->countdown)
-        //         );
-
-        //     $resource_builder
-        //         ->setCountdown($countdown_builder->build())
-        //         ->setskill(\MINER_SKILL_NAME);
-
-        //     $this->mine_resources[] = $resource_builder->build()->toArray();
-        // }
+        return Miner::with(['workforce'])
+            ->where('username', $this->sessionService->user())
+            ->get();
     }
 
-    private function calculateTraderStatus()
+    /**
+     * 
+     * @return Trader|null 
+     */
+    private function getTraderData()
     {
-        $user_trader_data = $this->trader_model->find();
-        $trader_assignment_data = $this->traderAssignment_model->find($user_trader_data['assignment_id']);
-
-        $this->traderassignment_resource = TraderAssignmentBuilder::create(
-            \array_merge(
-                $user_trader_data,
-                $trader_assignment_data
-            )
-        )->build()
-            ->toArray();
+        return Trader::with(['traderAssignment', 'cart'])
+            ->where('username', $this->sessionService->user())
+            ->first();
     }
 }
