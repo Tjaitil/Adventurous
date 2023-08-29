@@ -2,30 +2,30 @@
 
 namespace App\models;
 
-use Exception;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
+
+/**
+ * @property int $id
+ * @property string $username
+ * @property int $workforce_total
+ * @property int $avail_workforce
+ * @property int $golbak
+ * @property int $snerpiir
+ * @property int $efficiency_level
+ * @property Collection<Miner> $miner
+ */
 class MinerWorkforce extends Model
 {
     public $timestamps = false;
 
     public $table = 'miner_workforce';
 
-    /**
-     * 
-     * @param string $location
-     *
-     * @return string
-     * @throws Exception
-     */
-    public static function getLocationTable(string $location)
+    public $guarded = [];
+
+    public function miner()
     {
-        if ($location === 'golbak') {
-            return 'golbak_workforce';
-        } else if ($location === 'snerpiir') {
-            return 'snerpiir_workforce';
-        } else {
-            throw new Exception("Unvalid miner location");
-        }
+        return $this->hasMany(Miner::class, 'username', 'username');
     }
 }
