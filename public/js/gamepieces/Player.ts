@@ -218,34 +218,34 @@ export class Player implements MovingGameObject {
 
     draw() {
         viewport.resetPlayerLayer();
-        this.drawLegs();
-        this.drawBody();
-        this.drawHead();
+        // this.drawLegs();
+        // this.drawBody();
+        // this.drawHead();
 
-        // let drawImage = this.sprite;
-        // let spriteX;
-        // let spriteY;
+        let drawImage = this.sprite;
+        let spriteX;
+        let spriteY;
 
-        // // Determine which image and calculate spriteX and spriteY there after
-        // if (this.combat === true) {
-        //     drawImage = this.spriteAttack;
-        //     spriteX = 41 * this.loopIndex + this.imageFix;
-        //     spriteY = 38 * this.indexY;
-        // } else {
-        //     drawImage = this.sprite;
-        //     spriteX = this.indexX * this.loopIndex;
-        //     spriteY = this.indexY;
-        // }
+        // Determine which image and calculate spriteX and spriteY there after
+        if (this.combat === true) {
+            drawImage = this.spriteAttack;
+            spriteX = 41 * this.loopIndex + this.imageFix;
+            spriteY = 38 * this.indexY;
+        } else {
+            drawImage = this.sprite;
+            spriteX = this.indexX * this.loopIndex;
+            spriteY = this.indexY;
+        }
 
-        // viewport.drawPlayer({
-        //     img: drawImage,
-        //     spriteX,
-        //     spriteY,
-        //     sWidth: 32,
-        //     sHeight: 32,
-        //     width: this.playerSize,
-        //     height: this.playerSize,
-        // });
+        viewport.drawPlayer({
+            img: drawImage,
+            spriteX,
+            spriteY,
+            sWidth: 32,
+            sHeight: 32,
+            width: this.playerSize,
+            height: this.playerSize,
+        });
     }
 
     drawCooldown() {
