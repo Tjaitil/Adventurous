@@ -30,7 +30,7 @@ class BakeryController extends controller
         protected SessionService $sessionService,
         protected StoreDiscountService $storeDiscountService,
     ) {
-        parent::__construct(true);
+        parent::__construct();
     }
 
     /**
@@ -39,7 +39,7 @@ class BakeryController extends controller
      */
     public function index()
     {
-        $this->render('bakery', 'Bakery', ['store_resource' => $this->makeShop()], true, true);
+        $this->render('bakery', 'Bakery', ['store_resource' => $this->makeShop()], true, true, true);
     }
 
     /**

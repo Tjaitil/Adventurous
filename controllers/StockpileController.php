@@ -21,7 +21,7 @@ class StockpileController extends controller
         private SessionService $sessionService,
     ) {
 
-        parent::__construct(true);
+        parent::__construct();
     }
 
     public function index()
@@ -35,7 +35,7 @@ class StockpileController extends controller
         $this->render('stockpile', 'Stockpile', [
             'Stockpile' => $Stockpile,
             'max_amount' => $stockpile_max_amount
-        ], true, true);
+        ], true, true, true);
     }
 
     /**

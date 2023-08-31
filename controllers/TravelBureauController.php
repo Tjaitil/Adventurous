@@ -27,7 +27,7 @@ class TravelBureauController extends controller
         private InventoryService $inventoryService,
         private SessionService $sessionService,
     ) {
-        parent::__construct(true);
+        parent::__construct();
     }
 
     public function index()
@@ -38,7 +38,7 @@ class TravelBureauController extends controller
         $this->render('travelbureau', 'Travel Bureau', [
             'store_resource' => $store_resource,
             'current_cart' => $current_cart
-        ], true, true);
+        ], true, true, true);
     }
 
     /**

@@ -2,16 +2,14 @@
 
 namespace App\controllers;
 
-use App\builders\SkillActionBuilder;
-use App\builders\TimeBuilder;
-use App\builders\WorkforceBuilder;
+use App\enums\GameLocations;
 use App\libs\controller;
 use App\libs\Request;
 use App\libs\Response;
 use App\models\Miner;
 use App\models\Mineral;
+use App\models\MinerPermitCost;
 use App\models\MinerWorkforce;
-use App\services\CountdownService;
 use App\services\HungerService;
 use App\services\InventoryService;
 use App\services\LocationService;
@@ -22,13 +20,8 @@ use Respect\Validation\Validator;
 
 class MineController extends controller
 {
-    public $data = [];
     function __construct(
         private InventoryService $inventoryService,
-        private CountdownService $countdownService,
-        private SkillActionBuilder $skillActionBuilder,
-        private TimeBuilder $countdownBuilder,
-        private WorkforceBuilder $workforceBuilder,
         private SessionService $sessionService,
         private SkillsService $skillsService,
         private HungerService $hungerService,
@@ -36,33 +29,40 @@ class MineController extends controller
     ) {
         parent::__construct();
     }
+
+    /**
+     * 
+     * @return void 
+     */
     public function index()
     {
         $this->getViewData();
-        $this->data['action_items'] = Mineral::all()->sortBy('miner_level')->values();
-        $this->data['workforce_data'] = MinerWorkforce::where('username', $this->sessionService->getCurrentUsername())
+        $data['action_items'] = Mineral::all()->sortBy('miner_level')->values();
+        $data['workforce_data'] = MinerWorkforce::where('username', $this->sessionService->getCurrentUsername())
             ->first()
             ->toArray();
 
-        $this->data['permits'] = Miner::select('permits')->where('username', $this->sessionService->getCurrentUsername())
+        $data['permits'] = Miner::select('permits')->where('username', $this->sessionService->getCurrentUsername())
             ->first()->permits;
 
-        $this->render('mine', 'Mine', $this->data, true, true);
+        $this->render('mine', 'Mine', $data, true, true, true);
     }
 
-
-
+    /**
+     * 
+     * @return Response 
+     */
     public function getViewData()
     {
-        $this->data['minerals'] = Mineral::all()->sortBy('miner_level')->values();
-        $this->data['workforce_data'] = MinerWorkforce::where('username', $this->sessionService->getCurrentUsername())
+        $data['minerals'] = Mineral::all()->sortBy('miner_level')->values();
+        $data['workforce_data'] = MinerWorkforce::where('username', $this->sessionService->getCurrentUsername())
             ->first()
             ->toArray();
 
-        $this->data['permits'] = Miner::select('permits')->where('username', $this->sessionService->getCurrentUsername())
+        $data['permits'] = Miner::select('permits')->where('username', $this->sessionService->getCurrentUsername())
             ->first()->permits;
 
-        return Response::setData($this->data);
+        return Response::setData($data);
     }
 
     /**
@@ -162,10 +162,9 @@ class MineController extends controller
         $Miner->mining_countdown = Carbon::now()->addSeconds($addTime);
         $Miner->save();
 
-        $location_table = MinerWorkforce::getLocationTable($location);
 
         $MinerWorkforce->avail_workforce = $new_workforce_amount;
-        $MinerWorkforce->{$location_table} = $workforce;
+        $MinerWorkforce->{$location} = $workforce;
         $MinerWorkforce->save();
 
         return Response::addMessage("You have started mining for $type")
@@ -195,7 +194,6 @@ class MineController extends controller
         ]);
 
         $location = $this->sessionService->getCurrentLocation();
-        $location_table = MinerWorkforce::getLocationTable($location);
 
         $MinerWorkforce = MinerWorkforce::where('username', $this->sessionService->getCurrentUsername())
             ->first();
@@ -226,8 +224,8 @@ class MineController extends controller
             return Response::addMessage("The mining is not yet finished")->setStatus(422);
         }
 
-        $MinerWorkforce->avail_workforce += $MinerWorkforce->{$location_table};
-        $MinerWorkforce->{$location_table} = 0;
+        $MinerWorkforce->avail_workforce += $MinerWorkforce->{$location};
+        $MinerWorkforce->{$location} = 0;
         $MinerWorkforce->save();
 
         $Miner->mineral_type = null;
@@ -242,48 +240,56 @@ class MineController extends controller
             $this->skillsService
                 ->updateMinerXP($Mineral->experience)
                 ->updateSkills();
-            Response::addMessage("You have finished mining " . $Mineral->mineral_type);
+            return Response::addMessage("You have finished mining " . $Mineral->mineral_type);
         } else {
-            Response::addMessage("You have cancelled mining");
+            return Response::addMessage("You have cancelled mining");
         }
 
         return Response::setData(['avail_workforce' => $MinerWorkforce->avail_workforce])
             ->setStatus(200);
     }
 
-
-
-    private function buyPermits(Request $request)
+    /**
+     * 
+     * @param Request $request 
+     * @return Response
+     */
+    public function buyPermits(Request $request)
     {
-
         $location = $request->getInput('location');
 
         $request->validate([
-            'skill' => Validator::in(GameConstants::MINE_LOCATIONS)
+            'skill' => Validator::in(GameLocations::getMineLocations())
         ]);
 
-        $skill_action_builder = SkillActionBuilder::create(
-            $this->mineCountdown_model->find($location)
-        );
+        $Miner = Miner::where('username', $this->sessionService->user())
+            ->where('location', $location)
+            ->first();
 
-        // TODO: Move this price
-        $price = 200;
-        if (!$this->inventoryService->hasEnoughAmount(GameConstants::CURRENCY, $price)) {
-            return $this->inventoryService->logNotEnoughAmount(GameConstants::CURRENCY);
+        if (!$Miner instanceof Miner) {
+            return Response::addMessage("Unvalid miner")->setStatus(422);
         }
 
-        $this->inventoryService->edit(GameConstants::CURRENCY, $price);
 
+        $MinerPermitCost = MinerPermitCost::where('location', $location)
+            ->first();
 
-        $skill_action_resource = $skill_action_builder
-            ->incrementPermits(50)
-            ->build();
+        if (!$MinerPermitCost instanceof MinerPermitCost) {
+            return Response::addMessage("Unvalid location")->setStatus(422);
+        }
 
-        $this->mineCountdown_model->updatePermits($skill_action_resource->permits);
+        if (!$this->inventoryService->hasEnoughAmount(\CURRENCY, $MinerPermitCost->permit_cost)) {
+            return $this->inventoryService->logNotEnoughAmount(\CURRENCY);
+        }
 
-        Response::addMessage(\sprintf("You bought 50 permits for %s", [$location]))
+        $this->inventoryService->edit(\CURRENCY, $MinerPermitCost->permit_cost);
+
+        $Miner->permits += $MinerPermitCost->permit_amount;
+        $Miner->save();
+
+        return Response::addMessage(\sprintf("You bought 50 permits for %s", [$location]))
             ->setData([
-                'newPermits' => $skill_action_resource->permits
+                'newPermits' => $Miner->permits
             ]);
     }
 }
