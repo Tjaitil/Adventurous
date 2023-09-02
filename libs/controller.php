@@ -2,49 +2,41 @@
 
 namespace App\libs;
 
-use eftec\bladeone\BladeOne;
+use Jenssegers\Blade\Blade;
 
 
 class controller
 {
     protected $model;
     protected $controller;
-    protected BladeOne $bladeRender;
+    protected Blade $viewEngine;
     public $viewBlade = false;
 
-    public function __construct($viewBlade = false)
+    public function __construct()
     {
-        $this->viewBlade = $viewBlade;
-        $this->bootBladeRendering();
+        $this->bootViewEngine();
     }
 
 
-
-    public function bootBladeRendering()
+    /**
+     * Boot the blade rendering engine
+     * 
+     * @return void 
+     */
+    public function bootViewEngine()
     {
         $views = ROUTE_ROOT . 'views';
         $cache = ROUTE_ROOT . 'cache';
-        $this->bladeRender = new BladeOne($views, $cache, BladeOne::MODE_DEBUG); // MODE_DEBUG allows to pinpoint troubles.
-
-        $this->bladeRender->directiveRT('class', function ($expression) {
-
-            $classes = [];
-            foreach ($expression as $key => $value) {
-                if (\is_numeric($key)) {
-                    $classes[] = $value;
-                } elseif ($value == true) {
-                    $classes[] = $key;
-                }
-            }
-            echo "class=\"" . implode(' ', $classes) . "\"";
-        });
+        $viewEngine = new ViewEngine($views, $cache);
+        $this->viewEngine = $viewEngine->get();
     }
 
 
 
     // Render site
-    public function render($name, $title, $data, $up = false, $ajax = false)
+    public function render($name, $title, $data, bool $up = false, bool $ajax = false, bool $useBlade = false)
     {
+        $this->viewBlade = $useBlade;
         foreach ($data as $key => $value) {
             ${"$key"} = $value;
         }
@@ -58,7 +50,7 @@ class controller
         } else {
             $data['title'] = $title;
             if ($this->viewBlade) {
-                echo $this->bladeRender->run($name, $data);
+                echo $this->viewEngine->render($name, $data);
             } else {
                 require(constant('ROUTE_ROOT') . constant('ROUTE_VIEW') . $name . '.php');
             }
