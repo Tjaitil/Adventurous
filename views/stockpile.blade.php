@@ -1,13 +1,11 @@
 <h1 class="page_title">{{ $title }}</h1>
 <div id="stockpile">
-    @component('components.help')
+    <x-help>
         Click on items to withdraw or insert items into the stockpile. <br>
         When selecting custom amount press enter to submit.
-    @endcomponent
+    </x-help>
     <div id="stockpile-list">
-        @component('components.stockpile.itemList')
-        @endcomponent
+        <x-stockpile.itemList :stockpile="$Stockpile" :max-amount="$max_amount" />
     </div>
-    @component('components.stockpile.stockpileMenu')
-    @endcomponent
+    <x-stockpile.stockpileMenu />
 </div>

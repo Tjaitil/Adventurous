@@ -112,7 +112,7 @@ const stockpileModule = {
 		}
 
 		AdvApi.post<UpdateStockpileRequest>("/stockpile/update", data).then((res) => {
-			document.getElementById("stockpile").innerHTML = res.html.stockpile;
+			document.getElementById("stockpile-list").innerHTML = res.html.stockpile;
 			document.getElementById("stck_menu").style.visibility = "hidden";
 
 			stckMenuInput.value = "";
@@ -208,8 +208,9 @@ const stockpileModule = {
 		this.removeEvent();
 		let menu = document.getElementById("stck_menu");
 		// If menu is visible remove it
-		if (menu)
+		if (menu) {
 			menu.parentElement.removeChild(document.getElementById("stck_menu"));
+		}
 	},
 };
 export { stockpileModule as default };

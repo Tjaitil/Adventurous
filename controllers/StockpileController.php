@@ -12,6 +12,7 @@ use Respect\Validation\Validator;
 use App\services\InventoryService;
 use App\models\UserData;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Blade;
 
 class StockpileController extends controller
 {
@@ -136,10 +137,10 @@ class StockpileController extends controller
     /**
      *
      * @param array $bladeData
-     * @return void
+     * @return string
      */
     public function getTemplate(array $bladeData)
     {
-        return $this->bladeRender->run('components.stockpile.itemList', ['Stockpile' => $bladeData[0], 'max_amount' => $bladeData[1]]);
+        return Blade::render('components.stockpile.itemList', ['stockpile' => $bladeData[0], 'max_amount' => $bladeData[1]]);
     }
 }
