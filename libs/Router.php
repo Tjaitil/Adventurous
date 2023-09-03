@@ -135,7 +135,7 @@ class Router
      * @param string $method request Method
      * @param string $uri request uri
      *
-     * @return void
+     * @return bool
      */
     public function matchRoute(string $method, string $uri)
     {
@@ -176,7 +176,7 @@ class Router
             $this->cleanUpAfterRequest();
         } catch (Exception $e) {
             database::getInstance()->rollbackIfTest();
-            return Response::addMessage($e->getMessage())->setStatus(404);
+            echo Response::addMessage($e->getMessage())->setStatus(404)->get();
         }
 
         return $matched_route !== null ? true : false;
