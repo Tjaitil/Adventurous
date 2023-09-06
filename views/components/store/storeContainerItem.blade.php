@@ -1,39 +1,33 @@
+@props(['item'])
 @php
     /**
-     * @param StoreItemResource $key
+     * @param StoreItemResource $item
      */
 @endphp
 <div
-    class="store-container-item relative flex flex-row gap-3 p-4 cursor-pointer 
-            border-b-2 border-primary-400 last:border-0">
-    @component('components.item', [
-        'name' => $key->name,
-        'show_tooltip' => false,
-        'show_amount' => false,
-        'amount' => 1,
-    ])
-    @endcomponent
-    <div class="flex flex-row justify-between items-center grow">
-        <p class="flex flex-row justify-center items-center">
+    class="store-container-item relative flex cursor-pointer flex-row gap-3 border-b-2 border-primary-400 p-4 last:border-0">
+    <x-item :name="$item->name" :show-tooltip="false" :show-amount="false"
+        :id="$item->id" />
+    <div class="flex grow flex-row items-center justify-between">
+        <p class="flex flex-row items-center justify-center">
             <span>
                 <span @class([
                     'store-container-item-price',
-                    'line-through' => $key->adjusted_difference > 0,
+                    'line-through' => $item->adjusted_difference > 0,
                     'mr-2',
                 ])>
-                    {{ $key->store_value }}
+                    {{ $item->store_value }}
                 </span>
-                @if ($key->adjusted_difference > 0)
+                @if ($item->adjusted_difference > 0)
                     <span class="able-color">
-                        {{ $key->adjusted_store_value }}
+                        {{ $item->adjusted_store_value }}
                     </span>
                 @endif
             </span>
-            @component('components.goldIcon')
-            @endcomponent
+            <x-goldIcon />
         </p>
-        @if ($key->amount > -1)
-            <span>x {{ $key->amount }}</span>
+        @if ($item->amount > -1)
+            <span>x {{ $item->amount }}</span>
         @endif
     </div>
 </div>

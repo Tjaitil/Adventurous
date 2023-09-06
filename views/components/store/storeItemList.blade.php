@@ -1,16 +1,12 @@
+@props(['store-items'])
 @php
     /**
-     * @param StoreItemResource[] $store_items
+     * @param StoreItemResource[] $storeItems
      */
 @endphp
 <div id="store-container-item-list"
-    class="pb-05 basis-2/5 flex flex-column overflow-y-scroll min-[336px]
-            border-r-2 border-primary-400">
-    @foreach ($store_items as $key)
-        @component('components.store.storeContainerItem', [
-            'key' => $key,
-            'options' => $options,
-        ])
-        @endcomponent
+    class="pb-05 flex-column min-[336px] flex basis-2/5 overflow-y-scroll border-r-2 border-primary-400">
+    @foreach ($storeItems as $key)
+        <x-store.storeContainerItem :item="$key" />
     @endforeach
 </div>
