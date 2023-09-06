@@ -1,10 +1,11 @@
+@props(['is-active', 'notice-text'])
 @php
     /**
-     * @property bool $is_active
-     * @property string $notice_text
+     * @property bool $isActive
+     * @property string $noticeText
      */
 @endphp
 
-@if ($is_active)
-    <span class="text-green-700">{{ $notice_text }}</span>
+@if ($isActive)
+    <span class="text-green-700">{{ $noticeText }}</span>
 @endif
