@@ -1,9 +1,11 @@
+@props(['id' => null, 'text'])
 @php
     /**
-     * @param string $id
+     * @param int $id
      * @param string $text
      */
 @endphp
-<button @if ($id) id="{{ $id }}" @endif class="hover:bg-primary-200 cursor-pointer">
+<button id="{{ $id }}"
+    {{ $attributes->merge(['class' => 'cursor-pointer hover:bg-primary-200']) }}>
     {{ $text }}
 </button>

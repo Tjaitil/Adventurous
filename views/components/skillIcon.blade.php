@@ -1,15 +1,19 @@
+@props(['skill', 'level', 'has-required-level' => true, 'show-able-color' => true, 'size' => 'small'])
 @php
     /**
      * @param string $skill
      * @param int $level
-     * @param bool $has_required_level
-     * @param bool $show_able_color
+     * @param bool $hasRequiredLevel
+     * @param bool $showAbleColor
+     * @param string $size
      */
 @endphp
 <p @class([
-    'not-able-color' => !$has_required_level && $show_able_color,
-    'able-color' => $has_required_level && $show_able_color,
+    'not-able-color' => !$hasRequiredLevel && $showAbleColor,
+    'able-color' => $hasRequiredLevel && $showAbleColor,
+    'text-center',
 ])>
-    <img class="mx-auto w-8 h-8" src="{{ constant('ROUTE_IMG') . strtolower($skill) . ' icon.png' }}" />
+    <img {{ $attributes->class(['mx-auto', $size === 'medium' ? 'w-12 h-12' : 'w-8 h-8']) }}
+        src="{{ constant('ROUTE_IMG') . strtolower($skill) . ' icon.png' }}" />
     {{ $level }}
 </p>
