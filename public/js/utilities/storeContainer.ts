@@ -21,7 +21,11 @@ const storeContainer = {
         this.requirementsWrapper = document.getElementById("store-container-item-requirements");
         this.itemInformationWrapper = document.getElementById("store-container-item-information");
         this.skillRequirementsWrapper = document.querySelectorAll("#store-container-item-selected .skill-requirements")[0] as HTMLElement;
-        this.doTradeButton = document.getElementById("store-container-item-event-button") as HTMLButtonElement;
+        if (document.getElementById("store-container-item-event")) {
+            this.doTradeButton = document.getElementById("store-container-item-event");
+        } else {
+            this.doTradeButton = document.getElementById("store-container-item-trade-button");
+        }
         this.SelectedTradeContainer = document.getElementById("store-container-do-trade");
         this.noTradeSelectedWrapper = document.getElementById("store-container-no-trade-selected");
         this.storeItemList = document.getElementById("store-container-item-list");
