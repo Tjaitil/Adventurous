@@ -1,4 +1,4 @@
-@props(['id', 'currentValue', 'maxValue'])
+@props(['id', 'current-value', 'max-value'])
 @php
     /**
      * @param string $id

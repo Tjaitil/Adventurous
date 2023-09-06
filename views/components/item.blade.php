@@ -1,4 +1,4 @@
-@props(['name', 'amount', 'show_tooltip' => true, 'show_amount' => true, 'id' => null])
+@props(['name', 'amount', 'show-tooltip' => true, 'show-amount' => true, 'id' => null])
 @php
     /**
      * @param string $name
@@ -19,7 +19,7 @@
             {{ ucwords($name) }}
         </figcaption>
         @if ($showAmount)
-            <span @class(['item_amount'])>{{ $amount }}</span>
+            <span class="item_amount">{{ $amount }}</span>
         @endif
     </figure>
 </div>

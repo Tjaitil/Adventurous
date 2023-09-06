@@ -56,7 +56,7 @@
             <div class="grid-cols grid gap-4 px-2">
                 <div class="col-span-2">
                     <x-item :name="$Trader->traderAssignment->cargo" :show-tooltip="false"
-                        :show_toolip="false" :show-amount="false" />
+                        :show-toolip="false" :show-amount="false" />
                 </div>
                 <div>
                     Route<br>
