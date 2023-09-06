@@ -39,6 +39,7 @@ class AdvclientController extends controller
             'advclient',
             "",
             [
+                'username' => $this->sessionService->getCurrentUsername(),
                 'location' => $user_data['location'],
                 'levels' => UserLevels::where('username', $this->sessionService->getCurrentUsername())->first()->toArray(),
                 'profiency' => $user_data['profiency'],
