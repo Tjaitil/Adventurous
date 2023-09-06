@@ -21,7 +21,7 @@
         <?php endif; ?>
         <?php
         if ($this->viewBlade) {
-            echo $this->bladeRender->run($name, $data);
+            echo $this->viewEngine->render($name, $data);
         } else {
             require(constant('ROUTE_VIEW') . $name . '.php');
         }
@@ -29,7 +29,10 @@
     </section>
     <?php if (array_search($name, array("gameguide", "profile", "error", "main", "highscores", "news", "messages")) === false) : ?>
         <aside class="col-span-1 col-start-1 row-start-2">
-            <?php require(constant('ROUTE_VIEW') . '/aside.php'); ?>
+
+            <?php
+            echo $this->viewEngine->render('sidebar', $data);
+            ?>
         </aside>
     <?php endif; ?>
     <footer class="col-span-5 col-start-2 row-start-3">

@@ -6,7 +6,7 @@ window.addEventListener("load", () => {
     );
 });
 
-export async function getSkillXp(skill: string) {
+export function getSkillXp(skill: string) {
     const skillDivs = {
         adventurer: 0,
         farmer: 1,
@@ -31,4 +31,9 @@ export async function getSkillXp(skill: string) {
         tooltips.forEach(element => element.style.visibility = "hidden");
         currentTooltip.style.visibility = "visible";
     }
+}
+
+export function hideAllSkillTooltips() {
+    let tooltips = <HTMLElement[]>[...document.getElementById("skill-levels-container").querySelectorAll(".skill_tooltip")];
+    tooltips.forEach(element => element.style.visibility = "hidden");
 }
