@@ -5,7 +5,8 @@
      * @var \App\models\Trader $Trader
      */
 @endphp
-<div id="trader_assignments_container " class="grid grid-cols-[repeat(auto-fit,_180px)] gap-4 justify-center">
+<div id="trader_assignments_container "
+    class="grid grid-cols-[repeat(auto-fit,_180px)] justify-center gap-4">
     @forelse ($Assignments as $value)
         @php
             $has_required_level = $trader_level >= $value->type->required_level;
@@ -17,12 +18,8 @@
             'div_content_dark',
             'grayscale-[60%]' => $not_current_location || !$has_required_level,
         ])>
-            <div class="flex justify-center items-center gap-2 mb-2">
-                @component('components.item', [
-                    'name' => $value->cargo,
-                    'show_tooltip' => false,
-                ])
-                @endcomponent
+            <div class="mb-2 flex items-center justify-center gap-2">
+                <x-item :name="$value->cargo" :show-tooltip="false" :show-amount="false" />
                 <span class="align-middle">
                     {{ ' X ' . $value->assignment_amount }}
                 </span>
@@ -30,17 +27,12 @@
             <p @class(['not-able-color' => $not_current_location])>
                 {{ ucfirst($value->base) . ' ' . '->' . ' ' . ucfirst($value->destination) }}
             </p>
-            @component('components.skillIcon', [
-                'skill' => \App\Enums\SkillNames::TRADER->value,
-                'show_able_color' => true,
-                'level' => $value->type->required_level,
-                'has_required_level' => $has_required_level,
-            ])
-            @endcomponent
+            <x-skillIcon :skill="\App\Enums\SkillNames::TRADER->value" :show-able-color="true" :level="$value->type->required_level"
+                :has-required-level="$has_required_level" />
             <p>
                 {{ ucwords($value->assignment_type) }}
             </p>
-            <span class="hidden trader_assignment_id">{{ $value->id }}</span>
+            <span class="trader_assignment_id hidden">{{ $value->id }}</span>
         </div>
     @empty
         <p>No assignments</p>
