@@ -39,7 +39,7 @@
             </div>
             <div id="trader_assignments">
                 <?php
-                echo $this->bladeRender->run('templates.traderAssignment_tpl', ['CurrentAssignment' => $CurrentAssignment, 'Trader' => $Trader]);
+                echo $this->viewEngine->render('templates.traderAssignment_tpl', ['CurrentAssignment' => $CurrentAssignment, 'Trader' => $Trader]);
                 ?>
                 <p id="trader_assignments_countdown">New trader assignments in <span id="trader_assignments_countdown_time"></span></p>
                 <h3 class="text-lg">Select your assignment below. Greyed out assignments are locked</h3>
@@ -48,7 +48,7 @@
                     <button type="button" id="start_trader_assignment" class="mt-1 mb-1">Do Assigment</button>
                     <div id="trader_assignments_container ">
                         <?php
-                        echo $this->bladeRender->run('templates.traderAssignments_tpl', ['Assignments' => $CurrentLocationAssignments, 'current_location' => $current_location, 'trader_level' => $trader_level]);
+                        echo $this->viewEngine->render('templates.traderAssignments_tpl', ['Assignments' => $CurrentLocationAssignments, 'current_location' => $current_location, 'trader_level' => $trader_level]);
                         ?>
                     </div>
                 </div>
@@ -56,7 +56,7 @@
                     <h3 class="font-bold">Assignments available in other locations</h3>
                     <div id="trader_assignments_container">
                         <?php
-                        echo $this->bladeRender->run('templates.traderAssignments_tpl', ['Assignments' => $OtherAssignments, 'current_location' => $current_location, 'trader_level' => $trader_level]);
+                        echo $this->viewEngine->render('templates.traderAssignments_tpl', ['Assignments' => $OtherAssignments, 'current_location' => $current_location, 'trader_level' => $trader_level]);
                         ?>
                     </div>
                 </div>
