@@ -31,13 +31,13 @@ const merchantModule = {
         let data = "model=Merchant" + "&method=getOffers";
 
         // TODO: Fix api endpoint
-        AdvApi.get<advAPIResponse>('/').then((response) => {
-            if (response.html['store'] !== undefined) {
-                document.getElementById("merchant-offer-list").innerHTML = response.html['store'];
-                this.addMerchantEvents();
-                this.resetStockTimer();
-            }
-        })
+        // AdvApi.get<advAPIResponse>('/').then((response) => {
+        //     if (response.html['store'] !== undefined) {
+        //         document.getElementById("merchant-offer-list").innerHTML = response.html['store'];
+        //         this.addMerchantEvents();
+        //         this.resetStockTimer();
+        //     }
+        // })
     },
     resetStockTimer() {
         clearTimeout(this.stockTimerId);
@@ -51,24 +51,24 @@ const merchantModule = {
         let data = "&model=Merchant" + "&method=getMerchantCountdown";
 
         // TODO: Fix api endpoint
-        AdvApi.get('/').then((response) => {
-            let responseText = response[1];
-            let endTime = (parseInt(responseText.date) + 14400) * 1000;
-            let x = setInterval(() => {
-                let { remainder, hours, minutes, seconds } = countdown.calculate(endTime);
-                if (document.getElementById("trades_countdown_time") == null) {
-                    clearInterval(x);
-                }
-                else if (remainder < 1) {
-                    document.getElementById("trades_countdown_time").innerHTML = "0";
-                    this.updateStock();
-                    clearInterval(x);
-                }
-                else {
-                    document.getElementById("trades_countdown_time").innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
-                }
-            });
-        });
+        // AdvApi.get('/').then((response) => {
+        //     let responseText = response[1];
+        //     let endTime = (parseInt(responseText.date) + 14400) * 1000;
+        //     let x = setInterval(() => {
+        //         let { remainder, hours, minutes, seconds } = countdown.calculate(endTime);
+        //         if (document.getElementById("trades_countdown_time") == null) {
+        //             clearInterval(x);
+        //         }
+        //         else if (remainder < 1) {
+        //             document.getElementById("trades_countdown_time").innerHTML = "0";
+        //             this.updateStock();
+        //             clearInterval(x);
+        //         }
+        //         else {
+        //             document.getElementById("trades_countdown_time").innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
+        //         }
+        //     });
+        // });
     },
     addMerchantEvents() {
         let trades = document.getElementById("trades").querySelectorAll(".merchant-offer");
@@ -183,17 +183,17 @@ const merchantModule = {
         };
 
         // TODO: Fix url
-        AdvApi.post('/', data).then((response) => {
-            // TODO: Fix this after diplomacy is fixed
-            // updateDiplomacyTab();
-            Inventory.update();
-            this.updateStoreList(response.html['store'] ?? "");
+        // AdvApi.post('/', data).then((response) => {
+        //     // TODO: Fix this after diplomacy is fixed
+        //     // updateDiplomacyTab();
+        //     Inventory.update();
+        //     this.updateStoreList(response.html['store'] ?? "");
 
-            this.updateStockCountdown(true);
-            document.getElementById("selected_trade").innerHTML = "";
-            document.getElementById("trade_price").querySelectorAll("span")[0].innerHTML = "";
-            amountElement.value = "0";
-        })
+        //     this.updateStockCountdown(true);
+        //     document.getElementById("selected_trade").innerHTML = "";
+        //     document.getElementById("trade_price").querySelectorAll("span")[0].innerHTML = "";
+        //     amountElement.value = "0";
+        // })
     },
     updateStoreList(content: string) {
         document.getElementById("merchant-offer-list").innerHTML = content;
