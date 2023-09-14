@@ -39,7 +39,7 @@ class WorldLoaderController extends controller
      *
      * @param Request $request
      *
-     * @return void
+     * @return Response
      */
     public function changeMap(Request $request)
     {
@@ -105,6 +105,8 @@ class WorldLoaderController extends controller
         $UserData->save();
 
         $this->loadWorld();
+
+        return Response::setStatus(200);
     }
 
 
