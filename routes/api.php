@@ -35,9 +35,9 @@ Route::get('/inventory', [InventoryController::class, "get"]);
 Route::get('/inventory/prices', [InventoryController::class, "getPrices"]);
 
 Route::post('/crops/start', [CropsController::class, "growCrops"]);
-Route::post('/crops/end', [CropsController::class, "updateCrops"]);
+Route::post('/crops/end', [CropsController::class, "harvestCrops"]);
 Route::post('/crops/generate', [CropsController::class, "generateSeed"]);
-Route::get('/crops/data', [CropsController::class, "getData"]);
+Route::get('/crops/data', [CropsController::class, "getViewData"]);
 Route::get('/crops/countdown', [CropsController::class, "getCountdown"]);
 
 Route::get('/mine/countdown', [MineController::class, "getCountdown"]);
