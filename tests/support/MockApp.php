@@ -3,17 +3,12 @@
 namespace App\tests\support;
 
 use App\libs\App;
-use App\libs\database;
-use App\models\UserData;
 use Dotenv\Dotenv;
 
 trait MockApp
 {
+    use SessionTrait;
     public static $isConfigured = false;
-    public static $username = "";
-    public static $user_id = 0;
-
-
 
     /**
      * 
@@ -31,9 +26,7 @@ trait MockApp
 
         require('root/routes.php');
         App::getInstance()->boot();
-
+        self::initializeUser($_ENV['TEST_USERNAME']);
         self::$isConfigured = true;
-        self::$username = $_ENV['TEST_USER'];
-        self::$user_id = UserData::where('username', self::$username)->first()->id ?? 0;
     }
 }

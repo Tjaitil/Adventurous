@@ -10,7 +10,7 @@ class session
     {
         session_start();
         if (App::getInstance()->getIsMocking()) {
-            $_SESSION['username'] = $_ENV['TEST_USER'];
+            $_SESSION['username'] = $_ENV['TEST_USERNAME'];
         }
     }
     public function setSession($username, $loggedin)
