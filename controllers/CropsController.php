@@ -2,7 +2,6 @@
 
 namespace App\controllers;
 
-use App\builders\SkillActionBuilder;
 use App\libs\controller;
 use App\libs\Request;
 use App\libs\Response;
@@ -25,7 +24,6 @@ class CropsController extends controller
     function __construct(
         private InventoryService $inventoryService,
         private CountdownService $countdownService,
-        private SkillActionBuilder $skillActionBuilder,
         private SessionService $sessionService,
         private HungerService $hungerService,
         private SkillsService $skillsService,
@@ -36,19 +34,19 @@ class CropsController extends controller
 
     public function index()
     {
-        $this->data['action_items'] = Crop::all();
+        $this->data['action_items'] = Crop::all()->sortBy('farmer_level');
         $this->data['workforce_data'] = FarmerWorkforce::where('username', $this->sessionService->getCurrentUsername())
             ->first()
             ->toArray();
 
-        $this->render('crops', 'Crops', $this->data, true, true);
+        $this->render('crops', 'Crops', $this->data, true, true, true);
     }
 
     /**
      *
      * @return Response
      */
-    public function getData()
+    public function getViewData()
     {
         $this->data['crops'] = Crop::all();
         $this->data['workforce_data'] = FarmerWorkforce::where('username', $this->sessionService->getCurrentUsername())->first();
@@ -73,10 +71,12 @@ class CropsController extends controller
             ->where('location', $this->sessionService->getCurrentLocation())
             ->first();
 
-        $farmerResource = [
-            ...$Farmer->toArray(),
-            'crop_countdown' => $Farmer->crop_countdown->timestamp,
-        ];
+        if ($Farmer instanceof Farmer) {
+            $farmerResource = [
+                ...$Farmer->toArray(),
+                'crop_finishes_at' => $Farmer->crop_finishes_at->timestamp,
+            ];
+        }
 
         return Response::setData($Farmer ? $farmerResource : []);
     }
@@ -93,7 +93,7 @@ class CropsController extends controller
     public function growCrops(Request $request)
     {
         // Get data and validate
-        $crop_type = $request->getInput('crop_type');
+        $crop_type = strtolower($request->getInput('crop_type'));
         $workforce = $request->getInput('workforce_amount');
 
         $request->validate([
@@ -114,52 +114,63 @@ class CropsController extends controller
             ->where('location', $location)
             ->first();
 
-        $CropData = Crop::where('crop_type', $crop_type)->first();
+        if (!$Farmer instanceof Farmer) {
+            return Response::addMessage("Unvalid Farmer location")->setStatus(422);
+        }
 
-        $WorkforceData = FarmerWorkforce::where('username', $this->sessionService->getCurrentUsername())->first();
+        $Crop = Crop::where('crop_type', $crop_type)->first();
 
         // Check if crop is correct
-        if (\is_null($CropData)) {
+        if (!$Crop instanceof Crop) {
             return Response::addMessage('Unvalid crop')->setStatus(422);
-        } else if ($CropData->location !== $location) {
+        } else if ($Crop->location !== $location) {
             return Response::addMessage('You are in the wrong location to grow this crop')->setStatus(422);
+        }
+
+        $FarmerWorkforce = FarmerWorkforce::where('username', $this->sessionService->getCurrentUsername())->first();
+        if (!$FarmerWorkforce instanceof FarmerWorkforce) {
+            return Response::addMessage("Something unexpected happeneded. Please try again")->setStatus(422);
         }
 
         if ($Farmer->crop_type) {
             return Response::addMessage("Your previous crops are not finished growing yet")->setStatus(422);
         }
 
-
-        if (!$this->inventoryService->hasEnoughAmount($CropData->seed_item, $CropData->seed_required)) {
+        if (!$this->inventoryService->hasEnoughAmount($Crop->seed_item, $Crop->seed_required)) {
             return Response::addMessage("You don't have any seed to grow")->setStatus(422);
         }
 
         // Check if user has the specified workforce
         if (
-            $WorkforceData->avail_workforce < $workforce
+            $FarmerWorkforce->avail_workforce < $workforce
         ) {
             return Response::addMessage("You don't have enough workers ready")->setStatus(422);
         }
 
         // Calculate new countdown
-        $workforce_reduction = ($CropData->time) * ($workforce * 0.005);
-        $base_reduction = $CropData->time * ($WorkforceData->efficiency_level * 0.01);
-        $addTime = $CropData->time - $workforce_reduction - $base_reduction;
+        $workforce_reduction = ($Crop->time) * ($workforce * 0.005);
+        $base_reduction = $Crop->time * ($FarmerWorkforce->efficiency_level * 0.01);
+        $addTime = $Crop->time - $workforce_reduction - $base_reduction;
 
         $new_countdown = Carbon::now()->addSeconds($addTime);
 
-        $location_table = $location . "_workforce";
+        $new_workforce_amount = $FarmerWorkforce->avail_workforce - $workforce;
+        $FarmerWorkforce->$location = $workforce;
+        $FarmerWorkforce->avail_workforce = $new_workforce_amount;
+        $FarmerWorkforce->save();
 
-        $WorkforceData->{$location_table} = $workforce;
-        $WorkforceData->avail_workforce -= $workforce;
-        $WorkforceData->save();
-
-        $Farmer->crop_countdown = $new_countdown;
+        $Farmer->crop_finishes_at = $new_countdown;
         $Farmer->crop_type = $crop_type;
         $Farmer->save();
 
-        $this->inventoryService->edit($CropData->seed_item, -$CropData->seed_required);
-        return Response::addMessage("You have started growing $crop_type")->setStatus(200);
+        $this->inventoryService->edit($Crop->seed_item, -$Crop->seed_required);
+        return Response::addMessage("You have started growing $crop_type")
+            ->setData([
+                'avail_workforce' => $new_workforce_amount,
+                'new_hunger' => $this->hungerService->getCurrentHunger(),
+            ])
+
+            ->setStatus(200);
     }
 
 
@@ -171,7 +182,7 @@ class CropsController extends controller
      *
      * @return Response
      */
-    public function updateCrops(Request $request)
+    public function harvestCrops(Request $request)
     {
 
         $is_cancelling = $request->getInput('is_cancelling');
@@ -189,20 +200,31 @@ class CropsController extends controller
             ->where('location', $location)
             ->first();
 
-        if (in_array($Farmer->crop_type, [null, "", "none"])) {
+        if (!$Farmer instanceof Farmer) {
+            return Response::addMessage("Unvalid Farmer location")->setStatus(422);
+        }
+        if (\is_null($Farmer->crop_type)) {
             return Response::addMessage("You don't have any crops growing")->setStatus(422);
         }
         $Crop = Crop::where('crop_type', $Farmer->crop_type)->first();
 
+        if (!$Crop instanceof Crop) {
+            return Response::addMessage("Unvalid crop")->setStatus(422);
+        }
+
         $Workforce = FarmerWorkforce::where('username', $this->sessionService->getCurrentUsername())->first();
 
+        if (!$Workforce instanceof FarmerWorkforce) {
+            return Response::addMessage("Something unexpected happeneded. Please try again")->setStatus(422);
+        }
+
         if (
-            Carbon::now()->isAfter($Farmer->crop_countdown) &&
+            Carbon::now()->isAfter($Farmer->crop_finishes_at) &&
             $Farmer->crop_type &&
             $is_cancelling
         ) {
             return Response::addMessage("Why destroy crops that is finished")->setStatus(422);
-        } else if (!Carbon::now()->isAfter($Farmer->crop_countdown) && !$is_cancelling) {
+        } else if (!Carbon::now()->isAfter($Farmer->crop_finishes_at) && !$is_cancelling) {
             return Response::addMessage("Growing of crops is not finished yet")->setStatus(422);
         }
 
@@ -220,12 +242,12 @@ class CropsController extends controller
         $Farmer->crop_type = null;
         $Farmer->save();
 
-        $Workforce->avail_workforce += $Workforce->{$location . "_workforce"};
-        $Workforce->{$location . "_workforce"} = 0;
+        $Workforce->avail_workforce += $Workforce->{$location};
+        $Workforce->{$location} = 0;
         $Workforce->save();
 
         return Response::addMessage("You have harvested $amount $Farmer->crop_type")
-            ->setData(['available_workforce' => $Workforce->avail_workforce])
+            ->setData(['avail_workforce' => $Workforce->avail_workforce])
             ->setStatus(200);
     }
 
@@ -246,8 +268,6 @@ class CropsController extends controller
             'item' => Validator::stringVal()->notEmpty(),
             'amount' => Validator::intVal()->min(1),
         ]);
-
-
 
         $CropData = Crop::where('crop_type', $item)->first();
 

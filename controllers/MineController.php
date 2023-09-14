@@ -76,10 +76,10 @@ class MineController extends controller
             ->where('location', $this->sessionService->getCurrentLocation())
             ->first();
 
-        if (!is_null($Miner)) {
+        if ($Miner instanceof Miner) {
             $minerResource = [
                 ...$Miner->toArray(),
-                'mining_countdown' => $Miner->mining_countdown->timestamp,
+                'mining_finishes_at' => $Miner->mining_finishes_at->timestamp,
             ];
         }
 
@@ -96,9 +96,8 @@ class MineController extends controller
      */
     public function start(Request $request)
     {
-        $type = $request->getInput('mineral_ore');
+        $type = strtolower($request->getInput('mineral_ore'));
         $workforce = $request->getInput('workforce_amount');
-
         $request->validate([
             'mineral_ore' => Validator::stringVal()->notEmpty(),
             'workforce_amount' => Validator::intVal()->min(1)
@@ -116,7 +115,7 @@ class MineController extends controller
         $Mineral = Mineral::where('mineral_ore', $type)
             ->first();
 
-        if (is_null($Mineral)) {
+        if (!$Mineral instanceof Mineral) {
             return Response::addMessage('Unvalid mineral')->setStatus(422);
         } else if ($Mineral->location !== $location) {
             return Response::addMessage("You are in the wrong location to mine this mineral")->setStatus(422);
@@ -128,10 +127,14 @@ class MineController extends controller
             ->where('location', $location)
             ->first();
 
+        if (!$Miner instanceof Miner) {
+            return Response::addMessage('Unvalid miner')->setStatus(422);
+        }
+
         $MinerWorkforce = MinerWorkforce::where('username', $this->sessionService->getCurrentUsername())
             ->first();
 
-        if (is_null($MinerWorkforce)) {
+        if (!$MinerWorkforce instanceof MinerWorkforce) {
             return Response::addMessage('Unvalid miner location')->setStatus(422);
         }
 
@@ -159,12 +162,12 @@ class MineController extends controller
         $addTime = $Mineral->time - (0.1 * $MinerWorkforce->efficiency_level + $workforce * 0.05);
 
         $Miner->mineral_type = $type;
-        $Miner->mining_countdown = Carbon::now()->addSeconds($addTime);
+        $Miner->mining_finishes_at = Carbon::now()->addSeconds($addTime);
         $Miner->save();
 
 
         $MinerWorkforce->avail_workforce = $new_workforce_amount;
-        $MinerWorkforce->{$location} = $workforce;
+        $MinerWorkforce->$location = $workforce;
         $MinerWorkforce->save();
 
         return Response::addMessage("You have started mining for $type")
@@ -194,11 +197,10 @@ class MineController extends controller
         ]);
 
         $location = $this->sessionService->getCurrentLocation();
-
         $MinerWorkforce = MinerWorkforce::where('username', $this->sessionService->getCurrentUsername())
             ->first();
 
-        if (is_null($MinerWorkforce)) {
+        if (!$MinerWorkforce instanceof MinerWorkforce) {
             return Response::addMessage("Unvalid Miner location")->setStatus(422);
         }
 
@@ -206,21 +208,25 @@ class MineController extends controller
             ->where('location', $location)
             ->first();
 
+        if (!$Miner instanceof Miner) {
+            return Response::addMessage("You don't have enough permits")->setStatus(422);
+        }
+
         $Mineral = Mineral::where('location', $location)
             ->where('mineral_ore', $Miner->mineral_type)
             ->first();
 
-        if (is_null($Mineral)) {
+        if (!$Mineral instanceof Mineral) {
             return Response::addMessage("Unvalid Mineral")->setStatus(422);
         }
 
         if (
-            Carbon::now()->isAfter($Miner->mining_countdown) &&
+            Carbon::now()->isAfter($Miner->mining_finishes_at) &&
             $Miner->mineral_type &&
             $is_cancelling
         ) {
             return Response::addMessage("Why quit mining that is already finished")->setStatus(422);
-        } else if (!Carbon::now()->isAfter($Miner->mining_countdown) && !$is_cancelling) {
+        } else if (!Carbon::now()->isAfter($Miner->mining_finishes_at) && !$is_cancelling) {
             return Response::addMessage("The mining is not yet finished")->setStatus(422);
         }
 

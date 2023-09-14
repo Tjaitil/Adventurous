@@ -1,19 +1,17 @@
 import { UpdateCropsRequest } from './../types/requests/CropsRequests';
 import { StartGrowingRequest, SeedGeneratorRequest } from '../types/requests/CropsRequests';
 import { SkillActionContainer } from './../SkillActionContainer.js';
-import { CropCountdownResponse, GrowCropsResponse, HarvestCropsResponse } from '../types/responses/CropsResponses';
 import { commonMessages, gameLogger } from '../utilities/gameLogger.js';
-import { ClientOverlayInterface } from '../clientScripts/clientOverlayInterface.js';
-import { ItemSelector, selectedCheck } from '../ItemSelector.js';
-import countdown from '../utilities/countdown.js';
+import { ItemSelector } from '../ItemSelector.js';
 import { updateHunger } from '../clientScripts/hunger.js';
-import { checkInventoryStatus, Inventory } from '../clientScripts/inventory.js';
+import { Inventory } from '../clientScripts/inventory.js';
 import { AdvApi } from '../AdvApi.js';
+import { advAPIResponse } from '../types/responses/AdvResponse';
 
 class CropsModule extends SkillActionContainer {
 
     constructor() {
-        super();
+        super("Growing", "No crops growing");
         this.init();
     }
 
@@ -21,50 +19,22 @@ class CropsModule extends SkillActionContainer {
         this.cancelActionButton.addEventListener("click", () => this.updateCrop(true));
         this.finishActionButton.addEventListener("click", () => this.updateCrop(false));
         this.startActionButton.addEventListener("click", () => this.grow());
-        this.getCountdown();
         this.addSelectEvent();
+        this.fetchData('crops');
+        this.getCountdown();
 
         document.getElementById("seed_generator_action").addEventListener("click",
             () => this.seedGenerator());
-        this.fetchData('crops');
         ItemSelector.setup();
     }
 
     private getCountdown() {
         this.infoActionElement.innerHTML = "No crops growing";
-
         AdvApi.get<CropCountdownResponse>('/crops/countdown').then((response) => {
-            let endTime = response.data.crop_countdown * 1000;
-
-            let crop_type = response.data.crop_type;
-
-            this.intervalID = setInterval(() => {
-                let { remainder, hours, minutes, seconds } = countdown.calculate(endTime);
-
-                if (document.getElementById("time") == null) {
-
-                    clearInterval(this.intervalID);
-                } else if (remainder < 0 && crop_type) {
-
-                    clearInterval(this.intervalID);
-                    this.finishActionButton.style.display = "inline-block";
-                    this.cancelActionButton.style.display = "none";
-                    document.getElementById("time").innerText = "";
-                    this.infoActionElement.innerText = "Finished";
-                } else if (remainder < 0) {
-
-                    clearInterval(this.intervalID);
-                    this.infoActionElement.innerText = "No crops growing";
-                    document.getElementById("time").innerText = "";
-                    this.cancelActionButton.style.display = "none";
-                    this.finishActionButton.style.display = "none";
-                } else {
-                    document.getElementById("time").innerText = hours + "h " + minutes + "m " + seconds + "s ";
-                    this.cancelActionButton.style.display = "inline-block";
-                    this.finishActionButton.style.display = "none";
-                }
-            }, 1000);
-            setTimeout(() => ClientOverlayInterface.adjustWrapperHeight(), 1100);
+            this.startCountdownAndUpdateUI({
+                endTime: response.data.crop_finishes_at * 1000,
+                type: response.data.crop_type
+            });
         });
     }
 
@@ -86,10 +56,11 @@ class CropsModule extends SkillActionContainer {
         };
 
         AdvApi.post<GrowCropsResponse>('/crops/start', data).then((response) => {
-            updateHunger(response.data.new_hunger);
             Inventory.update();
-            this.updateUI(response.data.avail_workforce);
-        }).catch(() => false);
+            updateHunger(response.data.new_hunger);
+            this.setAvailableWorkforce(response.data.avail_workforce);
+            this.getCountdown();
+        });
     }
 
     public updateCrop(cancel: boolean) {
@@ -103,8 +74,13 @@ class CropsModule extends SkillActionContainer {
         }
 
         AdvApi.post<HarvestCropsResponse>('/crops/end', data).then((response) => {
-            this.updateUI(response.data.avail_workforce);
-            Inventory.update();
+            this.setAvailableWorkforce(response.data.avail_workforce);
+            if (cancel) {
+                this.clearCountdownAndUpdateUI();
+            } else {
+                this.getCountdown();
+                Inventory.update();
+            }
         }).catch(() => false);
     }
 
@@ -122,12 +98,44 @@ class CropsModule extends SkillActionContainer {
             ItemSelector.clearContainer();
         }).catch(() => false);
     }
-
-    public updateUI(availWorkforce: number) {
-        this.getCountdown();
-        clearInterval(this.intervalID);
-        this.setAvailableWorkforce(availWorkforce);
-    }
 }
 
 export default CropsModule;
+
+export interface CropCountdownResponse extends advAPIResponse {
+    data: {
+        crop_finishes_at: number;
+        crop_type: string;
+        date: number;
+    }
+}
+
+export interface GrowCropsResponse extends advAPIResponse {
+    data: {
+        new_hunger: number;
+        avail_workforce: number;
+    }
+}
+
+export interface CropCountdownResponse {
+    harvest: number,
+    date: number,
+}
+
+export interface GrowCropsResponse {
+    newHunger: number,
+    availWorkforce: number,
+}
+
+export interface DestroyCropsResponse {
+    availWorkforce: number,
+}
+
+export interface HarvestCropsResponse {
+    availWorkforce: number,
+}
+export interface HarvestCropsResponse extends advAPIResponse {
+    data: {
+        avail_workforce: number;
+    }
+}

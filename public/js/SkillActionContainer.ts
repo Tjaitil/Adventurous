@@ -129,7 +129,7 @@ export class SkillActionContainer {
         locationInputField.value = jsUcfirst(matchedType.location);
 
         let timeInputField = <HTMLInputElement>document.getElementsByName("time")[0];
-        timeInputField.value = matchedType.time + "";
+        timeInputField.value = matchedType.time + " s";
 
         let selectedFigure = document.getElementById("selected_item");
         if (selectedFigure.children.length == 0) {

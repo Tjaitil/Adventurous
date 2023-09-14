@@ -20,6 +20,7 @@ class MineModule extends SkillActionContainer {
         this.addSelectEvent();
         this.fetchData('mine');
         this.getCountdown();
+        console.log(this.setAvailableWorkforce(2));
     }
 
     private getCountdown() {
@@ -27,7 +28,7 @@ class MineModule extends SkillActionContainer {
 
         AdvApi.get<MineCountdownResponse>('/mine/countdown').then((response) => {
             this.startCountdownAndUpdateUI({
-                endTime: response.data.mining_countdown * 1000,
+                endTime: response.data.mining_finishes_at * 1000,
                 type: response.data.mineral_type
             });
         })
@@ -55,7 +56,7 @@ class MineModule extends SkillActionContainer {
             this.setAvailableWorkforce(response.data.avail_workforce);
             this.getCountdown();
             document.getElementById("total_permits").innerHTML = "" + response.data.new_permits;
-        })
+        });
     }
 
     private updateMine(cancel: boolean) {
@@ -93,7 +94,7 @@ export interface BuyPermitsRequest {
 
 export interface MineCountdownResponse extends advAPIResponse {
     data: {
-        mining_countdown: number;
+        mining_finishes_at: number;
         mineral_type: string;
     }
 }

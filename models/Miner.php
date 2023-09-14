@@ -8,8 +8,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property string $username
  * @property string $mineral_type
- * @property int $mining_countdown
- * @property int $mining_started
+ * @property Carbon $mining_finishes_at
  * @property int $permits
  * @property string $location
  * @property MinerWorkforce $workforce
@@ -23,7 +22,7 @@ class Miner extends Model
 
     protected $guarded = [];
 
-    protected $dates = ['mining_countdown', 'mining_started'];
+    protected $dates = ['mining_finishes_at'];
 
     public function workforce()
     {

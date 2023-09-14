@@ -10,9 +10,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * Class Farmer
  * @property int $id
  * @property string $username
- * @property Carbon $crop_countdown
+ * @property Carbon $crop_finishes_at
  * @property int $crop_quant
- * @property bool $can_harvest
  * @property string $location
  * @property FarmerWorkforce $workforce
  * @mixin \Eloquent
@@ -25,7 +24,7 @@ class Farmer extends Model
 
     protected $guarded = [];
 
-    protected $dates = ['crop_countdown'];
+    protected $dates = ['crop_finishes_at'];
 
 
     public function workforce(): HasOne
