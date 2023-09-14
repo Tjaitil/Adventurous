@@ -71,6 +71,7 @@ enum GameMaps: string
             self::_2_6->value => GameLocations::TASNOBIL_LOCATION->value,
             self::_2_9->value => GameLocations::PVITUL_LOCATION->value,
             self::_3_5->value => GameLocations::GOLBAK_LOCATION->value,
+            self::_3_6->value => GameLocations::KRASNUR_LOCATION->value,
             self::_4_3->value => GameLocations::FANSALPLAINS_LOCATION->value,
             self::_4_9->value => GameLocations::HIRTAM_LOCATION->value,
             self::_5_5->value => GameLocations::SNERPIIR_LOCATION->value,

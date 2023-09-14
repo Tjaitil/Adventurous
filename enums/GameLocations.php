@@ -72,7 +72,7 @@ enum GameLocations: string
     {
         return [
             self::GOLBAK_LOCATION->value,
-            self::FAGNA_LOCATION->value,
+            self::SNERPIIR_LOCATION->value,
         ];
     }
 }
