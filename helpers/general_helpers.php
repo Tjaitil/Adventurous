@@ -44,3 +44,15 @@ function fetchTemplate(string $name, array $data = [])
         echo "Unable to load template";
     }
 }
+
+/**
+ * Simulate laravels DD function
+ * @param mixed $data 
+ * @return never 
+ */
+function dd($data)
+{
+    echo '<pre>';
+    die(var_dump($data));
+    echo '</pre>';
+}
