@@ -16,13 +16,17 @@
         @foreach ($Farmers as $Farmer)
             <h3 class="mt-1">{{ ucwords($Farmer->location) }}</h3>
             <p>
-                @if ($Farmer->crop_type && Carbon::now()->isBefore($Farmer->crop_countdown))
+                @if (
+                    $Farmer->crop_type &&
+                        Carbon\Carbon::now()->isBefore($Farmer->crop_finishes_at))
+                    {{ ucwords($Farmer->crop_type) }}
                     Finished in
-                    {{ $Farmer->crop_countdown->diffInMinutes(Carbon::now()) }}
-                @elseif($Farmer->crop_type && Carbon::now()->isAfter($Farmer->crop_countdown))
+                    {{ $Farmer->crop_finishes_at->diffInMinutes(Carbon\Carbon::now()) }}
+                @elseif(
+                    $Farmer->crop_type &&
+                        Carbon\Carbon::now()->isAfter($Farmer->crop_finishes_at))
                     Finished
-                    @el
-                    se
+                @else
                     Nothing happening
                 @endif
             </p>
@@ -35,10 +39,15 @@
         @foreach ($Miners as $Miner)
             <h3 class="mt-1">{{ ucwords($Miner->location) }}</h3>
             <p>
-                @if ($Miner->mineral_type && Carbon::now()->isBefore($Miner->mining_countdown))
+                @if (
+                    $Miner->mineral_type &&
+                        Carbon\Carbon::now()->isBefore($Miner->mining_finishes_at))
+                    {{ ucwords($Miner->mineral_type) }}
                     Finished in
-                    {{ $Miner->mining_countdown->diffInMinutes(Carbon::now()) }}
-                @elseif($Miner->mineral_type && Carbon::now()->isAfter($Miner->mining_countdown))
+                    {{ $Miner->mining_finishes_at->diffInMinutes(Carbon\Carbon::now()) }}
+                @elseif(
+                    $Miner->mineral_type &&
+                        Carbon\Carbon::now()->isAfter($Miner->mining_finishes_at))
                     Finished
                 @else
                     Nothing happening
