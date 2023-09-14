@@ -147,9 +147,6 @@ h5,
 h6 {
     margin-bottom: 1rem;
 }
-#time {
-    height: 19px;
-}
 .se header,
 aside,
 #inventory {
@@ -361,8 +358,7 @@ section table:not(#game_messages) > *,
     color: var(--textColor);
 }
 section table,
-section button,
-aside div {
+section button {
     margin-bottom: 5px;
     box-sizing: border-box;
 }
@@ -374,6 +370,11 @@ section img {
     height: 48px;
     box-sizing: border-box;
     vertical-align: middle;
+}
+/* TODO remove this when the above is removed */
+#skill-action-container img {
+    width: 64px;
+    height: 64px;
 }
 table button {
     margin-top: 5px;
@@ -868,9 +869,9 @@ input::-webkit-inner-spin-button {
     .item .item_amount {
         top: -54%;
     }
-    #skills div {
+    /* #skills div {
         font-size: 14px;
-    }
+    } */
     section {
         min-height: unset;
         width: 97.4%;
@@ -883,9 +884,9 @@ input::-webkit-inner-spin-button {
     /*.inventory_buttons {
         margin-left: 6px;
     }*/
-    #skills div {
+    /* #skills div {
         min-width: 53px;
-    }
+    } */
     #inventory {
         /* Style added in general.js*/
         right: 5px;
@@ -934,8 +935,4 @@ input::-webkit-inner-spin-button {
 
 .dark-bg {
     background-color: var(--layoutBgColorDark);
-}
-
-.py-1 {
-    padding-block: 1rem;
 }
