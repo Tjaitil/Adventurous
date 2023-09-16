@@ -17,6 +17,7 @@ enum Buildings {
     STOCKPILE = "stockpile",
     MINE = "mine",
     CROPS = "crops",
+    ZINSSTORE = "zinsstore",
 }
 
 type BuildingName = `${Buildings}`;
@@ -58,6 +59,9 @@ export const inputHandler: IInputHandler = {
         },
         [Buildings.CROPS]: {
             "script": "crops.js",
+        },
+        [Buildings.ZINSSTORE]: {
+            "script": "zinsstore.js",
         }
     },
     buildingMatch: <undefined | Building>undefined,

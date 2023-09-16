@@ -48,6 +48,7 @@ Route::get('/mine/data', [MineController::class, "getViewData"]);
 Route::get('/stockpile/{item}', [StockpileController::class, "show"]);
 Route::post('/stockpile/update', [StockpileController::class, "update"]);
 
+Route::get('/zinsstore/store', [ZinsstoreController::class, "getStoreItems"]);
 Route::post('/zinsstore', [ZinsstoreController::class, "buy"]);
 
 Route::get('/merchant/{item}/price', [MerchantController::class]);
