@@ -50,7 +50,7 @@ class StoreResource extends Resource
     /**
      * Convert resource to an array
      *
-     * @return StoreResource
+     * @return array
      */
     public function toArray(): array
     {
