@@ -59,9 +59,15 @@ const storeContainer = {
         this.noTradeSelectedWrapper.style.display = "none";
         this.selectedTradeWrapper.innerHTML = "";
         this.doTradeButton.disabled = false;
-        this.requirementsWrapper.innerHTML = "";
-        this.itemInformationWrapper.innerHTML = "";
-        this.skillRequirementsWrapper.innerHTML = "";
+        if (this.requirementsWrapper) {
+            this.requirementsWrapper.innerHTML = "";
+        }
+        if (this.itemInformationWrapper) {
+            this.itemInformationWrapper.innerHTML = "";
+        }
+        if (this.skillRequirementsWrapper) {
+            this.skillRequirementsWrapper.innerHTML = "";
+        }
 
         let eventElement = <HTMLElement>event.currentTarget;
         let elementDiv = eventElement.closest(".store-container-item");
