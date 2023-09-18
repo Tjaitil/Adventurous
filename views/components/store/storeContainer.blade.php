@@ -34,7 +34,7 @@ $options = array_merge(
         class="max-w-500px relative mx-auto box-border flex max-h-[500px] min-h-[250px] flex-row">
         <x-store.storeItemList :store-items="$storeResource->store_items" />
         <div id="store-container-item-selected"
-            class="basis-3/5 border-l-2 border-primary-400 px-4">
+            class="basis-1/2 border-l-2 border-primary-400 px-4">
             <div id="store-container-do-trade"
                 class="hidden min-w-[155px] flex-col justify-between gap-4 py-4">
                 <div id="store-container-selected-trade">
@@ -45,7 +45,7 @@ $options = array_merge(
                     <span></span>
                     <x-goldIcon />
                 </p>
-                @if ($options['show-requirements'] === false)
+                @if ($options['show-requirements'] === true)
                     <div class="flex flex-col gap-2 bg-primary-900 p-2">
                         <span class="mb-2">Required</span>
                         <div id="store-container-item-requirements"
