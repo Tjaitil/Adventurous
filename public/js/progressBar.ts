@@ -28,7 +28,7 @@ export class ProgressBar {
         if (typeof createElement === "string") {
             this.progressBarElement = this.createProgressBar(createElement);
         } else {
-            if (element instanceof HTMLElement) {
+            if (typeof element !== "string") {
                 this.progressBarElement = element;
             } else {
                 let domElement = document.getElementById(element);
