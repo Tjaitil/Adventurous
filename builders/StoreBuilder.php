@@ -63,11 +63,12 @@ class StoreBuilder
      *
      * @return void
      */
-    public function setAdjustedStoreValueForItem(string $item, int $value)
+    public function setAdjustedStoreValueForItem(string $itemName, int $value)
     {
         foreach ($this->resource->store_items as $key => $item) {
-            if ($item->name) {
+            if ($item->name === $itemName) {
                 $item->adjusted_store_value = $value;
+                $item->adjusted_difference = $item->store_value - $value;
                 break;
             }
         }
@@ -143,5 +144,16 @@ class StoreBuilder
     public function build()
     {
         return $this->resource;
+    }
+
+    /**
+     * 
+     * @param StoreResource $storeResource 
+     * @return $this 
+     */
+    public function setResource(StoreResource $storeResource)
+    {
+        $this->resource = $storeResource;
+        return $this;
     }
 }
