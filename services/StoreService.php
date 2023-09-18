@@ -12,7 +12,8 @@ class StoreService
 
     public function __construct(
         public StoreBuilder $storeBuilder,
-        protected SkillsService $skillsService
+        protected SkillsService $skillsService,
+        protected InventoryService $inventoryService
     ) {
         $this->storeBuilder = $storeBuilder::create();
     }
@@ -79,6 +80,40 @@ class StoreService
         }
 
         return (object) $matches[0];
+    }
+
+    /**
+     * Log that item is not a store item
+     *
+     * @param string $name Item name
+     * @param int $amount Amount of item
+     *
+     * @return false;
+     */
+    public function hasRequiredItems(string $item, int $amount = 1)
+    {
+        $store_item = $this->getStoreItem($item);
+        if (!$store_item instanceof StoreItemResource) {
+            return false;
+        }
+
+        foreach ($store_item->required_items as $key => $value) {
+            if (!$this->inventoryService->hasEnoughAmount($value->name, $value->amount * $amount)) {
+                return false;
+                break;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Log that item is not a store item
+     *
+     * @return Response
+     */
+    public function logNotEnoughAmount()
+    {
+        return Response::addMessage("Item is not a store item")->setStatus(400);
     }
 
     /**
