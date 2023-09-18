@@ -11,7 +11,6 @@ class DiplomacyService
     protected array $CurrentCityRelations = [];
 
     public function __construct(
-        protected Diplomacy $Diplomacy,
         protected CityRelation $CityRelation,
         protected SessionService $sessionService,
         protected LocationService $locationService
@@ -32,7 +31,7 @@ class DiplomacyService
     {
         $this->CurrentCityRelations = CityRelation::where('city', $current_location);
 
-        $Diplomacy = $this->Diplomacy->where('username', $this->sessionService->getCurrentUsername());
+        $Diplomacy = Diplomacy::where('username', $this->sessionService->getCurrentUsername())->get();
 
         for ($i = 0; $i < count(GameLocations::getDiplomacyLocations()); $i++) {
             $location = GameLocations::getDiplomacyLocations()[$i];
@@ -75,7 +74,7 @@ class DiplomacyService
         $diplomacy_price_adjust = 1;
         $location = str_replace("-", "", $location);
 
-        $Diplomacy = $this->Diplomacy->where('username', $this->sessionService->getCurrentUsername());
+        $Diplomacy = Diplomacy::where('username', $this->sessionService->getCurrentUsername())->first();
 
         $diplomacy_price_ratio = floatval($Diplomacy->{$location});
 
