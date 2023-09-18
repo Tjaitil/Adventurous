@@ -67,9 +67,6 @@ class DiplomacyService
      */
     public function calculateNewMerchantPrice($price, $location)
     {
-        if (!$this->locationService->isDiplomacyLocation($location)) {
-            return 0;
-        }
 
         $diplomacy_price_adjust = 1;
         $location = str_replace("-", "", $location);
