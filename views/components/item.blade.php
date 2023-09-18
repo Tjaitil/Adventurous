@@ -18,6 +18,6 @@
         <figcaption @class(['tooltip' => $showTooltip === true])>
             {{ ucwords($name) }}
         </figcaption>
-        <span @class(['item_amount', 'hidden' => $showAmount])>{{ $amount }}</span>
+        <span @class(['item_amount', 'hidden' => !$showAmount])>{{ $amount }}</span>
     </figure>
 </div>
