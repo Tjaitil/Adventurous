@@ -5,11 +5,10 @@ namespace App\services;
 use App\enums\GameLocations;
 use App\models\CityRelation;
 use App\models\Diplomacy;
+use Exception;
 
 class DiplomacyService
 {
-    protected array $CurrentCityRelations = [];
-
     public function __construct(
         protected CityRelation $CityRelation,
         protected SessionService $sessionService,
@@ -24,19 +23,25 @@ class DiplomacyService
      *
      * @param string $current_location
      * @param int $percentage
-     *
      * @return void
+     * @throws Exception 
      */
     public function setNewDiplomacy(string $current_location, int $percentage)
     {
-        $this->CurrentCityRelations = CityRelation::where('city', $current_location);
+        $CityRelation = CityRelation::where('city', $current_location)->first();
 
-        $Diplomacy = Diplomacy::where('username', $this->sessionService->getCurrentUsername())->get();
+        if (!$CityRelation instanceof CityRelation) {
+            throw new Exception("City relation not found");
+        }
+
+        $Diplomacy = Diplomacy::where('username', $this->sessionService->getCurrentUsername())->first();
+        if (!$Diplomacy instanceof Diplomacy) {
+            throw new Exception("Diplomacy not found");
+        }
 
         for ($i = 0; $i < count(GameLocations::getDiplomacyLocations()); $i++) {
             $location = GameLocations::getDiplomacyLocations()[$i];
-
-            $location_relation = floatval($this->CurrentCityRelations[$location]);
+            $location_relation = floatval($CityRelation->{$location});
 
             // If the relation is 1 it will be unaffected
             if ($location_relation === 1) {
@@ -65,7 +70,7 @@ class DiplomacyService
      *
      * @return float
      */
-    public function calculateNewMerchantPrice($price, $location)
+    public function calculateNewMerchantPrice(int $price, string $location)
     {
 
         $diplomacy_price_adjust = 1;
