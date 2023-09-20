@@ -1,3 +1,4 @@
+@props(['assignment', 'trader'])
 @php
     /**
      *

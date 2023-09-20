@@ -1,16 +1,18 @@
+@props(['assignments' => [], 'current-location', 'trader-level'])
 @php
     /**
      *
-     * @var \App\models\TraderAssignment $CurrentAssignment
-     * @var \App\models\Trader $Trader
+     * @param $assigments TraderAssignment[]
+     * @param string $currentLocation
+     * @param int $traderLevel
      */
 @endphp
 <div id="trader_assignments_container "
     class="grid grid-cols-[repeat(auto-fit,_180px)] justify-center gap-4">
-    @forelse ($Assignments as $value)
+    @forelse ($assignments as $value)
         @php
-            $has_required_level = $trader_level >= $value->type->required_level;
-            $not_current_location = $value->base !== $current_location;
+            $has_required_level = $traderLevel >= $value->type->required_level;
+            $not_current_location = $value->base !== $currentLocation;
         @endphp
         <div @class([
             'flex flex-col justify-center max-w[180px] justify-center pb-2 trader_assignment text-white',
