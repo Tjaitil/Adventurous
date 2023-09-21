@@ -51,6 +51,12 @@ export class ItemElement {
 
     public setClass(className: string) {
         this.element.classList.add(className);
+        return this;
+    }
+
+    public removeClass(className: string) {
+        this.element.classList.remove(className);
+        return this;
     }
 
     public replaceItem(item: string, amount: number) {
