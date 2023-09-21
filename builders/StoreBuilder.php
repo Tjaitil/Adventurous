@@ -96,6 +96,43 @@ class StoreBuilder
 
     /**
      * 
+     * @param string $itemName 
+     * @param int $price 
+     * @return void 
+     */
+    public function setStoreBuyPriceForItem(string $itemName, int $price)
+    {
+        foreach ($this->resource->store_items as $key => $item) {
+            if ($item->name === $itemName) {
+                $item->store_buy_price = $price;
+                break;
+            }
+        }
+    }
+
+
+
+    /**
+     * 
+     * @param string $item 
+     * @param int $price 
+     * @return $this 
+     */
+    public function setStoreBuyPrice(string $item, int $price)
+    {
+        foreach ($this->resource->store_items as $key => $item) {
+            if ($item->name) {
+                $item->store_buy_price = $price;
+                break;
+            }
+        }
+        return $this;
+    }
+
+
+
+    /**
+     * 
      * @param string $item 
      * @param string $skill 
      * @return $this 

@@ -42,7 +42,7 @@ $options = array_merge(
                 </div>
                 <p id="store-contaniner-trade-price"
                     class="flex flex-row justify-center">
-                    <span></span>
+                    <span id="store-container-trade-price-span"></span>
                     <x-goldIcon />
                 </p>
                 @if ($options['show-requirements'] === true)
