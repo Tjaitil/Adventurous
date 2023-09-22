@@ -20,6 +20,7 @@ class StoreResource extends Resource
         parent::__construct([
             "name" => "",
             "store_value_modifier" => 1.00,
+            "store_name" => "",
             "store_items" => [],
             "inifinite_amount" => false,
         ], $resource);

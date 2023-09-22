@@ -23,7 +23,7 @@ class StoreItemResource extends Resource
             "name" => "",
             "amount" => 0,
             "store_value" => 0,
-            "store_buy_price" => "",
+            "store_buy_price" => 0,
             "required_items" => [],
             "item_multiplier" => 0,
             "adjusted_store_value" => 0,
@@ -65,7 +65,7 @@ class StoreItemResource extends Resource
             "store_buy_price" => $this->store_buy_price,
             "required_items" => $required_items,
             "adjusted_store_value" => $this->adjusted_store_value,
-            "adjusted_difference" => $this->adjusted_difference,
+            "adjusted_difference" => is_string($this->adjusted_difference) ? 0 : $this->adjusted_difference,
             "item_multiplier" => $this->item_multiplier,
             "skill_requirements" => $skill_requirements
         ];

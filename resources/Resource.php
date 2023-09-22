@@ -26,7 +26,7 @@ abstract class Resource
     {
         if (is_array($data)) {
             $new = static::mapping($data);
-            $this->default = array_intersect_key($new, $this->default);
+            $this->default = array_merge($this->default, $new);
         }
     }
 
@@ -51,7 +51,7 @@ abstract class Resource
 
     public function __get($name)
     {
-        return $this->default[$name] ?? "";
+        return $this->default[$name];
     }
 
     public function __set($name, $value)
