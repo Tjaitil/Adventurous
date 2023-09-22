@@ -31,7 +31,7 @@ $options = array_merge(
 @endphp
 <x-borderInterfaceContainer>
     <div id="store-container-item-wrapper"
-        class="max-w-500px relative mx-auto box-border flex max-h-[500px] min-h-[250px] flex-row">
+        class="max-w-500px relative mx-auto box-border flex min-h-[250px] flex-row">
         <x-store.storeItemList :store-items="$storeResource->store_items" />
         <div id="store-container-item-selected"
             class="basis-1/2 border-l-2 border-primary-400 px-4">

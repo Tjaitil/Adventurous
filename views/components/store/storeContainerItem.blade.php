@@ -7,7 +7,7 @@
 <div
     class="store-container-item relative flex cursor-pointer flex-row gap-3 border-b-2 border-primary-400 p-3 last:border-0">
     <x-item :name="$item->name" :show-tooltip="false" :show-amount="false"
-        :amount="$item->amount" :id="$item->id" />
+        :amount="$item->amount" />
     <div class="flex grow flex-row items-center justify-center">
         <span>
             <span @class([
