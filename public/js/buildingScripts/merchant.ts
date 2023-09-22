@@ -1,23 +1,26 @@
-import { ItemPriceResponse } from '../types/responses/MerchantResponses.js';
 import { Inventory } from './../clientScripts/inventory.js';
-import { selectItemEvent } from '../ItemSelector.js';
-import { commonMessages, gameLogger } from './../utilities/gameLogger.js';
 import traderModule from './trader.js';
-import countdown from '../utilities/countdown.js';
 import { AdvApi } from '../AdvApi.js';
-import { checkInventoryStatus } from '../clientScripts/inventory.js';
-import { advAPIResponse } from '../types/responses/AdvResponse';
+import storeContainer, { StoreItemResource } from '../utilities/storeContainer.js';
+import { StoreItemResponse } from '../types/responses/StoreItemResponse.js';
+import { advAPIResponse } from '../types/responses/AdvResponse.js';
 
 const merchantModule = {
     stockTimerId: null,
-    init() {
-
-        this.updateStockCountdown(true);
-        this.getMerchantCountdown();
-        this.addMerchantEvents();
-        selectItemEvent.addSelectEvent();
+    async init() {
+        await this.getData().then(() => {
+            storeContainer.init();
+            storeContainer.setOnlySellStoreItems(false);
+            storeContainer.addSelectTrade();
+            storeContainer.addSelectTradeToInventory();
+            storeContainer.addSelectedItemButtonEvent(this.trade);
+        });
         if (traderModule.init) traderModule.init();
-        document.getElementById("trade_button").addEventListener("click", () => this.tradeItem());
+    },
+    async getData() {
+        AdvApi.get<StoreItemResponse>('/merchant/store/items').then((response) => {
+            storeContainer.setStoreItems(response.data.store_items);
+        });
     },
     updateStockCountdown(pause = false, end?: boolean) {
         if (end === true) {
@@ -27,17 +30,11 @@ const merchantModule = {
             this.resetStockTimer();
         }
     },
-    updateStock() {
-        let data = "model=Merchant" + "&method=getOffers";
-
-        // TODO: Fix api endpoint
-        // AdvApi.get<advAPIResponse>('/').then((response) => {
-        //     if (response.html['store'] !== undefined) {
-        //         document.getElementById("merchant-offer-list").innerHTML = response.html['store'];
-        //         this.addMerchantEvents();
-        //         this.resetStockTimer();
-        //     }
-        // })
+    async updateStock() {
+        AdvApi.get<StoreResponse>('/merchant/store').then((response) => {
+            storeContainer.setStoreItems(response.data.store_items);
+            storeContainer.setNewStoreItemsUI(response.html.storeItemList);
+        });
     },
     resetStockTimer() {
         clearTimeout(this.stockTimerId);
@@ -51,7 +48,6 @@ const merchantModule = {
         let data = "&model=Merchant" + "&method=getMerchantCountdown";
 
         // TODO: Fix api endpoint
-        // AdvApi.get('/').then((response) => {
         //     let responseText = response[1];
         //     let endTime = (parseInt(responseText.date) + 14400) * 1000;
         //     let x = setInterval(() => {
@@ -70,136 +66,36 @@ const merchantModule = {
         //     });
         // });
     },
-    addMerchantEvents() {
-        let trades = document.getElementById("trades").querySelectorAll(".merchant-offer");
-        if (trades.length > 0) {
-            trades.forEach(element =>
-                element.addEventListener('click', event => this.selectTrade(event))
-            );
-        }
-    },
-    selectTrade(event) {
+    trade() {
+        let result = storeContainer.getSelectedTrade();
+        if (!result) return;
 
-        const getPrice = (item: string) => {
-
-            AdvApi.get<ItemPriceResponse>('/').then((response) => {
-                document.getElementById("trade_price").querySelectorAll("span")[0].innerText = "" + response.data.price;
+        if (storeContainer.isTradeNotStoreItem) {
+            AdvApi.post('/merchant/trade/open', result).then(async (response) => {
+                Inventory.update();
             });
-        };
-
-        // If trades div is hidden return false, because then the tab visible is trader assignment
-        if (document.getElementById("trades").style.visibility == "hidden"
-            || document.getElementById("trades") == null) {
-            return false;
+        } else {
+            AdvApi.post<StoreResponse>('/merchant/trade', result).then(async (response) => {
+                await Inventory.update().then(() => {
+                    storeContainer.setStoreItems(response.data.store_items);
+                    storeContainer.setNewStoreItemsUI(response.html.storeItemList);
+                    storeContainer.resetUI();
+                    storeContainer.addSelectTradeToInventory();
+                });
+                // Update diplomacy tab
+            })
         }
-        document.getElementById("do_trade").querySelectorAll("button")[0].disabled = false;
-        let elementDiv;
-        let price;
-        let item;
-        if (!event.target.closest(".merchant-offer")) {
-            item = event.target.closest(".inventory_item").querySelectorAll("figcaption")[0].innerHTML.trim();
-            if (item === "Gold") {
-                gameLogger.addMessage("You cannot sell gold!", true);
-                return false;
-            }
-            // Item is in inventory
-            elementDiv = event.target.closest(".inventory_item");
-            // Check if player is in fagna
-            if (document.title.indexOf("Fagna") == -1) {
-                // Check if the merchant is interested in that item
-                let items = document.getElementById("merchant-offer-container").querySelectorAll(".tooltip");
-                let match = false;
-                for (var i = 0; i < items.length; i++) {
-                    if (item === items[i].innerHTML) {
-                        match = true;
-                        price = items[i].closest(".merchant-offer").querySelectorAll(".item_sell_price")[0].innerHTML.trim();
-                        break;
-                    }
-                }
-                if (match === false) {
-                    gameLogger.addMessage("This merchant is not interested in that item", true);
-                    return false;
-                }
-            }
-        }
-        else {
-            elementDiv = event.target.closest(".merchant-offer");
-            price = elementDiv.querySelectorAll(".item_buy_price")[0].innerHTML.trim();
-            item = elementDiv.querySelectorAll("figcaption")[0].innerHTML.trim();
-            let amount = elementDiv.querySelectorAll(".merchant-offer-amount")[0].innerHTML;
-            let amountElement = <HTMLInputElement>document.getElementById("do_trade").querySelectorAll("#amount")[0]
-            amountElement.max = amount;
-        }
-        let figure = elementDiv.querySelectorAll("figure")[0].cloneNode(true);
-        document.getElementById("selected_trade").innerHTML = "";
-        document.getElementById("selected_trade").appendChild(figure);
-        document.getElementById("do_trade").querySelectorAll("p")[0].innerHTML = item;
-        document.getElementById("trade_price").querySelectorAll("span")[0].innerText = "" + 0;
-        // If location is fagna, fetch price
-        if (document.title.indexOf("Fagna") !== -1) {
-            getPrice(elementDiv.querySelectorAll(".tooltip")[0].innerHTML);
-        }
-        else {
-            document.getElementById("trade_price").querySelectorAll("span")[0].innerHTML = price;
-        }
-        let mode;
-        if (elementDiv.parentNode.id !== "inventory") {
-            mode = "Buy";
-        }
-        else {
-            mode = "Sell";
-        }
-        document.getElementById("do_trade").querySelectorAll("button")[0].innerText = mode;
-
-
     },
-    tradeItem() {
-        if (checkInventoryStatus()) {
-            gameLogger.addMessage(commonMessages.inventoryFull, true);
-            return false;
-        }
-        if (document.getElementById("selected_trade").children[0] == undefined) {
-            gameLogger.addMessage("ERROR: Select a trade!", true);
-            return false;
-        }
-        let item = document.getElementById("selected_trade").querySelectorAll("figcaption")[0].innerHTML;
-        let amountElement = <HTMLInputElement>document.getElementById("amount");
-        let amount = amountElement.value;
-        let mode = document.getElementById("do_trade").querySelectorAll("button")[0].innerText.toLowerCase();
-        if (mode !== "buy" && mode !== "sell") {
-            gameLogger.addMessage("Trade mode doesn't exists", true);
-            return false;
-        }
-        if (amount.length == 0) {
-            gameLogger.addMessage("ERROR: Select your amount", true);
-            return false;
-        }
-        // let data = "model=Merchant" + "&method=tradeItem" + "&item=" + item + "&amount=" + amount + "&mode=" + mode;
-
-        let data = {
-            item,
-            amount,
-            mode,
-        };
-
-        // TODO: Fix url
-        // AdvApi.post('/', data).then((response) => {
-        //     // TODO: Fix this after diplomacy is fixed
-        //     // updateDiplomacyTab();
-        //     Inventory.update();
-        //     this.updateStoreList(response.html['store'] ?? "");
-
-        //     this.updateStockCountdown(true);
-        //     document.getElementById("selected_trade").innerHTML = "";
-        //     document.getElementById("trade_price").querySelectorAll("span")[0].innerHTML = "";
-        //     amountElement.value = "0";
-        // })
-    },
-    updateStoreList(content: string) {
-        document.getElementById("merchant-offer-list").innerHTML = content;
-        this.addMerchantEvents();
-    }
 };
 export {
     merchantModule as default,
 };
+
+interface StoreResponse extends advAPIResponse {
+    html: {
+        storeItemList: string;
+    },
+    data: {
+        store_items: StoreItemResource[];
+    }
+}

@@ -2,24 +2,23 @@
 
 namespace App\controllers;
 
-use Exception;
 use App\libs\Request;
 use App\libs\Response;
 use App\libs\controller;
 use App\models\MerchantOffer;
-use App\models\Merchant_model;
 use App\services\StoreService;
 use App\services\SessionService;
 use Respect\Validation\Validator;
-use App\services\CountdownService;
 use App\services\DiplomacyService;
 use App\services\InventoryService;
 use App\libs\TemplateFetcher;
+use App\models\Item;
 use App\models\Trader;
 use App\models\TraderAssignment;
 use App\services\LocationService;
 use App\services\SkillsService;
-use Carbon\Carbon;
+use App\Stores\MerchantStore;
+use App\validators\ValidateStoreTrade;
 
 class MerchantController extends controller
 {
@@ -27,41 +26,19 @@ class MerchantController extends controller
 
     function __construct(
         private InventoryService $inventoryService,
-        private Merchant_model $merchant_model,
         private StoreService $storeService,
         private SessionService $sessionService,
         private LocationService $locationService,
         private DiplomacyService $diplomacyService,
         private TemplateFetcher $TemplateFetcher,
-        private SkillsService $skillsService
+        private SkillsService $skillsService,
+        private MerchantStore $merchantStore
     ) {
         parent::__construct();
     }
-    public function index(CountdownService $countdownService)
+    public function index()
     {
         // $this->data = $this->merchant_model->getData();
-        $this->data['offers'] = MerchantOffer::where('location', $this->sessionService->getCurrentLocation())->get()->toArray();
-
-        $this->storeService->makeStore(["list" => $this->data['offers']]);
-        $store_items = $this->storeService->storeBuilder->build()->store_items;
-        $offers = $store_items;
-        if ($this->locationService->isDiplomacyLocation($this->sessionService->getLocation(), false)) {
-            foreach ($store_items as $key => $value) {
-                $adjusted_price = $this->diplomacyService->calculateNewMerchantPrice(
-                    $value->store_value,
-                    $this->sessionService->getCurrentLocation()
-                );
-
-                $value->adjusted_store_value = ($adjusted_price < $value->merchant_buy_price) ? $value->merchant_buy_price : $adjusted_price;
-            }
-            $offers = $store_items;
-        }
-
-        $this->storeService->storeBuilder->setList($offers);
-
-        $this->storeService->makeStore(["list" => $offers]);
-        $this->data['offers'] = $this->storeService->storeBuilder->build()->toArray();
-
 
         $Trader = Trader::where('username', $this->sessionService->getCurrentUsername())->first();
 
@@ -101,20 +78,66 @@ class MerchantController extends controller
                 'OtherAssignments' => $other_assignments,
                 'merchant' => $this->data,
                 'Trader' => $Trader,
-                'offers' => $this->storeService->storeBuilder->build()->toArray(),
+                'store_resource' => $this->merchantStore->getStore(),
                 'location' => $this->sessionService->getCurrentLocation(),
                 'trader_level' => $this->skillsService->userLevels->trader_level
             ],
+            true,
             true,
             true
         );
     }
 
     /**
+     * 
+     * @return Response 
+     */
+    public function getStoreItems()
+    {
+        return $this->merchantStore->getStoreItemsResponse();
+    }
+
+    /**
+     * 
+     * @return Response 
+     */
+    public function getStore()
+    {
+        $initial_store = $this->merchantStore->makeStore();
+        $this->storeService->storeBuilder->setResource($initial_store);
+
+        $store_resource = $this->merchantStore->makeStore();
+
+        $view = $this->viewEngine->render('partials.storeItemListWrapper', [
+            'storeItems' => $store_resource->store_items
+        ]);
+
+        return Response::addTemplate('storeItemList', $view)
+            ->addData('store_items', $store_resource->toArray()['store_items'])
+            ->setStatus(200);
+    }
+
+    /**
+     *
+     * 
+     * @return Response
+     */
+    public function getNewStock()
+    {
+        $store_items = $this->merchantStore->makeStore();
+        $view = $this->viewEngine->render('partials.storeItemListWrapper', [
+            'store' => $store_items
+        ]);
+
+        return $this->merchantStore->getStoreItemsResponse()
+            ->addTemplate('storeItemList', $view)
+            ->setStatus(200);
+    }
+
+    /**
      * Get price for item
      *
-     * @param \App\libs\Request $request
-     *
+     * @param Request $request
      * @return Response
      */
     public function getPrice(Request $request)
@@ -130,94 +153,116 @@ class MerchantController extends controller
         $resource = $this->storeService->createStoreItemResourceFromModel($item);
         $this->storeService->makeStore(["list" => [$resource]]);
 
-
-
         return Response::addData('item', $resource->toArray())->setStatus(200);
     }
 
+    /**
+     * 
+     * @param Request $request 
+     * @return Response
+     */
+    public function openTrade(Request $request)
+    {
+        $item = $request->getInput('item');
+        $amount = $request->getInput('amount');
+        ValidateStoreTrade::validate($request);
+
+        if ($this->sessionService->getCurrentLocation() === 'fagna') {
+            $Item = Item::where('name', $item)->first();
+            $isSellingOtherItem = true;
+            if (!$Item instanceof Item) {
+                return Response::addMessage("The merchant is not interested in that item")->setStatus(400);
+            }
+            $total_cost = $Item->store_value * $amount;
+        }
+
+        if ($this->inventoryService->hasEnoughAmount(CURRENCY, $total_cost)) {
+            return $this->inventoryService->logNotEnoughAmount(CURRENCY);
+        }
+
+        $this->inventoryService->edit(CURRENCY, -$total_cost);
+
+        return Response::setStatus(200);
+    }
+
+    /**
+     * 
+     * @param Request $request 
+     * @return Response
+     */
     public function trade(Request $request)
     {
         $item = $request->getInput('item');
         $amount = $request->getInput('amount');
-        $buy = $request->getInput('buy', 'bool');
+        $isBuying = $request->getInput('isBuying', 'bool');
 
         $request->validate([
             'item' => Validator::stringVal()->notEmpty(),
             'amount' => Validator::intVal()->min(0),
-            'buy' => Validator::boolVal(),
+            'isBuying' => Validator::boolVal(),
         ]);
 
-        $item = MerchantOffer::where(
-            [
-                ['location', $this->sessionService->getLocation()],
-                ['item', $item]
-            ]
-        )->first();
+        $initial_store = $this->merchantStore->makeStore();
+        $this->storeService->storeBuilder->setResource($initial_store);
 
-        $item_resource = $this->storeService->createStoreItemResourceFromModel($item);
+        $MerchantOffer = MerchantOffer::where('item', $item)
+            ->where('location', $this->sessionService->getCurrentLocation())
+            ->first();
 
-        $this->storeService->makeStore(["list" => [$item_resource->toArray()]]);
-        if (!$this->storeService->isStoreItem($item)) {
-            return Response::addMessage("Not a store item")->setStatus(400);
+        if (!$MerchantOffer instanceof MerchantOffer) {
+            return Response::addMessage("The merchant is not interested in that item")->setStatus(400);
         }
 
-        $store_item = $this->storeService->getStoreItem('item');
-
-        // If user is in a diplomacy location
-        if ($this->locationService->isDiplomacyLocation($this->sessionService->getLocation(), false)) {
-            $new_diplomacy_merchant_price = $this->diplomacyService->calculateNewMerchantPrice(
-                $store_item->store_value,
-                $buy,
-                $this->sessionService->getLocation()
-            );
-        } else {
-            $new_diplomacy_merchant_price = $store_item->store_value;
-        }
+        $store_item = $this->storeService->getStoreItem($item);
 
         $total_cost = $store_item->store_value * $amount;
 
-        if ($buy) {
-            $this->inventoryService->hasEnoughAmount(
+        if ($isBuying) {
+            if (!$this->inventoryService->hasEnoughAmount(
                 CURRENCY,
                 $total_cost
-            );
+            )) {
+                return Response::addMessage("You don't have enough gold")->setStatus(400);
+            }
 
-            $this->storeService->hasItemAmount($store_item ?? [], $amount);
+            if (!$this->storeService->hasItemAmount($store_item, $amount)) {
+                return Response::addMessage("The merchant isn't selling that many item")->setStatus(400);
+            }
 
             $this->inventoryService->edit(CURRENCY, $total_cost);
 
             $this->inventoryService->edit($store_item->name, $amount);
+            $MerchantOffer->amount = $store_item->amount - $amount;
         } else {
-
-            if ($this->storeService->isStoreItem($item)) {
-                throw new Exception("The merchant isn't interested in what you are trying to sell");
+            if (!$this->inventoryService->hasEnoughAmount($item, $amount)) {
+                return Response::addMessage("You don't have enough of that item")->setStatus(400);
             }
 
             $this->inventoryService->edit(CURRENCY, $total_cost);
 
             $this->inventoryService->edit($store_item->name, -$amount);
+            $MerchantOffer->amount = $store_item->amount + $amount;
         }
 
         // Calculate the new price decrease
-        $new_price = $this->storeService->calculateNewPrice($new_diplomacy_merchant_price, $amount, $buy);
+        $new_price = $this->storeService->calculateNewPrice($MerchantOffer->store_value, $amount, $isBuying);
+        $MerchantOffer->store_value = $new_price;
+        $MerchantOffer->store_buy_price = floor($new_price * 0.97);
+        $MerchantOffer->save();
 
-        $item->store_value = $new_price;
-        $item->amount = $store_item->amount - $amount;
-        $item->save();
-
+        // Update price if diplomacy location
         if ($this->locationService->isDiplomacyLocation($this->sessionService->getLocation(), false)) {
-            // Update diplomacy
             $this->diplomacyService->setNewDiplomacy($this->sessionService->getLocation(), 10);
         }
 
-        $template = $this->TemplateFetcher->loadTemplate(
-            'merchantOffers',
-            [
-                'offers' => $this->storeService->storeBuilder->build(),
-                'location' => $this->sessionService->getCurrentLocation()
-            ]
-        );
+        $store_resource = $this->merchantStore->makeStore();
 
-        Response::addTemplate('store', $template)->setStatus(200);
+        $view = $this->viewEngine->render('partials.storeItemListWrapper', [
+            'storeItems' => $store_resource->store_items
+        ]);
+
+        return Response::addTemplate('storeItemList', $view)
+            ->addData('store_items', $store_resource->toArray()['store_items'])
+            ->setStatus(200);
     }
 }

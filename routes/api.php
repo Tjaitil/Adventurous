@@ -8,6 +8,7 @@ use App\controllers\CityCentreController;
 use App\controllers\CropsController;
 use App\controllers\HungerController;
 use App\controllers\InventoryController;
+use App\controllers\MerchantController;
 use App\controllers\MineController;
 use App\controllers\ProfiencyStatusController;
 use App\controllers\SmithyController;
@@ -53,8 +54,10 @@ Route::post('/zinsstore', [ZinsstoreController::class, "buy"]);
 
 Route::get('/merchant/{item}/price', [MerchantController::class]);
 Route::get('/merchant/countdown', [MerchantController::class]);
-Route::get('/merchant/store', [MerchantController::class]);
-Route::post('/merchant/trade', [MerchantController::class]);
+Route::get('/merchant/store/items', [MerchantController::class, "getStoreItems"]);
+Route::get('/merchant/store', [MerchantController::class, "getStore"]);
+Route::post('/merchant/trade/open', [MerchantController::class, "tradeOpen"]);
+Route::post('/merchant/trade', [MerchantController::class, "trade"]);
 
 Route::get('/trader/assignments', []);
 Route::post('/trader/assignment/new', [TraderAssignmentController::class, "newAssignment"]);
