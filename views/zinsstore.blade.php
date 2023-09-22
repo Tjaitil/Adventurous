@@ -9,6 +9,6 @@
         'item_requirements' => false,
         'item_information' => false,
         'show-input-amount' => true,
-        'show-requirements' => true,
+        'show-requirements' => false,
     ]" />
 </div>

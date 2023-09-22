@@ -5,10 +5,9 @@ namespace App\controllers;
 use App\libs\controller;
 use App\libs\Request;
 use App\libs\Response;
-use App\models\Item;
 use App\services\InventoryService;
 use App\services\StoreService;
-use \Exception;
+use App\Stores\ZinssStore;
 
 class ZinsstoreController extends controller
 {
@@ -16,6 +15,7 @@ class ZinsstoreController extends controller
 
 
     function __construct(
+        private ZinssStore $zinssStore,
         private StoreService $storeService,
         private InventoryService $inventoryService,
     ) {
@@ -24,26 +24,48 @@ class ZinsstoreController extends controller
 
     public function index()
     {
-        $this->render('zinsstore', 'Zins Store', $this->data, true, true);
+        $storeResource = $this->zinssStore->getStore();
+        $this->render('zinsstore', 'Zins Store', ['store_resource' => $storeResource], true, true, true);
     }
 
+    /**
+     * 
+     * @return Response 
+     */
+    public function getStoreItems()
+    {
+        return $this->zinssStore->getStoreItemsResponse();
+    }
+
+    /**
+     * 
+     * @param Request $request 
+     * @return Response 
+     */
     public function buy(Request $request)
     {
         $item = $request->getInput('item');
         $amount = $request->getInput('amount');
 
-        try {
-            $store_items = Item::whereIn('name', ['daqloon horns', 'daqloon scale']);
-            $this->storeService->makeStore(["list" => $store_items]);
+        $initial_store = $this->zinssStore->makeStore([$item]);
+        $this->storeService->storeBuilder->setResource($initial_store);
 
-            $this->inventoryService->hasEnoughAmount($item, $amount);
-            $matched_item = $this->storeService->isStoreItem($item);
-
-            // Update data
-            $this->inventoryService->edit('gold', $matched_item[0]->value * $amount);
-            $this->inventoryService->edit($item, -$amount);
-        } catch (Exception $e) {
-            Response::addMessage($e->getMessage());
+        if (!$this->inventoryService->hasEnoughAmount($item, $amount)) {
+            return $this->inventoryService->logNotEnoughAmount($item);
         }
+
+        if (!$this->storeService->isStoreItem($item)) {
+            return $this->storeService->logNotStoreItem($item);
+        }
+        $store_item = $this->storeService->getStoreItem($item);
+
+        if (!$this->inventoryService->hasEnoughAmount(CURRENCY, $store_item->store_value * $amount)) {
+            return $this->inventoryService->logNotEnoughAmount(CURRENCY);
+        } else {
+            $this->inventoryService->edit(CURRENCY, $store_item->store_value * $amount);
+        }
+
+        $this->inventoryService->edit($item, -$amount);
+        return Response::setStatus(200);
     }
 }
