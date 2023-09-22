@@ -7,10 +7,10 @@ use App\libs\Request;
 use App\libs\Response;
 use App\models\Trader;
 use App\models\TravelBureauCart;
-use App\resources\StoreResource;
 use App\services\SessionService;
 use App\services\InventoryService;
 use App\services\StoreService;
+use App\Stores\TravelBureauStore;
 
 class TravelBureauController extends controller
 {
@@ -26,6 +26,7 @@ class TravelBureauController extends controller
         private StoreService $storeService,
         private InventoryService $inventoryService,
         private SessionService $sessionService,
+        private TravelBureauStore $travelBureauStore
     ) {
         parent::__construct();
     }
@@ -33,7 +34,7 @@ class TravelBureauController extends controller
     public function index()
     {
         $current_cart = Trader::where('username', $this->sessionService->getCurrentUsername())->first()->cart;
-        $store_resource = $this->makeShop();
+        $store_resource = $this->travelBureauStore->getStore();
 
         $this->render('travelbureau', 'Travel Bureau', [
             'store_resource' => $store_resource,
@@ -42,25 +43,11 @@ class TravelBureauController extends controller
     }
 
     /**
-     * 
-     * @return storeResource
-     */
-    protected function makeShop()
-    {
-        $Carts = TravelBureauCart::with('requiredItems', 'skillRequirements')->get();
-        $this->storeService->makeStore(["list" => $Carts]);
-
-        return $this->storeService
-            ->storeBuilder->setInfiniteAmount(true)
-            ->build();
-    }
-
-    /**
      * @return Response
      */
     public function getStoreItems()
     {
-        return Response::addData("store_items", $this->makeShop()->toArray()['store_items'])->setStatus(200);
+        return $this->travelBureauStore->getStoreItemsResponse();
     }
 
     /**
@@ -73,26 +60,23 @@ class TravelBureauController extends controller
     {
         $item = $request->getInput('item');
         $amount = 1;
-        $Cart = TravelBureauCart::where('name', $item)->with('requiredItems')->first();
+        $initial_store = $this->travelBureauStore->makeStore([$item]);
+        $this->storeService->storeBuilder->setResource($initial_store);
+
         $Trader = Trader::where('username', $this->sessionService->getCurrentUsername())->first();
-        if (!$Cart) {
-            return Response::setStatus(422)->addMessage("This cart does not exist");
-        } else if ($Cart->id === $Trader->cart_id) {
-            return Response::setStatus(422)->addMessage("You already have this cart");
-        }
-
-        $this->storeService->makeStore(
-            ["list" => [$Cart]]
-        );
-
-
+        $Cart = TravelBureauCart::where('name', $item)->first();
         if (!$this->storeService->isStoreItem($item)) {
             return $this->storeService->logNotStoreItem($item);
         }
+        $store_item = $this->storeService->getStoreItem($item);
 
-        $item_data = $this->storeService->getStoreItem($item);
+        if ($Cart->id === $Trader->cart_id) {
+            return Response::setStatus(422)->addMessage("You already have this cart");
+        }
 
-        foreach ($item_data->required_items as $key => $value) {
+        $this->storeService->hasRequiredItems($item, $amount);
+
+        foreach ($store_item->required_items as $key => $value) {
             if (!$this->inventoryService->hasEnoughAmount(
                 $value->name,
                 $value->amount * $amount
@@ -101,22 +85,22 @@ class TravelBureauController extends controller
             }
         }
 
-        if (!$this->inventoryService->hasEnoughAmount(CURRENCY, $item_data->store_value)) {
+        if (!$this->inventoryService->hasEnoughAmount(CURRENCY, $store_item->store_value)) {
             return $this->inventoryService->logNotEnoughAmount(CURRENCY);
         }
 
-        foreach ($item_data->required_items as $key => $value) {
+        foreach ($store_item->required_items as $key => $value) {
             $this->inventoryService->edit($value->name, $value->amount * $amount);
         }
 
-        if (!$this->inventoryService->hasEnoughAmount(CURRENCY, $item_data->store_value)) {
+        if (!$this->inventoryService->hasEnoughAmount(CURRENCY, $store_item->store_value)) {
             return $this->inventoryService->logNotEnoughAmount(CURRENCY);
         } else {
 
             $this->inventoryService
                 ->edit(
                     CURRENCY,
-                    -$this->storeService->calculateItemCost($item_data->name, $amount)
+                    -$this->storeService->calculateItemCost($store_item->name, $amount)
                 );
         }
 
