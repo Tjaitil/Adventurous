@@ -5,12 +5,9 @@ namespace App\controllers;
 use App\libs\controller;
 use App\libs\Request;
 use App\libs\Response;
-use App\models\HealingItem;
-use App\resources\StoreResource;
 use App\services\InventoryService;
-use App\services\SessionService;
-use App\services\StoreDiscountService;
 use App\services\StoreService;
+use App\Stores\BakeryStore;
 use App\validators\ValidateStoreTrade;
 
 class BakeryController extends controller
@@ -21,14 +18,12 @@ class BakeryController extends controller
      * @param InventoryService $inventoryService 
      * @param StoreService $storeService 
      * @param SessionService $sessionService 
-     * @param StoreDiscountService $storeDiscountService 
      * @return void 
      */
     function __construct(
         protected InventoryService $inventoryService,
         protected StoreService $storeService,
-        protected SessionService $sessionService,
-        protected StoreDiscountService $storeDiscountService,
+        protected BakeryStore $bakeryStore
     ) {
         parent::__construct();
     }
@@ -39,7 +34,8 @@ class BakeryController extends controller
      */
     public function index()
     {
-        $this->render('bakery', 'Bakery', ['store_resource' => $this->makeShop()], true, true, true);
+        $storeResource = $this->bakeryStore->getStore();
+        $this->render('bakery', 'Bakery', ['store_resource' => $storeResource], true, true, true);
     }
 
     /**
@@ -48,42 +44,31 @@ class BakeryController extends controller
      */
     public function getStoreItems()
     {
-        return Response::addData("store_items", $this->makeShop()->toArray()['store_items'])->setStatus(200);
+        return $this->bakeryStore->getStoreItemsResponse();
     }
 
     /**
-     * Make item
      *
      * @param Request $request
-     *
      * @return Response
      */
     public function makeItem(Request $request)
     {
-
         $item = $request->getInput('item');
         $amount = intval($request->getInput('amount'));
 
         ValidateStoreTrade::validate($request);
 
-        $store_item = HealingItem::with('requiredItems')->where('bakery_item', 1)->get();
-
-        $this->storeService->makeStore(
-            ["store_items" => $store_item]
-        )
-            ->storeBuilder
-            ->setAdjustedStoreValue($this->storeDiscountService->getDiscount('bakery'));
+        $initial_store = $this->bakeryStore->makeStore();
+        $this->storeService->storeBuilder->setResource($initial_store);
 
         if (!$this->storeService->isStoreItem($item)) {
             return $this->storeService->logNotStoreItem($item);
         }
-
         $store_item = $this->storeService->getStoreItem($item);
-        foreach ($store_item->required_items as $key => $value) {
-            if (!$this->inventoryService->hasEnoughAmount($value->name, $value->amount * $amount)) {
-                return $this->inventoryService->logNotEnoughAmount($value->name);
-                break;
-            }
+
+        if (!$this->storeService->hasRequiredItems($item, $amount)) {
+            return $this->storeService->logNotEnoughAmount();
         }
 
         foreach ($store_item->required_items as $key => $value) {
@@ -99,22 +84,5 @@ class BakeryController extends controller
         $this->inventoryService->edit($item, $amount);
 
         return Response::setStatus(200);
-    }
-
-    /**
-     * 
-     * @return StoreResource
-     */
-    protected function makeShop()
-    {
-        $BakeryItems = HealingItem::with('requiredItems')->where('bakery_item', 1)->get();
-
-
-        return $this->storeService->makeStore(["store_items" => $BakeryItems])
-            ->storeBuilder
-            ->setAdjustedStoreValue($this->storeDiscountService->getDiscount('bakery'))
-            ->setStoreName('bakery')
-            ->setInfiniteAmount(true)
-            ->build();
     }
 }
