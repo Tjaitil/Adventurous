@@ -1,4 +1,4 @@
-@props(['assignments' => [], 'current-location', 'trader-level'])
+@props(['assignments' => [], 'currentLocation', 'traderLevel'])
 @php
     /**
      *

@@ -1,4 +1,4 @@
-@props(['id' => null, 'text', 'type' => 'button'])
+@props(['id' => null, 'text' => '', 'type' => 'button'])
 @php
     /**
      * @param int $id

@@ -1,4 +1,4 @@
-@props(['show-amount_input' => false, 'label-text' => 'amount'])
+@props(['showAmountInput' => false, 'labelText' => 'amount'])
 @php
     /**
      * @param boolean $show-amount-input

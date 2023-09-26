@@ -1,4 +1,4 @@
-@props(['show-permits', 'workforce-data', 'do-action-text', 'finish-action-text', 'cancel-action-text', 'action-type-label', 'action-items' => [], 'permits' => 0])
+@props(['showPermits', 'workforceData', 'doActionText', 'finishActionText', 'cancelActionText', 'actionTypeLabel', 'actionItems' => [], 'permits' => 0])
 @php
     /**
      * @param bool $showPermits

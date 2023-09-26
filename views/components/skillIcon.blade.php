@@ -1,4 +1,4 @@
-@props(['skill', 'level', 'has-required-level' => true, 'show-able-color' => true, 'size' => 'small'])
+@props(['skill', 'level', 'hasRequiredLevel' => true, 'showAbleColor' => true, 'size' => 'small'])
 @php
     /**
      * @param string $skill
