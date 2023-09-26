@@ -5,6 +5,21 @@ namespace App\models;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
+
+/**
+ * @property int $id
+ * @property string $username
+ * @property float $adventurer_respect
+ * @property int $farmer_level
+ * @property int $farmer_xp
+ * @property int $miner_level
+ * @property int $miner_xp
+ * @property int $trader_level
+ * @property int $trader_xp
+ * @property int $warrior_level
+ * @property int $warrior_xp
+ * @package App\models
+ */
 class UserLevels extends Model
 {
     protected $appends = [
