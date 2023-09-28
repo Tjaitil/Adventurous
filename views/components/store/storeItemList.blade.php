@@ -5,7 +5,7 @@
      */
 @endphp
 <div id="store-container-item-list"
-    class="pb-05 flex-column min-[336px] flex basis-1/2 overflow-y-scroll">
+    class="pb-05 flex-column min-[336px] flex max-h-[600px] basis-1/2 overflow-y-scroll">
     @foreach ($storeItems as $key)
         <x-store.storeContainerItem :item="$key" />
     @endforeach

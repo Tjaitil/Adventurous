@@ -47,7 +47,6 @@ const storeContainer: IStoreContainer = {
         this.noTradeSelectedWrapper = document.getElementById("store-container-no-trade-selected");
         this.storeItemList = document.getElementById("store-container-item-list");
         this.storeContainer = document.getElementById("store-container-item-wrapper");
-        this.adjustStoreItemListHeight();
     },
 
     adjustStoreItemListHeight(): void {
