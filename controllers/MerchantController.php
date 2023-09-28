@@ -229,7 +229,7 @@ class MerchantController extends controller
                 return Response::addMessage("The merchant isn't selling that many item")->setStatus(400);
             }
 
-            $this->inventoryService->edit(CURRENCY, $total_cost);
+            $this->inventoryService->edit(CURRENCY, -$total_cost);
 
             $this->inventoryService->edit($store_item->name, $amount);
             $MerchantOffer->amount = $store_item->amount - $amount;

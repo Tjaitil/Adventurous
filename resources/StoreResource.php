@@ -22,7 +22,7 @@ class StoreResource extends Resource
             "store_value_modifier" => 1.00,
             "store_name" => "",
             "store_items" => [],
-            "inifinite_amount" => false,
+            "infinite_amount" => false,
         ], $resource);
     }
 
