@@ -15,7 +15,6 @@ export const sidebar = {
             element.addEventListener("click", (event) => this.showTab(event));
         });
         this.sidebarElement = document.getElementById("sidebar");
-        document.getElementById("sidebar_button_toggle").addEventListener("click", () => this.toggleSidebar());
     },
     toggleSidebar() {
         if (this.isSidebarToggled === false) {
