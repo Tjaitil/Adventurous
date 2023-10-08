@@ -1,4 +1,3 @@
-import { UpgradeEfficiencyResponse } from './../types/responses/CityCentreResponses';
 import { UpgradeEfficiencyRequest } from './../types/requests/CityCentreRequests';
 import { Inventory } from '../clientScripts/inventory';
 import { AdvApi } from './../AdvApi';
@@ -129,19 +128,5 @@ const cityCentreModule = {
         //     }
         // });
     },
-
-    upgradeEffiency(skill: string) {
-        const data: UpgradeEfficiencyRequest = {
-            skill
-        };
-
-        AdvApi.post<UpgradeEfficiencyResponse>('/citycentre/incrementEfficiency', data).then((response) => {
-            Inventory.update();
-
-            // tr.children[1].innerHTML = response.data.efficiencyLevel;
-            // tr.children[2].childNodes[0] = response.data.newEfficiencyPrice;
-        });
-
-    }
 };
 export default cityCentreModule;
