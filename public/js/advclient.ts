@@ -20,6 +20,7 @@ import { GetWorldResponse } from './types/responses/WorldLoaderResponse';
 import { getRandomInteger } from "./utilities/getRandomInteger.js";
 import { jsUcWords } from "./utilities/uppercase.js";
 import { LevelManager } from './LevelManager.js';
+import { setUpTabList } from './utilities/tabs.js';
 
 const CookieTicket = {
     checkCookieTicket(cookieNoob = "getOut") {
@@ -271,6 +272,7 @@ export class Game {
 
     public static setup() {
         conversation.setup();
+        setUpTabList();
 
         // Remove this ?
         sidebar.addClickEvent();
