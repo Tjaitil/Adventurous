@@ -1,11 +1,14 @@
-@props(['id', 'tab-id'])
+@props(['id', 'ariaLabelledBy', 'active' => false])
 @php
     /**
      * @param string $id
      * @param string $tabId
      */
 @endphp
-<div class="tabpanel invisible absolute w-full text-center text-white"
-    id="{{ $id }}" role="tabpanel" aria-labelledby="{{ $tabId }}">
+<div @class([
+    'tabpanel absolute w-full text-center text-white',
+    'hidden' => !$active,
+]) id="{{ $id }}" role="tabpanel"
+    aria-labelledby="{{ $ariaLabelledBy }}">
     {!! $slot !!}
 </div>
