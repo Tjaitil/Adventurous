@@ -57,9 +57,9 @@ export const sidebar = {
         let tabpanels = <HTMLElement[]>[...document.getElementById("sidebar-tabpanels").querySelectorAll(".tabpanel")];
         tabpanels.forEach(element => {
             if (element.id === targetTabPanelID) {
-                element.style.visibility = "visible";
+                element.classList.remove("hidden");
             } else {
-                element.style.visibility = "hidden";
+                element.classList.add("hidden");
             }
         });
         hideAllSkillTooltips();
