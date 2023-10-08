@@ -269,7 +269,7 @@ label {
 .inlineAuto {
     margin-inline: auto;
 }
-section table:not(#game_messages, .noDisplayBlock),
+section table:not(#game_messages, .noDisplayBlock, .custom-table),
 aside table {
     margin: 10px 0px 0px 0px;
     position: relative;
@@ -300,7 +300,7 @@ aside table {
     display: inline-block;
     height: 19px;
 }
-section table td,
+section table td:not(.custom-td),
 th,
 section caption,
 aside caption,
@@ -316,7 +316,13 @@ aside td {
     display: grid;
     grid-template-columns: repeat(4, max-content);
 }
-section tbody tr:not(.sectionTableNoPseudo):after {
+
+/** Tailwind doesn't support ridge border stylre */
+.border-ridge {
+    border-style: ridge;
+}
+
+section tbody tr:not(.sectionTableNoPseudo, .custom-tr):after {
     content: "";
     position: absolute;
     left: 10%;
@@ -324,14 +330,14 @@ section tbody tr:not(.sectionTableNoPseudo):after {
     height: 2px;
     background-color: #5f4121;
 }
-section table:not(#game_messages),
+section table:not(#game_messages, .custom-table),
 .div_content,
 #inventory {
     border: 8px ridge #5f4121;
     border-radius: 5px;
     position: relative;
 }
-section table:not(#game_messages)::after,
+section table:not(#game_messages, .custom-table)::after,
 .div_content::after,
 #inventory::after {
     content: "";
@@ -344,7 +350,7 @@ section table:not(#game_messages)::after,
     top: -5px;
     border-radius: 4px;
 }
-section table:not(#game_messages) > *,
+section table:not(#game_messages, .custom-table) > *,
 .div_content > *,
 #inventory > *:not(#stck_menu) {
     position: relative;
@@ -357,7 +363,7 @@ section table:not(#game_messages) > *,
     background-color: var(--layoutBgColorDark);
     color: var(--textColor);
 }
-section table,
+section table:not(.custom-table),
 section button {
     margin-bottom: 5px;
     box-sizing: border-box;
