@@ -12,6 +12,7 @@ use App\controllers\MineController;
 use App\controllers\SmithyController;
 use App\controllers\StockpileController;
 use App\controllers\TravelBureauController;
+use App\controllers\WorkforceLodgeController;
 use App\controllers\ZinsstoreController;
 use App\libs\database;
 use App\libs\DependencyContainer;
@@ -67,6 +68,7 @@ $controller_mapping = [
     'travelbureau' => TravelBureauController::class,
     'bakery' => BakeryController::class,
     'zinsstore' => ZinsstoreController::class,
+    'workforcelodge' => WorkforceLodgeController::class,
 ];
 
 if (is_null($building) || !array_key_exists($building, $controller_mapping)) {

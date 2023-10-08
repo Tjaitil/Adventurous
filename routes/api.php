@@ -21,6 +21,7 @@ use App\libs\Route;
 use App\libs\Router;
 use App\controllers\TraderAssignmentController;
 use App\controllers\TravelBureauController;
+use App\controllers\WorkforceLodgeController;
 
 require(ROUTE_ROOT . 'vendor/autoload.php');
 
@@ -104,5 +105,7 @@ Route::post('/armycamp/endTraining', [ArmyCampController::class, "endTraining"])
 Route::post('/armycamp/healWarrior', [ArmyCampController::class, "healWarrior"]);
 
 Route::get('/userlevels', [UserLevelsController::class, "getLevels"]);
+
+Route::post('/workforcelodge/efficiency/upgrade', [WorkforceLodgeController::class, "upgradeEfficiency"]);
 
 $match = Router::getInstance()->matchRoute($_SERVER['REQUEST_METHOD'], $uri);

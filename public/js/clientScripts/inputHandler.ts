@@ -1,3 +1,4 @@
+import { ModuleTester } from './../devtools/ModuleTester.js';
 import { Character } from './../gamepieces/Character';
 import { controls } from "./controls.js";
 import { ClientOverlayInterface } from "./clientOverlayInterface.js";
@@ -9,6 +10,7 @@ import { conversation } from "./conversation.js";
 import { GamePieces } from "./gamePieces.js";
 import { Building } from "../gamepieces/Building.js";
 import { HUD } from './HUD.js';
+import { setUpTabList } from '../utilities/tabs.js';
 
 
 enum Buildings {
@@ -19,6 +21,7 @@ enum Buildings {
     CROPS = "crops",
     ZINSSTORE = "zinsstore",
     MERCHANT = "merchant",
+    WORKFORCELODGE = "workforcelodge",
 }
 
 type BuildingName = `${Buildings}`;
@@ -66,6 +69,9 @@ export const inputHandler: IInputHandler = {
         },
         [Buildings.MERCHANT]: {
             "script": "merchant.js",
+        },
+        [Buildings.WORKFORCELODGE]: {
+            "script": "workforcelodge.js",
         }
     },
     buildingMatch: <undefined | Building>undefined,
@@ -168,13 +174,15 @@ export const inputHandler: IInputHandler = {
                 }
                 const module = await import(src + script).then((data) => {
                     this.currentBuildingModule = data;
-
+                    setUpTabList();
                     if (typeof this.currentBuildingModule.default === "function") {
-                        new this.currentBuildingModule.default();
+                        let classInstance = (new this.currentBuildingModule.default());
+                        new ModuleTester(classInstance, Game.properties.building, { defaultExport: false, });
                     } else if (this.currentBuildingModule.default.init) {
                         this.currentBuildingModule.default.init();
+                        new ModuleTester(this.currentBuildingModule, Game.properties.building, { defaultExport: true, });
                     }
-
+                    console.log(this.currentBuildingModule);
                 });
             })
             .catch(error => {
