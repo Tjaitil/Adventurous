@@ -7,5 +7,5 @@
 @endphp
 <button id="{{ $id }}" type="{{ $type }}"
     {{ $attributes->merge(['class' => 'cursor-pointer hover:bg-primary-200']) }}>
-    {{ $text }}
+    {{ $slot }}
 </button>
