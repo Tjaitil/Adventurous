@@ -1,8 +1,8 @@
 <?php
 
-namespace App\resources;
+namespace App\Http\Resources;
 
-use App\resources\Resource;
+use App\Http\Resources\Resource;
 
 /**
  * @property int $warrior_id

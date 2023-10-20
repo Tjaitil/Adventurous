@@ -1,10 +1,10 @@
 <?php
 
-namespace App\services;
+namespace App\Services;
 
-use App\enums\GameLocations;
-use App\models\CityRelation;
-use App\models\Diplomacy;
+use App\Enums\GameLocations;
+use App\Models\CityRelation;
+use App\Models\Diplomacy;
 use Exception;
 
 class DiplomacyService

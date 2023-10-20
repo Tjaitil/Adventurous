@@ -1,21 +1,21 @@
 <?php
 
-namespace App\controllers;
+namespace App\Http\Controllers;
 
-use App\enums\SkillNames;
+use App\Enums\SkillNames;
 use App\libs\Request;
 use App\libs\Response;
 use App\libs\controller;
-use App\services\HungerService;
-use App\services\SkillsService;
-use App\services\SessionService;
+use App\Services\HungerService;
+use App\Services\SkillsService;
+use App\Services\SessionService;
 use App\libs\TemplateFetcher;
-use App\models\Trader;
-use App\models\TraderAssignment;
-use App\models\TraderAssignmentType;
-use App\services\DiplomacyService;
-use App\services\InventoryService;
-use App\services\LocationService;
+use App\Models\Trader;
+use App\Models\TraderAssignment;
+use App\Models\TraderAssignmentType;
+use App\Services\DiplomacyService;
+use App\Services\InventoryService;
+use App\Services\LocationService;
 use Carbon\Carbon;
 
 class TraderAssignmentController extends controller

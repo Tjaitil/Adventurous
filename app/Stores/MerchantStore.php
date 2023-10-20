@@ -3,11 +3,11 @@
 namespace App\Stores;
 
 use App\Abstracts\AbstractStore;
-use App\models\MerchantOffer;
-use App\resources\StoreResource;
-use App\services\DiplomacyService;
-use App\services\LocationService;
-use App\services\SessionService;
+use App\Models\MerchantOffer;
+use App\Http\Resources\StoreResource;
+use App\Services\DiplomacyService;
+use App\Services\LocationService;
+use App\Services\SessionService;
 use Illuminate\Database\Eloquent\Builder;
 
 class MerchantStore extends AbstractStore

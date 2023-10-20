@@ -1,8 +1,8 @@
 <?php
 
-namespace App\services;
+namespace App\Services;
 
-use App\models\LevelData;
+use App\Models\LevelData;
 
 class LevelDataService
 {
@@ -55,7 +55,7 @@ class LevelDataService
     /**
      * 
      * @param int $level 
-     * @return \Illuminate\Database\Eloquent\Builder|\App\models\LevelData 
+     * @return \Illuminate\Database\Eloquent\Builder|\App\Models\LevelData 
      */
     public function getMaxEfficiencyLevel(int $level)
     {

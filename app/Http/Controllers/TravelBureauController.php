@@ -1,15 +1,15 @@
 <?php
 
-namespace App\controllers;
+namespace App\Http\Controllers;
 
 use App\libs\controller;
 use App\libs\Request;
 use App\libs\Response;
-use App\models\Trader;
-use App\models\TravelBureauCart;
-use App\services\SessionService;
-use App\services\InventoryService;
-use App\services\StoreService;
+use App\Models\Trader;
+use App\Models\TravelBureauCart;
+use App\Services\SessionService;
+use App\Services\InventoryService;
+use App\Services\StoreService;
 use App\Stores\TravelBureauStore;
 
 class TravelBureauController extends controller

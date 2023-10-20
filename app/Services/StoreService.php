@@ -1,10 +1,10 @@
 <?php
 
-namespace App\services;
+namespace App\Services;
 
-use App\builders\StoreBuilder;
+use App\Http\Builders\StoreBuilder;
 use App\libs\Response;
-use App\resources\StoreItemResource;
+use App\Http\Resources\StoreItemResource;
 use Illuminate\Database\Eloquent\Model;
 
 class StoreService

@@ -2,11 +2,11 @@
 
 namespace App\libs;
 
-use App\controllers\AdvclientController;
-use App\controllers\IndexController;
-use App\controllers\LoginController;
-use App\controllers\MainController;
-use App\controllers\notfound;
+use App\Http\Controllers\AdvclientController;
+use App\Http\Controllers\IndexController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\MainController;
+use App\Http\Controllers\notfound;
 use \Exception;
 
 // TODO: Clean up this file

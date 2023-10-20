@@ -1,19 +1,19 @@
 <?php
 
-namespace App\controllers;
+namespace App\Http\Controllers;
 
 use App\libs\controller;
 use App\libs\Request;
 use App\libs\Response;
-use App\models\Crop;
-use App\models\Farmer;
-use App\models\FarmerWorkforce;
-use App\services\CountdownService;
-use App\services\HungerService;
-use App\services\InventoryService;
-use App\services\LocationService;
-use App\services\SessionService;
-use App\services\SkillsService;
+use App\Models\Crop;
+use App\Models\Farmer;
+use App\Models\FarmerWorkforce;
+use App\Services\CountdownService;
+use App\Services\HungerService;
+use App\Services\InventoryService;
+use App\Services\LocationService;
+use App\Services\SessionService;
+use App\Services\SkillsService;
 use Carbon\Carbon;
 use Respect\Validation\Validator;
 

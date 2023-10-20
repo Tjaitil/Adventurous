@@ -3,9 +3,9 @@
 namespace App\Stores;
 
 use App\Abstracts\AbstractStore;
-use App\models\HealingItem;
-use App\resources\StoreResource;
-use App\services\StoreDiscountService;
+use App\Models\HealingItem;
+use App\Http\Resources\StoreResource;
+use App\Services\StoreDiscountService;
 use Illuminate\Database\Eloquent\Builder;
 
 class BakeryStore extends AbstractStore

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\builders;
+namespace App\Http\Builders;
 
-use App\resources\CountdownResource;
-use App\resources\SkillActionResource;
-use App\resources\TimeResource;
-use App\resources\WorkforceResource;
+use App\Http\Resources\CountdownResource;
+use App\Http\Resources\SkillActionResource;
+use App\Http\Resources\TimeResource;
+use App\Http\Resources\WorkforceResource;
 
 /**
  * @deprecated 

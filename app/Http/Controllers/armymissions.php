@@ -1,10 +1,10 @@
 <?php
 
-namespace App\controllers;
+namespace App\Http\Controllers;
 
 use App\libs\controller;
 use App\libs\Response;
-use App\services\WarriorService;
+use App\Services\WarriorService;
 
 class ArmymissionsController extends controller
 {

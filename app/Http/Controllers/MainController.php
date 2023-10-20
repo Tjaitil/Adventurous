@@ -1,6 +1,6 @@
 <?php
 
-namespace App\controllers;
+namespace App\Http\Controllers;
 
 use App\libs\controller;
 use \DateTime;

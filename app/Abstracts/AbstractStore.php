@@ -2,9 +2,9 @@
 
 namespace App\Abstracts;
 
-use App\builders\StoreBuilder;
+use App\Http\Builders\StoreBuilder;
 use App\libs\Response;
-use App\resources\StoreResource;
+use App\Http\Resources\StoreResource;
 
 abstract class AbstractStore
 {

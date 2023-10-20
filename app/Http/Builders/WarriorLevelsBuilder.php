@@ -1,8 +1,8 @@
 <?php
 
-namespace App\builders;
+namespace App\Http\Builders;
 
-use App\resources\WarriorLevelsResource;
+use App\Http\Resources\WarriorLevelsResource;
 
 
 class WarriorLevelsBuilder

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\resources;
+namespace App\Http\Resources;
 
 /**
  * @property int $assignment_id Trader assignment id

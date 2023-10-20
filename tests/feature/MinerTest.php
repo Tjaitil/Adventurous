@@ -2,8 +2,8 @@
 
 namespace App\tests;
 
-use App\enums\GameLocations;
-use App\models\Miner;
+use App\Enums\GameLocations;
+use App\Models\Miner;
 use App\tests\support\DatabaseUtils\UserTrait;
 use Carbon\Carbon;
 

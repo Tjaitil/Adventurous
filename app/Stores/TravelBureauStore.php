@@ -3,8 +3,8 @@
 namespace App\Stores;
 
 use App\Abstracts\AbstractStore;
-use App\models\TravelBureauCart;
-use App\resources\StoreResource;
+use App\Models\TravelBureauCart;
+use App\Http\Resources\StoreResource;
 use Illuminate\Database\Eloquent\Builder;
 
 class TravelBureauStore extends AbstractStore

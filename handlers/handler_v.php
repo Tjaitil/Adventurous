@@ -1,19 +1,19 @@
 <?php
 
-use App\controllers\ArcheryShopController;
-use App\controllers\ArmoryController;
-use App\controllers\ArmyCampController;
-use App\controllers\ArmymissionsController;
-use App\controllers\BakeryController;
-use App\controllers\CityCentreController;
-use App\controllers\CropsController;
-use App\controllers\MerchantController;
-use App\controllers\MineController;
-use App\controllers\SmithyController;
-use App\controllers\StockpileController;
-use App\controllers\TravelBureauController;
-use App\controllers\WorkforceLodgeController;
-use App\controllers\ZinsstoreController;
+use App\Http\Controllers\ArcheryShopController;
+use App\Http\Controllers\ArmoryController;
+use App\Http\Controllers\ArmyCampController;
+use App\Http\Controllers\ArmymissionsController;
+use App\Http\Controllers\BakeryController;
+use App\Http\Controllers\CityCentreController;
+use App\Http\Controllers\CropsController;
+use App\Http\Controllers\MerchantController;
+use App\Http\Controllers\MineController;
+use App\Http\Controllers\SmithyController;
+use App\Http\Controllers\StockpileController;
+use App\Http\Controllers\TravelBureauController;
+use App\Http\Controllers\WorkforceLodgeController;
+use App\Http\Controllers\ZinsstoreController;
 use App\libs\database;
 use App\libs\DependencyContainer;
 use App\libs\handler;

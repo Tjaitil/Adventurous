@@ -1,9 +1,9 @@
 <?php
 
-namespace App\services;
+namespace App\Services;
 
-use App\models\ArmoryItemsData;
-use App\models\WarriorsArmory;
+use App\Models\ArmoryItemsData;
+use App\Models\WarriorsArmory;
 
 class ArmoryService
 {

@@ -1,16 +1,16 @@
 <?php
 
-namespace App\controllers;
+namespace App\Http\Controllers;
 
 use App\libs\Request;
 use App\libs\Response;
 use App\libs\controller;
-use App\models\Inventory;
-use App\models\Stockpile;
-use App\services\SessionService;
+use App\Models\Inventory;
+use App\Models\Stockpile;
+use App\Services\SessionService;
 use Respect\Validation\Validator;
-use App\services\InventoryService;
-use App\models\UserData;
+use App\Services\InventoryService;
+use App\Models\UserData;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Blade;
 

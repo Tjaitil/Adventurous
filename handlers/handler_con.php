@@ -2,7 +2,7 @@
 
 namespace App\handlers;
 
-use App\controllers\conversation;
+use App\Http\Controllers\conversation;
 use App\libs\App;
 use App\libs\DependencyContainer;
 use App\libs\handler;

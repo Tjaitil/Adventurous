@@ -1,22 +1,22 @@
 <?php
 
-namespace App\controllers;
+namespace App\Http\Controllers;
 
 use App\libs\Request;
 use App\libs\Response;
 use App\libs\controller;
-use App\models\MerchantOffer;
-use App\services\StoreService;
-use App\services\SessionService;
+use App\Models\MerchantOffer;
+use App\Services\StoreService;
+use App\Services\SessionService;
 use Respect\Validation\Validator;
-use App\services\DiplomacyService;
-use App\services\InventoryService;
+use App\Services\DiplomacyService;
+use App\Services\InventoryService;
 use App\libs\TemplateFetcher;
-use App\models\Item;
-use App\models\Trader;
-use App\models\TraderAssignment;
-use App\services\LocationService;
-use App\services\SkillsService;
+use App\Models\Item;
+use App\Models\Trader;
+use App\Models\TraderAssignment;
+use App\Services\LocationService;
+use App\Services\SkillsService;
 use App\Stores\MerchantStore;
 use App\validators\ValidateStoreTrade;
 

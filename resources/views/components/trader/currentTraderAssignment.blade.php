@@ -2,8 +2,8 @@
 @php
     /**
      *
-     * @var \App\models\TraderAssignment $CurrentAssignment
-     * @var \App\models\Trader $Trader
+     * @var \App\Models\TraderAssignment $CurrentAssignment
+     * @var \App\Models\Trader $Trader
      */
 @endphp
 <div id="traderAssignment_current" class="mb-2">

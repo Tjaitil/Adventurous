@@ -2,7 +2,7 @@
 
 namespace App\tests\support;
 
-use App\models\UserData;
+use App\Models\UserData;
 
 trait SessionTrait
 {

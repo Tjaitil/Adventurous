@@ -1,17 +1,17 @@
 <?php
 
-namespace App\controllers;
+namespace App\Http\Controllers;
 
 use App\libs\controller;
 use App\libs\Request;
 use App\libs\Response;
-use App\models\EfficiencyUpgrade;
-use App\models\FarmerWorkforce;
-use App\models\MinerWorkforce;
-use App\services\InventoryService;
-use App\services\LevelDataService;
-use App\services\SessionService;
-use App\services\SkillsService;
+use App\Models\EfficiencyUpgrade;
+use App\Models\FarmerWorkforce;
+use App\Models\MinerWorkforce;
+use App\Services\InventoryService;
+use App\Services\LevelDataService;
+use App\Services\SessionService;
+use App\Services\SkillsService;
 
 class WorkforceLodgeController extends controller
 {

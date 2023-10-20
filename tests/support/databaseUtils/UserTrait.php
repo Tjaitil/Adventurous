@@ -2,9 +2,9 @@
 
 namespace App\tests\support\DatabaseUtils;
 
-use App\enums\GameLocations;
-use App\enums\GameMaps;
-use App\models\UserData;
+use App\Enums\GameLocations;
+use App\Enums\GameMaps;
+use App\Models\UserData;
 use App\tests\support\SessionTrait;
 
 trait UserTrait

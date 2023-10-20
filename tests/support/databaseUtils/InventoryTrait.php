@@ -2,7 +2,7 @@
 
 namespace App\tests\support\DatabaseUtils;
 
-use App\models\Inventory;
+use App\Models\Inventory;
 use App\tests\support\SessionTrait;
 
 trait InventoryTrait

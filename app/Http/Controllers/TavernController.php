@@ -1,27 +1,27 @@
 <?php
 
-namespace App\controllers;
+namespace App\Http\Controllers;
 
-use App\builders\WarriorBuilder;
-use App\builders\WorkforceBuilder;
+use App\Http\Builders\WarriorBuilder;
+use App\Http\Builders\WorkforceBuilder;
 use App\libs\controller;
 use App\libs\Request;
 use App\libs\Response;
-use App\models\Armory_model;
-use App\models\FarmerWorkforce_model;
-use App\models\LevelData;
-use App\models\MineWorkforce_model;
-use App\models\TavernPrices_model;
-use App\models\TavernTimes_model;
-use App\models\TavernWorkers_model;
-use App\models\UserLevels;
-use App\models\Warrior_model;
-use App\models\Warriors;
-use App\models\Warriors_model;
-use App\models\WarriorsLevels_model;
-use App\models\WarriorsLevelsData;
-use App\services\SessionService;
-use App\services\InventoryService;
+use App\Models\Armory_model;
+use App\Models\FarmerWorkforce_model;
+use App\Models\LevelData;
+use App\Models\MineWorkforce_model;
+use App\Models\TavernPrices_model;
+use App\Models\TavernTimes_model;
+use App\Models\TavernWorkers_model;
+use App\Models\UserLevels;
+use App\Models\Warrior_model;
+use App\Models\Warriors;
+use App\Models\Warriors_model;
+use App\Models\WarriorsLevels_model;
+use App\Models\WarriorsLevelsData;
+use App\Services\SessionService;
+use App\Services\InventoryService;
 use GameConstants;
 use Exception;
 use Respect\Validation\Validator;

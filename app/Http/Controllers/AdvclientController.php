@@ -1,15 +1,15 @@
 <?php
 
-namespace App\controllers;
+namespace App\Http\Controllers;
 
 use App\libs\controller;
-use App\models\Diplomacy;
-use App\models\UserData;
-use App\models\UserLevels;
-use App\services\HungerService;
-use App\services\InventoryService;
-use App\services\ProfiencyService;
-use App\services\SessionService;
+use App\Models\Diplomacy;
+use App\Models\UserData;
+use App\Models\UserLevels;
+use App\Services\HungerService;
+use App\Services\InventoryService;
+use App\Services\ProfiencyService;
+use App\Services\SessionService;
 
 class AdvclientController extends controller
 {

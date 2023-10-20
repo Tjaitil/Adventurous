@@ -1,20 +1,20 @@
 <?php
 
-namespace App\controllers;
+namespace App\Http\Controllers;
 
-use App\enums\GameLocations;
+use App\Enums\GameLocations;
 use App\libs\controller;
 use App\libs\Request;
 use App\libs\Response;
-use App\models\Miner;
-use App\models\Mineral;
-use App\models\MinerPermitCost;
-use App\models\MinerWorkforce;
-use App\services\HungerService;
-use App\services\InventoryService;
-use App\services\LocationService;
-use App\services\SessionService;
-use App\services\SkillsService;
+use App\Models\Miner;
+use App\Models\Mineral;
+use App\Models\MinerPermitCost;
+use App\Models\MinerWorkforce;
+use App\Services\HungerService;
+use App\Services\InventoryService;
+use App\Services\LocationService;
+use App\Services\SessionService;
+use App\Services\SkillsService;
 use Carbon\Carbon;
 use Respect\Validation\Validator;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\models;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $trader_xp
  * @property int $warrior_level
  * @property int $warrior_xp
- * @package App\models
+ * @package App\Models
  */
 class UserLevels extends Model
 {

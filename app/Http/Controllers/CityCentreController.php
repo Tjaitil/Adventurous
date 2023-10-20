@@ -1,18 +1,18 @@
 <?php
 
-namespace App\controllers;
+namespace App\Http\Controllers;
 
-use App\builders\WorkforceBuilder;
-use App\enums\SkillNames;
+use App\Http\Builders\WorkforceBuilder;
+use App\Enums\SkillNames;
 use App\libs\controller;
 use App\libs\Request;
 use App\libs\Response;
-use App\models\FarmerWorkforce_model;
-use App\models\LevelData;
-use App\models\MineWorkforce_model;
-use App\models\UserLevels;
-use App\services\InventoryService;
-use App\services\SessionService;
+use App\Models\FarmerWorkforce_model;
+use App\Models\LevelData;
+use App\Models\MineWorkforce_model;
+use App\Models\UserLevels;
+use App\Services\InventoryService;
+use App\Services\SessionService;
 use GameConstants;
 use Respect\Validation\Validator;
 

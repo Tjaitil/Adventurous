@@ -1,8 +1,8 @@
 <?php
 
-namespace App\builders;
+namespace App\Http\Builders;
 
-use App\resources\StoreResource;
+use App\Http\Resources\StoreResource;
 
 class StoreBuilder
 {

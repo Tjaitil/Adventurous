@@ -1,10 +1,10 @@
 <?php
 
-namespace App\controllers;
+namespace App\Http\Controllers;
 
 use App\libs\Response;
 use App\libs\controller;
-use App\services\ProfiencyService;
+use App\Services\ProfiencyService;
 use App\libs\TemplateFetcher;
 
 class ProfiencyStatusController extends controller

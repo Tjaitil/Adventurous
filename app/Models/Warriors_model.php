@@ -1,9 +1,9 @@
 <?php
 
-namespace App\models;
+namespace App\Models;
 
 use App\libs\model;
-use App\resources\WarriorResource;
+use App\Http\Resources\WarriorResource;
 use \PDO;
 
 /**

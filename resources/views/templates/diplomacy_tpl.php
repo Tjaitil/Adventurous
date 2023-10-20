@@ -1,6 +1,6 @@
 <?php
 
-use App\resources\DiplomacyResource;
+use App\Http\Resources\DiplomacyResource;
 
 /**
  * Get CSS class based on diplomacy level

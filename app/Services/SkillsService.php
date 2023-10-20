@@ -1,13 +1,13 @@
 <?php
 
-namespace App\services;
+namespace App\Services;
 
-use App\actions\CanLevelUpAction;
-use App\builders\SkillsBuilder;
-use App\enums\SkillNames;
+use App\Actions\CanLevelUpAction;
+use App\Http\Builders\SkillsBuilder;
+use App\Enums\SkillNames;
 use App\libs\Response;
-use App\models\LevelData;
-use App\models\UserLevels;
+use App\Models\LevelData;
+use App\Models\UserLevels;
 use Exception;
 
 /**

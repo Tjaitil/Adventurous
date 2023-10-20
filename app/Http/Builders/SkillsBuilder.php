@@ -1,8 +1,8 @@
 <?php
 
-namespace App\builders;
+namespace App\Http\Builders;
 
-use App\resources\SkillsResource;
+use App\Http\Resources\SkillsResource;
 
 
 class SkillsBuilder

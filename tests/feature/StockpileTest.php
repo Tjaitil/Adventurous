@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\models\Inventory;
-use App\models\Stockpile;
+use App\Models\Inventory;
+use App\Models\Stockpile;
 use App\tests\BaseTest;
 
 class StockpileTest extends BaseTest

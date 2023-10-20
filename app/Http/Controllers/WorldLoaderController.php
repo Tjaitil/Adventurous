@@ -1,13 +1,13 @@
 <?php
 
-namespace App\controllers;
+namespace App\Http\Controllers;
 
-use App\enums\GameMaps;
+use App\Enums\GameMaps;
 use App\libs\controller;
 use App\libs\Request;
 use App\libs\Response;
-use App\models\UserData;
-use App\services\SessionService;
+use App\Models\UserData;
+use App\Services\SessionService;
 
 class WorldLoaderController extends controller
 {

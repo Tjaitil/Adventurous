@@ -1,12 +1,12 @@
 <?php
 
-namespace App\builders;
+namespace App\Http\Builders;
 
-use App\enums\GameLocations;
-use App\resources\CountdownResource;
-use App\resources\TimeResource;
-use App\resources\WarriorLevelsResource;
-use App\resources\WarriorResource;
+use App\Enums\GameLocations;
+use App\Http\Resources\CountdownResource;
+use App\Http\Resources\TimeResource;
+use App\Http\Resources\WarriorLevelsResource;
+use App\Http\Resources\WarriorResource;
 use GameConstants;
 
 

@@ -3,8 +3,8 @@
 namespace App\Stores;
 
 use App\Abstracts\AbstractStore;
-use App\models\Item;
-use App\resources\StoreResource;
+use App\Models\Item;
+use App\Http\Resources\StoreResource;
 
 class ZinssStore extends AbstractStore
 {

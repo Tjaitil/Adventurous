@@ -2,8 +2,8 @@
 
 namespace App\tests;
 
-use App\models\Inventory;
-use App\models\TravelBureauCart;
+use App\Models\Inventory;
+use App\Models\TravelBureauCart;
 
 class TravelBureauTest extends BaseTest
 {

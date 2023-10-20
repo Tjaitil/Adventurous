@@ -1,18 +1,18 @@
 <?php
 
-namespace App\controllers;
+namespace App\Http\Controllers;
 
-use App\actions\MapRequiredDataAction;
-use App\enums\SkillNames;
+use App\Actions\MapRequiredDataAction;
+use App\Enums\SkillNames;
 use App\libs\controller;
 use App\libs\Logger;
 use App\libs\Request;
 use App\libs\Response;
-use App\models\SmithyItem;
-use App\services\InventoryService;
-use App\services\SessionService;
-use App\services\SkillsService;
-use App\services\StoreService;
+use App\Models\SmithyItem;
+use App\Services\InventoryService;
+use App\Services\SessionService;
+use App\Services\SkillsService;
+use App\Services\StoreService;
 use App\validators\ValidateStoreTrade;
 use GameConstants;
 

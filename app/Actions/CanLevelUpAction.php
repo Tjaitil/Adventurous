@@ -1,6 +1,6 @@
 <?php
 
-namespace App\actions;
+namespace App\Actions;
 
 class CanLevelUpAction
 {

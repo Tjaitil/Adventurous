@@ -1,8 +1,8 @@
 <?php
 
-namespace App\resources;
+namespace App\Http\Resources;
 
-use App\services\CountdownService;
+use App\Services\CountdownService;
 
 /**
  * @property string $time

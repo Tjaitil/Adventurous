@@ -3,8 +3,8 @@
 namespace App\tests;
 
 use App\tests\support\DatabaseUtils\UserTrait;
-use App\enums\GameLocations;
-use App\models\Farmer;
+use App\Enums\GameLocations;
+use App\Models\Farmer;
 use App\tests\support\DatabaseUtils\InventoryTrait;
 use Carbon\Carbon;
 

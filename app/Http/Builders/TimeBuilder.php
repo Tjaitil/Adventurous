@@ -1,8 +1,8 @@
 <?php
 
-namespace App\builders;
+namespace App\Http\Builders;
 
-use App\resources\TimeResource;
+use App\Http\Resources\TimeResource;
 
 /**
  * @deprecated 

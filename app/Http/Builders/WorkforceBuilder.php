@@ -1,8 +1,8 @@
 <?php
 
-namespace App\builders;
+namespace App\Http\Builders;
 
-use App\resources\WorkforceResource;
+use App\Http\Resources\WorkforceResource;
 
 class WorkforceBuilder
 {

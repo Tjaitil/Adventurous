@@ -1,15 +1,15 @@
 <?php
 
-namespace App\services;
+namespace App\Services;
 
-use App\actions\MergeIntoSubArrayAction;
-use App\builders\WarriorBuilder;
-use App\enums\GameLocations;
+use App\Actions\MergeIntoSubArrayAction;
+use App\Http\Builders\WarriorBuilder;
+use App\Enums\GameLocations;
 use App\libs\Response;
-use App\models\Warriors;
-use App\models\Warriors_model;
-use App\models\WarriorsArmory;
-use App\models\WarriorsLevels_model;
+use App\Models\Warriors;
+use App\Models\Warriors_model;
+use App\Models\WarriorsArmory;
+use App\Models\WarriorsLevels_model;
 use Illuminate\Database\Eloquent\Collection;
 
 /**

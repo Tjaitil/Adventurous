@@ -1,8 +1,8 @@
 <?php
 
-namespace App\builders;
+namespace App\Http\Builders;
 
-use App\resources\TraderAssignmentResource;
+use App\Http\Resources\TraderAssignmentResource;
 
 class TraderAssignmentBuilder
 {

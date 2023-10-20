@@ -3,7 +3,7 @@
 namespace App\libs;
 
 use App\libs\Response;
-use App\resources\Resource;
+use App\Http\Resources\Resource;
 use Exception;
 use \PDO;
 use \PDOStatement;

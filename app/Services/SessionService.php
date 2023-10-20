@@ -1,9 +1,9 @@
 <?php
 
-namespace App\services;
+namespace App\Services;
 
-use App\enums\GameMaps;
-use App\models\UserData;
+use App\Enums\GameMaps;
+use App\Models\UserData;
 
 
 /**

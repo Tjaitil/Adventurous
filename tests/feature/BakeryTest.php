@@ -2,8 +2,8 @@
 
 namespace App\tests;
 
-use App\models\HealingItem;
-use App\models\Inventory;
+use App\Models\HealingItem;
+use App\Models\Inventory;
 
 class BakeryTest extends BaseTest
 {

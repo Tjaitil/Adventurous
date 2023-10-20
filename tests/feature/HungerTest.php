@@ -2,9 +2,9 @@
 
 namespace App\tests;
 
-use App\models\HealingItem;
-use App\models\Hunger;
-use App\models\Inventory;
+use App\Models\HealingItem;
+use App\Models\Hunger;
+use App\Models\Inventory;
 
 class HungerTest extends BaseTest
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\services;
+namespace App\Services;
 
-use App\models\StoreDiscount;
+use App\Models\StoreDiscount;
 
 class StoreDiscountService
 {

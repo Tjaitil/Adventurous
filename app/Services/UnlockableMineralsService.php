@@ -1,9 +1,9 @@
 <?php
 
-namespace App\services;
+namespace App\Services;
 
 use App\libs\Response;
-use App\models\UserData;
+use App\Models\UserData;
 
 class UnlockableMineralsService
 {

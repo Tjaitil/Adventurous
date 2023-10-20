@@ -1,24 +1,24 @@
 <?php
 
-namespace App\controllers;
+namespace App\Http\Controllers;
 
-use App\actions\CalculateCharacterHealthAction;
-use App\actions\CanLevelUpAction;
-use App\actions\MergeIntoSubArrayAction;
-use App\builders\WarriorBuilder;
-use App\builders\WarriorLevelsBuilder;
+use App\Actions\CalculateCharacterHealthAction;
+use App\Actions\CanLevelUpAction;
+use App\Actions\MergeIntoSubArrayAction;
+use App\Http\Builders\WarriorBuilder;
+use App\Http\Builders\WarriorLevelsBuilder;
 use App\libs\controller;
 use App\libs\Request;
 use App\libs\Response;
-use App\models\HealingItem;
-use App\models\TrainingTypeData;
-use App\models\Warriors;
-use App\resources\WarriorResource;
-use App\services\CountdownService;
-use App\services\InventoryService;
-use App\services\SessionService;
-use App\services\SkillsService;
-use App\services\WarriorService;
+use App\Models\HealingItem;
+use App\Models\TrainingTypeData;
+use App\Models\Warriors;
+use App\Http\Resources\WarriorResource;
+use App\Services\CountdownService;
+use App\Services\InventoryService;
+use App\Services\SessionService;
+use App\Services\SkillsService;
+use App\Services\WarriorService;
 use \Exception;
 use Respect\Validation\Validator;
 

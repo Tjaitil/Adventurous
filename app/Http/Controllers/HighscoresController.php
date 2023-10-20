@@ -1,11 +1,11 @@
 <?php
 
-namespace App\controllers;
+namespace App\Http\Controllers;
 
 use App\libs\controller;
 use App\libs\Response;
-use App\models\UserLevels;
-use App\services\SessionService;
+use App\Models\UserLevels;
+use App\Services\SessionService;
 
 class HighscoresController extends controller
 {

@@ -1,14 +1,14 @@
 <?php
 
-namespace App\services;
+namespace App\Services;
 
 use App\libs\Response;
-use App\models\Farmer;
-use App\models\Miner;
-use App\models\Trader;
-use App\models\Warriors;
-use App\resources\SkillActionResource;
-use App\services\CountdownService;
+use App\Models\Farmer;
+use App\Models\Miner;
+use App\Models\Trader;
+use App\Models\Warriors;
+use App\Http\Resources\SkillActionResource;
+use App\Services\CountdownService;
 
 /**
  * @property SkillActionResource[] $farm_resources

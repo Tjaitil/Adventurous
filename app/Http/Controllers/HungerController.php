@@ -1,16 +1,16 @@
 <?php
 
-namespace App\controllers;
+namespace App\Http\Controllers;
 
 use App\libs\controller;
 use Respect\Validation\Validator;
 use App\libs\Request;
 use App\libs\Response;
-use App\models\HealingItem;
-use App\models\Hunger;
-use App\services\HungerService;
-use App\services\InventoryService;
-use App\services\SessionService;
+use App\Models\HealingItem;
+use App\Models\Hunger;
+use App\Services\HungerService;
+use App\Services\InventoryService;
+use App\Services\SessionService;
 
 class HungerController extends controller
 {

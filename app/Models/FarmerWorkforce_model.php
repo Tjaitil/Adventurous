@@ -1,9 +1,9 @@
 <?php
 
-namespace App\models;
+namespace App\Models;
 
 use App\libs\model;
-use App\resources\WorkforceResource;
+use App\Http\Resources\WorkforceResource;
 use \PDO;
 
 class FarmerWorkforce_model extends model

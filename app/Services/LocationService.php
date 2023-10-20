@@ -1,8 +1,8 @@
 <?php
 
-namespace App\services;
+namespace App\Services;
 
-use App\enums\GameLocations;
+use App\Enums\GameLocations;
 
 class LocationService
 {

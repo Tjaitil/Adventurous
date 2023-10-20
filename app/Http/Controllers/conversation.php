@@ -1,9 +1,9 @@
 <?php
 
-namespace App\controllers;
+namespace App\Http\Controllers;
 
 use App\libs\controller;
-use App\services\SessionService;
+use App\Services\SessionService;
 
 // TODO: Rewrite this
 class conversation extends controller

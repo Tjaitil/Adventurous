@@ -1,12 +1,12 @@
 <?php
 
-namespace App\controllers;
+namespace App\Http\Controllers;
 
 use App\libs\controller;
 use App\libs\Request;
 use App\libs\Response;
-use App\services\InventoryService;
-use App\services\StoreService;
+use App\Services\InventoryService;
+use App\Services\StoreService;
 use App\Stores\BakeryStore;
 use App\validators\ValidateStoreTrade;
 

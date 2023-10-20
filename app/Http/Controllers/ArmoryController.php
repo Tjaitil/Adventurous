@@ -1,20 +1,20 @@
 <?php
 
-namespace App\controllers;
+namespace App\Http\Controllers;
 
-use App\enums\SkillNames;
+use App\Enums\SkillNames;
 use App\libs\controller;
 use App\libs\Request;
 use App\libs\Response;
-use App\models\ArmoryItemsData;
-use App\models\WarriorsArmory;
-use App\resources\WarriorArmoryResource;
-use App\services\ArmoryService;
-use App\services\SessionService;
-use App\services\InventoryService;
-use App\services\SkillsService;
-use App\services\UnlockableMineralsService;
-use App\services\WarriorService;
+use App\Models\ArmoryItemsData;
+use App\Models\WarriorsArmory;
+use App\Http\Resources\WarriorArmoryResource;
+use App\Services\ArmoryService;
+use App\Services\SessionService;
+use App\Services\InventoryService;
+use App\Services\SkillsService;
+use App\Services\UnlockableMineralsService;
+use App\Services\WarriorService;
 use Illuminate\Database\Eloquent\Collection;
 use Respect\Validation\Validator;
 use App\libs\TemplateFetcher;

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\controllers;
+namespace App\Http\Controllers;
 
-use App\models\Item;
+use App\Models\Item;
 use App\libs\response;
 use App\libs\controller;
-use App\models\Inventory;
-use App\services\SessionService;
+use App\Models\Inventory;
+use App\Services\SessionService;
 use App\libs\TemplateFetcher;
 
 class InventoryController extends controller

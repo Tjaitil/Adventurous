@@ -1,6 +1,6 @@
 <?php
 
-namespace App\enums;
+namespace App\Enums;
 
 enum GameMaps: string
 {
@@ -63,7 +63,7 @@ enum GameMaps: string
 
     /**
      * 
-     * @return \App\enums\GameLocations[] 
+     * @return \App\Enums\GameLocations[] 
      */
     public static function locationMapping()
     {
