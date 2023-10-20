@@ -1,111 +1,126 @@
 <?php
 
-use App\controllers\ArcheryShopController;
-use App\controllers\ArmoryController;
-use App\controllers\ArmyCampController;
-use App\controllers\BakeryController;
-use App\controllers\CityCentreController;
-use App\controllers\CropsController;
-use App\controllers\HungerController;
-use App\controllers\InventoryController;
-use App\controllers\MerchantController;
-use App\controllers\MineController;
-use App\controllers\ProfiencyStatusController;
-use App\controllers\SmithyController;
-use App\controllers\StockpileController;
-use App\controllers\UserLevelsController;
-use App\controllers\WorldLoaderController;
-use App\controllers\ZinsstoreController;
-use App\libs\Response;
-use App\libs\Route;
-use App\libs\Router;
-use App\controllers\TraderAssignmentController;
-use App\controllers\TravelBureauController;
-use App\controllers\WorkforceLodgeController;
+use App\Http\Controllers\ArcheryShopController;
+use App\Http\Controllers\ArmoryController;
+use App\Http\Controllers\ArmyCampController;
+use App\Http\Controllers\BakeryController;
+use App\Http\Controllers\CityCentreController;
+use App\Http\Controllers\CropsController;
+use App\Http\Controllers\HungerController;
+use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\MerchantController;
+use App\Http\Controllers\MineController;
+use App\Http\Controllers\ProfiencyStatusController;
+use App\Http\Controllers\SmithyController;
+use App\Http\Controllers\StockpileController;
+use App\Http\Controllers\TraderAssignmentController;
+use App\Http\Controllers\TravelBureauController;
+use App\Http\Controllers\UserLevelsController;
+use App\Http\Controllers\WorkforceLodgeController;
+use App\Http\Controllers\WorldLoaderController;
+use App\Http\Controllers\ZinsstoreController;
+// use App\libs\Response;
+// use App\libs\Router;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
-require(ROUTE_ROOT . 'vendor/autoload.php');
+// require ROUTE_ROOT.'vendor/autoload.php';
 
-$uri = urldecode(str_replace('/api', '',  $_SERVER['REQUEST_URI']));
-Response::clear();
-http_response_code(200);
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "api" middleware group. Make something great!
+|
+*/
 
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
 
-Route::get('/world', [WorldLoaderController::class, "loadWorld"]);
-Route::post('/world/change', [WorldLoaderController::class, "changeMap"]);
+// $uri = urldecode(str_replace('/api', '', $_SERVER['REQUEST_URI']));
+// Response::clear();
+// http_response_code(200);
 
-Route::get('/inventory', [InventoryController::class, "get"]);
-Route::get('/inventory/prices', [InventoryController::class, "getPrices"]);
+Route::get('/world', [WorldLoaderController::class, 'loadWorld']);
+Route::post('/world/change', [WorldLoaderController::class, 'changeMap']);
 
-Route::post('/crops/start', [CropsController::class, "growCrops"]);
-Route::post('/crops/end', [CropsController::class, "harvestCrops"]);
-Route::post('/crops/generate', [CropsController::class, "generateSeed"]);
-Route::get('/crops/data', [CropsController::class, "getViewData"]);
-Route::get('/crops/countdown', [CropsController::class, "getCountdown"]);
+Route::get('/inventory', [InventoryController::class, 'get']);
+Route::get('/inventory/prices', [InventoryController::class, 'getPrices']);
 
-Route::get('/mine/countdown', [MineController::class, "getCountdown"]);
-Route::post('/mine/start', [MineController::class, "start"]);
-Route::post('/mine/end', [MineController::class, "endMining"]);
-Route::get('/mine/data', [MineController::class, "getViewData"]);
+Route::post('/crops/start', [CropsController::class, 'growCrops']);
+Route::post('/crops/end', [CropsController::class, 'harvestCrops']);
+Route::post('/crops/generate', [CropsController::class, 'generateSeed']);
+Route::get('/crops/data', [CropsController::class, 'getViewData']);
+Route::get('/crops/countdown', [CropsController::class, 'getCountdown']);
 
-Route::get('/stockpile/{item}', [StockpileController::class, "show"]);
-Route::post('/stockpile/update', [StockpileController::class, "update"]);
+Route::get('/mine/countdown', [MineController::class, 'getCountdown']);
+Route::post('/mine/start', [MineController::class, 'start']);
+Route::post('/mine/end', [MineController::class, 'endMining']);
+Route::get('/mine/data', [MineController::class, 'getViewData']);
 
-Route::get('/zinsstore/store', [ZinsstoreController::class, "getStoreItems"]);
-Route::post('/zinsstore', [ZinsstoreController::class, "buy"]);
+Route::get('/stockpile/{item}', [StockpileController::class, 'show']);
+Route::post('/stockpile/update', [StockpileController::class, 'update']);
+
+Route::get('/zinsstore/store', [ZinsstoreController::class, 'getStoreItems']);
+Route::post('/zinsstore', [ZinsstoreController::class, 'buy']);
 
 Route::get('/merchant/{item}/price', [MerchantController::class]);
 Route::get('/merchant/countdown', [MerchantController::class]);
-Route::get('/merchant/store/items', [MerchantController::class, "getStoreItems"]);
-Route::get('/merchant/store', [MerchantController::class, "getStore"]);
-Route::post('/merchant/trade/open', [MerchantController::class, "tradeOpen"]);
-Route::post('/merchant/trade', [MerchantController::class, "trade"]);
+Route::get('/merchant/store/items', [MerchantController::class, 'getStoreItems']);
+Route::get('/merchant/store', [MerchantController::class, 'getStore']);
+Route::post('/merchant/trade/open', [MerchantController::class, 'tradeOpen']);
+Route::post('/merchant/trade', [MerchantController::class, 'trade']);
 
 Route::get('/trader/assignments', []);
-Route::post('/trader/assignment/new', [TraderAssignmentController::class, "newAssignment"]);
-Route::post('/trader/assignment/update', [TraderAssignmentController::class, "updateAssignment"]);
-Route::post('/trader/assignment/countdown', [TraderAssignmentController::class, "getAssignmentCountdown"]);
+Route::post('/trader/assignment/new', [TraderAssignmentController::class, 'newAssignment']);
+Route::post('/trader/assignment/update', [TraderAssignmentController::class, 'updateAssignment']);
+Route::post('/trader/assignment/countdown', [TraderAssignmentController::class, 'getAssignmentCountdown']);
 
-Route::post('/smithy/smith', [SmithyController::class, "smithItem"]);
-Route::get('/smithy', [SmithyController::class, "get"]);
+Route::post('/smithy/smith', [SmithyController::class, 'smithItem']);
+Route::get('/smithy', [SmithyController::class, 'get']);
 
-Route::get('/archeryshop/get', [ArcheryShopController::class, "getItems"]);
-Route::post('/archeryshop/fletch', [ArcheryShopController::class, "fletchItem"]);
+Route::get('/archeryshop/get', [ArcheryShopController::class, 'getItems']);
+Route::post('/archeryshop/fletch', [ArcheryShopController::class, 'fletchItem']);
 
-Route::post('/travelbureau/buy', [TravelBureauController::class, "buyCart"]);
-Route::get('/travelbureau/store', [TravelBureauController::class, "getStoreItems"]);
+Route::post('/travelbureau/buy', [TravelBureauController::class, 'buyCart']);
+Route::get('/travelbureau/store', [TravelBureauController::class, 'getStoreItems']);
 
-Route::post('/armory/add', [ArmoryController::class, "add"]);
-Route::post('/armory/remove', [ArmoryController::class, "remove"]);
+Route::post('/armory/add', [ArmoryController::class, 'add']);
+Route::post('/armory/remove', [ArmoryController::class, 'remove']);
 
-Route::get('/bakery', [BakeryController::class, "index"]);
-Route::get('/bakery/get', [BakeryController::class, "get"]);
-Route::post('/bakery/make', [BakeryController::class, "makeItem"]);
-Route::get('/bakery/store', [BakeryController::class, "getStoreItems"]);
+Route::get('/bakery', [BakeryController::class, 'index']);
+Route::get('/bakery/get', [BakeryController::class, 'get']);
+Route::post('/bakery/make', [BakeryController::class, 'makeItem']);
+Route::get('/bakery/store', [BakeryController::class, 'getStoreItems']);
 
-Route::post('/tavern/recruit', [TavernController::class, "recruitPersonell"]);
+Route::post('/tavern/recruit', [TavernController::class, 'recruitPersonell']);
 
-Route::get('/hunger/get', [HungerController::class, "getHunger"]);
-Route::get('/hunger/item/get', [HungerController::class, "getHealData"]);
-Route::post('/hunger/restore', [HungerController::class, "restoreHealth"]);
+Route::get('/hunger/get', [HungerController::class, 'getHunger']);
+Route::get('/hunger/item/get', [HungerController::class, 'getHealData']);
+Route::post('/hunger/restore', [HungerController::class, 'restoreHealth']);
 
-Route::get('/citycentre/upgradeEfficiency', [CityCentreController::class, "upgradeEfficiency"]);
+Route::get('/citycentre/upgradeEfficiency', [CityCentreController::class, 'upgradeEfficiency']);
 
-Route::get('/profiencystatus/get', [ProfiencyStatusController::class, "getStatuses"]);
+Route::get('/profiencystatus/get', [ProfiencyStatusController::class, 'getStatuses']);
 
-Route::get('/worldloader', [WorldLoaderController::class, "loadWorld"]);
-Route::post('/worldloader/change', [WorldLoaderController::class, "changeMap"]);
+Route::get('/worldloader', [WorldLoaderController::class, 'loadWorld']);
+Route::post('/worldloader/change', [WorldLoaderController::class, 'changeMap']);
 
-Route::get('/armycamp/warriors', [ArmyCampController::class, "get"]);
-Route::post('/armycamp/transfer', [ArmyCampController::class, "transferWarriors"]);
-Route::post('/armycamp/toggleRest', [ArmyCampController::class, "toggleWarriorsRest"]);
-Route::post('/armycamp/upgradeWarrior', [ArmyCampController::class, "upgradeWarriorLevel"]);
-Route::post('/armycamp/changeWarriorType', [ArmyCampController::class, "changeWarriorType"]);
-Route::post('/armycamp/startTraining', [ArmyCampController::class, "startTraining"]);
-Route::post('/armycamp/endTraining', [ArmyCampController::class, "endTraining"]);
-Route::post('/armycamp/healWarrior', [ArmyCampController::class, "healWarrior"]);
+Route::get('/armycamp/warriors', [ArmyCampController::class, 'get']);
+Route::post('/armycamp/transfer', [ArmyCampController::class, 'transferWarriors']);
+Route::post('/armycamp/toggleRest', [ArmyCampController::class, 'toggleWarriorsRest']);
+Route::post('/armycamp/upgradeWarrior', [ArmyCampController::class, 'upgradeWarriorLevel']);
+Route::post('/armycamp/changeWarriorType', [ArmyCampController::class, 'changeWarriorType']);
+Route::post('/armycamp/startTraining', [ArmyCampController::class, 'startTraining']);
+Route::post('/armycamp/endTraining', [ArmyCampController::class, 'endTraining']);
+Route::post('/armycamp/healWarrior', [ArmyCampController::class, 'healWarrior']);
 
-Route::get('/userlevels', [UserLevelsController::class, "getLevels"]);
+Route::get('/userlevels', [UserLevelsController::class, 'getLevels']);
 
-Route::post('/workforcelodge/efficiency/upgrade', [WorkforceLodgeController::class, "upgradeEfficiency"]);
+Route::post('/workforcelodge/efficiency/upgrade', [WorkforceLodgeController::class, 'upgradeEfficiency']);
 
-$match = Router::getInstance()->matchRoute($_SERVER['REQUEST_METHOD'], $uri);
+// $match = Router::getInstance()->matchRoute($_SERVER['REQUEST_METHOD'], $uri);

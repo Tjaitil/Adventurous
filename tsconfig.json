@@ -11,6 +11,6 @@
         "rootDir": "./public",
         "outDir": "./public/dist"
     },
-    "include": ["./public/js"],
-    "exclude": ["./public/js/types"]
+    "include": ["./public/js", "resources/js/clientScripts", "resources/js/devtools", "resources/js/types", "resources/js/utilities", "resources/js/AdvApi.ts", "resources/js/advclient.ts", "resources/js/ajax.ts", "resources/js/CustomFetchApi.ts", "resources/js/general.ts", "resources/js/ItemSelector.ts", "resources/js/LevelManager.ts", "resources/js/progressBar.ts", "resources/js/scriptLoader.ts", "resources/js/SkillActionContainer.ts", "resources/js/time.ts", "resources/js/UIInfoUpdater.ts", "resources/js/buildingScripts", "resources/js/gamepieces", "resources/js/checkSite.js", "resources/js/login.js", "resources/js/main.js", "resources/js/profile.js", "resources/js/registration.js"],
+    "exclude": ["resources/js/types"]
 }
