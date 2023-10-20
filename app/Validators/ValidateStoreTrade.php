@@ -1,6 +1,6 @@
 <?php
 
-namespace App\validators;
+namespace App\Validators;
 
 use App\libs\Request;
 use Respect\Validation\Validator;
