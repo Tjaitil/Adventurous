@@ -16,6 +16,7 @@
         "respect/validation": "^2.2"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.9",
         "fakerphp/faker": "^1.9.1",
         "laravel/pint": "^1.0",
         "laravel/sail": "^1.18",
@@ -27,6 +28,7 @@
     "autoload": {
         "psr-4": {
             "App\\": "app/",
+            "App\\libs\\": "./libs",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         }
