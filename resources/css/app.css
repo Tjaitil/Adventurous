@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.border-outset {
+    border-style: outset;
+}
+
+.border-inset {
+    border-style: inset;
+}
