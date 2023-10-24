@@ -2,14 +2,13 @@
 
 /**
  * @deprecated
- * 
  */
 function get_template($name, $data, $up = false, $flag = false)
 {
-    $filename = $name . '_tpl.php';
-    $path = constant('ROUTE_TEMPLATE') . $filename;
+    $filename = $name.'_tpl.php';
+    $path = constant('ROUTE_TEMPLATE').$filename;
     if (file_exists($path)) {
-        require($path);
+        require $path;
     } else {
         return;
     }
@@ -17,12 +16,12 @@ function get_template($name, $data, $up = false, $flag = false)
 
 function restore_file($file, $up = false)
 {
-    $filepath = constant('ROUTE_GAMEDATA') . $file . ".json";
+    $filepath = constant('ROUTE_GAMEDATA').$file.'.json';
     if ($up == true) {
-        $filepath = '../' . constant('ROUTE_GAMEDATA') . $file . ".json";
+        $filepath = '../'.constant('ROUTE_GAMEDATA').$file.'.json';
     }
     if (file_exists($filepath)) {
-        return (json_decode(file_get_contents($filepath, true), true));
+        return json_decode(file_get_contents($filepath, true), true);
     } else {
         return null;
     }
@@ -31,8 +30,6 @@ function restore_file($file, $up = false)
 /**
  * Wrapper around TemplateFetcher functionality
  *
- * @param string $name
- * @param array $data
  *
  * @return string;
  */
@@ -41,18 +38,6 @@ function fetchTemplate(string $name, array $data = [])
     try {
         echo \App\libs\TemplateFetcher::loadTemplate($name, $data);
     } catch (Exception $e) {
-        echo "Unable to load template";
+        echo 'Unable to load template';
     }
-}
-
-/**
- * Simulate laravels DD function
- * @param mixed $data 
- * @return never 
- */
-function dd($data)
-{
-    echo '<pre>';
-    die(var_dump($data));
-    echo '</pre>';
 }
