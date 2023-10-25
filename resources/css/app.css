@@ -9,3 +9,7 @@
 .border-inset {
     border-style: inset;
 }
+
+.image-crisp {
+    image-rendering: crisp-edges;
+}
