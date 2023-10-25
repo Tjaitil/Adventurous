@@ -1,51 +1,36 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-    <title><?php echo $title; ?></title>
-    <link rel="stylesheet" type="text/css" href="public/css/<?php echo $name ?>.css" />
-    <link rel='shortcut icon' type='image/x-icon' href='<?php echo constant('ROUTE_IMG') . 'favicon.ico'; ?>' />
-</head>
-
-<body>
-    <section id="slot1" class="login-slide">
-        <div id="background_image_container">
-            <img src="<?php echo constant('ROUTE_IMG') . "7.5m.png"; ?>" id="background_image" />
-        </div>
-        
-        <div class="front-title z-front">
-            <img src="<?php echo constant('ROUTE_IMG') . 'adventurous_logo.png'; ?>" />
-            <h1>dventurous</h1>
-        </div>
-    </section>
-    <section id="slot2" class="login-slide">
-        <div id="login">
-            <img src="<?php echo constant('ROUTE_IMG') . 'adventurous_logo.png'; ?>" />
-            <?php if (isset($_SESSION['outdatedSessionID'])) : ?>
-                <p style="color:red"> Your session is timed out or is logged in on another device. Login to continue to play</p>
-            <?php unset($_SESSION['outdatedSessionID']);
-            endif; ?>
-            <form id="login_form" name="login" method="post" action="/login">
-                <h1>Login to continue</h1>
-                </br>
-                <label for="username">Username</label>
-                <input id="username" type="text" name="username" minlength="4" />
-                <span class="login_error"><?php echo $this->error['userErr']; ?></span></br>
-                <label for="password">Password</label>
-                <input id="password" type="password" name="password" minlength="4" />
-                <span class="login_error"><?php echo $this->error['passErr']; ?></span></br></br>
-                <button type="submit">Login</button>
+@extends('landingLayout')
+@section('title', 'Login')
+@section('content')
+    <div class="absolute top-0 h-full w-full bg-[length:200%_200%]">
+        <img src="{{ asset('images/5.7m.png') }}" width="3200"
+            class="absolute h-full max-w-none object-cover transition duration-100 ease-linear"
+            id="background_image" />
+    </div>
+    <div class="w-screen h-screen flex flex-row items-center justify-center">
+        <div id="login"
+            class="relative mx-auto w-1/2 rounded-lg bg-primary-400 p-1 text-center text-white shadow-lg shadow-black">
+            <img src="{{ asset('images/adventurous_logo.png') }}" />
+            <form method="post" action="/authenticate"
+                class="flex flex-col items-center justify-center gap-3">
+                @csrf
+                <div class="max-w-md">
+                    <x-baseInput name="email" labelText="Email" />
+                </div>
+                <div class="max-w-md">
+                    <x-baseInput name="password" labelText="Password" type="password" minlength="4"
+                        textAlignment="text-start" />
+                </div>
+                <p @class([
+                    'text-red-600',
+                    'invisible' => !$errors->has('password') || !$errors->has('email'),
+                ])>
+                    Invalid credentials
+                </p>
+                <x-button type="submit" class="w-full max-w-md self-center">
+                    Login
+                </x-button>
+                <p>Registration is currently closed, contact kjetil@baksaas.no for access</p>
             </form>
-            <span class="login_error"><?php echo $this->error['loginfail']; ?></span>
-            <p>Registration is currently closed, contact kjetil@baksaas.no for access</p>
         </div>
-    </section>
-    <script src="<?php echo constant('ROUTE_JS') . 'login.js'; ?>"></script>
-    <!--<div>
-            <video autoplay>
-                <source src="../public/img/adventurous video test.mov" type="video/mp4">
-            </video>
-        </div>-->
-</body>
-
-</html>
+    </div>
+@endsection

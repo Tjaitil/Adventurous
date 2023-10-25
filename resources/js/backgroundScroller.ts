@@ -1,18 +1,16 @@
-window.addEventListener('load', function() {
-    backgroundImageSlider();
-});
+window.addEventListener('load', () => backgroundImageSlider());
 function backgroundImageSlider() {
     let direction = -1;
-    let request = requestAnimationFrame(animate);
+    requestAnimationFrame(animate);
     let duration = 0;
     function animate() {
         // If 2 frames have gone by, animate
         if(duration % 2 === 0) {
-            // Image is 3200 x 3200
+            // Fits best with a square image. Preferrably a map image 3200 x 3200
             let imageElement = document.getElementById("background_image");
             let leftStyle = imageElement.offsetLeft;
             // If leftStyle is at the right edge change direction back
-            if(direction == -1 && leftStyle < - (3100 - screen.width)) {
+            if(direction == -1 && leftStyle < - (imageElement.offsetWidth - screen.width)) {
                 direction = + 1;
             }
             else if(direction == 1 && leftStyle > - 100) {

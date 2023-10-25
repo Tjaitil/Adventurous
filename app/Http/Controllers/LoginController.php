@@ -2,71 +2,58 @@
 
 namespace App\Http\Controllers;
 
-use App\libs\controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class LoginController extends controller
+class LoginController extends Controller
 {
-    public $error = array('userErr' => '', 'passErr' => '', 'loginfail' => '');
-    private $username;
-    private $password;
-    public $session;
+    /**
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse
+     */
+    public function index(Request $request)
+    {
+        if (Auth::check()) {
+            return redirect()->intended('main');
+        }
 
-    function __construct($session)
-    {
-        parent::__construct(false);
-        if (isset($_SESSION['username'])) {
-            header("Location: /main");
-            exit();
-        }
-        $this->session = $session;
-        if (isset($_POST['username'])) {
-            $this->checkData();
-        }
+        return view('login')->with('title', 'Login');
     }
-    public function index()
+
+    /**
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function authenticate(Request $request)
     {
-        $array = array(NULL, 'none');
-        $this->renderWE('login', 'Login', false, $this->error);
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
+
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+
+            return redirect()->intended('main');
+        }
+
+        return back()
+            ->withErrors([
+                'email' => 'The provided credentials do not match our records.',
+            ])
+            ->onlyInput('email');
+
     }
-    public function checkData()
+
+    /**
+     * @return \Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse
+     */
+    public function logOut(Request $request)
     {
-        if (empty($_POST["username"])) {
-            $this->error['userErr'] = "Please enter username!";
-        } else {
-            $this->username = trim($_POST['username']);
-        }
-        // Check if password is empty
-        if (empty(trim($_POST['password']))) {
-            $this->error['passErr'] = 'Please enter your password.';
-        } else {
-            $this->password = $_POST['password'];
-        }
-        if (!empty($this->error['userErr']) || !empty($this->error['passErr'])) {
-            return $this->error;
-        }
-        if (empty($this->error['userErr']) || empty($this->error['passErr'])) {
-            $this->loadModel('Login', false);
-            $checkuser = $this->model->checkuser($this->username, $this->password);
-            if ($this->model->status == false) {
-                $this->error['loginfail'] = "Something went wrong, please try again later";
-            } else if (!$this->model->status == false) {
-                if (password_verify($this->password, $this->model->row['password'])) {
-                    $this->session->setSession($this->username, $loggedin = true);
-                    if ($this->model->profiency != "none") {
-                        // If profiency is set redirect to main
-                        header('Location: /main');
-                        exit();
-                    } else {
-                        // If the user has no profiency it is a new user and needs to chose one
-                        header('Location: /newuser');
-                        exit();
-                    }
-                } else {
-                    $this->error['passErr'] = "The password you submitted doesn't match";
-                }
-            }
-        } else {
-            $this->error['loginfail'] = "Something went wrong, please try again later";
-        }
+        Auth::logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return redirect('/login');
     }
 }
