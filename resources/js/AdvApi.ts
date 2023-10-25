@@ -4,7 +4,7 @@ import { gameLogger } from './utilities/gameLogger.js';
 
 type responseType<T> = T extends advAPIResponse ? T : T;
 export class AdvApi {
-    private static route = "/api";
+    private static route = "/";
 
     private static fetchInstance<T extends {}>(method: 'PUT' | 'GET' | 'POST', url: string, data?: Object): Promise<T> {
 
