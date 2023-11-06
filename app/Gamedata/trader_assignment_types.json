@@ -1,4 +1,0 @@
-[{"type":"small", "xp":"50", "per_cargo_xp": 0.2},
-{"type":"favor", "xp":"100", "per_cargo_xp": 0.5},
- {"type":"medium", "xp":"150", "per_cargo_xp": 0.7},
- {"type":"large", "xp":"200", "per_cargo_xp": 1}]

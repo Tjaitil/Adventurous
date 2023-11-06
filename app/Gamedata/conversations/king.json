@@ -1,7 +1,0 @@
-{
-    "index": "kg",
-    "kg": "a,king|Greetings traveler! Welcome to the capitol of Towher|Q",
-    "kgQ": ["b|Nice to meet you, tell me more about this kingdom|r1",
-            "b|What is up with all the soldiers present?|r2"],
-    "kgQr2": "a,princess|We are preparing an attack on the bandit scum|r"
-}
