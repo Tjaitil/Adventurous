@@ -11,7 +11,6 @@ import { HUD } from "./clientScripts/HUD.js";
 import { itemPrices } from "./clientScripts/inventory.js";
 import { Map } from "./clientScripts/map.js";
 import { pauseManager } from "./clientScripts/pause.js";
-import { sidebar } from "./clientScripts/sidebar.js";
 import { tutorial } from "./clientScripts/tutorial.js";
 import viewport from "./clientScripts/viewport.js";
 import { CustomFetchApi } from './CustomFetchApi.js';
@@ -94,7 +93,6 @@ function doubleClickDetect() {
 
 export class Game {
     public static properties: GameProperties = {
-        HUD: HUD,
         duration: 0,
         requestId: 0,
         pauseID: null,
@@ -274,8 +272,6 @@ export class Game {
         conversation.setup();
         setUpTabList();
 
-        // Remove this ?
-        sidebar.addClickEvent();
         ClientOverlayInterface.setup();
 
         viewport.setup({
