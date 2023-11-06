@@ -4,18 +4,22 @@ namespace App\Services;
 
 use App\libs\Response;
 use App\Models\Hunger;
+use Illuminate\Support\Facades\Auth;
 
 class HungerService
 {
+    private ?Hunger $Hunger;
 
-    private Hunger $Hunger;
-
-    public function __construct(private SessionService $sessionService)
+    public function __construct()
     {
-        $this->Hunger = Hunger::find($this->sessionService->user_id());
     }
 
-
+    private function getHunger()
+    {
+        if (! isset($this->Hunger)) {
+            $this->Hunger = Hunger::find(Auth::user()->id);
+        }
+    }
 
     /**
      * Get hunger
@@ -24,10 +28,10 @@ class HungerService
      */
     public function getCurrentHunger()
     {
+        $this->getHunger();
+
         return $this->Hunger->current;
     }
-
-
 
     /**
      * Get hunger data
@@ -36,10 +40,10 @@ class HungerService
      */
     public function getHungerData()
     {
+        $this->getHunger();
+
         return $this->Hunger;
     }
-
-
 
     /**
      * Check if hunger is too low for action
@@ -48,6 +52,8 @@ class HungerService
      */
     public function isHungerTooLow()
     {
+        $this->getHunger();
+
         if ($this->Hunger->current < 10) {
             return true;
         } else {
@@ -55,23 +61,17 @@ class HungerService
         }
     }
 
-
-
     /**
-     * 
-     * @return Response 
+     * @return Response
      */
     public function logHungerTooLow()
     {
-        return Response::addMessage("Your hunger bar is too low")->setStatus(422);
+        return Response::addMessage('Your hunger bar is too low')->setStatus(422);
     }
-
-
 
     /**
      * Set new hunger based on action
      *
-     * @param string $action
      *
      * @return void
      */
@@ -82,20 +82,18 @@ class HungerService
                 // TODO: Decrease hunger
                 $this->decreaseHunger(10);
             default:
-                # code...
+                // code...
                 break;
         }
     }
 
-
-
     /**
-     * 
-     * @param int $new_hunger 
-     * @return void 
+     * @return void
      */
     public function updateHunger(int $new_hunger)
     {
+        $this->getHunger();
+
         $this->Hunger->current = $new_hunger;
         if ($this->Hunger->current > 100) {
             $this->Hunger->current = 100;
@@ -104,24 +102,16 @@ class HungerService
         $this->Hunger->save();
     }
 
-
-
     /**
-     * 
-     * @param int $amount 
-     * @return void 
+     * @return void
      */
     public function decreaseHunger(int $amount)
     {
         $this->updateHunger($this->Hunger->current + $amount);
     }
 
-
-
     /**
-     * 
-     * @param int $amount 
-     * @return void 
+     * @return void
      */
     public function increaseHunger(int $amount)
     {

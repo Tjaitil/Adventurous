@@ -4,8 +4,9 @@ namespace App\Services;
 
 use App\libs\Response;
 use App\Models\Inventory;
-use \Exception;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * @property Collection $inventory_items
@@ -16,12 +17,8 @@ class InventoryService
 
     public function __construct(
         protected Inventory $inventory,
-        protected SessionService $sessionService
     ) {
-        $this->getInventory();
     }
-
-
 
     /**
      * Get inventory
@@ -30,19 +27,16 @@ class InventoryService
      */
     public function getInventory()
     {
-
-        return $this->inventory_items = $this->inventory->all()->where('username', $this->sessionService->user());
+        return $this->inventory_items = $this->inventory->all()->where('username', Auth::user()->name);
     }
-
-
 
     /**
      * Find item in inventory
      *
-     * @param string $item
+     *
+     * @return null|Inventory
      *
      * @throws Exception If user does not have item
-     * @return null|Inventory
      */
     public function findItem(string $item)
     {
@@ -55,13 +49,9 @@ class InventoryService
         return $item;
     }
 
-
-
     /**
      * Check if user has enough of a item
      *
-     * @param string $name
-     * @param int $amount
      *
      * @return bool
      */
@@ -79,13 +69,10 @@ class InventoryService
         }
     }
 
-
-
     /**
      * Log when user does not have enough amount
      *
-     * @param string $name Item name
-     *
+     * @param  string  $name Item name
      * @return Response
      */
     public function logNotEnoughAmount(string $name)
@@ -93,16 +80,14 @@ class InventoryService
         return Response::addMessage(sprintf("You don't have enough of %s", $name))->setStatus(400);
     }
 
-
-
     /**
      * Edit item in inventory
      *
-     * @param string $item Item to edit
-     * @param int $amount Positive will add and negative will subtract
-     * 
-     * @throws Exception On full inventory
+     * @param  string  $item Item to edit
+     * @param  int  $amount Positive will add and negative will subtract
      * @return self
+     *
+     * @throws Exception On full inventory
      */
     public function edit(string $item, int $amount)
     {
@@ -113,15 +98,15 @@ class InventoryService
 
         $new_amount = (is_null($InventoryItem)) ? $amount : $InventoryItem->amount + $amount;
 
-        if ($this->inventory_items->count() >= 18 && !$InventoryItem && $new_amount > 0) {
+        if ($this->inventory_items->count() >= 18 && ! $InventoryItem && $new_amount > 0) {
 
-            throw new Exception("Inventory is full!");
-        } else if ($InventoryItem === null) {
+            throw new Exception('Inventory is full!');
+        } elseif ($InventoryItem === null) {
 
             Inventory::create([
                 'item' => $item,
                 'amount' => $amount,
-                'username' => $this->sessionService->getCurrentUsername()
+                'username' => Auth::user()->username,
             ]);
         } else {
 
@@ -134,16 +119,16 @@ class InventoryService
                 $InventoryItem->save();
             }
         }
+
         return $this;
     }
-
-
 
     public function checkSkipInventory()
     {
         if (boolval($_ENV['skip_inventory']) === true) {
             return true;
         }
+
         return false;
     }
 }
