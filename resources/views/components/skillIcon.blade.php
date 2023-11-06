@@ -14,6 +14,6 @@
     'text-center',
 ])>
     <img {{ $attributes->class(['mx-auto', $size === 'medium' ? 'w-12 h-12' : 'w-8 h-8']) }}
-        src="{{ constant('ROUTE_IMG') . strtolower($skill) . ' icon.png' }}" />
+        src="{{ asset('images/' . strtolower($skill) . ' icon.png') }}" />
     {{ $level }}
 </p>

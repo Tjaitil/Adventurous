@@ -12,7 +12,7 @@
 <div class="text-white">
     <x-profiencyStatus.profiencyStatusWrapper>
         <img class="mx-auto"
-            src="{{ constant('ROUTE_IMG') . 'farmer icon.png' }}" />
+            src="{{ asset('images/farmer icon.png') }}" />
         @foreach ($Farmers as $Farmer)
             <h3 class="mt-1">{{ ucwords($Farmer->location) }}</h3>
             <p>
@@ -35,7 +35,7 @@
     <x-profiencyStatus.profiencyStatusWrapper>
 
         <img class="mx-auto"
-            src="{{ constant('ROUTE_IMG') . 'miner icon.png' }}" />
+            src="{{ asset('images/miner icon.png') }}" />
         @foreach ($Miners as $Miner)
             <h3 class="mt-1">{{ ucwords($Miner->location) }}</h3>
             <p>
@@ -57,7 +57,7 @@
     </x-profiencyStatus.profiencyStatusWrapper>
     <x-profiencyStatus.profiencyStatusWrapper>
         <img class="mx-auto"
-            src="{{ constant('ROUTE_IMG') . 'trader icon.png' }}" />
+            src="{{ asset('images/trader icon.png') }}" />
         @if (intval($Trader->assignment_id === 0))
             Nothing happening
         @else
@@ -94,7 +94,7 @@
     </x-profiencyStatus.profiencyStatusWrapper>
     <x-profiencyStatus.profiencyStatusWrapper>
         <img class="mx-auto"
-            src="{{ constant('ROUTE_IMG') . 'warrior icon.png' }}" />
+            src="{{ asset('images/warrior icon.png') }}" />
         <h3>Warrior(s)</h3>
         <p>{{ 'finished training: ' . $warrior_statuses['statuses']['finished_training'] }}
         </p>

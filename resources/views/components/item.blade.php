@@ -1,4 +1,4 @@
-@props(['name', 'amount', 'showTooltip' => true, 'showAmount' => true, 'id' => null])
+@props(['name', 'amount' => 0, 'showTooltip' => true, 'showAmount' => true, 'id' => null])
 @php
     /**
      * @param string $name
@@ -13,7 +13,7 @@
     @endif
     >
     <figure>
-        <img class="mx-auto" src="{{ constant('ROUTE_IMG') . strtolower($name) . '.png' }}" />
+        <img class="mx-auto" src="{{ asset('images/' . strtolower($name) . '.png') }}" />
         <figcaption @class(['tooltip' => $showTooltip === true])>
             {{ ucwords($name) }}
         </figcaption>
