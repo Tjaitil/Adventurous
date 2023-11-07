@@ -36,6 +36,12 @@ return [
             'throw' => false,
         ],
 
+        'gamedata' => [
+            'driver' => 'local',
+            'root' => storage_path('app/gamedata'),
+            'throw' => false,
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
