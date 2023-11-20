@@ -10,6 +10,14 @@
     border-style: inset;
 }
 
+.border-ridge {
+    border-style: ridge;
+}
+
 .image-crisp {
     image-rendering: crisp-edges;
+}
+
+.image-auto-render {
+    image-rendering: auto;
 }

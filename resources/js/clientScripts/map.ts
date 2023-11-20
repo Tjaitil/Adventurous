@@ -73,7 +73,7 @@ export class Map {
     private static mapType: string = "local";
 
     public static load(currentMap) {
-        this.localIMGElement.src = "public/images/" + currentMap + "m.png";
+        this.localIMGElement.src = "images/" + currentMap + "m.png";
         this.drawTags();
         this.checkImages();
         this.loadLocalMapTags();
@@ -144,7 +144,7 @@ export class Map {
             
             // Load default water image on failed load
             if(image.naturalHeight === 0) {
-                image.src = "public/images/1.10m.png";
+                image.src = "images/1.10m.png";
             }
         }
     }
@@ -152,20 +152,22 @@ export class Map {
     private static drawTags() {
         for (const i of this.mapTag) {
             let mapParentNumbers = i.mapParent.split(".");
-            let tag;
+            let element;
             if (i.tagType === "text") {
-                tag = document.createElement("span");
-                tag.className = "mapTextTag ";
+                let tag = document.createElement("span");
+                tag.classList.add("absolute", "text-white");
                 tag.style.fontSize = this.fontProperties[i.type] + "px";
                 tag.innerText = i.text;
+                element = tag;
             } else {
-                tag = document.createElement("img");
-                tag.src = "public/images/" + i.src + ".png";
+                let tag = document.createElement("img");
+                tag.src = "images/" + i.src + ".png";
+                element = tag;
             }
-            tag.className += "mapTag";
-            tag.style.left = i.x + (parseInt(mapParentNumbers[0]) - 1) * 200 + "px";
-            tag.style.top = i.y + (parseInt(mapParentNumbers[1]) - 1) * 200 + "px";
-            this.worldImgContainer.appendChild(tag);
+            element.classList.add("absolute", "mapTag");
+            element.style.left = i.x + (parseInt(mapParentNumbers[0]) - 1) * 200 + "px";
+            element.style.top = i.y + (parseInt(mapParentNumbers[1]) - 1) * 200 + "px";
+            this.worldImgContainer.appendChild(element);
         }
     }
 
@@ -180,10 +182,9 @@ export class Map {
             if (i.visible === false) {
                 continue;
             }
-            let tag;
-            tag = document.createElement("img");
-            tag.src = "public/images/" + i.src + ".png";
-            tag.className = "mapTag localTag";
+            let tag = document.createElement("img");
+            tag.src = "images/" + i.src + ".png";
+            tag.classList.add("mapTag", "w-[32]", "h-[32]")
             // Divide by 2 because the image is styled 1600px by 1600px. map.css -> #local_img
             tag.style.left = i.x / 2 + "px";
             tag.style.top = i.y / 2 + "px";
