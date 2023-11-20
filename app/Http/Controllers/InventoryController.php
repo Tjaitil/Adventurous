@@ -2,46 +2,45 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Item;
-use App\libs\response;
-use App\libs\controller;
+use App\Http\Responses\AdvResponse;
 use App\Models\Inventory;
-use App\Services\SessionService;
-use App\libs\TemplateFetcher;
+use App\Models\Item;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class InventoryController extends controller
+class InventoryController extends Controller
 {
-
     public function __construct(
-        private TemplateFetcher $TemplateFetcher,
         private Inventory $inventory,
-        private SessionService $sessionService
     ) {
-        parent::__construct();
     }
 
-    public function get()
+    public function get(Request $request): JsonResponse
     {
-        $data = $this->inventory
+        $Inventory = $this->inventory
             ->all()
-            ->where('username', $this->sessionService->getCurrentUsername())->toArray();
-        $inventory_template = $this->TemplateFetcher->loadTemplate('inventory', $data);
-        return response::addTemplate("inventory", $inventory_template);
+            ->where('username', Auth::user()->name);
+
+        $template = view('inventory')
+            ->with('Inventory', $Inventory)
+            ->render();
+
+        return (new AdvResponse)->addTemplate('inventory', $template)->toResponse($request);
     }
 
-    public function getPrices()
+    public function getPrices(): JsonResponse
     {
         $Inventory_prices = Item::select('name', 'store_value')->join('inventory', 'items.name', '=', 'inventory.item')
-            ->where('inventory.username', $this->sessionService->getCurrentUsername())
+            ->where('inventory.username', Auth::user()->name)
             ->get();
 
         $Stockpile_prices = Item::select('name', 'store_value')->join('stockpile', 'items.name', '=', 'stockpile.item')
-            ->where('stockpile.username', $this->sessionService->getCurrentUsername())
+            ->where('stockpile.username', Auth::user()->name)
             ->get();
 
         $prices = array_merge($Inventory_prices->toArray(), $Stockpile_prices->toArray());
 
-
-        return Response::setResponse(["prices" => $prices]);
+        return response()->json(['prices' => $prices]);
     }
 }
