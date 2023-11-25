@@ -2,8 +2,6 @@
 
 use App\libs\TemplateFetcher;
 
-require_once(constant('ROUTE_HELPER') . 'urlcheck.php');
-urlcheck();
 ?>
 <div id="log_pseudo_parent">
 
@@ -13,17 +11,16 @@ urlcheck();
     <div id="log" class="darkTextColor">
         <table id="game_messages">
             <?php
-            echo TemplateFetcher::loadTemplate('log', $_SESSION['log'] ?? []);
-            ?>
+            // echo TemplateFetcher::loadTemplate('log', $_SESSION['log'] ?? []);
+// ?>
         </table>
     </div>
 </div>
 <div id="log_2"></div>
 <?php
 
-// if (count($_SESSION['gamedata']['level_up']) > 0) : 
+// if (count($_SESSION['gamedata']['level_up']) > 0) :
 ?>
-<!-- <script src="<?php echo constant("ROUTE_JS") . 'levelup.js' ?>"></script> -->
 <!-- News is the black "curtain" which the content is displayed upon
      both used for alert and news -->
 <div id="news">
@@ -35,5 +32,5 @@ urlcheck();
     <div id="news_content_main_content" class="mb-2 mt-2">
 
     </div>
-    <img class="cont_exit" src="<?php echo constant("ROUTE_IMG") . 'exit.png'; ?>" width="20px" height="20px" />
+    <img class="cont_exit" src="{{ asset('images/exit.png'); }}" width="20px" height="20px" />
 </div>
