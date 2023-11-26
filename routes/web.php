@@ -40,7 +40,7 @@ Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/authenticate', [LoginController::class, 'authenticate']);
 Route::post('/logout', [LoginController::class, 'authenticate']);
 
-Route::get('/advclient', [AdvclientController::class, 'index']);
+Route::get('/advclient', [AdvclientController::class, 'index'])->name('clent');
 Route::get('/world', [WorldLoaderController::class, 'loadWorld']);
 Route::post('/world/change', [WorldLoaderController::class, 'changeMap']);
 
