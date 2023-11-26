@@ -2,61 +2,47 @@
 
 namespace App\Http\Controllers;
 
-use App\libs\controller;
 use App\Models\Diplomacy;
+use App\Models\Hunger;
 use App\Models\UserData;
 use App\Models\UserLevels;
 use App\Services\HungerService;
 use App\Services\InventoryService;
 use App\Services\ProfiencyService;
-use App\Services\SessionService;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
-class AdvclientController extends controller
+class AdvclientController extends Controller
 {
-    protected $city;
-    protected $cityfile;
-    public $data = array();
-
-    function __construct(
+    public function __construct(
         private HungerService $hungerService,
         private InventoryService $inventoryService,
-        private SessionService $sessionService,
         private ProfiencyService $profiencyService,
-        private Diplomacy $diplomacy
     ) {
-        parent::__construct();
     }
+
+    /**
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse
+     */
     public function index()
     {
-        $this->generateGameID();
+        // $this->generateGameID();
+        $user_data = UserData::where('username', Auth::user()->name ?? '')->first();
+        if (! $user_data instanceof UserData) {
+            Log::warning('User data not found for user:', ['user' => Auth::user(), 'session' => session()]);
 
-        // TODO: Fix this
-        $_SESSION['gamedata']['inventory'] = [];
-
-        $user_data = UserData::where('username', $this->sessionService->getCurrentUsername())->first()->toArray();
-
-        $this->render(
-            'advclient',
-            "",
-            [
-                'username' => $this->sessionService->getCurrentUsername(),
-                'location' => $user_data['location'],
-                'levels' => UserLevels::where('username', $this->sessionService->getCurrentUsername())->first()->toArray(),
-                'profiency' => $user_data['profiency'],
-                'current_hunger' => $this->hungerService->getCurrentHunger(),
-                'inventory' => $this->inventoryService->getInventory()->toArray(),
-                'profiency_status' => $this->profiencyService->calculateProfienciesStatuses(),
-                'diplomacy_data' => $this->diplomacy->where('username', $this->sessionService->getCurrentUsername())->get()->toArray(),
-            ],
-            false
-        );
-    }
-    private function generateGameID()
-    {
-        $str = 0;
-        for ($i = 0; $i < 8; $i++) {
-            $str .= rand(0, 9);
+            return redirect()->route('login');
         }
-        $_SESSION['gameid'] = $str;
+
+        return View('advclient')
+            ->with('username', Auth::user()->name)
+            ->with('location', $user_data->location)
+            ->with('Levels', UserLevels::where('username', Auth::user()->name)->first()->toArray())
+            ->with('profiency', $user_data->profiency)
+            ->with('Hunger', Hunger::where('user_id', Auth::user()->id)->first())
+            ->with('Inventory', $this->inventoryService->getInventory())
+            ->with('profiency_status', $this->profiencyService->calculateProfienciesStatuses())
+            ->with('Diplomacy', Diplomacy::where('username', Auth::user()->name)->get()->toArray())
+            ->with('map_location', UserData::where('username', Auth::user()->name)->first()->map_location);
     }
 }
