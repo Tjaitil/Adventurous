@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdvclientController;
 use App\Http\Controllers\ArcheryShopController;
 use App\Http\Controllers\ArmoryController;
 use App\Http\Controllers\ArmyCampController;
@@ -35,10 +36,11 @@ use Illuminate\Support\Facades\Route;
 */
 Route::get('/', [LandingController::class, 'index']);
 
-Route::get('/login', [LoginController::class, 'index']);
+Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/authenticate', [LoginController::class, 'authenticate']);
 Route::post('/logout', [LoginController::class, 'authenticate']);
 
+Route::get('/advclient', [AdvclientController::class, 'index']);
 Route::get('/world', [WorldLoaderController::class, 'loadWorld']);
 Route::post('/world/change', [WorldLoaderController::class, 'changeMap']);
 
