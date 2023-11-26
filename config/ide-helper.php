@@ -11,7 +11,7 @@ return [
     |
     */
 
-    'filename'  => '_ide_helper.php',
+    'filename' => '_ide_helper.php',
 
     /*
     |--------------------------------------------------------------------------
@@ -122,7 +122,7 @@ return [
     'include_helpers' => false,
 
     'helper_files' => [
-        base_path() . '/vendor/laravel/framework/src/Illuminate/Support/helpers.php',
+        base_path().'/vendor/laravel/framework/src/Illuminate/Support/helpers.php',
     ],
 
     /*
@@ -267,6 +267,7 @@ return [
     'type_overrides' => [
         'integer' => 'int',
         'boolean' => 'bool',
+        '\\Illuminate\Support\Carbon' => '\\Carbon\\Carbon',
     ],
 
     /*
