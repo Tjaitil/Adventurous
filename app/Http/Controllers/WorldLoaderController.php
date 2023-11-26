@@ -3,50 +3,52 @@
 namespace App\Http\Controllers;
 
 use App\Enums\GameMaps;
-use App\libs\controller;
-use App\libs\Request;
-use App\libs\Response;
-use App\Models\UserData;
+use App\Http\Responses\AdvResponse;
 use App\Services\SessionService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
-class WorldLoaderController extends controller
+class WorldLoaderController extends Controller
 {
-    public $username;
-    public $session;
-    private $object_array = array();
-    private $map;
-    private $changed_location;
-    private $objectCollisionData = array();
+    /**
+     * @var array<mixed>
+     */
+    private array $object_array = [];
 
-    function __construct(private SessionService $sessionService)
+    private string $map;
+
+    /**
+     * @var array<mixed>
+     */
+    private array $objectCollisionData = [];
+
+    public function __construct(private SessionService $sessionService)
     {
-        parent::__construct();
-        $buildingsArray = json_decode(file_get_contents(\ROUTE_ROOT . 'gamedata/buildings.json'), true);
+        $buildingsArray = json_decode(Storage::disk('gamedata')->get('buildings.json') ?? '', true);
         $buildingsArray = array_filter($buildingsArray['tiles'], function ($object) {
-            return (isset($object['properties']));
+            return isset($object['properties']);
         });
-        $landscapeArray = json_decode(file_get_contents(\ROUTE_ROOT . 'gamedata/landscape.json'), true);
+        $landscapeArray = json_decode(Storage::disk('gamedata')->get('landscape.json') ?? '', true);
         $landscapeArray = array_filter($landscapeArray['tiles'], function ($object) {
-            return (isset($object['properties']));
+            return isset($object['properties']);
         });
         $this->objectCollisionData = array_merge($buildingsArray, $landscapeArray);
     }
 
-
-
     /**
      * Change location
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
-    public function changeMap(Request $request)
+    public function changeMap(Request $request): JsonResponse
     {
-        $is_new_map_string = $request->getInput('is_new_map_string');
+        $Response = new AdvResponse();
+
+        $UserData = $this->sessionService->fetchData();
+        $is_new_map_string = $request->boolean('is_new_map_string');
         $new_destination = null;
         if ($is_new_map_string) {
-            $new_destination = $request->getInput('new_destination');
+            $new_destination = $request->input('new_destination');
 
             // Find the map in the index
             $match = false;
@@ -60,23 +62,23 @@ class WorldLoaderController extends controller
 
             // If match isn't true, it means that the destination does not exists
             if ($match !== true) {
-                return Response::addMessage("The place you are trying to reach doesn't exists")->setStatus(422);
+                return $Response->addMessage("The place you are trying to reach doesn't exists")->setStatus(422)->toResponse($request);
             }
         } else {
-            $newMap = $request->getInput('new_map');
-
+            $newMap = $request->input('new_map');
             // Check wether or not the difference is greater than 1. There should not be possible in normal game state to travel more..
             // ... than 1 difference without interference
             if ((abs($newMap['newX']) > 1 || abs($newMap['newY']) > 1)) {
                 // Throw error
-                return false;
+                return $Response->setStatus(400)->addMessage('You are trying to travel to far')->toResponse($request);
             }
             // If both newX and newY is 0 then the player is trying to access the same place they are.
-            else if ((abs($newMap['newX']) === 0 && abs($newMap['newY']) === 0)) {
+            elseif ((abs($newMap['newX']) === 0 && abs($newMap['newY']) === 0)) {
                 // Throw error
-                return false;
+                return $Response->setStatus(400)->addMessage('You are trying to travel to far')->toResponse($request);
             }
-            $split_array = explode('.', $this->sessionService->getCurrentMap());
+
+            $split_array = explode('.', $UserData->map_location);
 
             $split_array[0] = intval($split_array[0]);
             $split_array[1] = intval($split_array[1]);
@@ -88,8 +90,8 @@ class WorldLoaderController extends controller
 
             $this->map = $newMap = \implode('.', $split_array);
 
-            if (!in_array($newMap, GameMaps::getMaps())) {
-                return Response::addMessage("The place you are trying to reach doesn't exists")->setStatus(422);
+            if (! in_array($newMap, GameMaps::getMaps())) {
+                return $Response->addMessage("The place you are trying to reach doesn't exists")->setStatus(422)->toResponse($request);
             }
 
             $new_destination = GameMaps::locationMapping()[$newMap] ?? null;
@@ -97,7 +99,6 @@ class WorldLoaderController extends controller
             $this->map = $newMap;
         }
 
-        $UserData = UserData::where('username', [$this->sessionService->getCurrentUsername()])->first();
         $UserData->map_location = $this->map;
         if ($new_destination) {
             $UserData->location = $new_destination;
@@ -106,56 +107,48 @@ class WorldLoaderController extends controller
 
         $this->loadWorld();
 
-        return Response::setStatus(200);
+        return $Response->setStatus(200)->toResponse($request);
     }
 
-
-
-    /**
-     * Load world
-     *
-     * @return Response
-     */
-    public function loadWorld()
+    public function loadWorld(): JsonResponse
     {
-        $UserData = UserData::where('username', $this->sessionService->getCurrentUsername())->first();
-        if (is_null($UserData)) {
-            return Response::addMessage("User not found")->setStatus(403);
-        }
-
-        $this->map = $UserData->map_location;
-        if (!file_exists('../gamedata/' . $this->map . '.json')) {
-            $this->session['map_location'] = '3.5';
-        }
         $this->loadObjects();
 
         // $this->model = $this->loadModel('eventLoader', true);
         // $events = $this->model->loadEventPositions($this->map);
-
-        return Response::setData([
-            'current_map' => strval($this->map),
-            'changed_location' => $this->changed_location,
-            'map_data' => $this->object_array,
-            'events' => []
-        ]);
+        return response()->json([
+            'data' => [
+                'current_map' => strval($this->map),
+                'changed_location' => '',
+                'map_data' => $this->object_array,
+                'events' => [],
+            ],
+        ], 200);
     }
 
-
-
     /**
-     * 
-     * @return void 
+     * @return void|false
      */
     public function loadObjects()
     {
-        $string = json_decode(file_get_contents(\ROUTE_ROOT . 'gamedata/' . $this->map . '.json'), true);
-        $objects = array();
-        // $objects['title'] = getMapTitle();
-        $objects['objects'] = array();
+        $this->map = $this->sessionService->getCurrentMap();
 
-        $objects['buildings'] = array();
+        $file = Storage::disk('gamedata')->get($this->map.'.json');
+        if (! $file) {
+            Log::alert('File not found: '.$this->map.'.json');
+
+            return false;
+        }
+
+        $string = json_decode($file, true);
+
+        $objects = [];
+        // $objects['title'] = getMapTitle();
+        $objects['objects'] = [];
+
+        $objects['buildings'] = [];
         for ($i = 0; $i < count($string['layers']); $i++) {
-            if (in_array($string['layers'][$i]['name'], array("Objects", "Buildings", "Characters", "Figures")) === true) {
+            if (in_array($string['layers'][$i]['name'], ['Objects', 'Buildings', 'Characters', 'Figures']) === true) {
                 $object_array = $string['layers'][$i]['objects'];
                 for ($x = 0; $x < count($string['layers'][$i]['objects']); $x++) {
                     unset($object_array[$x]['gid']);
@@ -168,13 +161,13 @@ class WorldLoaderController extends controller
                             unset($object_array[$x]['properties']);
                         }
                     }
-                    if ($string['layers'][$i]['name'] === "Buildings") {
+                    if ($string['layers'][$i]['name'] === 'Buildings') {
                         $object_array[$x] = $this->setupBuilding($object_array[$x]);
                     }
-                    // If the diameter variables is not set, set them. 
+                    // If the diameter variables is not set, set them.
                     // Y value in images in json files are the value at the bottom and not up. To get the same base subtract
                     $object_array[$x] = $this->checkRotation($object_array[$x]);
-                    if (in_array($object_array[$x]['type'], array('figure', 'object'))) {
+                    if (in_array($object_array[$x]['type'], ['figure', 'object'])) {
                         // if($object_array[$x]['rotation'] === 90) {
                         //     $width = $object_array[$x]['width'];
                         //     $object_array[$x]['x'] = $object_array[$x]['x'] - $object_array[$x]['height'];
@@ -182,7 +175,7 @@ class WorldLoaderController extends controller
                         //     $object_array[$x]['height'] = $width;
                         // }
                         $object_array[$x]['y'] = round($object_array[$x]['y'], 2);
-                    } else if ($object_array[$x]['type'] === "daqloon_fighting_area") {
+                    } elseif ($object_array[$x]['type'] === 'daqloon_fighting_area') {
                         $object_array[$x]['y'] = round($object_array[$x]['y']);
                         $object_array[$x]['x'] = round($object_array[$x]['x']);
                         $object_array[$x]['diameterUp'] = $object_array[$x]['y'];
@@ -191,18 +184,18 @@ class WorldLoaderController extends controller
                         $object_array[$x]['diameterRight'] = $object_array[$x]['x'] + $object_array[$x]['width'];
                         $objects['daqloon_fighting_areas'][] = $object_array[$x];
                         unset($object_array[$x]);
+
                         continue;
                     } else {
                         $object_array[$x]['y'] = round($object_array[$x]['y'], 2) - $object_array[$x]['height'];
                     }
                     if (isset($object_array[$x]['src'])) {
                         $objectSrc = $object_array[$x]['src'];
-                        $objectCollData = array_values(array_filter($this->objectCollisionData, function ($object)
-                        use ($objectSrc) {
-                            return ($object['image'] == $objectSrc);
+                        $objectCollData = array_values(array_filter($this->objectCollisionData, function ($object) use ($objectSrc) {
+                            return $object['image'] == $objectSrc;
                         }));
                     }
-                    if (!isset($object_array[$x]['diameterUp'])) {
+                    if (! isset($object_array[$x]['diameterUp'])) {
                         $object_array[$x]['diameterUp'] = 0;
                         $object_array[$x]['diameterRight'] = 0;
                         $object_array[$x]['diameterDown'] = 0;
@@ -218,16 +211,16 @@ class WorldLoaderController extends controller
                         $object_array[$x]['diameterLeft'] = $object_array[$x]['x'] + $objectCollData['x'];
                         $object_array[$x]['diameterRight'] = $object_array[$x]['diameterLeft']
                             + $objectCollData['width'];
-                    } else if (($string['layers'][$i]['name'] === 'Buildings')) {
+                    } elseif (($string['layers'][$i]['name'] === 'Buildings')) {
                         $object_array[$x]['diameterUp'] = $object_array[$x]['y'] + 40;
                         $object_array[$x]['diameterDown'] = $object_array[$x]['y'] + $object_array[$x]['height'];
                         $object_array[$x]['diameterLeft'] = $object_array[$x]['x'];
                         $object_array[$x]['diameterRight'] = $object_array[$x]['x'] + $object_array[$x]['width'];
                     } else {
-                        if (!in_array($object_array[$x]['type'], array(
+                        if (! in_array($object_array[$x]['type'], [
                             'figure', 'start_point', 'daqloon_fighting_area',
-                            'desert_dune', 'nc_object', ''
-                        ))) {
+                            'desert_dune', 'nc_object', '',
+                        ])) {
                             switch ($object_array[$x]['height']) {
                                 case 32:
                                     $object_array[$x]['diameterUp'] = $object_array[$x]['y'] + 10;
@@ -237,7 +230,7 @@ class WorldLoaderController extends controller
                                     break;
                             }
                             // if(isset($object_array[$x]['src'])) var_dump($object_array[$x]);
-                            if (in_array($object_array[$x]['src'], array("crate_3.png", "crate_5.png"))) {
+                            if (in_array($object_array[$x]['src'], ['crate_3.png', 'crate_5.png'])) {
                                 $object_array[$x]['diameterUp'] = $object_array[$x]['y'] + 10;
                             }
                         } else {
@@ -256,65 +249,60 @@ class WorldLoaderController extends controller
             if ($string['layers'][$i]['name'] === 'Sides/Corners') {
                 $object_array = $string['layers'][$i]['objects'];
                 $objects['daqloon_fighting_areas'] = array_filter($object_array, function ($object) {
-                    return ($object['type'] === "daqloon_fighting_area");
+                    return $object['type'] === 'daqloon_fighting_area';
                 });
             }
         }
         $this->object_array = $objects;
     }
 
-
-
     /**
-     * 
-     * @param mixed $object 
-     * @return mixed 
+     * @param  array<mixed>  $object
+     * @return array<mixed>
      */
-    private function setupBuilding($object)
+    private function setupBuilding(array $object): array
     {
         switch ($object['src']) {
             case 'city centre.png':
-                $object['src'] = "citycentre.png";
+                $object['src'] = 'citycentre.png';
                 break;
             case 'army camp.png':
-                $object['src'] = "armycamp.png";
+                $object['src'] = 'armycamp.png';
                 break;
             default:
 
                 break;
         }
-        if (!isset($object['displayName'])) {
+        if (! isset($object['displayName'])) {
             $object['displayName'] = trim(substr($object['src'], 0, -4));
         }
-        if ($this->map === "9.9") {
+        if ($this->map === '9.9') {
             $object['visible'] = false;
         }
+
         return $object;
     }
 
-
-
     /**
-     * 
-     * @param mixed $object 
-     * @return mixed 
+     * @param  array<mixed>  $object
+     * @return array<mixed>
      */
-    private function setupCharacter($object)
+    private function setupCharacter(array $object): array
     {
         // Check conversation
-        if (in_array($object['src'], array(
+        if (in_array($object['src'], [
             'Woman character.png', 'Character13.png',
-            'Citizen.png'
-        ))) {
+            'Citizen.png',
+        ])) {
             $object['conversation'] = false;
         } else {
             $object['conversation'] = true;
         }
 
         // Set display name
-        $display_name = "";
+        $display_name = '';
         switch ($object['type']) {
-            case 'Woman character.png';
+            case 'Woman character.png':
                 $display_name = 'citizen';
                 break;
             case 'Character13.png':
@@ -337,17 +325,15 @@ class WorldLoaderController extends controller
                 break;
         }
         $object['displayName'] = $display_name;
+
         return $object;
     }
 
-
-
     /**
-     * 
-     * @param mixed $object 
-     * @return mixed 
+     * @param  array<mixed>  $object
+     * @return array<mixed>
      */
-    private function checkRotation($object)
+    private function checkRotation(array $object): array
     {
         if ($object['rotation'] !== 0) {
             switch ($object['rotation']) {
@@ -367,6 +353,7 @@ class WorldLoaderController extends controller
                     break;
             }
         }
+
         return $object;
     }
 }
