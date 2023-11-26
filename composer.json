@@ -23,8 +23,11 @@
         "laravel/sail": "^1.18",
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^7.0",
+        "nunomaduro/larastan": "^2.6.4",
         "phpunit/phpunit": "^10.1",
-        "spatie/laravel-ignition": "^2.0"
+        "psalm/plugin-laravel": "^2.8",
+        "spatie/laravel-ignition": "^2.0",
+        "vimeo/psalm": "^5.16"
     },
     "autoload": {
         "psr-4": {
@@ -54,7 +57,9 @@
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
-        ]
+        ],
+        "phpstan": "./vendor/bin/phpstan analyse --memory-limit=2G",
+        "psalm": "./vendor/bin/psalm"
     },
     "extra": {
         "laravel": {
