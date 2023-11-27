@@ -3,8 +3,9 @@
 namespace App\Services;
 
 use App\Enums\GameMaps;
+use App\Models\User;
 use App\Models\UserData;
-
+use Illuminate\Support\Facades\Auth;
 
 /**
  * @property int $miner_level
@@ -12,101 +13,86 @@ use App\Models\UserData;
  */
 class SessionService
 {
+    private UserData $UserData;
 
-    private $default = [];
-    private UserData $data;
-
-    public function __construct(private UserData $userData)
+    public function setAuthenticatedUser(User $user)
     {
-        $this->default = $_SESSION;
-
-        $this->data = $this->userData->where('username', $this->default['username'])->first();
+        $this->UserData = UserData::where('username', $user->username)->first();
     }
 
-    private function fetchData()
+    public function getUserData(): UserData
     {
-        $this->data = $this->userData_model->find();
+        return $this->UserData = UserData::where('username', $this->getCurrentUsername())->first();
     }
 
-    /**
-     * 
-     * @return string 
-     */
-    public function user()
+    public function user(): string
     {
+        if (! isset($this->UserData)) {
+            $this->getUserData();
+        }
+
         return $this->getCurrentUsername();
     }
 
     /**
-     * 
      * @return int
      */
     public function user_id()
     {
-        return $this->data->id;
-    }
-
-    /**
-     * 
-     * @return string 
-     */
-    public function getCurrentUsername()
-    {
-        return $this->data->username;
-    }
-
-    /**
-     * 
-     * @return string 
-     */
-    public function getCurrentMap()
-    {
-        if (!isset($this->data->map_location)) {
-            $this->fetchData();
+        if (! isset($this->UserData)) {
+            $this->getUserData();
         }
-        return $this->data->map_location;
+
+        return $this->UserData->id;
     }
 
-    /**
-     * 
-     * @return string 
-     */
-    public function getLocation()
+    public function getCurrentUsername(): string
     {
-        return $this->data->location;
+
+        return Auth::user()->name;
+    }
+
+    public function getCurrentMap(): string
+    {
+        if (! isset($this->UserData)) {
+            $this->getUserData();
+        }
+
+        return $this->UserData->map_location;
+    }
+
+    public function getLocation(): string
+    {
+        if (! isset($this->UserData)) {
+            $this->getUserData();
+        }
+
+        return $this->UserData->location;
     }
 
     /**
      * Get current location user is in
-     *
-     * @return string
      */
-    public function getCurrentLocation()
+    public function getCurrentLocation(): string
     {
-        return GameMaps::locationMapping()[$this->data->map_location] ?? "";
+        if (! isset($this->UserData)) {
+            $this->getUserData();
+        }
+
+        return GameMaps::locationMapping()[$this->UserData->map_location] ?? '';
     }
 
     /**
      * Check if player is provided profiency
      *
-     * @param string $profiency
-     *
-     * @return bool
+     * @param  string  $profiency
      */
-    public function isProfiency($profiency)
+    public function isProfiency($profiency): bool
     {
-        return $this->data->profiency === $profiency;
-    }
-
-    public function __get($name)
-    {
-        return $this->default[$name];
-    }
-
-    public function __set($name, $value)
-    {
-        if (is_array($this->default)) {
-            $this->default[$name] = $value;
+        if (! isset($this->UserData)) {
+            $this->getUserData();
         }
+
+        return $this->UserData->profiency === $profiency;
     }
 }
