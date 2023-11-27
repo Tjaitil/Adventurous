@@ -4,7 +4,7 @@ import { HUD } from "./../clientScripts/HUD.js";
 import { StaticGameObject } from "./gamepieces/StaticGameObject";
 
 export interface GameProperties {
-    HUD: typeof HUD;
+    HUD?: typeof HUD;
     duration: 0;
     requestId: number;
     pauseID: null;
@@ -18,7 +18,6 @@ export interface GameProperties {
     inBuilding: boolean;
     checkingPerson: string;
     delta: number;
-    assetsPath: string;
 }
 
 export interface loadWorldParamters {

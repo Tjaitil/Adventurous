@@ -20,6 +20,7 @@ import { getRandomInteger } from "./utilities/getRandomInteger.js";
 import { jsUcWords } from "./utilities/uppercase.js";
 import { LevelManager } from './LevelManager.js';
 import { setUpTabList } from './utilities/tabs.js';
+import { AssetPaths } from './clientScripts/ImagePath';
 
 const CookieTicket = {
     checkCookieTicket(cookieNoob = "getOut") {
@@ -108,7 +109,6 @@ export class Game {
         inBuilding: false,
         checkingPerson: "none",
         delta: 0,
-        assetsPath: "public/images/",
     }
 
     public static getProperty(val: keyof GameProperties) {
@@ -208,7 +208,7 @@ export class Game {
             Game.properties.ybase = startPoints[0].y;
         }
 
-        let worldMapSrc = "public/images/" + Game.properties.currentMap + ".png";
+        let worldMapSrc = AssetPaths.getImagePath(Game.properties.currentMap + ".png");
         viewport.adjustViewport(Game.properties.xbase, Game.properties.ybase, worldMapSrc);
 
         GamePieces.loadAssets(Game.properties.xbase, Game.properties.ybase, data.map_data);
