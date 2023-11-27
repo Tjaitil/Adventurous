@@ -44,7 +44,7 @@ class WorldLoaderController extends Controller
     {
         $Response = new AdvResponse();
 
-        $UserData = $this->sessionService->fetchData();
+        $UserData = $this->sessionService->getUserData();
         $is_new_map_string = $request->boolean('is_new_map_string');
         $new_destination = null;
         if ($is_new_map_string) {
