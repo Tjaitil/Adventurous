@@ -5,6 +5,10 @@ export const sidebar = {
     sidebarToggledButton: document.getElementById("sidebar_button_toggle"),
     isSidebarToggled: false,
     currentTab: null,
+    adjustSidebar() {
+        let parent = this.sidebarElement.parentElement;
+        this.sidebarElement.style.maxWidth = parent.clientWidth + "px";
+    },
     addClickEvent() {
         this.sidebarToggledButton.addEventListener("click", () => this.toggleSidebar());
         let sidebarTabs = <HTMLElement[]>[...this.sidebarElement.querySelectorAll(".sidebar-tab")];
@@ -28,9 +32,8 @@ export const sidebar = {
         } else {
             this.hideTabs();
             if (window.screen.width < 830) {
-                this.sidebarElement.style.width = document.getElementsByTagName("section")[0].clientWidth * 0.12 + "px";
+                this.adjustSidebar();
             } else {
-                this.sidebarElement.style.width = document.getElementsByTagName("aside")[0].clientWidth + "px";
             }
             this.isSidebarToggled = false;
             if (window.screen.width > 830) {
@@ -71,3 +74,5 @@ export const sidebar = {
         });
     }
 };
+window.addEventListener("resize", () => sidebar.adjustSidebar());
+sidebar.adjustSidebar();
