@@ -1,3 +1,4 @@
+import { AssetPaths } from "../clientScripts/ImagePath";
 import { SkillRequirementResource } from "../types/SkillRequirementResource";
 
 export class StoreSkillRequirements {
@@ -18,7 +19,7 @@ export class StoreSkillRequirements {
             wrapper.classList.add("skill-requirements-list-item");
 
             let img = document.createElement("img");
-            img.src = "public/images/" + element.skill + " icon.png";
+            img.src = AssetPaths.getImagePath(element.skill + " icon.png");
             img.width = 48;
             img.height = 48;
             img.style.marginInline = "auto";

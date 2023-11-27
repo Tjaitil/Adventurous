@@ -1,6 +1,6 @@
-import { BaseStaticGameObject } from "./BaseStaticGameObject.js";
-import viewport from "../clientScripts/viewport.js";
-import { StaticGameObject } from "../types/gamepieces/StaticGameObject.js";
+import { BaseStaticGameObject } from "./BaseStaticGameObject";
+import viewport from "../clientScripts/viewport";
+import { StaticGameObject } from "../types/gamepieces/StaticGameObject";
 
 export class Building extends BaseStaticGameObject {
     constructor(initBuildingData: StaticGameObject) {

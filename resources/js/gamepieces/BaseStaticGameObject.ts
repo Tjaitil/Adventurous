@@ -1,6 +1,7 @@
-import { StaticGameObject } from "../types/gamepieces/StaticGameObject.js";
-import viewport from "../clientScripts/viewport.js";
-import { NonDrawingTypes } from "./NonDrawingTypes.js";
+import { StaticGameObject } from "../types/gamepieces/StaticGameObject";
+import viewport from "../clientScripts/viewport";
+import { NonDrawingTypes } from "./NonDrawingTypes";
+import { AssetPaths } from "../clientScripts/ImagePath";
 
 export class BaseStaticGameObject implements StaticGameObject {
     public type: string;
@@ -48,7 +49,7 @@ export class BaseStaticGameObject implements StaticGameObject {
         this.noCollision = initObjectData.noCollision;
         this.sprite = new Image(this.width, this.height);
 
-        this.sprite.src = "public/images/" + this.src;
+        this.sprite.src = AssetPaths.getImagePath(this.src);
         if (!this.src && !NonDrawingTypes.includes(this.type)) {
             console.error("No image source found for " + initObjectData);
         }

@@ -10,6 +10,7 @@ import { RunSingleWarriorActionResponse, RunWarriorActionResponse } from './../t
 import { WarriorActions } from './../types/WarriorActions.js';
 import { WarriorResource } from './../types/WarriorResource.js';
 import { WarriorStatus } from './../types/WarriorStatus.js';
+import { AssetPaths } from '../clientScripts/ImagePath';
 
 const armycampModule = {
     singleWarriorAction: [WarriorActions.HEAL_WARRIOR, WarriorActions.CHANGE_WARRIOR_TYPE] as string[],
@@ -291,7 +292,7 @@ class Warrior {
 
     public updateWarriorTypeElement() {
         let img = this.wrapper.querySelectorAll("img")[0];
-        img.src = "public/images/" + this.data.type + " icon.png";
+        img.src = AssetPaths.getImagePath(this.data.type + " icon.png");
     }
 
     public checkIfLevelUp() {

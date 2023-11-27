@@ -5,6 +5,7 @@ import { Game } from "../advclient.js";
 import viewport from "../clientScripts/viewport.js";
 import { GamePieces } from "../clientScripts/gamePieces.js";
 import { HUD } from "../clientScripts/HUD.js";
+import { AssetPaths } from "../clientScripts/ImagePath.js";
 
 export class Player implements MovingGameObject {
     width = 36;
@@ -86,11 +87,11 @@ export class Player implements MovingGameObject {
     setup() {
         this.setHuntedStatus(false);
         this.draw();
-        this.sprite.src = "public/images/character1.png";
-        this.spriteAttack.src = "public/images/character attack2.png";
-        this.headSprite.src = "public/images/character head.png";
-        this.bodySprite.src = "public/images/character body.png";
-        this.legsSprite.src = "public/images/character legs.png";
+        this.sprite.src = AssetPaths.getImagePath("character1.png");
+        this.spriteAttack.src = AssetPaths.getImagePath("character attack2.png");
+        this.headSprite.src = AssetPaths.getImagePath("character head.png");
+        this.bodySprite.src = AssetPaths.getImagePath("character body.png");
+        this.legsSprite.src = AssetPaths.getImagePath("character legs.png");
         this.diameterUp = this.y;
         this.diameterRight = this.x + this.width - 5;
         this.diameterDown = this.y + 28;

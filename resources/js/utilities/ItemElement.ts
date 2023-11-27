@@ -1,3 +1,4 @@
+import { AssetPaths } from "../clientScripts/ImagePath.js";
 import { itemTitle } from "./itemTitle.js";
 import { jsUcWords } from "./uppercase.js";
 
@@ -60,7 +61,7 @@ export class ItemElement {
     }
 
     public replaceItem(item: string, amount: number) {
-        this.imageElement.src = "public/images/" + item + ".png";
+        this.imageElement.src = AssetPaths.getImagePath(item + ".png");
         this.amountElement.innerText = amount.toString();
         this.nameElement.innerText = jsUcWords(item);
     }

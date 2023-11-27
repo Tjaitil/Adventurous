@@ -4,7 +4,7 @@ import viewport from "../clientScripts/viewport.js";
 import { getRandomInteger } from "../utilities/getRandomInteger.js";
 import { GamePieces } from "../clientScripts/gamePieces.js";
 import { collisionCheck } from "../clientScripts/collision.js";
-import { HUD } from "../clientScripts/HUD.js";
+import { AssetPaths } from "../clientScripts/ImagePath.js";
 
 export class Daqloon implements MovingGameObject {
     id: number;
@@ -68,7 +68,7 @@ export class Daqloon implements MovingGameObject {
         this.health = 10;
         this.drawX = Math.round(this.x - viewport.offsetX);
         this.drawY = Math.round(this.y - viewport.offsetY);
-        this.sprite.src = "public/images/daqloon sprite.png";
+        this.sprite.src = AssetPaths.getImagePath("daqloon sprite.png");
     }
 
     setDiameter() {

@@ -6,6 +6,7 @@ import { LevelManager } from './LevelManager.js';
 import countdown from './utilities/countdown.js';
 import { advAPIResponse } from './types/responses/AdvResponse';
 import { ClientOverlayInterface } from './clientScripts/clientOverlayInterface.js';
+import { AssetPaths } from './clientScripts/ImagePath';
 
 export class SkillActionContainer {
     private typeData = <CropResource[] | MineralResource[]>[];
@@ -136,7 +137,7 @@ export class SkillActionContainer {
             selectedFigure.appendChild(clone);
         } else {
             let img = <HTMLImageElement>selectedFigure.children[0];
-            img.src = "public/images/" + item + ".png";
+            img.src = AssetPaths.getImagePath(item + ".png");
             img.alt = item;
             img.style.border = "";
         }

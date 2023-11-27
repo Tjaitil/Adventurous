@@ -1,10 +1,10 @@
 import { Game } from "../advclient.js";
-import { loadSprite } from "../clientScripts/spritesContainer.js";
 import { GamePieces } from "../clientScripts/gamePieces.js";
 import viewport from "../clientScripts/viewport.js";
 import { ajaxP } from "../ajax.js";
 import { updateInventory } from "../clientScripts/inventory.js";
-import { ItemSprite } from "../types/itemSprite.js";
+import { ItemSprite } from "../types/ItemSprite.js";
+import { makeSprite } from "../clientScripts/spritesContainer.js";
 
 export class Item {
     x: number;
@@ -30,7 +30,7 @@ export class Item {
         this.y = drawY + viewport.offsetY;
         this.id = GamePieces.items.length + 1;
 
-        this.spriteObject = loadSprite(this.name, this.width, this.height, this.src);
+        this.spriteObject = makeSprite(this.name, this.width, this.height, this.src);
         this.shadow = new ItemShadowAnimation(this.x, this.y);
     }
 
