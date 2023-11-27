@@ -4,6 +4,7 @@ import { itemTitle } from '../utilities/itemTitle.js';
 import { inputHandler } from './inputHandler.js';
 import { getClientPageTitle } from '../utilities/getClientPageTitle.js';
 import { AdvApi } from '../AdvApi.js';
+import { CustomFetchApi } from '../CustomFetchApi';
 
 /**
  * @deprecated
@@ -92,7 +93,7 @@ export class Inventory {
     }
 
     static async update() {
-        return AdvApi.get("/inventory")
+        return CustomFetchApi.get("/inventory")
             .then(data => {
                 document.getElementById("inventory").innerHTML = data["html"]["inventory"];
                 this.itemsElements = [...document.querySelectorAll(".inventory_item")];
@@ -147,7 +148,7 @@ export const itemPrices = {
         }
     },
     get() {
-        AdvApi.get<ItemPricesResponse>("/inventory/prices").then(response => {
+        CustomFetchApi.get<ItemPricesResponse>("/inventory/prices").then(response => {
             this.prices = response.prices;
         }).catch(() => false);
     }
