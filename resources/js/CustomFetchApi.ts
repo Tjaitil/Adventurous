@@ -1,12 +1,15 @@
 
 export class CustomFetchApi {
-    private static route = "/api";
+    private static route = window.location.origin;
 
     private static fetchInstance<T extends {}>(method: 'PUT' | 'GET' | 'POST', url: string, data?: Object): Promise<T> {
 
         const requestInfo: RequestInit = {
             method: method,
-            headers: { "Content-type": "application/json" },
+            headers: { 
+                "Content-type": "application/json",
+                "X-Requested-With": "XMLHttpRequest",
+            },
         }
         if (data !== undefined) requestInfo.body = JSON.stringify(data);
 
