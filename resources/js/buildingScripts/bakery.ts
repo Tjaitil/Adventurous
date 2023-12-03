@@ -1,8 +1,8 @@
-import { AdvApi } from './../AdvApi.js';
-import { Inventory } from '../clientScripts/inventory.js';
-import storeContainer from '../utilities/storeContainer.js';
+import { AdvApi } from './../AdvApi';
+import { Inventory } from '../clientScripts/inventory';
+import storeContainer from '../utilities/storeContainer';
 import { BaseBuyStoreItemRequest } from '../types/requests/BaseBuyStoreItemRequest';
-import { StoreItemResponse } from '../types/responses/StoreItemResponse.js';
+import { StoreItemResponse } from '../types/Responses/StoreItemResponse';
 
 const bakeryModule = {
     async init() {

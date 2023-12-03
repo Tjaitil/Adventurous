@@ -1,8 +1,8 @@
-import { viewport } from './viewport.js';
-import { GamePieces } from "./gamePieces.js";
-import { HUD } from "./HUD.js";
-import { ProgressBar } from "../progressBar.js";
-import { conversation } from "./conversation.js";
+import { viewport } from './viewport';
+import { GamePieces } from "./gamePieces";
+import { HUD } from "./HUD";
+import { ProgressBar } from "../progressBar";
+import { conversation } from "./conversation";
 
 export const tutorial = {
     step: 1,

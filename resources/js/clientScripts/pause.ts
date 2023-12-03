@@ -1,7 +1,7 @@
-import { GamePieces } from './gamePieces.js';
-import { controls } from './controls.js';
-import { Game } from '../advclient.js';
-import viewport from './viewport.js';
+import { GamePieces } from './gamePieces';
+import { controls } from './controls';
+import { Game } from '../advclient';
+import viewport from './viewport';
 
 export const pauseManager = {
     togglePause() {

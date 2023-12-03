@@ -1,11 +1,11 @@
-import { ClientOverlayInterface } from './../clientScripts/clientOverlayInterface.js';
-import { Inventory } from './../clientScripts/inventory.js';
-import { ProgressBar } from './../progressBar.js';
-import { AdvApi } from './../AdvApi.js';
-import countdown from "../utilities/countdown.js";
-import { gameLogger } from '../utilities/gameLogger.js';
-import { advAPIResponse } from '../types/responses/AdvResponse.js';
-import { updateHunger } from '../clientScripts/hunger.js';
+import { ClientOverlayInterface } from './../clientScripts/clientOverlayInterface';
+import { Inventory } from './../clientScripts/inventory';
+import { ProgressBar } from './../progressBar';
+import { AdvApi } from './../AdvApi';
+import countdown from "../utilities/countdown";
+import { gameLogger } from '../utilities/gameLogger';
+import { advAPIResponse } from '../types/Responses/AdvResponse';
+import { updateHunger } from '../clientScripts/hunger';
 
 const traderModule = {
     selectedAssigmentID: null,

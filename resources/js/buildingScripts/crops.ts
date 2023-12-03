@@ -1,12 +1,12 @@
 import { UpdateCropsRequest } from './../types/requests/CropsRequests';
 import { StartGrowingRequest, SeedGeneratorRequest } from '../types/requests/CropsRequests';
-import { SkillActionContainer } from './../SkillActionContainer.js';
-import { commonMessages, gameLogger } from '../utilities/gameLogger.js';
-import { ItemSelector } from '../ItemSelector.js';
-import { updateHunger } from '../clientScripts/hunger.js';
-import { Inventory } from '../clientScripts/inventory.js';
-import { AdvApi } from '../AdvApi.js';
-import { advAPIResponse } from '../types/responses/AdvResponse';
+import { SkillActionContainer } from './../SkillActionContainer';
+import { commonMessages, gameLogger } from '../utilities/gameLogger';
+import { ItemSelector } from '../ItemSelector';
+import { updateHunger } from '../clientScripts/hunger';
+import { Inventory } from '../clientScripts/inventory';
+import { AdvApi } from '../AdvApi';
+import { advAPIResponse } from '../types/Responses/AdvResponse';
 
 class CropsModule extends SkillActionContainer {
 

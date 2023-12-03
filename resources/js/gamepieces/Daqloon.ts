@@ -1,10 +1,10 @@
-import { MovingGameObject, DirectionBlockedCheck } from "../types/gamepieces/MovingGameObject.js";
-import { Game } from "../advclient.js";
-import viewport from "../clientScripts/viewport.js";
-import { getRandomInteger } from "../utilities/getRandomInteger.js";
-import { GamePieces } from "../clientScripts/gamePieces.js";
-import { collisionCheck } from "../clientScripts/collision.js";
-import { AssetPaths } from "../clientScripts/ImagePath.js";
+import { MovingGameObject, DirectionBlockedCheck } from "../types/gamepieces/MovingGameObject";
+import { Game } from "../advclient";
+import viewport from "../clientScripts/viewport";
+import { getRandomInteger } from "../utilities/getRandomInteger";
+import { GamePieces } from "../clientScripts/gamePieces";
+import { collisionCheck } from "../clientScripts/collision";
+import { AssetPaths } from "../clientScripts/ImagePath";
 
 export class Daqloon implements MovingGameObject {
     id: number;

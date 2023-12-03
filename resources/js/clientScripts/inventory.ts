@@ -1,9 +1,9 @@
-import { ItemPricesResponse } from './../types/responses/PricesResponse';
-import { ItemSelector } from '../ItemSelector.js';
-import { itemTitle } from '../utilities/itemTitle.js';
-import { inputHandler } from './inputHandler.js';
-import { getClientPageTitle } from '../utilities/getClientPageTitle.js';
-import { AdvApi } from '../AdvApi.js';
+import { ItemPricesResponse } from './../types/Responses/PricesResponse';
+import { ItemSelector } from '../ItemSelector';
+import { itemTitle } from '../utilities/itemTitle';
+import { inputHandler } from './inputHandler';
+import { getClientPageTitle } from '../utilities/getClientPageTitle';
+import { AdvApi } from '../AdvApi';
 import { CustomFetchApi } from '../CustomFetchApi';
 
 /**
@@ -87,13 +87,26 @@ export class Inventory {
 
     static init() {
         if (this.isInited) return;
+        document.getElementById("update-inventory").addEventListener("click", () => this.test())
         this.itemsElements = [...document.querySelectorAll(".inventory_item")];
         this.itemsAmount = this.itemsElements.length;
         this.isInited = true;
     }
 
+    static async test() {
+        let requestData = {
+            foo: 5,
+        };
+
+        
+        await CustomFetchApi.post<response>("/inventory/test", requestData).then(data => {
+            data
+            console.log(data);
+        }).catch(() => false);
+    }
+
     static async update() {
-        return CustomFetchApi.get("/inventory")
+        return CustomFetchApi.get<response>("/inventory")
             .then(data => {
                 document.getElementById("inventory").innerHTML = data["html"]["inventory"];
                 this.itemsElements = [...document.querySelectorAll(".inventory_item")];
@@ -128,6 +141,13 @@ export class Inventory {
     }
 }
 
+interface postData {
+    foo: string;
+}
+interface response {
+    html: any;
+}
+
 interface ItemPrice {
     name: string;
     store_value: number;
@@ -153,3 +173,7 @@ export const itemPrices = {
         }).catch(() => false);
     }
 }
+
+window.addEventListener("load", () => { 
+    // Inventory.test();
+})

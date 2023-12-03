@@ -1,4 +1,4 @@
-import { advAPIResponse } from "./AdvResponse.js"
+import { advAPIResponse } from "./AdvResponse"
 
 export interface MerchantStoreResponse extends advAPIResponse {
     html: {

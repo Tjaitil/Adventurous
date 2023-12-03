@@ -1,26 +1,26 @@
 import { SetWorldRequest } from './types/requests/WorldLoaderRequests';
-import { ajaxP } from "./ajax.js";
-import { loadingCanvas } from "./clientScripts/canvasText.js";
-import { ClientOverlayInterface } from "./clientScripts/clientOverlayInterface.js";
-import { collisionCheck } from "./clientScripts/collision.js";
-import { controls } from "./clientScripts/controls.js";
-import { conversation } from "./clientScripts/conversation.js";
-import { eventHandler } from "./clientScripts/gameEventHandler.js";
-import { GamePieces } from "./clientScripts/gamePieces.js";
-import { HUD } from "./clientScripts/HUD.js";
-import { itemPrices } from "./clientScripts/inventory.js";
-import { Map } from "./clientScripts/map.js";
-import { pauseManager } from "./clientScripts/pause.js";
-import { tutorial } from "./clientScripts/tutorial.js";
-import viewport from "./clientScripts/viewport.js";
-import { CustomFetchApi } from './CustomFetchApi.js';
-import { GameProperties, loadWorldParamters } from "./types/Advclient.js";
-import { GetWorldResponse } from './types/responses/WorldLoaderResponse';
-import { getRandomInteger } from "./utilities/getRandomInteger.js";
-import { jsUcWords } from "./utilities/uppercase.js";
-import { LevelManager } from './LevelManager.js';
-import { setUpTabList } from './utilities/tabs.js';
+import { ajaxP } from "./ajax";
+import { loadingCanvas } from "./clientScripts/canvasText";
+import { ClientOverlayInterface } from "./clientScripts/clientOverlayInterface";
+import { collisionCheck } from "./clientScripts/collision";
+import { controls } from "./clientScripts/controls";
+import { conversation } from "./clientScripts/conversation";
+import { eventHandler } from "./clientScripts/gameEventHandler";
+import { GamePieces } from "./clientScripts/gamePieces";
+import { HUD } from "./clientScripts/HUD";
+import { itemPrices } from "./clientScripts/inventory";
+import { Map } from "./clientScripts/map";
+import { pauseManager } from "./clientScripts/pause";
+import { tutorial } from "./clientScripts/tutorial";
+import viewport from "./clientScripts/viewport";
+import { CustomFetchApi } from './CustomFetchApi';
+import { GameProperties, loadWorldParamters } from "./types/Advclient";
+import { getRandomInteger } from "./utilities/getRandomInteger";
+import { jsUcWords } from "./utilities/uppercase";
+import { LevelManager } from './LevelManager';
+import { setUpTabList } from './utilities/tabs';
 import { AssetPaths } from './clientScripts/ImagePath';
+import { GetWorldResponse } from './types/Responses/WorldLoaderResponse';
 
 const CookieTicket = {
     checkCookieTicket(cookieNoob = "getOut") {

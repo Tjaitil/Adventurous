@@ -1,7 +1,7 @@
-import { Inventory } from './../clientScripts/inventory.js';
-import { AdvApi } from "../AdvApi.js";
-import storeContainer from "../utilities/storeContainer.js";
-import { StoreItemResponse } from '../types/responses/StoreItemResponse.js';
+import { Inventory } from './../clientScripts/inventory';
+import { AdvApi } from "../AdvApi";
+import storeContainer from "../utilities/storeContainer";
+import { StoreItemResponse } from '../types/Responses/StoreItemResponse';
 
 const zinsStoreModule = {
     async init() {

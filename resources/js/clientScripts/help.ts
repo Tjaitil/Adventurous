@@ -1,4 +1,4 @@
-import { Game } from '../advclient.js';
+import { Game } from '../advclient';
 
 export const clientHelpContainer = {
     init() {

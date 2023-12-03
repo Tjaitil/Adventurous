@@ -1,4 +1,4 @@
-import { ajaxJS } from "../ajax.js";
+import { ajaxJS } from "../ajax";
 
 const warriorSelect = {
     addWarriorEvents() {

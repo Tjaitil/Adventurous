@@ -1,16 +1,16 @@
-import { ModuleTester } from './../devtools/ModuleTester.js';
+import { ModuleTester } from './../devtools/ModuleTester';
 import { Character } from './../gamepieces/Character';
-import { controls } from "./controls.js";
-import { ClientOverlayInterface } from "./clientOverlayInterface.js";
-import { tutorial } from "./tutorial.js";
-import { itemTitle } from "../utilities/itemTitle.js";
-import { Game } from "../advclient.js";
-import { gameLogger } from "../utilities/gameLogger.js";
-import { conversation } from "./conversation.js";
-import { GamePieces } from "./gamePieces.js";
-import { Building } from "../gamepieces/Building.js";
-import { HUD } from './HUD.js';
-import { setUpTabList } from '../utilities/tabs.js';
+import { controls } from "./controls";
+import { ClientOverlayInterface } from "./clientOverlayInterface";
+import { tutorial } from "./tutorial";
+import { itemTitle } from "../utilities/itemTitle";
+import { Game } from "../advclient";
+import { gameLogger } from "../utilities/gameLogger";
+import { conversation } from "./conversation";
+import { GamePieces } from "./gamePieces";
+import { Building } from "../gamepieces/Building";
+import { HUD } from './HUD';
+import { setUpTabList } from '../utilities/tabs';
 
 
 enum Buildings {
@@ -50,28 +50,28 @@ interface IInputHandler {
 export const inputHandler: IInputHandler = {
     buildingAssetsRecord: {
         [Buildings.BAKERY]: {
-            "script": "bakery.js"
+            "script": "bakery"
         },
         [Buildings.TRAVELBUREAU]: {
-            "script": "travelbureau.js"
+            "script": "travelbureau"
         },
         [Buildings.STOCKPILE]: {
-            "script": "stockpile.js",
+            "script": "stockpile",
         },
         [Buildings.MINE]: {
-            "script": "mine.js",
+            "script": "mine",
         },
         [Buildings.CROPS]: {
-            "script": "crops.js",
+            "script": "crops",
         },
         [Buildings.ZINSSTORE]: {
-            "script": "zinsstore.js",
+            "script": "zinsstore",
         },
         [Buildings.MERCHANT]: {
-            "script": "merchant.js",
+            "script": "merchant",
         },
         [Buildings.WORKFORCELODGE]: {
-            "script": "workforcelodge.js",
+            "script": "workforcelodge",
         }
     },
     buildingMatch: <undefined | Building>undefined,

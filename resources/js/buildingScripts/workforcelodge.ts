@@ -1,7 +1,7 @@
-import { AdvApi } from "../AdvApi.js";
-import { Inventory } from "../clientScripts/inventory.js";
-import { advAPIResponse } from "../types/responses/AdvResponse.js";
-import { GoldCostElement } from "../utilities/GoldCostElement.js";
+import { AdvApi } from "../AdvApi";
+import { Inventory } from "../clientScripts/inventory";
+import { advAPIResponse } from "../types/Responses/AdvResponse";
+import { GoldCostElement } from "../utilities/GoldCostElement";
 
 const workforceLodgeModule: IWorkforceLodgeModule = {
     activeInfoSectionName: null,

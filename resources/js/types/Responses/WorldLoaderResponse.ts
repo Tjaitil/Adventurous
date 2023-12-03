@@ -1,4 +1,4 @@
-import { WorldMapData } from "../Advclient.js";
+import { WorldMapData } from "../Advclient";
 
 export interface GetWorldResponse {
     data: {

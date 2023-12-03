@@ -1,6 +1,6 @@
-import { AssetPaths } from "../clientScripts/ImagePath.js";
-import { itemTitle } from "./itemTitle.js";
-import { jsUcWords } from "./uppercase.js";
+import { AssetPaths } from "../clientScripts/ImagePath";
+import { itemTitle } from "./itemTitle";
+import { jsUcWords } from "./uppercase";
 
 export class ItemElement {
     private element: HTMLElement = null;

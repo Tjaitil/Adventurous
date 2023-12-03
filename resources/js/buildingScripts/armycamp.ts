@@ -1,15 +1,15 @@
-import { inputHandler } from '../clientScripts/inputHandler.js';
-import { ProgressBar } from '../progressBar.js';
-import { selectedCheck, selectItemEvent } from '../ItemSelector.js';
-import countdown from '../utilities/countdown.js';
-import { gameLogger } from '../utilities/gameLogger.js';
-import { AdvApi } from './../AdvApi.js';
-import { Inventory } from './../clientScripts/inventory.js';
-import { BaseRunWarriorActionRequest, ChangeWarriorTypeRequest, RestWarriorsRequest, RunSingleWarriorActionRequest, StartTrainingRequest } from './../types/requests/ArmyCampRequests.js';
-import { RunSingleWarriorActionResponse, RunWarriorActionResponse } from './../types/responses/ArmycampResponses.js';
-import { WarriorActions } from './../types/WarriorActions.js';
-import { WarriorResource } from './../types/WarriorResource.js';
-import { WarriorStatus } from './../types/WarriorStatus.js';
+import { inputHandler } from '../clientScripts/inputHandler';
+import { ProgressBar } from '../progressBar';
+import { selectedCheck, selectItemEvent } from '../ItemSelector';
+import countdown from '../utilities/countdown';
+import { gameLogger } from '../utilities/gameLogger';
+import { AdvApi } from './../AdvApi';
+import { Inventory } from './../clientScripts/inventory';
+import { BaseRunWarriorActionRequest, ChangeWarriorTypeRequest, RestWarriorsRequest, RunSingleWarriorActionRequest, StartTrainingRequest } from './../types/requests/ArmyCampRequests';
+import { RunSingleWarriorActionResponse, RunWarriorActionResponse } from './../types/Responses/ArmycampResponses';
+import { WarriorActions } from './../types/WarriorActions';
+import { WarriorResource } from './../types/WarriorResource';
+import { WarriorStatus } from './../types/WarriorStatus';
 import { AssetPaths } from '../clientScripts/ImagePath';
 
 const armycampModule = {

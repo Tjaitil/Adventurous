@@ -1,11 +1,11 @@
-import { AdvApi } from "./AdvApi.js";
-import { Game } from "./advclient.js";
-import { jsUcWords, jsUcfirst } from "./utilities/uppercase.js";
+import { AdvApi } from "./AdvApi";
+import { Game } from "./advclient";
+import { jsUcWords, jsUcfirst } from "./utilities/uppercase";
 import { CropResource } from './types/CropResource';
-import { LevelManager } from './LevelManager.js';
-import countdown from './utilities/countdown.js';
-import { advAPIResponse } from './types/responses/AdvResponse';
-import { ClientOverlayInterface } from './clientScripts/clientOverlayInterface.js';
+import { LevelManager } from './LevelManager';
+import countdown from './utilities/countdown';
+import { advAPIResponse } from './types/Responses/AdvResponse';
+import { ClientOverlayInterface } from './clientScripts/clientOverlayInterface';
 import { AssetPaths } from './clientScripts/ImagePath';
 
 export class SkillActionContainer {

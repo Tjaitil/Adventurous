@@ -1,6 +1,6 @@
 import { DaqloonFightingArea } from "./../gamepieces/DaqloonFightingArea";
 import { Building } from "./../gamepieces/Building";
-import { HUD } from "./../clientScripts/HUD.js";
+import { HUD } from "./../clientScripts/HUD";
 import { StaticGameObject } from "./gamepieces/StaticGameObject";
 
 export interface GameProperties {

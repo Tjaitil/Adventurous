@@ -1,11 +1,11 @@
 import { Inventory } from './../clientScripts/inventory';
-import { selectItemEvent } from "../ItemSelector.js";
-import { gameLogger } from '../utilities/gameLogger.js';
+import { selectItemEvent } from "../ItemSelector";
+import { gameLogger } from '../utilities/gameLogger';
 import { AdvApi } from './../AdvApi';
-import { ClientOverlayInterface } from './../clientScripts/clientOverlayInterface.js';
-import { ProgressBar } from './../progressBar.js';
+import { ClientOverlayInterface } from './../clientScripts/clientOverlayInterface';
+import { ProgressBar } from './../progressBar';
 import { RecruitWorkerRequest, RestoreHealthRequest } from './../types/requests/TavernRequests';
-import { GetHealDataResponse, RestoreHealthResponse } from './../types/responses/TavernResponses';
+import { GetHealDataResponse, RestoreHealthResponse } from './../types/Responses/TavernResponses';
 import { HUD } from '../clientScripts/HUD';
 
 

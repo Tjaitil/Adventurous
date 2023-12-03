@@ -1,7 +1,7 @@
-import { Game } from '../advclient.js';
-import { tutorial } from "./tutorial.js";
-import { canvasTextHeader } from "./canvasText.js";
-import { ajaxP } from "../ajax.js";
+import { Game } from '../advclient';
+import { tutorial } from "./tutorial";
+import { canvasTextHeader } from "./canvasText";
+import { ajaxP } from "../ajax";
 
 declare interface IgameTravel {
     seconds: number;

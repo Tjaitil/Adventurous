@@ -1,8 +1,8 @@
 import { BaseBuyStoreItemRequest } from '../types/requests/BaseBuyStoreItemRequest';
-import { StoreItemResponse } from './../types/responses/StoreItemResponse';
-import { AdvApi } from "./../AdvApi.js";
-import storeContainer from "../utilities/storeContainer.js";
-import { Inventory } from "../clientScripts/inventory.js";
+import { StoreItemResponse } from './../types/Responses/StoreItemResponse';
+import { AdvApi } from "./../AdvApi";
+import storeContainer from "../utilities/storeContainer";
+import { Inventory } from "../clientScripts/inventory";
 
 const archeryShopModule = {
     init() {

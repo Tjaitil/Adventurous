@@ -1,8 +1,8 @@
-import { Player } from './../gamepieces/Player.js';
-import { Daqloon } from "./../gamepieces/Daqloon.js";
-import { GameObject } from "../types/gamepieces/GameObject.js";
-import { getRandomInteger } from "../utilities/getRandomInteger.js";
-import { GamePieces } from '../clientScripts/gamePieces.js';
+import { Player } from './../gamepieces/Player';
+import { Daqloon } from "./../gamepieces/Daqloon";
+import { GameObject } from "../types/gamepieces/GameObject";
+import { getRandomInteger } from "../utilities/getRandomInteger";
+import { GamePieces } from '../clientScripts/gamePieces';
 
 export interface IDaqloonFightingArea extends GameObject {
     daqloon_amount: number;

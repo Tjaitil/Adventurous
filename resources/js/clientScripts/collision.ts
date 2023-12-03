@@ -1,7 +1,7 @@
 import { Player } from "./../gamepieces/Player";
-import { MovingGameObjectTypes } from "../types/gamepieces/MovingGameObject.js";
-import { controls } from "./controls.js";
-import { GamePieces } from "./gamePieces.js";
+import { MovingGameObjectTypes } from "../types/gamepieces/MovingGameObject";
+import { controls } from "./controls";
+import { GamePieces } from "./gamePieces";
 
 export function collisionCheck(gamePiece: MovingGameObjectTypes, debug = false) {
     // Collision detection, if user is less than 1px from object prevent movement

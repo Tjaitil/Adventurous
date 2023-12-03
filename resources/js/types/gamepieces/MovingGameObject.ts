@@ -1,6 +1,6 @@
 import { GameObject } from "./GameObject";
-import { Daqloon } from "../../gamepieces/Daqloon.js";
-import { Player } from "../../gamepieces/Player.js";
+import { Daqloon } from "../../gamepieces/Daqloon";
+import { Player } from "../../gamepieces/Player";
 
 export type DirectionBlockedCheck = "blocked" | "";
 

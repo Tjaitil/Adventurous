@@ -1,6 +1,6 @@
-import { gameLogger } from './utilities/gameLogger.js';
-import { inputHandler } from './clientScripts/inputHandler.js';
-import { itemTitle } from './utilities/itemTitle.js';
+import { gameLogger } from './utilities/gameLogger';
+import { inputHandler } from './clientScripts/inputHandler';
+import { itemTitle } from './utilities/itemTitle';
 
 /**
  * 

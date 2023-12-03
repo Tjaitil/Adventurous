@@ -1,11 +1,11 @@
-import { GamePieces } from "./gamePieces.js";
-import { tutorial } from "./tutorial.js";
-import { ProgressBar } from "../progressBar.js";
-import viewport from "./viewport.js";
-import { itemTitle } from "../utilities/itemTitle.js";
-import { clientSettings } from "./clientSettings.js";
-import { clientHelpContainer } from "./help.js";
-import { Inventory } from "./inventory.js";
+import { GamePieces } from "./gamePieces";
+import { tutorial } from "./tutorial";
+import { ProgressBar } from "../progressBar";
+import viewport from "./viewport";
+import { itemTitle } from "../utilities/itemTitle";
+import { clientSettings } from "./clientSettings";
+import { clientHelpContainer } from "./help";
+import { Inventory } from "./inventory";
 
 export const HUD = {
     container: null,

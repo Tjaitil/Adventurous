@@ -1,4 +1,4 @@
-import { hideAllSkillTooltips } from "./getXp.js";
+import { hideAllSkillTooltips } from "./getXp";
 
 export const sidebar = {
     sidebarElement: document.getElementById("sidebar"),

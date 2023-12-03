@@ -1,9 +1,9 @@
-import { AdvApi } from './../AdvApi.js';
-import { Inventory } from '../clientScripts/inventory.js';
-import { gameLogger } from '../utilities/gameLogger.js';
-import { SkillActionContainer } from '../SkillActionContainer.js';
-import { updateHunger } from '../clientScripts/hunger.js';
-import { advAPIResponse } from '../types/responses/AdvResponse';
+import { AdvApi } from './../AdvApi';
+import { Inventory } from '../clientScripts/inventory';
+import { gameLogger } from '../utilities/gameLogger';
+import { SkillActionContainer } from '../SkillActionContainer';
+import { updateHunger } from '../clientScripts/hunger';
+import { advAPIResponse } from '../types/Responses/AdvResponse';
 
 
 class MineModule extends SkillActionContainer {

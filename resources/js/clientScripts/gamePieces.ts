@@ -1,16 +1,16 @@
-import { inputHandler } from "./inputHandler.js";
-import { GameObject } from "../types/gamepieces/GameObject.js";
-import { BaseStaticGameObject } from "../gamepieces/BaseStaticGameObject.js";
-import { Building } from "../gamepieces/Building.js";
-import { Character, ICharacter } from "../gamepieces/Character.js";
-import { IDaqloonFightingArea, DaqloonFightingArea } from "../gamepieces/DaqloonFightingArea.js";
-import { Daqloon } from "../gamepieces/Daqloon.js";
-import { Player } from "../gamepieces/Player.js";
-import viewport from "./viewport.js";
-import { Item } from "../gamepieces/Item.js";
+import { inputHandler } from "./inputHandler";
+import { GameObject } from "../types/gamepieces/GameObject";
+import { BaseStaticGameObject } from "../gamepieces/BaseStaticGameObject";
+import { Building } from "../gamepieces/Building";
+import { Character, ICharacter } from "../gamepieces/Character";
+import { IDaqloonFightingArea, DaqloonFightingArea } from "../gamepieces/DaqloonFightingArea";
+import { Daqloon } from "../gamepieces/Daqloon";
+import { Player } from "../gamepieces/Player";
+import viewport from "./viewport";
+import { Item } from "../gamepieces/Item";
 import { StaticGameObject } from "../types/gamepieces/StaticGameObject";
-import { WorldMapData } from "../types/Advclient.js";
-import { HUD } from "./HUD.js";
+import { WorldMapData } from "../types/Advclient";
+import { HUD } from "./HUD";
 
 export type gameObjectTypes = Character | Building | BaseStaticGameObject;
 

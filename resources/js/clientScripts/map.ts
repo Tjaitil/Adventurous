@@ -1,9 +1,9 @@
-import { LocalMapTags } from './../types/LocalMapTags.js';
-import { MapFontProperties, MapPlayerMarker } from './../types/Map.js';
-import { BaseMapTag } from "./../types/BaseMapTag.js";
-import { jsUcfirst } from "../utilities/uppercase.js";
-import { Game } from "../advclient.js";
-import { GamePieces } from "./gamePieces.js";
+import { LocalMapTags } from './../types/LocalMapTags';
+import { MapFontProperties, MapPlayerMarker } from './../types/Map';
+import { BaseMapTag } from "./../types/BaseMapTag";
+import { jsUcfirst } from "../utilities/uppercase";
+import { Game } from "../advclient";
+import { GamePieces } from "./gamePieces";
 
 window.addEventListener("load", () => {
     document.getElementById("toggle_world_image").addEventListener("click", () => Map.toggleMapType());

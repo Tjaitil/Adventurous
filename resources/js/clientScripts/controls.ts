@@ -1,10 +1,10 @@
-import { tutorial } from './tutorial.js';
-import { pauseManager } from './pause.js';
-import { inputHandler } from './inputHandler.js';
-import { Game } from "../advclient.js";
-import { gameLogger } from "../utilities/gameLogger.js";
-import { GamePieces } from "./gamePieces.js";
-import { conversation } from "./conversation.js";
+import { tutorial } from './tutorial';
+import { pauseManager } from './pause';
+import { inputHandler } from './inputHandler';
+import { Game } from "../advclient";
+import { gameLogger } from "../utilities/gameLogger";
+import { GamePieces } from "./gamePieces";
+import { conversation } from "./conversation";
 
 export const controls = {
     playerLeft: false,

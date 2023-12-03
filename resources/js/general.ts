@@ -1,12 +1,8 @@
 import { sidebar } from './clientScripts/sidebar';
-import { Game } from './advclient.js';
-import { inputHandler } from './clientScripts/inputHandler.js';
-import { itemTitle } from './utilities/itemTitle.js';
-import { inventorySidebarMob } from './utilities/inventoryToggle.js';
-import { jsUcfirst } from "./utilities/uppercase.js";
-import viewport from './clientScripts/viewport.js';
-import { ajaxP } from './ajax.js';
-import { ClientOverlayInterface } from './clientScripts/clientOverlayInterface.js';
+import { itemTitle } from './utilities/itemTitle';
+import { inventorySidebarMob } from './utilities/inventoryToggle';
+import { ajaxP } from './ajax';
+import { ClientOverlayInterface } from './clientScripts/clientOverlayInterface';
 
 // scriptLoader.loadScript(['itemTitle', 'uppercase', 'inventoryToggle'], 'utility');
 // TODO: Remove this file

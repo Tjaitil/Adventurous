@@ -1,10 +1,10 @@
-import { Game } from "../advclient.js";
-import { GamePieces } from "../clientScripts/gamePieces.js";
-import viewport from "../clientScripts/viewport.js";
-import { ajaxP } from "../ajax.js";
-import { updateInventory } from "../clientScripts/inventory.js";
-import { ItemSprite } from "../types/ItemSprite.js";
-import { makeSprite } from "../clientScripts/spritesContainer.js";
+import { Game } from "../advclient";
+import { GamePieces } from "../clientScripts/gamePieces";
+import viewport from "../clientScripts/viewport";
+import { ajaxP } from "../ajax";
+import { updateInventory } from "../clientScripts/inventory";
+import { ItemSprite } from "../types/ItemSprite";
+import { makeSprite } from "../clientScripts/spritesContainer";
 
 export class Item {
     x: number;

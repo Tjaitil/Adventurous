@@ -1,5 +1,5 @@
-import { jsUcfirst } from "../utilities/uppercase.js";
-import viewport from "./viewport.js";
+import { jsUcfirst } from "../utilities/uppercase";
+import viewport from "./viewport";
 
 export const canvasTextHeader = {
     opacity: 0.0,

@@ -1,12 +1,12 @@
-import { gameTravel } from './gameTravel.js';
-import { tutorial } from "./tutorial.js";
-import { Game } from "../advclient.js";
-import { inputHandler } from "./inputHandler.js";
-import { gameLogger } from "../utilities/gameLogger.js";
-import { GamePieces } from "./gamePieces.js";
-import viewport from "./viewport.js";
-import { jsUcfirst } from "../utilities/uppercase.js";
-import { ClientOverlayInterface } from "./clientOverlayInterface.js";
+import { gameTravel } from './gameTravel';
+import { tutorial } from "./tutorial";
+import { Game } from "../advclient";
+import { inputHandler } from "./inputHandler";
+import { gameLogger } from "../utilities/gameLogger";
+import { GamePieces } from "./gamePieces";
+import viewport from "./viewport";
+import { jsUcfirst } from "../utilities/uppercase";
+import { ClientOverlayInterface } from "./clientOverlayInterface";
 
 addEventListener("load", function () {
     conversation.conversationDiv = document.getElementById("conversation").querySelectorAll("ul")[0];

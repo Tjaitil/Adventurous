@@ -1,9 +1,10 @@
-import { ChangeArmorResponse } from '../types/responses/ArmoryResponses.js';
-import { changeArmorRequest } from '../types/requests/ArmoryRequests.js';
-import { Inventory } from './../clientScripts/inventory.js';
-import { inputHandler } from '../clientScripts/inputHandler.js';
-import { ItemSelector } from '../ItemSelector.js';
-import { AdvApi } from '../AdvApi.js';
+import { ChangeArmorResponse } from '../types/Responses/ArmoryResponses';
+import { changeArmorRequest } from '../types/requests/ArmoryRequests';
+import { Inventory } from './../clientScripts/inventory';
+import { inputHandler } from '../clientScripts/inputHandler';
+import { ItemSelector } from '../ItemSelector';
+import { AdvApi } from '../AdvApi';
+import axios from 'axios';
 
 
 const armoryModule = {
@@ -73,6 +74,9 @@ const armoryModule = {
             part: "",
         }
 
+        axios.post<ChangeArmorResponse>('/api/armory/add', data).then((response) => {
+            response.
+        });
         AdvApi.post<ChangeArmorResponse>('/api/armory/add', data).then((response) => {
             document.getElementById("selected").innerHTML = "";
             this.replaceWarriorContainer(response.html.warrior_armory, data.warrior_id);
@@ -109,6 +113,7 @@ const armoryModule = {
         }
 
         AdvApi.post<ChangeArmorResponse>('/api/armory/remove', data).then((response) => {
+            response.data.
             document.getElementById("selected").innerHTML = "";
             this.replaceWarriorContainer(response.html.warrior_armory, data.warrior_id);
             Inventory.update();

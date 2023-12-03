@@ -1,5 +1,5 @@
-import { Game } from '../advclient.js';
-import { itemPrices } from '../clientScripts/inventory.js';
+import { Game } from '../advclient';
+import { itemPrices } from '../clientScripts/inventory';
 
 // Container for item title for items
 export const itemTitle = {

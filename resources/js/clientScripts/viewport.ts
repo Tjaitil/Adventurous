@@ -1,9 +1,9 @@
-import { GamePieces } from "./gamePieces.js";
-import { Game } from "../advclient.js";
-import { CanvasSprite } from "../types/CanvasSprite.js";
-import { Character } from "../gamepieces/Character.js";
-import { Building } from "../gamepieces/Building.js";
-import { NonDrawingTypes } from "../gamepieces/NonDrawingTypes.js";
+import { GamePieces } from "./gamePieces";
+import { Game } from "../advclient";
+import { CanvasSprite } from "../types/CanvasSprite";
+import { Character } from "../gamepieces/Character";
+import { Building } from "../gamepieces/Building";
+import { NonDrawingTypes } from "../gamepieces/NonDrawingTypes";
 
 interface IViewport {
     counter: number;

@@ -1,7 +1,7 @@
-import { AdvApi } from './../AdvApi.js';
-import { ClientOverlayInterface } from "../clientScripts/clientOverlayInterface.js";
-import { Inventory } from "../clientScripts/inventory.js";
-import { itemTitle } from "../utilities/itemTitle.js";
+import { AdvApi } from './../AdvApi';
+import { ClientOverlayInterface } from "../clientScripts/clientOverlayInterface";
+import { Inventory } from "../clientScripts/inventory";
+import { itemTitle } from "../utilities/itemTitle";
 
 const stockpileModule = {
 	toggled: false,

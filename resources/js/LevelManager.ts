@@ -1,8 +1,8 @@
-import { UserLevelsResource } from './types/UserLevelsResource.js';
-import { AdvApi } from './AdvApi.js';
-import { LevelUpSkill } from './types/LevelUpSkill.js';
-import { gameLogger } from './utilities/gameLogger.js';
-import { jsUcfirst } from './utilities/uppercase.js';
+import { UserLevelsResource } from './types/UserLevelsResource';
+import { AdvApi } from './AdvApi';
+import { LevelUpSkill } from './types/LevelUpSkill';
+import { gameLogger } from './utilities/gameLogger';
+import { jsUcfirst } from './utilities/uppercase';
 
 export const LevelManager = {
     skillElement: null,

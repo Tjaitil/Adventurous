@@ -1,10 +1,10 @@
-import { Game } from "../advclient.js";
-import merchant from "../buildingScripts/merchant.js";
-import { selectItemEvent } from "../ItemSelector.js";
-import { itemTitle } from "../utilities/itemTitle.js";
-import { jsUcWords } from "../utilities/uppercase.js";
-import { inputHandler } from "./inputHandler.js";
-import viewport from "./viewport.js";
+import { Game } from "../advclient";
+import merchant from "../buildingScripts/merchant";
+import { selectItemEvent } from "../ItemSelector";
+import { itemTitle } from "../utilities/itemTitle";
+import { jsUcWords } from "../utilities/uppercase";
+import { inputHandler } from "./inputHandler";
+import viewport from "./viewport";
 
 
 export class ClientOverlayInterface {

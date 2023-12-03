@@ -1,9 +1,9 @@
-import { gameLogger } from "./gameLogger.js";
-import { itemTitle } from "./itemTitle.js";
-import { StoreSkillRequirements } from './StoreSkillRequirements.js';
+import { gameLogger } from "./gameLogger";
+import { itemTitle } from "./itemTitle";
+import { StoreSkillRequirements } from './StoreSkillRequirements';
 import { SkillRequirementResource } from '../types/SkillRequirementResource';
-import { ItemElement } from "./ItemElement.js";
-import { itemPrices } from "../clientScripts/inventory.js";
+import { ItemElement } from "./ItemElement";
+import { itemPrices } from "../clientScripts/inventory";
 
 const storeContainer: IStoreContainer = {
     storeItems: [],

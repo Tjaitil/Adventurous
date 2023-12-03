@@ -1,5 +1,5 @@
-import { BaseStaticGameObject } from "./BaseStaticGameObject.js";
-import { StaticGameObject } from "../types/gamepieces/StaticGameObject.js";
+import { BaseStaticGameObject } from "./BaseStaticGameObject";
+import { StaticGameObject } from "../types/gamepieces/StaticGameObject";
 
 export interface ICharacter extends StaticGameObject {
     conversation: boolean;

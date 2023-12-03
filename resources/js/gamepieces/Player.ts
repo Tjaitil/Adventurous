@@ -1,11 +1,11 @@
-import { MovingGameObject, DirectionBlockedCheck } from "../types/gamepieces/MovingGameObject.js";
-import { canvasTextHeader } from "../clientScripts/canvasText.js";
-import { controls } from "../clientScripts/controls.js";
-import { Game } from "../advclient.js";
-import viewport from "../clientScripts/viewport.js";
-import { GamePieces } from "../clientScripts/gamePieces.js";
-import { HUD } from "../clientScripts/HUD.js";
-import { AssetPaths } from "../clientScripts/ImagePath.js";
+import { MovingGameObject, DirectionBlockedCheck } from "../types/gamepieces/MovingGameObject";
+import { canvasTextHeader } from "../clientScripts/canvasText";
+import { controls } from "../clientScripts/controls";
+import { Game } from "../advclient";
+import viewport from "../clientScripts/viewport";
+import { GamePieces } from "../clientScripts/gamePieces";
+import { HUD } from "../clientScripts/HUD";
+import { AssetPaths } from "../clientScripts/ImagePath";
 
 export class Player implements MovingGameObject {
     width = 36;

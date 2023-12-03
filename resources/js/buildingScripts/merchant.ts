@@ -1,9 +1,9 @@
-import { Inventory } from './../clientScripts/inventory.js';
-import traderModule from './trader.js';
-import { AdvApi } from '../AdvApi.js';
-import storeContainer, { StoreItemResource } from '../utilities/storeContainer.js';
-import { StoreItemResponse } from '../types/responses/StoreItemResponse.js';
-import { advAPIResponse } from '../types/responses/AdvResponse.js';
+import { Inventory } from './../clientScripts/inventory';
+import traderModule from './trader';
+import { AdvApi } from '../AdvApi';
+import storeContainer, { StoreItemResource } from '../utilities/storeContainer';
+import { StoreItemResponse } from '../types/Responses/StoreItemResponse';
+import { advAPIResponse } from '../types/Responses/AdvResponse';
 
 const merchantModule = {
     stockTimerId: null,
