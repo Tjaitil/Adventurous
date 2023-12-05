@@ -1,5 +1,5 @@
 <div id="map_container"
-    class="max-h-3/4 b border-ridge absolute top-0 z-50 h-[75vh] max-h-[75vh] w-11/12 rounded-lg border-8 border-r border-primary-800 transition-all duration-200">
+    class="max-h-3/4 b border-ridge absolute top-0 z-50 h-[75vh] max-h-[75vh] w-11/12 rounded-lg border-8 border-r border-primary-800 transition-all duration-200 invisible">
     <div id="map_container_header" class=" flex m-0 bg-orange-50 py-2 px-1">
         <img id="toggle_icon_list_image" class="cur-pointer"
             src="{{ asset('images/symbol icon.png') }} ">
