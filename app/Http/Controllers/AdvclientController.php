@@ -26,7 +26,6 @@ class AdvclientController extends Controller
      */
     public function index()
     {
-        // $this->generateGameID();
         $user_data = UserData::where('username', Auth::user()->name ?? '')->first();
         if (! $user_data instanceof UserData) {
             Log::warning('User data not found for user:', ['user' => Auth::user(), 'session' => session()]);
