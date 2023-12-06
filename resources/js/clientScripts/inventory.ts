@@ -87,22 +87,9 @@ export class Inventory {
 
     static init() {
         if (this.isInited) return;
-        document.getElementById("update-inventory").addEventListener("click", () => this.test())
         this.itemsElements = [...document.querySelectorAll(".inventory_item")];
         this.itemsAmount = this.itemsElements.length;
         this.isInited = true;
-    }
-
-    static async test() {
-        let requestData = {
-            foo: 5,
-        };
-
-        
-        await CustomFetchApi.post<response>("/inventory/test", requestData).then(data => {
-            data
-            console.log(data);
-        }).catch(() => false);
     }
 
     static async update() {
@@ -173,7 +160,3 @@ export const itemPrices = {
         }).catch(() => false);
     }
 }
-
-window.addEventListener("load", () => { 
-    // Inventory.test();
-})
