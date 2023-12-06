@@ -1,47 +1,43 @@
-import { advAPIResponse } from './types/responses/AdvResponse';
-import { checkResponse } from "./ajax.js";
-import { gameLogger } from './utilities/gameLogger.js';
+import { advAPIResponse } from './types/Responses/AdvResponse';
+import { BaseAxios } from "./ajax";
+import { gameLogger } from './utilities/gameLogger';
 
-type responseType<T> = T extends advAPIResponse ? T : T;
-export class AdvApi {
-    private static route = "/";
+export class AdvApi extends BaseAxios {
 
-    private static fetchInstance<T extends {}>(method: 'PUT' | 'GET' | 'POST', url: string, data?: Object): Promise<T> {
+    protected static interceptorsConfigured = false;
 
-        const requestInfo: RequestInit = {
-            method: method,
-            headers: { "Content-type": "application/json" },
-        }
-        if (data !== undefined) requestInfo.body = JSON.stringify(data);
+    private static init() {
+        BaseAxios.getInstance().interceptors.response.use(response => {
 
-        return fetch(this.route + url, requestInfo)
-            .then((res) => {
-                if (!res.ok) {
-                    return res.json().then((data) => {
-                        return Promise.reject(data);
-                    });
-                }
-                return res.json();
-            })
-            .then((data: T) => {
-                checkResponse(data);
-                return data;
-            })
-            .catch((errorMessage) => {
-                checkResponse(errorMessage);
-                return Promise.reject(errorMessage);
-            });
+            if(response.status !== 200) {
+                gameLogger.addMessage("An Error Occured", true);
+                return Promise.reject(response);
+            }
+
+            else if (typeof response.data.gameMessage !== "undefined") {
+                gameLogger.addMessage(response.data.gameMessage, true);
+                return Promise.resolve(response);
+            } else if (typeof response.data.errorGameMessage !== "undefined") {
+                gameLogger.addMessage(response.data.errorGameMessage, true);
+                return Promise.reject(response.data.gameMessage);
+            }   
+
+            return response;
+        })
+        this.interceptorsConfigured = true;
     }
 
-    public static get<T = advAPIResponse>(url: string): Promise<responseType<T>> {
-        return this.fetchInstance<responseType<T>>('GET', url);
+    public static async get<T = advAPIResponse>(url: string): Promise<T> {
+        if(this.interceptorsConfigured === false) this.init();
+
+        return BaseAxios.get<T>(url);
     }
 
+    public static async post<T = advAPIResponse>(url: string, data: Object): Promise<T> {
+        if(this.interceptorsConfigured === false) this.init();
 
-    public static post<T = advAPIResponse>(url: string, data: Object): Promise<responseType<T>> {
-
-        return this.fetchInstance<responseType<T>>('POST', url, data);
+        return BaseAxios.post<T>(url, data);
     }
 }
 
-(<any>window).AdvApi = AdvApi;
+

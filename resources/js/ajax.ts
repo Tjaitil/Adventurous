@@ -1,6 +1,46 @@
-import { LevelManager } from "./LevelManager.js";
-import { advAPIResponse } from "./types/responses/AdvResponse.js";
-import { gameLogger } from "./utilities/gameLogger.js";
+import { advAPIResponse } from "./types/Responses/AdvResponse";
+import { gameLogger } from "./utilities/gameLogger";
+import axios, {Axios} from 'axios';
+
+
+export class BaseAxios {
+    private static route = window.location.origin;
+    
+    private static AxiosInstance: Axios;
+
+    public static getInstance() {
+        if(!this.AxiosInstance) this.createAxiosInstance();
+
+        return this.AxiosInstance;
+    }
+
+    private static createAxiosInstance() {
+        this.AxiosInstance = axios.create({
+            baseURL: this.route,
+            headers: { 
+                "Content-type": "application/json",
+            },
+        });
+    
+        this.AxiosInstance.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+    }
+
+    public static async get<T = advAPIResponse>(url: string): Promise<T> {
+        if(!this.AxiosInstance) this.createAxiosInstance();
+
+
+        return await this.AxiosInstance.get<T>(url).then(async (response) => response.data);
+
+    }
+
+    public static async post<T = advAPIResponse>(url: string, data: Object): Promise<T> {
+        if(!this.AxiosInstance) this.createAxiosInstance();
+        
+        return await this.AxiosInstance.post<T>(url, data).then(async (response) => response.data);
+    }
+}
+
+
 
 // scriptLoader.loadScript(["gameLogger"], "utility");
 

@@ -1,44 +1,13 @@
+import { BaseAxios } from "./ajax";
 
-export class CustomFetchApi {
-    private static route = window.location.origin;
+export class CustomFetchApi extends BaseAxios {
 
-    private static fetchInstance<T extends {}>(method: 'PUT' | 'GET' | 'POST', url: string, data?: Object): Promise<T> {
-
-        const requestInfo: RequestInit = {
-            method: method,
-            headers: { 
-                "Content-type": "application/json",
-                "X-Requested-With": "XMLHttpRequest",
-            },
-        }
-        if (data !== undefined) requestInfo.body = JSON.stringify(data);
-
-        return fetch(this.route + url, requestInfo)
-            .then((res) => res.json())
-            .then((data: T) => {
-                return data;
-            })
-            .catch((error) => {
-                throw new Error(error);
-            });
+    public static async get<T>(url: string): Promise<T> {
+        return BaseAxios.get<T>(url);
     }
 
-    public static get<T extends {}>(url: string): Promise<T> {
-        return this.fetchInstance<T>('GET', url);
-    }
-
-
-    public static post<T extends {}>(url: string, data: Object): Promise<T> {
-        return fetch(this.route + url, {
-            method: "POST",
-            headers: { "Content-type": "application/json" },
-            body: JSON.stringify(data),
-        }).then((res) => res.json()).then((data: T) => {
-            return data;
-        })
-            .catch((error) => {
-                throw new Error(error);
-            })
+    public static async post<T>(url: string, data: Object): Promise<T> {
+        return BaseAxios.post<T>(url, data);
     }
 }
 
