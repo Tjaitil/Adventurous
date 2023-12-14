@@ -7,7 +7,6 @@ export default defineConfig({
             input: ['resources/css/app.css',
                 'resources/js/app.js',
                 'resources/js/backgroundScroller.ts',
-                'resources/js/advclient.ts',
                 'resources/js/clientScripts/getXp.ts',
                 'resources/js/clientScripts/sidebar.ts'],
             refresh: true,
