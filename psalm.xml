@@ -9,12 +9,13 @@
     findUnusedCode="true"
 >
     <projectFiles>
-        <directory name="./libs" />
         <directory name="app" />
         <directory name="database/factories" />
         <directory name="database/seeders" />
         <ignoreFiles>
             <directory name="vendor" />
+            <directory name="libs" />
+            <directory name="node_modules" />
         </ignoreFiles>
     </projectFiles>
     <plugins>
