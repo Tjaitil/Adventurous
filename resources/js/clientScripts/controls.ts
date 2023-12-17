@@ -264,12 +264,7 @@ export const controls = {
         // Set controls
         controls.w = () => inputHandler.interactCharacter();
         controls.p = () => pauseManager.togglePause();
-        controls.space = () => {
-            let event = new Event("keydown");
-            if (!conversation.multipleResponses) {
-                conversation.getNextLine(false, true);
-            }
-        };
+ 
         // Prevent user from scrolling with arrow keys on site
         window.addEventListener(
             "keydown",

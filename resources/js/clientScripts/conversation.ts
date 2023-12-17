@@ -53,7 +53,7 @@ export class conversation {
     public static addNextEvent() {
         conversation.button.addEventListener("click", (event) => conversation.handleUserEvent(event));
     }
-    private static checkConversation() {
+    public static checkConversation() {
         if (this.conversationContainer.style.visibility === "visible") {
             return true;
         } else {

@@ -45,7 +45,7 @@ export const HUD = {
         let HUDrowHeight = 46;
 
         // Set width on elements that should be same with as canvas
-        let conversation_container = document.getElementById("conversation_container");
+        let conversation_container = document.getElementById("conversation-container");
         conversation_container.style.width = width + "px";
         conversation_container.style.top =
             document.getElementById("game_canvas").offsetTop +

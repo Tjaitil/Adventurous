@@ -13,7 +13,7 @@ export const pauseManager = {
         }
     },
     pauseGame() {
-        if (document.getElementById("conversation_container").style.visibility == "visible" || Game.properties.inBuilding == true) {
+        if (document.getElementById("conversation-container").style.visibility == "visible" || Game.properties.inBuilding == true) {
             return false;
         }
         if ((controls.playerUp !== false || controls.playerRight !== false ||
