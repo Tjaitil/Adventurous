@@ -47,7 +47,7 @@ class WorldLoaderController extends Controller
         $UserData = $this->sessionService->getUserData();
         $is_new_map_string = $request->boolean('is_new_map_string');
         $new_destination = null;
-        if ($is_new_map_string) {
+        if ($is_new_map_string === true) {
             $new_destination = $request->input('new_destination');
 
             // Find the map in the index
@@ -105,17 +105,38 @@ class WorldLoaderController extends Controller
         }
         $UserData->save();
 
-        $this->loadWorld();
+        $result = $this->getWorldData();
+        if ($result === false) {
+            return $Response->addMessage('File not found')->setStatus(422)->toResponse($request);
+        }
 
-        return $Response->setStatus(200)->toResponse($request);
+        return $Response->setData($result)->setStatus(200)->toResponse($request);
+    }
+
+    public function getWorldData()
+    {
+        $result = $this->loadObjects();
+        if ($result === false) {
+            return false;
+        }
+
+        return [
+            'data' => [
+                'current_map' => strval($this->map),
+                'changed_location' => '',
+                'map_data' => $this->object_array,
+                'events' => [],
+            ],
+        ];
     }
 
     public function loadWorld(): JsonResponse
     {
-        $this->loadObjects();
+        $result = $this->getWorldData();
+        if ($result === false) {
+            return response()->json($result, 422);
+        }
 
-        // $this->model = $this->loadModel('eventLoader', true);
-        // $events = $this->model->loadEventPositions($this->map);
         return response()->json([
             'data' => [
                 'current_map' => strval($this->map),
@@ -127,14 +148,14 @@ class WorldLoaderController extends Controller
     }
 
     /**
-     * @return void|false
+     * @return bool
      */
     public function loadObjects()
     {
         $this->map = $this->sessionService->getCurrentMap();
 
         $file = Storage::disk('gamedata')->get($this->map.'.json');
-        if (! $file) {
+        if (is_null($file)) {
             Log::alert('File not found: '.$this->map.'.json');
 
             return false;
@@ -254,6 +275,8 @@ class WorldLoaderController extends Controller
             }
         }
         $this->object_array = $objects;
+
+        return true;
     }
 
     /**

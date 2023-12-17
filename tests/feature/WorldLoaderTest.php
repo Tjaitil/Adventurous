@@ -31,15 +31,36 @@ class WorldLoaderTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_change_map_with_new_destination(): void
+    public static function getDestination()
+    {
+
+        return [
+            ['destination' => 'towhar'],
+            ['destination' => 'golbak'],
+            ['destination' => 'krasnur'],
+            ['destination' => 'ter'],
+            ['destination' => 'fansalplains'],
+            ['destination' => 'cruendo'],
+            ['destination' => 'snerpiir'],
+            ['destination' => 'fagna'],
+            ['destination' => 'tasnobil'],
+            ['destination' => 'khanz'],
+        ];
+    }
+
+    /**
+     * @dataProvider getDestination
+     */
+    public function test_change_map_with_new_destination($data): void
     {
         $User = User::find(1);
         $response = $this->actingAs($User)->post('/worldloader/change', [
             'is_new_map_string' => true,
-            'new_destination' => 'towhar',
+            'new_destination' => $data,
         ]);
 
-        $response->json();
+        $json = $response->json();
+        $this->assertArrayHasKey('current_map', $json['data']);
         $response->assertStatus(200);
     }
 
