@@ -6,6 +6,7 @@ use App\Http\Controllers\ArmoryController;
 use App\Http\Controllers\ArmyCampController;
 use App\Http\Controllers\BakeryController;
 use App\Http\Controllers\CityCentreController;
+use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\CropsController;
 use App\Http\Controllers\HungerController;
 use App\Http\Controllers\InventoryController;
@@ -46,6 +47,8 @@ Route::post('/world/change', [WorldLoaderController::class, 'changeMap']);
 
 Route::get('/inventory', [InventoryController::class, 'get']);
 Route::get('/inventory/prices', [InventoryController::class, 'getPrices']);
+
+Route::get(('conversation/next'), [ConversationController::class, 'index']);
 
 Route::post('/crops/start', [CropsController::class, 'growCrops']);
 Route::post('/crops/end', [CropsController::class, 'harvestCrops']);
