@@ -349,7 +349,7 @@ export class Game {
         if (
             // (GamePieces.player.speedX != 0 || GamePieces.player.speedY != 0) &&
             Game.properties.inBuilding == false &&
-            conversation.active === false
+            conversation.isActive === false
         ) {
             eventHandler.checkEvent();
             viewport.checkViewportGamePieces();

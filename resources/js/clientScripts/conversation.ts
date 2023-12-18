@@ -21,19 +21,12 @@ addEventListener("load", function () {
     conversation.button.addEventListener("click", conversation.addNextEvent);
 });
 export class conversation {
-    private static index = null;
-    private static indexSet = false;
     private static active = false;
-    private static end = false;
     public static conversationDiv = null;
     public static button: HTMLButtonElement = null;
     private static buttonToggle = false;
-    private static selectItem = false;
     private static currrentPerson = null;
-    private static activeDialogues = [];
     private static persons = [];
-    private static conversationPartner = null;
-    private static multipleResponses = false;
     private static endEvents = [];
     private static personContainerA = null;
     private static personContainerB = null;
@@ -42,7 +35,12 @@ export class conversation {
     private static conversationHeader: HTMLElement = null;
     private static conversationContainer: HTMLElement = null;
     private static conversationTextWrapper: HTMLElement = null;
-    private static setup() {
+
+    public static get isActive() {
+        return this.active;
+    }
+
+    public static setup() {
         this.conversationContainer = document.getElementById("conversation-container");
         this.conversationHeader = document.getElementById("conversation-header");
         this.personContainerA = document.getElementById("conversation-a");
@@ -71,7 +69,6 @@ export class conversation {
         }
 
         this.active = true;
-        this.end = false;
         this.persons = [];
         // Close news to prevent players having conversation and also being in building
         ClientOverlayInterface.hide();
