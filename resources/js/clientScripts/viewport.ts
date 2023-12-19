@@ -162,6 +162,9 @@ export const viewport = {
         this.elements.hud.height = this.height;
         this.elements.hud.style.left = this.left + "px";
 
+        document.getElementById("canvas-border").style.width = this.width + "px";
+        document.getElementById("canvas-border").style.height = this.height + 2 + "px";
+
         this.layer.background.scale(this.zoom, this.zoom);
         this.layer.player.scale(this.zoom, this.zoom);
         this.layer.sprite.scale(this.zoom, this.zoom);
