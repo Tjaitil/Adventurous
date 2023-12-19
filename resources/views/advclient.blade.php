@@ -12,15 +12,7 @@
         <div id="client-container">
             @include('layout')
             @include('partials.conversationContainer')
-            <div id="game-screen">
-                <div id="canvas_border"></div>
-                <canvas id="game_canvas" width="700" height="400"></canvas>
-                <canvas id="game_canvas2" width="700" height="400"></canvas>
-                <canvas id="game_canvas3" width="700" height="400"></canvas>
-                <canvas id="game_canvas4" width="700" height="400"></canvas>
-                <canvas id="text_canvas" width="700" height="400"></canvas>
-                <canvas id="hud_canvas" width="700" height="400"></canvas>
-            </div>
+            @include('partials.gameScreen')
             <div id="client_help_container" class="div_content div_content_dark">
                 <div id="client_help_content">
                     <img class="cont_exit" src="{{ asset('images/exit.png') }}" />
@@ -42,43 +34,10 @@
                     </div>
                 </div>
             </div>
-            <div id="client_settings_container" class="div_content div_content_dark">
-                <div id="client_help_content">
-                    <img class="cont_exit" src="{{ asset('images/exit.png') }}" />
-                    <h1 class="page_title"> Settings </h1>
-                    <label class="label-container">
-                        Minimal Controls? <br>
-                        This will remove "P" and "C" section
-                        <input type="checkbox" name="client-settings-minimal-control"
-                            id="client-settings-minimal-control">
-                        <span class="checkmark"></span>
-                    </label>
-                </div>
-            </div>
-
+            @include('partials.clientSettings')
             <div id="game_hud">
-                <div id="hunger_progressBar" class="progressBarContainer">
-                    <div class="progressBarOverlayShadow">
-                    </div>
-                    <div class="progressBarOverlay">
-                    </div>
-                    <div class="progressBar">
-                        <span class="progressBar_currentValue">{{ $Hunger->current }}</span>
-                        &nbsp/&nbsp
-                        <span class="progressBar_maxValue">100</span>
-                    </div>
-                </div>
-                <div id="health_progressBar" class="progressBarContainer">
-                    <div class="progressBarOverlayShadow">
-                    </div>
-                    <div class="progressBarOverlay">
-                    </div>
-                    <div class="progressBar">
-                        <span class="progressBar_currentValue">100</span>
-                        &nbsp/&nbsp
-                        <span class="progressBar_maxValue">100</span>
-                    </div>
-                </div>
+                <x-progressBar id="hunger_progressBar" :current-value="$Hunger->current" :max-value="$Hunger->max" />
+                <x-progressBar id="health_progressBar" :current-value="100" :max-value="100" />
                 <img src="{{ asset('/images/hunted icon.png') }}" id="HUD_hunted_icon" />
                 <p id="HUD_hunted_locater"></p>
                 <div id="HUD-left-icons-container">
