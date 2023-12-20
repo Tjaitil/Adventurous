@@ -2,7 +2,7 @@
     Workforce Lodge
 </x-pageTitle>
 <div id="workers">
-    <div id="workers-overview">
+    <div id="workers-overview" class="flex gap-2">
         @php
             $new_farmer_workers_amount = $maxFarmerWorkers - $FarmerWorkforce->workforce_total;
             $new_farmer_worker_amount = $new_farmer_workers_amount > 0 ?: 0;
@@ -10,7 +10,7 @@
             $new_mine_worker_amount = $new_mine_workers_amount > 0 ?: 0;
         @endphp
         <div class="flex flex-row justify-center gap-3">
-            <div id="farmer_workers">
+            <div id="farmer_workers" class="w-1/2">
                 <h4>Farmer workforce</h4>
                 <p>
                     Current efficiency level:
@@ -73,7 +73,7 @@
                     </x-slot>
                 </x-baseTable>
             </div>
-            <div id="miner_workers">
+            <div id="miner_workers" class="w-1/2">
                 <h4>Miner workforce</h4>
                 <p>
                     Current efficiency level:

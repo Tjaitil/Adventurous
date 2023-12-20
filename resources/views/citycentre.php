@@ -1,28 +1,28 @@
             citycentre.css|citycentre.js|
             <h1 class="page_title"> City Centre </h1>
-            <?php if (in_array($_SESSION['gamedata']['location'], array("fansal-plains", "hirtam", "khanz", "pvitul", "ter"))) : ?>
+            <?php if (in_array($_SESSION['gamedata']['location'], ['fansal-plains', 'hirtam', 'khanz', 'pvitul', 'ter'])) { ?>
                 <p> Current diplomacy relation: <?php echo $_SESSION['gamedata']['location'], ', ',
-                                                $this->data['diplomacy'][0]; ?>
+                $this->data['diplomacy'][0]; ?>
                 </p>
-            <?php endif; ?>
+            <?php } ?>
             <div id="profiency">
                 <p> Current profiency: <span id="profiency"><?php echo ucfirst($_SESSION['gamedata']['profiency']); ?></span></p>
                 <label for="profiency_select"> Change profiency</label></br>
                 <select name="profiency_select" id="profiency_select">
                     <option selected disabled hidden></option>
                     <?php
-                    $profiences = array(
+                    $profiences = [
                         'farmer' => 'farmer', 'miner' => 'miner', 'trader' => 'trader',
-                        'warrior' => 'warrior'
-                    );
-                    unset($profiences[$_SESSION['gamedata']['profiency']]);
-                    foreach ($profiences as $values) : ?>
+                        'warrior' => 'warrior',
+                    ];
+            unset($profiences[$_SESSION['gamedata']['profiency']]);
+            foreach ($profiences as $values) { ?>
                         <option><?php echo ucfirst($values); ?></option>
-                    <?php endforeach; ?>
+                    <?php } ?>
                 </select>
                 <p>
                     The cost of changing profiency is charged 500
-                    <img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.png'; ?>">
+                    <img class="gold" src="<?php echo constant('ROUTE_IMG').'gold.png'; ?>">
                 </p>
                 <label class="label-container mb-1">
                     Beware that you will lose profiency advantages when switching profiencies. <br>
@@ -35,12 +35,12 @@
             <div id="keep">
                 <div id="artefact">
                     <p> Current artefact: <?php echo ucfirst($this->data['artefact_data']['artefact']); ?>
-                        <?php if ($this->data['artefact_data']['artefact'] === 'none') : ?>
+                        <?php if ($this->data['artefact_data']['artefact'] === 'none') { ?>
                             <img style="background-color:white;">
-                        <?php else : ?>
-                            <img src="<?php echo constant('ROUTE_IMG') . trim(explode("(", $this->data['artefact_data']['artefact'])[0])
-                                            . '.png'; ?>">
-                        <?php endif; ?>
+                        <?php } else { ?>
+                            <img src="<?php echo constant('ROUTE_IMG').trim(explode('(', $this->data['artefact_data']['artefact'])[0])
+                                    .'.png'; ?>">
+                        <?php } ?>
                     </p>
                 </div>
                 <div id="selected">
@@ -49,10 +49,10 @@
                 <button> Change artefact </button>
                 <button> Create new artefact </button>
             </div>
-            <div id="miner_permits">
+            <div id="miner_permits" >
                 <p class="help"> You will need miner permits to mine for minerals. Different types of minerals require a
                     certain amount of permits</p>
-                <div class="div_content_light div_content inlineAuto mt-1">
+                <div class="div_content_light div_content inlineAuto max-w-sm">
                     <h4 class="mt-1 mb-1">Buy Permits</h4>
                     <label>
                         <input type="radio" name="permit_location" value="golbak">
@@ -62,7 +62,7 @@
                         <input type="radio" name="permit_location" value="Snerpiir">
                         Snerpiir - <span><?php echo $this->data['permits']['snerpiir']; ?></span>
                     </label>
-                    <p>50 permits cost 50<img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.png'; ?>"></p>
+                    <p>50 permits cost 50<img class="gold" src="<?php echo constant('ROUTE_IMG').'gold.png'; ?>"></p>
                     <button id="miner-permits-buy-permits" type="button" class="mb-1">Buy</button>
                 </div>
             </div>
@@ -77,21 +77,21 @@
                         </tr>
                     </thead>
                     <tr>
-                        <td> Frajrite items <img src="<?php echo constant('ROUTE_IMG') . 'frajrite platebody.png'; ?>"></td>
-                        <td> 125 <img src="<?php echo constant('ROUTE_IMG') . 'weapon tokens.png'; ?>"></td>
-                        <td><button <?php if (intval($this->data['unlock_items']['frajrite_items']) === 1) : ?> class="button_disabled" disabled> Unlocked
-                            <?php else : ?>
+                        <td> Frajrite items <img src="<?php echo constant('ROUTE_IMG').'frajrite platebody.png'; ?>"></td>
+                        <td> 125 <img src="<?php echo constant('ROUTE_IMG').'weapon tokens.png'; ?>"></td>
+                        <td><button <?php if (intval($this->data['unlock_items']['frajrite_items']) === 1) { ?> class="button_disabled" disabled> Unlocked
+                            <?php } else { ?>
                                 >Buy
-                            <?php endif; ?>
+                            <?php } ?>
                             </button></td>
                     </tr>
                     <tr>
-                        <td> Wujkin items <img src="<?php echo constant('ROUTE_IMG') . 'wujkin platebody.png'; ?>"></td>
-                        <td> 160 <img src="<?php echo constant('ROUTE_IMG') . 'weapon tokens.png'; ?>"></td>
-                        <td><button <?php if (intval($this->data['unlock_items']['wujkin_items']) === 1) : ?> class="button_disabled" disabled> Unlocked
-                            <?php else : ?>
+                        <td> Wujkin items <img src="<?php echo constant('ROUTE_IMG').'wujkin platebody.png'; ?>"></td>
+                        <td> 160 <img src="<?php echo constant('ROUTE_IMG').'weapon tokens.png'; ?>"></td>
+                        <td><button <?php if (intval($this->data['unlock_items']['wujkin_items']) === 1) { ?> class="button_disabled" disabled> Unlocked
+                            <?php } else { ?>
                                 >Buy
-                            <?php endif; ?>
+                            <?php } ?>
                             </button></td>
                     </tr>
                 </table>
@@ -112,7 +112,7 @@
                         <td> Farmer </td>
                         <td><?php echo $this->data['effiency']['farmer']; ?></td>
                         <td id="efficiency_cost"><?php echo $this->data['effiency']['farmer'] * 150; ?>
-                            <img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.png'; ?>">
+                            <img class="gold" src="<?php echo constant('ROUTE_IMG').'gold.png'; ?>">
                         </td>
                         <td><button type="button" class="upgrade-efficiency-button" id="upgrade-efficiency-farmer"> Upgrade </button></td>
                     </tr>
@@ -120,7 +120,7 @@
                         <td> Miner </td>
                         <td><?php echo $this->data['effiency']['miner']; ?></td>
                         <td id="efficiency_cost"><?php echo $this->data['effiency']['miner'] * 150; ?>
-                            <img class="gold" src="<?php echo constant('ROUTE_IMG') . 'gold.png'; ?>">
+                            <img class="gold" src="<?php echo constant('ROUTE_IMG').'gold.png'; ?>">
                         </td>
                         <td><button type="button" class="upgrade-efficiency-button" id="upgrade-efficiency-miner"> Upgrade </button></td>
                     </tr>

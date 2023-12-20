@@ -1,9 +1,0 @@
-.trader_assignments_container {
-    display: grid;
-    grid-template-columns: repeat(300px);
-}
-.trader_assignment {
-    display: flex;
-    flex-direction: column;
-    max-width: 300px;
-}
