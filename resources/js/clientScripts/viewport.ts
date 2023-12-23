@@ -146,21 +146,31 @@ export const viewport = {
         this.elements.background.width = this.width;
         this.elements.background.height = this.height;
         this.elements.background.style.left = this.left + "px";
+        
         this.elements.player.width = this.width;
         this.elements.player.height = this.height;
         this.elements.player.style.left = this.left + "px";
+        this.elements.player.style.zIndex = "2";
+
         this.elements.sprite.width = this.width;
         this.elements.sprite.height = this.height;
         this.elements.sprite.style.left = this.left + "px";
+        this.elements.sprite.style.zIndex = "3";
+
         this.elements.frontObjects.width = this.width;
         this.elements.frontObjects.height = this.height;
         this.elements.frontObjects.style.left = this.left + "px";
+        this.elements.frontObjects.style.zIndex = "4";
+
         this.elements.text.width = this.width;
         this.elements.text.height = this.height;
         this.elements.text.style.left = this.left + "px";
+        this.elements.text.style.zIndex = "5";
+
         this.elements.hud.width = this.width;
         this.elements.hud.height = this.height;
         this.elements.hud.style.left = this.left + "px";
+        this.elements.hud.style.zIndex = "6";
 
         document.getElementById("canvas-border").style.width = this.width + "px";
         document.getElementById("canvas-border").style.height = this.height + 2 + "px";
