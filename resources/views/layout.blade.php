@@ -7,15 +7,6 @@ use App\libs\TemplateFetcher;
 
 </div>
 <input type="checkbox" name="" id="draw_checkbox">
-<div id="log_container" class="div_content mb-1">
-    <div id="log" class="darkTextColor">
-        <table id="game_messages">
-            <?php
-            // echo TemplateFetcher::loadTemplate('log', $_SESSION['log'] ?? []);
-// ?>
-        </table>
-    </div>
-</div>
 <div id="log_2"></div>
 <?php
 

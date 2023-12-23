@@ -1,12 +1,15 @@
 <div id="sidebar"
-    class="fixed col-span-1 min-h-[500px] overflow-y-scroll bg-primary-800 px-2 text-white transition-all duration-200">
+    class="h-full pt-2 bg-primary-800 px-2 text-white transition-all duration-200">
     <button id="sidebar_button_toggle" class="sidebar_button">
         {{ '<<' }} </button>
     <p>{{ ucfirst($username) }}</p>
     <p class="mb-1 mt-1">{{ ucfirst($profiency) }}</p>
     <p>{{ ucwords($location) }}</p>
-    <div class="flex flex-row">
+    <div class="flex flex-row gap-2">
         <x-tabList data-is-setup="true" class="flex flex-col max-w-[100px]">
+            <x-tab id="log-tab" aria-controls="sidebar-log-tabpanel" class="sidebar-tab">
+                Log
+            </x-tab>
             <x-tab id="adventure-tab" aria-controls="sidebar-adventure-tabpanel"
                 class="sidebar-tab">
                 Adventure
@@ -32,7 +35,18 @@
                     src="{{ asset('images/settings icon.png') }}" />
             </x-tab>
         </x-tabList>
-        <div id="sidebar-tabpanels" class="flex-grow">
+        <div id="sidebar-tabpanels" class="flex-grow overflow-y-scroll h-full max-h-[600px]">
+            <x-tabpanel id="sidebar-log-tabpanel" aria-labelled-by="log-tab">
+                <div id="log_container" class="div_content mb-1">
+                    <div id="log" class="darkTextColor">
+                        <table id="game_messages">
+                            <?php
+                            // echo TemplateFetcher::loadTemplate('log', $_SESSION['log'] ?? []);
+                // ?>
+                        </table>
+                    </div>
+                </div>
+            </x-tabpanel>
             <x-tabpanel id="sidebar-adventure-tabpanel" aria-labelled-by="adventure-tab">
                 {{-- Add adventure tab here --}}
             </x-tabpanel>
