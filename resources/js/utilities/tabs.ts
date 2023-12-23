@@ -1,6 +1,5 @@
 export function setUpTabList() {
-    const tabLists = [...document.querySelectorAll('[data-is-setup="false"], [role="tablist')];
-
+    const tabLists = [...document.querySelectorAll('[data-is-setup="false"] [role="tablist')];
     tabLists.forEach((tabList: HTMLElement) => {
         let tabs = tabList.querySelectorAll('[role="tab"]');
         tabs.forEach((tab: HTMLElement) => {
@@ -21,14 +20,13 @@ export function setUpTabList() {
 
 function getTabPanel(tab: HTMLElement) {
     if (!tab) {
-        console.log("Tab not found", tab);
     }
     let tabPanelId = tab.getAttribute("aria-controls");
     let tabPanel = <HTMLElement>document.querySelector(`#${tabPanelId}`);
     return tabPanel;
 }
 
-function toggleTabPanel(tabPanel: HTMLElement, hide: boolean) {
+export function toggleTabPanel(tabPanel: HTMLElement, hide: boolean) {
     if (hide) {
         tabPanel.classList.add("hidden");
         tabPanel.classList.add("absolute");
@@ -58,23 +56,4 @@ function changeTabs(e) {
     let tabPanelId = tab.getAttribute("aria-controls");
     let tabPanel = getTabPanel(tab);
     toggleTabPanel(tabPanel, false);
-}
-
-export function getSelectedTabInGroup() {
-
-}
-
-class Tab {
-
-    private tabList: HTMLElement;
-
-    private tabs: NodeListOf<HTMLElement>;
-
-    private tabListLabel: string;
-
-    constructor(tablist: HTMLElement) {
-        this.tabList = tablist;
-        this.tabs = this.tabList.querySelectorAll('.tab');
-        this.tabListLabel = this.tabList.ariaLabel;
-    }
 }
