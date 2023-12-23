@@ -1,3 +1,4 @@
+import { clientSettings } from "./clientSettings";
 import { hideAllSkillTooltips } from "./getXp";
 
 export const sidebar = {
@@ -24,6 +25,7 @@ export const sidebar = {
         if (this.isSidebarToggled === false) {
             this.sidebarElement.style.visibility = "visible";
             this.sidebarElement.style.width = document.getElementsByTagName("section")[0].clientWidth * 0.4 + "px";
+            this.sidebarElement.style.maxWidth = "initial";
             this.isSidebarToggled = true;
             this.sidebarToggledButton.style.visibility = "visible";
             if (window.screen.width < 830) {
@@ -31,19 +33,9 @@ export const sidebar = {
             }
         } else {
             this.hideTabs();
-            if (window.screen.width < 830) {
-                this.adjustSidebar();
-            } else {
-            }
+            this.adjustSidebar();
             this.isSidebarToggled = false;
-            if (window.screen.width > 830) {
-                this.sidebarToggledButton.style.visibility = "hidden";
-            } else {
-                setTimeout(() => {
-                    this.sidebarToggledButton.style.visibility = "hidden";
-                    this.sidebarToggledButton.style.cssFloat = "left";
-                }, 200);
-            }
+            this.sidebarToggledButton.style.visibility = "hidden";
         }
     },
     showTab(event: MouseEvent) {
@@ -61,8 +53,10 @@ export const sidebar = {
         tabpanels.forEach(element => {
             if (element.id === targetTabPanelID) {
                 element.classList.remove("hidden");
+                element.classList.remove("absolute");
             } else {
                 element.classList.add("hidden");
+                element.classList.add("absolute");
             }
         });
         hideAllSkillTooltips();
@@ -74,5 +68,6 @@ export const sidebar = {
         });
     }
 };
-window.addEventListener("resize", () => sidebar.adjustSidebar());
+clientSettings.init();
 sidebar.adjustSidebar();
+sidebar.addClickEvent();
