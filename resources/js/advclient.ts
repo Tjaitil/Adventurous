@@ -288,11 +288,10 @@ export class Game {
 
         LevelManager.get();
 
+        this.loadGame();
         setTimeout(() => {
             document.getElementById("client-container").style.opacity = "" + 1;
-            document.getElementById("client-loading-container").style.display = "none";
-            this.loadGame();
-        }, 5000);
+        }, 500);
     }
 
     private static loadGame() {
