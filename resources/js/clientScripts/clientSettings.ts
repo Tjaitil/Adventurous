@@ -1,23 +1,6 @@
-import { Game } from "../advclient";
 
 export const clientSettings = {
-    element: null,
-    toggled: false,
-    toggle() {
-        if (this.toggled === false) {
-            this.element.style.visibility = "visible";
-            Game.setGameState('help');
-        }
-        else {
-            this.element.style.visibility = "hidden";
-            Game.setGameState('playing');
-        }
-        this.toggled = !this.toggled;
-    },
     init() {
-        clientSettings.element = document.getElementById("client_settings_container");
-        clientSettings.element.querySelectorAll(".cont_exit")[0].addEventListener("click", () => clientSettings.toggle());
-        document.getElementById("setting_button").addEventListener("click", () => clientSettings.toggle());
         this.checkLocalStorage();
     },
     set(settingName: string) {
