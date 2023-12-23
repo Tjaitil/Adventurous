@@ -24,6 +24,7 @@ export class ClientOverlayInterface {
     public static loadingScreen() {
         let h = document.createElement("h1");
         h.innerText = "Loading...";
+        h.classList.add("mt-5");
         h.id = "loading_message";
         this.show(h, false);
     }
