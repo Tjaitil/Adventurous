@@ -3,8 +3,6 @@ import { tutorial } from "./tutorial";
 import { ProgressBar } from "../progressBar";
 import viewport from "./viewport";
 import { itemTitle } from "../utilities/itemTitle";
-import { clientSettings } from "./clientSettings";
-import { clientHelpContainer } from "./help";
 import { Inventory } from "./inventory";
 
 export const HUD = {
@@ -70,6 +68,7 @@ export const HUD = {
         hungerProgressBar.style.top = HUDTopPosition + HUDrowHeight * 0 + "px";
         hungerProgressBar.style.left = HUDLeftPosition + "px";
         hungerProgressBar.style.width = "250px";
+        hungerProgressBar.style.position = "absolute";
 
         let currentHunger = parseInt(hungerProgressBar.querySelectorAll(".progressBar_currentValue")[0].innerHTML);
         this.elements.hungerProgressBar = new ProgressBar(document.getElementById("hunger_progressBar"), {
@@ -81,7 +80,9 @@ export const HUD = {
         healthProgressBar.style.top = HUDTopPosition + HUDrowHeight * 0 + "px";
         healthProgressBar.style.left = parseInt(hungerProgressBar.style.width) + 30 + "px";
         healthProgressBar.style.width = "100px";
+        healthProgressBar.style.position = "absolute"
         healthProgressBar.querySelectorAll(".progressBar_currentValue")[0].innerHTML = "" + GamePieces.player.health;
+
         this.elements.healthProgressBar = new ProgressBar(document.getElementById("health_progressBar"), {
             currentValue: 100,
             maxValue: 100,
@@ -101,12 +102,6 @@ export const HUD = {
         this.elements.huntedLocator.style.top =
             this.elements.huntedIcon.offsetHeight + this.elements.huntedIcon.offsetTop + 10 + "px";
         this.elements.huntedLocator.style.left = HUDLeftPosition + "px";
-
-        // Assign help container width as canvas
-        let help_container = document.getElementById("client_help_container");
-        let settings_container = document.getElementById("client_settings_container");
-        help_container.style.width = settings_container.style.width = width + "px";
-        help_container.style.top = settings_container.style.top = top + 40 + "px";
 
         // Position map related elements
         // document.getElementById("toggle_map_icon").style.top = "10px";
@@ -137,15 +132,15 @@ export const HUD = {
             cont_exit_button.style.margin = "0 auto";
             cont_exit_button.style.marginBottom = "20px";
         }
-
-        clientHelpContainer.init();
-        clientSettings.init();
     },
     makeTutorialHUD() {
         let tutorial_progressContainer = document.createElement("div");
         tutorial_progressContainer.setAttribute("id", "tutorial_progressContainer");
         tutorial_progressContainer.style.top = 60 + "px";
         tutorial_progressContainer.style.width = viewport.width * 0.75 + "px";
+        tutorial_progressContainer.style.height = 50 + "px";
+        tutorial_progressContainer.classList.add("absolute", "right-0", "left-0", "text-white", "mx-auto");
+        tutorial_progressContainer.classList.add("right-0");
         let title = document.createElement("p");
         title.innerText = "Tutorial progress";
         let under_title = document.createElement("p");
