@@ -1,38 +1,58 @@
 <div id="sidebar"
-    class="col-span-1 fixed min-h-[500px] overflow-y-scroll bg-primary-800 px-2 text-white transition-all duration-200">
+    class="fixed col-span-1 min-h-[500px] overflow-y-scroll bg-primary-800 px-2 text-white transition-all duration-200">
     <button id="sidebar_button_toggle" class="sidebar_button">
         {{ '<<' }} </button>
     <p>{{ ucfirst($username) }}</p>
     <p class="mb-1 mt-1">{{ ucfirst($profiency) }}</p>
     <p>{{ ucwords($location) }}</p>
-    <div>
-        <x-tab id="sidebar-tab-1" aria-controls="sidebar-adventure-tabpanel" class="sidebar-tab">
-            Adventure
-        </x-tab>
-        <x-tab id="sidebar-tab-2" aria-controls="sidebar-countdowns-tabpanel" class="sidebar-tab">
-            Countdowns
-        </x-tab>
-        <x-tab id="sidebar-tab-3" aria-controls="sidebar-diplomacy-tabpanel" class="sidebar-tab">
-            Diplomacy
-        </x-tab>
-        <x-tab id="sidebar-tab-4" aria-controls="sidebar-skills-tabpanel" class="sidebar-tab">
-            Skills
-        </x-tab>
-    </div>
-    <div id="sidebar-tabpanels">
-        <x-tabpanel id="sidebar-adventure-tabpanel" aria-labelled-by="sidebar-tab-1">
-            {{-- Add adventure tab here --}}
-        </x-tabpanel>
-        <x-tabpanel id="sidebar-countdowns-tabpanel" aria-labelled-by="sidebar-tab-2">
-            <x-profiencyStatus.profiencyStatusContainer :profiency-status="$profiency_status" />
-        </x-tabpanel>
-        <x-tabpanel id="sidebar-diplomacy-tabpanel" aria-labelled-by="sidebar-tab-3">
-            <?php
-            // echo TemplateFetcher::loadTemplate('diplomacy', $data['diplomacy_data'])
-            ?>
-        </x-tabpanel>
-        <x-tabpanel id="sidebar-skills-tabpanel" aria-labelled-by="sidebar-tab-4">
-            <x-skillLevels.skillLevelsContainer :levels="$Levels" />
-        </x-tabpanel>
+    <div class="flex flex-row">
+        <x-tabList data-is-setup="true" class="flex flex-col max-w-[100px]">
+            <x-tab id="adventure-tab" aria-controls="sidebar-adventure-tabpanel"
+                class="sidebar-tab">
+                Adventure
+            </x-tab>
+            <x-tab id="countdown-tab" aria-controls="sidebar-countdowns-tabpanel"
+                class="sidebar-tab">
+                Countdowns
+            </x-tab>
+            <x-tab id="diplomacy-tab" aria-controls="sidebar-diplomacy-tabpanel"
+                class="sidebar-tab">
+                Diplomacy
+            </x-tab>
+            <x-tab id="skills-tab" aria-controls="sidebar-skills-tabpanel" class="sidebar-tab">
+                Skills
+            </x-tab>
+            <x-tab id="help-tab" aria-controls="help-settings-tabPanel" class="sidebar-tab">
+                <img class="mx-auto" id="HUD_help_button"
+                    src="{{ asset('images/help icon.png') }}" />
+            </x-tab>
+            <x-tab id="client-settings-tab" aria-controls="sidebar-settings-tabPanel"
+                class="sidebar-tab">
+                <img class="mx-auto" id="setting_button"
+                    src="{{ asset('images/settings icon.png') }}" />
+            </x-tab>
+        </x-tabList>
+        <div id="sidebar-tabpanels" class="flex-grow">
+            <x-tabpanel id="sidebar-adventure-tabpanel" aria-labelled-by="adventure-tab">
+                {{-- Add adventure tab here --}}
+            </x-tabpanel>
+            <x-tabpanel id="sidebar-countdowns-tabpanel" aria-labelled-by="countdown-tab">
+                <x-profiencyStatus.profiencyStatusContainer :profiency-status="$profiency_status" />
+            </x-tabpanel>
+            <x-tabpanel id="sidebar-diplomacy-tabpanel" aria-labelled-by="diplomacy-tab">
+                <?php
+                // echo TemplateFetcher::loadTemplate('diplomacy', $data['diplomacy_data'])
+                ?>
+            </x-tabpanel>
+            <x-tabpanel id="sidebar-skills-tabpanel" aria-labelled-by="skills-tab">
+                <x-skillLevels.skillLevelsContainer :levels="$Levels" />
+            </x-tabpanel>
+            <x-tabPanel id="help-settings-tabPanel" aria-labelled-by="help-settings-tab">
+                @include('partials.clientHelp')
+            </x-tabPanel>
+            <x-tabPanel id="sidebar-settings-tabPanel" aria-labelled-by="client-settings-tab">
+                @include('partials.clientSettings')
+            </x-tabPanel>
+        </div>
     </div>
 </div>
