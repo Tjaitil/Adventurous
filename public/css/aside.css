@@ -1,4 +1,4 @@
-aside {
+/* aside {
     margin: 0px 0px 0px 0px;
     z-index: 25;
     position: relative;
@@ -9,20 +9,20 @@ aside a {
 }
 aside a:visited {
     color: #003cb3;
-}
-aside img {
+} */
+/* aside img {
     vertical-align: middle;
     width: 48px;
     height: 48px;
-}
-aside caption {
+} */
+/* aside caption {
     background-color: none;
-}
-#side_menu {
+} */
+/* #side_menu {
     margin: 0px 0px 0px 0px;
-}
+} */
 
-#side_menu ul {
+/* #side_menu ul {
     list-style-type: none;
     font-size: 15px;
     position: absolute;
@@ -41,8 +41,8 @@ aside caption {
 #side_menu li a {
     text-decoration: none;
     font-size: 14px;
-}
-.sidebar_button {
+} */
+/* .sidebar_button {
     background-color: #f2e6d9;
     border-radius: 5px;
     border: 1px outset;
@@ -51,24 +51,20 @@ aside caption {
     color: black;
     font-weight: bold;
     font-size: 11px;
-}
-.sidebar_tab {
+} */
+/* .sidebar_tab {
     left: 10px;
     color: var(--textColor);
     width: calc(100% - 20px);
     text-align: center;
-}
-#sidebar table {
+} */
+/* #sidebar table {
     text-align: center;
-}
-#sidebar_button_toggle {
-    float: right;
-    visibility: hidden;
 }
 #people figure {
     display: inline-block;
     padding-inline: 8px;
-}
+} */
 /* #skills {
     height: 86px;
     margin-bottom: 5px;
@@ -88,7 +84,7 @@ aside caption {
 #skills figure {
     position: relative;
 } */
-.skill_tooltip {
+/* .skill_tooltip {
     position: absolute;
     right: 20%;
     border-radius: 1px;
@@ -102,10 +98,9 @@ aside caption {
     width: auto;
     display: inline-block;
     float: right;
-}
-@media all and (max-width: 1040px) {
+} */
+/* @media all and (max-width: 1040px) {
     aside {
-        /*display: none;*/
         position: absolute;
     }
 }
@@ -116,4 +111,4 @@ aside caption {
         position: sticky;
         top: 25px;
     }
-}
+} */

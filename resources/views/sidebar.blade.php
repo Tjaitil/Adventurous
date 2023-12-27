@@ -1,6 +1,7 @@
 <div id="sidebar"
     class="h-full pt-2 bg-primary-800 px-2 text-white transition-all duration-200">
-    <button id="sidebar_button_toggle" class="sidebar_button">
+    <button id="sidebar_button_toggle" class="sidebar_button rounded-md text-black bg-orange-50 border-2 shadow p-2
+        font-bold text-xs float-right invisible outline-none">
         {{ '<<' }} </button>
     <p>{{ ucfirst($username) }}</p>
     <p class="mb-1 mt-1">{{ ucfirst($profiency) }}</p>
@@ -26,12 +27,12 @@
                 Skills
             </x-tab>
             <x-tab id="help-tab" aria-controls="help-settings-tabPanel" class="sidebar-tab">
-                <img class="mx-auto" id="HUD_help_button"
+                <img class="mx-auto w-12 h-12" id="HUD_help_button"
                     src="{{ asset('images/help icon.png') }}" />
             </x-tab>
             <x-tab id="client-settings-tab" aria-controls="sidebar-settings-tabPanel"
                 class="sidebar-tab">
-                <img class="mx-auto" id="setting_button"
+                <img class="mx-auto w-12 h-12" id="setting_button"
                     src="{{ asset('images/settings icon.png') }}" />
             </x-tab>
         </x-tabList>
