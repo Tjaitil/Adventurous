@@ -10,7 +10,7 @@ class LoginController extends Controller
     /**
      * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse
      */
-    public function index(Request $request)
+    public function index()
     {
         if (Auth::check()) {
             return redirect()->intended('main');
@@ -31,6 +31,7 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+            $this->addInfoMessage('Welcome! Enjoy your stay!');
 
             return redirect()->intended('main');
         }
