@@ -64,7 +64,7 @@ export const sidebar = {
     hideTabs() {
         let tabpanels = <HTMLElement[]>[...document.getElementById("sidebar-tabpanels").querySelectorAll(".tabpanel")];
         tabpanels.forEach(element => {
-            element.style.visibility = "hidden";
+            element.classList.add("hidden");
         });
     }
 };
