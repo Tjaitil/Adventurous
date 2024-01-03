@@ -385,7 +385,7 @@ section img {
 table button {
     margin-top: 5px;
 }
-button {
+button:not(.custom-button) {
     background-color: #f2e6d9;
     border-radius: 5px;
     border: 1px outset;
@@ -415,42 +415,9 @@ button:focus {
     background-color: transparent;
     box-shadow: none;
 }
-#log_container {
-    width: 49%;
-    position: relative;
-}
-#log {
-    height: 15%;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    height: 100px;
-    background-color: #f2e6d9;
-    z-index: 1;
-    position: relative;
-    margin: 0;
-}
-#log td {
-    border: none;
-    padding: 0px;
-    text-align: left;
-    background-color: transparent;
-}
+
 .error_log {
     color: red;
-}
-#game_messages {
-    outline: none;
-}
-#game_messages tr {
-    border: none;
-}
-#game_messages tr::after {
-    content: none;
-}
-#game_messages td {
-    background-color: transparent;
-    text-align: left;
-    padding: 2px;
 }
 #log_pseudo_parent {
     position: absolute;
