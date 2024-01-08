@@ -38,15 +38,7 @@
         </x-tabList>
         <div id="sidebar-tabpanels" class="flex-grow overflow-y-scroll h-full max-h-[600px]">
             <x-tabpanel id="sidebar-log-tabpanel" aria-labelled-by="log-tab">
-                <div id="log_container" class="div_content mb-1">
-                    <div id="log" class="darkTextColor">
-                        <table id="game_messages">
-                            <?php
-                            // echo TemplateFetcher::loadTemplate('log', $_SESSION['log'] ?? []);
-                // ?>
-                        </table>
-                    </div>
-                </div>
+                <x-client.gameLog :messages="$gameLog" />
             </x-tabpanel>
             <x-tabpanel id="sidebar-adventure-tabpanel" aria-labelled-by="adventure-tab">
                 {{-- Add adventure tab here --}}

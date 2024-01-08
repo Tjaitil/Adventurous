@@ -34,6 +34,7 @@ class AdvclientController extends Controller
         }
 
         return View('advclient')
+            ->with('gameLog', session()->get('log') ?? [])
             ->with('username', Auth::user()->name)
             ->with('location', $user_data->location)
             ->with('Levels', UserLevels::where('username', Auth::user()->name)->first()->toArray())
