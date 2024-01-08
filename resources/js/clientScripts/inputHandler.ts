@@ -5,7 +5,7 @@ import { ClientOverlayInterface } from "./clientOverlayInterface";
 import { tutorial } from "./tutorial";
 import { itemTitle } from "../utilities/itemTitle";
 import { Game } from "../advclient";
-import { gameLogger } from "../utilities/gameLogger";
+import { GameLogger } from "../utilities/GameLogger";
 import { conversation } from "./conversation";
 import { GamePieces } from "./gamePieces";
 import { Building } from "../gamepieces/Building";
@@ -102,7 +102,7 @@ export const inputHandler: IInputHandler = {
     },
     interactBuilding() {
         if (tutorial.onGoing) {
-            gameLogger.addMessage("This building can not be accessed on tutorial island", true);
+            GameLogger.addMessage("This building can not be accessed on tutorial island", true);
         }
     },
     mapBuildingName(name: string) {
@@ -169,7 +169,7 @@ export const inputHandler: IInputHandler = {
                 itemTitle.addItemClassEvents();
                 const src = '/public/dist/js/buildingScripts/';
                 if (script.length === 0) {
-                    gameLogger.addMessage("Building could not be retrieved", true);
+                    GameLogger.addMessage("Building could not be retrieved", true);
                     return;
                 }
                 const module = await import(src + script).then((data) => {
@@ -223,7 +223,7 @@ export const inputHandler: IInputHandler = {
         if (this.characterMatch.src.split(".png")[0] === "hassen") {
             tutorial.checkStep();
         } else if (tutorial.onGoing && this.characterMatch.src.includes("tutorial_sailor")) {
-            gameLogger.addMessage("That person is not interested in talking to you now", true);
+            GameLogger.addMessage("That person is not interested in talking to you now", true);
         } else {
             conversation.loadConversation(this.characterMatch.displayName, "", false);
         }

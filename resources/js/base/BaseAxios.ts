@@ -1,7 +1,6 @@
 import { checkResponse } from '../ajax';
 import { advAPIResponse } from '../types/Responses/AdvResponse';
-import { Axios, AxiosInstance, AxiosResponse } from 'axios';
-import { gameLogger } from '../utilities/gameLogger';
+import { Axios } from 'axios';
 
 type responseType<T> = T extends advAPIResponse ? T : T;
 export class BaseAxios {

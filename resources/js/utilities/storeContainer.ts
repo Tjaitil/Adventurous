@@ -1,4 +1,4 @@
-import { gameLogger } from "./gameLogger";
+import { GameLogger } from "./gameLogger";
 import { itemTitle } from "./itemTitle";
 import { StoreSkillRequirements } from './StoreSkillRequirements';
 import { SkillRequirementResource } from '../types/SkillRequirementResource';
@@ -167,7 +167,7 @@ const storeContainer: IStoreContainer = {
 
         if (this.onlySellStoreItems) {
             if (!itemData) {
-                gameLogger.addMessage("You can't sell that item here", true);
+                GameLogger.addMessage("You can't sell that item here", true);
             }
             price = itemData.store_buy_price;
             this.checkHasRequirements(itemElement.item);
@@ -229,13 +229,13 @@ const storeContainer: IStoreContainer = {
         let amount = parseInt(this.selectedTradeAmount.value);
 
         if (this.maxAmount !== -1 && amount > this.maxAmount && this.isBuying) {
-            gameLogger.addMessage("You can't buy that many", true);
+            GameLogger.addMessage("You can't buy that many", true);
             return false;
         } else if (amount === 0) {
-            gameLogger.addMessage("Please enter a valid quantity", true);
+            GameLogger.addMessage("Please enter a valid quantity", true);
             return false;
         } else if (!item) {
-            gameLogger.addMessage("Please select an item", true);
+            GameLogger.addMessage("Please select an item", true);
         }
 
         return {

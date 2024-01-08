@@ -1,5 +1,5 @@
 import { advAPIResponse } from "./types/Responses/AdvResponse";
-import { gameLogger } from "./utilities/gameLogger";
+import { GameLogger } from "./utilities/GameLogger";
 import axios, {Axios} from 'axios';
 
 
@@ -42,7 +42,7 @@ export class BaseAxios {
 
 
 
-// scriptLoader.loadScript(["gameLogger"], "utility");
+// scriptLoader.loadScript(["GameLogger"], "utility");
 
 function validJSON(str) {
     try {
@@ -93,9 +93,9 @@ export async function ajaxJS(data, callback, log = true, file: string = "handler
             checkResponse(responseText);
             if (checkError(this.responseText)) {
                 callback([false, responseText]);
-                gameLogger.addMessage("ERROR!:");
+                GameLogger.addMessage("ERROR!:");
                 console.log(this.responseText);
-                gameLogger.logMessages();
+                GameLogger.logMessages();
             } else {
                 callback([true, responseText]);
             }
@@ -125,8 +125,8 @@ export async function ajaxP(data, callback, log = true) {
             checkResponse(responseText);
             if (checkError(this.responseText)) {
                 callback([false, responseText]);
-                // gameLogger.addMessage("ERROR Something unexpected happened!");
-                // gameLogger.logMessages();
+                // GameLogger.addMessage("ERROR Something unexpected happened!");
+                // GameLogger.logMessages();
             } else {
                 callback([true, responseText]);
             }
@@ -144,11 +144,11 @@ export function checkResponse(response: advAPIResponse) {
     //     LevelManager.update(response.levelUp);
     // }
     if (typeof response.gameMessage !== "undefined") {
-        gameLogger.addMessage(response.gameMessage);
-        gameLogger.logMessages();
+        GameLogger.addMessage(response.gameMessage);
+        GameLogger.logMessages();
     } else if (typeof response.errorGameMessage !== "undefined") {
-        gameLogger.addMessage(response.errorGameMessage);
-        gameLogger.logMessages();
+        GameLogger.addMessage(response.errorGameMessage);
+        GameLogger.logMessages();
     }
 }
 

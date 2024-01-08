@@ -1,7 +1,7 @@
 import { UserLevelsResource } from './types/UserLevelsResource';
 import { AdvApi } from './AdvApi';
 import { LevelUpSkill } from './types/LevelUpSkill';
-import { gameLogger } from './utilities/gameLogger';
+import { GameLogger } from './utilities/GameLogger';
 import { jsUcfirst } from './utilities/uppercase';
 
 export const LevelManager = {
@@ -41,7 +41,7 @@ export const LevelManager = {
         let index = this.elementIndexes[levelData["skill"]];
         let element = document.getElementById("skills").querySelectorAll(".skill_level")[index];
         element.innerHTML = levelData["new_level"];
-        gameLogger.addMessage(
+        GameLogger.addMessage(
             "Congratulations! You have leveled up " + jsUcfirst(levelData["skill"]) + " to " + levelData["new_level"]
         );
         setInterval(() => this.skillHighlight(document.getElementById("skills").children[index]), 1000);

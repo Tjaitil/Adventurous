@@ -1,7 +1,7 @@
 import { UpdateCropsRequest } from './../types/requests/CropsRequests';
 import { StartGrowingRequest, SeedGeneratorRequest } from '../types/requests/CropsRequests';
 import { SkillActionContainer } from './../SkillActionContainer';
-import { commonMessages, gameLogger } from '../utilities/gameLogger';
+import { commonMessages, GameLogger } from '../utilities/GameLogger';
 import { ItemSelector } from '../ItemSelector';
 import { updateHunger } from '../clientScripts/hunger';
 import { Inventory } from '../clientScripts/inventory';
@@ -43,10 +43,10 @@ class CropsModule extends SkillActionContainer {
         let crop_type = this.getSelectedType();
 
         if (workforce_amount === 0) {
-            gameLogger.addMessage("You need to select the amount of workers", true);
+            GameLogger.addMessage("You need to select the amount of workers", true);
             return false;
         } else if (crop_type.length === 0) {
-            gameLogger.addMessage("You need to select the crop you are trying to grow", true);
+            GameLogger.addMessage("You need to select the crop you are trying to grow", true);
             return false;
         }
 
@@ -65,7 +65,7 @@ class CropsModule extends SkillActionContainer {
 
     public updateCrop(cancel: boolean) {
         if (Inventory.isFull() && !cancel) {
-            gameLogger.addMessage(commonMessages.inventoryFull, true);
+            GameLogger.addMessage(commonMessages.inventoryFull, true);
             return false;
         }
 

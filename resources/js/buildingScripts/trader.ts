@@ -3,7 +3,7 @@ import { Inventory } from './../clientScripts/inventory';
 import { ProgressBar } from './../progressBar';
 import { AdvApi } from './../AdvApi';
 import countdown from "../utilities/countdown";
-import { gameLogger } from '../utilities/gameLogger';
+import { GameLogger } from '../utilities/GameLogger';
 import { advAPIResponse } from '../types/Responses/AdvResponse';
 import { updateHunger } from '../clientScripts/hunger';
 
@@ -95,9 +95,9 @@ const traderModule = {
     },
     newAssignment() {
         if (document.getElementById("traderAssignment_progressBar")) {
-            gameLogger.addMessage("You already have an assigment", true);
+            GameLogger.addMessage("You already have an assigment", true);
         } else if (this.selectedAssigmentID === null || !this.selectedAssigmentID) {
-            gameLogger.addMessage("This assignment is locked", true);
+            GameLogger.addMessage("This assignment is locked", true);
             return false;
         }
 

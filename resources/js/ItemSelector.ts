@@ -1,4 +1,4 @@
-import { gameLogger } from './utilities/gameLogger';
+import { GameLogger } from './utilities/GameLogger';
 import { inputHandler } from './clientScripts/inputHandler';
 import { itemTitle } from './utilities/itemTitle';
 
@@ -123,16 +123,16 @@ export class ItemSelector {
 
     public static isItemValid(): boolean {
         if (document.getElementById("selected").getElementsByTagName("figure").length == 0) {
-            gameLogger.addMessage("Please select a valid item");
-            gameLogger.logMessages();
+            GameLogger.addMessage("Please select a valid item");
+            GameLogger.logMessages();
             return false;
         }
         if (this.isSelectedAmountInputVisible) {
             let amount = parseInt(this.selectedItemAmountInput.value);
 
             if (amount <= 0) {
-                gameLogger.addMessage("Please enter a valid amount");
-                gameLogger.logMessages();
+                GameLogger.addMessage("Please enter a valid amount");
+                GameLogger.logMessages();
                 return false;
             }
         }
@@ -140,7 +140,7 @@ export class ItemSelector {
 
     public static get selected(): { name: string, amount: number } {
         if (this.selectedWrapper.getElementsByTagName("figure").length === 0) {
-            gameLogger.addMessage("Please select a valid item", true);
+            GameLogger.addMessage("Please select a valid item", true);
         }
         let name = this.selectedWrapper.querySelectorAll("figcaption")[0].innerHTML.toLowerCase().trim();
         // Is input visible?
@@ -237,8 +237,8 @@ export const selectItemEvent = {
  */
 export function selectedCheck(amount_r = true) {
     if (document.getElementById("selected").getElementsByTagName("figure").length == 0) {
-        gameLogger.addMessage("Please select a valid item");
-        gameLogger.logMessages();
+        GameLogger.addMessage("Please select a valid item");
+        GameLogger.logMessages();
         return false;
     }
     let div = document.getElementById("selected");
@@ -248,8 +248,8 @@ export function selectedCheck(amount_r = true) {
         let inputElement = <HTMLInputElement>document.getElementById("selected_amount");
         let amount = parseInt(inputElement.value);
         if (amount === 0) {
-            gameLogger.addMessage("Please select a valid amount");
-            gameLogger.logMessages();
+            GameLogger.addMessage("Please select a valid amount");
+            GameLogger.logMessages();
             return false;
         }
         return { item, amount };

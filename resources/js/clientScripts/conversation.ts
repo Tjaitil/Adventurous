@@ -2,7 +2,7 @@ import { gameTravel } from './gameTravel';
 import { tutorial } from "./tutorial";
 import { Game } from "../advclient";
 import { inputHandler } from "./inputHandler";
-import { gameLogger } from "../utilities/gameLogger";
+import { GameLogger } from "../utilities/GameLogger";
 import { GamePieces } from "./gamePieces";
 import viewport from "./viewport";
 import { ClientOverlayInterface } from "./clientOverlayInterface";
@@ -182,7 +182,7 @@ export class conversation {
             this.handleNextLine();
         }).catch((error) => {
             console.log(error);
-            gameLogger.addMessage("An error occured", true);
+            GameLogger.addMessage("An error occured", true);
         })
     }
     private static async handleUserEvent(event: MouseEvent) {

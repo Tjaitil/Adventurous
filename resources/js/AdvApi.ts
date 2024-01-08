@@ -1,6 +1,6 @@
 import { advAPIResponse } from './types/Responses/AdvResponse';
 import { BaseAxios } from "./ajax";
-import { gameLogger } from './utilities/gameLogger';
+import { GameLogger } from './utilities/GameLogger';
 
 export class AdvApi extends BaseAxios {
 
@@ -10,15 +10,15 @@ export class AdvApi extends BaseAxios {
         BaseAxios.getInstance().interceptors.response.use(response => {
 
             if(response.status !== 200) {
-                gameLogger.addMessage("An Error Occured", true);
+                GameLogger.addMessage("An Error Occured", true);
                 return Promise.reject(response);
             }
 
             else if (typeof response.data.gameMessage !== "undefined") {
-                gameLogger.addMessage(response.data.gameMessage, true);
+                GameLogger.addMessage(response.data.gameMessage, true);
                 return Promise.resolve(response);
             } else if (typeof response.data.errorGameMessage !== "undefined") {
-                gameLogger.addMessage(response.data.errorGameMessage, true);
+                GameLogger.addMessage(response.data.errorGameMessage, true);
                 return Promise.reject(response.data.gameMessage);
             }   
 

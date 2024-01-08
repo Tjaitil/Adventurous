@@ -2,7 +2,7 @@ import { inputHandler } from '../clientScripts/inputHandler';
 import { ProgressBar } from '../progressBar';
 import { selectedCheck, selectItemEvent } from '../ItemSelector';
 import countdown from '../utilities/countdown';
-import { gameLogger } from '../utilities/gameLogger';
+import { GameLogger } from '../utilities/GameLogger';
 import { AdvApi } from './../AdvApi';
 import { Inventory } from './../clientScripts/inventory';
 import { BaseRunWarriorActionRequest, ChangeWarriorTypeRequest, RestWarriorsRequest, RunSingleWarriorActionRequest, StartTrainingRequest } from './../types/requests/ArmyCampRequests';
@@ -86,17 +86,17 @@ const armycampModule = {
         let actionName = this.actionTypeInput.options[this.actionTypeInput.selectedIndex].value;
 
         if (actionName.length === 0) {
-            gameLogger.addMessage("ERROR: Select a action to perform", true);
+            GameLogger.addMessage("ERROR: Select a action to perform", true);
             return false
         }
 
         let selectedWarriors = this.retrieveWarriorsIdsSelected();
 
         if (selectedWarriors.length === 0) {
-            gameLogger.addMessage("ERROR: You have not selected any warriors for action", true);
+            GameLogger.addMessage("ERROR: You have not selected any warriors for action", true);
             return false;
         } else if (this.singleWarriorAction.includes(actionName) && selectedWarriors.length > 1) {
-            gameLogger.addMessage("ERROR: Only 1 warrior allowed for " + actionName + " action", true);
+            GameLogger.addMessage("ERROR: Only 1 warrior allowed for " + actionName + " action", true);
             return false;
         }
 
@@ -149,7 +149,7 @@ const armycampModule = {
         else {
             if (actionName === WarriorActions.START_TRAINING) {
                 if (!this.trainingTypeInput) {
-                    gameLogger.addMessage("ERROR: Please select training type!", true);
+                    GameLogger.addMessage("ERROR: Please select training type!", true);
                     return false;
                 }
 

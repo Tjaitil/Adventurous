@@ -1,6 +1,6 @@
 import { AdvApi } from './../AdvApi';
 import { Inventory } from '../clientScripts/inventory';
-import { gameLogger } from '../utilities/gameLogger';
+import { GameLogger } from '../utilities/GameLogger';
 import { SkillActionContainer } from '../SkillActionContainer';
 import { updateHunger } from '../clientScripts/hunger';
 import { advAPIResponse } from '../types/Responses/AdvResponse';
@@ -39,10 +39,10 @@ class MineModule extends SkillActionContainer {
         let workforce_amount = this.getWorkforceAmount();
 
         if (workforce_amount === 0) {
-            gameLogger.addMessage("You need to select the amount of workers", true);
+            GameLogger.addMessage("You need to select the amount of workers", true);
             return false;
         } else if (mineral_ore.length === 0) {
-            gameLogger.addMessage("You need to select at least one mineral", true);
+            GameLogger.addMessage("You need to select at least one mineral", true);
             return false;
         }
 

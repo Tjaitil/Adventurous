@@ -2,7 +2,7 @@ import { tutorial } from './tutorial';
 import { pauseManager } from './pause';
 import { inputHandler } from './inputHandler';
 import { Game } from "../advclient";
-import { gameLogger } from "../utilities/gameLogger";
+import { GameLogger } from "../utilities/GameLogger";
 import { GamePieces } from "./gamePieces";
 import { conversation } from "./conversation";
 
@@ -57,8 +57,8 @@ export const controls = {
             }
         }
         if (tutorial.onGoing) {
-            gameLogger.addMessage("This building can not be accessed on tutorial island");
-            gameLogger.logMessages();
+            GameLogger.addMessage("This building can not be accessed on tutorial island");
+            GameLogger.logMessages();
         }
         if (Game.properties.inBuilding != true && Game.properties.device == "pc") {
             enterBuilding();

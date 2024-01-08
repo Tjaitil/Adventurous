@@ -1,6 +1,6 @@
 import { Inventory } from './../clientScripts/inventory';
 import { selectItemEvent } from "../ItemSelector";
-import { gameLogger } from '../utilities/gameLogger';
+import { GameLogger } from '../utilities/GameLogger';
 import { AdvApi } from './../AdvApi';
 import { ClientOverlayInterface } from './../clientScripts/clientOverlayInterface';
 import { ProgressBar } from './../progressBar';
@@ -70,7 +70,7 @@ const tavernModule = {
             .querySelectorAll("figure")[0]
             .children[1].innerHTML.toLowerCase();
         if (item.length == 0) {
-            gameLogger.addMessage("ERROR: Select a item to eat!", true);
+            GameLogger.addMessage("ERROR: Select a item to eat!", true);
             return false;
         }
         let inputElement = <HTMLInputElement>document.getElementById("healing-item-amount");
@@ -78,7 +78,7 @@ const tavernModule = {
         let amount = parseInt(inputElement.value);
 
         if (amount == 0 || amount == null) {
-            gameLogger.addMessage("ERROR: Select a amount", true);
+            GameLogger.addMessage("ERROR: Select a amount", true);
             return false;
         }
         let data: RestoreHealthRequest = {
