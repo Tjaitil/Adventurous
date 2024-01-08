@@ -14,7 +14,6 @@
     <link href="https://fonts.googleapis.com/css?family=Martel&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/css/header.css" />
     <link rel="stylesheet" type="text/css" href="/css/layout.css" />
-    <link rel="stylesheet" type="text/css" href="/css/aside.css" />
     <link rel="stylesheet" type="text/css" href="/css/progressbar.css" />
     <link rel="stylesheet" type="text/css" href="/css/warriorSelect.css" />
     <link rel="stylesheet" type="text/css" href="/css/battleresult.css" />
