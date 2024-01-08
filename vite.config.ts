@@ -6,6 +6,7 @@ export default defineConfig({
         laravel({
             input: ['resources/css/app.css',
                 'resources/js/app.js',
+                'resources/js/clientScripts/inventory.ts',
                 'resources/js/backgroundScroller.ts',
                 'resources/js/clientScripts/getXp.ts',
                 'resources/js/clientScripts/sidebar.ts'],
