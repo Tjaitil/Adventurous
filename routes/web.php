@@ -8,6 +8,7 @@ use App\Http\Controllers\BakeryController;
 use App\Http\Controllers\CityCentreController;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\CropsController;
+use App\Http\Controllers\GameLoggerController;
 use App\Http\Controllers\HungerController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\LandingController;
@@ -124,4 +125,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/userlevels', [UserLevelsController::class, 'getLevels']);
 
     Route::post('/workforcelodge/efficiency/upgrade', [WorkforceLodgeController::class, 'upgradeEfficiency']);
+
+    Route::post('/log', [GameLoggerController::class, 'log']);
 });
