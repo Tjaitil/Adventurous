@@ -1,36 +1,65 @@
-// Object containing common game messages
+import { CustomFetchApi } from "../CustomFetchApi";
 
 export enum commonMessages {
     'inventoryFull' = "Remove some items from inventory before doing this action",
 }
-// Log gamemessages
-export const gameLogger = {
-    messages: [],
-    currentlyLogging: false,
-    currentIndex: 0,
-    addMessage(message, instantLog = false) {
-        if (Array.isArray(message)) {
-            for (let i = 0; i < message.length; i++) {
-                this.messages.push(message[i]);
-            }
-        }
-        else {
+
+export class GameLogger {
+    private static messages: GameLog[] = [];
+    private static currentlyLogging = false;
+    private static currentIndex = 0;
+    
+
+    public static addErrorMessage(message: string, instantLog = false, shouldLogToApi = false) {
+        this.addMessage({ text: message, type: GameLogTypes.ERROR }, instantLog, shouldLogToApi);
+    }
+
+    public static addSuccessMessage(message: string, instantLog = false, shouldLogToApi = false) {
+        this.addMessage({ text: message, type: GameLogTypes.SUCCESS }, instantLog, shouldLogToApi);
+    }
+
+    public static addWarningMessage(message: string, instantLog = false, shouldLogToApi = false) {
+        this.addMessage({ text: message, type: GameLogTypes.WARNING }, instantLog, shouldLogToApi);
+    }
+
+    public static addInfoMessage(message: string, instantLog = false, shouldLogToApi = false) {
+        this.addMessage({ text: message, type: GameLogTypes.INFO }, instantLog, shouldLogToApi);
+    }
+
+    /**
+     * @param message string|GameLog
+     * This function accepts a string for legacy reasons until all calls to this function are updated
+     */
+    public static addMessage(message: string|GameLog, instantLog = false, shouldLogToApi = false) {
+        if (typeof message !== 'string') {
             this.messages.push(message);
         }
+        else {
+            this.messages.push({
+                text: message,
+                type: GameLogTypes.INFO,
+            });
+        }
+
+        if(shouldLogToApi === true) {
+            this.logMessageToApi(message)
+        }
+
         // Use to start this.logMessages instead of having to call it directly in another file 
         if (instantLog) this.logMessages();
-    },
-    logMessages() {
+    }
+
+    public static logMessages() {
         if (this.messages.length === 0) return false;
         // Start new loop only if none is set
 
-        console.log(this.currentlyLogging);
         if (!this.currentlyLogging) {
             this.clientLog();
         }
         this.currentlyLogging = true;
-    },
-    mainLog() {
+    }
+
+    private static mainLog() {
         function addZero(num: number): string {
             let str = num + "";
             if (num < 10) {
@@ -40,40 +69,60 @@ export const gameLogger = {
         }
 
         let message = this.messages[this.currentIndex];
-        let tr = document.createElement("TR");
-        let td = document.createElement("TD");
-        if (message.indexOf("ERROR") != -1) {
-            message = message.split("ERROR")[1].trim();
-            td.className = "error_log";
-        }
-        if (message.search("\\[") == -1) {
+        let td = <HTMLTableCellElement>document.getElementById("game_messages").querySelectorAll("td")[0].cloneNode(true);
+
+        td.classList.add(this.getColorFromType(message.type));
+
+        if (message.timestamp === undefined) {
             var d = new Date();
             var time = "[" + addZero(d.getHours()) + ":" + addZero(d.getMinutes()) + ":" + addZero(d.getSeconds()) + "] ";
-            message = time + message;
+            message.timestamp = time;
         }
-        let table = document.getElementById("game_messages");
-        tr.appendChild(td);
-        td.innerHTML = message;
+
+        td.innerHTML = message.timestamp + message.text;
+        let tr = document.createElement("TR").appendChild(td);
+
         let logElement = document.getElementById("log");
         let isScrolledToBottom = logElement.scrollHeight - logElement.clientHeight <= logElement.scrollTop + 1;
-        table.appendChild(tr);
+        document.getElementById("game_messages").querySelectorAll("tbody")[0].appendChild(tr);
+        this.removeLogElementIfOverLength();
         // scroll to bottom if isScrolledToBottom
         if (isScrolledToBottom) {
             logElement.scrollTop = logElement.scrollHeight - logElement.clientHeight;
         }
-    },
-    clientLog() {
-        console.log('clientlog');
+    }
+    /**
+     * @param message string|GameLog
+     * Typing for legacy support see GameLogger.addMessage()
+     */
+    private static logMessageToApi(message: GameLog|string, instantLog = false) 
+    {
+        let messageToLog;
+        if (typeof message === 'string') {
+            messageToLog = {
+                text: message,
+            }
+        } else {
+            messageToLog = message;
+        }
+
+
+        CustomFetchApi.post("/log", messageToLog)
+            .then(() => false)
+            .catch(() => false);
+    }
+
+    private static clientLog() {
         let message = this.messages[this.currentIndex];
         let div = document.getElementById("log_2");
-        div.innerHTML = message;
+        div.innerHTML = message.text;
         div.style.opacity = "1";
         div.style.height = "50px";
         div.style.top = window.pageYOffset + 5 + "px";
-        // TODO: Fix main log
-        // this.mainLog();
+
+        div.classList.add(this.getColorFromType(message.type));
+        this.mainLog();
         setTimeout(() => {
-            console.log('log_2');
             document.getElementById("log_2").style.height = "4px";
         }, 3700);
         setTimeout(() => {
@@ -84,22 +133,52 @@ export const gameLogger = {
                 this.closeClientLog();
             }
         }, 4000);
-    },
-    closeClientLog() {
+    }
+
+    private static getColorFromType(type: GameLogType) {
+        switch (type) {
+            case GameLogTypes.ERROR:
+                return 'text-red-600';
+            case GameLogTypes.WARNING:
+                return 'text-yellow-600';
+            case GameLogTypes.SUCCESS:
+                return 'text-green-600';
+            default:
+                return 'text-black-600';
+        }
+    }
+
+    private static closeClientLog() {
         let div = document.getElementById("log_2");
         div.style.height = "4px";
         div.style.top = "0px"
         div.style.opacity = "0";
-        let ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.onload = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                console.log(this.responseText);
-            }
-        };
-        ajaxRequest.open('GET', "handlers/handler_log.php?log=" + JSON.stringify(this.messages));
-        ajaxRequest.send();
+
         this.messages = [];
         this.currentIndex = 0;
         this.currentlyLogging = false;
     }
+
+    private static removeLogElementIfOverLength() {
+        if(this.messages.length > 100) {
+            document.getElementById("game_messages").querySelectorAll("td")[0].remove();
+        }
+    }
 };
+
+interface GameLog {
+    text: string;
+    type: GameLogType;
+    timestamp?: string;
+}
+
+enum GameLogTypes
+{
+    INFO = 'info',
+    ERROR = 'error',
+    WARNING = 'warning',
+    SUCCESS = 'success',
+}
+
+type GameLogType = `${GameLogTypes}`;
+(<any>window).GameLogger = GameLogger;
