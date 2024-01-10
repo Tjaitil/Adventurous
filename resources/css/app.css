@@ -21,3 +21,7 @@
 .image-auto-render {
     image-rendering: auto;
 }
+
+#log-modal {
+    transition: opacity 0.5s ease-out, height 0.2s ease-out;
+}
