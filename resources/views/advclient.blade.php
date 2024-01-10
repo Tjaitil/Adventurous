@@ -4,6 +4,7 @@
     @section('sectionContent')
         <div id="client-container" class=" opacity-0 transition-opacity duration-500 ease-in">
             @include('layout')
+            <x-client.logModal />
             @include('partials.conversationContainer')
             @include('partials.gameScreen')
             <div id="game_hud" class="z-10 absolute">
