@@ -1,5 +1,4 @@
 <input type="checkbox" name="" id="draw_checkbox">
-<div id="log_2"></div>
 <!-- News is the black "curtain" which the content is displayed upon
      both used for alert and news -->
 <div id="news">
