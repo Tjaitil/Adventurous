@@ -80,7 +80,8 @@ export class GameLogger {
         }
 
         td.innerHTML = message.timestamp + message.text;
-        let tr = document.createElement("TR").appendChild(td);
+        let tr = document.createElement("TR");
+        tr.appendChild(td);
 
         let logElement = document.getElementById("log");
         let isScrolledToBottom = logElement.scrollHeight - logElement.clientHeight <= logElement.scrollTop + 1;
@@ -114,16 +115,16 @@ export class GameLogger {
 
     private static clientLog() {
         let message = this.messages[this.currentIndex];
-        let div = document.getElementById("log_2");
-        div.innerHTML = message.text;
+        let div = document.getElementById("log-modal");
+        div.querySelectorAll("p")[0].innerHTML = message.text;
         div.style.opacity = "1";
         div.style.height = "50px";
-        div.style.top = window.pageYOffset + 5 + "px";
+        div.style.top = window.scrollY + 5 + "px";
 
         div.classList.add(this.getColorFromType(message.type));
         this.mainLog();
         setTimeout(() => {
-            document.getElementById("log_2").style.height = "4px";
+            div.style.height = "4px";
         }, 3700);
         setTimeout(() => {
             if (this.currentIndex !== this.messages.length - 1) {
@@ -149,7 +150,7 @@ export class GameLogger {
     }
 
     private static closeClientLog() {
-        let div = document.getElementById("log_2");
+        let div = document.getElementById("log-modal");
         div.style.height = "4px";
         div.style.top = "0px"
         div.style.opacity = "0";
