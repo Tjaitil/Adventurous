@@ -119,8 +119,7 @@ export const HUD = {
         this.elements.control_text_conversation = document.getElementById("control_text_conversation");
         this.elements.control_text_building = document.getElementById("control_text_building");
 
-        // Assign width to log_2 equal to canvas width
-        document.getElementById("log_2").style.width = width + "px";
+        document.getElementById("log-modal").style.width = width + "px";
         /* If screen is less than 830 set sidebar to be the same top as inventory so that the two are aligned
          * Also align cont_exit button in news content to middle instead of right */
         if (window.screen.width < 830) {
