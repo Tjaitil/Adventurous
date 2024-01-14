@@ -10,6 +10,14 @@ trait UserTrait
 {
     private ?User $User;
 
+    public User $RandomUser;
+
+    public function __constructUserTrait()
+    {
+        $this->User = User::first();
+        $this->RandomUser = $this->getRandomUser();
+    }
+
     /**
      * @return void
      */
@@ -21,13 +29,13 @@ trait UserTrait
 
     public function getRandomUser(): User
     {
-        return User::inRandomOrder()->first();
+        return User::first();
     }
 
     /**
      * @return void
      */
-    public function setUserCurrentLocation(string $location, int $user_id = null)
+    public function setUserCurrentLocation(string $location, ?int $user_id = null)
     {
         $map_locations = \array_flip(GameMaps::locationMapping());
 
