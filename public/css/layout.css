@@ -338,8 +338,7 @@ section table:not(#game_messages, .custom-table),
     position: relative;
 }
 section table:not(#game_messages, .custom-table)::after,
-.div_content::after,
-#inventory::after {
+.div_content::after {
     content: "";
     border: 3px solid rgba(0, 0, 0, 0.6);
     width: calc(100% + 4px);
@@ -351,11 +350,11 @@ section table:not(#game_messages, .custom-table)::after,
     border-radius: 4px;
 }
 section table:not(#game_messages, .custom-table) > *,
-.div_content > *,
-#inventory > *:not(#stck_menu) {
+.div_content > * {
     position: relative;
     z-index: 1;
 }
+
 .div_content_light {
     background-color: var(--contentBgColor);
 }
@@ -553,20 +552,6 @@ button:focus {
     position: relative;
     /*line-height: 25px;*/
 }
-#inventory {
-    box-sizing: border-box;
-    float: right;
-    width: 29%;
-    height: 600px;
-    /*background-color: #a6a6a6;*/
-    /*background-color: #724e27;*/
-    /* background-color: #4c341a; */
-    background-color: var(--layoutBgColorDark);
-    color: white;
-    position: relative;
-    z-index: var(--newsZIndex);
-    transition: background-color 0.8s ease-out;
-}
 #inv_toggle_button_container {
     position: absolute;
     right: 5px;
@@ -588,34 +573,29 @@ button:focus {
     height: 100%;
     position: absolute;
 }*/
-#item_tooltip {
-    visibility: hidden;
-    z-index: 2;
-}
-#item_tooltip ul {
-    text-align: left;
+/* #item_tooltip ul {
     list-style-type: none;
     border: 1px solid black;
     position: absolute;
     max-width: 125px;
-    z-index: 2;
+    z-index: 50;
     top: 14%;
     padding-top: 3px;
     background-color: #724e27;
     color: #ffffff;
     font-size: 12px;
-}
-#item_tooltip ul li {
+} */
+/* #item_tooltip ul li {
     background-color: #724e27;
     width: 120px;
     cursor: pointer;
     padding: 2px;
     text-align: center;
-}
-#item_tooltip ul li:nth-child(1) {
+} */
+/* #item_tooltip ul li:nth-child(1) {
     cursor: default;
     text-align: center;
-}
+} */
 .tooltip {
     visibility: hidden;
     position: absolute;
