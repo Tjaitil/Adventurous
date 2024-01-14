@@ -30,9 +30,8 @@
             <div id="inv_toggle_button_container">
                 <button id="inv_toggle_button">INV</button>
             </div>
-            <div id="inventory">
-                @include('inventory', ['inventory' => $Inventory])
-            </div>
+            <x-inventory.inventoryContainer :inventory="$Inventory" />
+            <x-items.itemTooltip />
             <div id="control" class="invisble absolute">
                 <button id="control_button"></button>
             </div>
