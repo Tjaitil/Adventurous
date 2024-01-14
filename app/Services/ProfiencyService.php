@@ -54,7 +54,7 @@ class ProfiencyService
             ],
         ];
 
-        $warriors = Warriors::where('username', Auth::user()->name);
+        $warriors = Warriors::where('username', Auth::user()->username);
 
         foreach ($warriors as $key => $value) {
             $training_countdown_passed = $this->countdownService->hasTimestampPassed($value->training_countdown);
@@ -76,7 +76,7 @@ class ProfiencyService
     private function getFarmerData()
     {
 
-        $Farmer = Farmer::with(['workforce'])->where('username', Auth::user()->name)->get();
+        $Farmer = Farmer::with(['workforce'])->where('username', Auth::user()->username)->get();
 
         return $Farmer;
     }
@@ -87,7 +87,7 @@ class ProfiencyService
     private function getMinerData()
     {
         return Miner::with(['workforce'])
-            ->where('username', Auth::user()->name)
+            ->where('username', Auth::user()->username)
             ->get();
     }
 
@@ -97,7 +97,7 @@ class ProfiencyService
     private function getTraderData()
     {
         return Trader::with(['traderAssignment', 'cart'])
-            ->where('username', Auth::user()->name)
+            ->where('username', Auth::user()->username)
             ->first();
     }
 }

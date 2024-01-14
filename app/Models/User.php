@@ -8,7 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * App\Models\User
  *
  * @property int $id
- * @property string $name
+ * @property string $username
  * @property string $email
  * @property string|null $email_verified_at
  * @property string $password

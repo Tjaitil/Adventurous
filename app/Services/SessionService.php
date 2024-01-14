@@ -49,7 +49,7 @@ class SessionService
     public function getCurrentUsername(): string
     {
 
-        return Auth::user()->name;
+        return Auth::user()->username;
     }
 
     public function getCurrentMap(): string
