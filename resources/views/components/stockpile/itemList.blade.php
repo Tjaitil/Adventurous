@@ -1,5 +1,5 @@
+@props(['stockpile'])
 @php
-    $Stockpile = $stockpile;
     $max_amount = $max_amount ?? $attributes['max-amount'];
     /**
      * @var \App\Models\Stockpile[] $Stockpile
@@ -7,12 +7,12 @@
      */
 @endphp
 <x-borderInterfaceContainer>
-    <p class="mb-3">Item slots: {{ $Stockpile->count() }} / {{ $max_amount }}
+    <p class="mb-3">Item slots: {{ $stockpile->count() }} / {{ $max_amount }}
     </p>
-    @foreach ($Stockpile as $key)
+    @foreach ($stockpile as $key)
         <div class="stockpile_item">
             <figure>
-                <img src="{{ constant('ROUTE_IMG') . $key->item . '.png' }}" />
+                <img src="{{ asset('images/' . $key->item . '.png') }}" />
                 <figcaption class="tooltip">{{ ucwords($key->item) }}
                 </figcaption>
             </figure>

@@ -5,7 +5,7 @@
         When selecting custom amount press enter to submit.
     </x-help>
     <div id="stockpile-list">
-        <x-stockpile.itemList :stockpile="$Stockpile" :max-amount="$max_amount" />
+        <x-stockpile.itemList :$stockpile :max-amount="$max_amount" />
     </div>
     <x-stockpile.stockpileMenu />
 </div>
