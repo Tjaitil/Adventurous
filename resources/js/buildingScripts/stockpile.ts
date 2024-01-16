@@ -19,7 +19,7 @@ const stockpileModule = {
 	},
 	menuListItemInputIndex: 2,
 	init() {
-		document.getElementById("item_tooltip").style.visibility = "hidden";
+		itemTitle.hideItemTooltip();
 		this.addEvent();
 		this.addShowMenuEvent();
 		this.addStockpileActions();
@@ -206,11 +206,8 @@ const stockpileModule = {
 	},
 	onClose() {
 		this.removeEvent();
-		let menu = document.getElementById("stck_menu");
-		// If menu is visible remove it
-		if (menu) {
-			menu.parentElement.removeChild(document.getElementById("stck_menu"));
-		}
+		let menu = document.getElementById("stck_menu")?.parentElement
+			.removeChild(document.getElementById("stck_menu"));
 	},
 };
 export { stockpileModule as default };
