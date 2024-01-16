@@ -68,8 +68,10 @@ export class ClientOverlayInterface {
             }
         }
         if (inputHandler.currentBuildingModule) {
-            if (inputHandler.currentBuildingModule.default.onClose) {
+            if (inputHandler.currentBuildingModule.default?.onClose) {
                 inputHandler.currentBuildingModule.default.onClose();
+            } else if(inputHandler.currentBuildingModule?.onClose) {            
+                inputHandler.currentBuildingModule.onClose();
             }
         }
 
