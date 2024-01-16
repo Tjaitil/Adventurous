@@ -11,6 +11,14 @@ import { GamePieces } from "./gamePieces";
 import { Building } from "../gamepieces/Building";
 import { HUD } from './HUD';
 import { setUpTabList } from '../utilities/tabs';
+import stockpileModule from '../buildingScripts/stockpile';
+import travelBureauModule from '../buildingScripts/travelbureau';
+import bakeryModule from '../buildingScripts/bakery';
+import MineModule from '../buildingScripts/mine';
+import CropsModule from '../buildingScripts/crops';
+import zinsStoreModule from '../buildingScripts/zinsstore';
+import merchantModule from '../buildingScripts/merchant';
+import workforceLodgeModule from '../buildingScripts/workforcelodge';
 
 
 enum Buildings {
@@ -24,13 +32,28 @@ enum Buildings {
     WORKFORCELODGE = "workforcelodge",
 }
 
-type BuildingName = `${Buildings}`;
+type BuildingModuleMapping = {
+    "bakery": typeof bakeryModule,
+    "travelbureau": typeof travelBureauModule,
+    "stockpile": typeof stockpileModule,
+    "mine": typeof MineModule,
+    "crops": typeof CropsModule,
+    "zinsstore": typeof zinsStoreModule,
+    "merchant": typeof merchantModule,
+    "workforcelodge": typeof workforceLodgeModule,
+}
+
+function shouldSkipImport(building: string) {
+    return ["stockpile", "travelbureau", "bakery", "mine", "crops", "zinsstore", "merchant", "workforceLodge"].includes(building);
+}
+
+type BuildingName = keyof BuildingModuleMapping;
 
 interface BuildingAssetsTypes {
     stylesheets?: string[];
     script: string;
 }
-type BuildingAssetsRecord = Record<Buildings, BuildingAssetsTypes>;
+type BuildingAssetsRecord = Record<Exclude<Buildings, Buildings.STOCKPILE>, BuildingAssetsTypes>;
 
 interface IInputHandler {
     buildingAssetsRecord: BuildingAssetsRecord;
@@ -40,7 +63,7 @@ interface IInputHandler {
     interactBuilding(): void;
     mapBuildingName(name: string): string;
     currentBuildingModule: any;
-    fetchBuilding(building: string): Promise<string>;
+    fetchBuilding(building: string);
     characterMatch: undefined | Character;
     characterMatchUIChanged: boolean;
     checkCharacter(): void;
@@ -54,9 +77,6 @@ export const inputHandler: IInputHandler = {
         },
         [Buildings.TRAVELBUREAU]: {
             "script": "travelbureau"
-        },
-        [Buildings.STOCKPILE]: {
-            "script": "stockpile",
         },
         [Buildings.MINE]: {
             "script": "mine",
@@ -125,6 +145,7 @@ export const inputHandler: IInputHandler = {
         return buildingName;
     },
     currentBuildingModule: undefined,
+
     async fetchBuilding(building: string) {
         building = this.mapBuildingName(building.trim());
         Game.properties.inBuilding = true;
@@ -133,7 +154,8 @@ export const inputHandler: IInputHandler = {
         conversation.endConversation();
 
         ClientOverlayInterface.loadingScreen();
-        await fetch("handlers/handler_v.php?" + new URLSearchParams({ building: building }))
+
+        await fetch("/" + building)
             .then((response) => {
                 if (!response.ok) throw new Error("Something unexpected happened. Please try again");
                 return response.text();
@@ -172,18 +194,53 @@ export const inputHandler: IInputHandler = {
                     GameLogger.addMessage("Building could not be retrieved", true);
                     return;
                 }
-                const module = await import(src + script).then((data) => {
-                    this.currentBuildingModule = data;
-                    setUpTabList();
-                    if (typeof this.currentBuildingModule.default === "function") {
-                        let classInstance = (new this.currentBuildingModule.default());
-                        new ModuleTester(classInstance, Game.properties.building, { defaultExport: false, });
-                    } else if (this.currentBuildingModule.default.init) {
-                        this.currentBuildingModule.default.init();
-                        new ModuleTester(this.currentBuildingModule, Game.properties.building, { defaultExport: true, });
+                if (!shouldSkipImport(building)) {
+                    // stockpileModule.init();
+                    await import(src + script).then((data) => {
+                        setUpTabList();
+                        if (typeof this.currentBuildingModule.default === "function") {
+                            let classInstance = (new this.currentBuildingModule.default());
+                            new ModuleTester(classInstance, Game.properties.building, { defaultExport: false, });
+                        } else if (this.currentBuildingModule.default.init) {
+                            this.currentBuildingModule.default.init();
+                            new ModuleTester(this.currentBuildingModule, Game.properties.building, { defaultExport: true, });
+                        }
+                        this.currentBuildingModule = data;
+                    });
+                } else {
+                    switch (building) {
+                        case "stockpile":
+                            this.currentBuildingModule = stockpileModule;
+                            this.currentBuildingModule.init();
+                            break;
+                        case "travelbureau":
+                            this.currentBuildingModule = travelBureauModule;
+                            this.currentBuildingModule.init();
+                            break;
+                        case "bakery":
+                            this.currentBuildingModule = bakeryModule;
+                            this.currentBuildingModule.init();
+                            break;
+                        case "mine":
+                            this.currentBuildingModule = new MineModule();
+                            break;
+                        case "crops":
+                            this.currentBuildingModule = new CropsModule();
+                            break;
+                        case "zinsstore":
+                            this.currentBuildingModule = zinsStoreModule;
+                            this.currentBuildingModule.init();
+                            break;
+                        case "merchant":
+                            this.currentBuildingModule = merchantModule;
+                            this.currentBuildingModule.init();
+                            break;
+                        case "workforcelodge":
+                            this.currentBuildingModule = workforceLodgeModule;
+                            this.currentBuildingModule.init();
+                            break;
                     }
-                    console.log(this.currentBuildingModule);
-                });
+                }
             })
             .catch(error => {
                 console.log(error);
@@ -191,7 +248,6 @@ export const inputHandler: IInputHandler = {
                 // alert(error);
                 // return;
             })
-        return building;
     },
     characterMatch: <undefined | Character>null,
     characterMatchUIChanged: false,
@@ -225,7 +281,7 @@ export const inputHandler: IInputHandler = {
         } else if (tutorial.onGoing && this.characterMatch.src.includes("tutorial_sailor")) {
             GameLogger.addMessage("That person is not interested in talking to you now", true);
         } else {
-            conversation.loadConversation(this.characterMatch.displayName, "", false);
+            conversation.loadConversation(this.characterMatch.displayName);
         }
     },
 };
