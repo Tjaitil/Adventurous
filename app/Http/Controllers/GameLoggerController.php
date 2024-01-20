@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Enums\GameLogTypes;
+use App\Traits\GameLogger;
 use Illuminate\Http\Request;
 
 class GameLoggerController extends Controller
 {
+    use GameLogger;
+
     public function log(Request $request): \Illuminate\Http\JsonResponse
     {
         $type = $request->string('type');
