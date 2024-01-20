@@ -2,10 +2,11 @@
 
 namespace App\Services;
 
-use App\libs\Response;
+use App\Http\Responses\AdvResponse;
 use App\Models\Inventory;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -73,11 +74,11 @@ class InventoryService
      * Log when user does not have enough amount
      *
      * @param  string  $name Item name
-     * @return Response
      */
-    public function logNotEnoughAmount(string $name)
+    public function logNotEnoughAmount(string $name): JsonResponse
     {
-        return Response::addMessage(sprintf("You don't have enough of %s", $name))->setStatus(400);
+        return (new AdvResponse([], 422))
+            ->addErrorMessage(sprintf("You don't have enough of %s", $name))->toResponse(request());
     }
 
     /**

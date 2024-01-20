@@ -3,12 +3,15 @@
 namespace App\Services;
 
 use App\Http\Builders\StoreBuilder;
-use App\libs\Response;
 use App\Http\Resources\StoreItemResource;
+use App\Http\Responses\AdvResponse;
+use App\Traits\GameLogger;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\JsonResponse;
 
 class StoreService
 {
+    use GameLogger;
 
     public function __construct(
         public StoreBuilder $storeBuilder,
@@ -18,20 +21,22 @@ class StoreService
         $this->storeBuilder = $storeBuilder::create();
     }
 
-    public function makeStore(array $items)
+    /**
+     * @param  array<mixed>  $items
+     */
+    public function makeStore(array $items): self
     {
         if (isset($items['list'])) {
             $items['store_items'] = $items['list'];
         }
 
         $this->storeBuilder = $this->storeBuilder::create($items);
+
         return $this;
     }
 
     /**
      * Get store item
-     *
-     * @param string $item Item name
      *
      * @return bool
      */
@@ -52,20 +57,15 @@ class StoreService
 
     /**
      * Log that item is not a store item
-     *
-     * @param string $name Item name
-     *
-     * @return Response
      */
-    public function logNotStoreItem(string $name)
+    public function logNotStoreItem(string $name): JsonResponse
     {
-        return Response::addMessage(sprintf("%s is not a store item", $name))->setStatus(400);
+        return (new AdvResponse([], 400))->addErrorMessage(sprintf('%s is not a store item', $name))
+            ->toResponse(request());
     }
 
     /**
      * Get store item
-     *
-     * @param string $name Item name
      *
      * @return StoreItemResource
      */
@@ -79,47 +79,42 @@ class StoreService
             }
         }
 
-        return (object) $matches[0];
+        return $matches[0];
     }
 
     /**
      * Log that item is not a store item
-     *
-     * @param string $name Item name
-     * @param int $amount Amount of item
-     *
-     * @return false;
      */
-    public function hasRequiredItems(string $item, int $amount = 1)
+    public function hasRequiredItems(string $name, int $amount = 1): bool
     {
-        $store_item = $this->getStoreItem($item);
-        if (!$store_item instanceof StoreItemResource) {
+        $store_item = $this->getStoreItem($name);
+        if (! $store_item instanceof StoreItemResource) {
             return false;
         }
 
         foreach ($store_item->required_items as $key => $value) {
-            if (!$this->inventoryService->hasEnoughAmount($value->name, $value->amount * $amount)) {
+            if (! $this->inventoryService->hasEnoughAmount($value->name, $value->amount * $amount)) {
                 return false;
                 break;
             }
         }
+
         return true;
     }
 
     /**
      * Log that item is not a store item
-     *
-     * @return Response
      */
-    public function logNotEnoughAmount()
+    public function logNotEnoughAmount(): JsonResponse
     {
-        return Response::addMessage("Item is not a store item")->setStatus(400);
+        return (new AdvResponse)->addErrorMessage('Item is not a store item')
+            ->setStatus(400)
+            ->toResponse(request());
     }
 
     /**
      * Create StoreItemResource from model
      *
-     * @param Model $item
      *
      * @return StoreItemResource
      */
@@ -131,8 +126,6 @@ class StoreService
     /**
      *  Calculate Item cost
      *
-     * @param string $item
-     * @param int $amount
      *
      * @return int
      */
@@ -145,44 +138,14 @@ class StoreService
         return $price;
     }
 
-    public function calculateAdjustedBuyValue($original_price, $sell_price, $diplomacy_price_adjust, $diplomacy_price_ratio)
-    {
-        $buy_price = "";
-        $difference = 0;
-        $class = "";
-        if (!isset($diplomacy_price_ratio)) {
-            return array("buy_price" => $original_price, "difference" => $difference, "class" => $class);
-        } else {
-            // Calculate ratio, example 0.95 diplomacy would result in (0.05 in paranthesis)
-            if (round(($diplomacy_price_ratio < 1))) {
-                $buy_price = $original_price * (1.0 + $diplomacy_price_adjust);
-                $class = "negativeDiplomacy";
-            } else {
-                $buy_price = $original_price * (1.0 - $diplomacy_price_adjust);
-                $class = "positiveDiplomacy";
-            }
-            $difference = $original_price - $buy_price;
-            if ($difference > 0) $difference = "- " . $difference;
-            if ($buy_price < $sell_price) $buy_price = $sell_price;
-        }
-
-        return;
-    }
-
-
-
     /**
      * Check if the store has enough amount
      *
-     * @param StoreItemResource|array $storeItemResource
-     * @param int $amount
-     * 
-     * 
      * @return bool
      */
-    public function hasItemAmount(StoreItemResource|array $storeItemResource, int $amount)
+    public function hasItemAmount(StoreItemResource $storeItemResource, int $amount)
     {
-        if (is_array($storeItemResource) || $storeItemResource->amount < $amount) {
+        if ($storeItemResource->amount < $amount) {
             return false;
         } else {
             return true;
@@ -191,15 +154,16 @@ class StoreService
 
     /**
      * Check if the user has skill requirements
-     * 
      */
-    public function hasSkillRequirements(string $item)
+    public function hasSkillRequirements(string $item): bool
     {
         $result = false;
         $match = false;
 
         $item = $this->getStoreItem($item);
-        if (!isset($item->skill_requirements)) return true;
+        if (! isset($item->skill_requirements)) {
+            return true;
+        }
 
         foreach ($item->skill_requirements as $key => $value) {
             $skill = $value->skill;
@@ -214,18 +178,20 @@ class StoreService
             }
         }
 
-        if ($match) return true;
-        else return $result;
+        if ($match) {
+            return true;
+        } else {
+            return $result;
+        }
     }
 
     /**
      * Calculate new price of item. Will be 5 percent if value is over 1500
      *
-     * @param int|float $price Item price
-     * @param int $amount Amount that is being traded
-     * @param bool $positive If the change is negative or positive
-     *
-     * @return int New Price
+     * @param  int|float  $price Item price
+     * @param  int  $amount Amount that is being traded
+     * @param  bool  $positive If the change is negative or positive
+     * @return float New Price
      */
     public function calculateNewPrice(int|float $price, int $amount, bool $positive)
     {

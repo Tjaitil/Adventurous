@@ -3,12 +3,13 @@
 namespace App\Abstracts;
 
 use App\Http\Builders\StoreBuilder;
-use App\libs\Response;
 use App\Http\Resources\StoreResource;
+use Illuminate\Http\JsonResponse;
 
 abstract class AbstractStore
 {
     public StoreBuilder $storeBuilder;
+
     public ?StoreResource $StoreResource = null;
 
     public function __construct()
@@ -16,11 +17,10 @@ abstract class AbstractStore
         $this->storeBuilder = StoreBuilder::create();
     }
 
-    public abstract function makeStore(array $items = []): StoreResource;
+    abstract public function makeStore(array $items = []): StoreResource;
 
     /**
-     * 
-     * @return StoreResource 
+     * @return StoreResource
      */
     public function getStore()
     {
@@ -31,12 +31,8 @@ abstract class AbstractStore
         return $this->StoreResource;
     }
 
-    /**
-     * 
-     * @return \App\libs\Response 
-     */
-    public function getStoreItemsResponse(): Response
+    public function getStoreItemsResponse(): JsonResponse
     {
-        return Response::addData("store_items", $this->getStore()->toArray()['store_items'])->setStatus(200);
+        return response()->json(['store_items', $this->getStore()->toArray()['store_items']], 200);
     }
 }

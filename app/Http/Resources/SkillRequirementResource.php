@@ -2,17 +2,21 @@
 
 namespace App\Http\Resources;
 
+use App\Enums\SkillNames;
+
+/**
+ * @property int $level
+ * @property value-of<SkillNames> $skill
+ */
 class SkillRequirementResource extends Resource
 {
-
     public function __construct($resource = null)
     {
         parent::__construct([
-            "level" => 0,
-            "skill" => ""
+            'level' => 0,
+            'skill' => '',
         ], $resource);
     }
-
 
     /**
      * Convert resource to an array
@@ -21,8 +25,8 @@ class SkillRequirementResource extends Resource
     {
 
         return [
-            "level" => $this->level,
-            "skill" => $this->skill
+            'level' => $this->level,
+            'skill' => $this->skill,
         ];
     }
 

@@ -8,26 +8,27 @@ use App\Models\Stockpile;
 use App\Models\UserData;
 use App\Services\InventoryService;
 use App\Services\SessionService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Blade;
 
 class StockpileController extends Controller
 {
     public function __construct(
         private InventoryService $inventoryService,
-        private Inventory $inventory,
         private SessionService $sessionService,
     ) {
     }
 
+    /**
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
+     */
     public function index()
     {
         $stockpile = $this->get();
 
         $stockpile_max_amount = UserData::where('username', $this->sessionService->getCurrentUsername())
-            ->first()
-            ->stockpile_max_amount;
+            ->first()?->stockpile_max_amount;
 
         return view('stockpile')
             ->with('title', 'Stockpile')
@@ -44,7 +45,7 @@ class StockpileController extends Controller
     }
 
     /**
-     * @return AdvResponse
+     * @return JsonResponse
      */
     public function update(Request $request)
     {
@@ -61,8 +62,7 @@ class StockpileController extends Controller
         ]);
 
         $stockpile_max_amount = UserData::where('username', $this->sessionService->getCurrentUsername())
-            ->first()
-            ->stockpile_max_amount;
+            ->first('stockpile_max_amount')?->stockpile_max_amount;
 
         if ($amount === $stockpile_max_amount && $insert === true) {
             return $Response->addMessage('You can\'t store more than $stockpile_max_amount items in your stockpile')
@@ -135,13 +135,5 @@ class StockpileController extends Controller
             ->render();
 
         return $Response->addTemplate('stockpile', $blade)->toResponse($request);
-    }
-
-    /**
-     * @return string
-     */
-    public function getTemplate(array $bladeData)
-    {
-        return Blade::render('components.stockpile.itemList', ['stockpile' => $bladeData[0], 'max_amount' => $bladeData[1]]);
     }
 }
