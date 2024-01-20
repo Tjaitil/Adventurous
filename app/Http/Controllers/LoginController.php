@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Traits\GameLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
+    use GameLogger;
+
     /**
      * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse
      */

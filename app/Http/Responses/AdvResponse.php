@@ -2,12 +2,20 @@
 
 namespace App\Http\Responses;
 
+use App\Traits\GameLogger;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
 class AdvResponse implements Responsable
 {
+    use GameLogger{
+        GameLogger::addErrorMessage as BaseAddErrorMessage;
+        GameLogger::addInfoMessage as BaseAddInfoMessage;
+        GameLogger::addWarningMessage as BaseAddWarningMessage;
+        GameLogger::addSuccessMessage as BaseAddSuccessMessage;
+    }
+
     /**
      * @see https://wendelladriel.com/blog/standard-api-responses-with-laravel-responsables All credit
      */
@@ -42,6 +50,34 @@ class AdvResponse implements Responsable
     public function addMessage(string $message): self
     {
         $this->data['gameMessage'][] = $message;
+
+        return $this;
+    }
+
+    public function addInfoMessage(string $message): self
+    {
+        $this->BaseAddInfoMessage($message);
+
+        return $this;
+    }
+
+    public function addErrorMessage(string $message): self
+    {
+        $this->BaseAddErrorMessage($message);
+
+        return $this;
+    }
+
+    public function addWarningMessage(string $message): self
+    {
+        $this->BaseAddWarningMessage($message);
+
+        return $this;
+    }
+
+    public function addSuccessMessage(string $message): self
+    {
+        $this->BaseAddSuccessMessage($message);
 
         return $this;
     }
