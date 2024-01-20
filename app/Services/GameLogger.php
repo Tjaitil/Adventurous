@@ -7,30 +7,33 @@ use Carbon\Carbon;
 
 trait GameLogger
 {
+    /**
+     * @var array<array{type: string, timestamp: Carbon, text: string}>>
+     */
     private array $logs = [];
 
-    public function initLog()
+    public function initLog(): void
     {
         $this->logs = [];
         session()->put('log', $this->logs);
     }
 
-    public function addErrorMessage(string $message)
+    public function addErrorMessage(string $message): void
     {
         $this->addMessage($message, GameLogTypes::ERROR->value);
     }
 
-    public function addInfoMessage(string $message)
+    public function addInfoMessage(string $message): void
     {
         $this->addMessage($message, GameLogTypes::INFO->value);
     }
 
-    public function addWarningMessage(string $message)
+    public function addWarningMessage(string $message): void
     {
         $this->addMessage($message, GameLogTypes::WARNING->value);
     }
 
-    public function addSuccessMessage(string $message)
+    public function addSuccessMessage(string $message): void
     {
         $this->addMessage($message, GameLogTypes::SUCCESS->value);
     }
@@ -38,9 +41,8 @@ trait GameLogger
     /**
      * @param  mixed  $message
      * @param  value-of<GameLogTypes>  $type
-     * @return void
      */
-    public function addMessage($message, string $type)
+    public function addMessage($message, string $type): void
     {
         $this->logs = session()->get('log') ?? [];
 
