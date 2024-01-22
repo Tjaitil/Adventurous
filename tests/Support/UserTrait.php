@@ -14,7 +14,7 @@ trait UserTrait
 
     public function __constructUserTrait()
     {
-        $this->User = User::first();
+        $this->User = User::find(3);
         $this->RandomUser = $this->getRandomUser();
     }
 
@@ -29,7 +29,7 @@ trait UserTrait
 
     public function getRandomUser(): User
     {
-        return User::first();
+        return User::find(3);
     }
 
     /**
