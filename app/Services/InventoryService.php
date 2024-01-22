@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\InventoryFullException;
 use App\Http\Responses\AdvResponse;
 use App\Models\Inventory;
 use Exception;
@@ -71,6 +72,25 @@ class InventoryService
     }
 
     /**
+     * @param  null|int  $plusAmont Can be used to check if inventory is full included a plus amount
+     */
+    public function isInventoryIsFull(?int $plusAmont = null): bool
+    {
+        $currentCount = Inventory::where('username', Auth::user()->username)->count();
+        if (isset($plusAmont)) {
+            return $currentCount += $plusAmont > 18;
+        } else {
+            return $currentCount >= 18;
+        }
+    }
+
+    public function handleInventoryFull(): JsonResponse
+    {
+        return (new AdvResponse([], 422))
+            ->addErrorMessage('Inventory is full')->toResponse(request());
+    }
+
+    /**
      * Log when user does not have enough amount
      *
      * @param  string  $name Item name
@@ -101,7 +121,7 @@ class InventoryService
 
         if ($this->inventory_items->count() >= 18 && ! $InventoryItem && $new_amount > 0) {
 
-            throw new Exception('Inventory is full!');
+            throw new InventoryFullException();
         } elseif ($InventoryItem === null) {
 
             Inventory::create([
