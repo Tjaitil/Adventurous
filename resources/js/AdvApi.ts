@@ -14,8 +14,9 @@ export class AdvApi extends BaseAxios {
                 return Promise.reject(response);
             }
 
-            else if (typeof response.data.gameMessage !== "undefined") {
-                GameLogger.addMessage(response.data.gameMessage, true);
+            else if (Array.isArray(response.data.gameMessage) === true) {
+                GameLogger.addMessages(response.data.gameMessage, true);
+                GameLogger.logMessages()
                 return Promise.resolve(response);
             } else if (typeof response.data.errorGameMessage !== "undefined") {
                 GameLogger.addMessage(response.data.errorGameMessage, true);

@@ -49,6 +49,12 @@ export class GameLogger {
         if (instantLog) this.logMessages();
     }
 
+    public static addMessages(messages: GameLog[], instantLog = false, shouldLogToApi = false) 
+    {
+        messages.forEach(message => this.addMessage(message, false, shouldLogToApi));
+        if (instantLog) this.logMessages();
+    }
+
     public static logMessages() {
         if (this.messages.length === 0) return false;
         // Start new loop only if none is set
