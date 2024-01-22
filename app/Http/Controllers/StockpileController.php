@@ -107,6 +107,10 @@ class StockpileController extends Controller
 
             $adjust_inventory_item_amount = -$amount;
         } else {
+            if ($this->inventoryService->isInventoryIsFull()) {
+                return $this->inventoryService->handleInventoryFull();
+            }
+
             if ($matched_stockpile_item === false) {
                 return $Response->addMessage('You don\'t have that item in your stockpile')
                     ->setStatus(400)
