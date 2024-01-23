@@ -2,6 +2,7 @@
 
 namespace App\Http\Responses;
 
+use App\Enums\GameLogTypes;
 use App\Traits\GameLogger;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\JsonResponse;
@@ -49,7 +50,7 @@ class AdvResponse implements Responsable
 
     public function addMessage(string $message): self
     {
-        $this->data['gameMessage'][] = $message;
+        $this->data['gameMessage'][] = ['text' => $message, 'type' => GameLogTypes::INFO->value];
 
         return $this;
     }
@@ -57,6 +58,7 @@ class AdvResponse implements Responsable
     public function addInfoMessage(string $message): self
     {
         $this->BaseAddInfoMessage($message);
+        $this->data['gameMessage'][] = ['text' => $message, 'type' => GameLogTypes::INFO->value];
 
         return $this;
     }
@@ -64,6 +66,7 @@ class AdvResponse implements Responsable
     public function addErrorMessage(string $message): self
     {
         $this->BaseAddErrorMessage($message);
+        $this->data['gameMessage'][] = ['text' => $message, 'type' => GameLogTypes::ERROR->value];
 
         return $this;
     }
@@ -71,6 +74,7 @@ class AdvResponse implements Responsable
     public function addWarningMessage(string $message): self
     {
         $this->BaseAddWarningMessage($message);
+        $this->data['gameMessage'][] = ['text' => $message, 'type' => GameLogTypes::WARNING->value];
 
         return $this;
     }
@@ -78,6 +82,7 @@ class AdvResponse implements Responsable
     public function addSuccessMessage(string $message): self
     {
         $this->BaseAddSuccessMessage($message);
+        $this->data['gameMessage'][] = ['text' => $message, 'type' => GameLogTypes::SUCCESS->value];
 
         return $this;
     }

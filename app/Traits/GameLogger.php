@@ -20,29 +20,29 @@ trait GameLogger
 
     public function addErrorMessage(string $message): void
     {
-        $this->addMessage($message, GameLogTypes::ERROR->value);
+        $this->logMessage($message, GameLogTypes::ERROR->value);
     }
 
     public function addInfoMessage(string $message): void
     {
-        $this->addMessage($message, GameLogTypes::INFO->value);
+        $this->logMessage($message, GameLogTypes::INFO->value);
     }
 
     public function addWarningMessage(string $message): void
     {
-        $this->addMessage($message, GameLogTypes::WARNING->value);
+        $this->logMessage($message, GameLogTypes::WARNING->value);
     }
 
     public function addSuccessMessage(string $message): void
     {
-        $this->addMessage($message, GameLogTypes::SUCCESS->value);
+        $this->logMessage($message, GameLogTypes::SUCCESS->value);
     }
 
     /**
      * @param  mixed  $message
      * @param  value-of<GameLogTypes>  $type
      */
-    public function addMessage($message, string $type): void
+    public function logMessage($message, string $type): void
     {
         $this->logs = session()->get('log') ?? [];
 
