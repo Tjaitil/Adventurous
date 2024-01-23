@@ -62,6 +62,7 @@ const stockpileModule = {
 	},
 	stockpileAction(amountSet = false, event: Event) {
 		let listItem = (event.target as HTMLElement);
+		let eventTarget = event.target as HTMLElement;
 		let itemName = document.getElementById("stck-current-item").innerHTML;
 		let item =
 			itemName
@@ -84,7 +85,7 @@ const stockpileModule = {
 		if (amountSet) {
 			amount = stckMenuInput.value;
 		} else if (
-			event.currentTarget === document.getElementById("stck_menu_all")
+			eventTarget.id === "stck_menu_all"
 		) {
 			let array: HTMLElement[] = [];
 			if (insert === true) {
