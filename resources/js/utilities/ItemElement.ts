@@ -29,7 +29,7 @@ export class ItemElement {
             span.classList.add("item_amount");
             this.element.appendChild(span);
             this.element.querySelectorAll("figcaption")[0].innerHTML = jsUcWords(initalItem.name);
-            this.element.querySelectorAll("img")[0].src = "public/images/" + initalItem.name + ".png";
+            this.element.querySelectorAll("img")[0].src = "images/" + initalItem.name + ".png";
             this.element.querySelectorAll(".item_amount")[0].innerHTML = "" + initalItem.amount;
             this.element.classList.add(initalItem.className);
 
