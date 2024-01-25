@@ -5,6 +5,7 @@ import { inputHandler } from './inputHandler';
 import { getClientPageTitle } from '../utilities/getClientPageTitle';
 import { AdvApi } from '../AdvApi';
 import { CustomFetchApi } from '../CustomFetchApi';
+import createHTMLNode from '../utilities/createHTMLNode';
 
 /**
  * @deprecated
@@ -95,7 +96,7 @@ export class Inventory {
     static async update() {
         return CustomFetchApi.get<response>("/inventory")
             .then(data => {
-                document.getElementById("inventory").replaceWith(data["html"]["inventory"]);
+                document.getElementById("inventory").replaceWith(createHTMLNode(data["html"]["inventory"]));
                 this.itemsElements = [...document.querySelectorAll(".inventory_item")];
                 this.itemsAmount = this.itemsElements.length;
                 this.isFull() ? this.styleSpaceIndicator("full") : this.styleSpaceIndicator("");
@@ -126,10 +127,6 @@ export class Inventory {
     static get items() {
         return this.itemsElements;
     }
-}
-
-interface postData {
-    foo: string;
 }
 interface response {
     html: any;
