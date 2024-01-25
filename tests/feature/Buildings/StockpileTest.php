@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Buildings;
 
-use App\Models\Inventory;
+use App\Models\Item;
 use App\Models\Stockpile;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
@@ -29,11 +29,12 @@ class StockpileTest extends TestCase
 
     public function test_insert_item()
     {
-        $InventoryItem = Inventory::where('username', $this->RandomUser->username)
-            ->inRandomOrder()->limit(1)->first();
+        $Item = Item::inRandomOrder()->limit(1)->first();
+        $this->insertItemToInventory($this->RandomUser->username, $Item->name, 1);
+
         $response = $this->actingAs($this->RandomUser)
             ->post('/stockpile/update', [
-                'item' => $InventoryItem->item,
+                'item' => $Item->name,
                 'amount' => 1,
                 'insert' => true,
             ]);
@@ -41,14 +42,51 @@ class StockpileTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_insert_item_with_invalid_amount()
+    public function test_insert_all_of_item()
     {
-        $InventoryItem = Inventory::where('username', $this->RandomUser->username)->inRandomOrder()->limit(1)->first();
+        $Item = Item::inRandomOrder()->limit(1)->first();
+        $this->insertItemToInventory($this->RandomUser->username, $Item->name, 5);
 
         $response = $this->actingAs($this->RandomUser)
             ->post('/stockpile/update', [
-                'item' => $InventoryItem->item,
-                'amount' => $InventoryItem->amount + 1,
+                'item' => $Item->name,
+                'amount' => 5,
+                'insert' => true,
+            ]);
+
+        $response->json();
+        $response->assertStatus(200);
+    }
+
+    public function test_cannot_withdraw_when_inventory_is_full()
+    {
+        $Items = Item::inRandomOrder()->limit(18)->get();
+
+        foreach ($Items as $key => $value) {
+            $this->insertItemToInventory($this->RandomUser->username, $value->name, 5);
+        }
+
+        $response = $this->actingAs($this->RandomUser)
+            ->post('/stockpile/update', [
+                'item' => $Items->first()->name,
+                'amount' => 1,
+                'insert' => false,
+            ]);
+
+        $response->json();
+        $response->assertStatus(422);
+
+    }
+
+    public function test_insert_item_with_invalid_amount()
+    {
+        $Item = Item::inRandomOrder()->limit(1)->first();
+        $this->insertItemToInventory($this->RandomUser->username, $Item->name, 1);
+
+        $response = $this->actingAs($this->RandomUser)
+            ->post('/stockpile/update', [
+                'item' => $Item->name,
+                'amount' => 5,
                 'insert' => true,
             ]);
         $response->json();
@@ -57,11 +95,16 @@ class StockpileTest extends TestCase
 
     public function test_withdraw_item()
     {
-        $StockpileItem = Stockpile::where('username', $this->RandomUser->username)->inRandomOrder()->limit(1)->first();
+        $Item = Item::inRandomOrder()->limit(1)->first();
+        Stockpile::insert([
+            'username' => $this->RandomUser->username,
+            'item' => $Item->name,
+            'amount' => 1,
+        ]);
 
         $response = $this->actingAs($this->RandomUser)
             ->post('/stockpile/update', [
-                'item' => $StockpileItem->item,
+                'item' => $Item->name,
                 'amount' => 1,
                 'insert' => false,
             ]);
