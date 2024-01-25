@@ -8,6 +8,6 @@
                 <x-store.storeContainer :store-resource="$store_resource" :options="[
                     'item_requirements' => true,
                     'item_information' => true,
-                    'input_amount' => false,
+                    'show-input-amount' => false,
                 ]" />
             </div>

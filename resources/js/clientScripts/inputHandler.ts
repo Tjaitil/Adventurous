@@ -51,9 +51,9 @@ type BuildingName = keyof BuildingModuleMapping;
 
 interface BuildingAssetsTypes {
     stylesheets?: string[];
-    script: string;
+    script?: string;
 }
-type BuildingAssetsRecord = Record<Exclude<Buildings, Buildings.STOCKPILE>, BuildingAssetsTypes>;
+type BuildingAssetsRecord = Record<Buildings, BuildingAssetsTypes>;
 
 interface IInputHandler {
     buildingAssetsRecord: BuildingAssetsRecord;
@@ -75,9 +75,8 @@ export const inputHandler: IInputHandler = {
         [Buildings.BAKERY]: {
             "script": "bakery"
         },
-        [Buildings.TRAVELBUREAU]: {
-            "script": "travelbureau"
-        },
+        [Buildings.STOCKPILE]: {},
+        [Buildings.TRAVELBUREAU]: {},
         [Buildings.MINE]: {
             "script": "mine",
         },
@@ -165,10 +164,15 @@ export const inputHandler: IInputHandler = {
                 let css;
                 let html: string;
                 let link;
+                let skipImport;
 
                 if (this.buildingAssetsRecord[building]) {
                     let buildingName = building as BuildingName;
-                    script = this.buildingAssetsRecord[buildingName].script;
+                    if('script' in this.buildingAssetsRecord[buildingName]) {
+                        script = this.buildingAssetsRecord[buildingName].script;
+                    } else {
+                        skipImport = true;
+                    }
                     css = this.buildingAssetsRecord[buildingName].stylesheets;
                     html = data;
                 } else {
@@ -190,7 +194,7 @@ export const inputHandler: IInputHandler = {
                 ClientOverlayInterface.show(html);
                 itemTitle.addItemClassEvents();
                 const src = '/public/dist/js/buildingScripts/';
-                if (script.length === 0) {
+                if (skipImport == false && script.length === 0) {
                     GameLogger.addMessage("Building could not be retrieved", true);
                     return;
                 }

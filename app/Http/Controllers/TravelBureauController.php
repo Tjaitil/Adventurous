@@ -2,48 +2,46 @@
 
 namespace App\Http\Controllers;
 
-use App\libs\controller;
-use App\libs\Request;
-use App\libs\Response;
+use App\Exceptions\JsonException;
+use App\Http\Responses\AdvResponse;
 use App\Models\Trader;
 use App\Models\TravelBureauCart;
-use App\Services\SessionService;
 use App\Services\InventoryService;
+use App\Services\SessionService;
 use App\Services\StoreService;
 use App\Stores\TravelBureauStore;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
-class TravelBureauController extends controller
+class TravelBureauController extends Controller
 {
-
     /**
-     * 
-     * @param StoreService $storeService 
-     * @param InventoryService $inventoryService 
-     * @param SessionService $sessionService 
-     * @return void 
+     * @return void
      */
-    function __construct(
+    public function __construct(
         private StoreService $storeService,
         private InventoryService $inventoryService,
         private SessionService $sessionService,
         private TravelBureauStore $travelBureauStore
     ) {
-        parent::__construct();
-    }
-
-    public function index()
-    {
-        $current_cart = Trader::where('username', $this->sessionService->getCurrentUsername())->first()->cart;
-        $store_resource = $this->travelBureauStore->getStore();
-
-        $this->render('travelbureau', 'Travel Bureau', [
-            'store_resource' => $store_resource,
-            'current_cart' => $current_cart
-        ], true, true, true);
     }
 
     /**
-     * @return Response
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
+     */
+    public function index()
+    {
+        $current_cart = Trader::where('username', $this->sessionService->getCurrentUsername())->first()?->cart;
+        $store_resource = $this->travelBureauStore->getStore();
+
+        return view('travelbureau')
+            ->with('title', 'Travel Bureau')
+            ->with('store_resource', $store_resource)
+            ->with('current_cart', $current_cart);
+    }
+
+    /**
+     * @return JsonResponse
      */
     public function getStoreItems()
     {
@@ -51,33 +49,40 @@ class TravelBureauController extends controller
     }
 
     /**
-     * 
-     * @param Request $request 
-     * @return Response
-     * @throws \Exception 
+     * @return JsonResponse
+     *
+     * @throws \Exception|JsonException
      */
     public function buyCart(Request $request)
     {
-        $item = $request->getInput('item');
+        $item = $request->string('item');
         $amount = 1;
         $initial_store = $this->travelBureauStore->makeStore([$item]);
         $this->storeService->storeBuilder->setResource($initial_store);
 
         $Trader = Trader::where('username', $this->sessionService->getCurrentUsername())->first();
         $Cart = TravelBureauCart::where('name', $item)->first();
-        if (!$this->storeService->isStoreItem($item)) {
+        if (! $Trader instanceof Trader || ! $Cart instanceof TravelBureauCart) {
+            throw new JsonException('Could not find trader or cart: ' . $item);
+        }
+
+        if (! $this->storeService->isStoreItem($item)) {
             return $this->storeService->logNotStoreItem($item);
         }
         $store_item = $this->storeService->getStoreItem($item);
 
         if ($Cart->id === $Trader->cart_id) {
-            return Response::setStatus(422)->addMessage("You already have this cart");
+            return (new AdvResponse([], 422))
+                ->addErrorMessage('You already have this cart')
+                ->toResponse($request);
         }
 
-        $this->storeService->hasRequiredItems($item, $amount);
+        if($this->storeService->hasSkillRequirements($item)) {
+            return $this->storeService->logHasntSkillRequirements();
+        }
 
         foreach ($store_item->required_items as $key => $value) {
-            if (!$this->inventoryService->hasEnoughAmount(
+            if (! $this->inventoryService->hasEnoughAmount(
                 $value->name,
                 $value->amount * $amount
             )) {
@@ -85,21 +90,17 @@ class TravelBureauController extends controller
             }
         }
 
-        if (!$this->inventoryService->hasEnoughAmount(CURRENCY, $store_item->store_value)) {
-            return $this->inventoryService->logNotEnoughAmount(CURRENCY);
-        }
-
         foreach ($store_item->required_items as $key => $value) {
             $this->inventoryService->edit($value->name, $value->amount * $amount);
         }
 
-        if (!$this->inventoryService->hasEnoughAmount(CURRENCY, $store_item->store_value)) {
-            return $this->inventoryService->logNotEnoughAmount(CURRENCY);
+        if (! $this->inventoryService->hasEnoughAmount(config('adventurous.currency'), $store_item->store_value)) {
+            return $this->inventoryService->logNotEnoughAmount(config('adventurous.currency'));
         } else {
 
             $this->inventoryService
                 ->edit(
-                    CURRENCY,
+                    config('adventurous.currency'),
                     -$this->storeService->calculateItemCost($store_item->name, $amount)
                 );
         }
@@ -107,8 +108,9 @@ class TravelBureauController extends controller
         $Trader->cart_id = $Cart->id;
         $Trader->save();
 
-        return Response::setStatus(200)
-            ->addMessage(sprintf("You bought %s", $item))
-            ->addData("new_cart", $item);
+        return (new AdvResponse)->setStatus(200)
+            ->addInfoMessage(sprintf('You bought %s', $item))
+            ->addData('new_cart', $item)
+            ->toResponse($request);
     }
 }
