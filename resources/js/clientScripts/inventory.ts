@@ -95,7 +95,7 @@ export class Inventory {
     static async update() {
         return CustomFetchApi.get<response>("/inventory")
             .then(data => {
-                document.getElementById("inventory").innerHTML = data["html"]["inventory"];
+                document.getElementById("inventory").replaceWith(data["html"]["inventory"]);
                 this.itemsElements = [...document.querySelectorAll(".inventory_item")];
                 this.itemsAmount = this.itemsElements.length;
                 this.isFull() ? this.styleSpaceIndicator("full") : this.styleSpaceIndicator("");
