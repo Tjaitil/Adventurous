@@ -26,5 +26,9 @@ class Handler extends ExceptionHandler
         $this->renderable(function (InventoryFullException $e, Request $request) {
             $e->render($request);
         });
+
+        $this->renderable(function (JsonException $e, Request $request) {
+            $e->render($request);
+        });
     }
 }
