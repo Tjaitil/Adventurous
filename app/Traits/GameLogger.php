@@ -48,11 +48,11 @@ trait GameLogger
 
         $this->removeIfOverLength();
 
-        $this->logs[] = [
+        array_push($this->logs, [
             'type' => $type,
             'timestamp' => Carbon::now()->format('H:i:s'),
             'text' => $message,
-        ];
+        ]);
 
         session()->put('log', $this->logs);
     }
