@@ -66,7 +66,7 @@ export const itemTitle = {
             return false;
         }
 
-        if(this.currentTitle !== item) {
+        if (this.currentTitle !== item) {
             this.currentTitle = item;
             price = this.currentPrice
         } else {
@@ -86,42 +86,23 @@ export const itemTitle = {
         let menuFirstChild = <HTMLElement>menu.children[0];
         let textChild = <HTMLElement>menuFirstChild.children[0];
 
-        if (element.className == "inventory_item") {
-            menuTop = element.offsetTop + 30;
-            menuTop = element.offsetTop - 15;
-
-            menuFirstChild.style.top = menuTop + "px";
-            textChild.classList.add("text-center");
-
-            let leftPosition = this.isClippingOutsideScreen(event.clientX);
-            if (item.length < 8) {
-                menuFirstChild.style.left = leftPosition + "px";
-            }
-            else {
-                menuFirstChild.style.left = leftPosition + "px";
-            }
-        }
-        else {
-            let elementParent = element.closest("div");
-            elementParent.appendChild(menu);
-            menuFirstChild.style.left = 10 + "px";
-            menuFirstChild.style.top = 55 + "px";
-        }
+        menuTop = event.clientY - document.getElementsByTagName("section")[0].offsetTop + window.scrollY;
+        menuFirstChild.style.top = menuTop + "px";
+        menuFirstChild.style.left = this.isClippingOutsideScreen(event.clientX) + "px";
+        textChild.classList.add("text-center");
     },
     isClippingOutsideScreen(leftPositon: number): number {
         let tooltipItem = document.getElementById("item_tooltip").children[0];
         let calculatedPosition = leftPositon + this.subtractLeft;
-        if(leftPositon + tooltipItem.clientWidth > window.innerWidth) {
+        if (leftPositon + tooltipItem.clientWidth > window.innerWidth) {
             return calculatedPosition - tooltipItem.clientWidth;
         }
 
         return calculatedPosition
     },
     hideItemTooltip() {
-        let tooltip = document.getElementById("item_tooltip");
-        if (tooltip) {
-            document.getElementById("item_tooltip").classList.add("invisible");
-        }
+        let menu = document.getElementById("item_tooltip");
+        menu.classList.add("invisible");
     },
     hide() {
         this.hideItemTooltip();
