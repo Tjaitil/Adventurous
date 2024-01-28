@@ -36,6 +36,50 @@ class StoreService
     }
 
     /**
+     * @return JsonResponse|true
+     */
+    public function buyItem(string $item, int $amount) {
+
+        $store_item = $this->getStoreItem($item);
+
+        if (! $this->isStoreItem($item)) {
+            return $this->logNotStoreItem($item);
+        }
+
+        if(! $this->hasSkillRequirements($item)) {
+            return (new AdvResponse([], 422))
+                ->addErrorMessage('You do not have the required skill level')
+                ->toResponse(request());
+        }
+
+        foreach ($store_item->required_items as $key => $value) {
+            if (! $this->inventoryService->hasEnoughAmount(
+                $value->name,
+                $value->amount * $amount
+            )) {
+                return $this->inventoryService->logNotEnoughAmount($value->name);
+            }
+        }
+
+        foreach ($store_item->required_items as $key => $value) {
+            $this->inventoryService->edit($value->name, $value->amount * $amount);
+        }
+
+        if (! $this->inventoryService->hasEnoughAmount(config('adventurous.currency'), $store_item->store_value)) {
+            return $this->inventoryService->logNotEnoughAmount(config('adventurous.currency'));
+        } else {
+
+            $this->inventoryService
+                ->edit(
+                    config('adventurous.currency'),
+                    -$this->calculateItemCost($store_item->name, $amount)
+                );
+        }
+        
+        return true;
+    }
+
+    /**
      * Get store item
      *
      * @return bool
@@ -87,19 +131,20 @@ class StoreService
      */
     public function hasRequiredItems(string $name, int $amount = 1): bool
     {
+        $result = true;
         $store_item = $this->getStoreItem($name);
         if (! $store_item instanceof StoreItemResource) {
-            return false;
+            return $result = false;
         }
 
         foreach ($store_item->required_items as $key => $value) {
             if (! $this->inventoryService->hasEnoughAmount($value->name, $value->amount * $amount)) {
-                return false;
+                $result = false;
                 break;
             }
         }
 
-        return true;
+        return $result;
     }
 
     /**
@@ -161,7 +206,7 @@ class StoreService
         $match = false;
 
         $item = $this->getStoreItem($item);
-        if (! isset($item->skill_requirements)) {
+        if (is_null($item?->skill_requirements)) {
             return true;
         }
 

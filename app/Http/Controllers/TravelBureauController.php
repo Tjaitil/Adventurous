@@ -6,7 +6,6 @@ use App\Exceptions\JsonException;
 use App\Http\Responses\AdvResponse;
 use App\Models\Trader;
 use App\Models\TravelBureauCart;
-use App\Services\InventoryService;
 use App\Services\SessionService;
 use App\Services\StoreService;
 use App\Stores\TravelBureauStore;
@@ -20,7 +19,6 @@ class TravelBureauController extends Controller
      */
     public function __construct(
         private StoreService $storeService,
-        private InventoryService $inventoryService,
         private SessionService $sessionService,
         private TravelBureauStore $travelBureauStore
     ) {
@@ -56,9 +54,6 @@ class TravelBureauController extends Controller
     public function buyCart(Request $request)
     {
         $item = $request->string('item');
-        $amount = 1;
-        $initial_store = $this->travelBureauStore->makeStore([$item]);
-        $this->storeService->storeBuilder->setResource($initial_store);
 
         $Trader = Trader::where('username', $this->sessionService->getCurrentUsername())->first();
         $Cart = TravelBureauCart::where('name', $item)->first();
@@ -66,43 +61,18 @@ class TravelBureauController extends Controller
             throw new JsonException('Could not find trader or cart: ' . $item);
         }
 
-        if (! $this->storeService->isStoreItem($item)) {
-            return $this->storeService->logNotStoreItem($item);
-        }
-        $store_item = $this->storeService->getStoreItem($item);
-
         if ($Cart->id === $Trader->cart_id) {
-            return (new AdvResponse([], 422))
+            return (new AdvResponse([], 400))
                 ->addErrorMessage('You already have this cart')
                 ->toResponse($request);
         }
 
-        if($this->storeService->hasSkillRequirements($item)) {
-            return $this->storeService->logHasntSkillRequirements();
-        }
+        $initial_store = $this->travelBureauStore->makeStore([$item]);
+        $this->storeService->storeBuilder->setResource($initial_store);
 
-        foreach ($store_item->required_items as $key => $value) {
-            if (! $this->inventoryService->hasEnoughAmount(
-                $value->name,
-                $value->amount * $amount
-            )) {
-                return $this->inventoryService->logNotEnoughAmount($value->name);
-            }
-        }
-
-        foreach ($store_item->required_items as $key => $value) {
-            $this->inventoryService->edit($value->name, $value->amount * $amount);
-        }
-
-        if (! $this->inventoryService->hasEnoughAmount(config('adventurous.currency'), $store_item->store_value)) {
-            return $this->inventoryService->logNotEnoughAmount(config('adventurous.currency'));
-        } else {
-
-            $this->inventoryService
-                ->edit(
-                    config('adventurous.currency'),
-                    -$this->storeService->calculateItemCost($store_item->name, $amount)
-                );
+        $result = $this->storeService->buyItem($item, 1);
+        if($result !== true) {
+            return $result;
         }
 
         $Trader->cart_id = $Cart->id;
