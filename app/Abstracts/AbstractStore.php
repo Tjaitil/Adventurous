@@ -17,6 +17,12 @@ abstract class AbstractStore
         $this->storeBuilder = StoreBuilder::create();
     }
 
+    /**
+     *
+     * @param array<int,mixed> $items
+     *
+     * @return \App\Http\Resources\StoreResource
+     */
     abstract public function makeStore(array $items = []): StoreResource;
 
     /**
@@ -33,6 +39,8 @@ abstract class AbstractStore
 
     public function getStoreItemsResponse(): JsonResponse
     {
-        return response()->json(['store_items', $this->getStore()->toArray()['store_items']], 200);
+        $data = ['store_items' => $this->getStore()->toArray()['store_items']];
+
+        return response()->json(['data' => $data], 200);
     }
 }
