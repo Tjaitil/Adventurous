@@ -3,12 +3,16 @@
 namespace App\Services;
 
 use App\Actions\CanLevelUpAction;
-use App\Http\Builders\SkillsBuilder;
 use App\Enums\SkillNames;
+use App\Exceptions\JsonException;
+use App\Http\Builders\SkillsBuilder;
+use App\Http\Responses\AdvResponse;
 use App\libs\Response;
 use App\Models\LevelData;
 use App\Models\UserLevels;
 use Exception;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * @property UserLevels $userLevels
@@ -17,25 +21,34 @@ class SkillsService
 {
     public SkillsBuilder $skillsBuilder;
 
+    public UserLevels $userLevels;
+
     public function __construct(
         private CanLevelUpAction $canLevelUpAction,
-        private SessionService $sessionService,
-        public UserLevels $userLevels
     ) {
-        $this->userLevels = $this->userLevels->where('username', $this->sessionService->getCurrentUsername())->first();
+    }
+
+    private function setUserLevels(): void
+    {
+        if(! isset($this->userLevels)) {
+            $UserLevels = UserLevels::where('username', Auth::user()?->username)->first();
+            if(!$UserLevels instanceof UserLevels) {
+                throw new JsonException('UserLevels could not be found for user');
+            }
+            $this->userLevels = $UserLevels;
+        }
+
     }
 
     /**
      * Check if user has required profiency level
      *
-     * @param int $required_level Required profiency level
-     * @param string $skill Name of skill
-     *
-     * @return bool
+     * @param  int  $required_level Required profiency level
+     * @param  string  $skill Name of skill
      */
-    public function hasRequiredLevel(int $required_level, string $skill)
+    public function hasRequiredLevel(int $required_level, string $skill): bool
     {
-
+        $this->setUserLevels();
         switch ($skill) {
             case 'farmer':
                 $skill_level = $this->userLevels->farmer_level;
@@ -67,47 +80,57 @@ class SkillsService
     /**
      * Log that user has too low profiency level
      *
-     * @param string $profiency Profiency name
-     *
-     * @return Response
+     * @param  string  $profiency Profiency name
      */
-    public function logNotRequiredLevel(string $profiency)
+    public function logNotRequiredLevel(string $profiency): JsonResponse
     {
-        return Response::addMessage(sprintf("You have too low %s level", $profiency))->setStatus(422);
+        return (new AdvResponse([], 422))
+            ->addErrorMessage(sprintf('You have too low %s level', $profiency))
+            ->toResponse(request());
     }
 
-    public function updateSkills()
+    public function updateSkills(): void
     {
+        $this->setUserLevels();
         $this->userLevels->update();
         $this->canSkillsLevelUP();
     }
 
-    public function updateFarmerXP(int $amount)
+    public function updateFarmerXP(int $amount): self
     {
+        $this->setUserLevels();
         $this->userLevels->farmer_xp += $amount;
+
         return $this;
     }
 
-    public function updateMinerXP(int $amount)
+    public function updateMinerXP(int $amount): self
     {
+        $this->setUserLevels();
         $this->userLevels->miner_xp += $amount;
+
         return $this;
     }
 
-    public function updateTraderXP(int $amount)
+    public function updateTraderXP(int $amount): self
     {
+        $this->setUserLevels();
         $this->userLevels->trader_xp += $amount;
+
         return $this;
     }
 
-    public function updateWarriorXP(int $amount)
+    public function updateWarriorXP(int $amount): self
     {
+        $this->setUserLevels();
         $this->userLevels->warrior_xp += $amount;
+
         return $this;
     }
 
-    public function canSkillsLevelUP()
+    public function canSkillsLevelUP(): void
     {
+        $this->setUserLevels();
 
         if ($this->canLevelUpAction->handle($this->userLevels->farmer_xp, $this->userLevels->farmer_next_level_xp)) {
 
@@ -137,17 +160,17 @@ class SkillsService
     /**
      * Retrieve data from LevelData table based on current_skill_experience
      *
-     * @param int $current_skill_experience
-     *
      * @return int
+     *
+     * @throws Exception
      */
     private function getNextLevelFromExperience(int $current_skill_experience)
     {
-        $data = LevelData::select('level')->where('next_level', '>', $current_skill_experience)->limit(1)->first();
-        if (is_null($data->level)) {
-            throw new Exception("Unable to get level from experience");
+        $LevelData = LevelData::select('level')->where('next_level', '>', $current_skill_experience)->limit(1)->first();
+        if (! $LevelData instanceof LevelData) {
+            throw new JsonException('Unable to get level from experience');
         } else {
-            return $data->level;
+            return $LevelData->level;
         }
     }
 }
