@@ -6,7 +6,6 @@ use App\Models\Diplomacy;
 use App\Models\Hunger;
 use App\Models\UserData;
 use App\Models\UserLevels;
-use App\Services\HungerService;
 use App\Services\InventoryService;
 use App\Services\ProfiencyService;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +14,6 @@ use Illuminate\Support\Facades\Log;
 class AdvclientController extends Controller
 {
     public function __construct(
-        private HungerService $hungerService,
         private InventoryService $inventoryService,
         private ProfiencyService $profiencyService,
     ) {
@@ -37,12 +35,12 @@ class AdvclientController extends Controller
             ->with('gameLog', session()->get('log') ?? [])
             ->with('username', Auth::user()->username)
             ->with('location', $user_data->location)
-            ->with('Levels', UserLevels::where('username', Auth::user()->username)->first()->toArray())
+            ->with('Levels', UserLevels::where('username', Auth::user()->username)->first()?->toArray())
             ->with('profiency', $user_data->profiency)
             ->with('Hunger', Hunger::where('user_id', Auth::user()->id)->first())
             ->with('Inventory', $this->inventoryService->getInventory())
             ->with('profiency_status', $this->profiencyService->calculateProfienciesStatuses())
             ->with('Diplomacy', Diplomacy::where('username', Auth::user()->username)->get()->toArray())
-            ->with('map_location', UserData::where('username', Auth::user()->username)->first()->map_location);
+            ->with('map_location', UserData::where('username', Auth::user()->username)->first()?->map_location);
     }
 }
