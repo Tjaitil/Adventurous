@@ -8,7 +8,10 @@ use Respect\Validation\Validator;
 class ValidateStoreTrade
 {
 
-    public static function validate(Request $request)
+    /**
+     * @throws \Exception 
+     */
+    public static function validate(Request $request): void
     {
         $request->validate([
             'item' => Validator::stringVal()->notEmpty(),
