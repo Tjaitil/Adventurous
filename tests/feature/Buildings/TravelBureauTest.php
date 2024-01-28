@@ -2,8 +2,6 @@
 
 namespace App\tests;
 
-use App\Exceptions\JsonException;
-use App\Models\Inventory;
 use App\Models\TravelBureauCart;
 use App\Models\UserLevels;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -41,6 +39,10 @@ class TravelBureauTest extends TestCase
     public function test_buy_item()
     {
         $cart = TravelBureauCart::where('name', 'steel cart')->with('requiredItems')->first();
+
+        $skillRequirement = $cart->skillRequirements->first();
+
+        UserLevels::where('username', $this->RandomUser->username)->update(['trader_level' => $skillRequirement->level]);
 
         foreach ($cart->requiredItems as $key => $required_item) {
             $this->insertItemToInventory($this->RandomUser->username, $required_item->required_item, $required_item->amount);
