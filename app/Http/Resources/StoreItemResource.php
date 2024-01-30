@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-
 /**
  * @property string $name
  * @property int $amount
@@ -16,19 +15,18 @@ namespace App\Http\Resources;
  */
 class StoreItemResource extends Resource
 {
-
     public function __construct($resource = null)
     {
         parent::__construct([
-            "name" => "",
-            "amount" => 0,
-            "store_value" => 0,
-            "store_buy_price" => 0,
-            "required_items" => [],
-            "item_multiplier" => 0,
-            "adjusted_store_value" => 0,
-            "adjusted_difference" => 0,
-            "skill_requirements" => []
+            'name' => '',
+            'amount' => 0,
+            'store_value' => 0,
+            'store_buy_price' => 0,
+            'required_items' => [],
+            'item_multiplier' => 0,
+            'adjusted_store_value' => 0,
+            'adjusted_difference' => 0,
+            'skill_requirements' => [],
         ], $resource);
     }
 
@@ -58,16 +56,17 @@ class StoreItemResource extends Resource
                 array_push($skill_requirements, $value->toArray());
             }
         }
+
         return [
-            "name" => $this->name,
-            "amount" => $this->amount,
-            "store_value" => $this->store_value,
-            "store_buy_price" => $this->store_buy_price,
-            "required_items" => $required_items,
-            "adjusted_store_value" => $this->adjusted_store_value,
-            "adjusted_difference" => is_string($this->adjusted_difference) ? 0 : $this->adjusted_difference,
-            "item_multiplier" => $this->item_multiplier,
-            "skill_requirements" => $skill_requirements
+            'name' => $this->name,
+            'amount' => $this->amount,
+            'store_value' => $this->store_value,
+            'store_buy_price' => $this->store_buy_price,
+            'required_items' => $required_items,
+            'adjusted_store_value' => $this->adjusted_store_value,
+            'adjusted_difference' => $this->adjusted_difference ?? 0,
+            'item_multiplier' => $this->item_multiplier,
+            'skill_requirements' => $skill_requirements,
         ];
     }
 
@@ -75,11 +74,11 @@ class StoreItemResource extends Resource
     {
         if (isset($data['item'])) {
             $data['name'] = $data['item'];
-        } else if (isset($data['required_item'])) {
+        } elseif (isset($data['required_item'])) {
             $data['name'] = trim($data['required_item']);
         }
 
-        if (!isset($data['item_multiplier'])) {
+        if (! isset($data['item_multiplier'])) {
             $data['item_multiplier'] = 1;
         }
 

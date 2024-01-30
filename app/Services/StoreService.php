@@ -38,7 +38,8 @@ class StoreService
     /**
      * @return JsonResponse|true
      */
-    public function buyItem(string $item, int $amount) {
+    public function buyItem(string $item, int $amount)
+    {
 
         $store_item = $this->getStoreItem($item);
 
@@ -46,12 +47,11 @@ class StoreService
             return $this->logNotStoreItem($item);
         }
 
-        if(! $this->hasSkillRequirements($item)) {
+        if (! $this->hasSkillRequirements($item)) {
             return (new AdvResponse([], 422))
                 ->addErrorMessage('You do not have the required skill level')
                 ->toResponse(request());
         }
-
         foreach ($store_item->required_items as $key => $value) {
             if (! $this->inventoryService->hasEnoughAmount(
                 $value->name,
@@ -62,20 +62,23 @@ class StoreService
         }
 
         foreach ($store_item->required_items as $key => $value) {
-            $this->inventoryService->edit($value->name, $value->amount * $amount);
+            $this->inventoryService->edit($value->name, -$value->amount * $amount);
         }
 
         if (! $this->inventoryService->hasEnoughAmount(config('adventurous.currency'), $store_item->store_value)) {
             return $this->inventoryService->logNotEnoughAmount(config('adventurous.currency'));
         } else {
-
             $this->inventoryService
                 ->edit(
                     config('adventurous.currency'),
                     -$this->calculateItemCost($store_item->name, $amount)
                 );
         }
-        
+
+        if ($this->storeBuilder->build()->is_inventorable === true) {
+            $this->inventoryService->edit($store_item->name, $amount);
+        }
+
         return true;
     }
 
@@ -206,7 +209,7 @@ class StoreService
         $match = false;
 
         $item = $this->getStoreItem($item);
-        if (is_null($item?->skill_requirements)) {
+        if (is_null($item?->skill_requirements) || count($item?->skill_requirements) === 0) {
             return true;
         }
 
@@ -233,9 +236,9 @@ class StoreService
     /**
      * Calculate new price of item. Will be 5 percent if value is over 1500
      *
-     * @param  int|float  $price Item price
-     * @param  int  $amount Amount that is being traded
-     * @param  bool  $positive If the change is negative or positive
+     * @param  int|float  $price  Item price
+     * @param  int  $amount  Amount that is being traded
+     * @param  bool  $positive  If the change is negative or positive
      * @return float New Price
      */
     public function calculateNewPrice(int|float $price, int $amount, bool $positive)

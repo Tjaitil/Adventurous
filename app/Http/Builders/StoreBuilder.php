@@ -4,23 +4,38 @@ namespace App\Http\Builders;
 
 use App\Http\Resources\StoreResource;
 
-class StoreBuilder
+final class StoreBuilder
 {
     private StoreResource $resource;
 
+    /**
+     * @param array{
+     *  name?: string,
+     *  store_value_modifier?: float,
+     *  store_name?: string,
+     *  store_items: array<int, array<string, mixed>>,
+     *  infinite_amount?: bool,
+     *  is_inventorable?: bool,
+     * } $resource
+     */
     public function __construct($resource = null)
     {
         $this->resource = new StoreResource($resource);
     }
 
     /**
-     * 
-     * @param mixed $resource 
-     * @return static 
+     * @param array{
+     *  name?: string,
+     *  store_value_modifier?: float,
+     *  store_name?: string,
+     *  store_items: array<int, array<string, mixed>>,
+     *  infinite_amount?: bool,
+     *  is_inventorable?: bool,
+     * } $resource
      */
     public static function create($resource = null): static
     {
-        return new static($resource);
+        return new self($resource);
     }
 
     /**
@@ -34,15 +49,25 @@ class StoreBuilder
         foreach ($this->resource->store_items as $key => $item) {
             $item->amount = -1;
         }
+
+        return $this;
+    }
+
+    /**
+     * @return self
+     */
+    public function setInventorable(bool $is_inventorable)
+    {
+        $this->resource->is_inventorable = $is_inventorable;
+
         return $this;
     }
 
     /**
      * Set available item amount
      *
-     * @param string $item Item name
-     * @param int $amount New amount
-     *
+     * @param  string  $item  Item name
+     * @param  int  $amount  New amount
      * @return void
      */
     public function setAmount(string $item, int $amount)
@@ -57,9 +82,6 @@ class StoreBuilder
 
     /**
      * Set new store value based on a condition
-     *
-     * @param string $item
-     * @param int $value
      *
      * @return void
      */
@@ -82,23 +104,18 @@ class StoreBuilder
     public function setAdjustedStoreValue(float $decimal_modifier)
     {
         $this->resource->store_value_modifier = $decimal_modifier;
-        $this->resource->store_value_modifier_as_percentage = $decimal_modifier === 1.00 ? 0 : $decimal_modifier * 100;
+        $this->resource->store_value_modifier_as_percentage = $decimal_modifier === 1.00 ? 0 : round($decimal_modifier * 100);
 
         foreach ($this->resource->store_items as $key => $item) {
-            $item->adjusted_store_value =  $item->store_value * (1 - $decimal_modifier);
-            $item->adjusted_difference = $item->store_value - $item->adjusted_store_value;
+            $item->adjusted_store_value = intval(round($item->store_value * (1 - $decimal_modifier)));
+            $item->adjusted_difference = intval(round($item->store_value - $item->adjusted_store_value));
         }
 
         return $this;
     }
 
-
-
     /**
-     * 
-     * @param string $itemName 
-     * @param int $price 
-     * @return void 
+     * @return void
      */
     public function setStoreBuyPriceForItem(string $itemName, int $price)
     {
@@ -110,13 +127,8 @@ class StoreBuilder
         }
     }
 
-
-
     /**
-     * 
-     * @param string $item 
-     * @param int $price 
-     * @return $this 
+     * @return $this
      */
     public function setStoreBuyPrice(string $item, int $price)
     {
@@ -126,56 +138,36 @@ class StoreBuilder
                 break;
             }
         }
-        return $this;
-    }
 
-
-
-    /**
-     * 
-     * @param string $item 
-     * @param string $skill 
-     * @return $this 
-     */
-    public function setSkillRequired(string $item, string $skill)
-    {
-        foreach ($this->resource->store_items as $key => $item) {
-            if ($item->name) {
-                $item->skill_level_required = $skill;
-                break;
-            }
-        }
         return $this;
     }
 
     /**
      * Set updated list
      *
-     * @param StoreItemResource[] $list
-     *
+     * @param  array<int, \App\Http\Resources\StoreItemResource>  $list
      * @return self
      */
     public function setList($list)
     {
         $this->resource->store_items = $list;
+
         return $this;
     }
 
     /**
      * Set store name
      *
-     * @param string $name
-     *
      * @return self
      */
     public function setStoreName(string $name)
     {
-        $this->resource->name = $name;
+        $this->resource->store_name = $name;
+
         return $this;
     }
 
     /**
-     *
      * @return StoreResource
      */
     public function build()
@@ -184,13 +176,12 @@ class StoreBuilder
     }
 
     /**
-     * 
-     * @param StoreResource $storeResource 
-     * @return $this 
+     * @return $this
      */
     public function setResource(StoreResource $storeResource)
     {
         $this->resource = $storeResource;
+
         return $this;
     }
 }
