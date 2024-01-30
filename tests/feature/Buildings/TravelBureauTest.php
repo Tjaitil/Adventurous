@@ -36,6 +36,9 @@ class TravelBureauTest extends TestCase
         $response->assertStatus(200);
     }
 
+    /**
+     * @group store-purchase
+     */
     public function test_buy_item()
     {
         $cart = TravelBureauCart::where('name', 'steel cart')->with('requiredItems')->first();
@@ -45,19 +48,26 @@ class TravelBureauTest extends TestCase
         UserLevels::where('username', $this->RandomUser->username)->update(['trader_level' => $skillRequirement->level]);
 
         foreach ($cart->requiredItems as $key => $required_item) {
-            $this->insertItemToInventory($this->RandomUser->username, $required_item->required_item, $required_item->amount);
+            $this->insertItemToInventory($this->RandomUser, $required_item->required_item, $required_item->amount);
         }
-        $this->insertCurrencyToInventory($this->RandomUser->username, $cart->store_value);
+        $this->insertCurrencyToInventory($this->RandomUser, $cart->store_value);
 
         $response = $this->actingAs($this->RandomUser)->post('/travelbureau/buy', [
             'item' => 'steel cart',
         ]);
         $response->assertStatus(200);
 
+        $this->assertDatabaseMissing('inventory', [
+            'username' => $this->RandomUser->username,
+            'item' => 'steel cart',
+            'amount' => 1,
+        ]);
+
         $response->json();
     }
 
     /**
+     * @group store-purchase
      * Note: Never got this function to work with this->expectException()
      */
     public function test_json_exception_is_thrown_when_user_levels_cannot_be_found()
@@ -66,9 +76,9 @@ class TravelBureauTest extends TestCase
             ->first();
 
         foreach ($cart->requiredItems as $key => $required_item) {
-            $this->insertItemToInventory($this->RandomUser->username, $required_item->required_item, $required_item->amount);
+            $this->insertItemToInventory($this->RandomUser, $required_item->required_item, $required_item->amount);
         }
-        $this->insertCurrencyToInventory($this->RandomUser->username, $cart->store_value);
+        $this->insertCurrencyToInventory($this->RandomUser, $cart->store_value);
 
         UserLevels::where('username', $this->RandomUser->username)->update(['username' => 'foo']);
 
