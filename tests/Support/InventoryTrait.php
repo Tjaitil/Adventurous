@@ -3,23 +3,26 @@
 namespace Tests\Support;
 
 use App\Models\Inventory;
+use App\Models\User;
 
-trait InventoryTrait {
-
-    public function insertItemToInventory(string $username, string $name, int $amount): void {
+trait InventoryTrait
+{
+    public function insertItemToInventory(User $User, string $name, int $amount): void
+    {
         Inventory::insert(
             [
-                'username' => $username,
+                'username' => $User->username,
                 'item' => $name,
                 'amount' => $amount,
             ],
         );
     }
 
-    public function insertCurrencyToInventory(string $username, int $amount): void {
+    public function insertCurrencyToInventory(User $User, int $amount): void
+    {
         Inventory::insert(
             [
-                'username' => $username,
+                'username' => $User->username,
                 'item' => config('adventurous.currency'),
                 'amount' => $amount,
             ],
