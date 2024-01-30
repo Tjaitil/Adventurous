@@ -30,7 +30,7 @@ class StockpileTest extends TestCase
     public function test_insert_item()
     {
         $Item = Item::inRandomOrder()->limit(1)->first();
-        $this->insertItemToInventory($this->RandomUser->username, $Item->name, 1);
+        $this->insertItemToInventory($this->RandomUser, $Item->name, 1);
 
         $response = $this->actingAs($this->RandomUser)
             ->post('/stockpile/update', [
@@ -45,7 +45,7 @@ class StockpileTest extends TestCase
     public function test_insert_all_of_item()
     {
         $Item = Item::inRandomOrder()->limit(1)->first();
-        $this->insertItemToInventory($this->RandomUser->username, $Item->name, 5);
+        $this->insertItemToInventory($this->RandomUser, $Item->name, 5);
 
         $response = $this->actingAs($this->RandomUser)
             ->post('/stockpile/update', [
@@ -63,7 +63,7 @@ class StockpileTest extends TestCase
         $Items = Item::inRandomOrder()->limit(18)->get();
 
         foreach ($Items as $key => $value) {
-            $this->insertItemToInventory($this->RandomUser->username, $value->name, 5);
+            $this->insertItemToInventory($this->RandomUser, $value->name, 5);
         }
 
         $response = $this->actingAs($this->RandomUser)
@@ -81,7 +81,7 @@ class StockpileTest extends TestCase
     public function test_insert_item_with_invalid_amount()
     {
         $Item = Item::inRandomOrder()->limit(1)->first();
-        $this->insertItemToInventory($this->RandomUser->username, $Item->name, 1);
+        $this->insertItemToInventory($this->RandomUser, $Item->name, 1);
 
         $response = $this->actingAs($this->RandomUser)
             ->post('/stockpile/update', [
