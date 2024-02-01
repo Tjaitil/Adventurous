@@ -2,30 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\libs\controller;
-use App\libs\Request;
-use App\libs\Response;
-use App\Services\InventoryService;
+use App\Http\Responses\AdvResponse;
 use App\Services\StoreService;
 use App\Stores\BakeryStore;
-use App\validators\ValidateStoreTrade;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
-class BakeryController extends controller
+class BakeryController extends Controller
 {
 
     /**
      * 
-     * @param InventoryService $inventoryService 
-     * @param StoreService $storeService 
-     * @param SessionService $sessionService 
      * @return void 
      */
     function __construct(
-        protected InventoryService $inventoryService,
         protected StoreService $storeService,
         protected BakeryStore $bakeryStore
     ) {
-        parent::__construct();
     }
 
     /**
@@ -35,12 +28,15 @@ class BakeryController extends controller
     public function index()
     {
         $storeResource = $this->bakeryStore->getStore();
-        $this->render('bakery', 'Bakery', ['store_resource' => $storeResource], true, true, true);
+
+        return view('bakery')
+            ->with('title', 'Bakery')
+            ->with('store_resource', $storeResource);
     }
 
     /**
      * 
-     * @return Response 
+     * @return JsonResponse  
      */
     public function getStoreItems()
     {
@@ -49,40 +45,21 @@ class BakeryController extends controller
 
     /**
      *
-     * @param Request $request
-     * @return Response
+     * @return JsonResponse
      */
     public function makeItem(Request $request)
     {
-        $item = $request->getInput('item');
-        $amount = intval($request->getInput('amount'));
-
-        ValidateStoreTrade::validate($request);
+        $item = $request->input('item');
+        $amount = $request->integer('amount');
 
         $initial_store = $this->bakeryStore->makeStore();
         $this->storeService->storeBuilder->setResource($initial_store);
 
-        if (!$this->storeService->isStoreItem($item)) {
-            return $this->storeService->logNotStoreItem($item);
-        }
-        $store_item = $this->storeService->getStoreItem($item);
-
-        if (!$this->storeService->hasRequiredItems($item, $amount)) {
-            return $this->storeService->logNotEnoughAmount();
+        $result = $this->storeService->buyItem($item, $amount);
+        if ($result instanceof JsonResponse) {
+            return $result;
         }
 
-        foreach ($store_item->required_items as $key => $value) {
-            $this->inventoryService->edit($value->name, -$amount);
-        }
-
-        if (!$this->inventoryService->hasEnoughAmount(CURRENCY, $store_item->store_value * $amount)) {
-            return $this->inventoryService->logNotEnoughAmount(CURRENCY);
-        } else {
-            $this->inventoryService->edit(CURRENCY, -$store_item->store_value * $amount);
-        }
-
-        $this->inventoryService->edit($item, $amount);
-
-        return Response::setStatus(200);
+        return (new AdvResponse([], 200))->toResponse($request);
     }
 }

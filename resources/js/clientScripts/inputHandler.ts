@@ -72,9 +72,7 @@ interface IInputHandler {
 
 export const inputHandler: IInputHandler = {
     buildingAssetsRecord: {
-        [Buildings.BAKERY]: {
-            "script": "bakery"
-        },
+        [Buildings.BAKERY]: {},
         [Buildings.STOCKPILE]: {},
         [Buildings.TRAVELBUREAU]: {},
         [Buildings.MINE]: {
