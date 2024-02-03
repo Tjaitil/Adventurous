@@ -2,101 +2,104 @@
 
 namespace App\Http\Controllers;
 
-use App\libs\controller;
-use App\libs\Request;
-use App\libs\Response;
+use App\Enums\SkillNames;
+use App\Exceptions\JsonException;
+use App\Http\Responses\AdvResponse;
 use App\Models\EfficiencyUpgrade;
 use App\Models\FarmerWorkforce;
 use App\Models\MinerWorkforce;
+use App\Models\UserLevels;
 use App\Services\InventoryService;
 use App\Services\LevelDataService;
-use App\Services\SessionService;
 use App\Services\SkillsService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
-class WorkforceLodgeController extends controller
+class WorkforceLodgeController extends Controller
 {
     public function __construct(
-        public SessionService $sessionService,
         public SkillsService $skillsService,
         public InventoryService $inventoryService,
         public LevelDataService $levelDataService
     ) {
-        parent::__construct();
     }
 
     /**
-     * 
-     * @return void 
+     * @return mixed
      */
     public function index()
     {
-        $FarmerWorkforce = FarmerWorkforce::where('username', $this->sessionService->user())->first();
-        $MinerWorkforce = MinerWorkforce::where('username', $this->sessionService->user())->first();
+        $FarmerWorkforce = FarmerWorkforce::where('username', Auth::user()->username)->first();
+        $MinerWorkforce = MinerWorkforce::where('username', Auth::user()->username)->first();
 
-        $maxFarmerWorkers = $this->levelDataService->getMaxFarmers($this->skillsService->userLevels->farmer_level);
-        $maxMinerWorkers = $this->levelDataService->getMaxMiners($this->skillsService->userLevels->miner_level);
+        $UserLevels = UserLevels::where('username', Auth::user()->username)->first();
+
+        if (! $UserLevels instanceof UserLevels) {
+            throw new JsonException('Could not find userlevels');
+        }
+
+        $maxFarmerWorkers = $this->levelDataService->getMaxFarmers($UserLevels->farmer_level);
+        $maxMinerWorkers = $this->levelDataService->getMaxMiners($UserLevels->miner_level);
 
         $farmer_efficiency_cost = EfficiencyUpgrade::where('level', $FarmerWorkforce->efficiency_level)->first()->price;
         $miner_efficiency_cost = EfficiencyUpgrade::where('level', $MinerWorkforce->efficiency_level)->first()->price;
 
-        return $this->render(
-            'workforcelodge',
-            'workforcelodge',
-            [
-                'FarmerWorkforce' => $FarmerWorkforce,
-                'maxFarmerWorkers' => $maxFarmerWorkers,
-                'MinerWorkforce' => $MinerWorkforce,
-                'maxMinerWorkers' => $maxMinerWorkers,
-                'farmer_efficiency_cost' => $farmer_efficiency_cost,
-                'miner_efficiency_cost' => $miner_efficiency_cost,
-            ],
-            true,
-            true,
-            true
-        );
+        return view('workforcelodge')
+            ->with('title', 'Workforce Lodge')
+            ->with('FarmerWorkforce', $FarmerWorkforce)
+            ->with('maxFarmerWorkers', $maxFarmerWorkers)
+            ->with('MinerWorkforce', $MinerWorkforce)
+            ->with('maxMinerWorkers', $maxMinerWorkers)
+            ->with('farmer_efficiency_cost', $farmer_efficiency_cost)
+            ->with('miner_efficiency_cost', $miner_efficiency_cost);
     }
 
     /**
-     * 
-     * @param Request $request 
-     * @return void 
+     * @return \App\Http\Responses\AdvResponse|\Illuminate\Http\JsonResponse
      */
     public function upgradeEfficiency(Request $request)
     {
-        $skill = $request->getInput('skill');
+        $skill = $request->input('skill');
 
+        $UserLevels = Auth::user()->userLevels;
 
-        if ($skill === 'farmer') {
-            $skillLevel = $this->skillsService->userLevels->farmer_level;
-            $Workforce = FarmerWorkforce::where('username', $this->sessionService->user())->first();
-            $maxWorkers = $this->levelDataService->getMaxFarmers($skillLevel);
+        if ($skill === SkillNames::FARMER->value) {
+            $skillLevel = $UserLevels->farmer_level;
+            $Workforce = FarmerWorkforce::where('username', Auth::user()->username)->first();
+        } elseif ($skill === SkillNames::MINER->value) {
+            $skillLevel = $UserLevels->miner_level;
+            $Workforce = MinerWorkforce::where('username', Auth::user()->username)->first();
         } else {
-            $skillLevel = $this->skillsService->userLevels->miner_level;
-            $Workforce = MinerWorkforce::where('username', $this->sessionService->user())->first();
-            $maxWorkers = $this->levelDataService->getMaxMiners($$skillLevel);
+            Log::warning('Could not find skill', [
+                'skill' => $skill,
+                'user_id' => Auth::user()->id,
+            ]);
+
+            return (new AdvResponse([], 422))->addErrorMessage('Could not find skill');
         }
 
-        if (!$Workforce instanceof FarmerWorkforce && !$Workforce instanceof MinerWorkforce) {
-            return Response::addMessage("Something unexpected happened", 500);
+        if (! $Workforce instanceof FarmerWorkforce && ! $Workforce instanceof MinerWorkforce) {
+            throw new JsonException('Could not find farmerworkforce or minerworkforce ');
         }
 
-        if ($maxWorkers < $this->levelDataService->getMaxEfficiencyLevel($skillLevel)) {
-            return Response::addMessage("You need to level up your skill before upgrading efficiency more", 422);
+        if ($Workforce->efficiency_level === $this->levelDataService->getMaxEfficiencyLevel($skillLevel)) {
+            return (new AdvResponse([], 422))->addErrorMessage('You need to level up your skill before upgrading efficiency more');
         }
 
         $price = EfficiencyUpgrade::where('level', $Workforce->efficiency_level)->first()->price;
 
-        if (!$this->inventoryService->hasEnoughAmount(CURRENCY, $price)) {
-            return $this->inventoryService->logNotEnoughAmount(CURRENCY);
+        if (! $this->inventoryService->hasEnoughAmount(config('adventurous.currency'), $price)) {
+            return $this->inventoryService->logNotEnoughAmount(config('adventurous.currency'));
         }
 
         $Workforce->efficiency_level += 1;
         $Workforce->save();
 
-        return Response::setData([
+        return (new AdvResponse())->setData([
             'efficiency_level' => $Workforce->efficiency_level,
             'new_efficiency_price' => EfficiencyUpgrade::where('level', $Workforce->efficiency_level)->first()->price,
-        ])->addMessage("Efficiency upgraded")
+        ])->addSuccessMessage('Efficiency upgraded')
             ->setStatus(200);
     }
 }

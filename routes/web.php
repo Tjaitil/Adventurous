@@ -126,6 +126,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/userlevels', [UserLevelsController::class, 'getLevels']);
 
+    Route::get('/workforcelodge', [WorkforceLodgeController::class, 'index']);
     Route::post('/workforcelodge/efficiency/upgrade', [WorkforceLodgeController::class, 'upgradeEfficiency']);
 
     Route::post('/log', [GameLoggerController::class, 'log']);
