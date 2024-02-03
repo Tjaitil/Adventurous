@@ -9,7 +9,7 @@
             $new_mine_workers_amount = $maxMinerWorkers - $MinerWorkforce->workforce_total;
             $new_mine_worker_amount = $new_mine_workers_amount > 0 ?: 0;
         @endphp
-        <div class="flex flex-row justify-center gap-3">
+        <div class="flex flex-row justify-center gap-3 w-full">
             <div id="farmer_workers" class="w-1/2">
                 <h4>Farmer workforce</h4>
                 <p>
