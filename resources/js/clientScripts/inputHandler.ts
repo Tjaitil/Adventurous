@@ -44,7 +44,7 @@ type BuildingModuleMapping = {
 }
 
 function shouldSkipImport(building: string) {
-    return ["stockpile", "travelbureau", "bakery", "mine", "crops", "zinsstore", "merchant", "workforceLodge"].includes(building);
+    return ["stockpile", "travelbureau", "bakery", "mine", "crops", "zinsstore", "merchant", "workforcelodge"].includes(building);
 }
 
 type BuildingName = keyof BuildingModuleMapping;
@@ -87,9 +87,7 @@ export const inputHandler: IInputHandler = {
         [Buildings.MERCHANT]: {
             "script": "merchant",
         },
-        [Buildings.WORKFORCELODGE]: {
-            "script": "workforcelodge",
-        }
+        [Buildings.WORKFORCELODGE]: {}
     },
     buildingMatch: <undefined | Building>undefined,
     buildingMatchUIChanged: false,
