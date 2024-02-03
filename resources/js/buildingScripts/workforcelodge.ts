@@ -58,7 +58,7 @@ const workforceLodgeModule: IWorkforceLodgeModule = {
             Inventory.update();
             goldcostElement.setGoldCost(response.data.new_efficiency_price);
             this.setCurrentEfficiencyLevel(response.data.efficiency_level.toString());
-        });
+        }).catch((error) => false);
 
     }
 }
