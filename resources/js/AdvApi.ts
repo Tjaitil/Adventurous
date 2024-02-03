@@ -24,6 +24,13 @@ export class AdvApi extends BaseAxios {
             }   
 
             return response;
+        }, error => {
+            if (Array.isArray(error.response.data.gameMessage) === true) {
+                GameLogger.addMessages(error.response.data.gameMessage, true);
+                GameLogger.logMessages()
+            } 
+
+            return Promise.reject(error);
         })
         this.interceptorsConfigured = true;
     }
