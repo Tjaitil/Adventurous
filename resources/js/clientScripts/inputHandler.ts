@@ -63,6 +63,7 @@ interface IInputHandler {
     interactBuilding(): void;
     mapBuildingName(name: string): string;
     currentBuildingModule: any;
+    isCurrentBuildingDefaultExport: boolean;
     fetchBuilding(building: string);
     characterMatch: undefined | Character;
     characterMatchUIChanged: boolean;
@@ -140,6 +141,7 @@ export const inputHandler: IInputHandler = {
         return buildingName;
     },
     currentBuildingModule: undefined,
+    isCurrentBuildingDefaultExport: false,
 
     async fetchBuilding(building: string) {
         building = this.mapBuildingName(building.trim());
@@ -223,9 +225,11 @@ export const inputHandler: IInputHandler = {
                             break;
                         case "mine":
                             this.currentBuildingModule = new MineModule();
+                            this.isCurrentBuildingDefaultExport = true;
                             break;
                         case "crops":
                             this.currentBuildingModule = new CropsModule();
+                            this.isCurrentBuildingDefaultExport = true;
                             break;
                         case "zinsstore":
                             this.currentBuildingModule = zinsStoreModule;
@@ -239,6 +243,9 @@ export const inputHandler: IInputHandler = {
                             this.currentBuildingModule = workforceLodgeModule;
                             this.currentBuildingModule.init();
                             break;
+                    }
+                    if(import.meta.env.DEV) {
+                        new ModuleTester(this.currentBuildingModule, Game.properties.building, { defaultExport: this.isCurrentBuildingDefaultExport });
                     }
                 }
             })
