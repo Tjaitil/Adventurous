@@ -2,6 +2,7 @@
 
 namespace App\tests;
 
+use App\Enums\SkillNames;
 use App\Models\FarmerWorkforce;
 use App\Models\LevelData;
 use App\Models\MinerWorkforce;
@@ -19,6 +20,8 @@ class WorkforceLodgeTest extends TestCase
     {
         parent::setUp();
         $this->beginDatabaseTransaction();
+
+        $this->actingAs($this->RandomUser);
     }
 
     public function test_retrieve_building(): void
@@ -55,10 +58,9 @@ class WorkforceLodgeTest extends TestCase
                 ->update(['efficiency_level' => $LevelDataUnder->max_efficiency_level]);
         }
 
-        $response = $this->actingAs($this->RandomUser)
-            ->post('/workforcelodge/efficiency/upgrade', [
-                'skill' => $profiency,
-            ]);
+        $response = $this->post('/workforcelodge/efficiency/upgrade', [
+            'skill' => $profiency,
+        ]);
 
         $response->assertStatus(200);
 
@@ -88,10 +90,9 @@ class WorkforceLodgeTest extends TestCase
                 ->update(['efficiency_level' => $LevelData->max_efficiency_level]);
         }
 
-        $response = $this->actingAs($this->RandomUser)
-            ->post('/workforcelodge/efficiency/upgrade', [
-                'skill' => $profiency,
-            ]);
+        $response = $this->post('/workforcelodge/efficiency/upgrade', [
+            'skill' => $profiency,
+        ]);
 
         $response->json();
         $response->assertStatus(422);
@@ -100,8 +101,8 @@ class WorkforceLodgeTest extends TestCase
     public static function profiencyProvider(): array
     {
         return [
-            'farmer' => ['profiency' => 'farmer', 'efficiency_level' => 2],
-            'miner' => ['profiency' => 'miner', 'efficiency_level' => 2],
+            'farmer' => ['profiency' => SkillNames::FARMER->value, 'efficiency_level' => 2],
+            'miner' => ['profiency' => SkillNames::MINER->value, 'efficiency_level' => 2],
         ];
     }
 }
