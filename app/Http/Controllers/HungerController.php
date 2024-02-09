@@ -2,107 +2,98 @@
 
 namespace App\Http\Controllers;
 
-use App\libs\controller;
-use Respect\Validation\Validator;
-use App\libs\Request;
-use App\libs\Response;
+use App\Exceptions\JsonException;
 use App\Models\HealingItem;
 use App\Models\Hunger;
 use App\Services\HungerService;
 use App\Services\InventoryService;
-use App\Services\SessionService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
-class HungerController extends controller
+class HungerController extends Controller
 {
     public function __construct(
         private InventoryService $inventoryService,
-        private SessionService $sessionService,
         private HungerService $hungerService,
     ) {
-        parent::__construct();
     }
 
-
-
     /**
-     * Get hunger
-     *
-     * @param Request $request
-     *
-     * @return Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function getHunger(Request $request)
     {
-        $Hunger = Hunger::where('user_id', $this->sessionService->user_id())->first();
+        $Hunger = Hunger::where('user_id', Auth::user()->id)->first();
 
-        if (!$Hunger instanceof Hunger) {
-            return Response::addMessage("Unvalid user")->setStatus(400);
+        if (! $Hunger instanceof Hunger) {
+            throw new JsonException('Unvalid user', 400);
         }
 
-        return Response::addData('current_hunger', $Hunger->current);
+        return new JsonResponse(['current_hunger' => $Hunger->current]);
     }
-
-
 
     /**
      * Restore hunger
      *
-     * @param Request $request
-     *
-     * @return Response
+     * @return \Illuminate\Http\JsonResponse|\App\Http\Responses\AdvResponse
      */
     public function restoreHealth(Request $request)
     {
-        $item = $request->getInput('item');
-        $amount = $request->getInput('amount');
+        $item = $request->input('item');
+        $amount = $request->integer('amount');
 
-        $request->validate([
-            'item' => Validator::stringVal()->notEmpty(),
-            'amount' => Validator::intVal(),
+        $validator = Validator::make($request->all(), [
+            'item' => 'required|string',
+            'amount' => 'required|integer',
         ]);
 
+        if ($validator->fails()) {
+            return new JsonResponse('Invalid input', 422);
+        }
+
         if ($this->inventoryService->hasEnoughAmount($item, $amount) === false) {
-            return Response::addMessage("You do not have enough of that item")->setStatus(422);
+            return advResponse([], 422)->addErrorMessage('You do not have enough of that item');
         }
 
         if ($this->hungerService->getCurrentHunger() >= 100) {
-            return Response::addMessage("You are already at max health")->setStatus(422);
+            return advResponse([], 422)->addErrorMessage('You are already at max health');
         }
 
         $HealingItem = HealingItem::where('item', $item)->first();
 
-        if (!$HealingItem instanceof HealingItem) {
-            return Response::addMessage("That item does not heal you")->setStatus(422);
+        if (! $HealingItem instanceof HealingItem) {
+            return advResponse([], 422)->addErrorMessage('That item does not heal you');
         }
 
         $this->hungerService->decreaseHunger($amount);
 
         $this->inventoryService->edit($item, -$amount);
 
-        return Response::addMessage("You have been healed")
-            ->addData('hunger', $this->hungerService->getCurrentHunger())
-            ->setStatus(200);
+        return advResponse(['hunger' => $this->hungerService->getCurrentHunger()], 200)
+            ->addSuccessMessage('You have been healed');
     }
 
-
-
     /**
-     * Get heal data for item
-     *
-     * @param Request $request
-     *
-     * @return Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function getHealData(Request $request)
     {
-        $item = $request->getInput('item');
+        $item = $request->input('item');
 
-        $request->validate([
-            'item' => Validator::stringVal()->notEmpty()
+        $validator = Validator::make($request->all(), [
+            'item' => 'required|string',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json('Invalid input', 422);
+        }
 
         $HealingItem = HealingItem::where('item', $item)->first();
 
-        return Response::addData('heal', $HealingItem->heal ?? 0);
+        $heal = $HealingItem?->heal ?? 0;
+
+        return new JsonResponse(['heal' => $heal]);
     }
 }
