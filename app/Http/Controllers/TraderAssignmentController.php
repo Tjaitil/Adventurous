@@ -75,7 +75,7 @@ class TraderAssignmentController extends controller
         $Trader->save();
 
         $this->skillsService->updateTraderXP($TraderAssignment->type->xp_started)->updateSkills();
-        $this->hungerService->setNewHunger('skill');
+        $this->hungerService->setHungerForSkillAction();
 
 
         $blade = $this->bladeRender->run(

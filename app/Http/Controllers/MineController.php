@@ -158,7 +158,7 @@ class MineController extends controller
             return Response::addMessage("You don't have enough workers ready")->setStatus(422);
         }
 
-        $this->hungerService->setNewHunger(HUNGER_SKILL_ACTION);
+        $this->hungerService->setHungerForSkillAction();
         $addTime = $Mineral->time - (0.1 * $MinerWorkforce->efficiency_level + $workforce * 0.05);
 
         $Miner->mineral_type = $type;
