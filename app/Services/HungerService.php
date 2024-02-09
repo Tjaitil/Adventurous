@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\libs\Response;
 use App\Models\Hunger;
 use Illuminate\Support\Facades\Auth;
 
@@ -10,11 +9,7 @@ class HungerService
 {
     private ?Hunger $Hunger;
 
-    public function __construct()
-    {
-    }
-
-    private function getHunger()
+    private function getHunger(): void
     {
         if (! isset($this->Hunger)) {
             $this->Hunger = Hunger::find(Auth::user()->id);
@@ -23,10 +18,8 @@ class HungerService
 
     /**
      * Get hunger
-     *
-     * @return int
      */
-    public function getCurrentHunger()
+    public function getCurrentHunger(): int
     {
         $this->getHunger();
 
@@ -35,10 +28,8 @@ class HungerService
 
     /**
      * Get hunger data
-     *
-     * @return array
      */
-    public function getHungerData()
+    public function getHungerData(): ?Hunger
     {
         $this->getHunger();
 
@@ -47,10 +38,8 @@ class HungerService
 
     /**
      * Check if hunger is too low for action
-     *
-     * @return bool
      */
-    public function isHungerTooLow()
+    public function isHungerTooLow(): bool
     {
         $this->getHunger();
 
@@ -62,35 +51,31 @@ class HungerService
     }
 
     /**
-     * @return Response
+     * @return \App\Http\Responses\AdvResponse
      */
     public function logHungerTooLow()
     {
-        return Response::addMessage('Your hunger bar is too low')->setStatus(422);
+        return advResponse([], 422)->addErrorMessage('Your hunger bar is too low');
     }
 
     /**
      * Set new hunger based on action
      *
-     *
-     * @return void
+     * @param  'skill'  $action
      */
-    public function setNewHunger(string $action)
+    public function setNewHunger(string $action): void
     {
-        switch ($action) {
-            case HUNGER_SKILL_ACTION:
-                // TODO: Decrease hunger
-                $this->decreaseHunger(10);
-            default:
-                // code...
-                break;
+        if ($action === 'skill') {
+            $this->decreaseHunger(10);
         }
     }
 
-    /**
-     * @return void
-     */
-    public function updateHunger(int $new_hunger)
+    public function setHungerForSkillAction(): void
+    {
+        $this->setNewHunger('skill');
+    }
+
+    public function updateHunger(int $new_hunger): void
     {
         $this->getHunger();
 
@@ -102,18 +87,12 @@ class HungerService
         $this->Hunger->save();
     }
 
-    /**
-     * @return void
-     */
-    public function decreaseHunger(int $amount)
+    public function decreaseHunger(int $amount): void
     {
         $this->updateHunger($this->Hunger->current + $amount);
     }
 
-    /**
-     * @return void
-     */
-    public function increaseHunger(int $amount)
+    public function increaseHunger(int $amount): void
     {
         $this->updateHunger($this->Hunger->current - $amount);
     }
