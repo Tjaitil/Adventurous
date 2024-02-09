@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\Hunger
  *
  * @property int $id
- * @property int|null $current
+ * @property int $current
  * @property int|null $user_id
  *
  * @method static \Illuminate\Database\Eloquent\Builder|Hunger newModelQuery()
@@ -27,6 +27,4 @@ class Hunger extends Model
     protected $guarded = [];
 
     public $timestamps = false;
-
-    public static $HUNGER_SKILL_ACTION = 10;
 }
