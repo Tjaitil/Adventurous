@@ -7,10 +7,11 @@
         <h4 class="help_content_section">Hunger</h4>
         <p class="help_content_section_p">
             Every time you grow crops, start mining, start a new assignment or a new
-            army mission the hunger
-            will increase. To decrease hunger e.g increase hunger bar you have to eat
-            food. Visit tavern found
-            in every city to eat.
+            army mission the hunger status will worsen. 
+            When it hits below a certain point you will be prevented in doing any mentioned actions.
+            <br>
+            In order to relieve hunger and better hunger status you need to eat.
+            Visit tavern found in every city to eat.
         </p>
     </div>
 </div>

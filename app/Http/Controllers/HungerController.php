@@ -58,13 +58,13 @@ class HungerController extends Controller
         }
 
         if ($this->hungerService->getCurrentHunger() >= 100) {
-            return advResponse([], 422)->addErrorMessage('You are already at max health');
+            return advResponse([], 422)->addErrorMessage('Your hunger status is not low enough to eat');
         }
 
         $HealingItem = HealingItem::where('item', $item)->first();
 
         if (! $HealingItem instanceof HealingItem) {
-            return advResponse([], 422)->addErrorMessage('That item does not heal you');
+            return advResponse([], 422)->addErrorMessage('That item does not affect your hunger status');
         }
 
         $this->hungerService->decreaseHunger($amount);
@@ -72,7 +72,7 @@ class HungerController extends Controller
         $this->inventoryService->edit($item, -$amount);
 
         return advResponse(['hunger' => $this->hungerService->getCurrentHunger()], 200)
-            ->addSuccessMessage('You have been healed');
+            ->addSuccessMessage('You eat and you relive hunger');
     }
 
     /**

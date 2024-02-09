@@ -9,7 +9,7 @@ tavern.css|tavern.js|
 get_template('tavern', $this->data['workers'], true); ?>
 
 <div id="eat">
-    <h3 class="mb-05">Current hunger</h3>
+    <h3 class="mb-05">Current hunger status</h3>
     <?php get_template("select_item", null, true); ?>
     <p id="item_healing_amount" class="mb-1"></p>
     <input type="number" min="0" id="healing-item-amount" />

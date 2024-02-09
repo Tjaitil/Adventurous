@@ -1,7 +1,7 @@
 <h1 class="page_title">{{ $title }}</h1>
 <div id="bakery">
     <x-helpSection>
-        <p>Here you can make food to decrease your hunger.
+        <p>Here you can make food to relieve your hunger status.
             <br> For more information head to <a href="gameguide/bakery"
                 target="_blank">gameguide/bakery</a>
         </p>
