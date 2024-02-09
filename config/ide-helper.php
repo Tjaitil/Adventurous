@@ -267,7 +267,7 @@ return [
     'type_overrides' => [
         'integer' => 'int',
         'boolean' => 'bool',
-        '\\Illuminate\Support\Carbon' => '\\Carbon\\Carbon',
+        '\Illuminate\Support\Carbon' => '\Carbon\CarbonInterface',
     ],
 
     /*
