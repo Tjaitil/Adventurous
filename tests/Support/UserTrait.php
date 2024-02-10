@@ -35,15 +35,22 @@ trait UserTrait
     /**
      * @return void
      */
-    public function setUserCurrentLocation(string $location, ?int $user_id = null)
+    public function setUserCurrentLocation(string $location, User $User)
     {
+        $UserData = UserData::where('id', $User->id)->first();
+        if (! $UserData instanceof UserData) {
+            throw new \Exception('User data not found');
+        }
+
         $map_locations = \array_flip(GameMaps::locationMapping());
 
         $map_location = $map_locations[$location];
+        if (! $map_location) {
+            throw new \Exception('Location not found');
+        }
 
-        $this->setUserData([
-            'location' => $location,
-            'map_location' => $map_location,
-        ], $user_id);
+        $UserData->location = $location;
+        $UserData->map_location = $map_location;
+        $UserData->save();
     }
 }
