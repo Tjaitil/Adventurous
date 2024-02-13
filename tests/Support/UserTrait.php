@@ -3,8 +3,11 @@
 namespace Tests\Support;
 
 use App\Enums\GameMaps;
+use App\Enums\SkillNames;
+use App\Models\LevelData;
 use App\Models\User;
 use App\Models\UserData;
+use App\Models\UserLevels;
 
 trait UserTrait
 {
@@ -52,5 +55,47 @@ trait UserTrait
         $UserData->location = $location;
         $UserData->map_location = $map_location;
         $UserData->save();
+    }
+
+    /**
+     * @param  value-of<\App\Enums\SkillNames>  $skill
+     */
+    public function setUserLevel(string $skill, int $level, User $User)
+    {
+        $Skills = $User->userLevels;
+
+        if (! $Skills instanceof UserLevels) {
+            throw new \Exception('User data not found');
+        }
+
+        if ($level === 1) {
+            $xp = 0;
+        } else {
+            $xp = LevelData::where('level', $level - 1)->firstOrFail()->next_Level;
+        }
+
+        switch ($skill) {
+            case SkillNames::FARMER->value:
+                $Skills->farmer_level = $level;
+                $Skills->farmer_xp = $xp;
+                break;
+            case SkillNames::MINER->value:
+                $Skills->miner_level = $level;
+                $Skills->miner_xp = $xp;
+                break;
+            case SkillNames::TRADER->value:
+                $Skills->trader_level = $level;
+                $Skills->trader_xp = $xp;
+                break;
+            case SkillNames::WARRIOR->value:
+                $Skills->builder_level = $level;
+                $Skills->builder_xp = $xp;
+                break;
+
+            default:
+                break;
+        }
+
+        $Skills->save();
     }
 }
