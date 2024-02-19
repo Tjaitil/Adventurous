@@ -27,7 +27,7 @@ export const itemTitle = {
         elements.forEach(element => {
             if (this.computerDevice) {
                 element.addEventListener('mouseenter', (event) => itemTitle.show(event));
-                element.addEventListener('mouseleave', (event) => itemTitle.hide);
+                element.addEventListener('mouseleave', () => itemTitle.hide());
             }
             else {
                 element.addEventListener('click', itemTitle.show);
