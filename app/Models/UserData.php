@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $game_id
  * @property int $session_id
  * @property string $destination
- * @property \Carbon\Carbon $arrive_time
+ * @property \Carbon\CarbonInterface $arrive_time
  * @property string $profiency
  * @property string $horse
  * @property string $artefact
