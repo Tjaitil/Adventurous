@@ -225,11 +225,9 @@ export const inputHandler: IInputHandler = {
                             break;
                         case "mine":
                             this.currentBuildingModule = new MineModule();
-                            this.isCurrentBuildingDefaultExport = true;
                             break;
                         case "crops":
                             this.currentBuildingModule = new CropsModule();
-                            this.isCurrentBuildingDefaultExport = true;
                             break;
                         case "zinsstore":
                             this.currentBuildingModule = zinsStoreModule;
