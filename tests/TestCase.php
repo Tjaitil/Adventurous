@@ -9,13 +9,13 @@ use TiMacDonald\Log\LogFake;
 
 abstract class TestCase extends BaseTestCase
 {
-    use CreatesApplication, UserTrait, InventoryTrait;
+    use CreatesApplication, InventoryTrait, UserTrait;
 
     public function setUp(): void
     {
         parent::setUp();
         $this->__constructUserTrait();
 
-        LogFake::bind();
+        // LogFake::bind();
     }
 }

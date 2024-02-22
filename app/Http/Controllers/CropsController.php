@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\libs\controller;
-use App\libs\Request;
-use App\libs\Response;
+use App\Enums\SkillNames;
+use App\Exceptions\JsonException;
+use App\Http\Responses\AdvResponse;
 use App\Models\Crop;
 use App\Models\Farmer;
 use App\Models\FarmerWorkforce;
@@ -15,13 +15,14 @@ use App\Services\LocationService;
 use App\Services\SessionService;
 use App\Services\SkillsService;
 use Carbon\Carbon;
-use Respect\Validation\Validator;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
-class CropsController extends controller
+class CropsController extends Controller
 {
-    public $data;
-
-    function __construct(
+    public function __construct(
         private InventoryService $inventoryService,
         private CountdownService $countdownService,
         private SessionService $sessionService,
@@ -29,84 +30,83 @@ class CropsController extends controller
         private SkillsService $skillsService,
         private LocationService $locationService
     ) {
-        parent::__construct();
-    }
-
-    public function index()
-    {
-        $this->data['action_items'] = Crop::all()->sortBy('farmer_level');
-        $this->data['workforce_data'] = FarmerWorkforce::where('username', $this->sessionService->getCurrentUsername())
-            ->first()
-            ->toArray();
-
-        $this->render('crops', 'Crops', $this->data, true, true, true);
     }
 
     /**
-     *
-     * @return Response
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
      */
-    public function getViewData()
+    public function index()
     {
-        $this->data['crops'] = Crop::all();
-        $this->data['workforce_data'] = FarmerWorkforce::where('username', $this->sessionService->getCurrentUsername())->first();
-        $this->data['farmer_data'] = Farmer::where('username', $this->sessionService->getCurrentUsername())
+        $action_items = Crop::all()->sortBy('farmer_level');
+        $workforce_data = FarmerWorkforce::where('username', Auth::user()->username)
+            ->first()
+            ?->toArray();
+
+        return view('crops')
+            ->with('title', 'Crops')
+            ->with('action_items', $action_items)
+            ->with('workforce_data', $workforce_data);
+    }
+
+    public function getViewData(): JsonResponse
+    {
+        $Crop = Crop::all();
+        $Workforce = FarmerWorkforce::where('username', Auth::user()->username)->first();
+        $Farmer = Farmer::where('user_id', Auth::user()->id)
             ->where('location', $this->sessionService->getCurrentLocation())
             ->first();
 
-        return Response::setData($this->data);
+        return \response()->json([
+            'crops' => $Crop,
+            'workforce' => $Workforce,
+            'farmer' => $Farmer,
+        ]);
     }
-
-
 
     /**
      * Get countdown for one location
-     *
-     * @return Response
      */
-    public function getCountdown()
+    public function getCountdown(): JsonResponse
     {
-
-        $Farmer = Farmer::where('username', $this->sessionService->getCurrentUsername())
+        $Farmer = Farmer::where('user_id', Auth::user()->id)
             ->where('location', $this->sessionService->getCurrentLocation())
             ->first();
 
-        if ($Farmer instanceof Farmer) {
-            $farmerResource = [
-                ...$Farmer->toArray(),
-                'crop_finishes_at' => $Farmer->crop_finishes_at->timestamp,
-            ];
+        if (! $Farmer instanceof Farmer) {
+            throw new JsonException(Farmer::class.' model could not be retrieved for user');
         }
 
-        return Response::setData($Farmer ? $farmerResource : []);
+        return response()->json([
+            'crop_finishes_at' => $Farmer->crop_finishes_at?->timestamp,
+            'crop_type' => $Farmer->crop_type,
+        ]);
     }
-
-
 
     /**
      * Grow new crops
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
-    public function growCrops(Request $request)
+    public function growCrops(Request $request): AdvResponse|JsonResponse
     {
         // Get data and validate
-        $crop_type = strtolower($request->getInput('crop_type'));
-        $workforce = $request->getInput('workforce_amount');
+        $crop_type = strtolower($request->input('crop_type'));
+        $workforce = $request->integer('workforce_amount');
 
-        $request->validate([
-            'crop_type' => Validator::stringVal()->notEmpty(),
-            'workforce_amount' => Validator::intVal()->min(1)
-        ]);
+        $validator = Validator::make($request->all(),
+            [
+                'crop_type' => 'required|string',
+                'workforce_amount' => 'required|integer',
+            ]);
 
-        $location = $this->sessionService->getCurrentLocation();
+        if ($validator->fails()) {
+            return advResponse([])->addErrorMessage('Information provided is not valid');
+        }
+
+        $location = Auth::user()->player?->location ?? '';
 
         // Check if user is in right location
-        if (!$this->locationService->isCropsLocation($location)) {
-            return Response::addMessage("You are in the wrong location to grow crops")->setStatus(422);
-        } else if ($this->hungerService->isHungerTooLow()) {
+        if (! $this->locationService->isCropsLocation($location)) {
+            return advResponse([], 422)->addErrorMessage('You are in the wrong location to grow crops');
+        } elseif ($this->hungerService->isHungerTooLow()) {
             return $this->hungerService->logHungerTooLow();
         }
 
@@ -114,43 +114,45 @@ class CropsController extends controller
             ->where('location', $location)
             ->first();
 
-        if (!$Farmer instanceof Farmer) {
-            return Response::addMessage("Unvalid Farmer location")->setStatus(422);
+        if (! $Farmer instanceof Farmer) {
+            throw new JsonException(Farmer::class.' model could not be retrieved for user');
         }
 
         $Crop = Crop::where('crop_type', $crop_type)->first();
 
         // Check if crop is correct
-        if (!$Crop instanceof Crop) {
-            return Response::addMessage('Unvalid crop')->setStatus(422);
-        } else if ($Crop->location !== $location) {
-            return Response::addMessage('You are in the wrong location to grow this crop')->setStatus(422);
+        if (! $Crop instanceof Crop) {
+            return advResponse([], 422)->addErrorMessage('Unvalid crop');
+        } elseif ($Crop->location !== $location) {
+            return \advResponse([], 422)->addErrorMessage('You are in the wrong location to grow this crop');
+        } elseif (! $this->skillsService->hasRequiredLevel($Crop->farmer_level, SkillNames::FARMER->value)) {
+            return $this->skillsService->logNotRequiredLevel(SkillNames::FARMER->value);
         }
 
         $FarmerWorkforce = FarmerWorkforce::where('username', $this->sessionService->getCurrentUsername())->first();
-        if (!$FarmerWorkforce instanceof FarmerWorkforce) {
-            return Response::addMessage("Something unexpected happeneded. Please try again")->setStatus(422);
+        if (! $FarmerWorkforce instanceof FarmerWorkforce) {
+            throw new JsonException(FarmerWorkforce::class.' model could not be retrieved for user');
         }
 
         if ($Farmer->crop_type) {
-            return Response::addMessage("Your previous crops are not finished growing yet")->setStatus(422);
+            return advResponse([], 422)->addErrorMessage('Your previous crops are not finished growing yet');
         }
 
-        if (!$this->inventoryService->hasEnoughAmount($Crop->seed_item, $Crop->seed_required)) {
-            return Response::addMessage("You don't have any seed to grow")->setStatus(422);
+        if (! $this->inventoryService->hasEnoughAmount($Crop->seed_item, $Crop->seed_required)) {
+            return advResponse([], 422)->addErrorMessage("You don't have any seed to grow");
         }
 
         // Check if user has the specified workforce
         if (
             $FarmerWorkforce->avail_workforce < $workforce
         ) {
-            return Response::addMessage("You don't have enough workers ready")->setStatus(422);
+            return advResponse([], 422)->addErrorMessage("You don't have enough workers ready");
         }
 
         // Calculate new countdown
         $workforce_reduction = ($Crop->time) * ($workforce * 0.005);
         $base_reduction = $Crop->time * ($FarmerWorkforce->efficiency_level * 0.01);
-        $addTime = $Crop->time - $workforce_reduction - $base_reduction;
+        $addTime = intval($Crop->time - $workforce_reduction - $base_reduction);
 
         $new_countdown = Carbon::now()->addSeconds($addTime);
 
@@ -164,58 +166,57 @@ class CropsController extends controller
         $Farmer->save();
 
         $this->inventoryService->edit($Crop->seed_item, -$Crop->seed_required);
-        return Response::addMessage("You have started growing $crop_type")
-            ->setData([
-                'avail_workforce' => $new_workforce_amount,
-                'new_hunger' => $this->hungerService->getCurrentHunger(),
-            ])
 
-            ->setStatus(200);
+        return advResponse([
+            'avail_workforce' => $new_workforce_amount,
+            'new_hunger' => $this->hungerService->getCurrentHunger(),
+        ])->addSuccessMessage("You have started growing $crop_type");
     }
-
-
 
     /**
      * Harvest crops
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
-    public function harvestCrops(Request $request)
+    public function harvestCrops(Request $request): AdvResponse
     {
 
-        $is_cancelling = $request->getInput('is_cancelling');
+        $is_cancelling = $request->boolean('is_cancelling');
 
-        $request->validate([
-            'is_cancelling' => Validator::boolVal()
-        ]);
+        $validator = Validator::make($request->all(),
+            [
+                'is_cancelling' => 'required|boolean',
+            ]
+        );
+
+        if ($validator->fails()) {
+            return advResponse([], 400)->addErrorMessage('Invalid input provided');
+        }
 
         $location = $this->sessionService->getCurrentLocation();
-        if (!$this->locationService->isCropsLocation($location)) {
-            return Response::addMessage("You are in the wrong location to grow crops")->setStatus(422);
+        if (! $this->locationService->isCropsLocation($location)) {
+            return advResponse([], 422)->addErrorMessage('You are in the wrong location to grow crops');
         }
 
         $Farmer = Farmer::where('username', $this->sessionService->getCurrentUsername())
             ->where('location', $location)
             ->first();
 
-        if (!$Farmer instanceof Farmer) {
-            return Response::addMessage("Unvalid Farmer location")->setStatus(422);
+        if (! $Farmer instanceof Farmer) {
+            throw new JsonException(Farmer::class, ' model could not be retrieved');
         }
-        if (\is_null($Farmer->crop_type)) {
-            return Response::addMessage("You don't have any crops growing")->setStatus(422);
+        if (is_null($Farmer->crop_type)) {
+
+            return advResponse([], 422)->addErrorMessage("You don't have any crops growing");
         }
         $Crop = Crop::where('crop_type', $Farmer->crop_type)->first();
 
-        if (!$Crop instanceof Crop) {
-            return Response::addMessage("Unvalid crop")->setStatus(422);
+        if (! $Crop instanceof Crop) {
+            return advResponse([], 422)->addErrorMessage('Unvalid crop');
         }
 
-        $Workforce = FarmerWorkforce::where('username', $this->sessionService->getCurrentUsername())->first();
+        $Workforce = FarmerWorkforce::where('username', $this->sessionService->getCurrentUsername())->firstOrFail();
 
-        if (!$Workforce instanceof FarmerWorkforce) {
-            return Response::addMessage("Something unexpected happeneded. Please try again")->setStatus(422);
+        if (! $Workforce instanceof FarmerWorkforce) {
+            throw new JsonException(FarmerWorkforce::class, ' model could not be retrieved');
         }
 
         if (
@@ -223,20 +224,23 @@ class CropsController extends controller
             $Farmer->crop_type &&
             $is_cancelling
         ) {
-            return Response::addMessage("Why destroy crops that is finished")->setStatus(422);
-        } else if (!Carbon::now()->isAfter($Farmer->crop_finishes_at) && !$is_cancelling) {
-            return Response::addMessage("Growing of crops is not finished yet")->setStatus(422);
+            return advResponse([], 422)->addWarningMessage('Why destroy crops that is finished');
+        } elseif (! Carbon::now()->isAfter($Farmer->crop_finishes_at) && ! $is_cancelling) {
+            return advResponse([], 422)->addErrorMessage('Growing of crops is not finished yet');
         }
 
-        if (!$is_cancelling) {
+        $response = new AdvResponse([], 200);
+
+        if (! $is_cancelling) {
 
             $amount = rand($Crop->min_crop_count, $Crop->max_crop_count);
 
-            $experience = $Crop->experience + (round($Crop->experience / 100 * $amount));
+            $experience = intval($Crop->experience + (round($Crop->experience / 100 * $amount)));
 
             $this->inventoryService->edit($Farmer->crop_type, $amount);
 
-            $this->skillsService->updateFarmerXP($experience)->updateSkills();
+            $results = $this->skillsService->updateFarmerXP($experience)->updateSkills();
+            $response->addLevelUPs($results);
         }
 
         $Farmer->crop_type = null;
@@ -246,38 +250,41 @@ class CropsController extends controller
         $Workforce->{$location} = 0;
         $Workforce->save();
 
-        return Response::addMessage("You have harvested $amount $Farmer->crop_type")
-            ->setData(['avail_workforce' => $Workforce->avail_workforce])
-            ->setStatus(200);
-    }
+        $response = advResponse(['avail_workforce' => $Workforce->avail_workforce]);
 
-
-
-    /**
-     *
-     * @param \App\libs\Request $request
-     *
-     * @return Response
-     */
-    public function generateSeed(Request $request)
-    {
-        $item = $request->getInput('item');
-        $amount = $request->getInput('amount');
-
-        $request->validate([
-            'item' => Validator::stringVal()->notEmpty(),
-            'amount' => Validator::intVal()->min(1),
-        ]);
-
-        $CropData = Crop::where('crop_type', $item)->first();
-
-        if (\is_null($CropData)) {
-            return Response::addMessage("Unvalid crop")->setStatus(422);
+        if (! $is_cancelling) {
+            $response->addSuccessMessage("You have harvested $amount $Farmer->crop_type");
+        } else {
+            $response->addSuccessMessage('You have cancelled growing crops');
         }
 
-        $this->inventoryService->edit($CropData->seed_item, 1 * $amount);
+        return $response;
+    }
+
+    public function collectSeeds(Request $request): AdvResponse
+    {
+        $item = $request->input('item');
+        $amount = $request->integer('amount');
+
+        $validator = Validator::make($request->all(),
+            [
+                'item' => 'required|string',
+                'amount' => 'required|integer|min:1',
+            ]);
+
+        if ($validator->fails()) {
+            return advResponse([], 400)->addErrorMessage('Invalid input provided');
+        }
+
+        $Crop = Crop::where('crop_type', $item)->first();
+
+        if (! $Crop instanceof Crop) {
+            return advResponse([], 422)->addErrorMessage('Unvalid crop');
+        }
+
+        $this->inventoryService->edit($Crop->seed_item, 1 * $amount);
         $this->inventoryService->edit($item, -$amount);
 
-        return Response::setStatus(200)->addMessage("You have generated $amount seed");
+        return advResponse([])->addSuccessMessage("You have generated $amount seed");
     }
 }

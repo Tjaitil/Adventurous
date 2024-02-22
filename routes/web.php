@@ -54,9 +54,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get(('conversation/next'), [ConversationController::class, 'index']);
 
+    Route::get('/crops', [CropsController::class, 'index']);
     Route::post('/crops/start', [CropsController::class, 'growCrops']);
     Route::post('/crops/end', [CropsController::class, 'harvestCrops']);
-    Route::post('/crops/generate', [CropsController::class, 'generateSeed']);
+    Route::post('/crops/collect-seeds', [CropsController::class, 'collectSeeds']);
     Route::get('/crops/data', [CropsController::class, 'getViewData']);
     Route::get('/crops/countdown', [CropsController::class, 'getCountdown']);
 
