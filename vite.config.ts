@@ -11,7 +11,7 @@ export default defineConfig({
     plugins: [
         vue(),
         laravel({
-            input: ['resources/css/app.css',
+            input: [
                 'resources/js/app.js',
                 'resources/js/clientScripts/inventory.ts',
                 'resources/js/backgroundScroller.ts',
