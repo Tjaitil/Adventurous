@@ -2,13 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\GameLocations;
-use App\libs\controller;
-use App\libs\Request;
-use App\libs\Response;
+use App\Http\Responses\AdvResponse;
 use App\Models\Miner;
 use App\Models\Mineral;
-use App\Models\MinerPermitCost;
 use App\Models\MinerWorkforce;
 use App\Services\HungerService;
 use App\Services\InventoryService;
@@ -16,286 +12,241 @@ use App\Services\LocationService;
 use App\Services\SessionService;
 use App\Services\SkillsService;
 use Carbon\Carbon;
-use Respect\Validation\Validator;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use JsonException;
+use Validator;
 
-class MineController extends controller
+class MineController extends Controller
 {
-    function __construct(
+    public function __construct(
         private InventoryService $inventoryService,
         private SessionService $sessionService,
         private SkillsService $skillsService,
         private HungerService $hungerService,
         private LocationService $locationService
     ) {
-        parent::__construct();
     }
 
     /**
-     * 
-     * @return void 
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
      */
     public function index()
     {
         $this->getViewData();
-        $data['action_items'] = Mineral::all()->sortBy('miner_level')->values();
-        $data['workforce_data'] = MinerWorkforce::where('username', $this->sessionService->getCurrentUsername())
+        $action_items = Mineral::all()->sortBy('miner_level')->values();
+        $workforce_data = MinerWorkforce::where('username', Auth::user()->username)
             ->first()
-            ->toArray();
+            ?->toArray();
 
-        $data['permits'] = Miner::select('permits')->where('username', $this->sessionService->getCurrentUsername())
-            ->first()->permits;
+        $permits = Miner::select('permits')->where('username', Auth::user()->username)
+            ->first()?->permits;
 
-        $this->render('mine', 'Mine', $data, true, true, true);
+        return view('mine')
+            ->with('title', 'Mine')
+            ->with('action_items', $action_items)
+            ->with('workforce_data', $workforce_data)
+            ->with('permits', $permits);
     }
 
-    /**
-     * 
-     * @return Response 
-     */
-    public function getViewData()
+    public function getViewData(): JsonResponse
     {
-        $data['minerals'] = Mineral::all()->sortBy('miner_level')->values();
-        $data['workforce_data'] = MinerWorkforce::where('username', $this->sessionService->getCurrentUsername())
+        $Minerals = Mineral::all()->sortBy('miner_level')->values();
+        $Workforce = MinerWorkforce::where('user_id', Auth::user()->id)
             ->first()
-            ->toArray();
+            ?->toArray();
 
-        $data['permits'] = Miner::select('permits')->where('username', $this->sessionService->getCurrentUsername())
-            ->first()->permits;
+        $permits = Miner::select('permits')->where('user_id', Auth::user()->id)
+            ->first()?->permits;
 
-        return Response::setData($data);
+        return response()->json([
+            'minerals' => $Minerals,
+            'workforce' => $Workforce,
+            'permits' => $permits,
+        ]);
     }
 
     /**
      * Get countdown for one location
-     *
-     * @return Response
      */
-    public function getCountdown()
+    public function getCountdown(): JsonResponse
     {
-        $Miner = Miner::where('username', $this->sessionService->getCurrentUsername())
+        $Miner = Miner::where('user_id', Auth::user()->id)
             ->where('location', $this->sessionService->getCurrentLocation())
             ->first();
 
-        if ($Miner instanceof Miner) {
-            $minerResource = [
-                ...$Miner->toArray(),
-                'mining_finishes_at' => $Miner->mining_finishes_at->timestamp,
-            ];
+        if (! $Miner instanceof Miner) {
+            throw new JsonException(Miner::class.' model could not be retrieved for user');
         }
 
-        return Response::setData($Miner ? $minerResource : []);
+        return response()->json([
+            'mining_finishes_at' => $Miner->mining_finishes_at->timestamp,
+            'mineral_ore' => $Miner->mineral_ore,
+        ]);
     }
 
-
-
-    /**
-     *
-     * @param Request $request
-     *
-     * @return void
-     */
-    public function start(Request $request)
+    public function start(Request $request): AdvResponse
     {
-        $type = strtolower($request->getInput('mineral_ore'));
-        $workforce = $request->getInput('workforce_amount');
-        $request->validate([
-            'mineral_ore' => Validator::stringVal()->notEmpty(),
-            'workforce_amount' => Validator::intVal()->min(1)
+        $mineralOre = strtolower($request->string('mineral_ore'));
+        $workforce = $request->integer('workforce_amount');
+
+        $validator = Validator::make($request->all(), [
+            'mineral_ore' => 'required|string',
+            'workforce_amount' => 'required|integer|min:1',
         ]);
 
+        if ($validator->fails()) {
+            return advResponse([], 400)->addErrorMessage('Information provided is not valid');
+
+        }
         $location = $this->sessionService->getCurrentLocation();
 
         // Check if user is in right location
-        if (!$this->locationService->isMineLocation($location)) {
-            return Response::addMessage("You are in the wrong location to mine minerals")->setStatus(422);
-        } else if ($this->hungerService->isHungerTooLow()) {
+        if (! $this->locationService->isMineLocation($location)) {
+            return advResponse([], 422)->addMessage('You are in the wrong location to mine minerals');
+        } elseif ($this->hungerService->isHungerTooLow()) {
             return $this->hungerService->logHungerTooLow();
         }
 
-        $Mineral = Mineral::where('mineral_ore', $type)
+        $Mineral = Mineral::where('mineral_ore', $mineralOre)
             ->first();
 
-        if (!$Mineral instanceof Mineral) {
-            return Response::addMessage('Unvalid mineral')->setStatus(422);
-        } else if ($Mineral->location !== $location) {
-            return Response::addMessage("You are in the wrong location to mine this mineral")->setStatus(422);
-        } else if (!$this->skillsService->hasRequiredLevel($Mineral->miner_level, 'miner')) {
-            return Response::addMessage("You don't have the required level to mine this mineral")->setStatus(422);
+        if (! $Mineral instanceof Mineral) {
+            return advresponse([], 422)->addMessage('Unvalid mineral');
+        } elseif ($Mineral->location !== $location) {
+            return advResponse([], 422)->addMessage('You are in the wrong location to mine this mineral');
+        } elseif (! $this->skillsService->hasRequiredLevel($Mineral->miner_level, 'miner')) {
+            return advResponse([], 422)->addMessage("You don't have the required level to mine this mineral");
         }
 
-        $Miner = Miner::where('username', $this->sessionService->getCurrentUsername())
-            ->where('location', $location)
-            ->first();
+        $Miner = Miner::where('username', Auth::user()->username)
+            ->where('location', $location)->first();
 
-        if (!$Miner instanceof Miner) {
-            return Response::addMessage('Unvalid miner')->setStatus(422);
+        if (! $Miner instanceof Miner) {
+            throw new JsonException(Miner::class.' model could not be retrieved for user');
         }
 
-        $MinerWorkforce = MinerWorkforce::where('username', $this->sessionService->getCurrentUsername())
-            ->first();
+        $MinerWorkforce = MinerWorkforce::where('user_id', Auth::user()->id)->first();
 
-        if (!$MinerWorkforce instanceof MinerWorkforce) {
-            return Response::addMessage('Unvalid miner location')->setStatus(422);
+        if (! $MinerWorkforce instanceof MinerWorkforce) {
+            throw new JsonException(MinerWorkforce::class.' model could not be retrieved for user');
         }
 
         $new_permits = $Miner->permits - $Mineral->permit_cost;
 
         if ($new_permits < 0) {
-            return Response::addMessage("You don't have enough permits!")->setStatus(422);
+            return advResponse([], 422)->addMessage("You don't have enough permits");
         }
 
-        if ($Miner->mining_type) {
-            return Response::addMessage('Unvalid miner')->setStatus(422);
-        } else if ($Miner->location !== $location) {
-            return Response::addMessage('You are in the wrong location to mine this mineral')->setStatus(422);
+        if ($Miner->mineral_ore !== null) {
+            return advResponse([], 422)->addMessage('You are already mining');
+        } elseif ($Miner->location !== $location) {
+            return advResponse([], 422)->addMessage('You are in the wrong location to mine this mineral');
         }
 
         $new_workforce_amount = $MinerWorkforce->avail_workforce - $workforce;
 
-        if (
-            $new_workforce_amount < 0
-        ) {
-            return Response::addMessage("You don't have enough workers ready")->setStatus(422);
+        if (! $new_workforce_amount > 0 || $MinerWorkforce->avail_workforce === 0) {
+            return advResponse([], 422)->addMessage("You don't have enough workers ready");
         }
 
         $this->hungerService->setHungerForSkillAction();
         $addTime = $Mineral->time - (0.1 * $MinerWorkforce->efficiency_level + $workforce * 0.05);
 
-        $Miner->mineral_type = $type;
-        $Miner->mining_finishes_at = Carbon::now()->addSeconds($addTime);
+        $Miner->mineral_ore = $mineralOre;
+        $Miner->mining_finishes_at = Carbon::now()->addSeconds((int) $addTime);
         $Miner->save();
-
 
         $MinerWorkforce->avail_workforce = $new_workforce_amount;
         $MinerWorkforce->$location = $workforce;
         $MinerWorkforce->save();
 
-        return Response::addMessage("You have started mining for $type")
-            ->setData([
-                'avail_workforce' => $new_workforce_amount,
-                'new_permits' => $new_permits,
-                'new_hunger' => $this->hungerService->getCurrentHunger(),
-            ])
-            ->setStatus(200);
+        return advresponse([
+            'avail_workforce' => $new_workforce_amount,
+            'new_permits' => $new_permits,
+            'new_hunger' => $this->hungerService->getCurrentHunger(),
+        ])
+            ->addMessage("You have started mining for $mineralOre");
     }
 
-
-
-    /**
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function endMining(Request $request)
+    public function endMining(Request $request): AdvResponse
     {
 
-        $is_cancelling = $request->getInput('is_cancelling');
+        $is_cancelling = $request->boolean('is_cancelling');
 
-        $request->validate([
-            'is_cancelling' => Validator::boolVal()
+        $validator = Validator::make($request->all(), [
+            'is_cancelling' => 'required|boolean',
         ]);
 
-        $location = $this->sessionService->getCurrentLocation();
-        $MinerWorkforce = MinerWorkforce::where('username', $this->sessionService->getCurrentUsername())
-            ->first();
-
-        if (!$MinerWorkforce instanceof MinerWorkforce) {
-            return Response::addMessage("Unvalid Miner location")->setStatus(422);
+        if ($validator->fails()) {
+            return advResponse([])->addErrorMessage('Information provided is not valid');
         }
 
-        $Miner = Miner::where('username', $this->sessionService->getCurrentUsername())
+        $location = $this->sessionService->getCurrentLocation();
+        $MinerWorkforce = MinerWorkforce::where('user_id', Auth::user()->id)
+            ->first();
+
+        if (! $MinerWorkforce instanceof MinerWorkforce) {
+            throw new JsonException(MinerWorkforce::class.' model could not be retrieved for user');
+        }
+
+        $Miner = Miner::where('user_id', Auth::user()->id)
             ->where('location', $location)
             ->first();
 
-        if (!$Miner instanceof Miner) {
-            return Response::addMessage("You don't have enough permits")->setStatus(422);
+        if (! $Miner instanceof Miner) {
+            throw new JsonException(Miner::class.' model could not be retrieved for user');
+        }
+
+        if ($Miner->mineral_ore === null) {
+            return advResponse([], 422)->addMessage('You are not mining anything');
         }
 
         $Mineral = Mineral::where('location', $location)
-            ->where('mineral_ore', $Miner->mineral_type)
+            ->where('mineral_ore', $Miner->mineral_ore)
             ->first();
 
-        if (!$Mineral instanceof Mineral) {
-            return Response::addMessage("Unvalid Mineral")->setStatus(422);
+        if (! $Mineral instanceof Mineral) {
+            throw new JsonException(Mineral::class.' model could not be retrieved for user');
         }
 
         if (
             Carbon::now()->isAfter($Miner->mining_finishes_at) &&
-            $Miner->mineral_type &&
+            $Miner->mineral_ore &&
             $is_cancelling
         ) {
-            return Response::addMessage("Why quit mining that is already finished")->setStatus(422);
-        } else if (!Carbon::now()->isAfter($Miner->mining_finishes_at) && !$is_cancelling) {
-            return Response::addMessage("The mining is not yet finished")->setStatus(422);
+            return advResponse([], 422)->addMessage('You cannot cancel mining that is already finished');
+        } elseif (! Carbon::now()->isAfter($Miner->mining_finishes_at) && ! $is_cancelling) {
+            return advResponse([], 422)->addMessage('The mining is not yet finished');
         }
 
         $MinerWorkforce->avail_workforce += $MinerWorkforce->{$location};
         $MinerWorkforce->{$location} = 0;
         $MinerWorkforce->save();
 
-        $Miner->mineral_type = null;
+        $Miner->mineral_ore = null;
         $Miner->save();
 
-        if (!$is_cancelling) {
+        if (! $is_cancelling) {
 
             $amount = rand($Mineral->min_per_period, $Mineral->max_per_period);
             $this->inventoryService->edit($Mineral->mineral_ore, $amount);
 
-
             $this->skillsService
                 ->updateMinerXP($Mineral->experience)
                 ->updateSkills();
-            return Response::addMessage("You have finished mining " . $Mineral->mineral_type);
+
+            $message = sprintf('You have finished mining %s', $Mineral->mineral_ore);
         } else {
-            return Response::addMessage("You have cancelled mining");
+            $message = sprintf('You have cancelled mining.');
         }
 
-        return Response::setData(['avail_workforce' => $MinerWorkforce->avail_workforce])
+        return advResponse([
+            'avail_workforce' => $MinerWorkforce->avail_workforce,
+            'new_hunger' => $this->hungerService->getCurrentHunger(),
+        ])
+            ->addMessage($message)
             ->setStatus(200);
-    }
-
-    /**
-     * 
-     * @param Request $request 
-     * @return Response
-     */
-    public function buyPermits(Request $request)
-    {
-        $location = $request->getInput('location');
-
-        $request->validate([
-            'skill' => Validator::in(GameLocations::getMineLocations())
-        ]);
-
-        $Miner = Miner::where('username', $this->sessionService->user())
-            ->where('location', $location)
-            ->first();
-
-        if (!$Miner instanceof Miner) {
-            return Response::addMessage("Unvalid miner")->setStatus(422);
-        }
-
-
-        $MinerPermitCost = MinerPermitCost::where('location', $location)
-            ->first();
-
-        if (!$MinerPermitCost instanceof MinerPermitCost) {
-            return Response::addMessage("Unvalid location")->setStatus(422);
-        }
-
-        if (!$this->inventoryService->hasEnoughAmount(\CURRENCY, $MinerPermitCost->permit_cost)) {
-            return $this->inventoryService->logNotEnoughAmount(\CURRENCY);
-        }
-
-        $this->inventoryService->edit(\CURRENCY, $MinerPermitCost->permit_cost);
-
-        $Miner->permits += $MinerPermitCost->permit_amount;
-        $Miner->save();
-
-        return Response::addMessage(\sprintf("You bought 50 permits for %s", [$location]))
-            ->setData([
-                'newPermits' => $Miner->permits
-            ]);
     }
 }

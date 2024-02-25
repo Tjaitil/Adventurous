@@ -61,6 +61,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/crops/data', [CropsController::class, 'getViewData']);
     Route::get('/crops/countdown', [CropsController::class, 'getCountdown']);
 
+    Route::get('/mine', [MineController::class, 'index']);
     Route::get('/mine/countdown', [MineController::class, 'getCountdown']);
     Route::post('/mine/start', [MineController::class, 'start']);
     Route::post('/mine/end', [MineController::class, 'endMining']);
