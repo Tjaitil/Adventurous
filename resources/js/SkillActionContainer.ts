@@ -29,15 +29,6 @@ export class SkillActionContainer {
     public countdownElement = <HTMLElement>document.getElementById('time');
     public countdownCancelledManually: boolean = false;
 
-    protected state = {
-        workforce: 0,
-        selectedType: '',
-        isDoingAction: false,
-        isActionFinished: false,
-        isIdle: true,
-        something: [],
-    };
-
     public actionText: string;
     public noActionText: string;
 
@@ -80,6 +71,7 @@ export class SkillActionContainer {
         const clone = targetElement.cloneNode(true);
         clone.removeAttribute('onclick');
         const item = targetElement.getAttribute('alt');
+        console.log(item);
 
         [...document.getElementsByClassName('item-type')].forEach(element => {
             if (targetElement === element) {
@@ -116,6 +108,7 @@ export class SkillActionContainer {
             levelInputField.value = matchedType.farmer_level + '';
         } else if (Game.getProperty('building') === 'mine') {
             const data = this.typeData as MineralResource[];
+            console.log(data);
             matchedType = data.find(type => type.mineral_ore === item);
             if (matchedType === undefined) return;
 
