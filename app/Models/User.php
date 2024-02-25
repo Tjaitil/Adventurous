@@ -14,10 +14,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property string|null $email_verified_at
  * @property string $password
  * @property string|null $remember_token
- * @property string|null $created_at
- * @property string|null $updated_at
+ * @property \Carbon\CarbonInterface|null $created_at
+ * @property \Carbon\CarbonInterface|null $updated_at
+ * @property-read \App\Models\UserData|null $player
+ * @property-read \App\Models\UserData|null $userData
  * @property-read \App\Models\UserLevels|null $userLevels
- * @property-read \App\Models\UserData|null $user_data
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User query()
@@ -29,6 +31,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @method static \Illuminate\Database\Eloquent\Builder|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUsername($value)
+ *
  * @mixin \Eloquent
  */
 class User extends Authenticatable
@@ -37,9 +40,19 @@ class User extends Authenticatable
 
     public $timestamps = false;
 
-    public function user_data(): HasOne
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
+    public function userData(): HasOne
     {
         return $this->hasOne(UserData::class, 'username', 'username');
+    }
+
+    public function player(): HasOne
+    {
+        return $this->userData();
     }
 
     public function userLevels(): HasOne
