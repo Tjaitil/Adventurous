@@ -3,16 +3,15 @@
 namespace Tests\Feature\Buildings\Crops;
 
 use App\Enums\GameLocations;
-use App\Enums\SkillNames;
 use App\Models\Crop;
 use App\Models\Farmer;
 use App\Models\FarmerWorkforce;
 use App\Models\UserLevels;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tests\TestCase;
+use Tests\SkillTestCase;
 
-class HarvestCropsTest extends TestCase
+class HarvestCropsTest extends SkillTestCase
 {
     use DatabaseTransactions;
 
@@ -35,7 +34,7 @@ class HarvestCropsTest extends TestCase
         }
 
         $this->setUserCurrentLocation($location, $this->RandomUser);
-        $this->setUserLevel(SkillNames::FARMER->value, 44, $this->RandomUser);
+        $this->setFarmerLevel(44);
 
         $Farmer = Farmer::where('user_id', $this->RandomUser->id)->firstOrFail();
         if (! $Farmer instanceof Farmer) {
@@ -73,7 +72,7 @@ class HarvestCropsTest extends TestCase
         }
 
         $this->setUserCurrentLocation($location, $this->RandomUser);
-        $this->setUserLevel(SkillNames::FARMER->value, $Crop->farmer_level, $this->RandomUser);
+        $this->setFarmerLevel($Crop->farmer_level);
 
         $Farmer = Farmer::where('user_id', $this->RandomUser->id)->firstOrFail();
         if (! $Farmer instanceof Farmer) {
@@ -114,7 +113,7 @@ class HarvestCropsTest extends TestCase
         }
 
         $this->setUserCurrentLocation($location, $this->RandomUser);
-        $this->setUserLevel(SkillNames::FARMER->value, $Crop->farmer_level, $this->RandomUser);
+        $this->setFarmerLevel($Crop->farmer_level);
 
         $Farmer = Farmer::where('user_id', $this->RandomUser->id)->firstOrFail();
         if (! $Farmer instanceof Farmer) {
@@ -155,7 +154,7 @@ class HarvestCropsTest extends TestCase
         }
 
         $this->setUserCurrentLocation($location, $this->RandomUser);
-        $this->setUserLevel(SkillNames::FARMER->value, $Crop->farmer_level, $this->RandomUser);
+        $this->setFarmerLevel($Crop->farmer_level);
 
         $Farmer = Farmer::where('user_id', $this->RandomUser->id)->firstOrFail();
         if (! $Farmer instanceof Farmer) {

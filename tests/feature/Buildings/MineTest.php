@@ -10,11 +10,12 @@ use App\Models\MinerWorkforce;
 use App\Models\UserLevels;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tests\TestCase;
+use Tests\SkillTestCase;
+use Tests\Utils\Traits\ExperienceAssertions;
 
-class MineTest extends TestCase
+class MineTest extends SkillTestCase
 {
-    use DatabaseTransactions;
+    use DatabaseTransactions, ExperienceAssertions;
 
     public $connectionsToTransact = ['mysql'];
 
@@ -69,7 +70,7 @@ class MineTest extends TestCase
         $this->setUserCurrentLocation($location, $this->RandomUser);
 
         $Mineral = Mineral::where('mineral_ore', $mineralType)->firstOrFail();
-        $this->setUserLevel(SkillNames::MINER->value, $Mineral->miner_level, $this->RandomUser);
+        $this->setMinerLevel($Mineral->miner_level);
 
         $response = $this->post('/mine/start', [
             'mineral_ore' => $mineralType,
@@ -139,7 +140,7 @@ class MineTest extends TestCase
 
         $Mineral = Mineral::where('mineral_ore', $mineralOre)->firstOrFail();
 
-        $this->setUserLevel(SkillNames::FARMER->value, $Mineral?->miner_level, $this->RandomUser);
+        $this->setMinerLevel($Mineral->miner_level);
 
         $this->MinerWorkforce->avail_workforce = 0;
         $this->MinerWorkforce->save();
@@ -163,7 +164,7 @@ class MineTest extends TestCase
         $Mineral = Mineral::where('mineral_ore', $mineralOre)->firstOrFail();
         $Miner = Miner::where('username', $this->RandomUser->username)->where('location', $location)->firstOrFail();
 
-        $this->setUserLevel(SkillNames::FARMER->value, $Mineral?->miner_level, $this->RandomUser);
+        $this->setMinerLevel($Mineral->miner_level);
 
         $Miner->mineral_ore = $mineralOre;
         $Miner->mining_finishes_at = Carbon::now()->addMinutes(4);
@@ -191,7 +192,7 @@ class MineTest extends TestCase
         if ($Mineral->miner_level === 1) {
             $this->assertTrue(true);
         } else {
-            $this->setUserLevel(SkillNames::MINER->value, 1, $this->RandomUser);
+            $this->setMinerLevel(1);
 
             $response = $this->post('/mine/start', [
                 'mineral_ore' => $mineralOre,
@@ -239,7 +240,7 @@ class MineTest extends TestCase
     {
         $Mineral = Mineral::where('mineral_ore', $mineralOre)->firstOrFail();
         $this->setUserCurrentLocation($location, $this->RandomUser);
-        $this->setUserLevel(SkillNames::MINER->value, 44, $this->RandomUser);
+        $this->setMinerLevel(44);
 
         $Miner = Miner::where('username', $this->RandomUser->username)->where('location', $location)->firstOrFail();
 
@@ -270,7 +271,7 @@ class MineTest extends TestCase
         $Mineral = Mineral::where('mineral_ore', $mineralOre)->first();
 
         $this->setUserCurrentLocation($location, $this->RandomUser);
-        $this->setUserLevel(SkillNames::MINER->value, $Mineral->miner_level, $this->RandomUser);
+        $this->setMinerLevel($Mineral->miner_level);
 
         $Miner = Miner::where('username', $this->RandomUser->username)->where('location', $location)->firstOrFail();
 
@@ -303,7 +304,7 @@ class MineTest extends TestCase
         $Mineral = Mineral::where('mineral_ore', $mineralOre)->first();
 
         $this->setUserCurrentLocation($location, $this->RandomUser);
-        $this->setUserLevel(SkillNames::MINER->value, $Mineral->miner_level, $this->RandomUser);
+        $this->setMinerLevel($Mineral->miner_level);
 
         $Miner = Miner::where('username', $this->RandomUser->username)->where('location', $location)->firstOrFail();
 
@@ -336,7 +337,7 @@ class MineTest extends TestCase
         $Mineral = Mineral::where('mineral_ore', $mineralOre)->first();
 
         $this->setUserCurrentLocation($location, $this->RandomUser);
-        $this->setUserLevel(SkillNames::MINER->value, $Mineral->miner_level, $this->RandomUser);
+        $this->setMinerLevel($Mineral->miner_level);
 
         $Miner = Miner::where('username', $this->RandomUser->username)->where('location', $location)->firstOrFail();
 
@@ -367,6 +368,53 @@ class MineTest extends TestCase
         }
 
         $this->assertEquals($this->RandomUser->userLevels->miner_xp, $UserLevels->miner_xp);
+    }
+
+    /**
+     * @dataProvider locationProvider
+     */
+    public function test_end_mining_where_user_gains_level(string $location, string $mineralOre)
+    {
+        $Mineral = Mineral::where('mineral_ore', $mineralOre)->first();
+
+        $this->setUserCurrentLocation($location, $this->RandomUser);
+        $this->setMinerLevel($Mineral->miner_level);
+
+        $Miner = Miner::where('username', $this->RandomUser->username)->where('location', $location)->firstOrFail();
+        $this->setSkillLevelUpAble(SkillNames::MINER->value);
+
+        $Miner->mineral_ore = $mineralOre;
+        $Miner->mining_finishes_at = Carbon::now()->subMinutes(5);
+        $Miner->save();
+
+        $MinerWorkforce = MinerWorkforce::where('user_id', $this->RandomUser->id)->firstOrFail();
+        $MinerWorkforce->avail_workforce -= 3;
+        $MinerWorkforce->{$location} = 3;
+        $MinerWorkforce->save();
+
+        $response = $this->post('/mine/end', [
+            'is_cancelling' => false,
+        ]);
+
+        $response->assertStatus(200);
+        $response->json();
+
+        $this->assertDatabaseHas('inventory', [
+            'username' => $this->RandomUser->username,
+            'item' => $Mineral->mineral_ore,
+        ]);
+
+        $UserLevels = UserLevels::where('user_id', $this->RandomUser->id)->first();
+        if (! $UserLevels instanceof UserLevels) {
+            $this->fail();
+        }
+
+        $this->assertResponseHasLevelUpMessage($response, SkillNames::MINER->value, $Mineral->miner_level + 1);
+
+        $this->assertDatabaseHas('user_levels', [
+            'user_id' => $this->RandomUser->id,
+            'miner_level' => $Mineral->miner_level + 1,
+        ]);
     }
 
     /**

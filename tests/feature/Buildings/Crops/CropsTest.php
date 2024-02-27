@@ -3,15 +3,14 @@
 namespace Tests\Feature\Crops;
 
 use App\Enums\GameLocations;
-use App\Enums\SkillNames;
 use App\Models\Crop;
 use App\Models\Farmer;
 use App\Models\FarmerWorkforce;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tests\TestCase;
+use Tests\SkillTestCase;
 
-class CropsTest extends TestCase
+class CropsTest extends SkillTestCase
 {
     use DatabaseTransactions;
 
@@ -30,8 +29,6 @@ class CropsTest extends TestCase
 
         $this->Farmer = Farmer::where('user_id', $this->RandomUser->id)->firstOrFail();
         $this->FarmerWorkforce = FarmerWorkforce::where('user_id', $this->RandomUser->id)->firstOrFail();
-
-        $this->setUserLevel(SkillNames::FARMER->value, 44, $this->RandomUser);
     }
 
     public function test_retrieve_building()
@@ -89,7 +86,7 @@ class CropsTest extends TestCase
         if (! $Crop instanceof Crop) {
             $this->fail('Crop type not found');
         }
-        $this->setUserLevel(SkillNames::FARMER->value, $Crop->farmer_level, $this->RandomUser);
+        $this->setFarmerLevel($Crop->farmer_level);
 
         $this->insertItemToInventory($this->RandomUser, $Crop->seed_item, $Crop->seed_required);
         $availWorkforce = $this->FarmerWorkforce->avail_workforce;
@@ -126,7 +123,7 @@ class CropsTest extends TestCase
             $this->fail('Crop type not found');
         }
 
-        $this->setUserLevel(SkillNames::FARMER->value, $Crop->farmer_level, $this->RandomUser);
+        $this->setFarmerLevel($Crop->farmer_level);
 
         $response = $this->post('/crops/start', [
             'crop_type' => $cropType,
@@ -173,7 +170,7 @@ class CropsTest extends TestCase
             $this->fail('Crop type not found');
         }
 
-        $this->setUserLevel(SkillNames::FARMER->value, $Crop->farmer_level, $this->RandomUser);
+        $this->setFarmerLevel($Crop->farmer_level);
 
         $this->Farmer->crop_type = $cropType;
         $this->Farmer->crop_finishes_at = Carbon::now()->addMinutes(1);
@@ -200,13 +197,10 @@ class CropsTest extends TestCase
             $this->fail('Crop type not found');
         }
 
-        $this->setUserLevel(SkillNames::FARMER->value, $Crop->farmer_level, $this->RandomUser);
-
         if ($Crop->farmer_level === 1) {
             $this->assertTrue(true);
         } else {
-
-            $this->setUserLevel(SkillNames::FARMER->value, $Crop->farmer_level - 1, $this->RandomUser);
+            $this->setFarmerLevel($Crop->farmer_level - 1);
 
             $this->insertItemToInventory($this->RandomUser, $Crop->seed_item, $Crop->seed_required);
 
@@ -231,7 +225,7 @@ class CropsTest extends TestCase
     public function test_harvest(string $location, string $cropType)
     {
         $this->setUserCurrentLocation($location, $this->RandomUser);
-        $this->setUserLevel(SkillNames::FARMER->value, 44, $this->RandomUser);
+        $this->setFarmerLevel(44);
 
         $Farmer = Farmer::where('user_id', $this->RandomUser->id)->where('location', $location)->firstOrFail();
         if (! $Farmer instanceof Farmer) {
