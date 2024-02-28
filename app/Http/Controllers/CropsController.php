@@ -239,8 +239,7 @@ class CropsController extends Controller
 
             $this->inventoryService->edit($Farmer->crop_type, $amount);
 
-            $results = $this->skillsService->updateFarmerXP($experience)->updateSkills();
-            $response->addLevelUPs($results);
+            $this->skillsService->updateFarmerXP($experience)->updateSkills($response);
         }
 
         $Farmer->crop_type = null;

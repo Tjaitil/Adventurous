@@ -43,7 +43,7 @@ class AdvResponse implements Responsable
 
     public function setData(array $data): self
     {
-        $this->data = $data;
+        $this->data = array_merge($this->data, $data);
 
         return $this;
     }
@@ -97,6 +97,19 @@ class AdvResponse implements Responsable
         return $this;
     }
 
+    /**
+     * @param array<int, array{
+     *  'skill': value-of<\App\Enums\SkillNames>,
+     *  'new_level': int
+     * }> $levelUPs
+     */
+    public function addLevelUPs(array $levelUPs): self
+    {
+        $this->data['levelUP'] = $levelUPs;
+
+        return $this;
+    }
+
     public function setStatus(int $status): self
     {
         $this->code = $status;
@@ -105,9 +118,10 @@ class AdvResponse implements Responsable
     }
 
     /**
-     * @param  \Illuminate\Http\Request  $request,
-     *  NOTE: we cannot type the argument as Request
-     *  becasue it conflicts with the interface
+     * NOTE: we cannot type the argument as Request
+     * becasue it conflicts with the interface
+     *
+     * @param  \Illuminate\Http\Request  $request
      */
     public function toResponse($request): JsonResponse
     {

@@ -7,7 +7,6 @@ use App\Enums\SkillNames;
 use App\Exceptions\JsonException;
 use App\Http\Builders\SkillsBuilder;
 use App\Http\Responses\AdvResponse;
-use App\libs\Response;
 use App\Models\LevelData;
 use App\Models\UserLevels;
 use Exception;
@@ -30,9 +29,9 @@ class SkillsService
 
     private function setUserLevels(): void
     {
-        if(! isset($this->userLevels)) {
+        if (! isset($this->userLevels)) {
             $UserLevels = UserLevels::where('username', Auth::user()?->username)->first();
-            if(!$UserLevels instanceof UserLevels) {
+            if (! $UserLevels instanceof UserLevels) {
                 throw new JsonException('UserLevels could not be found for user');
             }
             $this->userLevels = $UserLevels;
@@ -43,8 +42,8 @@ class SkillsService
     /**
      * Check if user has required profiency level
      *
-     * @param  int  $required_level Required profiency level
-     * @param  string  $skill Name of skill
+     * @param  int  $required_level  Required profiency level
+     * @param  string  $skill  Name of skill
      */
     public function hasRequiredLevel(int $required_level, string $skill): bool
     {
@@ -80,7 +79,7 @@ class SkillsService
     /**
      * Log that user has too low profiency level
      *
-     * @param  string  $profiency Profiency name
+     * @param  string  $profiency  Profiency name
      */
     public function logNotRequiredLevel(string $profiency): JsonResponse
     {
@@ -89,11 +88,16 @@ class SkillsService
             ->toResponse(request());
     }
 
-    public function updateSkills(): void
+    public function updateSkills(?AdvResponse &$advResponse = null): void
     {
         $this->setUserLevels();
-        $this->userLevels->update();
-        $this->canSkillsLevelUP();
+
+        $results = $this->canSkillsLevelUP();
+        $this->userLevels->save();
+
+        if (count($results) > 0 && $advResponse instanceof AdvResponse) {
+            $advResponse->addLevelUPs($results);
+        }
     }
 
     public function updateFarmerXP(int $amount): self
@@ -128,33 +132,55 @@ class SkillsService
         return $this;
     }
 
-    public function canSkillsLevelUP(): void
+    /**
+     * @return array<int, array{
+     *  'skill': value-of<\App\Enums\SkillNames>,
+     *  'new_level': int
+     * }>
+     */
+    public function canSkillsLevelUP(): array
     {
         $this->setUserLevels();
+
+        $skills = [];
 
         if ($this->canLevelUpAction->handle($this->userLevels->farmer_xp, $this->userLevels->farmer_next_level_xp)) {
 
             $this->userLevels->farmer_level = $this->getNextLevelFromExperience($this->userLevels->farmer_xp);
-            Response::addLevelUP(SkillNames::FARMER->value, $this->userLevels->farmer_level);
+            $skills[] = [
+                'skill' => SkillNames::FARMER->value,
+                'new_level' => $this->userLevels->farmer_level,
+            ];
         }
 
         if ($this->canLevelUpAction->handle($this->userLevels->miner_xp, $this->userLevels->miner_next_level_xp)) {
 
             $this->userLevels->miner_level = $this->getNextLevelFromExperience($this->userLevels->miner_xp);
-            Response::addLevelUP(SkillNames::MINER->value, $this->userLevels->miner_level);
+            $skills[] = [
+                'skill' => SkillNames::MINER->value,
+                'new_level' => $this->userLevels->miner_level,
+            ];
         }
 
         if ($this->canLevelUpAction->handle($this->userLevels->trader_xp, $this->userLevels->trader_next_level_xp)) {
 
             $this->userLevels->trader_level = $this->getNextLevelFromExperience($this->userLevels->trader_xp);
-            Response::addLevelUP(SkillNames::TRADER->value, $this->userLevels->trader_level);
+            $skills[] = [
+                'skill' => SkillNames::TRADER->value,
+                'new_level' => $this->userLevels->trader_level,
+            ];
         }
 
         if ($this->canLevelUpAction->handle($this->userLevels->warrior_xp, $this->userLevels->warrior_next_level_xp)) {
 
             $this->userLevels->warrior_level = $this->getNextLevelFromExperience($this->userLevels->warrior_xp);
-            Response::addLevelUP(SkillNames::WARRIOR->value, $this->userLevels->warrior_level);
+            $skills[] = [
+                'skill' => SkillNames::WARRIOR->value,
+                'new_level' => $this->userLevels->warrior_level,
+            ];
         }
+
+        return $skills;
     }
 
     /**

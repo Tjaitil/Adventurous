@@ -228,6 +228,8 @@ class MineController extends Controller
         $Miner->mineral_ore = null;
         $Miner->save();
 
+        $response = advResponse([]);
+
         if (! $is_cancelling) {
 
             $amount = rand($Mineral->min_per_period, $Mineral->max_per_period);
@@ -235,18 +237,16 @@ class MineController extends Controller
 
             $this->skillsService
                 ->updateMinerXP($Mineral->experience)
-                ->updateSkills();
+                ->updateSkills($response);
 
             $message = sprintf('You have finished mining %s', $Mineral->mineral_ore);
         } else {
             $message = sprintf('You have cancelled mining.');
         }
 
-        return advResponse([
+        return $response->setData([
             'avail_workforce' => $MinerWorkforce->avail_workforce,
             'new_hunger' => $this->hungerService->getCurrentHunger(),
-        ])
-            ->addMessage($message)
-            ->setStatus(200);
+        ])->addMessage($message);
     }
 }
