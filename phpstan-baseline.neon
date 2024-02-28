@@ -946,81 +946,6 @@ parameters:
 			path: app/Http/Controllers/CityCentreController.php
 
 		-
-			message: "#^Access to an undefined property App\\\\Models\\\\Crop\\:\\:\\$experience\\.$#"
-			count: 2
-			path: app/Http/Controllers/CropsController.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Models\\\\Crop\\:\\:\\$location\\.$#"
-			count: 1
-			path: app/Http/Controllers/CropsController.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Models\\\\Crop\\:\\:\\$max_crop_count\\.$#"
-			count: 1
-			path: app/Http/Controllers/CropsController.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Models\\\\Crop\\:\\:\\$min_crop_count\\.$#"
-			count: 1
-			path: app/Http/Controllers/CropsController.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Models\\\\Crop\\:\\:\\$seed_item\\.$#"
-			count: 3
-			path: app/Http/Controllers/CropsController.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Models\\\\Crop\\:\\:\\$seed_required\\.$#"
-			count: 2
-			path: app/Http/Controllers/CropsController.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Models\\\\Crop\\:\\:\\$time\\.$#"
-			count: 3
-			path: app/Http/Controllers/CropsController.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Models\\\\Farmer\\:\\:\\$crop_type\\.$#"
-			count: 2
-			path: app/Http/Controllers/CropsController.php
-
-		-
-			message: "#^Cannot call method toArray\\(\\) on App\\\\Models\\\\FarmerWorkforce\\|null\\.$#"
-			count: 1
-			path: app/Http/Controllers/CropsController.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\CropsController\\:\\:index\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/Http/Controllers/CropsController.php
-
-		-
-			message: "#^Parameter \\#1 \\$amount of method App\\\\Services\\\\SkillsService\\:\\:updateFarmerXP\\(\\) expects int, float given\\.$#"
-			count: 1
-			path: app/Http/Controllers/CropsController.php
-
-		-
-			message: "#^Parameter \\#1 \\$value of method Carbon\\\\Carbon\\:\\:addSeconds\\(\\) expects int, float given\\.$#"
-			count: 1
-			path: app/Http/Controllers/CropsController.php
-
-		-
-			message: "#^Parameter \\#2 \\$amount of method App\\\\Services\\\\InventoryService\\:\\:edit\\(\\) expects int, float\\|int given\\.$#"
-			count: 2
-			path: app/Http/Controllers/CropsController.php
-
-		-
-			message: "#^Property App\\\\Http\\\\Controllers\\\\CropsController\\:\\:\\$data has no type specified\\.$#"
-			count: 1
-			path: app/Http/Controllers/CropsController.php
-
-		-
-			message: "#^Variable \\$amount might not be defined\\.$#"
-			count: 1
-			path: app/Http/Controllers/CropsController.php
-
-		-
 			message: "#^Cannot call method toArray\\(\\) on App\\\\Models\\\\UserLevels\\|null\\.$#"
 			count: 1
 			path: app/Http/Controllers/HighscoresController.php
@@ -1034,11 +959,6 @@ parameters:
 			message: "#^Property App\\\\Http\\\\Controllers\\\\HighscoresController\\:\\:\\$data has no type specified\\.$#"
 			count: 1
 			path: app/Http/Controllers/HighscoresController.php
-
-		-
-			message: "#^Parameter \\#2 \\$amount of method App\\\\Services\\\\InventoryService\\:\\:edit\\(\\) expects int, float\\|int given\\.$#"
-			count: 1
-			path: app/Http/Controllers/HungerController.php
 
 		-
 			message: "#^Method App\\\\Http\\\\Controllers\\\\IndexController\\:\\:index\\(\\) has no return type specified\\.$#"
@@ -1174,121 +1094,6 @@ parameters:
 			message: "#^Variable \\$total_cost might not be defined\\.$#"
 			count: 2
 			path: app/Http/Controllers/MerchantController.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Models\\\\Miner\\:\\:\\$mining_type\\.$#"
-			count: 1
-			path: app/Http/Controllers/MineController.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Models\\\\Mineral\\:\\:\\$experience\\.$#"
-			count: 1
-			path: app/Http/Controllers/MineController.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Models\\\\Mineral\\:\\:\\$location\\.$#"
-			count: 1
-			path: app/Http/Controllers/MineController.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Models\\\\Mineral\\:\\:\\$max_per_period\\.$#"
-			count: 1
-			path: app/Http/Controllers/MineController.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Models\\\\Mineral\\:\\:\\$min_per_period\\.$#"
-			count: 1
-			path: app/Http/Controllers/MineController.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Models\\\\Mineral\\:\\:\\$miner_level\\.$#"
-			count: 1
-			path: app/Http/Controllers/MineController.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Models\\\\Mineral\\:\\:\\$mineral_ore\\.$#"
-			count: 1
-			path: app/Http/Controllers/MineController.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Models\\\\Mineral\\:\\:\\$mineral_type\\.$#"
-			count: 1
-			path: app/Http/Controllers/MineController.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Models\\\\Mineral\\:\\:\\$permit_cost\\.$#"
-			count: 1
-			path: app/Http/Controllers/MineController.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Models\\\\Mineral\\:\\:\\$time\\.$#"
-			count: 1
-			path: app/Http/Controllers/MineController.php
-
-		-
-			message: "#^Access to property \\$timestamp on an unknown class App\\\\Models\\\\Carbon\\.$#"
-			count: 1
-			path: app/Http/Controllers/MineController.php
-
-		-
-			message: "#^Cannot access property \\$permits on App\\\\Models\\\\Miner\\|null\\.$#"
-			count: 2
-			path: app/Http/Controllers/MineController.php
-
-		-
-			message: "#^Cannot call method toArray\\(\\) on App\\\\Models\\\\MinerWorkforce\\|null\\.$#"
-			count: 2
-			path: app/Http/Controllers/MineController.php
-
-		-
-			message: "#^Constant CURRENCY not found\\.$#"
-			count: 3
-			path: app/Http/Controllers/MineController.php
-
-		-
-			message: "#^Constant HUNGER_SKILL_ACTION not found\\.$#"
-			count: 1
-			path: app/Http/Controllers/MineController.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\MineController\\:\\:buyPermits\\(\\) should return App\\\\libs\\\\Response but returns Illuminate\\\\Http\\\\JsonResponse\\.$#"
-			count: 1
-			path: app/Http/Controllers/MineController.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\MineController\\:\\:start\\(\\) with return type void returns App\\\\libs\\\\Response but should not return anything\\.$#"
-			count: 1
-			path: app/Http/Controllers/MineController.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\MineController\\:\\:start\\(\\) with return type void returns mixed but should not return anything\\.$#"
-			count: 11
-			path: app/Http/Controllers/MineController.php
-
-		-
-			message: "#^Parameter \\#1 \\$value of method Carbon\\\\Carbon\\:\\:addSeconds\\(\\) expects int, float given\\.$#"
-			count: 1
-			path: app/Http/Controllers/MineController.php
-
-		-
-			message: "#^Parameter \\#2 \\.\\.\\.\\$values of function sprintf expects bool\\|float\\|int\\|string\\|null, array\\<int, mixed\\> given\\.$#"
-			count: 1
-			path: app/Http/Controllers/MineController.php
-
-		-
-			message: "#^Property App\\\\Models\\\\Miner\\:\\:\\$mineral_type \\(string\\) does not accept null\\.$#"
-			count: 1
-			path: app/Http/Controllers/MineController.php
-
-		-
-			message: "#^Property App\\\\Models\\\\Miner\\:\\:\\$mining_finishes_at \\(App\\\\Models\\\\Carbon\\) does not accept Carbon\\\\Carbon\\.$#"
-			count: 1
-			path: app/Http/Controllers/MineController.php
-
-		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
-			count: 1
-			path: app/Http/Controllers/MineController.php
 
 		-
 			message: "#^Access to an undefined property App\\\\Http\\\\Controllers\\\\ProfiencyStatusController\\:\\:\\$date_now\\.$#"
@@ -1706,6 +1511,11 @@ parameters:
 			path: app/Http/Controllers/TraderAssignmentController.php
 
 		-
+			message: "#^Method App\\\\Http\\\\Controllers\\\\TraderAssignmentController\\:\\:newAssignment\\(\\) should return App\\\\libs\\\\Response but returns App\\\\Http\\\\Responses\\\\AdvResponse\\.$#"
+			count: 1
+			path: app/Http/Controllers/TraderAssignmentController.php
+
+		-
 			message: "#^Method App\\\\Http\\\\Controllers\\\\TraderAssignmentController\\:\\:updateAssignment\\(\\) should return App\\\\libs\\\\Response but return statement is missing\\.$#"
 			count: 1
 			path: app/Http/Controllers/TraderAssignmentController.php
@@ -1741,38 +1551,18 @@ parameters:
 			path: app/Http/Controllers/WorkforceLodgeController.php
 
 		-
+			message: "#^Cannot access property \\$farmer_level on App\\\\Models\\\\UserLevels\\|null\\.$#"
+			count: 1
+			path: app/Http/Controllers/WorkforceLodgeController.php
+
+		-
+			message: "#^Cannot access property \\$miner_level on App\\\\Models\\\\UserLevels\\|null\\.$#"
+			count: 1
+			path: app/Http/Controllers/WorkforceLodgeController.php
+
+		-
 			message: "#^Cannot access property \\$price on App\\\\Models\\\\EfficiencyUpgrade\\|null\\.$#"
 			count: 4
-			path: app/Http/Controllers/WorkforceLodgeController.php
-
-		-
-			message: "#^Comparison operation \"\\<\" between int and Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<App\\\\Models\\\\LevelData\\> results in an error\\.$#"
-			count: 1
-			path: app/Http/Controllers/WorkforceLodgeController.php
-
-		-
-			message: "#^Constant CURRENCY not found\\.$#"
-			count: 2
-			path: app/Http/Controllers/WorkforceLodgeController.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\WorkforceLodgeController\\:\\:index\\(\\) with return type void returns mixed but should not return anything\\.$#"
-			count: 1
-			path: app/Http/Controllers/WorkforceLodgeController.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\WorkforceLodgeController\\:\\:upgradeEfficiency\\(\\) with return type void returns Illuminate\\\\Http\\\\JsonResponse but should not return anything\\.$#"
-			count: 1
-			path: app/Http/Controllers/WorkforceLodgeController.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\WorkforceLodgeController\\:\\:upgradeEfficiency\\(\\) with return type void returns mixed but should not return anything\\.$#"
-			count: 3
-			path: app/Http/Controllers/WorkforceLodgeController.php
-
-		-
-			message: "#^Static method App\\\\libs\\\\Response\\:\\:addMessage\\(\\) invoked with 2 parameters, 1 required\\.$#"
-			count: 2
 			path: app/Http/Controllers/WorkforceLodgeController.php
 
 		-
@@ -3431,11 +3221,6 @@ parameters:
 			path: app/Models/Farmer.php
 
 		-
-			message: "#^Property App\\\\Models\\\\Farmer\\:\\:\\$dates has no type specified\\.$#"
-			count: 1
-			path: app/Models/Farmer.php
-
-		-
 			message: "#^Method App\\\\Models\\\\FarmerWorkforce\\:\\:farmer\\(\\) return type with generic class Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\HasMany does not specify its types\\: TRelatedModel$#"
 			count: 1
 			path: app/Models/FarmerWorkforce.php
@@ -3999,11 +3784,6 @@ parameters:
 			message: "#^Property App\\\\Models\\\\MerchantOffer\\:\\:\\$dates has no type specified\\.$#"
 			count: 1
 			path: app/Models/MerchantOffer.php
-
-		-
-			message: "#^Method App\\\\Models\\\\Miner\\:\\:workforce\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/Models/Miner.php
 
 		-
 			message: "#^Property App\\\\Models\\\\Miner\\:\\:\\$dates has no type specified\\.$#"
@@ -5056,7 +4836,17 @@ parameters:
 			path: app/Models/UpdateGamedata_model.php
 
 		-
-			message: "#^Method App\\\\Models\\\\User\\:\\:user_data\\(\\) has no return type specified\\.$#"
+			message: "#^Method App\\\\Models\\\\User\\:\\:player\\(\\) return type with generic class Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\HasOne does not specify its types\\: TRelatedModel$#"
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: "#^Method App\\\\Models\\\\User\\:\\:userData\\(\\) return type with generic class Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\HasOne does not specify its types\\: TRelatedModel$#"
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: "#^Method App\\\\Models\\\\User\\:\\:userLevels\\(\\) return type with generic class Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\HasOne does not specify its types\\: TRelatedModel$#"
 			count: 1
 			path: app/Models/User.php
 
@@ -5886,26 +5676,6 @@ parameters:
 			path: app/Services/HungerService.php
 
 		-
-			message: "#^Constant HUNGER_SKILL_ACTION not found\\.$#"
-			count: 1
-			path: app/Services/HungerService.php
-
-		-
-			message: "#^Method App\\\\Services\\\\HungerService\\:\\:getHunger\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/Services/HungerService.php
-
-		-
-			message: "#^Method App\\\\Services\\\\HungerService\\:\\:getHungerData\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: app/Services/HungerService.php
-
-		-
-			message: "#^Method App\\\\Services\\\\HungerService\\:\\:getHungerData\\(\\) should return array but returns App\\\\Models\\\\Hunger\\|null\\.$#"
-			count: 1
-			path: app/Services/HungerService.php
-
-		-
 			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$item\\.$#"
 			count: 1
 			path: app/Services/InventoryService.php
@@ -5941,27 +5711,12 @@ parameters:
 			path: app/Services/LevelDataService.php
 
 		-
-			message: "#^Instanceof between Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<App\\\\Models\\\\LevelData\\> and App\\\\Models\\\\LevelData will always evaluate to false\\.$#"
-			count: 1
-			path: app/Services/LevelDataService.php
-
-		-
-			message: "#^Method App\\\\Services\\\\LevelDataService\\:\\:getMaxEfficiencyLevel\\(\\) should return Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<App\\\\Models\\\\LevelData\\> but returns 1\\.$#"
-			count: 1
-			path: app/Services/LevelDataService.php
-
-		-
 			message: "#^Method App\\\\Services\\\\LevelDataService\\:\\:getMaxFarmers\\(\\) should return int but returns int\\|null\\.$#"
 			count: 1
 			path: app/Services/LevelDataService.php
 
 		-
 			message: "#^Method App\\\\Services\\\\LevelDataService\\:\\:getMaxMiners\\(\\) should return int but returns int\\|null\\.$#"
-			count: 1
-			path: app/Services/LevelDataService.php
-
-		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
 			path: app/Services/LevelDataService.php
 
