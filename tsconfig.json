@@ -10,6 +10,9 @@
         "moduleResolution": "Bundler",
         "types": ["vite/client"],
         "lib": ["es5", "es6", "dom", "dom.iterable", "es2016"],
+        "paths": {
+            "@/*": ["./resources/js/*"]
+        },
     },
     "include": ["resources/js/**/*"],
 }
