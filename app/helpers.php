@@ -10,7 +10,7 @@ if (! function_exists('advResponse')) {
      * @param  array<string, mixed>  $headers
      * @return \App\Http\Responses\AdvResponse
      */
-    function advResponse($data, $status = Response::HTTP_OK, $headers = [])
+    function advResponse($data = [], $status = Response::HTTP_OK, $headers = [])
     {
         return new AdvResponse($data, $status, $headers);
     }
