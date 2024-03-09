@@ -1,65 +1,40 @@
-import { UserLevelsResource } from './types/UserLevelsResource';
-import { AdvApi } from './AdvApi';
-import { LevelUpSkill } from './types/LevelUpSkill';
-import { GameLogger } from './utilities/GameLogger';
-import { jsUcfirst } from './utilities/uppercase';
+import { SkillTypes } from './types/Skill';
+import { useSkillsStore } from './ui/stores/SkillsStore';
 
 export const LevelManager = {
-    skillElement: null,
-    skillData: <UserLevelsResource>{},
-    highLightIndex: 0,
-    elementIndexes: {
-        adventurer: 0,
-        farmer: 1,
-        miner: 2,
-        trader: 3,
-        warrior: 4,
-    },
-    getMinerLevel() {
-        return this.skillData.miner_level
-    },
-    getFarmerlevel() {
-        return this.skillData.farmer_level
-    },
-    getAdventurerLevel() {
-        return this.skillData.adventurer_respect
-    },
-    getTraderLevel() {
-        return this.skillData.trader_level
-    },
-    getWarriorLevel() {
-        return this.skillData.warrior_level
-    },
-    get() {
-        AdvApi.get<UserLevelsResource>('/userlevels').then((response) => {
-            this.skillData = response;
-        });
-    },
-    update(levelData: LevelUpSkill[]) {
-        if (!Object.keys(levelData)) return false;
+    showHasLevelRequired(
+        skill: SkillTypes,
+        levelRequired: number,
+        uiElement: HTMLElement,
+    ) {
+        const store = useSkillsStore();
 
-        let index = this.elementIndexes[levelData["skill"]];
-        let element = document.getElementById("skills").querySelectorAll(".skill_level")[index];
-        element.innerHTML = levelData["new_level"];
-        GameLogger.addMessage(
-            "Congratulations! You have leveled up " + jsUcfirst(levelData["skill"]) + " to " + levelData["new_level"]
-        );
-        setInterval(() => this.skillHighlight(document.getElementById("skills").children[index]), 1000);
-    },
-    skillHighlight(element) {
-        if (element.style.backgroundColor === "" || element.style.backgroundColor == "rgb(201, 155, 105)") {
-            element.style.backgroundColor = "#f8f2ec";
+        let hasRequiredLevel = false;
+        switch (skill) {
+            case 'farmer':
+                hasRequiredLevel = store.hasRequiredFarmerLevel(levelRequired);
+                break;
+
+            case 'adventurer':
+                hasRequiredLevel =
+                    store.hasRequiredAdventurerRespect(levelRequired);
+                break;
+            case 'miner':
+                hasRequiredLevel = store.hasRequiredMinerLevel(levelRequired);
+                break;
+            case 'trader':
+                hasRequiredLevel = store.hasRequiredTraderLevel(levelRequired);
+                break;
+            case 'warrior':
+                hasRequiredLevel = store.hasRequiredWarriorLevel(levelRequired);
+                break;
+            default:
+                break;
+        }
+        if (hasRequiredLevel === false) {
+            uiElement.classList.add('not-able-color');
         } else {
-            element.style.backgroundColor = "#c99b69";
+            uiElement.classList.remove('not-able-color');
         }
     },
-    showHasLevelRequired(skill: string, levelRequired: number, uiElement: HTMLElement) {
-        let currentLevel = this.skillData[skill + "_level"];
-
-        if (currentLevel > levelRequired) {
-            uiElement.classList.add("not-able-color");
-        } else {
-            uiElement.classList.remove("not-able-color");
-        }
-    }
 };

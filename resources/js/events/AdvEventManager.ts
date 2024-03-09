@@ -1,5 +1,10 @@
 import { createGameEventManager } from '@/lib/GameEventManager';
+import { XpGainedEvent } from './XpGainedEvent';
 
-type AdvEvents = {};
+type AdvEvents = {
+    XpGainedEvent: () => void;
+};
 
-export const AdvEventManager = createGameEventManager<AdvEvents>({});
+export const AdvEventManager = createGameEventManager<AdvEvents>({
+    XpGainedEvent: () => XpGainedEvent.handle(),
+});

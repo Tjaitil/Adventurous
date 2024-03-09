@@ -17,7 +17,6 @@ import { CustomFetchApi } from './CustomFetchApi';
 import { GameProperties, loadWorldParamters } from "./types/Advclient";
 import { getRandomInteger } from "./utilities/getRandomInteger";
 import { jsUcWords } from "./utilities/uppercase";
-import { LevelManager } from './LevelManager';
 import { setUpTabList } from './utilities/tabs';
 import { AssetPaths } from './clientScripts/ImagePath';
 import { GetWorldResponse } from './types/Responses/WorldLoaderResponse';
@@ -285,8 +284,6 @@ export class Game {
         });
         // Initial loading screen
         loadingCanvas.loadingScreen();
-
-        LevelManager.get();
 
         this.loadGame();
         setTimeout(() => {
