@@ -1,5 +1,4 @@
 import { clientSettings } from "./clientSettings";
-import { hideAllSkillTooltips } from "./getXp";
 
 export const sidebar = {
     sidebarElement: document.getElementById("sidebar"),
@@ -59,7 +58,6 @@ export const sidebar = {
                 element.classList.add("absolute");
             }
         });
-        hideAllSkillTooltips();
     },
     hideTabs() {
         let tabpanels = <HTMLElement[]>[...document.getElementById("sidebar-tabpanels").querySelectorAll(".tabpanel")];
