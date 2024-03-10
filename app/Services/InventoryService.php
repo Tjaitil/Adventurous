@@ -15,11 +15,15 @@ use Illuminate\Support\Facades\Auth;
  */
 class InventoryService
 {
-    private $inventory_items = [];
+    /**
+     * @var Collection<Inventory>
+     */
+    private ?Collection $inventory_items;
 
     public function __construct(
         protected Inventory $inventory,
     ) {
+        $this->inventory_items = $this->getInventory();
     }
 
     /**
@@ -72,7 +76,7 @@ class InventoryService
     }
 
     /**
-     * @param  null|int  $plusAmont Can be used to check if inventory is full included a plus amount
+     * @param  null|int  $plusAmont  Can be used to check if inventory is full included a plus amount
      */
     public function isInventoryIsFull(?int $plusAmont = null): bool
     {
@@ -93,7 +97,7 @@ class InventoryService
     /**
      * Log when user does not have enough amount
      *
-     * @param  string  $name Item name
+     * @param  string  $name  Item name
      */
     public function logNotEnoughAmount(string $name): JsonResponse
     {
@@ -104,17 +108,14 @@ class InventoryService
     /**
      * Edit item in inventory
      *
-     * @param  string  $item Item to edit
-     * @param  int  $amount Positive will add and negative will subtract
+     * @param  string  $item  Item to edit
+     * @param  int  $amount  Positive will add and negative will subtract
      * @return self
      *
      * @throws Exception On full inventory
      */
     public function edit(string $item, int $amount)
     {
-        if (count($this->inventory_items) === 0) {
-            $this->getInventory();
-        }
         $InventoryItem = $this->findItem($item);
 
         $new_amount = (is_null($InventoryItem)) ? $amount : $InventoryItem->amount + $amount;
@@ -144,7 +145,7 @@ class InventoryService
         return $this;
     }
 
-    public function checkSkipInventory()
+    public function checkSkipInventory(): bool
     {
         if (boolval($_ENV['skip_inventory']) === true) {
             return true;
