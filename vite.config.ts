@@ -24,7 +24,6 @@ export default defineConfig({
                 'resources/js/app.js',
                 'resources/js/clientScripts/inventory.ts',
                 'resources/js/backgroundScroller.ts',
-                'resources/js/clientScripts/getXp.ts',
                 'resources/js/clientScripts/sidebar.ts',
             ],
             refresh: false,
