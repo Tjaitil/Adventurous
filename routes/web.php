@@ -12,6 +12,7 @@ use App\Http\Controllers\GameLoggerController;
 use App\Http\Controllers\HungerController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\LandingController;
+use App\Http\Controllers\LevelController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MerchantController;
 use App\Http\Controllers\MineController;
@@ -21,7 +22,6 @@ use App\Http\Controllers\StockpileController;
 use App\Http\Controllers\TavernController;
 use App\Http\Controllers\TraderAssignmentController;
 use App\Http\Controllers\TravelBureauController;
-use App\Http\Controllers\UserLevelsController;
 use App\Http\Controllers\WorkforceLodgeController;
 use App\Http\Controllers\WorldLoaderController;
 use App\Http\Controllers\ZinsstoreController;
@@ -126,7 +126,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/armycamp/endTraining', [ArmyCampController::class, 'endTraining']);
     Route::post('/armycamp/healWarrior', [ArmyCampController::class, 'healWarrior']);
 
-    Route::get('/userlevels', [UserLevelsController::class, 'getLevels']);
+    Route::get('/skill/level-check', [LevelController::class, 'checkLevel']);
 
     Route::get('/workforcelodge', [WorkforceLodgeController::class, 'index']);
     Route::post('/workforcelodge/efficiency/upgrade', [WorkforceLodgeController::class, 'upgradeEfficiency']);
