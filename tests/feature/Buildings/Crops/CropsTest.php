@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Crops;
 
+use App\Enums\GameEvents;
 use App\Enums\GameLocations;
 use App\Models\Crop;
 use App\Models\Farmer;
@@ -247,6 +248,8 @@ class CropsTest extends SkillTestCase
 
         $response->assertStatus(200);
         $response->json();
+
+        $this->assertResponseHasEvent($response, GameEvents::XpGainedEvent->value);
 
         $this->assertDatabaseHas('farmer', [
             'user_id' => $this->RandomUser->id,

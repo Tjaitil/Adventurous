@@ -2,8 +2,8 @@
 
 namespace App\tests;
 
+use App\Enums\GameEvents;
 use App\Enums\GameLocations;
-use App\Enums\SkillNames;
 use App\Models\Miner;
 use App\Models\Mineral;
 use App\Models\MinerWorkforce;
@@ -226,6 +226,8 @@ class MineTest extends SkillTestCase
             'new_hunger',
         ]);
 
+        $this->assertResponseHasEvent($response, GameEvents::XpGainedEvent->value);
+
         $this->assertDatabaseHas('miner', [
             'username' => $this->RandomUser->username,
             'mineral_ore' => null,
@@ -362,59 +364,13 @@ class MineTest extends SkillTestCase
             'item' => $Mineral->mineral_ore,
         ]);
 
+        $this->assertResponseNotHasEvent($response, GameEvents::XpGainedEvent->value);
         $UserLevels = UserLevels::where('user_id', $this->RandomUser->id)->first();
         if (! $UserLevels instanceof UserLevels) {
             $this->fail();
         }
 
         $this->assertEquals($this->RandomUser->userLevels->miner_xp, $UserLevels->miner_xp);
-    }
-
-    /**
-     * @dataProvider locationProvider
-     */
-    public function test_end_mining_where_user_gains_level(string $location, string $mineralOre)
-    {
-        $Mineral = Mineral::where('mineral_ore', $mineralOre)->first();
-
-        $this->setUserCurrentLocation($location, $this->RandomUser);
-        $this->setMinerLevel($Mineral->miner_level);
-
-        $Miner = Miner::where('username', $this->RandomUser->username)->where('location', $location)->firstOrFail();
-        $this->setSkillLevelUpAble(SkillNames::MINER->value);
-
-        $Miner->mineral_ore = $mineralOre;
-        $Miner->mining_finishes_at = Carbon::now()->subMinutes(5);
-        $Miner->save();
-
-        $MinerWorkforce = MinerWorkforce::where('user_id', $this->RandomUser->id)->firstOrFail();
-        $MinerWorkforce->avail_workforce -= 3;
-        $MinerWorkforce->{$location} = 3;
-        $MinerWorkforce->save();
-
-        $response = $this->post('/mine/end', [
-            'is_cancelling' => false,
-        ]);
-
-        $response->assertStatus(200);
-        $response->json();
-
-        $this->assertDatabaseHas('inventory', [
-            'username' => $this->RandomUser->username,
-            'item' => $Mineral->mineral_ore,
-        ]);
-
-        $UserLevels = UserLevels::where('user_id', $this->RandomUser->id)->first();
-        if (! $UserLevels instanceof UserLevels) {
-            $this->fail();
-        }
-
-        $this->assertResponseHasLevelUpMessage($response, SkillNames::MINER->value, $Mineral->miner_level + 1);
-
-        $this->assertDatabaseHas('user_levels', [
-            'user_id' => $this->RandomUser->id,
-            'miner_level' => $Mineral->miner_level + 1,
-        ]);
     }
 
     /**

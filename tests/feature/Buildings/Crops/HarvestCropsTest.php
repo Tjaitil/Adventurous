@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Buildings\Crops;
 
+use App\Enums\GameEvents;
 use App\Enums\GameLocations;
 use App\Models\Crop;
 use App\Models\Farmer;
@@ -192,6 +193,7 @@ class HarvestCropsTest extends SkillTestCase
         if (! $UserLevels instanceof UserLevels) {
             $this->fail();
         }
+        $this->assertResponseNotHasEvent($response, GameEvents::XpGainedEvent->value);
 
         $this->assertEquals($this->RandomUser->userLevels->farmer_xp, $UserLevels->farmer_xp);
     }
