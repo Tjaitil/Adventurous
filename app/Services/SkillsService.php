@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Actions\CanLevelUpAction;
+use App\Enums\GameEvents;
 use App\Enums\SkillNames;
 use App\Exceptions\JsonException;
 use App\Http\Builders\SkillsBuilder;
@@ -92,12 +93,9 @@ class SkillsService
     {
         $this->setUserLevels();
 
-        $results = $this->canSkillsLevelUP();
         $this->userLevels->save();
 
-        if (count($results) > 0 && $advResponse instanceof AdvResponse) {
-            $advResponse->addLevelUPs($results);
-        }
+        $advResponse->addEvent(GameEvents::XpGainedEvent->value);
     }
 
     public function updateFarmerXP(int $amount): self
