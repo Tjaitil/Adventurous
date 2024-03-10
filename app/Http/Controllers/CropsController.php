@@ -249,7 +249,7 @@ class CropsController extends Controller
         $Workforce->{$location} = 0;
         $Workforce->save();
 
-        $response = advResponse(['avail_workforce' => $Workforce->avail_workforce]);
+        $response->setData(['avail_workforce' => $Workforce->avail_workforce]);
 
         if (! $is_cancelling) {
             $response->addSuccessMessage("You have harvested $amount $Farmer->crop_type");
