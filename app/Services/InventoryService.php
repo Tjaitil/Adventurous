@@ -10,13 +10,10 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
-/**
- * @property Collection $inventory_items
- */
 class InventoryService
 {
     /**
-     * @var Collection<Inventory>
+     * @var Collection<int, Inventory>
      */
     private ?Collection $inventory_items;
 
@@ -29,7 +26,7 @@ class InventoryService
     /**
      * Get inventory
      *
-     * @return Collection
+     * @return Collection<int, \App\Models\Inventory>
      */
     public function getInventory()
     {
@@ -48,9 +45,7 @@ class InventoryService
     {
         $this->getInventory();
 
-        $item = $this->inventory_items->first(function ($value, $key) use ($item) {
-            return $value->item === $item;
-        });
+        $item = $this->inventory_items?->firstWhere('item', $item);
 
         return $item;
     }
@@ -82,7 +77,9 @@ class InventoryService
     {
         $currentCount = Inventory::where('username', Auth::user()->username)->count();
         if (isset($plusAmont)) {
-            return $currentCount += $plusAmont > 18;
+            $newAmount = $currentCount += $plusAmont;
+
+            return $newAmount > 18;
         } else {
             return $currentCount >= 18;
         }
@@ -120,7 +117,7 @@ class InventoryService
 
         $new_amount = (is_null($InventoryItem)) ? $amount : $InventoryItem->amount + $amount;
 
-        if ($this->inventory_items->count() >= 18 && ! $InventoryItem && $new_amount > 0) {
+        if ($this->inventory_items?->count() >= 18 && ! $InventoryItem && $new_amount > 0) {
 
             throw new InventoryFullException();
         } elseif ($InventoryItem === null) {
