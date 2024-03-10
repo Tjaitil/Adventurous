@@ -136,7 +136,7 @@ class SkillsService
      *  'new_level': int
      * }>
      */
-    public function canSkillsLevelUP(): array
+    public function levelUpSkills(): array
     {
         $this->setUserLevels();
 
@@ -177,6 +177,8 @@ class SkillsService
                 'new_level' => $this->userLevels->warrior_level,
             ];
         }
+
+        $this->userLevels->save();
 
         return $skills;
     }

@@ -14,7 +14,7 @@ class LevelController extends Controller
 
     public function checkLevel(): AdvResponse
     {
-        $skills = $this->skillsService->canSkillsLevelUP();
+        $skills = $this->skillsService->levelUpSkills();
         if ($skills) {
             $response = advResponse(['new_levels' => $skills]);
             foreach ($skills as $key => $skill) {
