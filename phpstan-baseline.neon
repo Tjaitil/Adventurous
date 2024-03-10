@@ -1536,11 +1536,6 @@ parameters:
 			path: app/Http/Controllers/TraderAssignmentController.php
 
 		-
-			message: "#^Cannot call method toArray\\(\\) on App\\\\Models\\\\UserLevels\\|null\\.$#"
-			count: 1
-			path: app/Http/Controllers/UserLevelsController.php
-
-		-
 			message: "#^Cannot access property \\$efficiency_level on App\\\\Models\\\\FarmerWorkforce\\|null\\.$#"
 			count: 1
 			path: app/Http/Controllers/WorkforceLodgeController.php
@@ -3786,11 +3781,6 @@ parameters:
 			path: app/Models/MerchantOffer.php
 
 		-
-			message: "#^Property App\\\\Models\\\\Miner\\:\\:\\$dates has no type specified\\.$#"
-			count: 1
-			path: app/Models/Miner.php
-
-		-
 			message: "#^Method App\\\\Models\\\\MinerWorkforce\\:\\:miner\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/Models/MinerWorkforce.php
@@ -5674,37 +5664,7 @@ parameters:
 			message: "#^Cannot call method save\\(\\) on App\\\\Models\\\\Hunger\\|null\\.$#"
 			count: 1
 			path: app/Services/HungerService.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$item\\.$#"
-			count: 1
-			path: app/Services/InventoryService.php
-
-		-
-			message: "#^Method App\\\\Services\\\\InventoryService\\:\\:checkSkipInventory\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/Services/InventoryService.php
-
-		-
-			message: "#^Method App\\\\Services\\\\InventoryService\\:\\:findItem\\(\\) should return App\\\\Models\\\\Inventory\\|null but returns Illuminate\\\\Database\\\\Eloquent\\\\Model\\|null\\.$#"
-			count: 1
-			path: app/Services/InventoryService.php
-
-		-
-			message: "#^Method App\\\\Services\\\\InventoryService\\:\\:getInventory\\(\\) return type with generic class Illuminate\\\\Database\\\\Eloquent\\\\Collection does not specify its types\\: TKey, TModel$#"
-			count: 1
-			path: app/Services/InventoryService.php
-
-		-
-			message: "#^Method App\\\\Services\\\\InventoryService\\:\\:isInventoryIsFull\\(\\) should return bool but returns int\\.$#"
-			count: 1
-			path: app/Services/InventoryService.php
-
-		-
-			message: "#^Property App\\\\Services\\\\InventoryService\\:\\:\\$inventory_items has no type specified\\.$#"
-			count: 1
-			path: app/Services/InventoryService.php
-
+			
 		-
 			message: "#^Access to an undefined property App\\\\Models\\\\LevelData\\:\\:\\$max_trade_workers\\.$#"
 			count: 1
@@ -5777,11 +5737,6 @@ parameters:
 
 		-
 			message: "#^Relation 'traderAssignment' is not found in App\\\\Models\\\\Trader model\\.$#"
-			count: 1
-			path: app/Services/ProfiencyService.php
-
-		-
-			message: "#^Relation 'workforce' is not found in App\\\\Models\\\\Miner model\\.$#"
 			count: 1
 			path: app/Services/ProfiencyService.php
 
