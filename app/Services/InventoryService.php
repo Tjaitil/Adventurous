@@ -33,7 +33,7 @@ class InventoryService
      */
     public function getInventory()
     {
-        return $this->inventory_items = $this->inventory->all()->where('username', Auth::user()->username);
+        return $this->inventory_items = $this->inventory->all()->where('username', Auth::user()?->username);
     }
 
     /**
