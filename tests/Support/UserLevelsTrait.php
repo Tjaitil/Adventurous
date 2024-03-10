@@ -83,16 +83,16 @@ trait UserLevelsTrait
 
         switch ($skill) {
             case SkillNames::FARMER->value:
-                $this->TestUserLevels->farmer_xp = $xpNextLevel - 1;
+                $this->TestUserLevels->farmer_xp = $xpNextLevel;
                 break;
             case SkillNames::MINER->value:
-                $this->TestUserLevels->miner_xp = $xpNextLevel - 1;
+                $this->TestUserLevels->miner_xp = $xpNextLevel;
                 break;
             case SkillNames::TRADER->value:
-                $this->TestUserLevels->trader_xp = $xpNextLevel - 1;
+                $this->TestUserLevels->trader_xp = $xpNextLevel;
                 break;
             case SkillNames::WARRIOR->value:
-                $this->TestUserLevels->builder_xp = $xpNextLevel - 1;
+                $this->TestUserLevels->builder_xp = $xpNextLevel;
                 break;
 
             default:
