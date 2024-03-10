@@ -98,6 +98,16 @@ class AdvResponse implements Responsable
     }
 
     /**
+     * @param value-of<\App\Enums\GameEvents>
+     */
+    public function addEvent(string $event): self
+    {
+        $this->data['events'][] = $event;
+
+        return $this;
+    }
+
+    /**
      * @param array<int, array{
      *  'skill': value-of<\App\Enums\SkillNames>,
      *  'new_level': int
