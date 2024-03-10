@@ -89,7 +89,7 @@ class SkillsService
             ->toResponse(request());
     }
 
-    public function updateSkills(?AdvResponse &$advResponse = null): void
+    public function updateSkills(AdvResponse &$advResponse): void
     {
         $this->setUserLevels();
 
