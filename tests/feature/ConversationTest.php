@@ -2,71 +2,25 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Support\Facades\Storage;
 use Tests\Support\UserTrait;
 use Tests\TestCase;
+use Tests\Utils\Contracts\ConversationContract;
+use Tests\Utils\Traits\ConversationTester;
 
-class ConversationTest extends TestCase
+class ConversationTest extends TestCase implements ConversationContract
 {
-    use UserTrait;
+    use ConversationTester, UserTrait;
 
-    public function test_start_conversation_has_correct_index(): void
+    public function setUp(): void
     {
-        $data = Storage::disk('gamedata')->json('conversations/pesr.json');
-        $User = $this->getRandomUser();
-        $response = $this->actingAs($User)
-            ->get('/conversation/next?person=pesr&is_starting=true');
+        parent::setUp();
 
-        $response->assertStatus(200);
-        $json = $response->json();
-        $index = session()->get('conversation_index');
-        foreach ($json['conversation_segment'] as $key => $segment) {
-            $this->assertArrayNotHasKey('server_event', $segment);
-        }
-        $this->assertArrayHasKey('conversation_segment', $json);
-        $this->assertEquals($data['index'], $index);
+        $this->actingAs($this->getRandomUser());
+        $this->__constructConversationTester('pesr');
     }
 
-    public function test_continue_conversation_has_correct_index(): void
+    public function test_conversation_tree(): void
     {
-        $data = Storage::disk('gamedata')->json('conversations/pesr.json');
-        $User = $this->getRandomUser();
-
-        session()->put('conversation_index', 'pr');
-
-        $response = $this->actingAs($User)
-            ->get('/conversation/next?person=pesr&nextKey=r');
-
-        $response->assertStatus(200);
-        $json = $response->json();
-        foreach ($json['conversation_segment'] as $key => $segment) {
-            $this->assertArrayNotHasKey('server_event', $segment);
-        }
-        $this->assertArrayHasKey('conversation_segment', $json);
-        $this->assertEquals('prr', session()->get('conversation_index'));
-    }
-
-    public function test_unvalid_conversation_returns_error(): void
-    {
-        $User = $this->getRandomUser();
-
-        $response = $this->actingAs($User)
-            ->get('/conversation/next?person=notvalid&nextKey=r');
-
-        $response->assertStatus(422);
-        $json = $response->json();
-        $this->assertArrayHasKey('error', $json);
-    }
-
-    public function test_unvalid_conversation_returns_error_when_starting(): void
-    {
-        $User = $this->getRandomUser();
-
-        $response = $this->actingAs($User)
-            ->get('/conversation/next?person=notvalid&is_starting=true');
-
-        $response->assertStatus(422);
-        $json = $response->json();
-        $this->assertArrayHasKey('error', $json);
+        $this->triggerConversationTree('pesr');
     }
 }
