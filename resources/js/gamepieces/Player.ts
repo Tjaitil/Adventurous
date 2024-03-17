@@ -36,7 +36,7 @@ export class Player implements MovingGameObject {
     left: DirectionBlockedCheck;
     down: DirectionBlockedCheck;
     right: DirectionBlockedCheck;
-    playerSize = 36;
+    playerSize = 38;
     diameterUp = this.y;
     diameterRight = this.x + this.width - 5;
     diameterDown = this.y + 28;
