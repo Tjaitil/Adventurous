@@ -16,6 +16,7 @@ use ReflectionMethod;
  * index {
  *  id: int,
  *  header: string,
+ *  client_events: string[] Fired when conversation is fetched on frontend,
  *  options: [
  *    {
  *      "person": person|player,

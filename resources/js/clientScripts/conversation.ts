@@ -9,6 +9,7 @@ import { ClientOverlayInterface } from './clientOverlayInterface';
 import { CustomFetchApi } from '../CustomFetchApi';
 import { AssetPaths } from './ImagePath';
 import { jsUcWords } from '../utilities/uppercase';
+import { Inventory } from './inventory';
 
 type ConversationCallback =
     | 'fetchBuilding'
@@ -20,6 +21,8 @@ type ConversationCallback =
     | 'showBuilding'
     | 'gameTravel.travel'
     | 'Inventory.update';
+
+type ConversationClientEvent = 'Inventory.update';
 
 addEventListener('load', function () {
     conversation.conversationDiv = document
@@ -150,6 +153,21 @@ export class conversation {
             this.conversationHeader.innerText = text;
         }
     }
+
+    private static handleClientEvents() {
+        if (this.currentConversationSegment.client_events.length > 0) {
+            this.currentConversationSegment.client_events.forEach(
+                clientEvent => {
+                    switch (clientEvent) {
+                        case 'Inventory.update':
+                            Inventory.update();
+                            break;
+                    }
+                },
+            );
+        }
+    }
+
     private static handleCallbacks() {
         const objArray = [];
         let triggerEvent: CallableFunction = () => {};
@@ -261,7 +279,7 @@ export class conversation {
             this.setButtonToggle(true);
             this.handleToggleButton();
         }
-
+        this.handleClientEvents();
         this.resetEventButton();
         this.makeLinks();
     }
@@ -350,6 +368,7 @@ interface conversationSegmentResponse {
 interface ConversationSegment {
     header?: string;
     options: ConversationOption[];
+    client_events: ConversationClientEvent[];
 }
 interface ConversationOption {
     person: string | null;
