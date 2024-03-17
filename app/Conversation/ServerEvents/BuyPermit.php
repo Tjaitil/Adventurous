@@ -17,10 +17,10 @@ class BuyPermit
 
     public function locationConditional(string $location): bool
     {
-        return Auth::user()->player->location === $location;
+        return Auth::user()->player?->location === $location;
     }
 
-    public function priceReplacer(string $location): string
+    public function priceReplacer(string $location): int
     {
         $MinerPermitCost = MinerPermitCost::where('location', $location)->firstOrFail();
 
