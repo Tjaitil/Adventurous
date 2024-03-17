@@ -1651,101 +1651,6 @@ parameters:
 			path: app/Http/Controllers/armymissions.php
 
 		-
-			message: "#^Expression \"\\$_SESSION\\['conversation'\\]\\['conv_index'\\]\" on a separate line does not do anything\\.$#"
-			count: 1
-			path: app/Http/Controllers/conversation.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\conversation\\:\\:checkPerson\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/Http/Controllers/conversation.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\conversation\\:\\:checkPerson\\(\\) has parameter \\$person with no type specified\\.$#"
-			count: 1
-			path: app/Http/Controllers/conversation.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\conversation\\:\\:conversationCheck\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/Http/Controllers/conversation.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\conversation\\:\\:dataReplacer\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/Http/Controllers/conversation.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\conversation\\:\\:dataReplacer\\(\\) has parameter \\$active_conversation with no type specified\\.$#"
-			count: 1
-			path: app/Http/Controllers/conversation.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\conversation\\:\\:echoConversation\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/Http/Controllers/conversation.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\conversation\\:\\:echoConversation\\(\\) has parameter \\$getIndex with no type specified\\.$#"
-			count: 1
-			path: app/Http/Controllers/conversation.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\conversation\\:\\:getConversation\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/Http/Controllers/conversation.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\conversation\\:\\:getConversation\\(\\) has parameter \\$person with no type specified\\.$#"
-			count: 1
-			path: app/Http/Controllers/conversation.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\conversation\\:\\:getNextLine\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/Http/Controllers/conversation.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\conversation\\:\\:getNextLine\\(\\) has parameter \\$POST with no type specified\\.$#"
-			count: 1
-			path: app/Http/Controllers/conversation.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\conversation\\:\\:setPerson\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/Http/Controllers/conversation.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\conversation\\:\\:setPerson\\(\\) has parameter \\$POST with no type specified\\.$#"
-			count: 1
-			path: app/Http/Controllers/conversation.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\conversation\\:\\:setPerson\\(\\) has parameter \\$set_index with no type specified\\.$#"
-			count: 1
-			path: app/Http/Controllers/conversation.php
-
-		-
-			message: "#^Property App\\\\Http\\\\Controllers\\\\conversation\\:\\:\\$POST has no type specified\\.$#"
-			count: 1
-			path: app/Http/Controllers/conversation.php
-
-		-
-			message: "#^Property App\\\\Http\\\\Controllers\\\\conversation\\:\\:\\$file has no type specified\\.$#"
-			count: 1
-			path: app/Http/Controllers/conversation.php
-
-		-
-			message: "#^Property App\\\\Http\\\\Controllers\\\\conversation\\:\\:\\$index has no type specified\\.$#"
-			count: 1
-			path: app/Http/Controllers/conversation.php
-
-		-
-			message: "#^Property App\\\\Http\\\\Controllers\\\\conversation\\:\\:\\$text has no type specified\\.$#"
-			count: 1
-			path: app/Http/Controllers/conversation.php
-
-		-
 			message: "#^Method App\\\\Http\\\\Controllers\\\\notfound\\:\\:index\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/Http/Controllers/error.php
@@ -5564,11 +5469,6 @@ parameters:
 			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
 			path: app/Services/ArmoryService.php
-
-		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
-			count: 1
-			path: app/Services/ConversationService.php
 
 		-
 			message: "#^Class App\\\\Services\\\\string not found\\.$#"
