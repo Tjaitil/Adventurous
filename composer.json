@@ -1,7 +1,7 @@
 {
-    "name": "laravel/laravel",
+    "name": "Adventurous",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "An RPG open world game",
     "keywords": [
         "laravel",
         "framework"
@@ -32,7 +32,8 @@
     },
     "autoload": {
         "files": [
-            "app/helpers.php"
+            "app/helpers.php",
+            "libs/GlobalModel.php"
         ],
         "psr-4": {
             "App\\": "app/",
