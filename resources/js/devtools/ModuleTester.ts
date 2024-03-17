@@ -59,3 +59,16 @@ export interface ModuleTesterOptions {
     defaultExport?: boolean;
     instantiate?: boolean;
 }
+
+/**
+ * Add module to window object in dev mode for easier testing
+ */
+export function addModuleTester(
+    classInstance: any,
+    name: string,
+    options: ModuleTesterOptions = {},
+) {
+    if (import.meta.env.DEV) {
+        new ModuleTester(classInstance, name, options);
+    }
+}

@@ -1,4 +1,4 @@
-import { ModuleTester } from './../devtools/ModuleTester';
+import { ModuleTester, addModuleTester } from './../devtools/ModuleTester';
 import { Character } from './../gamepieces/Character';
 import { controls } from './controls';
 import { ClientOverlayInterface } from './clientOverlayInterface';
@@ -339,4 +339,4 @@ export const inputHandler: IInputHandler = {
     },
 };
 
-(<any>window).inputHandler = inputHandler;
+addModuleTester(inputHandler, 'inputHandler');

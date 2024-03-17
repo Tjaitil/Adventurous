@@ -14,6 +14,7 @@ import { Item } from '../gamepieces/Item';
 import { StaticGameObject } from '../types/gamepieces/StaticGameObject';
 import { WorldMapData } from '../types/Advclient';
 import { HUD } from './HUD';
+import { addModuleTester } from '@/devtools/ModuleTester';
 
 export type gameObjectTypes = Character | Building | BaseStaticGameObject;
 
@@ -141,8 +142,8 @@ export const GamePieces = {
         inputHandler.checkBuilding();
 
         if (draw === true) {
-            (<any>window).gamePieces = GamePieces.objects;
-            (<any>window).visibleObjects = GamePieces.visibleObjects;
+            addModuleTester(GamePieces.objects, 'GamePieces');
+            addModuleTester(GamePieces.visibleObjects, 'visibleObjects');
             for (let i = 0, n = GamePieces.objects.length; i < n; i++) {
                 viewport.layer.frontObjects.fillStyle = 'red';
                 viewport.layer.frontObjects.fillRect(

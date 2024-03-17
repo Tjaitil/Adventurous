@@ -10,6 +10,7 @@ import { CustomFetchApi } from '../CustomFetchApi';
 import { AssetPaths } from './ImagePath';
 import { jsUcWords } from '../utilities/uppercase';
 import { Inventory } from './inventory';
+import { addModuleTester } from '@/devtools/ModuleTester';
 
 type ConversationCallback =
     | 'fetchBuilding'
@@ -384,3 +385,5 @@ interface ConversationRequest {
     is_starting: boolean;
     selected_option?: number;
 }
+
+addModuleTester(conversation, 'conversation');

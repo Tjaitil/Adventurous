@@ -1,4 +1,5 @@
 import { BaseAxios } from './ajax';
+import { addModuleTester } from './devtools/ModuleTester';
 
 export class CustomFetchApi extends BaseAxios {
     public static async get<T>(url: string): Promise<T> {
@@ -10,4 +11,4 @@ export class CustomFetchApi extends BaseAxios {
     }
 }
 
-(<any>window).AdvApi = CustomFetchApi;
+addModuleTester(CustomFetchApi, 'CustomFetchApi');

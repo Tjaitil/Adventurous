@@ -9,6 +9,7 @@ import viewport from '../clientScripts/viewport';
 import { GamePieces } from '../clientScripts/gamePieces';
 import { HUD } from '../clientScripts/HUD';
 import { AssetPaths } from '../clientScripts/ImagePath';
+import { addModuleTester } from '@/devtools/ModuleTester';
 
 export class Player implements MovingGameObject {
     width = 36;
@@ -101,7 +102,6 @@ export class Player implements MovingGameObject {
         this.diameterRight = this.x + this.width - 5;
         this.diameterDown = this.y + 28;
         this.diameterLeft = this.x + 5;
-        (<any>window).player = typeof Player;
     }
 
     load(xbase, ybase, nearestDaqloon) {
@@ -480,3 +480,4 @@ export class Player implements MovingGameObject {
         }
     }
 }
+addModuleTester(Player, 'Player');

@@ -1,3 +1,4 @@
+import { addModuleTester } from '@/devtools/ModuleTester';
 import { CustomFetchApi } from '../CustomFetchApi';
 
 export enum commonMessages {
@@ -248,4 +249,4 @@ enum GameLogTypes {
 }
 
 type GameLogType = `${GameLogTypes}`;
-(<any>window).GameLogger = GameLogger;
+addModuleTester(GameLogger, 'GameLogger');
