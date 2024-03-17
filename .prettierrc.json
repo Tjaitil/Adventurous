@@ -6,7 +6,7 @@
   "arrowParens": "avoid",
   "overrides": [
     {
-      "files": "*.json",
+      "files": "./storage/**/*.json",
       "options": {
         "tabWidth": 2
       }
