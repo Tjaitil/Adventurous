@@ -1,6 +1,6 @@
 import { Inventory } from './../clientScripts/inventory';
-import { AdvApi } from "../AdvApi";
-import storeContainer from "../utilities/storeContainer";
+import { AdvApi } from '../AdvApi';
+import storeContainer from '../utilities/storeContainer';
 import { StoreItemResponse } from '../types/Responses/StoreItemResponse';
 
 const zinsStoreModule = {
@@ -12,23 +12,23 @@ const zinsStoreModule = {
         });
     },
     async getData() {
-        AdvApi.get<StoreItemResponse>('/zinsstore/store').then((response) => {
+        AdvApi.get<StoreItemResponse>('/zinsstore/store').then(response => {
             storeContainer.setStoreItems(response.data.store_items);
         });
     },
     trade() {
-        let { item, amount } = storeContainer.getSelectedTrade() || {};
+        const { item, amount } = storeContainer.getSelectedTrade() || {};
         if (!item) return;
 
         AdvApi.post('/zinsstore', {
             item,
-            amount
+            amount,
         }).then(() => {
             Inventory.update();
-        })
+        });
     },
     onClose() {
         storeContainer.checkItemTooltip();
     },
-}
+};
 export default zinsStoreModule;

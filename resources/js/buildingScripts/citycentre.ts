@@ -79,30 +79,37 @@ const cityCentreModule = {
         // }
     },
     buyPermits() {
-        let amount = 50;
+        const amount = 50;
         // let location = document.querySelector('input[name="permit_location"]:checked').value;
-        let location = null;
+        const location = null;
         if (!location) {
-            gameLogger.addMessage("ERROR Select a location to buy permits", true);
+            gameLogger.addMessage(
+                'ERROR Select a location to buy permits',
+                true,
+            );
             return false;
         }
 
-        let data: BuyPermitsRequest = {
-            location
+        const data: BuyPermitsRequest = {
+            location,
         };
 
-        AdvApi.post<BuyPermitsResponse>('mine/permits/buy', {}).then((response) => {
-            let spans = document.getElementById("miner_permits").querySelectorAll("span");
-            if (location === "golbak") {
-                spans[0].innerText = response.data.new_permits + "";
-            } else {
-                spans[1].innerText = response.data.new_permits + "";
-            }
-            Inventory.update();
-        });
+        AdvApi.post<BuyPermitsResponse>('mine/permits/buy', {}).then(
+            response => {
+                const spans = document
+                    .getElementById('miner_permits')
+                    .querySelectorAll('span');
+                if (location === 'golbak') {
+                    spans[0].innerText = response.data.new_permits + '';
+                } else {
+                    spans[1].innerText = response.data.new_permits + '';
+                }
+                Inventory.update();
+            },
+        );
     },
     newArtefact() {
-        gameLogger.addMessage("Currently disabled", true);
+        gameLogger.addMessage('Currently disabled', true);
         // let data = "model=Artefact" + "&method=newArtefact";
         // ajaxP(data, function(response) {
         //     if(response[0] !== false) {
@@ -120,7 +127,7 @@ const cityCentreModule = {
         // });
     },
     setArtefact() {
-        gameLogger.addMessage("Currently disabled", true);
+        gameLogger.addMessage('Currently disabled', true);
         // let data = "model=Artefact" + "&method=setArtefact";
         // ajaxP(data, function(response) {
         //     if(response[0] !== false) {

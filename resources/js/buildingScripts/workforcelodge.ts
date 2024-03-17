@@ -1,25 +1,43 @@
-import { AdvApi } from "../AdvApi";
-import { Inventory } from "../clientScripts/inventory";
-import { advAPIResponse } from "../types/Responses/AdvResponse";
-import { GoldCostElement } from "../utilities/GoldCostElement";
+import { AdvApi } from '../AdvApi';
+import { Inventory } from '../clientScripts/inventory';
+import { advAPIResponse } from '../types/Responses/AdvResponse';
+import { GoldCostElement } from '../utilities/GoldCostElement';
 
 const workforceLodgeModule: IWorkforceLodgeModule = {
     activeInfoSectionName: null,
-    efficiencyLevelInfoElement: <HTMLElement>document.getElementById("upgrade-info-efficiency-level-el"),
-    minerEfficiencyLevelElement: <HTMLElement>document.getElementById("miner-efficiency-level-el"),
-    farmerEfficiencyLevelElement: <HTMLElement>document.getElementById("farmer-efficiency-level-el"),
+    efficiencyLevelInfoElement: <HTMLElement>(
+        document.getElementById('upgrade-info-efficiency-level-el')
+    ),
+    minerEfficiencyLevelElement: <HTMLElement>(
+        document.getElementById('miner-efficiency-level-el')
+    ),
+    farmerEfficiencyLevelElement: <HTMLElement>(
+        document.getElementById('farmer-efficiency-level-el')
+    ),
     init() {
-        this.efficiencyLevelInfoElement = <HTMLElement>document.getElementById("upgrade-info-efficiency-level-el");
-        this.minerEfficiencyLevelElement = <HTMLElement>document.getElementById("miner-efficiency-level-el");
-        this.farmerEfficiencyLevelElement = <HTMLElement>document.getElementById("farmer-efficiency-level-el");
+        this.efficiencyLevelInfoElement = <HTMLElement>(
+            document.getElementById('upgrade-info-efficiency-level-el')
+        );
+        this.minerEfficiencyLevelElement = <HTMLElement>(
+            document.getElementById('miner-efficiency-level-el')
+        );
+        this.farmerEfficiencyLevelElement = <HTMLElement>(
+            document.getElementById('farmer-efficiency-level-el')
+        );
 
-        let currentChecked = document.querySelector('input[name="efficiency-upgrade-profiency"]:checked');
-        let val = <ActiveInfoSection>currentChecked.getAttribute("data-efficiency-upgrade-profiency");
+        const currentChecked = document.querySelector(
+            'input[name="efficiency-upgrade-profiency"]:checked',
+        );
+        const val = <ActiveInfoSection>(
+            currentChecked.getAttribute('data-efficiency-upgrade-profiency')
+        );
         this.setActiveInfoSection(val);
-        let radios = <NodeListOf<HTMLInputElement>>document.getElementsByName("efficiency-upgrade-profiency");
+        const radios = <NodeListOf<HTMLInputElement>>(
+            document.getElementsByName('efficiency-upgrade-profiency')
+        );
         radios.forEach(element => {
-            element.addEventListener('change', (e) => {
-                let element = <HTMLInputElement>e.currentTarget;
+            element.addEventListener('change', e => {
+                const element = <HTMLInputElement>e.currentTarget;
                 if (element.checked) {
                     this.setActiveInfoSection(val);
                     this.setInfo(element);
@@ -27,54 +45,71 @@ const workforceLodgeModule: IWorkforceLodgeModule = {
             });
         });
 
-        document.getElementById("efficiency-upgrade-form").addEventListener("submit", () => this.upgradeEffiency());
+        document
+            .getElementById('efficiency-upgrade-form')
+            .addEventListener('submit', () => this.upgradeEffiency());
     },
     setInfo(element: HTMLInputElement) {
-        let upgradeCost = <ActiveInfoSection>element.getAttribute("data-efficiency-upgrade-cost");
-        let efficiencyLevel = parseInt(element.getAttribute("data-efficiency-level"));
+        const upgradeCost = <ActiveInfoSection>(
+            element.getAttribute('data-efficiency-upgrade-cost')
+        );
+        const efficiencyLevel = parseInt(
+            element.getAttribute('data-efficiency-level'),
+        );
         this.setCurrentEfficiencyLevel(efficiencyLevel);
-        let goldcastElementWrapper = <HTMLElement>document.getElementById("efficiency-upgrade-info").querySelectorAll(".gold-cost-wrapper")[0];
-        let goldcostElement = new GoldCostElement(goldcastElementWrapper);
+        const goldcastElementWrapper = <HTMLElement>(
+            document
+                .getElementById('efficiency-upgrade-info')
+                .querySelectorAll('.gold-cost-wrapper')[0]
+        );
+        const goldcostElement = new GoldCostElement(goldcastElementWrapper);
         goldcostElement.setGoldCost(parseInt(upgradeCost));
-
     },
     setActiveInfoSection(val: ActiveInfoSection) {
         this.activeInfoSectionName = val;
     },
     setCurrentEfficiencyLevel(level: number) {
-        this.efficiencyLevelInfoElement.innerHTML = level + "";
+        this.efficiencyLevelInfoElement.innerHTML = level + '';
 
-        if (this.activeInfoSectionName === "miner") {
-            this.minerEfficiencyLevelElement.innerHTML = level + "";
+        if (this.activeInfoSectionName === 'miner') {
+            this.minerEfficiencyLevelElement.innerHTML = level + '';
         } else {
-            this.farmerEfficiencyLevelElement.innerHTML = level + "";
+            this.farmerEfficiencyLevelElement.innerHTML = level + '';
         }
     },
     upgradeEffiency() {
         const data: UpgradeEfficiencyRequest = {
-            skill: this.activeInfoSectionName
+            skill: this.activeInfoSectionName,
         };
 
-        let goldcastElementWrapper = <HTMLElement>document.getElementById("efficiency-upgrade-info").querySelectorAll(".gold-cost-wrapper")[0];
-        let goldcostElement = new GoldCostElement(goldcastElementWrapper);
+        const goldcastElementWrapper = <HTMLElement>(
+            document
+                .getElementById('efficiency-upgrade-info')
+                .querySelectorAll('.gold-cost-wrapper')[0]
+        );
+        const goldcostElement = new GoldCostElement(goldcastElementWrapper);
 
-        AdvApi.post<UpgradeEfficiencyResponse>('/workforcelodge/efficiency/upgrade', data).then((response) => {
-            Inventory.update();
-            goldcostElement.setGoldCost(response.data.new_efficiency_price);
-            this.setCurrentEfficiencyLevel(response.data.efficiency_level);
-        }).catch((error) => false);
-
-    }
-}
+        AdvApi.post<UpgradeEfficiencyResponse>(
+            '/workforcelodge/efficiency/upgrade',
+            data,
+        )
+            .then(response => {
+                Inventory.update();
+                goldcostElement.setGoldCost(response.data.new_efficiency_price);
+                this.setCurrentEfficiencyLevel(response.data.efficiency_level);
+            })
+            .catch(error => false);
+    },
+};
 
 interface UpgradeEfficiencyRequest {
     skill: ActiveInfoSection;
 }
 export interface UpgradeEfficiencyResponse extends advAPIResponse {
     data: {
-        efficiency_level: number,
-        new_efficiency_price: number
-    }
+        efficiency_level: number;
+        new_efficiency_price: number;
+    };
 }
 interface IWorkforceLodgeModule {
     activeInfoSectionName: ActiveInfoSection;
@@ -86,7 +121,7 @@ interface IWorkforceLodgeModule {
     setCurrentEfficiencyLevel(level: number): void;
     setActiveInfoSection(val: ActiveInfoSection): void;
     upgradeEffiency(): void;
-};
+}
 
-type ActiveInfoSection = "miner" | "farmer";
-export default workforceLodgeModule
+type ActiveInfoSection = 'miner' | 'farmer';
+export default workforceLodgeModule;

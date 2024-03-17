@@ -10,7 +10,8 @@ export interface StartTrainingRequest extends BaseRunWarriorActionRequest {
     training_type: string;
 }
 
-export interface ChangeWarriorTypeRequest extends RunSingleWarriorActionRequest {
+export interface ChangeWarriorTypeRequest
+    extends RunSingleWarriorActionRequest {
     new_warrior_type: string;
 }
 

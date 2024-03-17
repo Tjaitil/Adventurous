@@ -1,9 +1,9 @@
-import { GamePieces } from "./gamePieces";
-import { Game } from "../advclient";
-import { CanvasSprite } from "../types/CanvasSprite";
-import { Character } from "../gamepieces/Character";
-import { Building } from "../gamepieces/Building";
-import { NonDrawingTypes } from "../gamepieces/NonDrawingTypes";
+import { GamePieces } from './gamePieces';
+import { Game } from '../advclient';
+import { CanvasSprite } from '../types/CanvasSprite';
+import { Character } from '../gamepieces/Character';
+import { Building } from '../gamepieces/Building';
+import { NonDrawingTypes } from '../gamepieces/NonDrawingTypes';
 
 interface IViewport {
     counter: number;
@@ -99,22 +99,27 @@ export const viewport = {
         hud: null as CanvasRenderingContext2D,
     },
     setInitalDimensions() {
-        let screen = window.screen;
+        const screen = window.screen;
         let newWidth;
         if (screen.width < 800) {
-            newWidth = document.getElementsByTagName("section")[0].offsetWidth * 0.97;
+            newWidth =
+                document.getElementsByTagName('section')[0].offsetWidth * 0.97;
         } else {
-            newWidth = document.getElementsByTagName("section")[0].offsetWidth * 0.68;
+            newWidth =
+                document.getElementsByTagName('section')[0].offsetWidth * 0.68;
         }
-        let canvasContainer = document.getElementById("game-screen");
+        const canvasContainer = document.getElementById('game-screen');
         if (canvasContainer) {
             this.left = canvasContainer.offsetLeft;
             this.top = canvasContainer.offsetTop;
         }
         let newHeight;
         // If the device is mobile check for the shortest dimension of height and width to compensate for already rotated devices
-        if (Game.properties.device == "mobile") {
-            newHeight = screen.width < screen.height ? screen.width - 20 : screen.height - 20;
+        if (Game.properties.device == 'mobile') {
+            newHeight =
+                screen.width < screen.height
+                    ? screen.width - 20
+                    : screen.height - 20;
         } else {
             newHeight = screen.height - 20;
         }
@@ -128,52 +133,54 @@ export const viewport = {
         // Set layers and elements
         this.setInitalDimensions();
 
-        this.layer.background = layers.background.getContext("2d");
-        this.layer.background.fillStyle = "black";
+        this.layer.background = layers.background.getContext('2d');
+        this.layer.background.fillStyle = 'black';
         this.elements.background = layers.background;
 
-        this.layer.player = layers.player.getContext("2d");
+        this.layer.player = layers.player.getContext('2d');
         this.elements.player = layers.player;
-        this.layer.sprite = layers.sprite.getContext("2d");
+        this.layer.sprite = layers.sprite.getContext('2d');
         this.elements.sprite = layers.sprite;
-        this.layer.frontObjects = layers.frontObjects.getContext("2d");
+        this.layer.frontObjects = layers.frontObjects.getContext('2d');
         this.elements.frontObjects = layers.frontObjects;
-        this.layer.text = layers.text.getContext("2d");
+        this.layer.text = layers.text.getContext('2d');
         this.elements.text = layers.text;
-        this.layer.hud = layers.hud.getContext("2d");
+        this.layer.hud = layers.hud.getContext('2d');
         this.elements.hud = layers.hud;
 
         this.elements.background.width = this.width;
         this.elements.background.height = this.height;
-        this.elements.background.style.left = this.left + "px";
-        
+        this.elements.background.style.left = this.left + 'px';
+
         this.elements.player.width = this.width;
         this.elements.player.height = this.height;
-        this.elements.player.style.left = this.left + "px";
-        this.elements.player.style.zIndex = "2";
+        this.elements.player.style.left = this.left + 'px';
+        this.elements.player.style.zIndex = '2';
 
         this.elements.sprite.width = this.width;
         this.elements.sprite.height = this.height;
-        this.elements.sprite.style.left = this.left + "px";
-        this.elements.sprite.style.zIndex = "3";
+        this.elements.sprite.style.left = this.left + 'px';
+        this.elements.sprite.style.zIndex = '3';
 
         this.elements.frontObjects.width = this.width;
         this.elements.frontObjects.height = this.height;
-        this.elements.frontObjects.style.left = this.left + "px";
-        this.elements.frontObjects.style.zIndex = "4";
+        this.elements.frontObjects.style.left = this.left + 'px';
+        this.elements.frontObjects.style.zIndex = '4';
 
         this.elements.text.width = this.width;
         this.elements.text.height = this.height;
-        this.elements.text.style.left = this.left + "px";
-        this.elements.text.style.zIndex = "5";
+        this.elements.text.style.left = this.left + 'px';
+        this.elements.text.style.zIndex = '5';
 
         this.elements.hud.width = this.width;
         this.elements.hud.height = this.height;
-        this.elements.hud.style.left = this.left + "px";
-        this.elements.hud.style.zIndex = "6";
+        this.elements.hud.style.left = this.left + 'px';
+        this.elements.hud.style.zIndex = '6';
 
-        document.getElementById("canvas-border").style.width = this.width + "px";
-        document.getElementById("canvas-border").style.height = this.height + 2 + "px";
+        document.getElementById('canvas-border').style.width =
+            this.width + 'px';
+        document.getElementById('canvas-border').style.height =
+            this.height + 2 + 'px';
 
         this.layer.background.scale(this.zoom, this.zoom);
         this.layer.player.scale(this.zoom, this.zoom);
@@ -203,7 +210,7 @@ export const viewport = {
             0,
             0,
             this.width,
-            this.height
+            this.height,
         );
     },
     drawPlayer(canvasSprite: CanvasSprite) {
@@ -216,7 +223,7 @@ export const viewport = {
             this.playerCanvasX,
             this.playerCanvasY,
             canvasSprite.width,
-            canvasSprite.height
+            canvasSprite.height,
         );
     },
     resetPlayerLayer() {
@@ -226,24 +233,46 @@ export const viewport = {
         this.layer.frontObjects.clearRect(0, 0, this.width, this.height);
     },
     drawObject(layer, img, spriteX, spriteY, width, height) {
-        if (!["background", "frontObjects"].includes(layer)) return false;
-        if (layer === "background") {
-            this.layer.background.drawImage(img, spriteX, spriteY, width, height);
-        } else if (layer === "frontObjects") {
-            this.layer.frontObjects.drawImage(img, spriteX, spriteY, width, height);
+        if (!['background', 'frontObjects'].includes(layer)) return false;
+        if (layer === 'background') {
+            this.layer.background.drawImage(
+                img,
+                spriteX,
+                spriteY,
+                width,
+                height,
+            );
+        } else if (layer === 'frontObjects') {
+            this.layer.frontObjects.drawImage(
+                img,
+                spriteX,
+                spriteY,
+                width,
+                height,
+            );
         }
     },
     resetSpriteLayer() {
         this.layer.sprite.clearRect(0, 0, this.width, this.height);
     },
     drawSprite(img, spriteX, spriteY, sWidth, sHeight, x, y, width, height) {
-        this.layer.sprite.drawImage(img, spriteX, spriteY, sWidth, sHeight, x, y, width, height);
+        this.layer.sprite.drawImage(
+            img,
+            spriteX,
+            spriteY,
+            sWidth,
+            sHeight,
+            x,
+            y,
+            width,
+            height,
+        );
     },
     drawText(font, fillStyle, text, x, y, textAlign = false) {
         if (textAlign) {
-            this.layer.text.textAlign = "center";
+            this.layer.text.textAlign = 'center';
         } else {
-            this.layer.text.textAlign = "start";
+            this.layer.text.textAlign = 'start';
         }
         this.layer.text.font = font;
         this.layer.text.fillStyle = fillStyle;
@@ -253,11 +282,11 @@ export const viewport = {
         this.layer.text.clearRect(0, 0, this.width, this.height);
     },
     drawAttackCoolDown(cooldown) {
-        this.layer.player.fillStyle = "orange";
+        this.layer.player.fillStyle = 'orange';
         this.layer.player.fillRect(10, 60, 100 - (100 - cooldown), 10);
     },
     drawBlockCoolDown(cooldown) {
-        this.layer.player.fillStyle = "red";
+        this.layer.player.fillStyle = 'red';
         this.layer.player.fillRect(10, 90, 100 - (100 - cooldown), 10);
     },
     drawDaqloonHealthbar(fillstyle, x, y, width, height) {
@@ -267,13 +296,25 @@ export const viewport = {
     checkViewportGamePieces(first = false) {
         // If player has moved a certain amount of pixels update object that will be drawn
 
-        if (Math.abs(GamePieces.player.xTracker) > 100 || Math.abs(GamePieces.player.yTracker) > 100 || first == true) {
-            GamePieces.nearObjects = GamePieces.objects.filter((object) => {
+        if (
+            Math.abs(GamePieces.player.xTracker) > 100 ||
+            Math.abs(GamePieces.player.yTracker) > 100 ||
+            first == true
+        ) {
+            GamePieces.nearObjects = GamePieces.objects.filter(object => {
                 return (
-                    (Math.abs(object.diameterRight - GamePieces.player.xpos) <= this.width + 50 ||
-                        Math.abs(object.diameterLeft - GamePieces.player.xpos) <= this.width + 50) &&
-                    (Math.abs(object.diameterUp - GamePieces.player.ypos) <= this.height + 50 ||
-                        Math.abs(object.diameterDown - GamePieces.player.ypos) <= this.height + 50)
+                    (Math.abs(object.diameterRight - GamePieces.player.xpos) <=
+                        this.width + 50 ||
+                        Math.abs(
+                            object.diameterLeft - GamePieces.player.xpos,
+                        ) <=
+                            this.width + 50) &&
+                    (Math.abs(object.diameterUp - GamePieces.player.ypos) <=
+                        this.height + 50 ||
+                        Math.abs(
+                            object.diameterDown - GamePieces.player.ypos,
+                        ) <=
+                            this.height + 50)
                 );
             });
 
@@ -281,10 +322,16 @@ export const viewport = {
             GamePieces.nearCharacters = [];
             GamePieces.visibleObjects = [];
 
-            GamePieces.nearObjects.forEach((object) => {
-                if (object instanceof Character && object.type === "character") {
+            GamePieces.nearObjects.forEach(object => {
+                if (
+                    object instanceof Character &&
+                    object.type === 'character'
+                ) {
                     GamePieces.nearCharacters.push(object);
-                } else if (object instanceof Building && object.type === "building") {
+                } else if (
+                    object instanceof Building &&
+                    object.type === 'building'
+                ) {
                     GamePieces.nearBuildings.push(object);
                 }
 

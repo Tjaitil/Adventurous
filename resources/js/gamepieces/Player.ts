@@ -1,11 +1,14 @@
-import { MovingGameObject, DirectionBlockedCheck } from "../types/gamepieces/MovingGameObject";
-import { canvasTextHeader } from "../clientScripts/canvasText";
-import { controls } from "../clientScripts/controls";
-import { Game } from "../advclient";
-import viewport from "../clientScripts/viewport";
-import { GamePieces } from "../clientScripts/gamePieces";
-import { HUD } from "../clientScripts/HUD";
-import { AssetPaths } from "../clientScripts/ImagePath";
+import {
+    MovingGameObject,
+    DirectionBlockedCheck,
+} from '../types/gamepieces/MovingGameObject';
+import { canvasTextHeader } from '../clientScripts/canvasText';
+import { controls } from '../clientScripts/controls';
+import { Game } from '../advclient';
+import viewport from '../clientScripts/viewport';
+import { GamePieces } from '../clientScripts/gamePieces';
+import { HUD } from '../clientScripts/HUD';
+import { AssetPaths } from '../clientScripts/ImagePath';
 
 export class Player implements MovingGameObject {
     width = 36;
@@ -21,13 +24,13 @@ export class Player implements MovingGameObject {
     yMovement = 0;
     drawX: 0;
     drawY: 0;
-    src: "";
+    src: '';
     sprite = new Image(96, 128);
     headSprite = new Image(32, 224);
     bodySprite = new Image(32, 224);
     legsSprite = new Image(32, 224);
     spriteAttack = new Image(114, 32);
-    type: "player";
+    type: 'player';
     visible: true;
     // xTracker and yTracker used for tracking x and y l
     xTracker = 0;
@@ -51,7 +54,7 @@ export class Player implements MovingGameObject {
     hunted = false;
     loopIndex = 0;
     counter = 0;
-    direction = "none";
+    direction = 'none';
     loopArray = [0, 1, 0, 2];
     indexX = 32;
     indexY = 0;
@@ -75,7 +78,7 @@ export class Player implements MovingGameObject {
         block: 0,
     };
     movementSpeed = 60;
-    currentAnimation: string = "idle";
+    currentAnimation: string = 'idle';
     health = 100;
     regenerateCoundown = false;
     newDirection: string;
@@ -87,11 +90,13 @@ export class Player implements MovingGameObject {
     setup() {
         this.setHuntedStatus(false);
         this.draw();
-        this.sprite.src = AssetPaths.getImagePath("character1.png");
-        this.spriteAttack.src = AssetPaths.getImagePath("character attack2.png");
-        this.headSprite.src = AssetPaths.getImagePath("character head.png");
-        this.bodySprite.src = AssetPaths.getImagePath("character body.png");
-        this.legsSprite.src = AssetPaths.getImagePath("character legs.png");
+        this.sprite.src = AssetPaths.getImagePath('character1.png');
+        this.spriteAttack.src = AssetPaths.getImagePath(
+            'character attack2.png',
+        );
+        this.headSprite.src = AssetPaths.getImagePath('character head.png');
+        this.bodySprite.src = AssetPaths.getImagePath('character body.png');
+        this.legsSprite.src = AssetPaths.getImagePath('character legs.png');
         this.diameterUp = this.y;
         this.diameterRight = this.x + this.width - 5;
         this.diameterDown = this.y + 28;
@@ -146,22 +151,22 @@ export class Player implements MovingGameObject {
 
         // Player died
         if (this.health <= 0) {
-            canvasTextHeader.setDraw("You died!", 2);
+            canvasTextHeader.setDraw('You died!', 2);
 
             this.health = 100;
             let newX;
             let newY;
             // Locate nearest town
             switch (Game.properties.currentMap) {
-                case "6.7":
+                case '6.7':
                     newX = 5;
                     newY = 7;
                     break;
-                case "8.3":
+                case '8.3':
                     newX = 8;
                     newY = 2;
                     break;
-                case "3.10":
+                case '3.10':
                     newX = 4;
                     newY = 9;
                     break;
@@ -171,11 +176,11 @@ export class Player implements MovingGameObject {
             setTimeout(
                 () =>
                     Game.setWorld({
-                        method: "changeMap",
+                        method: 'changeMap',
                         newxBase: newX,
                         newyBase: newY,
                     }),
-                2000
+                2000,
             );
         }
         HUD.elements.healthProgressBar.setCurrentValue(this.health);
@@ -262,9 +267,9 @@ export class Player implements MovingGameObject {
     setHuntedStatus(status: boolean) {
         this.hunted = status;
         if (this.hunted === true) {
-            HUD.elements.huntedIcon.style.visibility = "visible";
+            HUD.elements.huntedIcon.style.visibility = 'visible';
         } else {
-            HUD.elements.huntedIcon.style.visibility = "hidden";
+            HUD.elements.huntedIcon.style.visibility = 'hidden';
         }
     }
 
@@ -281,10 +286,10 @@ export class Player implements MovingGameObject {
         //     this.regenerateCoundown = true;
         //     setTimeout(() => this.regenerateHealth(), 7000);
         // }
-        this.up = "";
-        this.left = "";
-        this.down = "";
-        this.right = "";
+        this.up = '';
+        this.left = '';
+        this.down = '';
+        this.right = '';
         // //drawing starts at x (diameterLeft) and y (diameterUp) line
         if (newPos !== false) {
             this.xpos = Game.properties.xbase + this.xMovement;
@@ -300,24 +305,24 @@ export class Player implements MovingGameObject {
         }
         this.determineDirection();
         if (this.combat === true && !this.ranged && this.combatActions.attack) {
-            let newDirection = "none";
+            let newDirection = 'none';
             if (controls.playerDown === true) {
-                newDirection = "down";
-                this.direction = "down";
+                newDirection = 'down';
+                this.direction = 'down';
                 this.indexY = 0;
                 this.imageFix = 10;
             } else if (controls.playerUp === true) {
-                newDirection = "up";
-                this.direction = "up";
+                newDirection = 'up';
+                this.direction = 'up';
                 this.indexY = 2;
                 this.imageFix = 5;
             }
             // If direction direction is left or right then draw sprite heading down
             if (
-                (newDirection === "undefined" || newDirection == "none") &&
+                (newDirection === 'undefined' || newDirection == 'none') &&
                 (controls.playerRight === true || controls.playerLeft === true)
             ) {
-                if (this.direction === "up") {
+                if (this.direction === 'up') {
                     this.indexY = 2;
                     this.imageFix = 5;
                 } else {
@@ -325,25 +330,36 @@ export class Player implements MovingGameObject {
                     this.imageFix = 10;
                 }
             }
-            if (this.attack === true && Game.properties.duration % 2 === 0 && this.cooldown <= 0) {
+            if (
+                this.attack === true &&
+                Game.properties.duration % 2 === 0 &&
+                this.cooldown <= 0
+            ) {
                 this.indexY += 1;
                 if (this.attackLoop === 0) {
                     this.loopIndex = 0;
                     let direction;
                     for (let i = 0; i < GamePieces.daqloon.length; i++) {
                         if (
-                            (this.direction === "up" &&
+                            (this.direction === 'up' &&
                                 GamePieces.daqloon[i].y < this.ypos &&
-                                Math.abs(GamePieces.daqloon[i].x - this.xpos) < 30 &&
-                                Math.abs(GamePieces.daqloon[i].diameterDown - this.ypos) < 16) ||
-                            (this.direction === "down" &&
-                                Math.abs(GamePieces.daqloon[i].x - this.xpos) < 64 &&
-                                Math.abs(GamePieces.daqloon[i].y - this.ypos + 32) < 60)
+                                Math.abs(GamePieces.daqloon[i].x - this.xpos) <
+                                    30 &&
+                                Math.abs(
+                                    GamePieces.daqloon[i].diameterDown -
+                                        this.ypos,
+                                ) < 16) ||
+                            (this.direction === 'down' &&
+                                Math.abs(GamePieces.daqloon[i].x - this.xpos) <
+                                    64 &&
+                                Math.abs(
+                                    GamePieces.daqloon[i].y - this.ypos + 32,
+                                ) < 60)
                         ) {
-                            if (this.direction === "down") {
-                                direction = "down";
+                            if (this.direction === 'down') {
+                                direction = 'down';
                             } else {
-                                direction = "up";
+                                direction = 'up';
                             }
                             GamePieces.daqloon[i].hit(direction);
                         }
@@ -359,7 +375,10 @@ export class Player implements MovingGameObject {
                 } else {
                     this.attackLoop++;
                 }
-            } else if (Game.properties.duration % 10 === 0 && this.attack === false) {
+            } else if (
+                Game.properties.duration % 10 === 0 &&
+                this.attack === false
+            ) {
                 if (this.loopIndex > 3) {
                     this.loopIndex = 0;
                 }
@@ -378,8 +397,11 @@ export class Player implements MovingGameObject {
             }
             this.draw();
         } else {
-            if (this.newDirection != "none" && (this.oldYbase != this.ypos || this.oldXbase != this.xpos)) {
-                if (this.newDirection != "none" && Game.isGameDuration(10)) {
+            if (
+                this.newDirection != 'none' &&
+                (this.oldYbase != this.ypos || this.oldXbase != this.xpos)
+            ) {
+                if (this.newDirection != 'none' && Game.isGameDuration(10)) {
                     this.draw();
                     this.loopIndex++;
                 } else if (this.newDirection != this.direction) {
@@ -388,7 +410,7 @@ export class Player implements MovingGameObject {
                     this.draw();
                     this.loopIndex++;
                 }
-                if (this.loopIndex == 5 && this.newDirection != "none") {
+                if (this.loopIndex == 5 && this.newDirection != 'none') {
                     this.loopIndex = 1;
                 }
                 this.counter++;
@@ -412,28 +434,40 @@ export class Player implements MovingGameObject {
     }
 
     determineDirection() {
-        this.newDirection = "none";
+        this.newDirection = 'none';
         if (controls.playerLeft == true && controls.playerDown == true) {
-            this.newDirection = "left, down";
+            this.newDirection = 'left, down';
         }
-        if (controls.playerRight == true && controls.playerUp == false && controls.playerDown == false) {
-            this.newDirection = "right";
+        if (
+            controls.playerRight == true &&
+            controls.playerUp == false &&
+            controls.playerDown == false
+        ) {
+            this.newDirection = 'right';
             this.indexY = 32;
         }
-        if (controls.playerLeft == true && controls.playerUp == false && controls.playerDown == false) {
-            this.newDirection = "left";
+        if (
+            controls.playerLeft == true &&
+            controls.playerUp == false &&
+            controls.playerDown == false
+        ) {
+            this.newDirection = 'left';
             this.indexY = 64;
         }
         if (controls.playerDown == true) {
-            this.newDirection = "right, down";
+            this.newDirection = 'right, down';
             this.indexY = 0;
         }
         if (controls.playerUp == true) {
-            this.newDirection = "right, up";
+            this.newDirection = 'right, up';
             this.indexY = 96;
         }
-        if (controls.playerRight == true && controls.playerUp == false && controls.playerDown == false) {
-            this.newDirection = "right";
+        if (
+            controls.playerRight == true &&
+            controls.playerUp == false &&
+            controls.playerDown == false
+        ) {
+            this.newDirection = 'right';
             this.indexY = 32;
         }
         if (
@@ -442,7 +476,7 @@ export class Player implements MovingGameObject {
             controls.playerRight == false &&
             controls.playerDown == false
         ) {
-            this.newDirection = "none";
+            this.newDirection = 'none';
         }
     }
 }

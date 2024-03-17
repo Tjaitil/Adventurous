@@ -18,20 +18,21 @@ const merchantModule = {
         if (traderModule.init) traderModule.init();
     },
     async getData() {
-        AdvApi.get<StoreItemResponse>('/merchant/store/items').then((response) => {
-            storeContainer.setStoreItems(response.data.store_items);
-        });
+        AdvApi.get<StoreItemResponse>('/merchant/store/items').then(
+            response => {
+                storeContainer.setStoreItems(response.data.store_items);
+            },
+        );
     },
     updateStockCountdown(pause = false, end?: boolean) {
         if (end === true) {
             clearTimeout(this.stockTimerId);
-        }
-        else if (pause == true) {
+        } else if (pause == true) {
             this.resetStockTimer();
         }
     },
     async updateStock() {
-        AdvApi.get<StoreResponse>('/merchant/store').then((response) => {
+        AdvApi.get<StoreResponse>('/merchant/store').then(response => {
             storeContainer.setStoreItems(response.data.store_items);
             storeContainer.setNewStoreItemsUI(response.html.storeItemList);
         });
@@ -40,12 +41,12 @@ const merchantModule = {
         clearTimeout(this.stockTimerId);
         this.stockTimerId = setTimeout(() => {
             if (this.updateStock) {
-                this.updateStock()
+                this.updateStock();
             }
         }, 15000);
     },
     getMerchantCountdown() {
-        let data = "&model=Merchant" + "&method=getMerchantCountdown";
+        const data = '&model=Merchant' + '&method=getMerchantCountdown';
 
         // TODO: Fix api endpoint
         //     let responseText = response[1];
@@ -67,35 +68,37 @@ const merchantModule = {
         // });
     },
     trade() {
-        let result = storeContainer.getSelectedTrade();
+        const result = storeContainer.getSelectedTrade();
         if (!result) return;
 
         if (storeContainer.isTradeNotStoreItem) {
-            AdvApi.post('/merchant/trade/open', result).then(async (response) => {
+            AdvApi.post('/merchant/trade/open', result).then(async response => {
                 Inventory.update();
             });
         } else {
-            AdvApi.post<StoreResponse>('/merchant/trade', result).then(async (response) => {
-                await Inventory.update().then(() => {
-                    storeContainer.setStoreItems(response.data.store_items);
-                    storeContainer.setNewStoreItemsUI(response.html.storeItemList);
-                    storeContainer.resetUI();
-                    storeContainer.addSelectTradeToInventory();
-                });
-                // Update diplomacy tab
-            })
+            AdvApi.post<StoreResponse>('/merchant/trade', result).then(
+                async response => {
+                    await Inventory.update().then(() => {
+                        storeContainer.setStoreItems(response.data.store_items);
+                        storeContainer.setNewStoreItemsUI(
+                            response.html.storeItemList,
+                        );
+                        storeContainer.resetUI();
+                        storeContainer.addSelectTradeToInventory();
+                    });
+                    // Update diplomacy tab
+                },
+            );
         }
     },
 };
-export {
-    merchantModule as default,
-};
+export { merchantModule as default };
 
 interface StoreResponse extends advAPIResponse {
     html: {
         storeItemList: string;
-    },
+    };
     data: {
         store_items: StoreItemResource[];
-    }
+    };
 }

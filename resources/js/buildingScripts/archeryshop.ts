@@ -1,34 +1,36 @@
 import { BaseBuyStoreItemRequest } from '../types/requests/BaseBuyStoreItemRequest';
 import { StoreItemResponse } from './../types/Responses/StoreItemResponse';
-import { AdvApi } from "./../AdvApi";
-import storeContainer from "../utilities/storeContainer";
-import { Inventory } from "../clientScripts/inventory";
+import { AdvApi } from './../AdvApi';
+import storeContainer from '../utilities/storeContainer';
+import { Inventory } from '../clientScripts/inventory';
 
 const archeryShopModule = {
     init() {
         this.getData();
         storeContainer.addSelectTrade();
-        storeContainer.addSelectedItemButtonEvent(this.fletch, "fletch");
+        storeContainer.addSelectedItemButtonEvent(this.fletch, 'fletch');
     },
     getData() {
-        AdvApi.get<StoreItemResponse>("/archeryshop/get").then((response) => {
-            storeContainer.setStoreItems(response.data.store_items);
-        }).catch(() => false);
+        AdvApi.get<StoreItemResponse>('/archeryshop/get')
+            .then(response => {
+                storeContainer.setStoreItems(response.data.store_items);
+            })
+            .catch(() => false);
     },
     fletch() {
-        let result = storeContainer.getSelectedTrade();
+        const result = storeContainer.getSelectedTrade();
         if (!result) return;
 
-        let { item, amount } = result;
+        const { item, amount } = result;
 
-        let data: BaseBuyStoreItemRequest = {
+        const data: BaseBuyStoreItemRequest = {
             item,
             amount,
-        }
+        };
 
-        AdvApi.post('/archeryshop/fletch', data).then((response) =>
-            Inventory.update()
-        ).catch(() => false);
+        AdvApi.post('/archeryshop/fletch', data)
+            .then(response => Inventory.update())
+            .catch(() => false);
     },
     onClose() {
         storeContainer.checkItemTooltip();

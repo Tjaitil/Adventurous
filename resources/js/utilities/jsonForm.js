@@ -8,7 +8,8 @@ function JSONForm(form) {
                     if (form[i].children[x].tagName != 'INPUT') {
                         continue;
                     }
-                    form_data[form[i].children[x].name] = form[i].children[x].value;
+                    form_data[form[i].children[x].name] =
+                        form[i].children[x].value;
                 }
                 break;
             case 'INPUT':
@@ -22,7 +23,8 @@ function JSONForm(form) {
                 break;
             case 'SELECT':
                 if (form[i].name.length > 0) {
-                    form_data[form[i].name] = form[i].children[form[i].selectedIndex].value;
+                    form_data[form[i].name] =
+                        form[i].children[form[i].selectedIndex].value;
                     break;
                 }
                 break;

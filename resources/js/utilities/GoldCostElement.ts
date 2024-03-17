@@ -1,4 +1,3 @@
-
 export class GoldCostElement {
     private element: HTMLElement;
     private goldAmountElement: HTMLElement;
@@ -7,8 +6,12 @@ export class GoldCostElement {
 
     constructor(element: HTMLElement) {
         this.element = element;
-        this.goldAmountElement = <HTMLElement>element.querySelectorAll(".gold-cost-amount")[0];
-        this.goldIconElement = <HTMLElement>element.querySelectorAll(".gold-icon")[0];
+        this.goldAmountElement = <HTMLElement>(
+            element.querySelectorAll('.gold-cost-amount')[0]
+        );
+        this.goldIconElement = <HTMLElement>(
+            element.querySelectorAll('.gold-icon')[0]
+        );
         this.goldCost = parseInt(this.goldAmountElement.innerText);
     }
 

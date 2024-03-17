@@ -1,7 +1,7 @@
-import { StaticGameObject } from "../types/gamepieces/StaticGameObject";
-import viewport from "../clientScripts/viewport";
-import { NonDrawingTypes } from "./NonDrawingTypes";
-import { AssetPaths } from "../clientScripts/ImagePath";
+import { StaticGameObject } from '../types/gamepieces/StaticGameObject';
+import viewport from '../clientScripts/viewport';
+import { NonDrawingTypes } from './NonDrawingTypes';
+import { AssetPaths } from '../clientScripts/ImagePath';
 
 export class BaseStaticGameObject implements StaticGameObject {
     public type: string;
@@ -43,7 +43,7 @@ export class BaseStaticGameObject implements StaticGameObject {
         this.drawY = Math.round(initObjectData.y - viewport.offsetY);
 
         if (this.src) {
-            this.displayName = this.src.split(".png")[0];
+            this.displayName = this.src.split('.png')[0];
         }
 
         this.noCollision = initObjectData.noCollision;
@@ -51,9 +51,10 @@ export class BaseStaticGameObject implements StaticGameObject {
 
         this.sprite.src = AssetPaths.getImagePath(this.src);
         if (!this.src && !NonDrawingTypes.includes(this.type)) {
-            console.error("No image source found for " + initObjectData);
+            console.error('No image source found for ' + initObjectData);
         }
         // check source for missing format
-        if (this.sprite.src.includes(".png") === false) this.sprite.src += ".png";
+        if (this.sprite.src.includes('.png') === false)
+            this.sprite.src += '.png';
     }
 }

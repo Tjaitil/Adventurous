@@ -1,19 +1,19 @@
-import { advAPIResponse } from "./AdvResponse"
+import { advAPIResponse } from './AdvResponse';
 
 export interface MerchantStoreResponse extends advAPIResponse {
     html: {
-        store: string,
-    }
+        store: string;
+    };
 }
 
 export interface SingleItemResponse extends advAPIResponse {
     html: {
-        storeItem: string,
-    }
+        storeItem: string;
+    };
 }
 
 export interface ItemPriceResponse {
     data: {
-        price: number,
-    }
+        price: number;
+    };
 }

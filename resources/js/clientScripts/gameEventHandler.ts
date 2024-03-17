@@ -2,7 +2,7 @@ export const eventHandler = {
     events: [],
     eventOngoing: false,
     checkEvent() {
-        return
+        return;
         // if(this.eventOngoing == true) {
         //     return;
         // }
@@ -15,7 +15,7 @@ export const eventHandler = {
         //     }
         // }
         // function loadEvent(event) {
-        //     let data = "event=" + event; 
+        //     let data = "event=" + event;
         //     ajaxJS(data, function(response) {
         //         if(response[0] !== false) {
         //             let responseText = response[1];
@@ -26,7 +26,7 @@ export const eventHandler = {
         //                     img2 = img.cloneNode();
         //                     img2.onload = function() {
         //                         game.properties.context3.drawImage(img2, game.properties.charX + element.x,
-        //                                                   game.properties.charY + element.y);   
+        //                                                   game.properties.charY + element.y);
         //                     };
         //                     img2.src = "public/images/" + element.src;
         //                 });
@@ -36,5 +36,5 @@ export const eventHandler = {
         //         }
         //     }, true, 'handler_e');
         // }
-    }
+    },
 };

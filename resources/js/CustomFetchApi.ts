@@ -1,7 +1,6 @@
-import { BaseAxios } from "./ajax";
+import { BaseAxios } from './ajax';
 
 export class CustomFetchApi extends BaseAxios {
-
     public static async get<T>(url: string): Promise<T> {
         return BaseAxios.get<T>(url);
     }

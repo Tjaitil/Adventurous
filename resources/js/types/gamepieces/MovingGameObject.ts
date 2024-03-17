@@ -1,8 +1,8 @@
-import { GameObject } from "./GameObject";
-import { Daqloon } from "../../gamepieces/Daqloon";
-import { Player } from "../../gamepieces/Player";
+import { GameObject } from './GameObject';
+import { Daqloon } from '../../gamepieces/Daqloon';
+import { Player } from '../../gamepieces/Player';
 
-export type DirectionBlockedCheck = "blocked" | "";
+export type DirectionBlockedCheck = 'blocked' | '';
 
 export interface MovingGameObject extends GameObject {
     type: string;

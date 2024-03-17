@@ -384,5 +384,3 @@ interface ConversationRequest {
     is_starting: boolean;
     selected_option?: number;
 }
-
-(<any>window).conversation = conversation;

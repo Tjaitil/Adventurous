@@ -4,7 +4,7 @@ export interface BaseMapTag {
     y: number;
     text?: string;
     src?: string;
-    type: "city" | "placeName" | "icon";
+    type: 'city' | 'placeName' | 'icon';
     mapParent: string;
     tagType: string;
 }

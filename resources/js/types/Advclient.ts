@@ -1,7 +1,7 @@
-import { DaqloonFightingArea } from "./../gamepieces/DaqloonFightingArea";
-import { Building } from "./../gamepieces/Building";
-import { HUD } from "./../clientScripts/HUD";
-import { StaticGameObject } from "./gamepieces/StaticGameObject";
+import { DaqloonFightingArea } from './../gamepieces/DaqloonFightingArea';
+import { Building } from './../gamepieces/Building';
+import { HUD } from './../clientScripts/HUD';
+import { StaticGameObject } from './gamepieces/StaticGameObject';
 
 export interface GameProperties {
     HUD?: typeof HUD;
@@ -28,7 +28,7 @@ export interface loadWorldParamters {
         newY: number;
     };
     newDestination?: string;
-    method?: "changeMap";
+    method?: 'changeMap';
     startPointType?: boolean;
 }
 

@@ -1,11 +1,15 @@
 const countdown = {
     calculate(endTime: number) {
-        let now = new Date().getTime();
-        let remainder = endTime - now;
-        let days = Math.floor(remainder / (1000 * 60 * 60 * 24));
-        let hours = Math.floor((remainder % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        let minutes = Math.floor((remainder % (1000 * 60 * 60)) / (1000 * 60));
-        let seconds = Math.floor((remainder % (1000 * 60)) / 1000);
+        const now = new Date().getTime();
+        const remainder = endTime - now;
+        const days = Math.floor(remainder / (1000 * 60 * 60 * 24));
+        const hours = Math.floor(
+            (remainder % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+        );
+        const minutes = Math.floor(
+            (remainder % (1000 * 60 * 60)) / (1000 * 60),
+        );
+        const seconds = Math.floor((remainder % (1000 * 60)) / 1000);
 
         return {
             remainder,
@@ -13,7 +17,7 @@ const countdown = {
             hours,
             minutes,
             seconds,
-        }
-    }
+        };
+    },
 };
 export default countdown;

@@ -10,6 +10,3 @@ export interface GameObject {
     noCollision: boolean;
     type: string;
 }
-
-
-

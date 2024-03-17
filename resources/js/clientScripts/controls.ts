@@ -1,22 +1,22 @@
 import { tutorial } from './tutorial';
 import { pauseManager } from './pause';
 import { inputHandler } from './inputHandler';
-import { Game } from "../advclient";
-import { GameLogger } from "../utilities/GameLogger";
-import { GamePieces } from "./gamePieces";
-import { conversation } from "./conversation";
+import { Game } from '../advclient';
+import { GameLogger } from '../utilities/GameLogger';
+import { GamePieces } from './gamePieces';
+import { conversation } from './conversation';
 
 export const controls = {
     playerLeft: false,
     playerUp: false,
     playerRight: false,
     playerDown: false,
-    actionText: "Press x",
-    enterText: "E - Enter",
-    enterButton: "E -",
-    personText: "W - Talk to ",
-    personButton: "W -",
-    device: "pc",
+    actionText: 'Press x',
+    enterText: 'E - Enter',
+    enterButton: 'E -',
+    personText: 'W - Talk to ',
+    personButton: 'W -',
+    device: 'pc',
     w: null,
     p: null,
     space: null,
@@ -38,10 +38,9 @@ export const controls = {
         }
     },
     e(eMouseX: string | boolean = false, eMouseY: string | boolean = false) {
-
         function enterBuilding() {
             for (let i = 0; i < GamePieces.buildings.length; i++) {
-                let object = GamePieces.buildings[i];
+                const object = GamePieces.buildings[i];
                 if (
                     GamePieces.player.ypos > object.diameterUp &&
                     GamePieces.player.ypos < object.diameterDown &&
@@ -50,19 +49,27 @@ export const controls = {
                     Math.abs(GamePieces.player.ypos - object.diameterDown) < 32
                 ) {
                     if (Game.properties.inBuilding == false) {
-                        inputHandler.fetchBuilding(object.src.split(".png")[0]);
+                        inputHandler.fetchBuilding(object.src.split('.png')[0]);
                     }
                     break;
                 }
             }
         }
         if (tutorial.onGoing) {
-            GameLogger.addMessage("This building can not be accessed on tutorial island");
+            GameLogger.addMessage(
+                'This building can not be accessed on tutorial island',
+            );
             GameLogger.logMessages();
         }
-        if (Game.properties.inBuilding != true && Game.properties.device == "pc") {
+        if (
+            Game.properties.inBuilding != true &&
+            Game.properties.device == 'pc'
+        ) {
             enterBuilding();
-        } else if (Game.properties.inBuilding != true && Game.properties.device == "mobile") {
+        } else if (
+            Game.properties.inBuilding != true &&
+            Game.properties.device == 'mobile'
+        ) {
             // console.log("check building");
             // let element = document.getElementById("text_canvas");
             // let ElementPos = element.getBoundingClientRect();
@@ -72,7 +79,6 @@ export const controls = {
             // let x = mouseX + (GamePieces.player.xpos - viewport.width / 2 + 32);
             // let y = mouseY + (GamePieces.player.ypos - viewport.height / 2);
             // let result = false;
-
             // for (let i = 0; i < GamePieces.buildings.length; i++) {
             //     let object = GamePieces.buildings[i];
             //     if (
@@ -96,24 +102,25 @@ export const controls = {
      * move and endmove for mobile
      */
     mobileControlButtonMove(event) {
-        if (Game.properties.gameState === "pause") {
+        if (Game.properties.gameState === 'pause') {
             pauseManager.resumeGame();
         }
-        let button = document.getElementById("control_button");
-        let element = event.target.closest("#control");
-        let elementPos = element.getBoundingClientRect();
-        let buttonPos = button.getBoundingClientRect();
-        let eventY = event.targetTouches[0].clientY - elementPos.y;
-        let eventX = event.targetTouches[0].clientX - elementPos.x;
+        const button = document.getElementById('control_button');
+        const element = event.target.closest('#control');
+        const elementPos = element.getBoundingClientRect();
+        const buttonPos = button.getBoundingClientRect();
+        const eventY = event.targetTouches[0].clientY - elementPos.y;
+        const eventX = event.targetTouches[0].clientX - elementPos.x;
         // eventYTrigger/eventXTrigger is the minimum width the button gets moved before movement happens;
-        let eventYTrigger = 50;
-        let eventXTrigger = 50;
+        const eventYTrigger = 50;
+        const eventXTrigger = 50;
         // a is the distance from eventY to diameter
         // b is the distance from eventX to diaemter
-        let a = Math.abs(eventY - elementPos.height / 2);
-        let b = Math.abs(eventX - elementPos.width / 2);
-        button.style.top = event.targetTouches[0].clientY - elementPos.y - 25 + "px";
-        button.style.left = event.targetTouches[0].clientX - 50 + "px";
+        const a = Math.abs(eventY - elementPos.height / 2);
+        const b = Math.abs(eventX - elementPos.width / 2);
+        button.style.top =
+            event.targetTouches[0].clientY - elementPos.y - 25 + 'px';
+        button.style.left = event.targetTouches[0].clientX - 50 + 'px';
 
         if (a < 5 && b < 5) {
             this.playerLeft = false;
@@ -192,9 +199,9 @@ export const controls = {
         }
     },
     endMobileMove() {
-        let button = document.getElementById("control_button");
-        button.style.top = "25%";
-        button.style.left = "25%";
+        const button = document.getElementById('control_button');
+        button.style.top = '25%';
+        button.style.left = '25%';
         this.playerLeft = false;
         this.playerUp = false;
         this.playerRight = false;
@@ -204,24 +211,26 @@ export const controls = {
         // Check for device type and bind events according to device
         if (
             window.screen.width > 830 ||
-            /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) == false
+            /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+                navigator.userAgent,
+            ) == false
         ) {
-            document.getElementById("control").style.display = "none";
-            this.actionText = "Press x";
-            this.enterText = "E - Enter building";
-            this.enterButton = "E -";
-            this.personText = "W - Talk to ";
-            this.personButton = "W -";
-            this.device = "pc";
+            document.getElementById('control').style.display = 'none';
+            this.actionText = 'Press x';
+            this.enterText = 'E - Enter building';
+            this.enterButton = 'E -';
+            this.personText = 'W - Talk to ';
+            this.personButton = 'W -';
+            this.device = 'pc';
         } else {
-            this.actionText = "Double tap";
-            this.enterText = "Tap on building to enter";
-            this.enterButton = "Tap on";
-            this.personText = "Tap on screen to talk";
-            this.personButton = "Tap on";
-            this.device = "mobile";
+            this.actionText = 'Double tap';
+            this.enterText = 'Tap on building to enter';
+            this.enterButton = 'Tap on';
+            this.personText = 'Tap on screen to talk';
+            this.personButton = 'Tap on';
+            this.device = 'mobile';
         }
-        if (Game.properties.device === "mobile") {
+        if (Game.properties.device === 'mobile') {
             // document.getElementById("text_canvas").addEventListener("click",
             //     function() {
             //         // If the conversation_container visibility is visible, conversation is happening. Prevent other actions
@@ -264,11 +273,11 @@ export const controls = {
         // Set controls
         controls.w = () => inputHandler.interactCharacter();
         controls.p = () => pauseManager.togglePause();
- 
+
         // Prevent user from scrolling with arrow keys on site
         window.addEventListener(
-            "keydown",
-            (e) => {
+            'keydown',
+            e => {
                 // space and arrow keys
                 if (
                     [32, 37, 38, 39, 40, 67].indexOf(e.keyCode) > -1 ||
@@ -277,11 +286,11 @@ export const controls = {
                     e.preventDefault();
                 }
             },
-            false
+            false,
         );
         window.addEventListener(
-            "keydown",
-            (e) => {
+            'keydown',
+            e => {
                 switch (e.keyCode) {
                     case 32:
                         controls.space();
@@ -300,7 +309,10 @@ export const controls = {
                         break;
                     case 65:
                         // A
-                        if (GamePieces.player.cooldown <= 0 && GamePieces.player.combat === true) {
+                        if (
+                            GamePieces.player.cooldown <= 0 &&
+                            GamePieces.player.combat === true
+                        ) {
                             GamePieces.player.combatActions.attack = true;
                             GamePieces.player.attack = true;
                         }
@@ -317,13 +329,19 @@ export const controls = {
                         break;
                     case 87:
                         // W
-                        if (Game.properties.gameState === "playing" && conversation.checkConversation() === false) {
+                        if (
+                            Game.properties.gameState === 'playing' &&
+                            conversation.checkConversation() === false
+                        ) {
                             controls.w();
                         }
                         break;
                     case 69:
                         // E
-                        if (Game.properties.gameState === "playing" && conversation.checkConversation() === false) {
+                        if (
+                            Game.properties.gameState === 'playing' &&
+                            conversation.checkConversation() === false
+                        ) {
                             controls.e();
                         }
                         break;
@@ -335,10 +353,10 @@ export const controls = {
                         break;
                 }
             },
-            false
+            false,
         );
         window.addEventListener(
-            "keyup",
+            'keyup',
             function (e) {
                 switch (e.keyCode) {
                     case 37:
@@ -355,7 +373,7 @@ export const controls = {
                         break;
                 }
             },
-            false
+            false,
         );
     },
 };

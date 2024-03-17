@@ -6,7 +6,6 @@ import { StoreItemResponse } from '../types/Responses/StoreItemResponse';
 
 const bakeryModule = {
     async init() {
-
         await this.getData().then(() => {
             storeContainer.init();
             storeContainer.addSelectTrade();
@@ -14,19 +13,19 @@ const bakeryModule = {
         });
     },
     make() {
-        let { item, amount } = storeContainer.getSelectedTrade() || {};
+        const { item, amount } = storeContainer.getSelectedTrade() || {};
 
-        let data: BaseBuyStoreItemRequest = {
+        const data: BaseBuyStoreItemRequest = {
             item,
-            amount
+            amount,
         };
 
-        AdvApi.post('/bakery/make', data).then((response) => {
+        AdvApi.post('/bakery/make', data).then(response => {
             Inventory.update();
-        })
+        });
     },
     async getData() {
-        AdvApi.get<StoreItemResponse>('/bakery/store').then((response) => {
+        AdvApi.get<StoreItemResponse>('/bakery/store').then(response => {
             storeContainer.setStoreItems(response.data.store_items);
         });
     },

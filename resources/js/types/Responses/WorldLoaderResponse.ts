@@ -1,4 +1,4 @@
-import { WorldMapData } from "../Advclient";
+import { WorldMapData } from '../Advclient';
 
 export interface GetWorldResponse {
     data: {
@@ -6,5 +6,5 @@ export interface GetWorldResponse {
         changed_location: string;
         map_data: WorldMapData;
         events: [];
-    }
+    };
 }

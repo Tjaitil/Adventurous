@@ -11,75 +11,82 @@ import createHTMLNode from '../utilities/createHTMLNode';
  * @deprecated
  */
 export async function getInventory() {
-    AdvApi.get("/inventory")
-        .then(data => {
-            document.getElementById("inventory").innerHTML = data["html"]["inventory"];
+    AdvApi.get('/inventory').then(data => {
+        document.getElementById('inventory').innerHTML =
+            data['html']['inventory'];
 
-            if (getClientPageTitle() == "Stockpile") {
-                let figures = document.getElementById("inventory").querySelectorAll("figure");
-                figures.forEach(element =>
-                    element.addEventListener('click', inputHandler.currentBuildingModule.show_menu)
-                );
-                itemTitle.removeTitleEvent();
-            }
-            else {
-                itemTitle.addTitleEvent();
-            }
-            itemPrices.get();
-            if (ItemSelector.isEventSet) {
-                ItemSelector.addSelectEventToInventory();
-            }
-            // document.getElementById("inv_toggle_button").addEventListener("click", inventorySidebarMob.toggleInventory);
-        })
+        if (getClientPageTitle() == 'Stockpile') {
+            const figures = document
+                .getElementById('inventory')
+                .querySelectorAll('figure');
+            figures.forEach(element =>
+                element.addEventListener(
+                    'click',
+                    inputHandler.currentBuildingModule.show_menu,
+                ),
+            );
+            itemTitle.removeTitleEvent();
+        } else {
+            itemTitle.addTitleEvent();
+        }
+        itemPrices.get();
+        if (ItemSelector.isEventSet) {
+            ItemSelector.addSelectEventToInventory();
+        }
+        // document.getElementById("inv_toggle_button").addEventListener("click", inventorySidebarMob.toggleInventory);
+    });
 }
 
 /**
- * 
+ *
  * @deprecated
  */
 export async function updateInventory(page = false, addSelect = false) {
-    await fetch("handlers/handlerf.php?file=inventory")
+    await fetch('handlers/handlerf.php?file=inventory')
         .then(response => response.text())
         .then(data => {
-            document.getElementById("inventory").innerHTML = data;
+            document.getElementById('inventory').innerHTML = data;
 
-            if (getClientPageTitle() == "Stockpile") {
-                let figures = document.getElementById("inventory").querySelectorAll("figure");
+            if (getClientPageTitle() == 'Stockpile') {
+                const figures = document
+                    .getElementById('inventory')
+                    .querySelectorAll('figure');
                 figures.forEach(element =>
-                    element.addEventListener('click', inputHandler.currentBuildingModule.show_menu)
+                    element.addEventListener(
+                        'click',
+                        inputHandler.currentBuildingModule.show_menu,
+                    ),
                 );
                 itemTitle.removeTitleEvent();
-            }
-            else {
+            } else {
                 itemTitle.addTitleEvent();
             }
             itemPrices.get();
             if (ItemSelector.isEventSet) {
                 ItemSelector.addSelectEventToInventory();
             }
-        })
+        });
 }
 
 /**
- * 
+ *
  * @deprecated
  */
 export function checkInventoryStatus() {
     // Fetch items amount
-    let items = document.getElementsByClassName("inventory_item");
+    const items = document.getElementsByClassName('inventory_item');
 
-    let status = (items.length === 18);
+    const status = items.length === 18;
 
-    let inventoryStatusElement = document.getElementById("inventory-status");
+    const inventoryStatusElement = document.getElementById('inventory-status');
     // Adjust color according to inventory status
     if (status) {
-        inventoryStatusElement.classList.add("not-able-color");
+        inventoryStatusElement.classList.add('not-able-color');
     } else {
-        inventoryStatusElement.classList.remove("not-able-color");
+        inventoryStatusElement.classList.remove('not-able-color');
     }
     return status;
 }
-
 
 export class Inventory {
     private static itemsElements: Element[];
@@ -88,39 +95,45 @@ export class Inventory {
 
     static init() {
         if (this.isInited) return;
-        this.itemsElements = [...document.querySelectorAll(".inventory_item")];
+        this.itemsElements = [...document.querySelectorAll('.inventory_item')];
         this.itemsAmount = this.itemsElements.length;
         this.isInited = true;
     }
 
     static async update() {
-        return CustomFetchApi.get<response>("/inventory")
-            .then(data => {
-                document.getElementById("inventory").replaceWith(createHTMLNode(data["html"]["inventory"]));
-                this.itemsElements = [...document.querySelectorAll(".inventory_item")];
-                this.itemsAmount = this.itemsElements.length;
-                this.isFull() ? this.styleSpaceIndicator("full") : this.styleSpaceIndicator("");
+        return CustomFetchApi.get<response>('/inventory').then(data => {
+            document
+                .getElementById('inventory')
+                .replaceWith(createHTMLNode(data['html']['inventory']));
+            this.itemsElements = [
+                ...document.querySelectorAll('.inventory_item'),
+            ];
+            this.itemsAmount = this.itemsElements.length;
+            this.isFull()
+                ? this.styleSpaceIndicator('full')
+                : this.styleSpaceIndicator('');
 
-                itemTitle.addTitleEvent();
-                itemPrices.get();
+            itemTitle.addTitleEvent();
+            itemPrices.get();
 
-                if (ItemSelector.isEventSet) {
-                    ItemSelector.addSelectEventToInventory();
-                }
-            })
+            if (ItemSelector.isEventSet) {
+                ItemSelector.addSelectEventToInventory();
+            }
+        });
     }
 
     static isFull() {
         return this.itemsAmount === 18;
     }
 
-    static styleSpaceIndicator(status: "full" | "") {
-        let inventoryStatusElement = document.getElementById("inventory-status");
+    static styleSpaceIndicator(status: 'full' | '') {
+        const inventoryStatusElement =
+            document.getElementById('inventory-status');
         // Adjust color according to inventory status
-        if (status === "full") {
-            inventoryStatusElement.classList.add("not-able-color");
+        if (status === 'full') {
+            inventoryStatusElement.classList.add('not-able-color');
         } else {
-            inventoryStatusElement.classList.remove("not-able-color");
+            inventoryStatusElement.classList.remove('not-able-color');
         }
     }
 
@@ -139,21 +152,22 @@ interface ItemPrice {
 export const itemPrices = {
     prices: <ItemPrice[]>[],
     findItem(itemName) {
-        let item = itemName.toLowerCase();
+        const item = itemName.toLowerCase();
 
-        let array = this.prices.filter((element) => {
+        const array = this.prices.filter(element => {
             if (element.name === item) return element.store_value;
         });
         if (array.length > 0) {
             return array[0].store_value;
-        }
-        else {
-            return "N/A";
+        } else {
+            return 'N/A';
         }
     },
     get() {
-        CustomFetchApi.get<ItemPricesResponse>("/inventory/prices").then(response => {
-            this.prices = response.prices;
-        }).catch(() => false);
-    }
-}
+        CustomFetchApi.get<ItemPricesResponse>('/inventory/prices')
+            .then(response => {
+                this.prices = response.prices;
+            })
+            .catch(() => false);
+    },
+};

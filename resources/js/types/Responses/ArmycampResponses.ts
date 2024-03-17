@@ -3,12 +3,12 @@ import { AdvApi } from './../../AdvApi';
 
 export interface RunWarriorActionResponse extends AdvApi {
     data: {
-        warriors: WarriorResource[]
-    }
+        warriors: WarriorResource[];
+    };
 }
 
 export interface RunSingleWarriorActionResponse extends AdvApi {
     data: {
-        warrior: WarriorResource
-    }
+        warrior: WarriorResource;
+    };
 }

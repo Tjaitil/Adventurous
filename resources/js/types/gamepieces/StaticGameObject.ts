@@ -1,4 +1,4 @@
-import { GameObject } from "./GameObject";
+import { GameObject } from './GameObject';
 
 export interface StaticGameObject extends GameObject {
     type: string;

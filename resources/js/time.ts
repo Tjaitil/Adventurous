@@ -1,13 +1,13 @@
 function clock() {
-    var today = new Date();
-    var hours = today.getHours();
-    var minutes = today.getMinutes();
-    var seconds = today.getSeconds();
+    const today = new Date();
+    const hours = today.getHours();
+    const minutes = today.getMinutes();
+    const seconds = today.getSeconds();
     // minutes = checkZero(minutes);
     // seconds = checkZero(seconds);
-    let container = document.getElementById("clock");
+    const container = document.getElementById('clock');
     if (container) {
-        container.innerHTML = hours + ":" + minutes + ":" + seconds;
+        container.innerHTML = hours + ':' + minutes + ':' + seconds;
     }
     setTimeout(clock, 1000);
 }

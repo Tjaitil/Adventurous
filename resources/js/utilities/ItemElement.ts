@@ -1,6 +1,6 @@
-import { AssetPaths } from "../clientScripts/ImagePath";
-import { itemTitle } from "./itemTitle";
-import { jsUcWords } from "./uppercase";
+import { AssetPaths } from '../clientScripts/ImagePath';
+import { itemTitle } from './itemTitle';
+import { jsUcWords } from './uppercase';
 
 export class ItemElement {
     private element: HTMLElement = null;
@@ -8,46 +8,57 @@ export class ItemElement {
     private amountElement: HTMLElement = null;
     private nameElement: HTMLElement = null;
 
-    constructor(element?: HTMLElement | Element | Node, initalItem?: Item, options?: ItemOptions) {
-
-        let showTooltip = options?.showTooltip || false;
+    constructor(
+        element?: HTMLElement | Element | Node,
+        initalItem?: Item,
+        options?: ItemOptions,
+    ) {
+        const showTooltip = options?.showTooltip || false;
 
         if (initalItem) {
-            this.element = document.createElement("div");
-            this.element.classList.add("item");
+            this.element = document.createElement('div');
+            this.element.classList.add('item');
 
-            let figure = document.createElement("figure");
-            figure.appendChild(document.createElement("img"));
+            const figure = document.createElement('figure');
+            figure.appendChild(document.createElement('img'));
 
-            this.nameElement = document.createElement("figcaption");
-            this.nameElement.classList.add("tooltip");
+            this.nameElement = document.createElement('figcaption');
+            this.nameElement.classList.add('tooltip');
             figure.appendChild(this.nameElement);
             this.element.appendChild(figure);
-            this.imageElement = figure.querySelector("img")[0];
+            this.imageElement = figure.querySelector('img')[0];
 
-            let span = document.createElement("span");
-            span.classList.add("item_amount");
+            const span = document.createElement('span');
+            span.classList.add('item_amount');
             this.element.appendChild(span);
-            this.element.querySelectorAll("figcaption")[0].innerHTML = jsUcWords(initalItem.name);
-            this.element.querySelectorAll("img")[0].src = "images/" + initalItem.name + ".png";
-            this.element.querySelectorAll(".item_amount")[0].innerHTML = "" + initalItem.amount;
+            this.element.querySelectorAll('figcaption')[0].innerHTML =
+                jsUcWords(initalItem.name);
+            this.element.querySelectorAll('img')[0].src =
+                'images/' + initalItem.name + '.png';
+            this.element.querySelectorAll('.item_amount')[0].innerHTML =
+                '' + initalItem.amount;
             this.element.classList.add(initalItem.className);
 
-            this.element.addEventListener("mouseenter", (event) => itemTitle.show(event));
-            this.element.addEventListener("mouseleave", () => itemTitle.hide());
+            this.element.addEventListener('mouseenter', event =>
+                itemTitle.show(event),
+            );
+            this.element.addEventListener('mouseleave', () => itemTitle.hide());
         } else {
             this.element = <HTMLElement>element;
             if (!this.element) throw new Error(`Element not found`);
 
-            this.imageElement = this.element.querySelectorAll("img")[0];
-            this.amountElement = <HTMLElement>this.element.querySelectorAll(".item_amount")[0];
-            this.nameElement = <HTMLElement>this.element.querySelectorAll("figcaption")[0];
+            this.imageElement = this.element.querySelectorAll('img')[0];
+            this.amountElement = <HTMLElement>(
+                this.element.querySelectorAll('.item_amount')[0]
+            );
+            this.nameElement = <HTMLElement>(
+                this.element.querySelectorAll('figcaption')[0]
+            );
         }
 
         if (!showTooltip) {
-            this.element.classList.add("no-tooltip");
+            this.element.classList.add('no-tooltip');
         }
-
     }
 
     public setClass(className: string) {
@@ -61,14 +72,16 @@ export class ItemElement {
     }
 
     public replaceItem(item: string, amount: number) {
-        this.imageElement.src = AssetPaths.getImagePath(item + ".png");
+        this.imageElement.src = AssetPaths.getImagePath(item + '.png');
         this.amountElement.innerText = amount.toString();
         this.nameElement.innerText = jsUcWords(item);
     }
 
     get item(): string {
-        return this.element.querySelectorAll("figcaption")[0].innerText.trim().toLowerCase();
-
+        return this.element
+            .querySelectorAll('figcaption')[0]
+            .innerText.trim()
+            .toLowerCase();
     }
 
     get amount(): number {
@@ -80,9 +93,7 @@ export class ItemElement {
     }
 }
 
-export function getItemFromID(id: string) {
-
-}
+export function getItemFromID(id: string) {}
 
 interface Item {
     name: string;

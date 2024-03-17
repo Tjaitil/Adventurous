@@ -3,28 +3,30 @@ import { inputHandler } from './clientScripts/inputHandler';
 import { itemTitle } from './utilities/itemTitle';
 
 /**
- * 
+ *
  * @depcrated
  */
 function select(event) {
-    let element = event.target.closest("figure");
-    let figure = element.cloneNode(true);
+    const element = event.target.closest('figure');
+    const figure = element.cloneNode(true);
 
-    figure.children[0].style.height = "50px";
-    figure.children[0].style.width = "50px";
-    figure.children[1].style.visibility = "hidden";
+    figure.children[0].style.height = '50px';
+    figure.children[0].style.width = '50px';
+    figure.children[1].style.visibility = 'hidden';
 
-    let parent = document.getElementById("selected");
-    parent.innerHTML = "";
+    const parent = document.getElementById('selected');
+    parent.innerHTML = '';
     parent.appendChild(figure);
-    let pageTitle = <HTMLElement>document.getElementsByClassName("page_title")[0];
+    const pageTitle = <HTMLElement>(
+        document.getElementsByClassName('page_title')[0]
+    );
     switch (pageTitle.innerText) {
-        case "Armory":
+        case 'Armory':
             inputHandler.currentBuildingModule.default.toggleOption();
             break;
-        case "Tavern":
+        case 'Tavern':
             inputHandler.currentBuildingModule.default.getHealingAmount(
-                element.querySelectorAll("figcaption")[0].innerHTML
+                element.querySelectorAll('figcaption')[0].innerHTML,
             );
             break;
         default:
@@ -51,17 +53,18 @@ function select(event) {
 
 export class ItemSelector {
     private static eventStatus: boolean = false;
-    private static page: string = "";
+    private static page: string = '';
     private static container: HTMLElement;
     private static selectedWrapper: HTMLElement;
     private static selectedItemAmountInput: HTMLInputElement;
     private static isSelectedAmountInputVisible: boolean = true;
 
-
     public static setup() {
-        this.container = document.getElementById("selected-item-container");
-        this.selectedWrapper = document.getElementById("selected");
-        this.selectedItemAmountInput = document.getElementById("selected-item-amount") as HTMLInputElement;
+        this.container = document.getElementById('selected-item-container');
+        this.selectedWrapper = document.getElementById('selected');
+        this.selectedItemAmountInput = document.getElementById(
+            'selected-item-amount',
+        ) as HTMLInputElement;
         this.addSelectEventToInventory();
     }
 
@@ -71,18 +74,24 @@ export class ItemSelector {
 
     public static addSelectEventToInventory() {
         this.eventStatus = true;
-        let figures = document.getElementById("inventory").querySelectorAll("figure");
-        figures.forEach((element) => {
-            let page_title = <HTMLElement>document.getElementsByClassName("page_title")[0];
+        const figures = document
+            .getElementById('inventory')
+            .querySelectorAll('figure');
+        figures.forEach(element => {
+            const page_title = <HTMLElement>(
+                document.getElementsByClassName('page_title')[0]
+            );
             this.page = page_title.innerText;
-            if (this.page === "Market") {
+            if (this.page === 'Market') {
                 // element.addEventListener("click", select_i);
-            } else if (this.page === "Merchant") {
-                element.addEventListener("click", (event) =>
-                    inputHandler.currentBuildingModule.default.selectTrade(event)
+            } else if (this.page === 'Merchant') {
+                element.addEventListener('click', event =>
+                    inputHandler.currentBuildingModule.default.selectTrade(
+                        event,
+                    ),
                 );
             } else {
-                element.addEventListener("click", (event) => select(event));
+                element.addEventListener('click', event => select(event));
             }
         });
     }
@@ -90,30 +99,34 @@ export class ItemSelector {
     public static removeSelectEventFromInventory() {
         this.eventStatus = false;
 
-        let inventory = document.getElementById("inventory");
-        let newInventory = inventory.cloneNode(true);
-        document.getElementById("client-container").replaceChild(newInventory, inventory);
+        const inventory = document.getElementById('inventory');
+        const newInventory = inventory.cloneNode(true);
+        document
+            .getElementById('client-container')
+            .replaceChild(newInventory, inventory);
         itemTitle.addTitleEvent();
     }
 
     public static selectItem(event) {
-        let element = event.target.closest("figure");
-        let figure = element.cloneNode(true);
+        const element = event.target.closest('figure');
+        const figure = element.cloneNode(true);
 
-        figure.children[0].style.height = "50px";
-        figure.children[0].style.width = "50px";
-        figure.children[1].style.visibility = "hidden";
+        figure.children[0].style.height = '50px';
+        figure.children[0].style.width = '50px';
+        figure.children[1].style.visibility = 'hidden';
 
-        this.selectedWrapper.innerHTML = "";
+        this.selectedWrapper.innerHTML = '';
         this.selectedWrapper.appendChild(figure);
-        let pageTitle = <HTMLElement>document.getElementsByClassName("page_title")[0];
+        const pageTitle = <HTMLElement>(
+            document.getElementsByClassName('page_title')[0]
+        );
         switch (pageTitle.innerText) {
-            case "Armory":
+            case 'Armory':
                 inputHandler.currentBuildingModule.default.toggleOption();
                 break;
-            case "Tavern":
+            case 'Tavern':
                 inputHandler.currentBuildingModule.default.getHealingAmount(
-                    element.querySelectorAll("figcaption")[0].innerHTML
+                    element.querySelectorAll('figcaption')[0].innerHTML,
                 );
                 break;
             default:
@@ -122,30 +135,36 @@ export class ItemSelector {
     }
 
     public static isItemValid(): boolean {
-        if (document.getElementById("selected").getElementsByTagName("figure").length == 0) {
-            GameLogger.addMessage("Please select a valid item");
+        if (
+            document.getElementById('selected').getElementsByTagName('figure')
+                .length == 0
+        ) {
+            GameLogger.addMessage('Please select a valid item');
             GameLogger.logMessages();
             return false;
         }
         if (this.isSelectedAmountInputVisible) {
-            let amount = parseInt(this.selectedItemAmountInput.value);
+            const amount = parseInt(this.selectedItemAmountInput.value);
 
             if (amount <= 0) {
-                GameLogger.addMessage("Please enter a valid amount");
+                GameLogger.addMessage('Please enter a valid amount');
                 GameLogger.logMessages();
                 return false;
             }
         }
     }
 
-    public static get selected(): { name: string, amount: number } {
-        if (this.selectedWrapper.getElementsByTagName("figure").length === 0) {
-            GameLogger.addMessage("Please select a valid item", true);
+    public static get selected(): { name: string; amount: number } {
+        if (this.selectedWrapper.getElementsByTagName('figure').length === 0) {
+            GameLogger.addMessage('Please select a valid item', true);
         }
-        let name = this.selectedWrapper.querySelectorAll("figcaption")[0].innerHTML.toLowerCase().trim();
+        const name = this.selectedWrapper
+            .querySelectorAll('figcaption')[0]
+            .innerHTML.toLowerCase()
+            .trim();
         // Is input visible?
         if (this.isSelectedAmountInputVisible) {
-            let amount = parseInt(this.selectedItemAmountInput.value);
+            const amount = parseInt(this.selectedItemAmountInput.value);
             return { name, amount };
         } else {
             return { name, amount: 1 };
@@ -154,50 +173,56 @@ export class ItemSelector {
 
     public static hideSelectedAmountInput() {
         this.isSelectedAmountInputVisible = false;
-        this.selectedItemAmountInput.style.display = "none";
+        this.selectedItemAmountInput.style.display = 'none';
     }
 
     public static showSelectedAmountInput() {
         this.isSelectedAmountInputVisible = true;
-        this.selectedItemAmountInput.style.display = "block";
+        this.selectedItemAmountInput.style.display = 'block';
     }
 
     public static clearContainer() {
-        this.selectedWrapper.innerHTML = "";
+        this.selectedWrapper.innerHTML = '';
         if (this.isSelectedAmountInputVisible) {
-            this.selectedItemAmountInput.value = "0";
+            this.selectedItemAmountInput.value = '0';
         }
     }
-
 }
-
 
 export const selectItemEvent = {
     selectItemStatus: false,
-    page: "",
+    page: '',
     addSelectEvent() {
         this.selectItemStatus = true;
-        let figures = document.getElementById("inventory").querySelectorAll("figure");
-        figures.forEach((element) => {
-            let page_title = <HTMLElement>document.getElementsByClassName("page_title")[0];
+        const figures = document
+            .getElementById('inventory')
+            .querySelectorAll('figure');
+        figures.forEach(element => {
+            const page_title = <HTMLElement>(
+                document.getElementsByClassName('page_title')[0]
+            );
             this.page = page_title.innerText;
-            if (this.page === "Market") {
+            if (this.page === 'Market') {
                 // element.addEventListener("click", select_i);
-            } else if (this.page === "Merchant") {
-                element.addEventListener("click", (event) =>
-                    inputHandler.currentBuildingModule.default.selectTrade(event)
+            } else if (this.page === 'Merchant') {
+                element.addEventListener('click', event =>
+                    inputHandler.currentBuildingModule.default.selectTrade(
+                        event,
+                    ),
                 );
             } else {
-                element.addEventListener("click", select);
+                element.addEventListener('click', select);
             }
         });
     },
     removeSelectEvent() {
         this.selectItemStatus = false;
 
-        let inventory = document.getElementById("inventory");
-        let newInventory = inventory.cloneNode(true);
-        document.getElementById("client-container").replaceChild(newInventory, inventory);
+        const inventory = document.getElementById('inventory');
+        const newInventory = inventory.cloneNode(true);
+        document
+            .getElementById('client-container')
+            .replaceChild(newInventory, inventory);
         itemTitle.addTitleEvent();
     },
 };
@@ -229,26 +254,33 @@ export const selectItemEvent = {
 //     },
 // };
 
-
-
 /**
- * 
+ *
  * @depcrated
  */
 export function selectedCheck(amount_r = true) {
-    if (document.getElementById("selected").getElementsByTagName("figure").length == 0) {
-        GameLogger.addMessage("Please select a valid item");
+    if (
+        document.getElementById('selected').getElementsByTagName('figure')
+            .length == 0
+    ) {
+        GameLogger.addMessage('Please select a valid item');
         GameLogger.logMessages();
         return false;
     }
-    let div = document.getElementById("selected");
-    let item = document.getElementById("selected").querySelectorAll("figcaption")[0].innerHTML.toLowerCase().trim();
+    const div = document.getElementById('selected');
+    const item = document
+        .getElementById('selected')
+        .querySelectorAll('figcaption')[0]
+        .innerHTML.toLowerCase()
+        .trim();
     // amount_r is variable that opens up for checking only item or item and amount
     if (amount_r === true) {
-        let inputElement = <HTMLInputElement>document.getElementById("selected_amount");
-        let amount = parseInt(inputElement.value);
+        const inputElement = <HTMLInputElement>(
+            document.getElementById('selected_amount')
+        );
+        const amount = parseInt(inputElement.value);
         if (amount === 0) {
-            GameLogger.addMessage("Please select a valid amount");
+            GameLogger.addMessage('Please select a valid amount');
             GameLogger.logMessages();
             return false;
         }

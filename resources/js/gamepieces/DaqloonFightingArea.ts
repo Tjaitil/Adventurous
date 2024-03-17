@@ -1,7 +1,7 @@
 import { Player } from './../gamepieces/Player';
-import { Daqloon } from "./../gamepieces/Daqloon";
-import { GameObject } from "../types/gamepieces/GameObject";
-import { getRandomInteger } from "../utilities/getRandomInteger";
+import { Daqloon } from './../gamepieces/Daqloon';
+import { GameObject } from '../types/gamepieces/GameObject';
+import { getRandomInteger } from '../utilities/getRandomInteger';
 import { GamePieces } from '../clientScripts/gamePieces';
 
 export interface IDaqloonFightingArea extends GameObject {
@@ -20,7 +20,7 @@ export class DaqloonFightingArea implements IDaqloonFightingArea {
     x: number;
     y: number;
     noCollision = true;
-    type: "object";
+    type: 'object';
 
     constructor(initData: IDaqloonFightingArea) {
         // Initalize data
@@ -37,13 +37,17 @@ export class DaqloonFightingArea implements IDaqloonFightingArea {
 
     public loadDaqloons(): Daqloon[] {
         this.daqloons.push(
-            new Daqloon(0, getRandomInteger(this.diameterUp, this.diameterDown - 32),
-                getRandomInteger(this.diameterUp, this.diameterDown - 32), {
-                diameterUp: this.diameterUp,
-                diameterRight: this.diameterRight,
-                diameterDown: this.diameterDown,
-                diameterLeft: this.diameterLeft,
-            })
+            new Daqloon(
+                0,
+                getRandomInteger(this.diameterUp, this.diameterDown - 32),
+                getRandomInteger(this.diameterUp, this.diameterDown - 32),
+                {
+                    diameterUp: this.diameterUp,
+                    diameterRight: this.diameterRight,
+                    diameterDown: this.diameterDown,
+                    diameterLeft: this.diameterLeft,
+                },
+            ),
         );
 
         // let daqloons = [];
@@ -67,10 +71,8 @@ export class DaqloonFightingArea implements IDaqloonFightingArea {
     }
 
     public findHuntingDaqloon() {
-
-
-        let distanceX = 0;
-        let distanceY = 0;
+        const distanceX = 0;
+        const distanceY = 0;
         let nearbyDaqloon: Daqloon;
 
         for (const daqloon of this.daqloons) {
@@ -78,8 +80,8 @@ export class DaqloonFightingArea implements IDaqloonFightingArea {
                 nearbyDaqloon = daqloon;
                 continue;
             } else {
-                let nearbyX = Math.abs(nearbyDaqloon.drawX - daqloon.drawX);
-                let nearbyY = Math.abs(nearbyDaqloon.drawY - daqloon.drawY);
+                const nearbyX = Math.abs(nearbyDaqloon.drawX - daqloon.drawX);
+                const nearbyY = Math.abs(nearbyDaqloon.drawY - daqloon.drawY);
                 if (nearbyX < distanceX && nearbyY < distanceY) {
                     nearbyDaqloon = daqloon;
                 }
@@ -89,7 +91,6 @@ export class DaqloonFightingArea implements IDaqloonFightingArea {
         console.log(nearbyDaqloon.id);
         GamePieces.player.attackedBy = nearbyDaqloon.id;
         GamePieces.player.setHuntedStatus(true);
-
 
         // findOtherDaqloons() {
         //     const check = (object) => {

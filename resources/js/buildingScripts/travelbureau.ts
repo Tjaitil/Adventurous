@@ -1,9 +1,9 @@
-import { AdvApi } from "../AdvApi";
-import { Inventory } from "../clientScripts/inventory";
-import { advAPIResponse } from "../types/Responses/AdvResponse";
-import { StoreItemResponse } from "../types/Responses/StoreItemResponse";
-import { ItemElement } from "../utilities/ItemElement";
-import storeContainer from "../utilities/storeContainer";
+import { AdvApi } from '../AdvApi';
+import { Inventory } from '../clientScripts/inventory';
+import { advAPIResponse } from '../types/Responses/AdvResponse';
+import { StoreItemResponse } from '../types/Responses/StoreItemResponse';
+import { ItemElement } from '../utilities/ItemElement';
+import storeContainer from '../utilities/storeContainer';
 
 const travelBureauModule = {
     async init() {
@@ -14,28 +14,36 @@ const travelBureauModule = {
         });
     },
     async getData() {
-        AdvApi.get<StoreItemResponse>('/travelbureau/store').then((response) => {
-            storeContainer.setStoreItems(response.data.store_items);
-        }).then(() => false);
+        AdvApi.get<StoreItemResponse>('/travelbureau/store')
+            .then(response => {
+                storeContainer.setStoreItems(response.data.store_items);
+            })
+            .then(() => false);
     },
     buyItem() {
-        let { item, amount } = storeContainer.getSelectedTrade() || {};
+        const { item, amount } = storeContainer.getSelectedTrade() || {};
 
-        let data: BuyCartRequest = {
-            item
-        }
+        const data: BuyCartRequest = {
+            item,
+        };
 
-        let currentCartItem = new ItemElement(document.getElementById("current-cart"), null, { showTooltip: false });
+        const currentCartItem = new ItemElement(
+            document.getElementById('current-cart'),
+            null,
+            { showTooltip: false },
+        );
 
-        AdvApi.post<BuyCartResponse>('/travelbureau/buy', data).then((response) => {
-            Inventory.update();
-            currentCartItem.replaceItem(response.data.new_cart, 1);
-        }).then(() => false);
+        AdvApi.post<BuyCartResponse>('/travelbureau/buy', data)
+            .then(response => {
+                Inventory.update();
+                currentCartItem.replaceItem(response.data.new_cart, 1);
+            })
+            .then(() => false);
     },
     onClose() {
         storeContainer.checkItemTooltip();
-    }
-}
+    },
+};
 export default travelBureauModule;
 
 interface BuyCartRequest {
@@ -45,5 +53,5 @@ interface BuyCartRequest {
 interface BuyCartResponse extends advAPIResponse {
     data: {
         new_cart: string;
-    }
+    };
 }

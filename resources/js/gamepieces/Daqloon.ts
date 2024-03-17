@@ -1,10 +1,13 @@
-import { MovingGameObject, DirectionBlockedCheck } from "../types/gamepieces/MovingGameObject";
-import { Game } from "../advclient";
-import viewport from "../clientScripts/viewport";
-import { getRandomInteger } from "../utilities/getRandomInteger";
-import { GamePieces } from "../clientScripts/gamePieces";
-import { collisionCheck } from "../clientScripts/collision";
-import { AssetPaths } from "../clientScripts/ImagePath";
+import {
+    MovingGameObject,
+    DirectionBlockedCheck,
+} from '../types/gamepieces/MovingGameObject';
+import { Game } from '../advclient';
+import viewport from '../clientScripts/viewport';
+import { getRandomInteger } from '../utilities/getRandomInteger';
+import { GamePieces } from '../clientScripts/gamePieces';
+import { collisionCheck } from '../clientScripts/collision';
+import { AssetPaths } from '../clientScripts/ImagePath';
 
 export class Daqloon implements MovingGameObject {
     id: number;
@@ -24,8 +27,8 @@ export class Daqloon implements MovingGameObject {
     spriteXIndex = 0;
     spriteYIndex = 2;
     sprite = new Image(160, 64);
-    src = "";
-    type = "daqloon";
+    src = '';
+    type = 'daqloon';
     visible = true;
     noCollision = true;
     oldX = 0;
@@ -41,7 +44,7 @@ export class Daqloon implements MovingGameObject {
     health: number;
     maxHealth = 100;
     movementSpeed = 60;
-    currentAnimation: string = "idle"
+    currentAnimation: string = 'idle';
     speedX = 0;
     speedY = 0;
     dead = false;
@@ -68,7 +71,7 @@ export class Daqloon implements MovingGameObject {
         this.health = 10;
         this.drawX = Math.round(this.x - viewport.offsetX);
         this.drawY = Math.round(this.y - viewport.offsetY);
-        this.sprite.src = AssetPaths.getImagePath("daqloon sprite.png");
+        this.sprite.src = AssetPaths.getImagePath('daqloon sprite.png');
     }
 
     setDiameter() {
@@ -79,15 +82,15 @@ export class Daqloon implements MovingGameObject {
     }
 
     resetDirections() {
-        this.up = "";
-        this.right = "";
-        this.down = "";
-        this.left = "";
+        this.up = '';
+        this.right = '';
+        this.down = '';
+        this.left = '';
     }
 
     hit(direction: string) {
         if (this.dead) return false;
-        if (direction === "up") {
+        if (direction === 'up') {
             this.y -= 10;
             this.drawY -= 10;
         } else {
@@ -96,22 +99,22 @@ export class Daqloon implements MovingGameObject {
         }
         this.setDiameter();
         this.calculateNewPosition();
-        this.setStartAnimationPoint("damage");
+        this.setStartAnimationPoint('damage');
         this.drawOnCanvas();
 
-        let damage = getRandomInteger(0, GamePieces.player.attackDamage);
+        const damage = getRandomInteger(0, GamePieces.player.attackDamage);
         this.health -= damage;
         this.hitMessage = Game.properties.duration;
         viewport.drawText(
-            "18px Times New Roman",
-            "#FFFFFF",
+            '18px Times New Roman',
+            '#FFFFFF',
             damage,
             this.drawX - GamePieces.player.xMovement * viewport.scale + 40,
-            this.drawY - GamePieces.player.yMovement * viewport.scale + 20
+            this.drawY - GamePieces.player.yMovement * viewport.scale + 20,
         );
         this.drawHealthBar(
             this.drawX - GamePieces.player.xMovement * viewport.scale,
-            this.drawY - GamePieces.player.yMovement * viewport.scale
+            this.drawY - GamePieces.player.yMovement * viewport.scale,
         );
         if (this.health <= 0) {
             this.spriteXIndex = 0;
@@ -120,21 +123,21 @@ export class Daqloon implements MovingGameObject {
     }
 
     locater() {
-        let direction = "Located ";
+        let direction = 'Located ';
         // Find locater;
         if (GamePieces.player.ypos < this.y) {
-            direction += "south";
+            direction += 'south';
             if (GamePieces.player.xpos - this.x > -200) {
-                direction += ", east";
+                direction += ', east';
             } else if (GamePieces.player.xpos - this.x < 200) {
-                direction += ", west";
+                direction += ', west';
             }
         } else {
-            direction += "north";
+            direction += 'north';
             if (GamePieces.player.xpos < this.x) {
-                direction += ", east";
+                direction += ', east';
             } else if (GamePieces.player.xpos > this.x) {
-                direction += ", west";
+                direction += ', west';
             }
         }
         if (
@@ -143,7 +146,7 @@ export class Daqloon implements MovingGameObject {
             this.fighting_area.diameterRight < GamePieces.player.xpos ||
             this.fighting_area.diameterLeft > GamePieces.player.xpos
         ) {
-            direction = "Not in daqloon area";
+            direction = 'Not in daqloon area';
         }
         // TODO: This causes performance issues. Need to find a better way to do this.
         // HUD.elements.huntedLocator.innerHTML = direction;
@@ -151,11 +154,23 @@ export class Daqloon implements MovingGameObject {
 
     drawHealthBar(x: number, y: number) {
         if (this.health <= 0) return false;
-        let remainingHealth = 100 - this.health;
+        const remainingHealth = 100 - this.health;
         if (this.health !== 100) {
-            viewport.drawDaqloonHealthbar("#4d0000", x + 5, y - 20, 0.35 * 100, 10);
+            viewport.drawDaqloonHealthbar(
+                '#4d0000',
+                x + 5,
+                y - 20,
+                0.35 * 100,
+                10,
+            );
         }
-        viewport.drawDaqloonHealthbar("red", x + 5, y - 20, 0.35 * this.health, 10);
+        viewport.drawDaqloonHealthbar(
+            'red',
+            x + 5,
+            y - 20,
+            0.35 * this.health,
+            10,
+        );
     }
 
     public drawOnCanvas() {
@@ -168,16 +183,19 @@ export class Daqloon implements MovingGameObject {
             this.drawX - GamePieces.player.xMovement,
             this.drawY - GamePieces.player.yMovement,
             this.width,
-            this.height
+            this.height,
         );
         if (GamePieces.player.attackedBy === this.id) {
             this.locater();
             this.drawHealthBar(
                 this.drawX - GamePieces.player.xMovement * viewport.scale,
-                this.drawY - GamePieces.player.yMovement * viewport.scale
+                this.drawY - GamePieces.player.yMovement * viewport.scale,
             );
         }
-        if (this.hitMessage !== -1 && Game.properties.duration - this.hitMessage > 10) {
+        if (
+            this.hitMessage !== -1 &&
+            Game.properties.duration - this.hitMessage > 10
+        ) {
             this.hitMessage = -1;
             viewport.resetTextLayer();
         }
@@ -188,10 +206,13 @@ export class Daqloon implements MovingGameObject {
     draw() {
         // TODO: This detection is way too low
         if (
-            ((Math.abs(this.diameterLeft - GamePieces.player.xpos) < 20 ||
-                Math.abs(this.diameterRight - GamePieces.player.xpos) < 20
-            ) && Math.abs(this.diameterUp + (this.height / 2) - GamePieces.player.diameterUp) < 20)
-            &&
+            (Math.abs(this.diameterLeft - GamePieces.player.xpos) < 20 ||
+                Math.abs(this.diameterRight - GamePieces.player.xpos) < 20) &&
+            Math.abs(
+                this.diameterUp +
+                    this.height / 2 -
+                    GamePieces.player.diameterUp,
+            ) < 20 &&
             this.attack === false &&
             this.cooldown === false &&
             this.spawn === false
@@ -199,9 +220,14 @@ export class Daqloon implements MovingGameObject {
             this.attack = true;
             this.cooldown = true;
             if (GamePieces.player.combatActions.block) {
-                console.log("BLOCKED");
-                viewport.drawText("18px Times New Roman", "#FFFFFF", "BLOCKED",
-                    20, viewport.height / 2);
+                console.log('BLOCKED');
+                viewport.drawText(
+                    '18px Times New Roman',
+                    '#FFFFFF',
+                    'BLOCKED',
+                    20,
+                    viewport.height / 2,
+                );
             } else {
                 GamePieces.player.takeDamage(this.attackDamage);
             }
@@ -210,31 +236,30 @@ export class Daqloon implements MovingGameObject {
         if (this.health > 0) {
             this.calculateMovement();
         }
-        if (this.currentAnimation === "damage") {
-            this.setStartAnimationPoint("idle");
+        if (this.currentAnimation === 'damage') {
+            this.setStartAnimationPoint('idle');
         } else if (this.spawn == true && this.dead == false) {
             if (Game.properties.duration % 10 === 0) {
-
                 if (this.spriteXIndex >= 2) {
                     this.spriteYIndex = 2;
                     this.spawn = false;
                     this.health = 10;
                     GamePieces.daqloon_fighting_area.findHuntingDaqloon();
-                    this.setStartAnimationPoint("idle");
+                    this.setStartAnimationPoint('idle');
                 } else {
                     this.spriteXIndex++;
                 }
             }
         } else if (this.dead === true && Game.properties.duration % 10 === 0) {
             // If spriteXIndex is 5, the death animation is complete
-            this.setStartAnimationPoint("death");
+            this.setStartAnimationPoint('death');
             if (this.spriteXIndex == 5) {
                 this.spriteXIndex = 3;
                 // let lootItem = getRandomInteger(0, 30) === 30 ? "daqloon horns" : "daqloon scale";
                 // GamePieces.items.push(new item(this.drawX, this.drawY, lootItem));
                 this.dead = false;
                 this.spawn = true;
-                this.setStartAnimationPoint("spawn");
+                this.setStartAnimationPoint('spawn');
             }
             this.spriteXIndex++;
         } else if (
@@ -282,30 +307,43 @@ export class Daqloon implements MovingGameObject {
     }
 
     private calculateMovement() {
-        let distanceX = GamePieces.player.xpos - this.x;
-        let distanceY = GamePieces.player.ypos - this.y;
-        let debug = true;
+        const distanceX = GamePieces.player.xpos - this.x;
+        const distanceY = GamePieces.player.ypos - this.y;
+        const debug = true;
 
         // Variables to determine how much a daqloon should move if it is able to
-        let move = this.movementSpeed * Game.properties.delta;
-        if ((Math.abs(distanceX) < 250 || Math.abs(distanceY) < 250) || GamePieces.player.attackedBy === this.id) {
+        const move = this.movementSpeed * Game.properties.delta;
+        if (
+            Math.abs(distanceX) < 250 ||
+            Math.abs(distanceY) < 250 ||
+            GamePieces.player.attackedBy === this.id
+        ) {
             this.nearbyPlayer = true;
 
-            if (distanceX > 6 && this.x + 1 < this.fighting_area.diameterRight) {
-                if (this.right !== "blocked") {
+            if (
+                distanceX > 6 &&
+                this.x + 1 < this.fighting_area.diameterRight
+            ) {
+                if (this.right !== 'blocked') {
                     this.speedX = move;
                 }
-            } else if (distanceX < -6 && this.x - 1 > this.fighting_area.diameterLeft) {
-                if (this.left !== "blocked") {
+            } else if (
+                distanceX < -6 &&
+                this.x - 1 > this.fighting_area.diameterLeft
+            ) {
+                if (this.left !== 'blocked') {
                     this.speedX = -move;
                 }
             }
             if (distanceY > 6 && this.y + 1 < this.fighting_area.diameterDown) {
-                if (this.down !== "blocked") {
+                if (this.down !== 'blocked') {
                     this.speedY = move;
                 }
-            } else if (distanceY < -6 && this.y - 1 > this.fighting_area.diameterUp) {
-                if (this.up !== "blocked") {
+            } else if (
+                distanceY < -6 &&
+                this.y - 1 > this.fighting_area.diameterUp
+            ) {
+                if (this.up !== 'blocked') {
                     this.speedY = -move;
                 }
             }
@@ -356,26 +394,26 @@ export class Daqloon implements MovingGameObject {
         this.calculateNewPosition();
     }
 
-    setStartAnimationPoint(type: "spawn" | "death" | "attack" | "damage" | "idle") {
-
-        if (type === "damage" && this.currentAnimation !== "damage") {
-            this.currentAnimation = "damage";
+    setStartAnimationPoint(
+        type: 'spawn' | 'death' | 'attack' | 'damage' | 'idle',
+    ) {
+        if (type === 'damage' && this.currentAnimation !== 'damage') {
+            this.currentAnimation = 'damage';
             this.spriteXIndex = 7;
-        }
-        else if (type === "spawn" && this.currentAnimation !== "spawn") {
-            this.currentAnimation = "spawn";
+        } else if (type === 'spawn' && this.currentAnimation !== 'spawn') {
+            this.currentAnimation = 'spawn';
             this.spriteXIndex = 0;
             this.spriteYIndex = 2;
-        } else if (type === "death" && this.currentAnimation !== "death") {
-            this.currentAnimation = "death";
+        } else if (type === 'death' && this.currentAnimation !== 'death') {
+            this.currentAnimation = 'death';
             this.spriteXIndex = 3;
             this.spriteYIndex = 2;
-        } else if (type === "attack" && this.currentAnimation !== "attack") {
-            this.currentAnimation = "attack";
+        } else if (type === 'attack' && this.currentAnimation !== 'attack') {
+            this.currentAnimation = 'attack';
             this.spriteXIndex = 5;
             this.spriteYIndex = 2;
-        } else if (type === "idle" && this.currentAnimation !== "idle") {
-            this.currentAnimation = "idle";
+        } else if (type === 'idle' && this.currentAnimation !== 'idle') {
+            this.currentAnimation = 'idle';
         }
     }
 }

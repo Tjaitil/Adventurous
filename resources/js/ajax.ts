@@ -1,15 +1,14 @@
-import { advAPIResponse } from "./types/Responses/AdvResponse";
-import { GameLogger } from "./utilities/GameLogger";
-import axios, {Axios} from 'axios';
-
+import { advAPIResponse } from './types/Responses/AdvResponse';
+import { GameLogger } from './utilities/GameLogger';
+import axios, { Axios } from 'axios';
 
 export class BaseAxios {
     private static route = window.location.origin;
-    
+
     private static AxiosInstance: Axios;
 
     public static getInstance() {
-        if(!this.AxiosInstance) this.createAxiosInstance();
+        if (!this.AxiosInstance) this.createAxiosInstance();
 
         return this.AxiosInstance;
     }
@@ -17,30 +16,34 @@ export class BaseAxios {
     private static createAxiosInstance() {
         this.AxiosInstance = axios.create({
             baseURL: this.route,
-            headers: { 
-                "Content-type": "application/json",
+            headers: {
+                'Content-type': 'application/json',
             },
         });
-    
-        this.AxiosInstance.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+        this.AxiosInstance.defaults.headers.common['X-Requested-With'] =
+            'XMLHttpRequest';
     }
 
     public static async get<T = advAPIResponse>(url: string): Promise<T> {
-        if(!this.AxiosInstance) this.createAxiosInstance();
+        if (!this.AxiosInstance) this.createAxiosInstance();
 
-
-        return await this.AxiosInstance.get<T>(url).then(async (response) => response.data);
-
+        return await this.AxiosInstance.get<T>(url).then(
+            async response => response.data,
+        );
     }
 
-    public static async post<T = advAPIResponse>(url: string, data: Object): Promise<T> {
-        if(!this.AxiosInstance) this.createAxiosInstance();
-        
-        return await this.AxiosInstance.post<T>(url, data).then(async (response) => response.data);
+    public static async post<T = advAPIResponse>(
+        url: string,
+        data: Object,
+    ): Promise<T> {
+        if (!this.AxiosInstance) this.createAxiosInstance();
+
+        return await this.AxiosInstance.post<T>(url, data).then(
+            async response => response.data,
+        );
     }
 }
-
-
 
 // scriptLoader.loadScript(["GameLogger"], "utility");
 
@@ -53,11 +56,20 @@ function validJSON(str) {
     return true;
 }
 function checkError(responseText) {
-    let errorWords = ["ERROR", "error", "notice", "Exception", "exception", "Trace", "trace", "Warning"];
+    const errorWords = [
+        'ERROR',
+        'error',
+        'notice',
+        'Exception',
+        'exception',
+        'Trace',
+        'trace',
+        'Warning',
+    ];
     let match = false;
     for (const i of errorWords) {
         if (responseText.includes(i)) {
-            console.log("Error key found at ", i);
+            console.log('Error key found at ', i);
             match = true;
             break;
         }
@@ -70,10 +82,10 @@ function checkError(responseText) {
 }
 
 export async function ajaxG(data, callback, log = true) {
-    let ajaxRequest = new XMLHttpRequest();
+    const ajaxRequest = new XMLHttpRequest();
     ajaxRequest.onload = function () {
         if (this.readyState == 4 && this.status == 200) {
-            let responseText = JSON.parse(this.responseText);
+            const responseText = JSON.parse(this.responseText);
             checkResponse(responseText);
             if (checkError(this.responseText)) {
                 callback([false, responseText]);
@@ -82,18 +94,23 @@ export async function ajaxG(data, callback, log = true) {
             }
         }
     };
-    ajaxRequest.open("GET", "handlers/handler_g.php?" + data);
+    ajaxRequest.open('GET', 'handlers/handler_g.php?' + data);
     ajaxRequest.send();
 }
-export async function ajaxJS(data, callback, log = true, file: string = "handler_js") {
-    let ajaxRequest = new XMLHttpRequest();
+export async function ajaxJS(
+    data,
+    callback,
+    log = true,
+    file: string = 'handler_js',
+) {
+    const ajaxRequest = new XMLHttpRequest();
     ajaxRequest.onload = function () {
         if (this.readyState == 4 && this.status == 200) {
-            let responseText = JSON.parse(this.responseText);
+            const responseText = JSON.parse(this.responseText);
             checkResponse(responseText);
             if (checkError(this.responseText)) {
                 callback([false, responseText]);
-                GameLogger.addMessage("ERROR!:");
+                GameLogger.addMessage('ERROR!:');
                 console.log(this.responseText);
                 GameLogger.logMessages();
             } else {
@@ -103,7 +120,7 @@ export async function ajaxJS(data, callback, log = true, file: string = "handler
             console.log(this.responseText);
         }
     };
-    ajaxRequest.open("GET", "handlers/" + file + ".php?" + data);
+    ajaxRequest.open('GET', 'handlers/' + file + '.php?' + data);
     ajaxRequest.send();
 }
 export async function ajaxP(data, callback, log = true) {
@@ -117,10 +134,10 @@ export async function ajaxP(data, callback, log = true) {
     //     .catch((error) => checkResponse(error));
 
     // return response;
-    let ajaxRequest = new XMLHttpRequest();
+    const ajaxRequest = new XMLHttpRequest();
     ajaxRequest.onload = function () {
         if (this.readyState == 4 && this.status == 200) {
-            let responseText = JSON.parse(this.responseText);
+            const responseText = JSON.parse(this.responseText);
             console.log(this.responseText);
             checkResponse(responseText);
             if (checkError(this.responseText)) {
@@ -134,8 +151,11 @@ export async function ajaxP(data, callback, log = true) {
             console.log(this.responseText);
         }
     };
-    ajaxRequest.open("POST", "handlers/handler_p.php");
-    ajaxRequest.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    ajaxRequest.open('POST', 'handlers/handler_p.php');
+    ajaxRequest.setRequestHeader(
+        'Content-Type',
+        'application/x-www-form-urlencoded',
+    );
     ajaxRequest.send(data);
 }
 export function checkResponse(response: advAPIResponse) {
@@ -143,10 +163,10 @@ export function checkResponse(response: advAPIResponse) {
     //     Object.keys(response.levelUp ?? {}).length > 0) {
     //     LevelManager.update(response.levelUp);
     // }
-    if (typeof response.gameMessage !== "undefined") {
+    if (typeof response.gameMessage !== 'undefined') {
         GameLogger.addMessage(response.gameMessage);
         GameLogger.logMessages();
-    } else if (typeof response.errorGameMessage !== "undefined") {
+    } else if (typeof response.errorGameMessage !== 'undefined') {
         GameLogger.addMessage(response.errorGameMessage);
         GameLogger.logMessages();
     }
@@ -162,4 +182,3 @@ export function checkResponse(response: advAPIResponse) {
 //     .catch((error) => checkResponse(error));
 
 // return response;
-

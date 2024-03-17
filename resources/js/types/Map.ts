@@ -4,7 +4,7 @@ export interface MapFontProperties {
 }
 
 export interface MapPlayerMarker {
-    tagType: "dot";
+    tagType: 'dot';
     visible: boolean;
     x: number;
     y: number;

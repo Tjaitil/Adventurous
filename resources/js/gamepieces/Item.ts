@@ -1,10 +1,10 @@
-import { Game } from "../advclient";
-import { GamePieces } from "../clientScripts/gamePieces";
-import viewport from "../clientScripts/viewport";
-import { ajaxP } from "../ajax";
-import { updateInventory } from "../clientScripts/inventory";
-import { ItemSprite } from "../types/ItemSprite";
-import { makeSprite } from "../clientScripts/spritesContainer";
+import { Game } from '../advclient';
+import { GamePieces } from '../clientScripts/gamePieces';
+import viewport from '../clientScripts/viewport';
+import { ajaxP } from '../ajax';
+import { updateInventory } from '../clientScripts/inventory';
+import { ItemSprite } from '../types/ItemSprite';
+import { makeSprite } from '../clientScripts/spritesContainer';
 
 export class Item {
     x: number;
@@ -30,7 +30,12 @@ export class Item {
         this.y = drawY + viewport.offsetY;
         this.id = GamePieces.items.length + 1;
 
-        this.spriteObject = makeSprite(this.name, this.width, this.height, this.src);
+        this.spriteObject = makeSprite(
+            this.name,
+            this.width,
+            this.height,
+            this.src,
+        );
         this.shadow = new ItemShadowAnimation(this.x, this.y);
     }
 
@@ -44,9 +49,11 @@ export class Item {
             32 * viewport.scale,
             32 * viewport.scale,
             this.drawX - GamePieces.player.xMovement * viewport.scale + 5,
-            this.drawY - GamePieces.player.yMovement * viewport.scale + this.loopArray[this.loopIndex],
+            this.drawY -
+                GamePieces.player.yMovement * viewport.scale +
+                this.loopArray[this.loopIndex],
             this.width * this.scale,
-            this.height * this.scale
+            this.height * this.scale,
         );
         this.shadow.draw();
         if (this.checking === false) this.pickUpItem();
@@ -54,17 +61,32 @@ export class Item {
     }
 
     pickUpItem() {
-        if (Math.abs(this.x - GamePieces.player.xpos) <= 10 && Math.abs(this.y - GamePieces.player.ypos) <= 10) {
+        if (
+            Math.abs(this.x - GamePieces.player.xpos) <= 10 &&
+            Math.abs(this.y - GamePieces.player.ypos) <= 10
+        ) {
             this.checking = true;
             let inInventory = false;
-            if (document.getElementById("inventory").querySelectorAll(".inventory_item").length === 18) {
-                let array = document.getElementById("inventory").querySelectorAll(".inventory_item");
+            if (
+                document
+                    .getElementById('inventory')
+                    .querySelectorAll('.inventory_item').length === 18
+            ) {
+                const array = document
+                    .getElementById('inventory')
+                    .querySelectorAll('.inventory_item');
                 for (
                     let i = 0;
-                    i < document.getElementById("inventory").querySelectorAll(".inventory_item").length;
+                    i <
+                    document
+                        .getElementById('inventory')
+                        .querySelectorAll('.inventory_item').length;
                     i++
                 ) {
-                    if (array[i].innerHTML.indexOf(this.spriteObject.name) !== -1) {
+                    if (
+                        array[i].innerHTML.indexOf(this.spriteObject.name) !==
+                        -1
+                    ) {
                         inInventory = true;
                     }
                 }
@@ -76,7 +98,11 @@ export class Item {
             // }
             // else if(inInventory === true) {
 
-            let data = "model=Loot" + "&method=addLoot" + "&item=" + this.spriteObject.name;
+            const data =
+                'model=Loot' +
+                '&method=addLoot' +
+                '&item=' +
+                this.spriteObject.name;
             GamePieces.items = GamePieces.items.filter((item: Item) => {
                 return item.id != this.id;
             });
@@ -119,7 +145,7 @@ export class ItemShadowAnimation {
             this.drawX - GamePieces.player.xMovement * viewport.scale - 8,
             this.drawY - GamePieces.player.yMovement * viewport.scale - 8,
             48,
-            48
+            48,
         );
         if (Game.properties.duration % 20 === 0) {
             this.indexX++;

@@ -1,43 +1,49 @@
-import { Game } from "../advclient";
-import merchant from "../buildingScripts/merchant";
-import { selectItemEvent } from "../ItemSelector";
-import { itemTitle } from "../utilities/itemTitle";
-import { jsUcWords } from "../utilities/uppercase";
-import { inputHandler } from "./inputHandler";
-import viewport from "./viewport";
-
+import { Game } from '../advclient';
+import merchant from '../buildingScripts/merchant';
+import { selectItemEvent } from '../ItemSelector';
+import { itemTitle } from '../utilities/itemTitle';
+import { jsUcWords } from '../utilities/uppercase';
+import { inputHandler } from './inputHandler';
+import viewport from './viewport';
 
 export class ClientOverlayInterface {
-    public static shadowContainer = document.getElementById("news");
-    public static outerContainer = document.getElementById("news_content");
-    public static wrapper = document.getElementById("news_content_main_content");
-    public static sidePanel = document.getElementById("news_content_side_panel");
+    public static shadowContainer = document.getElementById('news');
+    public static outerContainer = document.getElementById('news_content');
+    public static wrapper = document.getElementById(
+        'news_content_main_content',
+    );
+    public static sidePanel = document.getElementById(
+        'news_content_side_panel',
+    );
     public static activeButton = null;
     public static interfaceExitButton = null;
-    private static interfacePageTitle = "";
+    private static interfacePageTitle = '';
 
     public static setup() {
-        this.interfaceExitButton = this.outerContainer.querySelectorAll(".cont_exit")[0] as HTMLElement;
-        this.interfaceExitButton.addEventListener("click", () => this.hide());
+        this.interfaceExitButton = this.outerContainer.querySelectorAll(
+            '.cont_exit',
+        )[0] as HTMLElement;
+        this.interfaceExitButton.addEventListener('click', () => this.hide());
     }
 
     public static loadingScreen() {
-        let h = document.createElement("h1");
-        h.innerText = "Loading...";
-        h.classList.add("mt-5");
-        h.id = "loading_message";
+        const h = document.createElement('h1');
+        h.innerText = 'Loading...';
+        h.classList.add('mt-5');
+        h.id = 'loading_message';
         this.show(h, false);
     }
 
     public static show(content: string | Object, sidebar = true) {
-        this.wrapper.innerHTML = "";
-        this.outerContainer.style.top = viewport.elements.background.offsetTop + "px";
-        this.shadowContainer.style.visibility = "visible";
-        this.outerContainer.style.visibility = "visible";
+        this.wrapper.innerHTML = '';
+        this.outerContainer.style.top =
+            viewport.elements.background.offsetTop + 'px';
+        this.shadowContainer.style.visibility = 'visible';
+        this.outerContainer.style.visibility = 'visible';
 
-        if (typeof content === "object") {
-            let element = content as HTMLElement;
-            if (element.innerText.indexOf("Loading") != -1) {
+        if (typeof content === 'object') {
+            const element = content as HTMLElement;
+            if (element.innerText.indexOf('Loading') != -1) {
                 this.wrapper.appendChild(element);
             } else if (Object.keys(element).length > 1) {
                 for (let i = 0; i < Object.keys(element).length; i++) {
@@ -45,7 +51,7 @@ export class ClientOverlayInterface {
                 }
             }
         } else {
-            this.wrapper.innerHTML = "" + content;
+            this.wrapper.innerHTML = '' + content;
         }
         if (sidebar == true) {
             this.createSidePanelTabs();
@@ -55,10 +61,10 @@ export class ClientOverlayInterface {
     public static hide() {
         if (this.interfacePageTitle !== undefined) {
             switch (this.interfacePageTitle) {
-                case "merchant":
+                case 'merchant':
                     merchant.updateStockCountdown(false, true);
                     break;
-                case "tavern":
+                case 'tavern':
                     // TODO: Fix this
                     // let figures = document.getElementById("inventory").querySelectorAll("figure");
                     // figures.forEach((element) => element.removeEventListener("click", getHealingAmount));
@@ -70,19 +76,19 @@ export class ClientOverlayInterface {
         if (inputHandler.currentBuildingModule) {
             if (inputHandler.currentBuildingModule.default?.onClose) {
                 inputHandler.currentBuildingModule.default.onClose();
-            } else if(inputHandler.currentBuildingModule?.onClose) {            
+            } else if (inputHandler.currentBuildingModule?.onClose) {
                 inputHandler.currentBuildingModule.onClose();
             }
         }
 
-        this.wrapper.innerHTML = "";
-        this.sidePanel.innerHTML = "";
+        this.wrapper.innerHTML = '';
+        this.sidePanel.innerHTML = '';
 
-        this.outerContainer.style.visibility = "hidden";
-        this.shadowContainer.style.visibility = "hidden";
+        this.outerContainer.style.visibility = 'hidden';
+        this.shadowContainer.style.visibility = 'hidden';
 
-        this.outerContainer.style.top = "200px";
-        if (typeof Game.properties.inBuilding !== "undefined") {
+        this.outerContainer.style.top = '200px';
+        if (typeof Game.properties.inBuilding !== 'undefined') {
             Game.properties.inBuilding = false;
         }
         if (selectItemEvent.selectItemStatus === true) {
@@ -94,45 +100,56 @@ export class ClientOverlayInterface {
     }
 
     public static createSidePanelTabs() {
-        if (this.wrapper.style.width === "100%") {
-            this.wrapper.style.width = "75%";
-            this.sidePanel.style.width = "25%";
-            this.sidePanel.style.display = "";
+        if (this.wrapper.style.width === '100%') {
+            this.wrapper.style.width = '75%';
+            this.sidePanel.style.width = '25%';
+            this.sidePanel.style.display = '';
         }
-        this.sidePanel.innerHTML = "";
-        let divChildren = this.wrapper.children;
+        this.sidePanel.innerHTML = '';
+        const divChildren = this.wrapper.children;
 
         // Exceptions that should not be rendered
-        let exceptions = ["store-container-item-wrapper", "put_on", "persons", "stck_menu", "battle-result"];
+        const exceptions = [
+            'store-container-item-wrapper',
+            'put_on',
+            'persons',
+            'stck_menu',
+            'battle-result',
+        ];
         let buttonCount = 0;
         let divFirst = false;
 
         for (let i = 0; i < divChildren.length; i++) {
-            let childElement = <HTMLElement>divChildren[i];
-            if (childElement.tagName === "DIV" && exceptions.indexOf(childElement.id) == -1) {
-                childElement.style.visibility = "hidden";
-                childElement.style.display = "none";
-                let button = document.createElement("button");
+            const childElement = <HTMLElement>divChildren[i];
+            if (
+                childElement.tagName === 'DIV' &&
+                exceptions.indexOf(childElement.id) == -1
+            ) {
+                childElement.style.visibility = 'hidden';
+                childElement.style.display = 'none';
+                const button = document.createElement('button');
                 // Get text from div id and remove underscore and Uppercase character of each word;
-                let text = document.createTextNode(jsUcWords(underscoreTreatment(childElement.id, false)));
+                const text = document.createTextNode(
+                    jsUcWords(underscoreTreatment(childElement.id, false)),
+                );
                 button.appendChild(text);
-                button.classList.add("building-tab");
+                button.classList.add('building-tab');
                 this.sidePanel.appendChild(button);
                 if (divFirst === false) {
-                    childElement.style.visibility = "visible";
+                    childElement.style.visibility = 'visible';
                     divFirst = true;
                     this.showContent(undefined, button);
                     window.setTimeout(() => {
                         this.adjustWrapperHeight();
                     }, 500);
                 }
-                childElement.style.width = "100%";
+                childElement.style.width = '100%';
                 buttonCount++;
             }
         }
         if (buttonCount < 2) {
             // Remove padding
-            this.wrapper.style.paddingRight = "0px";
+            this.wrapper.style.paddingRight = '0px';
             // If first div is persons then show second div ([2] in the child tree, [0] is title, [1] is persons div)
 
             // if (this.wrapper.querySelectorAll("div")[0].id == "persons") {
@@ -145,91 +162,102 @@ export class ClientOverlayInterface {
             // } else {
             // }
 
-            this.wrapper.style.height = this.wrapper.querySelectorAll("div")[0].offsetHeight + 40 + "px";
-            this.wrapper.querySelectorAll("div")[0].getBoundingClientRect();
-            this.wrapper.style.width = "100%";
-            this.sidePanel.style.display = "none";
+            this.wrapper.style.height =
+                this.wrapper.querySelectorAll('div')[0].offsetHeight +
+                40 +
+                'px';
+            this.wrapper.querySelectorAll('div')[0].getBoundingClientRect();
+            this.wrapper.style.width = '100%';
+            this.sidePanel.style.display = 'none';
         } else {
             this.addEventSidePanelTab();
 
-            if (this.wrapper.style.paddingRight === "0") {
-                this.wrapper.style.paddingRight = "8px";
+            if (this.wrapper.style.paddingRight === '0') {
+                this.wrapper.style.paddingRight = '8px';
             }
         }
     }
 
     public static showContent(event = undefined, selectedButton = undefined) {
         // Check if there is a selectedButton or if there is a DOM event
-        if (typeof selectedButton === "object") {
+        if (typeof selectedButton === 'object') {
             this.activeButton = selectedButton.innerText;
         } else {
-            let eventTarget = <HTMLElement>event.target;
+            const eventTarget = <HTMLElement>event.target;
             this.activeButton = eventTarget.innerText;
         }
 
-
-        let buttons = document.getElementsByClassName("building-tab");
+        const buttons = document.getElementsByClassName('building-tab');
         for (let i = 0; i < buttons.length; i++) {
-            let button = buttons[i] as HTMLElement;
+            const button = buttons[i] as HTMLElement;
             if (button.innerText == this.activeButton) {
-                button.style.backgroundColor = "#474700";
+                button.style.backgroundColor = '#474700';
                 // document.getElementById(underscoreTreatment(button.innerText, true).toLowerCase()).style.position = "";
-                document.getElementById(underscoreTreatment(button.innerText, true).toLowerCase()).style.visibility =
-                    "visible";
-                document.getElementById(underscoreTreatment(button.innerText, true).toLowerCase()).style.display =
-                    "block";
+                document.getElementById(
+                    underscoreTreatment(button.innerText, true).toLowerCase(),
+                ).style.visibility = 'visible';
+                document.getElementById(
+                    underscoreTreatment(button.innerText, true).toLowerCase(),
+                ).style.display = 'block';
             } else {
-                button.style.backgroundColor = "";
-                document.getElementById(underscoreTreatment(button.innerText, true).toLowerCase()).style.visibility =
-                    "hidden";
-                document.getElementById(underscoreTreatment(button.innerText, true).toLowerCase()).style.display =
-                    "none";
+                button.style.backgroundColor = '';
+                document.getElementById(
+                    underscoreTreatment(button.innerText, true).toLowerCase(),
+                ).style.visibility = 'hidden';
+                document.getElementById(
+                    underscoreTreatment(button.innerText, true).toLowerCase(),
+                ).style.display = 'none';
             }
         }
         if (
-            document.getElementById("form_cont") !== null &&
-            document.getElementById("form_cont").style.display == "block"
+            document.getElementById('form_cont') !== null &&
+            document.getElementById('form_cont').style.display == 'block'
         ) {
-            document.getElementById("form_cont").style.display = "none";
+            document.getElementById('form_cont').style.display = 'none';
         }
         this.adjustWrapperHeight();
     }
 
     public static adjustWrapperHeight() {
         this.wrapper.getBoundingClientRect();
-        if (this.activeButton === "Overview") {
-            let number = document.querySelectorAll(".warrior").length;
+        if (this.activeButton === 'Overview') {
+            const number = document.querySelectorAll('.warrior').length;
             this.wrapper.style.height =
-                Math.ceil(number / 3) * 390 + 130 + "px";
+                Math.ceil(number / 3) * 390 + 130 + 'px';
         } else {
-            let visibleChildren = <HTMLElement[]>[...this.wrapper.children];
+            const visibleChildren = <HTMLElement[]>[...this.wrapper.children];
             visibleChildren.filter(
-                (element) => element.style.visibility !== "hidden" && element.style.display !== "none"
+                element =>
+                    element.style.visibility !== 'hidden' &&
+                    element.style.display !== 'none',
             );
 
             let totalHeight = 0;
-            visibleChildren.forEach((element) => (totalHeight += element.offsetHeight));
-            this.wrapper.style.height = totalHeight + "px";
+            visibleChildren.forEach(
+                element => (totalHeight += element.offsetHeight),
+            );
+            this.wrapper.style.height = totalHeight + 'px';
         }
     }
 
     public static addEventSidePanelTab() {
-        let buttons = [...document.getElementsByClassName("building-tab")];
-        buttons.forEach((element) => {
+        const buttons = [...document.getElementsByClassName('building-tab')];
+        buttons.forEach(element => {
             // Add eventListener to each node
-            element.addEventListener("click", (event) => this.showContent(event));
+            element.addEventListener('click', event => this.showContent(event));
         });
     }
 
     public static getInterfacePageTitle(): string {
-        let title = <HTMLElement>document.getElementsByClassName("page_title")[0];
+        const title = <HTMLElement>(
+            document.getElementsByClassName('page_title')[0]
+        );
         if (title) {
             this.interfacePageTitle = title.innerText;
         }
         return this.interfacePageTitle;
     }
-};
-
+}
 
 // export const clientOverlayInterface: IClientOverlayInterface = {
 //     outerContainer: document.getElementById("news_content"),
@@ -441,12 +469,12 @@ export class ClientOverlayInterface {
 // };
 
 function underscoreTreatment(string: string, addUnderscore: boolean): string {
-    let result = string.search("_");
+    const result = string.search('_');
     let editedString;
     if (result != -1 && addUnderscore === false) {
-        editedString = string.replace("_", " ");
+        editedString = string.replace('_', ' ');
     } else if (result == -1 && addUnderscore === true) {
-        editedString = string.replace(" ", "_");
+        editedString = string.replace(' ', '_');
     } else {
         return string;
     }

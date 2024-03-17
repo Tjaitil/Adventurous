@@ -1,3 +1,1 @@
-export interface GetSkillsRequest {
-
-}
+export interface GetSkillsRequest {}

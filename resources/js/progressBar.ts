@@ -1,4 +1,3 @@
-
 export class ProgressBar {
     progressBarElement: HTMLElement;
     currentValue: number;
@@ -23,15 +22,15 @@ export class ProgressBar {
             maxValue: number;
             finishedclass?: boolean;
         },
-        createElement: boolean | string = false
+        createElement: boolean | string = false,
     ) {
-        if (typeof createElement === "string") {
+        if (typeof createElement === 'string') {
             this.progressBarElement = this.createProgressBar(createElement);
         } else {
-            if (typeof element !== "string") {
+            if (typeof element !== 'string') {
                 this.progressBarElement = element;
             } else {
-                let domElement = document.getElementById(element);
+                const domElement = document.getElementById(element);
                 this.progressBarElement = domElement;
             }
         }
@@ -40,15 +39,23 @@ export class ProgressBar {
             this.finishedClassToggled = initialValues.finishedclass;
         }
 
-        this.progressElement = <HTMLElement>this.progressBarElement.querySelectorAll(".progressBarOverlay")[0];
+        this.progressElement = <HTMLElement>(
+            this.progressBarElement.querySelectorAll('.progressBarOverlay')[0]
+        );
         this.progressBarOverlayShadow = <HTMLElement>(
-            this.progressBarElement.querySelectorAll(".progressBarOverlayShadow")[0]
+            this.progressBarElement.querySelectorAll(
+                '.progressBarOverlayShadow',
+            )[0]
         );
         this.currentValueElement = <HTMLElement>(
-            this.progressBarElement.querySelectorAll(".progressBar_currentValue")[0]
+            this.progressBarElement.querySelectorAll(
+                '.progressBar_currentValue',
+            )[0]
         );
 
-        this.maxValueElement = <HTMLElement>this.progressBarElement.querySelectorAll(".progressBar_maxValue")[0];
+        this.maxValueElement = <HTMLElement>(
+            this.progressBarElement.querySelectorAll('.progressBar_maxValue')[0]
+        );
         this.currentValue = initialValues.currentValue;
         this.maxValue = initialValues.maxValue;
         this.calculateProgress();
@@ -59,14 +66,14 @@ export class ProgressBar {
     }
 
     setCurrentValue(newVal: number) {
-        this.currentValueElement.innerHTML = newVal + "";
+        this.currentValueElement.innerHTML = newVal + '';
         this.currentValue = newVal;
         this.calculateProgress();
     }
 
     setMaxValue(newVal: number) {
         this.maxValue = newVal;
-        this.maxValueElement.innerHTML = newVal + "";
+        this.maxValueElement.innerHTML = newVal + '';
         this.calculateProgress();
     }
 
@@ -82,24 +89,31 @@ export class ProgressBar {
     public calculateProgress() {
         if (this.progressBarElement == null) return false;
 
-        this.progressBarElement.querySelectorAll(".progressBar")[0].classList.remove("progressFinished");
+        this.progressBarElement
+            .querySelectorAll('.progressBar')[0]
+            .classList.remove('progressFinished');
 
         this.progressIndicator = (this.currentValue / this.maxValue) * 100;
         if (this.progressIndicator > 100) {
             this.progressIndicator = 100;
         }
 
-        let shadowLength = this.progressIndicator + 0.5;
+        const shadowLength = this.progressIndicator + 0.5;
 
         this.progressElement.getBoundingClientRect();
 
-        if (this.progressIndicator >= 100 && this.finishedClassToggled === true) {
+        if (
+            this.progressIndicator >= 100 &&
+            this.finishedClassToggled === true
+        ) {
             this.progressIndicator = 100;
-            this.progressBarElement.querySelectorAll(".progressBar")[0].classList.add("progressFinished");
+            this.progressBarElement
+                .querySelectorAll('.progressBar')[0]
+                .classList.add('progressFinished');
         }
         // Update values
-        this.progressElement.style.width = this.progressIndicator + "%";
-        this.progressBarOverlayShadow.style.width = shadowLength + "%";
+        this.progressElement.style.width = this.progressIndicator + '%';
+        this.progressBarOverlayShadow.style.width = shadowLength + '%';
     }
 
     /**
@@ -109,24 +123,30 @@ export class ProgressBar {
      */
     public createProgressBar(progressBarID: string) {
         // Create container
-        let progressBarContainer = document.createElement("div");
-        progressBarContainer.setAttribute("class", "progressBarContainer");
-        progressBarContainer.setAttribute("id", progressBarID);
-        progressBarContainer.style.width = "100%";
-        let progressBarOverlayShadow = document.createElement("div");
-        progressBarOverlayShadow.setAttribute("class", "progressBarOverlayShadow");
+        const progressBarContainer = document.createElement('div');
+        progressBarContainer.setAttribute('class', 'progressBarContainer');
+        progressBarContainer.setAttribute('id', progressBarID);
+        progressBarContainer.style.width = '100%';
+        const progressBarOverlayShadow = document.createElement('div');
+        progressBarOverlayShadow.setAttribute(
+            'class',
+            'progressBarOverlayShadow',
+        );
 
-        let progressBarOverlay = document.createElement("div");
-        progressBarOverlay.setAttribute("class", "progressBarOverlay");
-        let progressBar = document.createElement("div");
-        progressBar.setAttribute("class", "progressBar");
-        let progressBar_currentValue = document.createElement("span");
-        progressBar_currentValue.setAttribute("class", "progressBar_currentValue");
-        let progressBar_maxValue = document.createElement("span");
+        const progressBarOverlay = document.createElement('div');
+        progressBarOverlay.setAttribute('class', 'progressBarOverlay');
+        const progressBar = document.createElement('div');
+        progressBar.setAttribute('class', 'progressBar');
+        const progressBar_currentValue = document.createElement('span');
+        progressBar_currentValue.setAttribute(
+            'class',
+            'progressBar_currentValue',
+        );
+        const progressBar_maxValue = document.createElement('span');
 
-        let space = document.createTextNode("\u00A0");
-        let slash = document.createTextNode(" /");
-        progressBar_maxValue.setAttribute("class", "progressBar_maxValue");
+        const space = document.createTextNode('\u00A0');
+        const slash = document.createTextNode(' /');
+        progressBar_maxValue.setAttribute('class', 'progressBar_maxValue');
 
         // append children of progressbar
         progressBar.appendChild(progressBar_currentValue);

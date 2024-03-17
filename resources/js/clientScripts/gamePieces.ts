@@ -1,16 +1,19 @@
-import { inputHandler } from "./inputHandler";
-import { GameObject } from "../types/gamepieces/GameObject";
-import { BaseStaticGameObject } from "../gamepieces/BaseStaticGameObject";
-import { Building } from "../gamepieces/Building";
-import { Character, ICharacter } from "../gamepieces/Character";
-import { IDaqloonFightingArea, DaqloonFightingArea } from "../gamepieces/DaqloonFightingArea";
-import { Daqloon } from "../gamepieces/Daqloon";
-import { Player } from "../gamepieces/Player";
-import viewport from "./viewport";
-import { Item } from "../gamepieces/Item";
-import { StaticGameObject } from "../types/gamepieces/StaticGameObject";
-import { WorldMapData } from "../types/Advclient";
-import { HUD } from "./HUD";
+import { inputHandler } from './inputHandler';
+import { GameObject } from '../types/gamepieces/GameObject';
+import { BaseStaticGameObject } from '../gamepieces/BaseStaticGameObject';
+import { Building } from '../gamepieces/Building';
+import { Character, ICharacter } from '../gamepieces/Character';
+import {
+    IDaqloonFightingArea,
+    DaqloonFightingArea,
+} from '../gamepieces/DaqloonFightingArea';
+import { Daqloon } from '../gamepieces/Daqloon';
+import { Player } from '../gamepieces/Player';
+import viewport from './viewport';
+import { Item } from '../gamepieces/Item';
+import { StaticGameObject } from '../types/gamepieces/StaticGameObject';
+import { WorldMapData } from '../types/Advclient';
+import { HUD } from './HUD';
 
 export type gameObjectTypes = Character | Building | BaseStaticGameObject;
 
@@ -44,31 +47,38 @@ export const GamePieces = {
         this.loadStaticPieces(mapData.objects);
     },
     loadDaqloonFightingArea(daqloonFightingAreas: IDaqloonFightingArea[]) {
-        if (daqloonFightingAreas !== undefined && daqloonFightingAreas.length > 0) {
-            this.daqloon_fighting_area = new DaqloonFightingArea(daqloonFightingAreas[0]);
+        if (
+            daqloonFightingAreas !== undefined &&
+            daqloonFightingAreas.length > 0
+        ) {
+            this.daqloon_fighting_area = new DaqloonFightingArea(
+                daqloonFightingAreas[0],
+            );
             this.daqloon = this.daqloon_fighting_area.loadDaqloons();
             this.daqloon_fighting_area.findHuntingDaqloon();
             // checkDaqloon(GamePieces.daqloon_fighting_area.daqloon_amount);
         } else {
             this.daqloon = [];
-            HUD.elements.huntedLocator.innerHTML = "";
+            HUD.elements.huntedLocator.innerHTML = '';
         }
     },
     loadStaticPieces(initObjects: GameObject[]) {
-        initObjects.forEach((object) => {
+        initObjects.forEach(object => {
             let instantiatedObject;
 
             switch (object.type) {
-                case "character":
+                case 'character':
                     instantiatedObject = new Character(<ICharacter>object);
                     this.characters.push(instantiatedObject);
                     break;
-                case "building":
+                case 'building':
                     instantiatedObject = new Building(<Building>object);
                     this.buildings.push(instantiatedObject);
                     break;
                 default:
-                    instantiatedObject = new BaseStaticGameObject(<StaticGameObject>object);
+                    instantiatedObject = new BaseStaticGameObject(
+                        <StaticGameObject>object,
+                    );
                     break;
             }
             this.objects.push(instantiatedObject);
@@ -87,17 +97,16 @@ export const GamePieces = {
         viewport.resetObjectLayer();
 
         for (const GamePiece of GamePieces.visibleObjects) {
-
             let drawContext;
 
             // if(GamePiece.type === "building") GamePiece;
             // If building is behind player, then draw on the first canvas instead of the third
             if (GamePiece.diameterDown < GamePieces.player.diameterDown) {
-                drawContext = "background";
+                drawContext = 'background';
             } else {
-                drawContext = "frontObjects";
+                drawContext = 'frontObjects';
             }
-            if (GamePiece.type === "character") {
+            if (GamePiece.type === 'character') {
                 // drawContext.imageSmoothingEnabled = false;
                 viewport.drawObject(
                     drawContext,
@@ -105,7 +114,7 @@ export const GamePieces = {
                     GamePiece.drawX - GamePieces.player.xMovement,
                     GamePiece.drawY - GamePieces.player.yMovement,
                     GamePiece.width,
-                    GamePiece.height
+                    GamePiece.height,
                 );
                 // TODO: Fix a better solution for this
                 // viewport.layer.text.font = "30px Comic Sans MS";
@@ -123,7 +132,7 @@ export const GamePieces = {
                     Math.round(GamePiece.drawX - GamePieces.player.xMovement),
                     Math.round(GamePiece.drawY - GamePieces.player.yMovement),
                     GamePiece.width,
-                    GamePiece.height
+                    GamePiece.height,
                 );
             }
         }
@@ -135,23 +144,25 @@ export const GamePieces = {
             (<any>window).gamePieces = GamePieces.objects;
             (<any>window).visibleObjects = GamePieces.visibleObjects;
             for (let i = 0, n = GamePieces.objects.length; i < n; i++) {
-                viewport.layer.frontObjects.fillStyle = "red";
+                viewport.layer.frontObjects.fillStyle = 'red';
                 viewport.layer.frontObjects.fillRect(
-                    GamePieces.objects[i].drawX - GamePieces.player.xMovement / viewport.scale,
-                    GamePieces.objects[i].drawY - GamePieces.player.yMovement / viewport.scale,
-                    GamePieces.objects[i].width,
-                    GamePieces.objects[i].height
-                );
-                viewport.layer.frontObjects.font = "10px Comic Sans MS";
-                viewport.layer.frontObjects.fillStyle = "white";
-                viewport.layer.frontObjects.fillText(
-                    i + " | " + GamePieces.objects[i].id,
                     GamePieces.objects[i].drawX -
-                    GamePieces.player.xMovement / viewport.scale +
-                    GamePieces.objects[i].width / 2,
+                        GamePieces.player.xMovement / viewport.scale,
+                    GamePieces.objects[i].drawY -
+                        GamePieces.player.yMovement / viewport.scale,
+                    GamePieces.objects[i].width,
+                    GamePieces.objects[i].height,
+                );
+                viewport.layer.frontObjects.font = '10px Comic Sans MS';
+                viewport.layer.frontObjects.fillStyle = 'white';
+                viewport.layer.frontObjects.fillText(
+                    i + ' | ' + GamePieces.objects[i].id,
+                    GamePieces.objects[i].drawX -
+                        GamePieces.player.xMovement / viewport.scale +
+                        GamePieces.objects[i].width / 2,
                     GamePieces.objects[i].drawY +
-                    GamePieces.objects[i].height / 2 -
-                    GamePieces.player.yMovement / viewport.scale
+                        GamePieces.objects[i].height / 2 -
+                        GamePieces.player.yMovement / viewport.scale,
                 );
             }
         }
@@ -164,7 +175,7 @@ export const GamePieces = {
         }
     },
 };
-document.getElementById("draw_checkbox").addEventListener("change", (event) => {
-    let element = <HTMLInputElement>event.currentTarget;
+document.getElementById('draw_checkbox').addEventListener('change', event => {
+    const element = <HTMLInputElement>event.currentTarget;
     draw = element.checked;
 });
