@@ -1,5 +1,5 @@
 {
-    "name": "Adventurous",
+    "name": "adventurous/adventurous",
     "type": "project",
     "description": "An RPG open world game",
     "keywords": [
@@ -7,6 +7,12 @@
         "framework"
     ],
     "license": "MIT",
+    "authors": [
+        {
+            "name": "Kjetil Vea Baksaas",
+            "email": "kjetil@baksaas.no"
+        }
+    ],
     "require": {
         "php": "^8.1",
         "guzzlehttp/guzzle": "^7.2",
