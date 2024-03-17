@@ -2,6 +2,7 @@
 module.exports = {
     content: [
         './resources/views/**/*.blade.php',
+        './resources/views/errors/*.blade.php',
         './resources/views/templates/*.php',
         './resources/js/**/*.ts',
         './resources/js/**/*.vue',
