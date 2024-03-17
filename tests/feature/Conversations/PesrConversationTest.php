@@ -7,7 +7,7 @@ use Tests\TestCase;
 use Tests\Utils\Contracts\ConversationContract;
 use Tests\Utils\Traits\ConversationTester;
 
-class ConversationTest extends TestCase implements ConversationContract
+class PesrConversationTest extends TestCase implements ConversationContract
 {
     use ConversationTester, UserTrait;
 
