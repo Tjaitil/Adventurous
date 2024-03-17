@@ -1,5 +1,4 @@
 export class ModuleTester {
-
     public defaultExport: boolean;
     private module = null;
     private moduleName: string;
@@ -23,23 +22,29 @@ export class ModuleTester {
             (<any>window)['modules'] = {};
         }
         (<any>window)['modules'][this.moduleName] = this.module;
-        console.info("ModuleTester: " + this.moduleName + " added to window");
+        console.info('ModuleTester: ' + this.moduleName + ' added to window');
     }
 
     public listMethods() {
-        console.info("ModuleTester: " + this.moduleName + " methods:");
+        console.info('ModuleTester: ' + this.moduleName + ' methods:');
         console.info(Object.getOwnPropertyNames(this.module));
     }
 
     public checkHTMLElements() {
         // Check if objects that is typed as htmlelement is actually an htmlelement
-        for (let key in this.module) {
+        for (const key in this.module) {
             // Skip if function
-            if (typeof this.module[key] === "function") {
+            if (typeof this.module[key] === 'function') {
                 continue;
             }
 
-            if (!key.includes("Wrapper") && !key.includes("Element") && !key.includes("Button") && !key.includes("Container") && !key.includes("Input")) {
+            if (
+                !key.includes('Wrapper') &&
+                !key.includes('Element') &&
+                !key.includes('Button') &&
+                !key.includes('Container') &&
+                !key.includes('Input')
+            ) {
                 continue;
             }
 
