@@ -52,7 +52,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/inventory', [InventoryController::class, 'get']);
     Route::get('/inventory/prices', [InventoryController::class, 'getPrices']);
 
-    Route::get(('conversation/next'), [ConversationController::class, 'index']);
+    Route::post(('conversation/next'), [ConversationController::class, 'index']);
 
     Route::get('/crops', [CropsController::class, 'index']);
     Route::post('/crops/start', [CropsController::class, 'growCrops']);

@@ -18,7 +18,7 @@ class ConversationController extends Controller
     {
         try {
             $person = $request->string('person');
-            $nextKey = $request->string('nextKey');
+            $nextKey = $request->integer('selected_option');
             $isStarting = $request->boolean('is_starting');
 
             if (! $request->has('person')) {
