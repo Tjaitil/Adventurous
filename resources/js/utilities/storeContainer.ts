@@ -1,4 +1,4 @@
-import { GameLogger } from './gameLogger';
+import { GameLogger } from './GameLogger';
 import { itemTitle } from './itemTitle';
 import { StoreSkillRequirements } from './StoreSkillRequirements';
 import { SkillRequirementResource } from '../types/SkillRequirementResource';
