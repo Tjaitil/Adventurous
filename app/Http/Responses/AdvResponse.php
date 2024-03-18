@@ -98,7 +98,7 @@ class AdvResponse implements Responsable
     }
 
     /**
-     * @param value-of<\App\Enums\GameEvents>
+     * @param  value-of<\App\Enums\GameEvents>  $event
      */
     public function addEvent(string $event): self
     {
