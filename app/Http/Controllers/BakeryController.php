@@ -10,20 +10,17 @@ use Illuminate\Http\Request;
 
 class BakeryController extends Controller
 {
-
     /**
-     * 
-     * @return void 
+     * @return void
      */
-    function __construct(
+    public function __construct(
         protected StoreService $storeService,
         protected BakeryStore $bakeryStore
     ) {
     }
 
     /**
-     * 
-     * @return void 
+     * @return void
      */
     public function index()
     {
@@ -31,12 +28,12 @@ class BakeryController extends Controller
 
         return view('bakery')
             ->with('title', 'Bakery')
+            ->with('isDiscountActive', $storeResource->store_value_modifier !== 1.00)
             ->with('store_resource', $storeResource);
     }
 
     /**
-     * 
-     * @return JsonResponse  
+     * @return JsonResponse
      */
     public function getStoreItems()
     {
@@ -44,7 +41,6 @@ class BakeryController extends Controller
     }
 
     /**
-     *
      * @return JsonResponse
      */
     public function makeItem(Request $request)
