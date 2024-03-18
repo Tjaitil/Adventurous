@@ -47,7 +47,7 @@ class TravelBureauController extends Controller
     }
 
     /**
-     * @return JsonResponse
+     * @return JsonResponse|AdvResponse
      *
      * @throws \Exception|JsonException
      */
@@ -58,7 +58,7 @@ class TravelBureauController extends Controller
         $Trader = Trader::where('username', $this->sessionService->getCurrentUsername())->first();
         $Cart = TravelBureauCart::where('name', $item)->first();
         if (! $Trader instanceof Trader || ! $Cart instanceof TravelBureauCart) {
-            throw new JsonException('Could not find trader or cart: ' . $item);
+            throw new JsonException('Could not find trader or cart: '.$item);
         }
 
         if ($Cart->id === $Trader->cart_id) {
@@ -71,7 +71,7 @@ class TravelBureauController extends Controller
         $this->storeService->storeBuilder->setResource($initial_store);
 
         $result = $this->storeService->buyItem($item, 1);
-        if($result !== true) {
+        if ($result !== true) {
             return $result;
         }
 
