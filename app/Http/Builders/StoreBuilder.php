@@ -107,7 +107,7 @@ final class StoreBuilder
         $this->resource->store_value_modifier_as_percentage = $decimal_modifier === 1.00 ? 0 : round($decimal_modifier * 100);
 
         foreach ($this->resource->store_items as $key => $item) {
-            $item->adjusted_store_value = intval(round($item->store_value * (1 - $decimal_modifier)));
+            $item->adjusted_store_value = intval(round($item->store_value * $decimal_modifier));
             $item->adjusted_difference = intval(round($item->store_value - $item->adjusted_store_value));
         }
 
