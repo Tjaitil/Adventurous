@@ -2,140 +2,56 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\MapRequiredDataAction;
-use App\Enums\SkillNames;
-use App\libs\controller;
-use App\libs\Logger;
-use App\libs\Request;
-use App\libs\Response;
-use App\Models\SmithyItem;
-use App\Services\InventoryService;
-use App\Services\SessionService;
-use App\Services\SkillsService;
 use App\Services\StoreService;
-use App\validators\ValidateStoreTrade;
-use GameConstants;
+use App\Stores\SmithyStore;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
-class SmithyController extends controller
+class SmithyController extends Controller
 {
-    protected $discount = 0;
-
-    function __construct(
+    public function __construct(
         protected StoreService $storeService,
-        protected InventoryService $inventoryService,
-        protected SessionService $sessionService,
-        protected SmithyItem $SmithyItem,
-        protected MapRequiredDataAction $mapRequiredDataAction
+        protected SmithyStore $smithyStore,
     ) {
-        parent::__construct();
-    }
-
-    public function index()
-    {
-
-        $data['store_items'] = $this->makeShop();
-        $data['discount'] = $this->discount = $this->sessionService->isProfiency(SkillNames::MINER->value) ? GameConstants::MINER_STORE_DISCOUNT * 100 : 0;
-
-        $this->render('smithy', 'Smithy', $data, true, true);
-    }
-
-    protected function makeShop()
-    {
-        $SmithyItems = $this->SmithyItem->with('requiredItems', 'skillRequirements')->get();
-
-        $item = $SmithyItems->sortBy(function ($value, $key) {
-            $minLevel = 1;
-            $value->skillRequirements->each(function ($skillRequirement) use (&$minLevel) {
-                if ($skillRequirement->level > $minLevel) {
-                    $minLevel = $skillRequirement->level;
-                }
-            });
-            return $minLevel;
-        });
-
-        $this->storeService->makeStore(
-            ["list" => $item]
-        );
-
-        if ($this->sessionService->isProfiency(SkillNames::MINER->value)) {
-            $this->storeService->storeBuilder->setAdjustedStoreValue(GameConstants::MINER_STORE_DISCOUNT);
-        }
-
-        $this->storeService->storeBuilder->setInfiniteAmount(true);
-
-        return $this->storeService->storeBuilder->build()->toArray();
-    }
-
-    public function get()
-    {
-        return Response::addData("store_items", $this->makeShop())->setStatus(200);
     }
 
     /**
-     * Smith item
-     *
-     * @param Request $request
-     * @param MapRequiredDataAction $mapRequiredDataAction
-     * @param SkillsService $skillsService
-     *
-     * @return Response
+     * @return View|Factory
      */
-    public function smithItem(Request $request, SkillsService $skillsService)
+    public function index()
+    {
+        $storeResource = $this->smithyStore->makeStore();
+
+        return view('smithy')
+            ->with('title', 'Smithy')
+            ->with('isDiscountActive', $storeResource->store_value_modifier !== 1.00)
+            ->with('store_resource', $storeResource);
+    }
+
+    public function getStoreItems(): JsonResponse
+    {
+        return $this->smithyStore->getStoreItemsResponse();
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function smithItem(Request $request)
     {
 
-        $item = $request->getInput('item');
-        $amount = $request->getInput('amount');
+        $item = $request->input('item');
+        $amount = $request->integer('amount');
 
-        ValidateStoreTrade::validate($request);
+        $initial_store = $this->smithyStore->makeStore();
+        $this->storeService->storeBuilder->setResource($initial_store);
 
-        $item_data = $this->SmithyItem->with('requiredItems', 'skillRequirements')->where('item', $item)->get();
-
-        $this->storeService->makeStore(
-            ["list" => $item_data]
-        );
-
-
-        if (!$this->storeService->isStoreItem($item)) {
-            return $this->storeService->logNotStoreItem($item);
+        $result = $this->storeService->buyItem($item, $amount);
+        if ($result instanceof JsonResponse) {
+            return $result;
         }
 
-        $item = $this->storeService->getStoreItem($item);
-
-        // Check that user has required level
-        if (!$this->storeService->hasSkillRequirements($item->name)) {
-            return $skillsService->logNotRequiredLevel(SkillNames::MINER->value);
-        }
-
-        foreach ($item->required_items as $key => $value) {
-            if (!$this->inventoryService->hasEnoughAmount(
-                $value->name,
-                $value->amount * $amount
-            )) {
-                return $this->inventoryService->logNotEnoughAmount($value->name);
-            }
-        }
-
-        if (!$this->inventoryService->hasEnoughAmount(CURRENCY, $item->store_value)) {
-            return $this->inventoryService->logNotEnoughAmount(CURRENCY);
-        }
-
-        $price = $item->store_value;
-
-        if ($this->sessionService->isProfiency(SkillNames::MINER->value)) {
-            $price *= (1 - MINER_STORE_DISCOUNT);
-        }
-
-        foreach ($item->required_items as $key => $value) {
-            $this->inventoryService->edit($value->name, -$value->amount * $amount);
-        }
-
-        $this->inventoryService
-            ->edit(
-                CURRENCY,
-                -$this->storeService->calculateItemCost($item->name, $amount)
-            )
-            ->edit($item->name, $item->item_multiplier * $amount);
-
-        return Response::setStatus(200);
+        return response()->json([]);
     }
 }

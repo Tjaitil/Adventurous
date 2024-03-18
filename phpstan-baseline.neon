@@ -1166,66 +1166,6 @@ parameters:
 			path: app/Http/Controllers/ProfiencyStatusController.php
 
 		-
-			message: "#^Access to an undefined property App\\\\Models\\\\SmithyItem\\:\\:\\$skillRequirements\\.$#"
-			count: 1
-			path: app/Http/Controllers/SmithyController.php
-
-		-
-			message: "#^Access to constant MINER_STORE_DISCOUNT on an unknown class GameConstants\\.$#"
-			count: 2
-			path: app/Http/Controllers/SmithyController.php
-
-		-
-			message: "#^Class App\\\\Validators\\\\ValidateStoreTrade referenced with incorrect case\\: App\\\\validators\\\\ValidateStoreTrade\\.$#"
-			count: 2
-			path: app/Http/Controllers/SmithyController.php
-
-		-
-			message: "#^Constant CURRENCY not found\\.$#"
-			count: 3
-			path: app/Http/Controllers/SmithyController.php
-
-		-
-			message: "#^Constant MINER_STORE_DISCOUNT not found\\.$#"
-			count: 1
-			path: app/Http/Controllers/SmithyController.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\SmithyController\\:\\:get\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/Http/Controllers/SmithyController.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\SmithyController\\:\\:index\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/Http/Controllers/SmithyController.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\SmithyController\\:\\:makeShop\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/Http/Controllers/SmithyController.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\SmithyController\\:\\:smithItem\\(\\) should return App\\\\libs\\\\Response but returns Illuminate\\\\Http\\\\JsonResponse\\.$#"
-			count: 4
-			path: app/Http/Controllers/SmithyController.php
-
-		-
-			message: "#^PHPDoc tag @param references unknown parameter\\: \\$mapRequiredDataAction$#"
-			count: 1
-			path: app/Http/Controllers/SmithyController.php
-
-		-
-			message: "#^Property App\\\\Http\\\\Controllers\\\\SmithyController\\:\\:\\$discount has no type specified\\.$#"
-			count: 1
-			path: app/Http/Controllers/SmithyController.php
-
-		-
-			message: "#^Relation 'requiredItems' is not found in App\\\\Models\\\\SmithyItem model\\.$#"
-			count: 2
-			path: app/Http/Controllers/SmithyController.php
-
-		-
 			message: "#^Access to an undefined property App\\\\Http\\\\Controllers\\\\TavernController\\:\\:\\$tavernPrices_model\\.$#"
 			count: 2
 			path: app/Http/Controllers/TavernController.php
@@ -4346,21 +4286,6 @@ parameters:
 			path: app/Models/SetAdventure_model.php
 
 		-
-			message: "#^Method App\\\\Models\\\\SmithyItem\\:\\:requiredItems\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/Models/SmithyItem.php
-
-		-
-			message: "#^Method App\\\\Models\\\\SmithyItem\\:\\:skillRequirements\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/Models/SmithyItem.php
-
-		-
-			message: "#^Method App\\\\Models\\\\SmithyItemRequired\\:\\:smithyItem\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/Models/SmithyItemRequired.php
-
-		-
 			message: "#^Method App\\\\Models\\\\StoreDiscount\\:\\:toPercentage\\(\\) should return int but returns float\\.$#"
 			count: 1
 			path: app/Models/StoreDiscount.php
@@ -5664,21 +5589,6 @@ parameters:
 			message: "#^Property App\\\\Services\\\\SessionService\\:\\:\\$UserData \\(App\\\\Models\\\\UserData\\) does not accept App\\\\Models\\\\UserData\\|null\\.$#"
 			count: 2
 			path: app/Services/SessionService.php
-
-		-
-			message: "#^Call to function is_null\\(\\) with array\\<App\\\\Http\\\\Resources\\\\SkillRequirementResource\\> will always evaluate to false\\.$#"
-			count: 1
-			path: app/Services/StoreService.php
-
-		-
-			message: "#^Parameter \\#1 \\$resource of static method App\\\\Http\\\\Builders\\\\StoreBuilder\\:\\:create\\(\\) expects array\\{name\\?\\: string, store_value_modifier\\?\\: float, store_name\\?\\: string, store_items\\: array\\<int, array\\<string, mixed\\>\\>, infinite_amount\\?\\: bool, is_inventorable\\?\\: bool\\}\\|null, array given\\.$#"
-			count: 1
-			path: app/Services/StoreService.php
-
-		-
-			message: "#^Using nullsafe property access on non\\-nullable type App\\\\Http\\\\Resources\\\\StoreItemResource\\. Use \\-\\> instead\\.$#"
-			count: 2
-			path: app/Services/StoreService.php
 
 		-
 			message: "#^Access to constant CURRENCY on an unknown class GameConstants\\.$#"
