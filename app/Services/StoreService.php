@@ -36,50 +36,57 @@ class StoreService
     }
 
     /**
-     * @return JsonResponse|true
+     * Return true on success otherwise a jsonResponse
+     *
+     * @return JsonResponse|AdvResponse|true
      */
     public function buyItem(string $item, int $amount)
     {
 
-        $store_item = $this->getStoreItem($item);
+        try {
+            $store_item = $this->getStoreItem($item);
 
-        if (! $this->isStoreItem($item)) {
-            return $this->logNotStoreItem($item);
-        }
-
-        if (! $this->hasSkillRequirements($item)) {
-            return (new AdvResponse([], 422))
-                ->addErrorMessage('You do not have the required skill level')
-                ->toResponse(request());
-        }
-        foreach ($store_item->required_items as $key => $value) {
-            if (! $this->inventoryService->hasEnoughAmount(
-                $value->name,
-                $value->amount * $amount
-            )) {
-                return $this->inventoryService->logNotEnoughAmount($value->name);
+            if (! $store_item instanceof StoreItemResource || ! $this->isStoreItem($item)) {
+                return $this->logNotStoreItem($item);
             }
-        }
 
-        foreach ($store_item->required_items as $key => $value) {
-            $this->inventoryService->edit($value->name, -$value->amount * $amount);
-        }
+            if (! $this->hasSkillRequirements($store_item)) {
+                return (new AdvResponse([], 422))
+                    ->addErrorMessage('You do not have the required skill level')
+                    ->toResponse(request());
+            }
+            foreach ($store_item->required_items as $key => $value) {
+                if (! $this->inventoryService->hasEnoughAmount(
+                    $value->name,
+                    $value->amount * $amount
+                )) {
+                    return $this->inventoryService->logNotEnoughAmount($value->name);
+                }
+            }
 
-        if (! $this->inventoryService->hasEnoughAmount(config('adventurous.currency'), $store_item->store_value)) {
-            return $this->inventoryService->logNotEnoughAmount(config('adventurous.currency'));
-        } else {
-            $this->inventoryService
-                ->edit(
-                    config('adventurous.currency'),
-                    -$this->calculateItemCost($store_item->name, $amount)
-                );
-        }
+            foreach ($store_item->required_items as $key => $value) {
+                $this->inventoryService->edit($value->name, -$value->amount * $amount);
+            }
 
-        if ($this->storeBuilder->build()->is_inventorable === true) {
-            $this->inventoryService->edit($store_item->name, $amount);
-        }
+            if (! $this->inventoryService->hasEnoughAmount(config('adventurous.currency'), $store_item->store_value)) {
+                return $this->inventoryService->logNotEnoughAmount(config('adventurous.currency'));
+            } else {
+                $this->inventoryService
+                    ->edit(
+                        config('adventurous.currency'),
+                        -$this->calculateItemCost($store_item, $amount)
+                    );
+            }
 
-        return true;
+            if ($this->storeBuilder->build()->is_inventorable === true) {
+                $this->inventoryService->edit($store_item->name, $amount);
+            }
+
+            return true;
+        } catch (\Exception $e) {
+            return (new AdvResponse([], 500))
+                ->addErrorMessage('Something went wrong');
+        }
     }
 
     /**
@@ -114,7 +121,7 @@ class StoreService
     /**
      * Get store item
      *
-     * @return StoreItemResource
+     * @return StoreItemResource|null
      */
     public function getStoreItem(string $name)
     {
@@ -126,7 +133,7 @@ class StoreService
             }
         }
 
-        return $matches[0];
+        return isset($matches[0]) ? $matches[0] : null;
     }
 
     /**
@@ -177,10 +184,10 @@ class StoreService
      *
      * @return int
      */
-    public function calculateItemCost(string $item, int $amount)
+    public function calculateItemCost(StoreItemResource $storeResource, int $amount)
     {
-        $item = $this->getStoreItem($item);
-        $item_price = ($item->store_value !== $item->adjusted_store_value) ? $item->adjusted_store_value : $item->store_value;
+        $item_price = ($storeResource->store_value !== $storeResource->adjusted_store_value) ? $storeResource->adjusted_store_value : $storeResource->store_value;
+
         $price = $amount * $item_price;
 
         return $price;
@@ -203,17 +210,16 @@ class StoreService
     /**
      * Check if the user has skill requirements
      */
-    public function hasSkillRequirements(string $item): bool
+    public function hasSkillRequirements(StoreItemResource $storeItemResource): bool
     {
         $result = false;
         $match = false;
 
-        $item = $this->getStoreItem($item);
-        if (is_null($item?->skill_requirements) || count($item?->skill_requirements) === 0) {
+        if (count($storeItemResource->skill_requirements) === 0) {
             return true;
         }
 
-        foreach ($item->skill_requirements as $key => $value) {
+        foreach ($storeItemResource->skill_requirements as $key => $value) {
             $skill = $value->skill;
             $level = $value->level;
 
