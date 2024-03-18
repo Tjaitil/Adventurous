@@ -19,6 +19,7 @@ import CropsModule from '../buildingScripts/crops';
 import zinsStoreModule from '../buildingScripts/zinsstore';
 import merchantModule from '../buildingScripts/merchant';
 import workforceLodgeModule from '../buildingScripts/workforcelodge';
+import smithyModule from '../buildingScripts/smithy';
 
 enum Buildings {
     BAKERY = 'bakery',
@@ -29,6 +30,7 @@ enum Buildings {
     ZINSSTORE = 'zinsstore',
     MERCHANT = 'merchant',
     WORKFORCELODGE = 'workforcelodge',
+    SMITHY = 'smithy',
 }
 
 type BuildingModuleMapping = {
@@ -40,6 +42,7 @@ type BuildingModuleMapping = {
     zinsstore: typeof zinsStoreModule;
     merchant: typeof merchantModule;
     workforcelodge: typeof workforceLodgeModule;
+    smithy: typeof smithyModule;
 };
 
 function shouldSkipImport(building: string) {
@@ -52,6 +55,7 @@ function shouldSkipImport(building: string) {
         'zinsstore',
         'merchant',
         'workforcelodge',
+        'smithy',
     ].includes(building);
 }
 
@@ -84,6 +88,7 @@ export const inputHandler: IInputHandler = {
         [Buildings.BAKERY]: {},
         [Buildings.STOCKPILE]: {},
         [Buildings.TRAVELBUREAU]: {},
+        [Buildings.SMITHY]: {},
         [Buildings.MINE]: {
             script: 'mine',
         },
@@ -265,6 +270,10 @@ export const inputHandler: IInputHandler = {
                             break;
                         case 'merchant':
                             this.currentBuildingModule = merchantModule;
+                            this.currentBuildingModule.init();
+                            break;
+                        case 'smithy':
+                            this.currentBuildingModule = smithyModule;
                             this.currentBuildingModule.init();
                             break;
                         case 'workforcelodge':

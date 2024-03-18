@@ -6,15 +6,16 @@ import { StoreItemResponse } from '../types/Responses/StoreItemResponse';
 import { BaseBuyStoreItemRequest } from '../types/requests/BaseBuyStoreItemRequest';
 
 const smithyModule = {
-    init() {
-        this.getData();
-        storeContainer.init();
-        storeContainer.addSelectTrade();
-        storeContainer.addSelectedItemButtonEvent(this.smith, 'Smith');
+    async init() {
+        await this.getData().then(() => {
+            storeContainer.init();
+            storeContainer.addSelectTrade();
+            storeContainer.addSelectedItemButtonEvent(this.smith, 'Smith');
+        });
     },
     data: null,
-    getData() {
-        AdvApi.get<StoreItemResponse>('/smithy')
+    async getData() {
+        AdvApi.get<StoreItemResponse>('/smithy/store')
             .then(response =>
                 storeContainer.setStoreItems(response.data.store_items),
             )
@@ -32,7 +33,7 @@ const smithyModule = {
         };
 
         AdvApi.post('/smithy/smith', data)
-            .then(response => Inventory.update())
+            .then(() => Inventory.update())
             .catch(() => false);
     },
     showMineral(mineral) {
