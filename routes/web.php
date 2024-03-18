@@ -86,8 +86,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/trader/assignment/update', [TraderAssignmentController::class, 'updateAssignment']);
     Route::post('/trader/assignment/countdown', [TraderAssignmentController::class, 'getAssignmentCountdown']);
 
+    Route::get('/smithy', [SmithyController::class, 'index']);
     Route::post('/smithy/smith', [SmithyController::class, 'smithItem']);
-    Route::get('/smithy', [SmithyController::class, 'get']);
+    Route::get('/smithy/store', [SmithyController::class, 'getStoreItems']);
 
     Route::get('/archeryshop/get', [ArcheryShopController::class, 'getItems']);
     Route::post('/archeryshop/fletch', [ArcheryShopController::class, 'fletchItem']);
