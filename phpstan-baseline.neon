@@ -1661,21 +1661,6 @@ parameters:
 			path: app/Http/Controllers/logout.php
 
 		-
-			message: "#^Call to an undefined method maintenance\\:\\:render\\(\\)\\.$#"
-			count: 1
-			path: app/Http/Controllers/maintenance.php
-
-		-
-			message: "#^Method maintenance\\:\\:index\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/Http/Controllers/maintenance.php
-
-		-
-			message: "#^maintenance\\:\\:__construct\\(\\) calls parent\\:\\:__construct\\(\\) but maintenance does not extend any class\\.$#"
-			count: 1
-			path: app/Http/Controllers/maintenance.php
-
-		-
 			message: "#^Access to an undefined property market\\:\\:\\$model\\.$#"
 			count: 1
 			path: app/Http/Controllers/market.php
@@ -2215,30 +2200,6 @@ parameters:
 			count: 1
 			path: app/Http/Responses/AdvResponse.php
 
-		-
-			message: "#^Access to an undefined property AdventureRequest_model\\:\\:\\$db\\.$#"
-			count: 27
-			path: app/Models/AdventureRequest_model.php
-
-		-
-			message: "#^Access to an undefined property AdventureRequest_model\\:\\:\\$errorHandler\\.$#"
-			count: 3
-			path: app/Models/AdventureRequest_model.php
-
-		-
-			message: "#^Access to an undefined property AdventureRequest_model\\:\\:\\$response\\.$#"
-			count: 20
-			path: app/Models/AdventureRequest_model.php
-
-		-
-			message: "#^AdventureRequest_model\\:\\:__construct\\(\\) calls parent\\:\\:__construct\\(\\) but AdventureRequest_model does not extend any class\\.$#"
-			count: 1
-			path: app/Models/AdventureRequest_model.php
-
-		-
-			message: "#^Call to an undefined method AdventureRequest_model\\:\\:loadModel\\(\\)\\.$#"
-			count: 1
-			path: app/Models/AdventureRequest_model.php
 
 		-
 			message: "#^Method AdventureRequest_model\\:\\:__construct\\(\\) has parameter \\$session with no type specified\\.$#"
@@ -2296,11 +2257,6 @@ parameters:
 			path: app/Models/AdventureRequest_model.php
 
 		-
-			message: "#^Variable \\$param_username might not be defined\\.$#"
-			count: 1
-			path: app/Models/AdventureRequest_model.php
-
-		-
 			message: "#^Variable \\$receiver might not be defined\\.$#"
 			count: 1
 			path: app/Models/AdventureRequest_model.php
@@ -2309,26 +2265,6 @@ parameters:
 			message: "#^Variable \\$row might not be defined\\.$#"
 			count: 3
 			path: app/Models/AdventureRequest_model.php
-
-		-
-			message: "#^Access to an undefined property AdventureStatus_model\\:\\:\\$db\\.$#"
-			count: 9
-			path: app/Models/AdventureStatus_model.php
-
-		-
-			message: "#^Access to an undefined property AdventureStatus_model\\:\\:\\$errorHandler\\.$#"
-			count: 1
-			path: app/Models/AdventureStatus_model.php
-
-		-
-			message: "#^Access to an undefined property AdventureStatus_model\\:\\:\\$response\\.$#"
-			count: 5
-			path: app/Models/AdventureStatus_model.php
-
-		-
-			message: "#^AdventureStatus_model\\:\\:__construct\\(\\) calls parent\\:\\:__construct\\(\\) but AdventureStatus_model does not extend any class\\.$#"
-			count: 1
-			path: app/Models/AdventureStatus_model.php
 
 		-
 			message: "#^Method AdventureStatus_model\\:\\:__construct\\(\\) has parameter \\$session with no type specified\\.$#"
@@ -2349,26 +2285,6 @@ parameters:
 			message: "#^Property AdventureStatus_model\\:\\:\\$username has no type specified\\.$#"
 			count: 1
 			path: app/Models/AdventureStatus_model.php
-
-		-
-			message: "#^Access to an undefined property Adventures_model\\:\\:\\$db\\.$#"
-			count: 28
-			path: app/Models/Adventures_model.php
-
-		-
-			message: "#^Access to an undefined property Adventures_model\\:\\:\\$errorHandler\\.$#"
-			count: 1
-			path: app/Models/Adventures_model.php
-
-		-
-			message: "#^Access to an undefined property Adventures_model\\:\\:\\$response\\.$#"
-			count: 6
-			path: app/Models/Adventures_model.php
-
-		-
-			message: "#^Adventures_model\\:\\:__construct\\(\\) calls parent\\:\\:__construct\\(\\) but Adventures_model does not extend any class\\.$#"
-			count: 1
-			path: app/Models/Adventures_model.php
 
 		-
 			message: "#^Function js_echo not found\\.$#"
@@ -2470,35 +2386,6 @@ parameters:
 			count: 1
 			path: app/Models/ArcheryShopData.php
 
-		-
-			message: "#^Access to an undefined property ArmorItems\\:\\:\\$UpdateGamedata\\.$#"
-			count: 1
-			path: app/Models/ArmorItems_model.php
-
-		-
-			message: "#^Access to an undefined property ArmorItems\\:\\:\\$db\\.$#"
-			count: 6
-			path: app/Models/ArmorItems_model.php
-
-		-
-			message: "#^Access to an undefined property ArmorItems\\:\\:\\$errorHandler\\.$#"
-			count: 1
-			path: app/Models/ArmorItems_model.php
-
-		-
-			message: "#^Access to an undefined property ArmorItems\\:\\:\\$response\\.$#"
-			count: 4
-			path: app/Models/ArmorItems_model.php
-
-		-
-			message: "#^ArmorItems\\:\\:__construct\\(\\) calls parent\\:\\:__construct\\(\\) but ArmorItems does not extend any class\\.$#"
-			count: 1
-			path: app/Models/ArmorItems_model.php
-
-		-
-			message: "#^Call to an undefined method ArmorItems\\:\\:commonModels\\(\\)\\.$#"
-			count: 1
-			path: app/Models/ArmorItems_model.php
 
 		-
 			message: "#^Method ArmorItems\\:\\:__construct\\(\\) has parameter \\$session with no type specified\\.$#"
@@ -2526,23 +2413,8 @@ parameters:
 			path: app/Models/ArmorItems_model.php
 
 		-
-			message: "#^Access to an undefined property ArmyMissionsRessource_model\\:\\:\\$UpdateGamedata\\.$#"
-			count: 3
-			path: app/Models/ArmyMissionsRessource_model.php
-
-		-
 			message: "#^Access to an undefined property ArmyMissionsRessource_model\\:\\:\\$Warriors_model\\.$#"
 			count: 7
-			path: app/Models/ArmyMissionsRessource_model.php
-
-		-
-			message: "#^Access to an undefined property ArmyMissionsRessource_model\\:\\:\\$db\\.$#"
-			count: 24
-			path: app/Models/ArmyMissionsRessource_model.php
-
-		-
-			message: "#^Access to an undefined property ArmyMissionsRessource_model\\:\\:\\$errorHandler\\.$#"
-			count: 4
 			path: app/Models/ArmyMissionsRessource_model.php
 
 		-
@@ -2553,36 +2425,6 @@ parameters:
 		-
 			message: "#^Access to an undefined property ArmyMissionsRessource_model\\:\\:\\$mission_id_POST\\.$#"
 			count: 6
-			path: app/Models/ArmyMissionsRessource_model.php
-
-		-
-			message: "#^Access to an undefined property ArmyMissionsRessource_model\\:\\:\\$response\\.$#"
-			count: 21
-			path: app/Models/ArmyMissionsRessource_model.php
-
-		-
-			message: "#^Access to an undefined property ArmyMissionsRessource_model\\:\\:\\$session\\.$#"
-			count: 7
-			path: app/Models/ArmyMissionsRessource_model.php
-
-		-
-			message: "#^Access to an undefined property ArmyMissionsRessource_model\\:\\:\\$username\\.$#"
-			count: 5
-			path: app/Models/ArmyMissionsRessource_model.php
-
-		-
-			message: "#^ArmyMissionsRessource_model\\:\\:__construct\\(\\) calls parent\\:\\:__construct\\(\\) but ArmyMissionsRessource_model does not extend any class\\.$#"
-			count: 1
-			path: app/Models/ArmyMissionsRessource_model.php
-
-		-
-			message: "#^Call to an undefined method ArmyMissionsRessource_model\\:\\:commonModels\\(\\)\\.$#"
-			count: 1
-			path: app/Models/ArmyMissionsRessource_model.php
-
-		-
-			message: "#^Call to an undefined method ArmyMissionsRessource_model\\:\\:loadModel\\(\\)\\.$#"
-			count: 1
 			path: app/Models/ArmyMissionsRessource_model.php
 
 		-
@@ -2746,31 +2588,6 @@ parameters:
 			path: app/Models/ArmyMissionsRessource_model.php
 
 		-
-			message: "#^Access to an undefined property ArmyMissions_model\\:\\:\\$db\\.$#"
-			count: 11
-			path: app/Models/ArmyMissions_model.php
-
-		-
-			message: "#^Access to an undefined property ArmyMissions_model\\:\\:\\$errorHandler\\.$#"
-			count: 1
-			path: app/Models/ArmyMissions_model.php
-
-		-
-			message: "#^Access to an undefined property ArmyMissions_model\\:\\:\\$response\\.$#"
-			count: 2
-			path: app/Models/ArmyMissions_model.php
-
-		-
-			message: "#^ArmyMissions_model\\:\\:__construct\\(\\) calls parent\\:\\:__construct\\(\\) but ArmyMissions_model does not extend any class\\.$#"
-			count: 1
-			path: app/Models/ArmyMissions_model.php
-
-		-
-			message: "#^Call to an undefined method ArmyMissions_model\\:\\:commonModels\\(\\)\\.$#"
-			count: 1
-			path: app/Models/ArmyMissions_model.php
-
-		-
 			message: "#^Function ArrayMaker\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/Models/ArmyMissions_model.php
@@ -2861,37 +2678,7 @@ parameters:
 			path: app/Models/ArmyMissions_model.php
 
 		-
-			message: "#^Access to an undefined property Artefact_model\\:\\:\\$UpdateGamedata\\.$#"
-			count: 3
-			path: app/Models/Artefact_model.php
-
-		-
-			message: "#^Access to an undefined property Artefact_model\\:\\:\\$db\\.$#"
-			count: 13
-			path: app/Models/Artefact_model.php
-
-		-
-			message: "#^Access to an undefined property Artefact_model\\:\\:\\$errorHandler\\.$#"
-			count: 2
-			path: app/Models/Artefact_model.php
-
-		-
-			message: "#^Access to an undefined property Artefact_model\\:\\:\\$response\\.$#"
-			count: 4
-			path: app/Models/Artefact_model.php
-
-		-
-			message: "#^Artefact_model\\:\\:__construct\\(\\) calls parent\\:\\:__construct\\(\\) but Artefact_model does not extend any class\\.$#"
-			count: 1
-			path: app/Models/Artefact_model.php
-
-		-
 			message: "#^Binary operation \"\\-\" between string and 1 results in an error\\.$#"
-			count: 1
-			path: app/Models/Artefact_model.php
-
-		-
-			message: "#^Call to an undefined method Artefact_model\\:\\:commonModels\\(\\)\\.$#"
 			count: 1
 			path: app/Models/Artefact_model.php
 
@@ -2961,24 +2748,10 @@ parameters:
 			path: app/Models/Artefact_model.php
 
 		-
-			message: "#^Access to an undefined property CanvasGameID_model\\:\\:\\$db\\.$#"
-			count: 4
-			path: app/Models/CanvasGameID_model.php
-
-		-
-			message: "#^Access to an undefined property CanvasGameID_model\\:\\:\\$response\\.$#"
-			count: 4
-			path: app/Models/CanvasGameID_model.php
-
-		-
 			message: "#^Binary operation \"\\-\" between string and 5 results in an error\\.$#"
 			count: 1
 			path: app/Models/CanvasGameID_model.php
 
-		-
-			message: "#^CanvasGameID_model\\:\\:__construct\\(\\) calls parent\\:\\:__construct\\(\\) but CanvasGameID_model does not extend any class\\.$#"
-			count: 1
-			path: app/Models/CanvasGameID_model.php
 
 		-
 			message: "#^Method CanvasGameID_model\\:\\:__construct\\(\\) has parameter \\$session with no type specified\\.$#"
@@ -3024,16 +2797,6 @@ parameters:
 			message: "#^Property CanvasGameID_model\\:\\:\\$username has no type specified\\.$#"
 			count: 1
 			path: app/Models/CanvasGameID_model.php
-
-		-
-			message: "#^Access to an undefined property CityCentre_model\\:\\:\\$db\\.$#"
-			count: 6
-			path: app/Models/CityCentre_model.php
-
-		-
-			message: "#^CityCentre_model\\:\\:__construct\\(\\) calls parent\\:\\:__construct\\(\\) but CityCentre_model does not extend any class\\.$#"
-			count: 1
-			path: app/Models/CityCentre_model.php
 
 		-
 			message: "#^Method CityCentre_model\\:\\:__construct\\(\\) has parameter \\$session with no type specified\\.$#"
@@ -3114,16 +2877,6 @@ parameters:
 			message: "#^Method App\\\\Models\\\\HealingItemRequired\\:\\:healingItem\\(\\) return type with generic class Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\BelongsTo does not specify its types\\: TRelatedModel, TChildModel$#"
 			count: 1
 			path: app/Models/HealingItemRequired.php
-
-		-
-			message: "#^Access to an undefined property Highscores_model\\:\\:\\$db\\.$#"
-			count: 7
-			path: app/Models/Highscores_model.php
-
-		-
-			message: "#^Highscores_model\\:\\:__construct\\(\\) calls parent\\:\\:__construct\\(\\) but Highscores_model does not extend any class\\.$#"
-			count: 1
-			path: app/Models/Highscores_model.php
 
 		-
 			message: "#^Method Highscores_model\\:\\:__construct\\(\\) has parameter \\$session with no type specified\\.$#"
@@ -3281,11 +3034,6 @@ parameters:
 			path: app/Models/LevelUp_model.php
 
 		-
-			message: "#^Property LevelUp_model\\:\\:\\$db has no type specified\\.$#"
-			count: 1
-			path: app/Models/LevelUp_model.php
-
-		-
 			message: "#^Property LevelUp_model\\:\\:\\$new_levels has no type specified\\.$#"
 			count: 1
 			path: app/Models/LevelUp_model.php
@@ -3355,35 +3103,6 @@ parameters:
 			count: 1
 			path: app/Models/Login_model.php
 
-		-
-			message: "#^Access to an undefined property Loot_model\\:\\:\\$UpdateGamedata\\.$#"
-			count: 1
-			path: app/Models/Loot_model.php
-
-		-
-			message: "#^Access to an undefined property Loot_model\\:\\:\\$db\\.$#"
-			count: 4
-			path: app/Models/Loot_model.php
-
-		-
-			message: "#^Access to an undefined property Loot_model\\:\\:\\$errorHandler\\.$#"
-			count: 1
-			path: app/Models/Loot_model.php
-
-		-
-			message: "#^Access to an undefined property Loot_model\\:\\:\\$response\\.$#"
-			count: 1
-			path: app/Models/Loot_model.php
-
-		-
-			message: "#^Call to an undefined method Loot_model\\:\\:commonModels\\(\\)\\.$#"
-			count: 1
-			path: app/Models/Loot_model.php
-
-		-
-			message: "#^Loot_model\\:\\:__construct\\(\\) calls parent\\:\\:__construct\\(\\) but Loot_model does not extend any class\\.$#"
-			count: 1
-			path: app/Models/Loot_model.php
 
 		-
 			message: "#^Method Loot_model\\:\\:__construct\\(\\) has parameter \\$session with no type specified\\.$#"
@@ -3466,31 +3185,6 @@ parameters:
 			path: app/Models/Main_model.php
 
 		-
-			message: "#^Access to an undefined property Market_model\\:\\:\\$UpdateGamedata\\.$#"
-			count: 8
-			path: app/Models/Market_model.php
-
-		-
-			message: "#^Access to an undefined property Market_model\\:\\:\\$db\\.$#"
-			count: 45
-			path: app/Models/Market_model.php
-
-		-
-			message: "#^Access to an undefined property Market_model\\:\\:\\$errorHandler\\.$#"
-			count: 4
-			path: app/Models/Market_model.php
-
-		-
-			message: "#^Access to an undefined property Market_model\\:\\:\\$response\\.$#"
-			count: 18
-			path: app/Models/Market_model.php
-
-		-
-			message: "#^Call to an undefined method Market_model\\:\\:commonModels\\(\\)\\.$#"
-			count: 1
-			path: app/Models/Market_model.php
-
-		-
 			message: "#^Function get_item not found\\.$#"
 			count: 1
 			path: app/Models/Market_model.php
@@ -3498,11 +3192,6 @@ parameters:
 		-
 			message: "#^Function get_template not found\\.$#"
 			count: 7
-			path: app/Models/Market_model.php
-
-		-
-			message: "#^Market_model\\:\\:__construct\\(\\) calls parent\\:\\:__construct\\(\\) but Market_model does not extend any class\\.$#"
-			count: 1
 			path: app/Models/Market_model.php
 
 		-
@@ -3602,21 +3291,6 @@ parameters:
 
 		-
 			message: "#^Property Market_model\\:\\:\\$username has no type specified\\.$#"
-			count: 1
-			path: app/Models/Market_model.php
-
-		-
-			message: "#^Variable \\$param_amount might not be defined\\.$#"
-			count: 1
-			path: app/Models/Market_model.php
-
-		-
-			message: "#^Variable \\$param_item might not be defined\\.$#"
-			count: 1
-			path: app/Models/Market_model.php
-
-		-
-			message: "#^Variable \\$param_offeror might not be defined\\.$#"
 			count: 1
 			path: app/Models/Market_model.php
 
@@ -3726,11 +3400,6 @@ parameters:
 			path: app/Models/ModelFactory.php
 
 		-
-			message: "#^Access to an undefined property NewUser_model\\:\\:\\$db\\.$#"
-			count: 3
-			path: app/Models/NewUser_model.php
-
-		-
 			message: "#^Method NewUser_model\\:\\:__construct\\(\\) has parameter \\$username with no type specified\\.$#"
 			count: 1
 			path: app/Models/NewUser_model.php
@@ -3746,54 +3415,9 @@ parameters:
 			path: app/Models/NewUser_model.php
 
 		-
-			message: "#^NewUser_model\\:\\:__construct\\(\\) calls parent\\:\\:__construct\\(\\) but NewUser_model does not extend any class\\.$#"
-			count: 1
-			path: app/Models/NewUser_model.php
-
-		-
 			message: "#^Property NewUser_model\\:\\:\\$username has no type specified\\.$#"
 			count: 1
 			path: app/Models/NewUser_model.php
-
-		-
-			message: "#^Undefined variable\\: \\$param_location$#"
-			count: 2
-			path: app/Models/NewUser_model.php
-
-		-
-			message: "#^Undefined variable\\: \\$param_profiency$#"
-			count: 1
-			path: app/Models/NewUser_model.php
-
-		-
-			message: "#^Undefined variable\\: \\$param_username$#"
-			count: 1
-			path: app/Models/NewUser_model.php
-
-		-
-			message: "#^Access to an undefined property Profiency_model\\:\\:\\$UpdateGamedata\\.$#"
-			count: 1
-			path: app/Models/Profiency_model.php
-
-		-
-			message: "#^Access to an undefined property Profiency_model\\:\\:\\$db\\.$#"
-			count: 8
-			path: app/Models/Profiency_model.php
-
-		-
-			message: "#^Access to an undefined property Profiency_model\\:\\:\\$errorHandler\\.$#"
-			count: 1
-			path: app/Models/Profiency_model.php
-
-		-
-			message: "#^Access to an undefined property Profiency_model\\:\\:\\$response\\.$#"
-			count: 3
-			path: app/Models/Profiency_model.php
-
-		-
-			message: "#^Call to an undefined method Profiency_model\\:\\:commonModels\\(\\)\\.$#"
-			count: 1
-			path: app/Models/Profiency_model.php
 
 		-
 			message: "#^Method Profiency_model\\:\\:__construct\\(\\) has parameter \\$session with no type specified\\.$#"
@@ -3816,11 +3440,6 @@ parameters:
 			path: app/Models/Profiency_model.php
 
 		-
-			message: "#^Profiency_model\\:\\:__construct\\(\\) calls parent\\:\\:__construct\\(\\) but Profiency_model does not extend any class\\.$#"
-			count: 1
-			path: app/Models/Profiency_model.php
-
-		-
 			message: "#^Property Profiency_model\\:\\:\\$session has no type specified\\.$#"
 			count: 1
 			path: app/Models/Profiency_model.php
@@ -3829,11 +3448,6 @@ parameters:
 			message: "#^Property Profiency_model\\:\\:\\$username has no type specified\\.$#"
 			count: 1
 			path: app/Models/Profiency_model.php
-
-		-
-			message: "#^Access to an undefined property Profile_model\\:\\:\\$db\\.$#"
-			count: 2
-			path: app/Models/Profile_model.php
 
 		-
 			message: "#^Method Profile_model\\:\\:__construct\\(\\) has parameter \\$session with no type specified\\.$#"
@@ -3856,11 +3470,6 @@ parameters:
 			path: app/Models/Profile_model.php
 
 		-
-			message: "#^Profile_model\\:\\:__construct\\(\\) calls parent\\:\\:__construct\\(\\) but Profile_model does not extend any class\\.$#"
-			count: 1
-			path: app/Models/Profile_model.php
-
-		-
 			message: "#^Property Profile_model\\:\\:\\$session has no type specified\\.$#"
 			count: 1
 			path: app/Models/Profile_model.php
@@ -3869,36 +3478,6 @@ parameters:
 			message: "#^Property Profile_model\\:\\:\\$username has no type specified\\.$#"
 			count: 1
 			path: app/Models/Profile_model.php
-
-		-
-			message: "#^Undefined variable\\: \\$param_password$#"
-			count: 1
-			path: app/Models/Profile_model.php
-
-		-
-			message: "#^Undefined variable\\: \\$param_username$#"
-			count: 2
-			path: app/Models/Profile_model.php
-
-		-
-			message: "#^Access to an undefined property RecruitWorker_model\\:\\:\\$db\\.$#"
-			count: 10
-			path: app/Models/RecruitWorker_model.php
-
-		-
-			message: "#^Access to an undefined property RecruitWorker_model\\:\\:\\$errorHandler\\.$#"
-			count: 1
-			path: app/Models/RecruitWorker_model.php
-
-		-
-			message: "#^Access to an undefined property RecruitWorker_model\\:\\:\\$response\\.$#"
-			count: 6
-			path: app/Models/RecruitWorker_model.php
-
-		-
-			message: "#^Call to an undefined method RecruitWorker_model\\:\\:commonModels\\(\\)\\.$#"
-			count: 1
-			path: app/Models/RecruitWorker_model.php
 
 		-
 			message: "#^Method RecruitWorker_model\\:\\:__construct\\(\\) has parameter \\$session with no type specified\\.$#"
@@ -3926,11 +3505,6 @@ parameters:
 			path: app/Models/RecruitWorker_model.php
 
 		-
-			message: "#^RecruitWorker_model\\:\\:__construct\\(\\) calls parent\\:\\:__construct\\(\\) but RecruitWorker_model does not extend any class\\.$#"
-			count: 1
-			path: app/Models/RecruitWorker_model.php
-
-		-
 			message: "#^Variable \\$column might not be defined\\.$#"
 			count: 1
 			path: app/Models/RecruitWorker_model.php
@@ -3941,26 +3515,11 @@ parameters:
 			path: app/Models/RecruitWorker_model.php
 
 		-
-			message: "#^Variable \\$param_level might not be defined\\.$#"
-			count: 2
-			path: app/Models/RecruitWorker_model.php
-
-		-
 			message: "#^Variable \\$sql2 might not be defined\\.$#"
 			count: 1
 			path: app/Models/RecruitWorker_model.php
 
-		-
-			message: "#^Access to an undefined property Registration_model\\:\\:\\$db\\.$#"
-			count: 23
-			path: app/Models/Registration_model.php
-
-		-
-			message: "#^Access to an undefined property Registration_model\\:\\:\\$errorHandler\\.$#"
-			count: 1
-			path: app/Models/Registration_model.php
-
-		-
+		-		
 			message: "#^Function registration_check not found\\.$#"
 			count: 1
 			path: app/Models/Registration_model.php
@@ -3984,81 +3543,6 @@ parameters:
 			message: "#^Method Registration_model\\:\\:insertDb\\(\\) has parameter \\$POST_array with no type specified\\.$#"
 			count: 1
 			path: app/Models/Registration_model.php
-
-		-
-			message: "#^Registration_model\\:\\:__construct\\(\\) calls parent\\:\\:__construct\\(\\) but Registration_model does not extend any class\\.$#"
-			count: 1
-			path: app/Models/Registration_model.php
-
-		-
-			message: "#^Undefined variable\\: \\$param_country$#"
-			count: 1
-			path: app/Models/Registration_model.php
-
-		-
-			message: "#^Undefined variable\\: \\$param_dateofbirth$#"
-			count: 1
-			path: app/Models/Registration_model.php
-
-		-
-			message: "#^Undefined variable\\: \\$param_email$#"
-			count: 1
-			path: app/Models/Registration_model.php
-
-		-
-			message: "#^Undefined variable\\: \\$param_message$#"
-			count: 1
-			path: app/Models/Registration_model.php
-
-		-
-			message: "#^Undefined variable\\: \\$param_password$#"
-			count: 1
-			path: app/Models/Registration_model.php
-
-		-
-			message: "#^Undefined variable\\: \\$param_receiver$#"
-			count: 1
-			path: app/Models/Registration_model.php
-
-		-
-			message: "#^Undefined variable\\: \\$param_sender$#"
-			count: 1
-			path: app/Models/Registration_model.php
-
-		-
-			message: "#^Undefined variable\\: \\$param_title$#"
-			count: 1
-			path: app/Models/Registration_model.php
-
-		-
-			message: "#^Undefined variable\\: \\$param_username$#"
-			count: 1
-			path: app/Models/Registration_model.php
-
-		-
-			message: "#^Access to an undefined property Repair_model\\:\\:\\$UpdateGamedata\\.$#"
-			count: 3
-			path: app/Models/Repair_model.php
-
-		-
-			message: "#^Access to an undefined property Repair_model\\:\\:\\$db\\.$#"
-			count: 4
-			path: app/Models/Repair_model.php
-
-		-
-			message: "#^Access to an undefined property Repair_model\\:\\:\\$errorHandler\\.$#"
-			count: 1
-			path: app/Models/Repair_model.php
-
-		-
-			message: "#^Access to an undefined property Repair_model\\:\\:\\$response\\.$#"
-			count: 1
-			path: app/Models/Repair_model.php
-
-		-
-			message: "#^Call to an undefined method Repair_model\\:\\:commonModels\\(\\)\\.$#"
-			count: 1
-			path: app/Models/Repair_model.php
 
 		-
 			message: "#^Method Repair_model\\:\\:__construct\\(\\) has parameter \\$session with no type specified\\.$#"
@@ -4094,36 +3578,6 @@ parameters:
 			message: "#^Property Repair_model\\:\\:\\$username has no type specified\\.$#"
 			count: 1
 			path: app/Models/Repair_model.php
-
-		-
-			message: "#^Repair_model\\:\\:__construct\\(\\) calls parent\\:\\:__construct\\(\\) but Repair_model does not extend any class\\.$#"
-			count: 1
-			path: app/Models/Repair_model.php
-
-		-
-			message: "#^Access to an undefined property SetAdventure_model\\:\\:\\$UpdateGamedata\\.$#"
-			count: 2
-			path: app/Models/SetAdventure_model.php
-
-		-
-			message: "#^Access to an undefined property SetAdventure_model\\:\\:\\$db\\.$#"
-			count: 38
-			path: app/Models/SetAdventure_model.php
-
-		-
-			message: "#^Access to an undefined property SetAdventure_model\\:\\:\\$errorHandler\\.$#"
-			count: 4
-			path: app/Models/SetAdventure_model.php
-
-		-
-			message: "#^Access to an undefined property SetAdventure_model\\:\\:\\$response\\.$#"
-			count: 27
-			path: app/Models/SetAdventure_model.php
-
-		-
-			message: "#^Call to an undefined method SetAdventure_model\\:\\:commonModels\\(\\)\\.$#"
-			count: 1
-			path: app/Models/SetAdventure_model.php
 
 		-
 			message: "#^Function get_item not found\\.$#"
@@ -4266,11 +3720,6 @@ parameters:
 			path: app/Models/SetAdventure_model.php
 
 		-
-			message: "#^SetAdventure_model\\:\\:__construct\\(\\) calls parent\\:\\:__construct\\(\\) but SetAdventure_model does not extend any class\\.$#"
-			count: 1
-			path: app/Models/SetAdventure_model.php
-
-		-
 			message: "#^Variable \\$in might not be defined\\.$#"
 			count: 1
 			path: app/Models/SetAdventure_model.php
@@ -4334,11 +3783,6 @@ parameters:
 			message: "#^Method App\\\\Models\\\\TavernWorkers_model\\:\\:find\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: app/Models/TavernWorkers_model.php
-
-		-
-			message: "#^Method App\\\\Models\\\\Tavern_model\\:\\:__construct\\(\\) has parameter \\$session with no type specified\\.$#"
-			count: 1
-			path: app/Models/Tavern_model.php
 
 		-
 			message: "#^Method App\\\\Models\\\\Tavern_model\\:\\:getData\\(\\) has no return type specified\\.$#"
@@ -4425,35 +3869,6 @@ parameters:
 			count: 1
 			path: app/Models/TravelBureauCartRequiredItem.php
 
-		-
-			message: "#^Access to an undefined property UpdateAdventure_model\\:\\:\\$UpdateGamedata\\.$#"
-			count: 3
-			path: app/Models/UpdateAdventure_model.php
-
-		-
-			message: "#^Access to an undefined property UpdateAdventure_model\\:\\:\\$db\\.$#"
-			count: 24
-			path: app/Models/UpdateAdventure_model.php
-
-		-
-			message: "#^Access to an undefined property UpdateAdventure_model\\:\\:\\$errorHandler\\.$#"
-			count: 1
-			path: app/Models/UpdateAdventure_model.php
-
-		-
-			message: "#^Access to an undefined property UpdateAdventure_model\\:\\:\\$response\\.$#"
-			count: 7
-			path: app/Models/UpdateAdventure_model.php
-
-		-
-			message: "#^Call to an undefined method UpdateAdventure_model\\:\\:commonModels\\(\\)\\.$#"
-			count: 1
-			path: app/Models/UpdateAdventure_model.php
-
-		-
-			message: "#^Call to an undefined method UpdateAdventure_model\\:\\:loadModel\\(\\)\\.$#"
-			count: 2
-			path: app/Models/UpdateAdventure_model.php
 
 		-
 			message: "#^Expression \"\\$warrior_xp\" on a separate line does not do anything\\.$#"
@@ -4551,11 +3966,6 @@ parameters:
 			path: app/Models/UpdateAdventure_model.php
 
 		-
-			message: "#^UpdateAdventure_model\\:\\:__construct\\(\\) calls parent\\:\\:__construct\\(\\) but UpdateAdventure_model does not extend any class\\.$#"
-			count: 1
-			path: app/Models/UpdateAdventure_model.php
-
-		-
 			message: "#^Variable \\$count might not be defined\\.$#"
 			count: 4
 			path: app/Models/UpdateAdventure_model.php
@@ -4564,26 +3974,6 @@ parameters:
 			message: "#^Variable \\$warriors_levels might not be defined\\.$#"
 			count: 1
 			path: app/Models/UpdateAdventure_model.php
-
-		-
-			message: "#^Access to an undefined property UpdateGamedata_model\\:\\:\\$db\\.$#"
-			count: 6
-			path: app/Models/UpdateGamedata_model.php
-
-		-
-			message: "#^Access to an undefined property UpdateGamedata_model\\:\\:\\$session\\.$#"
-			count: 6
-			path: app/Models/UpdateGamedata_model.php
-
-		-
-			message: "#^Access to an undefined property UpdateGamedata_model\\:\\:\\$username\\.$#"
-			count: 6
-			path: app/Models/UpdateGamedata_model.php
-
-		-
-			message: "#^Call to an undefined method UpdateGamedata_model\\:\\:loadModel\\(\\)\\.$#"
-			count: 1
-			path: app/Models/UpdateGamedata_model.php
 
 		-
 			message: "#^Comparison operation \"\\>\" between \\(array\\|float\\|int\\) and 0 results in an error\\.$#"
@@ -4876,46 +4266,6 @@ parameters:
 			path: app/Models/Warriors_model.php
 
 		-
-			message: "#^Access to an undefined property Workers_model\\:\\:\\$UpdateGamedata\\.$#"
-			count: 1
-			path: app/Models/Workforce_model.php
-
-		-
-			message: "#^Access to an undefined property Workers_model\\:\\:\\$db\\.$#"
-			count: 7
-			path: app/Models/Workforce_model.php
-
-		-
-			message: "#^Access to an undefined property Workers_model\\:\\:\\$errorHandler\\.$#"
-			count: 1
-			path: app/Models/Workforce_model.php
-
-		-
-			message: "#^Access to an undefined property Workers_model\\:\\:\\$response\\.$#"
-			count: 5
-			path: app/Models/Workforce_model.php
-
-		-
-			message: "#^Access to an undefined property Workers_model\\:\\:\\$session\\.$#"
-			count: 2
-			path: app/Models/Workforce_model.php
-
-		-
-			message: "#^Access to an undefined property Workers_model\\:\\:\\$username\\.$#"
-			count: 2
-			path: app/Models/Workforce_model.php
-
-		-
-			message: "#^Constructor of class Workers_model has an unused parameter \\$session\\.$#"
-			count: 1
-			path: app/Models/Workforce_model.php
-
-		-
-			message: "#^Method Workers_model\\:\\:__construct\\(\\) has parameter \\$session with no type specified\\.$#"
-			count: 1
-			path: app/Models/Workforce_model.php
-
-		-
 			message: "#^Method Workers_model\\:\\:upgradeEffiency2\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: app/Models/Workforce_model.php
@@ -4925,20 +4275,6 @@ parameters:
 			count: 1
 			path: app/Models/Workforce_model.php
 
-		-
-			message: "#^Undefined variable\\: \\$param_efficiency_level$#"
-			count: 1
-			path: app/Models/Workforce_model.php
-
-		-
-			message: "#^Undefined variable\\: \\$param_username$#"
-			count: 1
-			path: app/Models/Workforce_model.php
-
-		-
-			message: "#^Workers_model\\:\\:__construct\\(\\) calls parent\\:\\:__construct\\(\\) but Workers_model does not extend any class\\.$#"
-			count: 1
-			path: app/Models/Workforce_model.php
 
 		-
 			message: "#^Access to an undefined property Combat_model\\:\\:\\$adventure_data\\.$#"
@@ -4963,11 +4299,6 @@ parameters:
 		-
 			message: "#^Access to an undefined property Combat_model\\:\\:\\$test_warriors\\.$#"
 			count: 2
-			path: app/Models/combat_model.php
-
-		-
-			message: "#^Combat_model\\:\\:__construct\\(\\) calls parent\\:\\:__construct\\(\\) but Combat_model does not extend any class\\.$#"
-			count: 1
 			path: app/Models/combat_model.php
 
 		-
@@ -5161,11 +4492,6 @@ parameters:
 			path: app/Models/combat_model.php
 
 		-
-			message: "#^Property Combat_model\\:\\:\\$db has no type specified\\.$#"
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
 			message: "#^Property Combat_model\\:\\:\\$duration has no type specified\\.$#"
 			count: 1
 			path: app/Models/combat_model.php
@@ -5292,11 +4618,6 @@ parameters:
 
 		-
 			message: "#^Property eventLoader_model\\:\\:\\$session has no type specified\\.$#"
-			count: 1
-			path: app/Models/eventLoader_model.php
-
-		-
-			message: "#^eventLoader_model\\:\\:__construct\\(\\) calls parent\\:\\:__construct\\(\\) but eventLoader_model does not extend any class\\.$#"
 			count: 1
 			path: app/Models/eventLoader_model.php
 
