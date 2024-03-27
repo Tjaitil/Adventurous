@@ -2,134 +2,52 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\MapRequiredDataAction;
-use App\Enums\SkillNames;
-use App\libs\controller;
-use App\libs\Logger;
-use App\libs\Request;
-use App\libs\Response;
-use App\Models\ArcheryShopData;
-use App\Services\InventoryService;
-use App\Services\SessionService;
-use App\Services\SkillsService;
 use App\Services\StoreService;
-use App\validators\ValidateStoreTrade;
-use GameConstants;
+use App\Stores\ArcheryStore;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
-
-class ArcheryShopController extends controller
+class ArcheryShopController extends Controller
 {
-    public $data = array();
-
-    function __construct(
+    public function __construct(
         private StoreService $storeService,
-        private InventoryService $inventoryService,
-        private SessionService $sessionService,
-        private ArcheryShopData $archeryShopData,
-        private MapRequiredDataAction $mapRequiredDataAction
+        private ArcheryStore $archeryStore,
     ) {
-        parent::__construct();
     }
+
+    /**
+     * @return View|Factory
+     */
     public function index()
     {
-        $data['store_items'] = $this->makeArcherShopStore();
-        $data['discount'] = $this->sessionService->isProfiency(SkillNames::MINER->value) ? GameConstants::MINER_STORE_DISCOUNT * 100 : 0;
+        $storeResource = $this->archeryStore->makeStore();
 
-        $this->render('archeryshop', 'Archery Shop', $data, true, true);
+        return view('archeryshop')
+            ->with('title', 'Archery Shop')
+            ->with('isDiscountActive', $storeResource->store_value_modifier !== 1.00)
+            ->with('store_resource', $storeResource);
     }
 
-    public function makeArcherShopStore()
+    public function getStoreItems(): JsonResponse
     {
-        $data = $this->archeryShopData->all();
-        $data = $this->mapRequiredDataAction->handle($data->toArray());
-        $this->storeService->makeStore(
-            ["list" => $data]
-        );
-
-        if ($this->sessionService->isProfiency(SkillNames::MINER->value)) {
-            $this->storeService->storeBuilder->setAdjustedStoreValue(GameConstants::MINER_STORE_DISCOUNT);
-        }
-
-        return $this->storeService->storeBuilder->build()->toArray();
+        return $this->archeryStore->getStoreItemsResponse();
     }
 
-    /**
-     * Get items
-     *
-     * @return Response
-     */
-    public function getItems()
+    public function fletchItem(Request $request): JsonResponse
     {
-        $items = $this->makeArcherShopStore();
+        $item = $request->input('item');
+        $amount = $request->integer('amount');
 
-        return Response::addData("store_items", $items)->setStatus(200);
-    }
+        $initial_store = $this->archeryStore->makeStore();
+        $this->storeService->storeBuilder->setResource($initial_store);
 
-    /**
-     * Fletch item
-     *
-     * @param Request $request
-     * @param MapRequiredDataAction $mapRequiredDataAction
-     * @param SkillsService $skillsService
-     *
-     * @return Response
-     */
-    public function fletchItem(Request $request, MapRequiredDataAction $mapRequiredDataAction, SkillsService $skillsService)
-    {
-        $item = $request->getInput('item');
-        $amount = $request->getInput('amount');
-
-        ValidateStoreTrade::validate($request);
-
-        $item_data = $this->archeryShopData->where('item', $item)->first();
-        $item_data = $mapRequiredDataAction->handle([$item_data->toArray()]);
-
-        $this->storeService->makeStore(
-            ["list" => $item_data]
-        );
-
-
-        if (!$this->storeService->isStoreItem($item)) {
-            return $this->storeService->logNotStoreItem($item);
+        $result = $this->storeService->buyItem($item, $amount);
+        if ($result instanceof JsonResponse) {
+            return $result;
         }
 
-        $item = $this->storeService->getStoreItem($item);
-
-        // Check that user has required level
-        if (!$skillsService->hasRequiredLevel($item_data[0]['required_level'], SkillNames::MINER->value)) {
-            return $skillsService->logNotRequiredLevel(SkillNames::MINER->value);
-        }
-
-        foreach ($item->required_items as $key => $value) {
-            if (!$this->inventoryService->hasEnoughAmount(
-                $value->name,
-                $value->amount * $amount
-            )) {
-                return $this->inventoryService->logNotEnoughAmount($value->name);
-            }
-        }
-
-        if (!$this->inventoryService->hasEnoughAmount(CURRENCY, $item->store_value)) {
-            return $this->inventoryService->logNotEnoughAmount(CURRENCY);
-        }
-
-        $price = $item->store_value;
-
-        if ($this->sessionService->isProfiency(SkillNames::MINER->value)) {
-            $price *= (1 - MINER_STORE_DISCOUNT);
-        }
-
-        foreach ($item->required_items as $key => $value) {
-            $this->inventoryService->edit($value->name, -$value->amount * $amount);
-        }
-        Logger::log('item_multiplier' . $item->item_multiplier . ' ' . $amount);
-        $this->inventoryService
-            ->edit(
-                GameConstants::CURRENCY,
-                -$this->storeService->calculateItemCost($item->name, $amount)
-            )
-            ->edit($item->name, $item->item_multiplier * $amount);
-
-        return Response::setStatus(200);
+        return response()->json([]);
     }
 }
