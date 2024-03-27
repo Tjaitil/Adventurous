@@ -90,7 +90,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/smithy/smith', [SmithyController::class, 'smithItem']);
     Route::get('/smithy/store', [SmithyController::class, 'getStoreItems']);
 
-    Route::get('/archeryshop/get', [ArcheryShopController::class, 'getItems']);
+    Route::get('/archeryshop', [ArcheryShopController::class, 'index']);
+    Route::get('/archeryshop/get', [ArcheryShopController::class, 'getStoreItems']);
     Route::post('/archeryshop/fletch', [ArcheryShopController::class, 'fletchItem']);
 
     Route::get('/travelbureau', [TravelBureauController::class, 'index']);

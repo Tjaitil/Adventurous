@@ -79,7 +79,7 @@ class StoreService
             }
 
             if ($this->storeBuilder->build()->is_inventorable === true) {
-                $this->inventoryService->edit($store_item->name, $amount);
+                $this->inventoryService->edit($store_item->name, $amount * $store_item->item_multiplier);
             }
 
             return true;

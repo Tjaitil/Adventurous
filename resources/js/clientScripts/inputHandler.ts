@@ -20,6 +20,7 @@ import zinsStoreModule from '../buildingScripts/zinsstore';
 import merchantModule from '../buildingScripts/merchant';
 import workforceLodgeModule from '../buildingScripts/workforcelodge';
 import smithyModule from '../buildingScripts/smithy';
+import archeryShopModule from '../buildingScripts/archeryshop';
 
 enum Buildings {
     BAKERY = 'bakery',
@@ -31,6 +32,7 @@ enum Buildings {
     MERCHANT = 'merchant',
     WORKFORCELODGE = 'workforcelodge',
     SMITHY = 'smithy',
+    ARCHERYSHOP = 'archeryshop',
 }
 
 type BuildingModuleMapping = {
@@ -43,6 +45,7 @@ type BuildingModuleMapping = {
     merchant: typeof merchantModule;
     workforcelodge: typeof workforceLodgeModule;
     smithy: typeof smithyModule;
+    archeryshop: typeof archeryShopModule;
 };
 
 function shouldSkipImport(building: string) {
@@ -56,6 +59,7 @@ function shouldSkipImport(building: string) {
         'merchant',
         'workforcelodge',
         'smithy',
+        'archeryshop',
     ].includes(building);
 }
 
@@ -73,7 +77,7 @@ interface IInputHandler {
     buildingMatchUIChanged: boolean;
     checkBuilding(mouseinputX?: number, mouseinputY?: number): void;
     interactBuilding(): void;
-    mapBuildingName(name: string): string;
+    mapBuildingName(name: string): BuildingName;
     currentBuildingModule: any;
     isCurrentBuildingDefaultExport: boolean;
     fetchBuilding(building: string);
@@ -102,6 +106,7 @@ export const inputHandler: IInputHandler = {
             script: 'merchant',
         },
         [Buildings.WORKFORCELODGE]: {},
+        [Buildings.ARCHERYSHOP]: {},
     },
     buildingMatch: <undefined | Building>undefined,
     buildingMatchUIChanged: false,
@@ -161,7 +166,7 @@ export const inputHandler: IInputHandler = {
     currentBuildingModule: undefined,
     isCurrentBuildingDefaultExport: false,
 
-    async fetchBuilding(building: string) {
+    async fetchBuilding(building: BuildingName) {
         building = this.mapBuildingName(building.trim());
         Game.properties.inBuilding = true;
         Game.properties.building = building;
@@ -246,6 +251,10 @@ export const inputHandler: IInputHandler = {
                     });
                 } else {
                     switch (building) {
+                        case 'archeryshop':
+                            this.currentBuildingModule = archeryShopModule;
+                            this.currentBuildingModule.init();
+                            break;
                         case 'stockpile':
                             this.currentBuildingModule = stockpileModule;
                             this.currentBuildingModule.init();

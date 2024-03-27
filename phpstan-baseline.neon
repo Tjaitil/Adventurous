@@ -606,56 +606,6 @@ parameters:
 			path: app/Http/Builders/WorkforceBuilder.php
 
 		-
-			message: "#^Access to constant CURRENCY on an unknown class GameConstants\\.$#"
-			count: 1
-			path: app/Http/Controllers/ArcheryShopController.php
-
-		-
-			message: "#^Access to constant MINER_STORE_DISCOUNT on an unknown class GameConstants\\.$#"
-			count: 2
-			path: app/Http/Controllers/ArcheryShopController.php
-
-		-
-			message: "#^Cannot call method toArray\\(\\) on App\\\\Models\\\\ArcheryShopData\\|null\\.$#"
-			count: 1
-			path: app/Http/Controllers/ArcheryShopController.php
-
-		-
-			message: "#^Class App\\\\Validators\\\\ValidateStoreTrade referenced with incorrect case\\: App\\\\validators\\\\ValidateStoreTrade\\.$#"
-			count: 2
-			path: app/Http/Controllers/ArcheryShopController.php
-
-		-
-			message: "#^Constant CURRENCY not found\\.$#"
-			count: 2
-			path: app/Http/Controllers/ArcheryShopController.php
-
-		-
-			message: "#^Constant MINER_STORE_DISCOUNT not found\\.$#"
-			count: 1
-			path: app/Http/Controllers/ArcheryShopController.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\ArcheryShopController\\:\\:fletchItem\\(\\) should return App\\\\libs\\\\Response but returns Illuminate\\\\Http\\\\JsonResponse\\.$#"
-			count: 4
-			path: app/Http/Controllers/ArcheryShopController.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\ArcheryShopController\\:\\:index\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/Http/Controllers/ArcheryShopController.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\ArcheryShopController\\:\\:makeArcherShopStore\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/Http/Controllers/ArcheryShopController.php
-
-		-
-			message: "#^Property App\\\\Http\\\\Controllers\\\\ArcheryShopController\\:\\:\\$data has no type specified\\.$#"
-			count: 1
-			path: app/Http/Controllers/ArcheryShopController.php
-
-		-
 			message: "#^Access to an undefined property App\\\\Models\\\\ArmoryItemsData\\:\\:\\$item\\.$#"
 			count: 2
 			path: app/Http/Controllers/ArmoryController.php
@@ -2365,27 +2315,6 @@ parameters:
 			message: "#^Variable \\$new_adventure_leader might not be defined\\.$#"
 			count: 3
 			path: app/Models/Adventures_model.php
-
-		-
-			message: "#^Method App\\\\Models\\\\ArcheryShopData\\:\\:getPriceAttribute\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/Models/ArcheryShopData.php
-
-		-
-			message: "#^Method App\\\\Models\\\\ArcheryShopData\\:\\:getRequiredLevelAttribute\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/Models/ArcheryShopData.php
-
-		-
-			message: "#^Method App\\\\Models\\\\ArcheryShopData\\:\\:getTypeAttribute\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/Models/ArcheryShopData.php
-
-		-
-			message: "#^Method App\\\\Models\\\\ArcheryShopData\\:\\:itemData\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/Models/ArcheryShopData.php
-
 
 		-
 			message: "#^Method ArmorItems\\:\\:__construct\\(\\) has parameter \\$session with no type specified\\.$#"
