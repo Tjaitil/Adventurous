@@ -8,6 +8,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * App\Models\ArcheryShopItem
  *
+ * @property int $id
+ * @property int $item_id
+ * @property string $item
+ * @property int|null $item_multiplier
+ * @property int $store_value
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ArcheryShopItemsRequired> $requiredItems
  * @property-read int|null $required_items_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SkillRequirement> $skillRequirements
@@ -15,6 +20,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder|ArcheryShopItem newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ArcheryShopItem newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ArcheryShopItem query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ArcheryShopItem whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ArcheryShopItem whereItem($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ArcheryShopItem whereItemId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ArcheryShopItem whereItemMultiplier($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ArcheryShopItem whereStoreValue($value)
  * @mixin \Eloquent
  */
 class ArcheryShopItem extends Model
@@ -22,7 +32,7 @@ class ArcheryShopItem extends Model
     protected $table = 'archery_shop_items';
 
     public $timestamps = false;
-    
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany<ArcheryShopItemsRequired>
      */
