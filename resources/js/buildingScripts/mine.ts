@@ -30,7 +30,6 @@ class MineModule extends SkillActionContainer {
 
         CustomFetchApi.get<MineCountdownResponse>('/mine/countdown').then(
             response => {
-                console.log('response', response);
                 this.startCountdownAndUpdateUI({
                     endTime: response.mining_finishes_at * 1000,
                     type: response.mineral_ore,
