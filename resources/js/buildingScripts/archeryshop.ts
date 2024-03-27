@@ -5,12 +5,14 @@ import storeContainer from '../utilities/storeContainer';
 import { Inventory } from '../clientScripts/inventory';
 
 const archeryShopModule = {
-    init() {
-        this.getData();
-        storeContainer.addSelectTrade();
-        storeContainer.addSelectedItemButtonEvent(this.fletch, 'fletch');
+    async init() {
+        this.getData().then(() => {
+            storeContainer.init();
+            storeContainer.addSelectTrade();
+            storeContainer.addSelectedItemButtonEvent(this.fletch, 'fletch');
+        });
     },
-    getData() {
+    async getData() {
         AdvApi.get<StoreItemResponse>('/archeryshop/get')
             .then(response => {
                 storeContainer.setStoreItems(response.data.store_items);
@@ -29,7 +31,7 @@ const archeryShopModule = {
         };
 
         AdvApi.post('/archeryshop/fletch', data)
-            .then(response => Inventory.update())
+            .then(() => Inventory.update())
             .catch(() => false);
     },
     onClose() {
