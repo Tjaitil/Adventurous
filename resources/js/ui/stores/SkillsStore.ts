@@ -1,9 +1,9 @@
-import { UserLevelsResource } from '@/types/UserLevelsResource';
+import { UserLevels } from '@/types/UserLevels';
 import { defineStore } from 'pinia';
 
 interface State {
     handleXpGainedEvent: boolean;
-    UserLevelsResource?: UserLevelsResource;
+    UserLevelsResource?: UserLevels;
 }
 
 export const useSkillsStore = defineStore('skillsStore', {
@@ -14,7 +14,7 @@ export const useSkillsStore = defineStore('skillsStore', {
         setHandleXpGainedEvent(status: boolean) {
             this.handleXpGainedEvent = status;
         },
-        setUserLevelsResource(resource: UserLevelsResource) {
+        setUserLevelsResource(resource: UserLevels) {
             this.UserLevelsResource = resource;
         },
         hasRequiredMinerLevel(levelRequired: number) {

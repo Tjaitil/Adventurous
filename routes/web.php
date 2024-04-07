@@ -12,11 +12,11 @@ use App\Http\Controllers\GameLoggerController;
 use App\Http\Controllers\HungerController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\LandingController;
-use App\Http\Controllers\LevelController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MerchantController;
 use App\Http\Controllers\MineController;
 use App\Http\Controllers\ProfiencyStatusController;
+use App\Http\Controllers\SkillsController;
 use App\Http\Controllers\SmithyController;
 use App\Http\Controllers\StockpileController;
 use App\Http\Controllers\TavernController;
@@ -128,7 +128,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/armycamp/endTraining', [ArmyCampController::class, 'endTraining']);
     Route::post('/armycamp/healWarrior', [ArmyCampController::class, 'healWarrior']);
 
-    Route::get('/skill/level-check', [LevelController::class, 'checkLevel']);
+    Route::post('/skills/update', [SkillsController::class, 'handleUpdate']);
 
     Route::get('/workforcelodge', [WorkforceLodgeController::class, 'index']);
     Route::post('/workforcelodge/efficiency/upgrade', [WorkforceLodgeController::class, 'upgradeEfficiency']);

@@ -1,5 +1,5 @@
 import { addModuleTester } from '@/devtools/ModuleTester';
-import { CustomFetchApi } from '../CustomFetchApi';
+import axios from 'axios';
 
 export enum commonMessages {
     'inventoryFull' = 'Remove some items from inventory before doing this action',
@@ -172,8 +172,8 @@ export class GameLogger {
         } else {
             messageToLog = message;
         }
-
-        CustomFetchApi.post('/log', messageToLog)
+        axios
+            .post('/log', messageToLog)
             .then(() => false)
             .catch(() => false);
     }
