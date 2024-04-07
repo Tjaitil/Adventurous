@@ -68,7 +68,7 @@ export function addModuleTester(
     name: string,
     options: ModuleTesterOptions = {},
 ) {
-    if (import.meta.env.DEV) {
+    if (import.meta.env.DEV && import.meta.env.MODE !== 'test') {
         new ModuleTester(classInstance, name, options);
     }
 }
