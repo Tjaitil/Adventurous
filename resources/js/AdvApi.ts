@@ -65,7 +65,7 @@ export class AdvApi extends BaseAxios {
 
     public static async post<T = advAPIResponse>(
         url: string,
-        data: object,
+        data: object = {},
     ): Promise<T> {
         if (this.interceptorsConfigured === false) this.init();
 
