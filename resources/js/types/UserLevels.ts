@@ -1,4 +1,4 @@
-export interface UserLevelsResource {
+export interface UserLevels {
     username: string;
     adventurer_respect: number;
     warrior_xp: number;
