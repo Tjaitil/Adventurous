@@ -22,3 +22,10 @@ yarn-error.log
 # IDE HELPER FILES
 _ide_helper.php
 .phpstorm.meta.php
+
+# TEST RELATED FOLDER
+coverage/**
+html/**
+
+# MAC temp
+.DS_Store
