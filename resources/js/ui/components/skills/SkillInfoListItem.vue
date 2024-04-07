@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import { LevelUpAbleSkills } from '@/types/LevelUpSkill';
+import { LevelUpAbleSkills } from '@/types/Skill';
 import { ref } from 'vue';
 
 interface Props {

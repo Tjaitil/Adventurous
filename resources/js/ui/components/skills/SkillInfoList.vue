@@ -47,22 +47,19 @@
 import { reactive, ref, watch } from 'vue';
 import SkillInfoListItem from './SkillInfoListItem.vue';
 import { useSkillsStore } from '@/ui/stores/SkillsStore';
-import { LevelUpAbleSkills, LevelUpSkill } from '@/types/LevelUpSkill';
-import { UserLevelsResource } from '@/types/UserLevelsResource';
+import { UserLevels } from '@/types/UserLevels';
 import { AdvApi } from '@/AdvApi';
+import { LevelUpAbleSkills } from '@/types/Skill';
+import { UpdateSkillsResponse } from '@/types/Responses/UpdateSkillsResponse';
 
 interface Props {
-    initLevels: UserLevelsResource;
-}
-
-interface checkForLevelUpResponse {
-    new_levels: LevelUpSkill[];
+    initLevels: UserLevels;
 }
 
 const props = defineProps<Props>();
 const store = useSkillsStore();
 
-const levels = reactive<UserLevelsResource>(props.initLevels);
+const levels = ref<UserLevels>(props.initLevels);
 store.setUserLevelsResource(props.initLevels);
 const levelUpStatus = reactive({
     farmer: false,
@@ -83,18 +80,16 @@ watch(
 );
 
 const updateSkills = async () => {
-    await AdvApi.get<checkForLevelUpResponse>('skill/level-check').then(
-        response => {
-            if (response.new_levels.length > 0) {
-                response.new_levels.forEach(levelUpSkill => {
-                    levelUpStatus[levelUpSkill.skill] = true;
-                    levels[levelUpSkill.skill + '_level'] =
-                        levelUpSkill.new_level;
-                });
-                store.UserLevelsResource = levels;
-            }
-        },
-    );
+    await AdvApi.post<UpdateSkillsResponse>('/skills/update').then(response => {
+        if (response.new_levels.length > 0) {
+            response.new_levels.forEach(levelUpSkill => {
+                levelUpStatus[levelUpSkill.skill] = true;
+                levels[levelUpSkill.skill + '_level'] = levelUpSkill.new_level;
+            });
+            store.UserLevelsResource = levels.value;
+        }
+        levels.value = response.user_levels;
+    });
     store.setHandleXpGainedEvent(false);
 };
 
