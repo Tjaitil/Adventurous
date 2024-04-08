@@ -156,7 +156,7 @@ export class conversation {
     }
 
     private static handleClientEvents() {
-        if (this.currentConversationSegment.client_events.length > 0) {
+        if (this.currentConversationSegment.client_events?.length > 0) {
             this.currentConversationSegment.client_events.forEach(
                 clientEvent => {
                     switch (clientEvent) {
@@ -369,7 +369,7 @@ interface conversationSegmentResponse {
 interface ConversationSegment {
     header?: string;
     options: ConversationOption[];
-    client_events: ConversationClientEvent[];
+    client_events?: ConversationClientEvent[];
 }
 interface ConversationOption {
     person: string | null;
