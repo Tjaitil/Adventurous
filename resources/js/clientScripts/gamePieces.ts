@@ -176,7 +176,11 @@ export const GamePieces = {
         }
     },
 };
-document.getElementById('draw_checkbox').addEventListener('change', event => {
-    const element = <HTMLInputElement>event.currentTarget;
-    draw = element.checked;
+window.addEventListener('load', () => {
+    document
+        .getElementById('draw_checkbox')
+        .addEventListener('change', event => {
+            const element = <HTMLInputElement>event.currentTarget;
+            draw = element.checked;
+        });
 });
