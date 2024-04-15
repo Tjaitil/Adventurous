@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Responses\AdvResponse;
 use App\Services\StoreService;
 use App\Stores\SmithyStore;
 use Illuminate\Contracts\View\Factory;
@@ -36,11 +37,10 @@ class SmithyController extends Controller
     }
 
     /**
-     * @return JsonResponse
+     * @return JsonResponse|AdvResponse
      */
     public function smithItem(Request $request)
     {
-
         $item = $request->input('item');
         $amount = $request->integer('amount');
 
@@ -48,10 +48,13 @@ class SmithyController extends Controller
         $this->storeService->storeBuilder->setResource($initial_store);
 
         $result = $this->storeService->buyItem($item, $amount);
-        if ($result instanceof JsonResponse) {
+        if (! is_array($result)) {
             return $result;
+        } else {
+            $message = sprintf('%d x %s smithed for %d {gold}', $result['totalAmount'], $item, $result['totalPrice']);
+
+            return advResponse()->addSuccessMessage($message);
         }
 
-        return response()->json([]);
     }
 }

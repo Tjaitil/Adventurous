@@ -1,3 +1,4 @@
+import { AssetPaths } from '@/clientScripts/ImagePath';
 import { addModuleTester } from '@/devtools/ModuleTester';
 import axios from 'axios';
 
@@ -181,10 +182,11 @@ export class GameLogger {
     private static clientLog() {
         const message = this.messages[this.currentIndex];
         const div = document.getElementById('log-modal');
-        div.querySelectorAll('p')[0].innerHTML = message.text;
+        const text = this.replacePlaceholders(message.text);
+        div.querySelectorAll('p')[0].innerHTML = text;
+
         div.style.opacity = '1';
-        div.style.height = '50px';
-        div.style.top = window.scrollY + 5 + 'px';
+        div.style.height = '56px';
 
         div.classList.add(this.getColorFromType(message.type));
         this.mainLog();
@@ -214,10 +216,22 @@ export class GameLogger {
         }
     }
 
+    private static replacePlaceholders(message: string) {
+        if (message.includes('{gold}')) {
+            const img = document.createElement('img');
+            img.classList.add('gold');
+            img.classList.add('inline');
+            img.style.marginLeft = '-6px';
+            img.style.marginTop = '-4px';
+            img.src = AssetPaths.getImagePath('gold.png');
+            message = message.replace('{gold}', img.outerHTML);
+        }
+        return message;
+    }
+
     private static closeClientLog() {
         const div = document.getElementById('log-modal');
         div.style.height = '4px';
-        div.style.top = '0px';
         div.style.opacity = '0';
 
         this.messages = [];
@@ -234,6 +248,8 @@ export class GameLogger {
         }
     }
 }
+
+type GameLoggerPlaceholder = '{gold}';
 
 interface GameLog {
     text: string;

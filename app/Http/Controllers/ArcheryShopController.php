@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Responses\AdvResponse;
 use App\Services\StoreService;
 use App\Stores\ArcheryStore;
 use Illuminate\Contracts\View\Factory;
@@ -35,7 +36,10 @@ class ArcheryShopController extends Controller
         return $this->archeryStore->getStoreItemsResponse();
     }
 
-    public function fletchItem(Request $request): JsonResponse
+    /**
+     * @return JsonResponse|AdvResponse
+     */
+    public function fletchItem(Request $request)
     {
         $item = $request->input('item');
         $amount = $request->integer('amount');
@@ -44,10 +48,12 @@ class ArcheryShopController extends Controller
         $this->storeService->storeBuilder->setResource($initial_store);
 
         $result = $this->storeService->buyItem($item, $amount);
-        if ($result instanceof JsonResponse) {
+        if (! is_array($result)) {
             return $result;
-        }
+        } else {
+            $message = sprintf('%d x %s fletched for %d {gold}', $result['totalAmount'], $item, $result['totalPrice']);
 
-        return response()->json([]);
+            return advResponse()->addSuccessMessage($message);
+        }
     }
 }
