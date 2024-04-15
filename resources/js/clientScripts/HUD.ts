@@ -149,7 +149,6 @@ export const HUD = {
             'control_text_building',
         );
 
-        document.getElementById('log-modal').style.width = width + 'px';
         /* If screen is less than 830 set sidebar to be the same top as inventory so that the two are aligned
          * Also align cont_exit button in news content to middle instead of right */
         if (window.screen.width < 830) {
