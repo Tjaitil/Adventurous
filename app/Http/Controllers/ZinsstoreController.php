@@ -2,35 +2,36 @@
 
 namespace App\Http\Controllers;
 
-use App\libs\controller;
-use App\libs\Request;
-use App\libs\Response;
-use App\Services\InventoryService;
+use App\Http\Responses\AdvResponse;
 use App\Services\StoreService;
 use App\Stores\ZinssStore;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
-class ZinsstoreController extends controller
+class ZinsstoreController extends Controller
 {
-    public $data;
-
-
-    function __construct(
+    public function __construct(
         private ZinssStore $zinssStore,
         private StoreService $storeService,
-        private InventoryService $inventoryService,
     ) {
-        parent::__construct();
-    }
-
-    public function index()
-    {
-        $storeResource = $this->zinssStore->getStore();
-        $this->render('zinsstore', 'Zins Store', ['store_resource' => $storeResource], true, true, true);
     }
 
     /**
-     * 
-     * @return Response 
+     * @return View|Factory
+     */
+    public function index()
+    {
+        $storeResource = $this->zinssStore->getStore();
+
+        return view('zinsstore')
+            ->with('title', 'Zins Store')
+            ->with('store_resource', $storeResource);
+    }
+
+    /**
+     * @return JsonResponse
      */
     public function getStoreItems()
     {
@@ -38,34 +39,22 @@ class ZinsstoreController extends controller
     }
 
     /**
-     * 
-     * @param Request $request 
-     * @return Response 
+     * @return JsonResponse|AdvResponse
      */
-    public function buy(Request $request)
+    public function sellItem(Request $request)
     {
-        $item = $request->getInput('item');
-        $amount = $request->getInput('amount');
+        $item = $request->input('item');
+        $amount = $request->integer('amount');
 
         $initial_store = $this->zinssStore->makeStore([$item]);
         $this->storeService->storeBuilder->setResource($initial_store);
-
-        if (!$this->inventoryService->hasEnoughAmount($item, $amount)) {
-            return $this->inventoryService->logNotEnoughAmount($item);
-        }
-
-        if (!$this->storeService->isStoreItem($item)) {
-            return $this->storeService->logNotStoreItem($item);
-        }
-        $store_item = $this->storeService->getStoreItem($item);
-
-        if (!$this->inventoryService->hasEnoughAmount(CURRENCY, $store_item->store_value * $amount)) {
-            return $this->inventoryService->logNotEnoughAmount(CURRENCY);
+        $result = $this->storeService->sellItem($item, $amount);
+        if (! is_array($result)) {
+            return $result;
         } else {
-            $this->inventoryService->edit(CURRENCY, $store_item->store_value * $amount);
-        }
+            $successMessage = sprintf('%d x %s sold for %d', $amount, $item, $result['totalPrice']);
 
-        $this->inventoryService->edit($item, -$amount);
-        return Response::setStatus(200);
+            return advResponse()->addSuccessMessage($successMessage);
+        }
     }
 }
