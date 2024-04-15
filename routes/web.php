@@ -71,8 +71,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/stockpile/{item}', [StockpileController::class, 'show']);
     Route::post('/stockpile/update', [StockpileController::class, 'update']);
 
+    Route::get('/zinsstore', [ZinsstoreController::class, 'index']);
     Route::get('/zinsstore/store', [ZinsstoreController::class, 'getStoreItems']);
-    Route::post('/zinsstore', [ZinsstoreController::class, 'buy']);
+    Route::post('/zinsstore/sell', [ZinsstoreController::class, 'sellItem']);
 
     Route::get('/merchant/{item}/price', [MerchantController::class]);
     Route::get('/merchant/countdown', [MerchantController::class]);
