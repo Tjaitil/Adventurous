@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool $frajrite_items
  * @property bool $wujkin_items
  * @property int|null $stockpile_max_amount
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|UserData newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserData newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserData query()
@@ -42,6 +43,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereStockpileMaxAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereUsername($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereWujkinItems($value)
+ *
  * @mixin \Eloquent
  */
 class UserData extends Model
@@ -49,7 +51,7 @@ class UserData extends Model
     public $timestamps = false;
 
     /**
-     * @var array
+     * @var array<string, string>
      */
     protected $casts =
     [

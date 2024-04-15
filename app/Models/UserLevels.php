@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * App\Models\UserLevels
@@ -53,7 +54,10 @@ class UserLevels extends Model
 
     public $timestamps = false;
 
-    public function nextLevel()
+    /**
+     * @return HasMany<LevelData>
+     */
+    public function nextLevel(): HasMany
     {
         return $this->hasMany(LevelData::class);
     }

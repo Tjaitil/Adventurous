@@ -3945,36 +3945,6 @@ parameters:
 			path: app/Models/UpdateGamedata_model.php
 
 		-
-			message: "#^Method App\\\\Models\\\\User\\:\\:player\\(\\) return type with generic class Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\HasOne does not specify its types\\: TRelatedModel$#"
-			count: 1
-			path: app/Models/User.php
-
-		-
-			message: "#^Method App\\\\Models\\\\User\\:\\:userData\\(\\) return type with generic class Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\HasOne does not specify its types\\: TRelatedModel$#"
-			count: 1
-			path: app/Models/User.php
-
-		-
-			message: "#^Method App\\\\Models\\\\User\\:\\:userLevels\\(\\) return type with generic class Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\HasOne does not specify its types\\: TRelatedModel$#"
-			count: 1
-			path: app/Models/User.php
-
-		-
-			message: "#^PHPDoc type array of property App\\\\Models\\\\UserData\\:\\:\\$casts is not covariant with PHPDoc type array\\<string, string\\> of overridden property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$casts\\.$#"
-			count: 1
-			path: app/Models/UserData.php
-
-		-
-			message: "#^Property App\\\\Models\\\\UserData\\:\\:\\$casts type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: app/Models/UserData.php
-
-		-
-			message: "#^Method App\\\\Models\\\\UserLevels\\:\\:nextLevel\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/Models/UserLevels.php
-
-		-
 			message: "#^Class App\\\\Models\\\\Warrior not found\\.$#"
 			count: 1
 			path: app/Models/Warrior_levels.php

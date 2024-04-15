@@ -45,16 +45,25 @@ class User extends Authenticatable
         'updated_at' => 'datetime',
     ];
 
+    /**
+     * @return HasOne<UserData>
+     */
     public function userData(): HasOne
     {
         return $this->hasOne(UserData::class, 'username', 'username');
     }
 
+    /**
+     * @return HasOne<UserData>
+     */
     public function player(): HasOne
     {
         return $this->userData();
     }
 
+    /**
+     * @return HasOne<UserLevels>
+     */
     public function userLevels(): HasOne
     {
         return $this->hasOne(UserLevels::class);
