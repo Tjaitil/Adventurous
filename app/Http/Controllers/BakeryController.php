@@ -41,7 +41,7 @@ class BakeryController extends Controller
     }
 
     /**
-     * @return JsonResponse
+     * @return JsonResponse|AdvResponse
      */
     public function makeItem(Request $request)
     {
@@ -52,10 +52,12 @@ class BakeryController extends Controller
         $this->storeService->storeBuilder->setResource($initial_store);
 
         $result = $this->storeService->buyItem($item, $amount);
-        if ($result instanceof JsonResponse) {
+        if (! is_array($result)) {
             return $result;
-        }
+        } else {
+            $message = sprintf('%d x %s made for %d {gold}', $result['totalAmount'], $item, $result['totalPrice']);
 
-        return (new AdvResponse([], 200))->toResponse($request);
+            return advResponse()->addSuccessMessage($message);
+        }
     }
 }
