@@ -1456,36 +1456,6 @@ parameters:
 			path: app/Http/Controllers/WorldLoaderController.php
 
 		-
-			message: "#^Constant CURRENCY not found\\.$#"
-			count: 3
-			path: app/Http/Controllers/ZinsstoreController.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\ZinsstoreController\\:\\:buy\\(\\) should return App\\\\libs\\\\Response but returns Illuminate\\\\Http\\\\JsonResponse\\.$#"
-			count: 3
-			path: app/Http/Controllers/ZinsstoreController.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\ZinsstoreController\\:\\:getStoreItems\\(\\) should return App\\\\libs\\\\Response but returns Illuminate\\\\Http\\\\JsonResponse\\.$#"
-			count: 1
-			path: app/Http/Controllers/ZinsstoreController.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\ZinsstoreController\\:\\:index\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/Http/Controllers/ZinsstoreController.php
-
-		-
-			message: "#^Parameter \\#2 \\$amount of method App\\\\Services\\\\InventoryService\\:\\:edit\\(\\) expects int, float\\|int given\\.$#"
-			count: 1
-			path: app/Http/Controllers/ZinsstoreController.php
-
-		-
-			message: "#^Property App\\\\Http\\\\Controllers\\\\ZinsstoreController\\:\\:\\$data has no type specified\\.$#"
-			count: 1
-			path: app/Http/Controllers/ZinsstoreController.php
-
-		-
 			message: "#^Access to an undefined property adventures\\:\\:\\$model\\.$#"
 			count: 1
 			path: app/Http/Controllers/adventures.php

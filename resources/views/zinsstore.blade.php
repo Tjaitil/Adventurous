@@ -1,4 +1,4 @@
-<h1 class="page_title">Zins Store</h1>
+<h1 class="page_title">{{ $title }}</h1>
 <div id="zinsstore">
     <x-helpSection>
         Zins is a trader who trades daqloon loot. He

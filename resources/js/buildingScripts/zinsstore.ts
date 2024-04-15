@@ -20,7 +20,7 @@ const zinsStoreModule = {
         const { item, amount } = storeContainer.getSelectedTrade() || {};
         if (!item) return;
 
-        AdvApi.post('/zinsstore', {
+        AdvApi.post('/zinsstore/sell', {
             item,
             amount,
         }).then(() => {

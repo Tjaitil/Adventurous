@@ -1,7 +1,6 @@
 import { gameTravel } from './gameTravel';
 import { tutorial } from './tutorial';
 import { Game } from '../advclient';
-import { inputHandler } from './inputHandler';
 import { GameLogger } from '../utilities/GameLogger';
 import { GamePieces } from './gamePieces';
 import viewport from './viewport';
@@ -11,9 +10,10 @@ import { AssetPaths } from './ImagePath';
 import { jsUcWords } from '../utilities/uppercase';
 import { Inventory } from './inventory';
 import { addModuleTester } from '@/devtools/ModuleTester';
+import { loadBuildingCallback } from '@/conversationCallbacks/loadBuilding';
 
 type ConversationCallback =
-    | 'fetchBuilding'
+    | 'loadBuilding'
     | 'loadConversation'
     | 'relocateHassen'
     | 'checkStep'
@@ -172,10 +172,16 @@ export class conversation {
     private static handleCallbacks() {
         const objArray = [];
         let triggerEvent: CallableFunction = () => {};
-        switch (this.selectedConversationOption.callback) {
-            case 'fetchBuilding':
+
+        const keyArray =
+            this.selectedConversationOption.callback?.split('#') ?? [];
+        const keyName = <ConversationCallback>keyArray.shift();
+
+        // Make a validator to check if the value has required parameters
+        switch (keyName) {
+            case 'loadBuilding':
                 triggerEvent = () => {
-                    inputHandler.fetchBuilding(String(objArray[1]));
+                    loadBuildingCallback(keyArray[0]);
                 };
                 break;
             case 'loadConversation':

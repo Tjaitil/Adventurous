@@ -90,6 +90,43 @@ class StoreService
     }
 
     /**
+     * @return JsonResponse|array{'totalPrice': int}|AdvResponse
+     */
+    public function sellItem(string $item, int $amount)
+    {
+        try {
+            $store_item = $this->getStoreItem($item);
+
+            if (! $store_item instanceof StoreItemResource || ! $this->isStoreItem($item)) {
+                return $this->logNotStoreItem($item);
+            }
+
+            if (! $this->hasSkillRequirements($store_item)) {
+                return (new AdvResponse([], 422))
+                    ->addErrorMessage('You do not have the required skill level')
+                    ->toResponse(request());
+            }
+
+            if (! $this->inventoryService->hasEnoughAmount($store_item->name, $amount)) {
+                return $this->inventoryService->logNotEnoughAmount($store_item->name);
+            }
+
+            $this->inventoryService->edit($store_item->name, -$amount);
+
+            $totalPrice = $this->calculateItemCost($store_item, $amount);
+            $this->inventoryService->edit(
+                config('adventurous.currency'),
+                $totalPrice,
+            );
+
+            return ['totalPrice' => $totalPrice];
+        } catch (\Exception $e) {
+            return (new AdvResponse([], 500))
+                ->addErrorMessage('Something went wrong');
+        }
+    }
+
+    /**
      * Get store item
      *
      * @return bool
