@@ -74,7 +74,7 @@ class SmithyTest extends TestCase
         $this->assertDatabaseHas('inventory', [
             'username' => $this->RandomUser->username,
             'item' => $SmithyItem->item,
-            'amount' => $amount,
+            'amount' => $amount * $SmithyItem->item_multiplier,
         ]);
 
         foreach ($RequiredItems as $key => $RequiredItem) {
