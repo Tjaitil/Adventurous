@@ -38,7 +38,7 @@ class StoreService
     /**
      * Return true on success otherwise a jsonResponse
      *
-     * @return JsonResponse|AdvResponse|true
+     * @return JsonResponse|AdvResponse|array{'totalPrice': int, 'totalAmount': int}
      */
     public function buyItem(string $item, int $amount)
     {
@@ -71,6 +71,8 @@ class StoreService
             if (! $this->inventoryService->hasEnoughAmount(config('adventurous.currency'), $store_item->store_value)) {
                 return $this->inventoryService->logNotEnoughAmount(config('adventurous.currency'));
             } else {
+                $totalPrice = $this->calculateItemCost($store_item, $amount);
+
                 $this->inventoryService
                     ->edit(
                         config('adventurous.currency'),
@@ -78,11 +80,12 @@ class StoreService
                     );
             }
 
+            $totalAmount = $amount * $store_item->item_multiplier;
             if ($this->storeBuilder->build()->is_inventorable === true) {
-                $this->inventoryService->edit($store_item->name, $amount * $store_item->item_multiplier);
+                $this->inventoryService->edit($store_item->name, $totalAmount);
             }
 
-            return true;
+            return ['totalPrice' => $totalPrice, 'totalAmount' => $totalAmount];
         } catch (\Exception $e) {
             return (new AdvResponse([], 500))
                 ->addErrorMessage('Something went wrong');
