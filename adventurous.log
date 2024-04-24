@@ -1,1 +1,0 @@
-[2023-10-19 23:13:37] Error occuredCould not resolve param hungerServiceError occuredCould not resolve param sessionServiceError occuredDatabase hosts array is empty. (SQL: select * from `user_data` where `username` = tjaitil limit 1)712141141
