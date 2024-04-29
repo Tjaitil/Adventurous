@@ -136,3 +136,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/log', [GameLoggerController::class, 'log']);
 });
+
+Route::fallback(function () {
+    abort(404);
+});
