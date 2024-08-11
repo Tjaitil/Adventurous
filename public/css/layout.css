@@ -238,7 +238,7 @@ footer {
     background-color: #2196f3;
 }
 .checkmark:after {
-    content: "";
+    content: '';
     position: absolute;
     display: none;
 }
@@ -257,7 +257,7 @@ footer {
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
 }
-section input:not([type="radio"]):not([type="checkbox"]):not(.custom-input) {
+section input:not([type='radio']):not([type='checkbox']):not(.custom-input) {
     background-color: #e5cdb3;
     padding: 2px 2px 2px 8px;
     margin: 3px;
@@ -323,7 +323,7 @@ aside td {
 }
 
 section tbody tr:not(.sectionTableNoPseudo, .custom-tr):after {
-    content: "";
+    content: '';
     position: absolute;
     left: 10%;
     width: 80%;
@@ -331,15 +331,14 @@ section tbody tr:not(.sectionTableNoPseudo, .custom-tr):after {
     background-color: #5f4121;
 }
 section table:not(#game_messages, .custom-table),
-.div_content,
-#inventory {
+.div_content {
     border: 8px ridge #5f4121;
     border-radius: 5px;
     position: relative;
 }
 section table:not(#game_messages, .custom-table)::after,
 .div_content::after {
-    content: "";
+    content: '';
     border: 3px solid rgba(0, 0, 0, 0.6);
     width: calc(100% + 4px);
     height: calc(100% + 4px);
