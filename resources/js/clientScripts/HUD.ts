@@ -38,8 +38,9 @@ export const HUD = {
         container.style.height = height + 'px';
 
         const HUDTopPosition = 15;
-        const HUDLeftPosition = 10;
+        const HUDLeftPosition = 20;
         const HUDrowHeight = 46;
+        const HUDSpacer = 20;
 
         // Set width on elements that should be same with as canvas
         const conversation_container = document.getElementById(
@@ -86,7 +87,10 @@ export const HUD = {
         const healthProgressBar = document.getElementById('health_progressBar');
         healthProgressBar.style.top = HUDTopPosition + HUDrowHeight * 0 + 'px';
         healthProgressBar.style.left =
-            parseInt(hungerProgressBar.style.width) + 30 + 'px';
+            parseInt(hungerProgressBar.style.left) +
+            hungerProgressBar.clientWidth +
+            HUDSpacer +
+            'px';
         healthProgressBar.style.width = '100px';
         healthProgressBar.style.position = 'absolute';
         healthProgressBar.querySelectorAll(

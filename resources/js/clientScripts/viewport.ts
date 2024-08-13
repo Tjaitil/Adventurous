@@ -178,9 +178,9 @@ export const viewport = {
         this.elements.hud.style.zIndex = '6';
 
         document.getElementById('canvas-border').style.width =
-            this.width + 'px';
+            this.width + 16 + 'px';
         document.getElementById('canvas-border').style.height =
-            this.height + 2 + 'px';
+            this.height + 16 + 'px';
 
         this.layer.background.scale(this.zoom, this.zoom);
         this.layer.player.scale(this.zoom, this.zoom);

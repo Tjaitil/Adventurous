@@ -6,7 +6,7 @@
      * @param int $maxValue
      */
 @endphp
-<div id="{{ $id }}" class="progressBarContainer w-100 mx-auto">
+<div id="{{ $id }}" class="progressBarContainer w-100 mx-auto pixelated-corners-sm">
     <div class="progressBarOverlayShadow">
     </div>
     <div class="progressBarOverlay">
