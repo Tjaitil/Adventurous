@@ -76,3 +76,45 @@
         0px calc(100% - 8px)
     );
 }
+
+baks-card,
+.bk-primary,
+.bk-secondary,
+.bk-dark,
+.bk-light {
+    --primary-color: theme(colors.primary.500);
+    --primary-color-border: theme(colors.primary.600);
+    --primary-color-hover: theme(colors.primary.600);
+    --primary-color-focus: theme(colors.primary.600);
+    --primary-color-active: theme(colors.primary.600);
+    --primary-color-border: theme(colors.primary.600);
+
+    --secondary-color: #3f75b0;
+    --secondary-color-hover: #39699d;
+    --secondary-color-focus: #39699d;
+    --secondary-color-active: #39699d;
+    --secondary-color-border: #39699d;
+    --secondary-color-text: #39699d;
+
+    --dark-color: #5a3e20;
+    --dark-color-hover: #5a3e20;
+    --dark-color-focus: #5a3e20;
+    --dark-color-active: #5a3e20;
+    --dark-color-border: #5a3e20;
+
+    --light-color: theme(colors.orange.50);
+    --light-color-hover: theme(colors.orange.100);
+    --light-color-focus: theme(colors.orange.100);
+    --light-color-active: theme(colors.orange.100);
+    --light-color-border: theme(colors.orange.100);
+}
+
+baks-card::part(baks-card) {
+    @apply relative p-2 my-4 text-white border-8 shadow-lg after:border-gray-950/60 after:pointer-events-none after:absolute after:top-0 after:left-0 after:content-[''] after:w-full after:h-full after:border-solid after:border-4;
+    @apply pixelated-corners;
+    border-style: ridge;
+}
+
+baks-card[variant='dark']::part(baks-card) {
+    border-color: rgb(135, 93, 49);
+}
