@@ -1,4 +1,5 @@
 /// <reference types="vitest" />
+/// <reference types="vite/client" />
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import vue from '@vitejs/plugin-vue';
@@ -32,6 +33,7 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/js/app.js',
+                'resources/js/ui/web/index.ts',
                 'resources/js/clientScripts/inventory.ts',
                 'resources/js/backgroundScroller.ts',
                 'resources/js/clientScripts/sidebar.ts',
