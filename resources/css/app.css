@@ -109,12 +109,19 @@ baks-card,
     --light-color-border: theme(colors.orange.100);
 }
 
-baks-card::part(baks-card) {
+baks-card::part(baks-card),
+.bk-card {
     @apply relative p-2 my-4 text-white border-8 shadow-lg after:border-gray-950/60 after:pointer-events-none after:absolute after:top-0 after:left-0 after:content-[''] after:w-full after:h-full after:border-solid after:border-4;
     @apply pixelated-corners;
     border-style: ridge;
 }
 
-baks-card[variant='dark']::part(baks-card) {
+baks-card[variant='dark']::part(baks-card),
+.bk-card.bk-light {
+    @apply border-yellow-700;
+}
+
+baks-card[variant='dark']::part(baks-card),
+.bk-card.bk-dark {
     border-color: rgb(135, 93, 49);
 }
