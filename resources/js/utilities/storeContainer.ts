@@ -248,7 +248,9 @@ const storeContainer: IStoreContainer = {
         this.selectedTradePriceElement.innerHTML = price + ' ';
 
         const nameElement = <HTMLElement>(
-            this.selectedTradeWrapper.querySelectorAll('figcaption')[0]
+            this.selectedTradeWrapper.querySelectorAll(
+                'figcaption .tooltip_item',
+            )[0]
         );
         nameElement.classList.remove('tooltip');
         const imageElement = <HTMLImageElement>(
@@ -268,7 +270,7 @@ const storeContainer: IStoreContainer = {
         | { item: string; amount: number; isBuying: boolean }
         | false {
         const item = this.selectedTradeWrapper
-            .querySelectorAll('figcaption')[0]
+            .querySelectorAll('figcaption .tooltip_item')[0]
             .innerHTML.toLowerCase()
             .trim();
 

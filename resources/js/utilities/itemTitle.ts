@@ -72,10 +72,6 @@ export const itemTitle = {
         const item = element.getElementsByTagName('figcaption')[0].innerHTML;
         let price;
 
-        if (!element.getElementsByTagName('figcaption')[0]) {
-            return false;
-        }
-
         if (this.currentTitle !== item) {
             this.currentTitle = item;
             price = this.currentPrice;

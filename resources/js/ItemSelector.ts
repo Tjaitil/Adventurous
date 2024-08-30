@@ -26,7 +26,8 @@ function select(event) {
             break;
         case 'Tavern':
             inputHandler.currentBuildingModule.default.getHealingAmount(
-                element.querySelectorAll('figcaption')[0].innerHTML,
+                element.querySelectorAll('figcaption .tooltip_item')[0]
+                    .innerHTML,
             );
             break;
         default:
@@ -126,7 +127,8 @@ export class ItemSelector {
                 break;
             case 'Tavern':
                 inputHandler.currentBuildingModule.default.getHealingAmount(
-                    element.querySelectorAll('figcaption')[0].innerHTML,
+                    element.querySelectorAll('figcaption .tooltip_item')[0]
+                        .innerHTML,
                 );
                 break;
             default:
@@ -159,7 +161,7 @@ export class ItemSelector {
             GameLogger.addMessage('Please select a valid item', true);
         }
         const name = this.selectedWrapper
-            .querySelectorAll('figcaption')[0]
+            .querySelectorAll('figcaption .tooltip_item')[0]
             .innerHTML.toLowerCase()
             .trim();
         // Is input visible?
@@ -270,7 +272,7 @@ export function selectedCheck(amount_r = true) {
     const div = document.getElementById('selected');
     const item = document
         .getElementById('selected')
-        .querySelectorAll('figcaption')[0]
+        .querySelectorAll('figcaption .tooltip_item')[0]
         .innerHTML.toLowerCase()
         .trim();
     // amount_r is variable that opens up for checking only item or item and amount
