@@ -31,8 +31,9 @@ export class ItemElement {
             const span = document.createElement('span');
             span.classList.add('item_amount');
             this.element.appendChild(span);
-            this.element.querySelectorAll('figcaption')[0].innerHTML =
-                jsUcWords(initalItem.name);
+            this.element.querySelectorAll(
+                'figcaption .tooltip_item',
+            )[0].innerHTML = jsUcWords(initalItem.name);
             this.element.querySelectorAll('img')[0].src =
                 'images/' + initalItem.name + '.png';
             this.element.querySelectorAll('.item_amount')[0].innerHTML =
@@ -52,7 +53,7 @@ export class ItemElement {
                 this.element.querySelectorAll('.item_amount')[0]
             );
             this.nameElement = <HTMLElement>(
-                this.element.querySelectorAll('figcaption')[0]
+                this.element.querySelectorAll('figcaption .tooltip_item')[0]
             );
         }
 
@@ -79,7 +80,7 @@ export class ItemElement {
 
     get item(): string {
         return this.element
-            .querySelectorAll('figcaption')[0]
+            .querySelectorAll('figcaption .tooltip_item')[0]
             .innerText.trim()
             .toLowerCase();
     }

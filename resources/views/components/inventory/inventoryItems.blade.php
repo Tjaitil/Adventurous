@@ -2,7 +2,7 @@
 <div class="inventory_item">
     <figure>
         <img src="{{ asset('images/' . $key->item . '.png') }}" />
-        <figcaption class="tooltip"> {{ ucwords($key->item) }}
+        <figcaption class="tooltip"><span class="tooltip_item">{{ ucwords($key->item) }}</span>
             @if ($key->amount)
                 <br> x {{ $key->amount }}
             @endif

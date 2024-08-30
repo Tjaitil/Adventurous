@@ -106,8 +106,8 @@ const stockpileModule = {
             }
             const itemElement = array.find(
                 element =>
-                    element.querySelectorAll('figcaption')[0].innerHTML ===
-                    itemName,
+                    element.querySelectorAll('figcaption .tooltip_item')[0]
+                        .innerHTML === itemName,
             );
             amount = parseInt(
                 itemElement.querySelectorAll('.item_amount')[0].innerHTML,
@@ -156,7 +156,8 @@ const stockpileModule = {
         } else {
             document.getElementById('news_content').appendChild(menu);
         }
-        const item = element.getElementsByTagName('figcaption')[0].innerHTML;
+        const item = element?.querySelectorAll('figcaption .tooltip_item')[0]
+            .innerHTML;
         // Insert item name at the first li
         document.getElementById('stck-current-item').innerHTML = item;
         menu.style.visibility = 'visible';
