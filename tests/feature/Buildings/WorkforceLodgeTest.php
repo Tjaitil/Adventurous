@@ -35,13 +35,13 @@ class WorkforceLodgeTest extends TestCase
     /**
      * @dataProvider profiencyProvider
      */
-    public function test_upgrade_efficiency(string $profiency, int $level): void
+    public function test_upgrade_efficiency(string $profiency, int $efficiency_level): void
     {
         $this->insertCurrencyToInventory($this->RandomUser, 100000);
-        $LevelData = LevelData::where('max_efficiency_level', $level)
+        $LevelData = LevelData::where('max_efficiency_level', $efficiency_level)
             ->first();
 
-        $LevelDataUnder = LevelData::where('max_efficiency_level', $level - 1)
+        $LevelDataUnder = LevelData::where('max_efficiency_level', $efficiency_level - 1)
             ->first();
 
         if ($profiency === 'farmer') {
@@ -70,11 +70,11 @@ class WorkforceLodgeTest extends TestCase
     /**
      * @dataProvider profiencyProvider
      */
-    public function test_cannot_upgrade_efficiency_when_reached_max_efficiency_level(string $profiency, int $level): void
+    public function test_cannot_upgrade_efficiency_when_reached_max_efficiency_level(string $profiency, int $efficiency_level): void
     {
         $this->insertCurrencyToInventory($this->RandomUser, 100000);
 
-        $LevelData = LevelData::where('max_efficiency_level', $level)->first();
+        $LevelData = LevelData::where('max_efficiency_level', $efficiency_level)->first();
 
         if ($profiency === 'farmer') {
             UserLevels::where('username', $this->RandomUser->username)

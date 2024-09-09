@@ -35,28 +35,28 @@ class WorldLoaderTest extends TestCase
     {
 
         return [
-            ['destination' => 'towhar'],
-            ['destination' => 'golbak'],
-            ['destination' => 'krasnur'],
-            ['destination' => 'ter'],
-            ['destination' => 'fansalplains'],
-            ['destination' => 'cruendo'],
-            ['destination' => 'snerpiir'],
-            ['destination' => 'fagna'],
-            ['destination' => 'tasnobil'],
-            ['destination' => 'khanz'],
+            'towhar' => ['destination' => 'towhar'],
+            'golbak' => ['destination' => 'golbak'],
+            'krasnur' => ['destination' => 'krasnur'],
+            'ter' => ['destination' => 'ter'],
+            'fansalplains' => ['destination' => 'fansalplains'],
+            'cruendo' => ['destination' => 'cruendo'],
+            'snerpiir' => ['destination' => 'snerpiir'],
+            'fagna' => ['destination' => 'fagna'],
+            'tasnobil' => ['destination' => 'tasnobil'],
+            'khanz' => ['destination' => 'khanz'],
         ];
     }
 
     /**
      * @dataProvider getDestination
      */
-    public function test_change_map_with_new_destination($data): void
+    public function test_change_map_with_new_destination(string $destination): void
     {
         $User = User::find(1);
         $response = $this->actingAs($User)->post('/worldloader/change', [
             'is_new_map_string' => true,
-            'new_destination' => $data,
+            'new_destination' => $destination,
         ]);
 
         $json = $response->json();
