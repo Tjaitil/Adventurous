@@ -34,6 +34,7 @@ export default defineConfig({
                 'resources/css/app.css',
                 'resources/js/app.js',
                 'resources/js/ui/web/index.ts',
+                'resources/js/ui/main.ts',
                 'resources/js/clientScripts/inventory.ts',
                 'resources/js/backgroundScroller.ts',
                 'resources/js/clientScripts/sidebar.ts',
