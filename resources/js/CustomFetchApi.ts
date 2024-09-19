@@ -6,7 +6,10 @@ export class CustomFetchApi extends BaseAxios {
         return BaseAxios.get<T>(url);
     }
 
-    public static async post<T>(url: string, data: Object): Promise<T> {
+    public static async post<T, K extends object = object>(
+        url: string,
+        data: K,
+    ): Promise<T> {
         return BaseAxios.post<T>(url, data);
     }
 }
