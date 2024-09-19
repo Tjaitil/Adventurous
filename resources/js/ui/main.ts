@@ -1,10 +1,11 @@
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import AppVue from './components/App.vue';
-
 import SkillInfoList from './components/skills/SkillInfoList.vue';
 import { createI18n } from 'vue-i18n';
 import { getLanguageBundle } from './localeSetup';
+import 'baks-components-vue/dist/style.css';
+import '../../css/overwrite.css';
 
 const i18n = createI18n({
     locale: 'en',
