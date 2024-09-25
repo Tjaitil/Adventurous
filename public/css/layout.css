@@ -864,3 +864,20 @@ input::-webkit-inner-spin-button {
 .dark-bg {
     background-color: var(--layoutBgColorDark);
 }
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+.loading-icon {
+    height: 32px;
+    width: auto;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    will-change: filter;
+    transition: filter 300ms;
+    animation: rotate 1.3s linear infinite;
+}
