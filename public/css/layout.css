@@ -477,7 +477,6 @@ button:focus {
     margin-bottom: 15px;
 }
 #news_content_side_panel {
-    flex: 1 0 25%;
     height: auto;
     box-sizing: border-box;
 }
@@ -496,7 +495,6 @@ button:focus {
     filter: brightness(var(--transitionDuration));
 }
 #news_content_main_content {
-    width: 72%;
     box-sizing: border-box;
     position: relative;
     top: -20px;

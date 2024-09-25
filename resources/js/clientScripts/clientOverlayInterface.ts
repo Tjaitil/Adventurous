@@ -27,14 +27,20 @@ export class ClientOverlayInterface {
     }
 
     public static loadingScreen() {
-        const h = document.createElement('h1');
-        h.innerText = 'Loading...';
-        h.classList.add('mt-5');
-        h.id = 'loading_message';
-        this.show(h, false);
+        const div = document.createElement('div');
+
+        const img = document.createElement('img');
+
+        img.src = 'images/loading.png';
+        img.classList.add('loading-icon');
+        img.classList.add('mx-auto');
+        div.appendChild(img);
+        div.classList.add('mt-5');
+        div.id = 'loading_message';
+        this.show(div, false);
     }
 
-    public static show(content: string | Object, sidebar = true) {
+    public static show(content: string | HTMLElement, sidebar = true) {
         this.wrapper.innerHTML = '';
         this.outerContainer.style.top =
             viewport.elements.background.offsetTop + 'px';
@@ -42,14 +48,7 @@ export class ClientOverlayInterface {
         this.outerContainer.style.visibility = 'visible';
 
         if (typeof content === 'object') {
-            const element = content as HTMLElement;
-            if (element.innerText.indexOf('Loading') != -1) {
-                this.wrapper.appendChild(element);
-            } else if (Object.keys(element).length > 1) {
-                for (let i = 0; i < Object.keys(element).length; i++) {
-                    this.wrapper.appendChild(element[i]);
-                }
-            }
+            this.wrapper?.appendChild(<HTMLElement>content);
         } else {
             this.wrapper.innerHTML = '' + content;
         }
@@ -82,7 +81,7 @@ export class ClientOverlayInterface {
         }
 
         this.wrapper.innerHTML = '';
-        this.sidePanel.innerHTML = '';
+        this.sidePanel?.classList.add('hidden');
 
         this.outerContainer.style.visibility = 'hidden';
         this.shadowContainer.style.visibility = 'hidden';
@@ -100,10 +99,8 @@ export class ClientOverlayInterface {
     }
 
     public static createSidePanelTabs() {
-        if (this.wrapper.style.width === '100%') {
-            this.wrapper.style.width = '75%';
-            this.sidePanel.style.width = '25%';
-            this.sidePanel.style.display = '';
+        if (this.sidePanel?.classList.contains('hidden')) {
+            this.sidePanel.classList.remove('hidden');
         }
         this.sidePanel.innerHTML = '';
         const divChildren = this.wrapper.children;
@@ -149,7 +146,6 @@ export class ClientOverlayInterface {
         }
         if (buttonCount < 2) {
             // Remove padding
-            this.wrapper.style.paddingRight = '0px';
             // If first div is persons then show second div ([2] in the child tree, [0] is title, [1] is persons div)
 
             // if (this.wrapper.querySelectorAll("div")[0].id == "persons") {
@@ -167,14 +163,9 @@ export class ClientOverlayInterface {
                 40 +
                 'px';
             this.wrapper.querySelectorAll('div')[0].getBoundingClientRect();
-            this.wrapper.style.width = '100%';
-            this.sidePanel.style.display = 'none';
+            this.sidePanel?.classList.add('hidden');
         } else {
             this.addEventSidePanelTab();
-
-            if (this.wrapper.style.paddingRight === '0') {
-                this.wrapper.style.paddingRight = '8px';
-            }
         }
     }
 
