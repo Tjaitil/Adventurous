@@ -6,6 +6,7 @@ import { createI18n } from 'vue-i18n';
 import { getLanguageBundle } from './localeSetup';
 import 'baks-components-vue/dist/style.css';
 import '../../css/overwrite.css';
+import InventoryContainer from './components/Inventory/InventoryContainer.vue';
 
 const i18n = createI18n({
     locale: 'en',
@@ -15,6 +16,7 @@ const i18n = createI18n({
 
 const components = {
     SkillInfoList,
+    InventoryContainer,
 };
 
 document.querySelectorAll('.vue-app').forEach(element => {
