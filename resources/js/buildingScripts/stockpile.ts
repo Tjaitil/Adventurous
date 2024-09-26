@@ -1,25 +1,18 @@
 import { AdvApi } from './../AdvApi';
 import { ClientOverlayInterface } from '../clientScripts/clientOverlayInterface';
-import { Inventory } from '../clientScripts/inventory';
 import { itemTitle } from '../utilities/itemTitle';
+import { useInventoryStore } from '@/ui/stores/InventoryStore';
 
 const stockpileModule = {
     toggled: false,
     addEvent() {
         this.toggled = true;
-
-        Inventory.items.forEach(element =>
-            element.addEventListener('click', e => this.show_menu(e)),
-        );
-        itemTitle.removeTitleEvent();
+        useInventoryStore().setInventoryItemEvent('stockpileMenu');
     },
     removeEvent() {
         this.toggled = false;
 
-        Inventory.items.forEach(element =>
-            element.removeEventListener('click', e => this.show_menu(e)),
-        );
-        itemTitle.addTitleEvent();
+        useInventoryStore().setInventoryItemEvent(null);
     },
     menuListItemInputIndex: 2,
     init() {
@@ -127,18 +120,16 @@ const stockpileModule = {
         };
 
         AdvApi.post<UpdateStockpileRequest>('/stockpile/update', data)
-            .then(res => {
+            .then(async res => {
                 document.getElementById('stockpile-list').innerHTML =
                     res.html.stockpile;
                 document.getElementById('stck_menu').style.visibility =
                     'hidden';
 
                 stckMenuInput.value = '';
-                Inventory.update().then(() => {
-                    itemTitle.removeTitleEvent();
-                    this.addShowMenuEvent();
-                    this.addEvent();
-                });
+
+                useInventoryStore().setShouldUpdateInventory(true);
+                this.addShowMenuEvent();
 
                 ClientOverlayInterface.adjustWrapperHeight();
             })
@@ -150,14 +141,16 @@ const stockpileModule = {
         const element = (event.target as HTMLElement).closest('div');
         const menu = document.getElementById('stck_menu');
         const list = document.getElementById('stck-menu-option-list');
-
+        let item;
         if (element.className == 'inventory_item') {
+            item = element?.querySelectorAll('figcaption .tooltip_item')[0]
+                .innerHTML;
             document.getElementById('inventory').appendChild(menu);
         } else {
             document.getElementById('news_content').appendChild(menu);
+            item = element?.querySelectorAll('figcaption')[0].innerHTML;
         }
 
-        const item = element?.querySelectorAll('figcaption')[0].innerHTML;
         // Insert item name at the first li
         document.getElementById('stck-current-item').innerHTML = item;
         menu.style.visibility = 'visible';
@@ -199,9 +192,9 @@ const stockpileModule = {
                 element.offsetTop + 150 >
                 document.getElementById('stockpile').offsetHeight
             ) {
-                menuTop = element.offsetTop - 70;
+                menuTop = element.offsetTop - 40;
             } else {
-                menuTop = element.offsetTop + 85;
+                menuTop = element.offsetTop - 25;
             }
         }
 

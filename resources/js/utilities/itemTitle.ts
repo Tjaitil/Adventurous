@@ -78,8 +78,11 @@ export const itemTitle = {
         } else {
             this.currentPrice = itemPrices.findItem(item);
         }
+        const itemName = element?.querySelectorAll(
+            'figcaption .tooltip_item',
+        )[0].innerHTML;
         document.getElementById('tooltip_item_price').innerHTML =
-            itemPrices.findItem(item) + '';
+            itemPrices.findItem(itemName) + '';
 
         const menu = document.getElementById('item_tooltip');
         if (

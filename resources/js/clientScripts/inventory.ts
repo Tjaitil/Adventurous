@@ -6,6 +6,7 @@ import { getClientPageTitle } from '../utilities/getClientPageTitle';
 import { AdvApi } from '../AdvApi';
 import { CustomFetchApi } from '../CustomFetchApi';
 import createHTMLNode from '../utilities/createHTMLNode';
+import { useInventoryStore } from '@/ui/stores/InventoryStore';
 
 /**
  * @deprecated
@@ -88,10 +89,13 @@ export function checkInventoryStatus() {
     return status;
 }
 
+/**
+ * @deprecated Use inventory store instead
+ */
 export class Inventory {
     private static itemsElements: Element[];
     private static itemsAmount: number;
-    private static isInited: boolean = false;
+    private static isInited: boolean = true;
 
     static init() {
         if (this.isInited) return;
@@ -101,29 +105,12 @@ export class Inventory {
     }
 
     static async update() {
-        return CustomFetchApi.get<response>('/inventory').then(data => {
-            document
-                .getElementById('inventory')
-                .replaceWith(createHTMLNode(data['html']['inventory']));
-            this.itemsElements = [
-                ...document.querySelectorAll('.inventory_item'),
-            ];
-            this.itemsAmount = this.itemsElements.length;
-            this.isFull()
-                ? this.styleSpaceIndicator('full')
-                : this.styleSpaceIndicator('');
-
-            itemTitle.addTitleEvent();
-            itemPrices.get();
-
-            if (ItemSelector.isEventSet) {
-                ItemSelector.addSelectEventToInventory();
-            }
-        });
+        useInventoryStore().setShouldUpdateInventory(true);
+        ItemSelector.isEventSet = false;
     }
 
     static isFull() {
-        return this.itemsAmount === 18;
+        return useInventoryStore().isInventoryFull;
     }
 
     static styleSpaceIndicator(status: 'full' | '') {
@@ -153,7 +140,6 @@ export const itemPrices = {
     prices: <ItemPrice[]>[],
     findItem(itemName) {
         const item = itemName.toLowerCase();
-
         const array = this.prices.filter(element => {
             if (element.name === item) return element.store_value;
         });

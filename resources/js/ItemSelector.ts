@@ -1,6 +1,7 @@
 import { GameLogger } from './utilities/GameLogger';
 import { inputHandler } from './clientScripts/inputHandler';
 import { itemTitle } from './utilities/itemTitle';
+import { useInventoryStore } from './ui/stores/InventoryStore';
 
 /**
  *
@@ -14,16 +15,22 @@ function select(event) {
     figure.children[0].style.width = '50px';
     figure.children[1].style.visibility = 'hidden';
 
+    const item = element
+        .querySelectorAll('figcaption .tooltip_item')[0]
+        .innerHTML.toLowerCase()
+        .trim();
+
+    useInventoryStore().setSelectedItem(item);
     const parent = document.getElementById('selected');
+    if (parent === null) {
+        return;
+    }
     parent.innerHTML = '';
     parent.appendChild(figure);
     const pageTitle = <HTMLElement>(
         document.getElementsByClassName('page_title')[0]
     );
     switch (pageTitle.innerText) {
-        case 'Armory':
-            inputHandler.currentBuildingModule.default.toggleOption();
-            break;
         case 'Tavern':
             inputHandler.currentBuildingModule.default.getHealingAmount(
                 element.querySelectorAll('figcaption .tooltip_item')[0]
@@ -73,28 +80,13 @@ export class ItemSelector {
         return this.eventStatus;
     }
 
+    public static set isEventSet(value: boolean) {
+        this.eventStatus = value;
+    }
+
     public static addSelectEventToInventory() {
         this.eventStatus = true;
-        const figures = document
-            .getElementById('inventory')
-            .querySelectorAll('figure');
-        figures.forEach(element => {
-            const page_title = <HTMLElement>(
-                document.getElementsByClassName('page_title')[0]
-            );
-            this.page = page_title.innerText;
-            if (this.page === 'Market') {
-                // element.addEventListener("click", select_i);
-            } else if (this.page === 'Merchant') {
-                element.addEventListener('click', event =>
-                    inputHandler.currentBuildingModule.default.selectTrade(
-                        event,
-                    ),
-                );
-            } else {
-                element.addEventListener('click', event => select(event));
-            }
-        });
+        useInventoryStore().setInventoryItemEvent('selectItem');
     }
 
     public static removeSelectEventFromInventory() {
