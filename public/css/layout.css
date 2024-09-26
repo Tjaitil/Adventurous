@@ -148,8 +148,7 @@ h6 {
     margin-bottom: 1rem;
 }
 .se header,
-aside,
-#inventory {
+aside {
     color: var(--textcolor);
 }
 body img {
@@ -727,10 +726,6 @@ button:focus {
 }
 #all {
     width: 40%;
-}
-#inventory:hover {
-    visibility: visible;
-    color: white;
 }
 #selected {
     height: 56px;
