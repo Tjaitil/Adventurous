@@ -30,7 +30,9 @@
             <div id="inv_toggle_button_container">
                 <button id="inv_toggle_button">INV</button>
             </div>
-            @include('inventory')
+            <div class="vue-app">
+                <inventory-container />
+            </div>
             <x-items.itemTooltip />
             <div id="control" class="invisble absolute">
                 <button id="control_button"></button>

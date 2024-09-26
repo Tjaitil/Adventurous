@@ -13,8 +13,7 @@ class InventoryController extends Controller
 {
     public function __construct(
         private Inventory $inventory,
-    ) {
-    }
+    ) {}
 
     public function get(Request $request): JsonResponse
     {
@@ -25,6 +24,14 @@ class InventoryController extends Controller
             ->render();
 
         return (new AdvResponse)->addTemplate('inventory', $template)->toResponse($request);
+    }
+
+    public function getItems(): JsonResponse
+    {
+        $Inventory = Inventory::where('username', Auth::user()->username)
+            ->get();
+
+        return response()->json($Inventory);
     }
 
     public function getPrices(): JsonResponse

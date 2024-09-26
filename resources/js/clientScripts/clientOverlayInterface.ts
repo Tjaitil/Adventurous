@@ -90,12 +90,6 @@ export class ClientOverlayInterface {
         if (typeof Game.properties.inBuilding !== 'undefined') {
             Game.properties.inBuilding = false;
         }
-        if (selectItemEvent.selectItemStatus === true) {
-            selectItemEvent.removeSelectEvent();
-        }
-        if (itemTitle.status === false) {
-            itemTitle.addTitleEvent();
-        }
     }
 
     public static createSidePanelTabs() {

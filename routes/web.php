@@ -49,7 +49,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/world', [WorldLoaderController::class, 'loadWorld']);
     Route::post('/world/change', [WorldLoaderController::class, 'changeMap']);
 
-    Route::get('/inventory', [InventoryController::class, 'get']);
+    Route::get('/inventory/items', [InventoryController::class, 'getItems']);
     Route::get('/inventory/prices', [InventoryController::class, 'getPrices']);
 
     Route::post(('conversation/next'), [ConversationController::class, 'index']);
