@@ -11,4 +11,3 @@
 <baks-card variant="{{ $variant }}" {{ $attributes }}>
     {!! $slot !!}
 </baks-card>
-</div>
