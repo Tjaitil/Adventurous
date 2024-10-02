@@ -34,6 +34,7 @@ import InventoryItemWrapper from './InventoryItemWrapper.vue';
 import BaseLoading from '@/ui/components/base/BaseLoading.vue';
 import { useInventoryStore } from '@/ui/stores/InventoryStore';
 import { itemPrices } from '@/clientScripts/inventory';
+import { reportCatchError } from '@/base/ErrorHandler';
 
 const inventoryStore = useInventoryStore();
 
@@ -49,7 +50,7 @@ const getInventory = async () => {
         inventoryStore.setShouldUpdateInventory(false);
         itemPrices.get();
     } catch (e) {
-        return;
+        reportCatchError(e);
     }
 };
 getInventory();
