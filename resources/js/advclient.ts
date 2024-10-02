@@ -19,6 +19,7 @@ import { jsUcWords } from './utilities/uppercase';
 import { setUpTabList } from './utilities/tabs';
 import { AssetPaths } from './clientScripts/ImagePath';
 import { GetWorldResponse } from './types/Responses/WorldLoaderResponse';
+import { initErrorHandler } from './base/ErrorHandler';
 
 const CookieTicket = {
     checkCookieTicket(cookieNoob = 'getOut') {
@@ -298,6 +299,7 @@ export class Game {
     }
 
     public static setup() {
+        initErrorHandler();
         conversation.setup();
         setUpTabList();
 
