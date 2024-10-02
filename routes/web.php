@@ -12,6 +12,7 @@ use App\Http\Controllers\GameLoggerController;
 use App\Http\Controllers\HungerController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\LandingController;
+use App\Http\Controllers\LogController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MerchantController;
 use App\Http\Controllers\MineController;
@@ -135,6 +136,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/workforcelodge/efficiency/upgrade', [WorkforceLodgeController::class, 'upgradeEfficiency']);
 
     Route::post('/log', [GameLoggerController::class, 'log']);
+    Route::post('/log/error', [LogController::class, 'logFrontendError']);
 });
 
 Route::fallback(function () {
