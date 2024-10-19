@@ -19,7 +19,7 @@ import { jsUcWords } from './utilities/uppercase';
 import { setUpTabList } from './utilities/tabs';
 import { AssetPaths } from './clientScripts/ImagePath';
 import { GetWorldResponse } from './types/Responses/WorldLoaderResponse';
-import { initErrorHandler } from './base/ErrorHandler';
+import { initErrorHandler, reportCatchError } from './base/ErrorHandler';
 
 const CookieTicket = {
     checkCookieTicket(cookieNoob = 'getOut') {
@@ -138,12 +138,11 @@ export class Game {
 
     public static async getWorld() {
         this.pauseWorld();
-
-        await CustomFetchApi.get<GetWorldResponse>('/worldloader').then(
-            response => {
+        await CustomFetchApi.get<GetWorldResponse>('/worldloader')
+            .then(response => {
                 this.loadWorld(response);
-            },
-        );
+            })
+            .catch(error => reportCatchError(error));
     }
 
     public static async setWorld(parameters: loadWorldParamters = {}) {
@@ -159,12 +158,11 @@ export class Game {
             data.is_new_map_string = true;
         }
 
-        await CustomFetchApi.post<GetWorldResponse>(
-            '/worldloader/change',
-            data,
-        ).then(async response => {
-            await this.loadWorld(response, parameters);
-        });
+        await CustomFetchApi.post<GetWorldResponse>('/worldloader/change', data)
+            .then(async response => {
+                await this.loadWorld(response, parameters);
+            })
+            .catch(error => reportCatchError(error));
     }
 
     private static pauseWorld() {
