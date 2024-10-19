@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Enums\GameMaps;
-use App\Http\Responses\AdvResponse;
 use App\Services\SessionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -42,8 +42,6 @@ class WorldLoaderController extends Controller
      */
     public function changeMap(Request $request): JsonResponse
     {
-        $Response = new AdvResponse();
-
         $UserData = $this->sessionService->getUserData();
         $is_new_map_string = $request->boolean('is_new_map_string');
         $new_destination = null;
@@ -62,7 +60,11 @@ class WorldLoaderController extends Controller
 
             // If match isn't true, it means that the destination does not exists
             if ($match !== true) {
-                return $Response->addMessage("The place you are trying to reach doesn't exists")->setStatus(422)->toResponse($request);
+                Log::error('Map not found: '.$match, ['user_id' => Auth::user()->id]);
+
+                return response()->json([
+                    'message' => 'Could not load map',
+                ], 422);
             }
         } else {
             $newMap = $request->input('new_map');
@@ -70,12 +72,17 @@ class WorldLoaderController extends Controller
             // ... than 1 difference without interference
             if ((abs($newMap['newX']) > 1 || abs($newMap['newY']) > 1)) {
                 // Throw error
-                return $Response->setStatus(400)->addMessage('You are trying to travel to far')->toResponse($request);
+                return response()->json([
+                    'message' => 'You are trying to travel to far',
+                ], 400);
             }
             // If both newX and newY is 0 then the player is trying to access the same place they are.
             elseif ((abs($newMap['newX']) === 0 && abs($newMap['newY']) === 0)) {
                 // Throw error
-                return $Response->setStatus(400)->addMessage('You are trying to travel to far')->toResponse($request);
+
+                return response()->json([
+                    'message' => 'You are trying to travel to the same place',
+                ], 400);
             }
 
             $split_array = explode('.', $UserData->map_location);
@@ -91,7 +98,11 @@ class WorldLoaderController extends Controller
             $this->map = $newMap = \implode('.', $split_array);
 
             if (! in_array($newMap, GameMaps::getMaps())) {
-                return $Response->addMessage("The place you are trying to reach doesn't exists")->setStatus(422)->toResponse($request);
+                Log::error('Map not found: '.$newMap, ['user_id' => Auth::user()->id]);
+
+                return response()->json([
+                    'message' => 'Failed to load map',
+                ], 422);
             }
 
             $new_destination = GameMaps::locationMapping()[$newMap] ?? null;
@@ -107,10 +118,12 @@ class WorldLoaderController extends Controller
 
         $result = $this->getWorldData();
         if ($result === false) {
-            return $Response->addMessage('File not found')->setStatus(422)->toResponse($request);
+            Log::error('File not found: '.$this->map.'.json', ['user_id' => Auth::user()->id]);
+
+            return response()->json([], 422);
         }
 
-        return $Response->setData($result)->setStatus(200)->toResponse($request);
+        return response()->json($result, 200);
     }
 
     public function getWorldData()
@@ -156,7 +169,7 @@ class WorldLoaderController extends Controller
 
         $file = Storage::disk('gamedata')->get($this->map.'.json');
         if (is_null($file)) {
-            Log::alert('File not found: '.$this->map.'.json');
+            Log::error('File not found: '.$this->map.'.json', ['user_id' => Auth::user()->id]);
 
             return false;
         }
