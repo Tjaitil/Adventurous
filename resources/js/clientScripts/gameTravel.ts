@@ -15,21 +15,21 @@ export const gameTravel: IgameTravel = {
         canvasTextHeader.setDraw('Travelling in 15', 15);
         if (tutorial.onGoing) tutorial.exitTutorial();
 
-        let startPointType = false;
+        let hasStartPointType = false;
 
         // If character is sailor then draw player at dock
         if (characterName.indexOf('sailor')) {
-            startPointType = true;
+            hasStartPointType = true;
         } else {
-            startPointType = false;
+            hasStartPointType = false;
         }
 
         setTimeout(
             () =>
                 Game.setWorld({
-                    method: 'changeMap',
+                    method: 'travel',
                     newDestination: destination,
-                    startPointType,
+                    hasStartPointType,
                 }),
             16000,
         );
