@@ -1,10 +1,9 @@
 import { WorldMapData } from '../Advclient';
+import { advAPIResponse } from './AdvResponse';
 
-export interface GetWorldResponse {
-    data: {
-        current_map: string;
-        changed_location: string;
-        map_data: WorldMapData;
-        events: [];
-    };
-}
+export type GetWorldResponse = advAPIResponse<{
+    current_map: string;
+    changed_location: string;
+    map_data: WorldMapData;
+    events: [];
+}>;
