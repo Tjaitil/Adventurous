@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Enums\GameMaps;
+use App\Enums\WorldChangeType;
 use App\Services\SessionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use UnhandledMatchError;
 
 class WorldLoaderController extends Controller
 {
@@ -43,10 +45,9 @@ class WorldLoaderController extends Controller
     public function changeMap(Request $request): JsonResponse
     {
         $UserData = $this->sessionService->getUserData();
-        $is_new_map_string = $request->boolean('is_new_map_string');
-        $new_destination = null;
-        if ($is_new_map_string === true) {
-            $new_destination = $request->input('new_destination');
+        $method = $request->enum('method', WorldChangeType::class);
+        $new_destination = $request->input('new_destination');
+        if ($method === WorldChangeType::TRAVEL) {
 
             // Find the map in the index
             $match = false;
@@ -66,7 +67,7 @@ class WorldLoaderController extends Controller
                     'message' => 'Could not load map',
                 ], 422);
             }
-        } else {
+        } elseif ($method === WorldChangeType::NEXT_MAP) {
             $newMap = $request->input('new_map');
             // Check wether or not the difference is greater than 1. There should not be possible in normal game state to travel more..
             // ... than 1 difference without interference
@@ -108,6 +109,15 @@ class WorldLoaderController extends Controller
             $new_destination = GameMaps::locationMapping()[$newMap] ?? null;
 
             $this->map = $newMap;
+        } else {
+            $respawnMap = match ($UserData->map_location) {
+                '4.2' => '4.3',
+                '6.2' => '5.2',
+                '8.3' => '8.2',
+                '3.10' => '4.9',
+                default => throw new UnhandledMatchError,
+            };
+            $this->map = $respawnMap;
         }
 
         $UserData->map_location = $this->map;
