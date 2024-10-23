@@ -5,7 +5,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 if (! function_exists('advResponse')) {
     /**
-     * @param  array<string, mixed>  $data
+     * @param  array<string, mixed>  $data  Data key of the response
      * @param  int  $status
      * @param  array<string, mixed>  $headers
      * @return \App\Http\Responses\AdvResponse
