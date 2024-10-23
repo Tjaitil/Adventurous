@@ -1,4 +1,3 @@
-import { SetWorldRequest } from './types/requests/WorldLoaderRequests';
 import { ajaxP } from './ajax';
 import { loadingCanvas } from './clientScripts/canvasText';
 import { ClientOverlayInterface } from './clientScripts/clientOverlayInterface';
@@ -14,7 +13,7 @@ import { pauseManager } from './clientScripts/pause';
 import { tutorial } from './clientScripts/tutorial';
 import viewport from './clientScripts/viewport';
 import { CustomFetchApi } from './CustomFetchApi';
-import { GameProperties, loadWorldParamters } from './types/Advclient';
+import { GameProperties, loadWorldParameters } from './types/Advclient';
 import { jsUcWords } from './utilities/uppercase';
 import { setUpTabList } from './utilities/tabs';
 import { AssetPaths } from './clientScripts/ImagePath';
@@ -145,17 +144,24 @@ export class Game {
             .catch(error => reportCatchError(error));
     }
 
-    public static async setWorld(parameters: loadWorldParamters = {}) {
+    public static async setWorld(parameters: loadWorldParameters) {
         this.pauseWorld();
 
-        const data: SetWorldRequest = {
-            is_new_map_string: false,
-            new_map: parameters.newMap,
-            new_destination: parameters.newDestination,
-        };
-
-        if (parameters.newDestination !== undefined) {
-            data.is_new_map_string = true;
+        let data;
+        if (parameters.method === 'nextMap') {
+            data = {
+                method: parameters.method,
+                new_map: parameters.newMap,
+            };
+        } else if (parameters.method === 'travel') {
+            data = {
+                method: parameters.method,
+                new_destination: parameters.newDestination,
+            };
+        } else {
+            data = {
+                method: parameters.method,
+            };
         }
 
         await CustomFetchApi.post<GetWorldResponse>('/worldloader/change', data)
@@ -178,7 +184,7 @@ export class Game {
 
     public static async loadWorld(
         response: GetWorldResponse,
-        parameters: loadWorldParamters = {},
+        parameters?: loadWorldParameters,
     ) {
         const data = response.data;
         Game.properties.currentMap = data.current_map;
@@ -197,14 +203,14 @@ export class Game {
         const startPoints = data.map_data.objects.filter(findStartPoint);
         GamePieces.objects = GamePieces.objects.filter(removeStartPoint);
 
-        if (parameters.newxBase) {
+        if (parameters?.method === 'nextMap' && parameters.newxBase != null) {
             // Legge til xbase i JSON map filene
             Game.properties.xbase = parameters.newxBase;
         } else if (startPoints.length > 0) {
             Game.properties.xbase = startPoints[0].x;
         }
 
-        if (parameters.newyBase) {
+        if (parameters?.method === 'nextMap' && parameters.newxBase !== null) {
             // Legge til ybase i JSON map filene
             Game.properties.ybase = parameters.newyBase;
         } else if (startPoints.length > 0) {
@@ -226,21 +232,20 @@ export class Game {
             data.map_data,
         );
         viewport.checkViewportGamePieces(true);
-        // viewport.init();
 
         Map.load(Game.properties.currentMap);
 
         setTimeout(() => {
             loadingCanvas.loadingAnimationTracker.start('open');
             Game.startGame();
-            if (
-                parameters.method !== 'changeMap' &&
-                Game.properties.currentMap == '9.9'
-            ) {
-                if (Game.properties.currentMap == '9.9') {
-                    tutorial.startTutorial();
-                }
-            }
+            // if (
+            //     parameters.method !== 'changeMap' &&
+            //     Game.properties.currentMap == '9.9'
+            // ) {
+            //     if (Game.properties.currentMap == '9.9') {
+            //         tutorial.startTutorial();
+            //     }
+            // }
         }, 3000);
     }
 
@@ -288,10 +293,10 @@ export class Game {
             GamePieces.player.travel = true;
 
             this.setWorld({
-                newxBase: newxBase,
-                newyBase: newyBase,
-                method: 'changeMap',
-                newMap: { newX, newY },
+                method: 'nextMap',
+                newMap: { newX: newX, newY: newY },
+                newxBase,
+                newyBase,
             });
         }
     }

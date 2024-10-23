@@ -50,15 +50,17 @@ class UserData extends Model
 {
     public $timestamps = false;
 
+    public $guarded = [];
+
     /**
      * @var array<string, string>
      */
     protected $casts =
-    [
-        'frajrite_items' => 'boolean',
-        'wujkin_items' => 'boolean',
-        'arrive_time' => 'datetime',
-    ];
+        [
+            'frajrite_items' => 'boolean',
+            'wujkin_items' => 'boolean',
+            'arrive_time' => 'datetime',
+        ];
 
     public function __construct()
     {

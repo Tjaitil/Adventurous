@@ -1,8 +1,8 @@
 import { LevelUpSkill } from '../Skill';
-export interface advAPIResponse {
+export interface advAPIResponse<T = object> {
     gameMessage?: string[];
     errorGameMessage?: string[];
-    data?: {};
+    data: T;
     levelUp?: LevelUpSkill[];
     html?: {
         [key: string]: string;
