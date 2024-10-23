@@ -20,17 +20,30 @@ export interface GameProperties {
     delta: number;
 }
 
-export interface loadWorldParamters {
-    newxBase?: number;
-    newyBase?: number;
+export type loadWorldParameters =
+    | RespawnLoadWorld
+    | TravelLoadWorld
+    | MovemenetNavigationWorldParameters;
+
+export type RespawnLoadWorld = {
+    method: 'respawn';
+};
+
+export type TravelLoadWorld = {
+    method: 'travel';
+    newDestination: string;
+    hasStartPointType: boolean;
+};
+
+export type MovemenetNavigationWorldParameters = {
+    method: 'nextMap';
     newMap?: {
         newX: number;
         newY: number;
     };
-    newDestination?: string;
-    method?: 'changeMap';
-    startPointType?: boolean;
-}
+    newxBase: number;
+    newyBase: number;
+};
 
 export interface WorldMapData {
     buildings: Building[];
