@@ -2,6 +2,7 @@
 
 namespace App\Http\Responses;
 
+use App\Enums\GameEvents;
 use App\Enums\GameLogTypes;
 use App\Traits\GameLogger;
 use Illuminate\Contracts\Support\Responsable;
@@ -18,13 +19,21 @@ class AdvResponse implements Responsable
     }
 
     /**
+     * @var array<string|int, mixed>
+     */
+    private array $data = [];
+
+    /**
+     * @param  array<string, mixed>  $data  Data key in the response
+     *
      * @see https://wendelladriel.com/blog/standard-api-responses-with-laravel-responsables All credit
      */
     public function __construct(
-        private array $data = [],
+        array $data = [],
         private int $code = Response::HTTP_OK,
         private array $headers = []
     ) {
+        $this->data['data'] = $data;
     }
 
     public function addTemplate(string $index, string $template): self
@@ -43,7 +52,7 @@ class AdvResponse implements Responsable
 
     public function setData(array $data): self
     {
-        $this->data = array_merge($this->data, $data);
+        $this->data['data'] = array_merge($this->data['data'], $data);
 
         return $this;
     }
@@ -98,9 +107,9 @@ class AdvResponse implements Responsable
     }
 
     /**
-     * @param  value-of<\App\Enums\GameEvents>  $event
+     * @param  value-of<\App\Enums\GameEvents>|\App\Enums\GameEvents  $event
      */
-    public function addEvent(string $event): self
+    public function addEvent(string|GameEvents $event): self
     {
         $this->data['events'][] = $event;
 
