@@ -1,5 +1,6 @@
 import { AssetPaths } from '@/clientScripts/ImagePath';
 import { addModuleTester } from '@/devtools/ModuleTester';
+import { GameLog } from '@/types/GameLog';
 import axios from 'axios';
 
 export enum commonMessages {
@@ -17,7 +18,7 @@ export class GameLogger {
         shouldLogToApi = false,
     ) {
         this.addMessage(
-            { text: message, type: GameLogTypes.ERROR },
+            { message: message, type: GameLogTypes.ERROR },
             instantLog,
             shouldLogToApi,
         );
@@ -29,7 +30,7 @@ export class GameLogger {
         shouldLogToApi = false,
     ) {
         this.addMessage(
-            { text: message, type: GameLogTypes.SUCCESS },
+            { message: message, type: GameLogTypes.SUCCESS },
             instantLog,
             shouldLogToApi,
         );
@@ -41,7 +42,7 @@ export class GameLogger {
         shouldLogToApi = false,
     ) {
         this.addMessage(
-            { text: message, type: GameLogTypes.WARNING },
+            { message: message, type: GameLogTypes.WARNING },
             instantLog,
             shouldLogToApi,
         );
@@ -53,7 +54,7 @@ export class GameLogger {
         shouldLogToApi = false,
     ) {
         this.addMessage(
-            { text: message, type: GameLogTypes.INFO },
+            { message: message, type: GameLogTypes.INFO },
             instantLog,
             shouldLogToApi,
         );
@@ -68,11 +69,12 @@ export class GameLogger {
         instantLog = false,
         shouldLogToApi = false,
     ) {
+        console.log(message);
         if (typeof message !== 'string') {
             this.messages.push(message);
         } else {
             this.messages.push({
-                text: message,
+                message: message,
                 type: GameLogTypes.INFO,
             });
         }
@@ -138,7 +140,7 @@ export class GameLogger {
             message.timestamp = time;
         }
 
-        td.innerHTML = message.timestamp + message.text;
+        td.innerHTML = message.timestamp + message.message;
         const tr = document.createElement('TR');
         tr.appendChild(td);
 
@@ -182,8 +184,8 @@ export class GameLogger {
     private static clientLog() {
         const message = this.messages[this.currentIndex];
         const div = document.getElementById('log-modal');
-        const text = this.replacePlaceholders(message.text);
-        div.querySelectorAll('p')[0].innerHTML = text;
+        const text = this.replacePlaceholders(message.message);
+        div.querySelectorAll('p')[0].innerHTML = message.message;
 
         div.style.opacity = '1';
         div.style.height = '56px';
@@ -247,14 +249,6 @@ export class GameLogger {
                 .remove();
         }
     }
-}
-
-type GameLoggerPlaceholder = '{gold}';
-
-interface GameLog {
-    text: string;
-    type: GameLogType;
-    timestamp?: string;
 }
 
 enum GameLogTypes {
