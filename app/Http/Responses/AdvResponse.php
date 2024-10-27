@@ -3,21 +3,13 @@
 namespace App\Http\Responses;
 
 use App\Enums\GameEvents;
-use App\Enums\GameLogTypes;
-use App\Traits\GameLogger;
+use App\ValueObjects\GameLog;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
 class AdvResponse implements Responsable
 {
-    use GameLogger{
-        GameLogger::addErrorMessage as BaseAddErrorMessage;
-        GameLogger::addInfoMessage as BaseAddInfoMessage;
-        GameLogger::addWarningMessage as BaseAddWarningMessage;
-        GameLogger::addSuccessMessage as BaseAddSuccessMessage;
-    }
-
     /**
      * @var array<string|int, mixed>
      */
@@ -34,6 +26,8 @@ class AdvResponse implements Responsable
         private array $headers = []
     ) {
         $this->data['data'] = $data;
+        $this->data['logs'] = [];
+        $this->data['events'] = [];
     }
 
     public function addTemplate(string $index, string $template): self
@@ -57,41 +51,9 @@ class AdvResponse implements Responsable
         return $this;
     }
 
-    public function addMessage(string $message): self
+    public function addMessage(GameLog $gameLog): self
     {
-        $this->data['gameMessage'][] = ['text' => $message, 'type' => GameLogTypes::INFO->value];
-
-        return $this;
-    }
-
-    public function addInfoMessage(string $message): self
-    {
-        $this->BaseAddInfoMessage($message);
-        $this->data['gameMessage'][] = ['text' => $message, 'type' => GameLogTypes::INFO->value];
-
-        return $this;
-    }
-
-    public function addErrorMessage(string $message): self
-    {
-        $this->BaseAddErrorMessage($message);
-        $this->data['gameMessage'][] = ['text' => $message, 'type' => GameLogTypes::ERROR->value];
-
-        return $this;
-    }
-
-    public function addWarningMessage(string $message): self
-    {
-        $this->BaseAddWarningMessage($message);
-        $this->data['gameMessage'][] = ['text' => $message, 'type' => GameLogTypes::WARNING->value];
-
-        return $this;
-    }
-
-    public function addSuccessMessage(string $message): self
-    {
-        $this->BaseAddSuccessMessage($message);
-        $this->data['gameMessage'][] = ['text' => $message, 'type' => GameLogTypes::SUCCESS->value];
+        $this->data['logs'][] = $gameLog;
 
         return $this;
     }
