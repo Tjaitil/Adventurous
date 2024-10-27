@@ -13,13 +13,16 @@ final class GameLog implements \JsonSerializable
 
     public readonly Carbon $timestamp;
 
-    public function __construct($message, GameLogTypes $type)
+    public function __construct(string $message, GameLogTypes $type)
     {
         $this->message = $message;
         $this->type = $type;
         $this->timestamp = Carbon::now();
     }
 
+    /**
+     * @return array{message: string, type: string, timestamp: string}
+     */
     public function toArray(): array
     {
         return [
@@ -29,6 +32,9 @@ final class GameLog implements \JsonSerializable
         ];
     }
 
+    /**
+     * @return array{message: string, type: string, timestamp: string}
+     */
     public function jsonSerialize(): array
     {
         return $this->toArray();
