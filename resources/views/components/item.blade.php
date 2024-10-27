@@ -8,14 +8,13 @@
      * @param string $id
      */
 @endphp
-<div @class(['item', 'no-tooltip' => $showTooltip === false]) @if (isset($id))
-    id='{{ $id }}'
-    @endif
-    >
+<div @class(['item', 'no-tooltip' => $showTooltip === false]) @if (isset($id)) id='{{ $id }}' @endif>
     <figure>
         <img class="mx-auto" src="{{ asset('images/' . strtolower($name) . '.png') }}" />
         <figcaption @class(['tooltip' => $showTooltip === true])>
-            {{ ucwords($name) }}
+            <span class="tooltip_item">
+                {{ ucwords($name) }}
+            </span>
         </figcaption>
         <span @class(['item_amount', 'hidden' => !$showAmount])>{{ $amount }}</span>
     </figure>
