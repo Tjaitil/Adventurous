@@ -65,6 +65,11 @@ class WorkforceLodgeTest extends TestCase
         $response->assertStatus(200);
 
         $response->json();
+
+        $response->assertJsonStructure(['data' => [
+            'efficiency_level',
+            'new_efficiency_price',
+        ]]);
     }
 
     /**
