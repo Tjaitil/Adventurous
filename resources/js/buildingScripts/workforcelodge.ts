@@ -77,7 +77,7 @@ const workforceLodgeModule: IWorkforceLodgeModule = {
             this.farmerEfficiencyLevelElement.innerHTML = level + '';
         }
     },
-    upgradeEffiency() {
+    async upgradeEffiency() {
         const data: UpgradeEfficiencyRequest = {
             skill: this.activeInfoSectionName,
         };
@@ -89,7 +89,7 @@ const workforceLodgeModule: IWorkforceLodgeModule = {
         );
         const goldcostElement = new GoldCostElement(goldcastElementWrapper);
 
-        AdvApi.post<UpgradeEfficiencyResponse>(
+        await AdvApi.post<UpgradeEfficiencyResponse>(
             '/workforcelodge/efficiency/upgrade',
             data,
         )
