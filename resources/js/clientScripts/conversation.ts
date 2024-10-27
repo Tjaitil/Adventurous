@@ -240,7 +240,8 @@ export class conversation {
             data,
         )
             .then(response => {
-                this.currentConversationSegment = response.conversation_segment;
+                this.currentConversationSegment =
+                    response.data.conversation_segment;
                 this.selectedConversationOption = null;
                 this.handleNextLine();
             })
