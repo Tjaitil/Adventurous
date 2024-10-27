@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\GameEvents;
 use App\Http\Responses\AdvResponse;
 use App\Models\Miner;
 use App\Models\Mineral;
 use App\Models\MinerWorkforce;
+use App\Services\GameLogService;
 use App\Services\HungerService;
 use App\Services\InventoryService;
 use App\Services\LocationService;
@@ -26,8 +28,7 @@ class MineController extends Controller
         private SkillsService $skillsService,
         private HungerService $hungerService,
         private LocationService $locationService
-    ) {
-    }
+    ) {}
 
     /**
      * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
@@ -97,27 +98,33 @@ class MineController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return advResponse([], 400)->addErrorMessage('Information provided is not valid');
+            return advResponse([], 400)
+                ->addMessage(GameLogService::addErrorLog('Information provided is not valid'));
 
         }
         $location = $this->sessionService->getCurrentLocation();
 
         // Check if user is in right location
         if (! $this->locationService->isMineLocation($location)) {
-            return advResponse([], 422)->addMessage('You are in the wrong location to mine minerals');
+            return advResponse([], 422)
+                ->addMessage(GameLogService::addErrorLog('You are in the wrong location to mine minerals'));
         } elseif ($this->hungerService->isHungerTooLow()) {
-            return $this->hungerService->logHungerTooLow();
+            return advResponse([], 422)
+                ->addMessage(GameLogService::addErrorLog('Your hunger status is too low'));
         }
 
         $Mineral = Mineral::where('mineral_ore', $mineralOre)
             ->first();
 
         if (! $Mineral instanceof Mineral) {
-            return advresponse([], 422)->addMessage('Unvalid mineral');
+            return advresponse([], 422)
+                ->addMessage(GameLogService::addErrorLog('Unvalid mineral'));
         } elseif ($Mineral->location !== $location) {
-            return advResponse([], 422)->addMessage('You are in the wrong location to mine this mineral');
+            return advResponse([], 422)
+                ->addMessage(GameLogService::addErrorLog('You are in the wrong location to mine this mineral'));
         } elseif (! $this->skillsService->hasRequiredLevel($Mineral->miner_level, 'miner')) {
-            return advResponse([], 422)->addMessage("You don't have the required level to mine this mineral");
+            return advResponse([], 422)
+                ->addMessage(GameLogService::addErrorLog('You don\'t have the required level to mine this mineral'));
         }
 
         $Miner = Miner::where('username', Auth::user()->username)
@@ -136,19 +143,22 @@ class MineController extends Controller
         $new_permits = $Miner->permits - $Mineral->permit_cost;
 
         if ($new_permits < 0) {
-            return advResponse([], 422)->addMessage("You don't have enough permits");
+            return advResponse([], 422, [])
+                ->addMessage(GameLogService::addErrorLog('You don\'t have enough permits'));
         }
 
         if ($Miner->mineral_ore !== null) {
-            return advResponse([], 422)->addMessage('You are already mining');
+            return advResponse([], 422)->addMessage(GameLogService::addErrorLog('You are already mining'));
         } elseif ($Miner->location !== $location) {
-            return advResponse([], 422)->addMessage('You are in the wrong location to mine this mineral');
+            return advResponse([], 422)
+                ->addMessage(GameLogService::addErrorLog('You are in the wrong location to mine this mineral'));
         }
 
         $new_workforce_amount = $MinerWorkforce->avail_workforce - $workforce;
 
         if (! $new_workforce_amount > 0 || $MinerWorkforce->avail_workforce === 0) {
-            return advResponse([], 422)->addMessage("You don't have enough workers ready");
+            return advResponse([], 422)
+                ->addMessage(GameLogService::addErrorLog('You don\'t have enough workers ready'));
         }
 
         $this->hungerService->setHungerForSkillAction();
@@ -167,10 +177,10 @@ class MineController extends Controller
             'new_permits' => $new_permits,
             'new_hunger' => $this->hungerService->getCurrentHunger(),
         ])
-            ->addMessage("You have started mining for $mineralOre");
+            ->addMessage(GameLogService::addSuccessLog("You have started mining for $mineralOre"));
     }
 
-    public function endMining(Request $request): AdvResponse
+    public function endMining(Request $request, GameLogService $loggertService): AdvResponse
     {
 
         $is_cancelling = $request->boolean('is_cancelling');
@@ -180,7 +190,8 @@ class MineController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return advResponse([])->addErrorMessage('Information provided is not valid');
+            return advResponse([], 522)->addMessage(
+                $loggertService->addErrorLog('Information provided is not valid'));
         }
 
         $location = $this->sessionService->getCurrentLocation();
@@ -200,7 +211,8 @@ class MineController extends Controller
         }
 
         if ($Miner->mineral_ore === null) {
-            return advResponse([], 422)->addMessage('You are not mining anything');
+            return advResponse([], 422)
+                ->addMessage($loggertService->addErrorLog('You are not mining anything'));
         }
 
         $Mineral = Mineral::where('location', $location)
@@ -216,9 +228,11 @@ class MineController extends Controller
             $Miner->mineral_ore &&
             $is_cancelling
         ) {
-            return advResponse([], 422)->addMessage('You cannot cancel mining that is already finished');
+            return advResponse([], 422)
+                ->addMessage($loggertService->addErrorLog('You cannot cancel mining that is already finished'));
         } elseif (! Carbon::now()->isAfter($Miner->mining_finishes_at) && ! $is_cancelling) {
-            return advResponse([], 422)->addMessage('The mining is not yet finished');
+            return advResponse([], 422)
+                ->addMessage($loggertService->addErrorLog('The mining is not yet finished'));
         }
 
         $MinerWorkforce->avail_workforce += $MinerWorkforce->{$location};
@@ -238,6 +252,7 @@ class MineController extends Controller
             $this->skillsService
                 ->updateMinerXP($Mineral->experience)
                 ->updateSkills($response);
+            $response->addEvent(GameEvents::XpGainedEvent);
 
             $message = sprintf('You have finished mining %s', $Mineral->mineral_ore);
         } else {
@@ -247,6 +262,7 @@ class MineController extends Controller
         return $response->setData([
             'avail_workforce' => $MinerWorkforce->avail_workforce,
             'new_hunger' => $this->hungerService->getCurrentHunger(),
-        ])->addMessage($message);
+        ])
+            ->addMessage($loggertService->addSuccessLog($message));
     }
 }

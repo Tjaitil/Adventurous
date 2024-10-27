@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Responses\AdvResponse;
+use App\Services\GameLogService;
 use App\Services\StoreService;
 use App\Stores\BakeryStore;
 use Illuminate\Http\JsonResponse;
@@ -16,8 +17,7 @@ class BakeryController extends Controller
     public function __construct(
         protected StoreService $storeService,
         protected BakeryStore $bakeryStore
-    ) {
-    }
+    ) {}
 
     /**
      * @return void
@@ -57,7 +57,8 @@ class BakeryController extends Controller
         } else {
             $message = sprintf('%d x %s made for %d {gold}', $result['totalAmount'], $item, $result['totalPrice']);
 
-            return advResponse()->addSuccessMessage($message);
+            return advResponse()->addMessage(
+                GameLogService::addSuccessLog($message));
         }
     }
 }

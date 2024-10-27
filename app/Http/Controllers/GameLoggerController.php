@@ -3,16 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Enums\GameLogTypes;
-use App\Traits\GameLogger;
+use App\Services\GameLogService;
 use Illuminate\Http\Request;
 
 class GameLoggerController extends Controller
 {
-    use GameLogger;
-
     public function log(Request $request): \Illuminate\Http\JsonResponse
     {
-        $type = $request->string('type');
+        $type = $request->enum('type', GameLogTypes::class);
         $message = $request->string('text');
 
         $request->validate([
@@ -22,18 +20,18 @@ class GameLoggerController extends Controller
 
         switch ($type) {
             case GameLogTypes::ERROR->value:
-                $this->addErrorMessage($message);
+                GameLogService::addErrorLog($message);
                 break;
 
             case GameLogTypes::WARNING->value:
-                $this->addWarningMessage($message);
+                GameLogService::addWarningLog($message);
                 break;
 
             case GameLogTypes::SUCCESS->value:
-                $this->addSuccessMessage($message);
+                GameLogService::addSuccessLog($message);
                 break;
             default:
-                $this->addInfoMessage($message);
+                GameLogService::addInfoLog($message);
                 break;
         }
 

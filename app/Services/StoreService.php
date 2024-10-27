@@ -5,14 +5,11 @@ namespace App\Services;
 use App\Http\Builders\StoreBuilder;
 use App\Http\Resources\StoreItemResource;
 use App\Http\Responses\AdvResponse;
-use App\Traits\GameLogger;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 
 class StoreService
 {
-    use GameLogger;
-
     public function __construct(
         public StoreBuilder $storeBuilder,
         protected SkillsService $skillsService,
@@ -52,7 +49,7 @@ class StoreService
 
             if (! $this->hasSkillRequirements($store_item)) {
                 return (new AdvResponse([], 422))
-                    ->addErrorMessage('You do not have the required skill level')
+                    ->addMessage(GameLogService::addErrorLog('You do not have the required skill level'))
                     ->toResponse(request());
             }
             foreach ($store_item->required_items as $key => $value) {
@@ -88,7 +85,7 @@ class StoreService
             return ['totalPrice' => $totalPrice, 'totalAmount' => $totalAmount];
         } catch (\Exception $e) {
             return (new AdvResponse([], 500))
-                ->addErrorMessage('Something went wrong');
+                ->addMessage(GameLogService::addErrorLog('Something went wrong'));
         }
     }
 
@@ -106,7 +103,7 @@ class StoreService
 
             if (! $this->hasSkillRequirements($store_item)) {
                 return (new AdvResponse([], 422))
-                    ->addErrorMessage('You do not have the required skill level')
+                    ->addMessage(GameLogService::addErrorLog('You do not have the required skill level'))
                     ->toResponse(request());
             }
 
@@ -125,7 +122,7 @@ class StoreService
             return ['totalPrice' => $totalPrice];
         } catch (\Exception $e) {
             return (new AdvResponse([], 500))
-                ->addErrorMessage('Something went wrong');
+                ->addMessage(GameLogService::addErrorLog('Something went wrong'));
         }
     }
 
@@ -154,7 +151,8 @@ class StoreService
      */
     public function logNotStoreItem(string $name): JsonResponse
     {
-        return (new AdvResponse([], 400))->addErrorMessage(sprintf('%s is not a store item', $name))
+        return (new AdvResponse([], 400))
+            ->addMessage(GameLogService::addErrorLog(sprintf('%s is not a store item', $name)))
             ->toResponse(request());
     }
 
@@ -202,7 +200,7 @@ class StoreService
      */
     public function logNotEnoughAmount(): JsonResponse
     {
-        return (new AdvResponse)->addErrorMessage('Item is not a store item')
+        return (new AdvResponse)->addMessage(GameLogService::addErrorLog('Item is not a store item'))
             ->setStatus(400)
             ->toResponse(request());
     }

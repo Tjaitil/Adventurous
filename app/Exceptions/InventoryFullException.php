@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use App\Http\Responses\AdvResponse;
+use App\Services\GameLogService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -16,6 +17,8 @@ class InventoryFullException extends Exception
 
     public function render(Request $request): JsonResponse
     {
-        return (new AdvResponse([], 422))->addErrorMessage('Inventory is full')->toResponse($request);
+        return (new AdvResponse([], 422))
+            ->addMessage(GameLogService::addErrorLog('Inventory is full'))
+            ->toResponse($request);
     }
 }

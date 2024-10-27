@@ -55,7 +55,8 @@ class HungerService
      */
     public function logHungerTooLow()
     {
-        return advResponse([], 422)->addErrorMessage('Your hunger status is too low');
+        return advResponse([], 422)
+            ->addMessage(GameLogService::addErrorLog('Your hunger status is too low'));
     }
 
     /**

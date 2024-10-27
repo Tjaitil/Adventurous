@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exceptions\JsonException;
 use App\Models\HealingItem;
 use App\Models\Hunger;
+use App\Services\GameLogService;
 use App\Services\HungerService;
 use App\Services\InventoryService;
 use Illuminate\Http\JsonResponse;
@@ -17,8 +18,7 @@ class HungerController extends Controller
     public function __construct(
         private InventoryService $inventoryService,
         private HungerService $hungerService,
-    ) {
-    }
+    ) {}
 
     /**
      * @return \Illuminate\Http\JsonResponse
@@ -54,17 +54,20 @@ class HungerController extends Controller
         }
 
         if ($this->inventoryService->hasEnoughAmount($item, $amount) === false) {
-            return advResponse([], 422)->addErrorMessage('You do not have enough of that item');
+            return advResponse([], 422)->addMessage(
+                GameLogService::addErrorLog('You do not have enough of that item'));
         }
 
         if ($this->hungerService->getCurrentHunger() >= 100) {
-            return advResponse([], 422)->addErrorMessage('Your hunger status is not low enough to eat');
+            return advResponse([], 422)->addMessage(
+                GameLogService::addErrorLog('You are not hungry'));
         }
 
         $HealingItem = HealingItem::where('item', $item)->first();
 
         if (! $HealingItem instanceof HealingItem) {
-            return advResponse([], 422)->addErrorMessage('That item does not affect your hunger status');
+            return advResponse([], 422)->addMessage(
+                GameLogService::addErrorLog('That item does not affect your hunger status'));
         }
 
         $this->hungerService->decreaseHunger($amount);
@@ -72,7 +75,7 @@ class HungerController extends Controller
         $this->inventoryService->edit($item, -$amount);
 
         return advResponse(['hunger' => $this->hungerService->getCurrentHunger()], 200)
-            ->addSuccessMessage('You eat and you relive hunger');
+            ->addMessage(GameLogService::addSuccessLog('You eat and you relive hunger'));
     }
 
     /**

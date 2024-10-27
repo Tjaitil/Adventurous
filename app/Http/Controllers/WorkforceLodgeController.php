@@ -9,6 +9,7 @@ use App\Models\EfficiencyUpgrade;
 use App\Models\FarmerWorkforce;
 use App\Models\MinerWorkforce;
 use App\Models\UserLevels;
+use App\Services\GameLogService;
 use App\Services\InventoryService;
 use App\Services\LevelDataService;
 use App\Services\SkillsService;
@@ -22,8 +23,7 @@ class WorkforceLodgeController extends Controller
         public SkillsService $skillsService,
         public InventoryService $inventoryService,
         public LevelDataService $levelDataService
-    ) {
-    }
+    ) {}
 
     /**
      * @return mixed
@@ -76,7 +76,8 @@ class WorkforceLodgeController extends Controller
                 'user_id' => Auth::user()->id,
             ]);
 
-            return (new AdvResponse([], 422))->addErrorMessage('Could not find skill');
+            return (new AdvResponse([], 422))
+                ->addMessage(GameLogService::addErrorLog('Could not find skill'));
         }
 
         if (! $Workforce instanceof FarmerWorkforce && ! $Workforce instanceof MinerWorkforce) {
@@ -84,7 +85,10 @@ class WorkforceLodgeController extends Controller
         }
 
         if ($Workforce->efficiency_level === $this->levelDataService->getMaxEfficiencyLevel($skillLevel)) {
-            return (new AdvResponse([], 422))->addErrorMessage('You need to level up your skill before upgrading efficiency more');
+            return (new AdvResponse([], 422))
+                ->addMessage(
+                    GameLogService::addErrorLog(
+                        'You need to level up your skill before upgrading efficiency more'));
         }
 
         $price = EfficiencyUpgrade::where('level', $Workforce->efficiency_level)->first()->price;
@@ -96,10 +100,10 @@ class WorkforceLodgeController extends Controller
         $Workforce->efficiency_level += 1;
         $Workforce->save();
 
-        return (new AdvResponse())->setData([
+        return (new AdvResponse)->setData([
             'efficiency_level' => $Workforce->efficiency_level,
             'new_efficiency_price' => EfficiencyUpgrade::where('level', $Workforce->efficiency_level)->first()->price,
-        ])->addSuccessMessage('Efficiency upgraded')
+        ])->addMessage(GameLogService::addSuccessLog('Efficiency upgraded'))
             ->setStatus(200);
     }
 }
