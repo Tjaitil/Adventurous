@@ -2,29 +2,32 @@
 
 namespace App\Http\Responses;
 
-use App\Enums\GameLogTypes;
-use App\Traits\GameLogger;
+use App\Enums\GameEvents;
+use App\ValueObjects\GameLog;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
 class AdvResponse implements Responsable
 {
-    use GameLogger{
-        GameLogger::addErrorMessage as BaseAddErrorMessage;
-        GameLogger::addInfoMessage as BaseAddInfoMessage;
-        GameLogger::addWarningMessage as BaseAddWarningMessage;
-        GameLogger::addSuccessMessage as BaseAddSuccessMessage;
-    }
+    /**
+     * @var array<string|int, mixed>
+     */
+    private array $data = [];
 
     /**
+     * @param  array<string, mixed>  $data  Data key in the response
+     *
      * @see https://wendelladriel.com/blog/standard-api-responses-with-laravel-responsables All credit
      */
     public function __construct(
-        private array $data = [],
+        array $data = [],
         private int $code = Response::HTTP_OK,
         private array $headers = []
     ) {
+        $this->data['data'] = $data;
+        $this->data['logs'] = [];
+        $this->data['events'] = [];
     }
 
     public function addTemplate(string $index, string $template): self
@@ -43,46 +46,14 @@ class AdvResponse implements Responsable
 
     public function setData(array $data): self
     {
-        $this->data = array_merge($this->data, $data);
+        $this->data['data'] = array_merge($this->data['data'], $data);
 
         return $this;
     }
 
-    public function addMessage(string $message): self
+    public function addMessage(GameLog $gameLog): self
     {
-        $this->data['gameMessage'][] = ['text' => $message, 'type' => GameLogTypes::INFO->value];
-
-        return $this;
-    }
-
-    public function addInfoMessage(string $message): self
-    {
-        $this->BaseAddInfoMessage($message);
-        $this->data['gameMessage'][] = ['text' => $message, 'type' => GameLogTypes::INFO->value];
-
-        return $this;
-    }
-
-    public function addErrorMessage(string $message): self
-    {
-        $this->BaseAddErrorMessage($message);
-        $this->data['gameMessage'][] = ['text' => $message, 'type' => GameLogTypes::ERROR->value];
-
-        return $this;
-    }
-
-    public function addWarningMessage(string $message): self
-    {
-        $this->BaseAddWarningMessage($message);
-        $this->data['gameMessage'][] = ['text' => $message, 'type' => GameLogTypes::WARNING->value];
-
-        return $this;
-    }
-
-    public function addSuccessMessage(string $message): self
-    {
-        $this->BaseAddSuccessMessage($message);
-        $this->data['gameMessage'][] = ['text' => $message, 'type' => GameLogTypes::SUCCESS->value];
+        $this->data['logs'][] = $gameLog;
 
         return $this;
     }
@@ -98,9 +69,9 @@ class AdvResponse implements Responsable
     }
 
     /**
-     * @param  value-of<\App\Enums\GameEvents>  $event
+     * @param  value-of<\App\Enums\GameEvents>|\App\Enums\GameEvents  $event
      */
-    public function addEvent(string $event): self
+    public function addEvent(string|GameEvents $event): self
     {
         $this->data['events'][] = $event;
 

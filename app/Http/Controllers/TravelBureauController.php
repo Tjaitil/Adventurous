@@ -6,6 +6,7 @@ use App\Exceptions\JsonException;
 use App\Http\Responses\AdvResponse;
 use App\Models\Trader;
 use App\Models\TravelBureauCart;
+use App\Services\GameLogService;
 use App\Services\SessionService;
 use App\Services\StoreService;
 use App\Stores\TravelBureauStore;
@@ -21,8 +22,7 @@ class TravelBureauController extends Controller
         private StoreService $storeService,
         private SessionService $sessionService,
         private TravelBureauStore $travelBureauStore
-    ) {
-    }
+    ) {}
 
     /**
      * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
@@ -63,7 +63,7 @@ class TravelBureauController extends Controller
 
         if ($Cart->id === $Trader->cart_id) {
             return (new AdvResponse([], 400))
-                ->addErrorMessage('You already have this cart')
+                ->addMessage(GameLogService::addErrorLog('You already have this cart'))
                 ->toResponse($request);
         }
 
@@ -79,7 +79,7 @@ class TravelBureauController extends Controller
         $Trader->save();
 
         return (new AdvResponse)->setStatus(200)
-            ->addInfoMessage(sprintf('You bought %s', $item))
+            ->addMessage(GameLogService::addInfoLog(sprintf('You bought %s', $item)))
             ->addData('new_cart', $item)
             ->toResponse($request);
     }

@@ -6,9 +6,9 @@ use App\Http\Responses\AdvResponse;
 use App\Models\Inventory;
 use App\Models\Stockpile;
 use App\Models\UserData;
+use App\Services\GameLogService;
 use App\Services\InventoryService;
 use App\Services\SessionService;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -17,8 +17,7 @@ class StockpileController extends Controller
     public function __construct(
         private InventoryService $inventoryService,
         private SessionService $sessionService,
-    ) {
-    }
+    ) {}
 
     /**
      * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
@@ -44,16 +43,11 @@ class StockpileController extends Controller
         return Stockpile::where('username', $this->sessionService->getCurrentUsername())->get();
     }
 
-    /**
-     * @return JsonResponse
-     */
-    public function update(Request $request)
+    public function update(Request $request): AdvResponse
     {
         $item = $request->string('item');
         $amount = $request->input('amount');
         $insert = $request->boolean('insert');
-
-        $Response = new AdvResponse();
 
         $request->validate([
             'item' => 'string|min:1',
@@ -65,8 +59,8 @@ class StockpileController extends Controller
             ->first('stockpile_max_amount')?->stockpile_max_amount;
 
         if ($amount === $stockpile_max_amount && $insert === true) {
-            return $Response->addMessage('You can\'t store more than $stockpile_max_amount items in your stockpile')
-                ->setStatus(422)->toResponse($request);
+            return advResponse([], 422)
+                ->addMessage(GameLogService::addErrorLog('You can\'t store more than $stockpile_max_amount items in your stockpile'));
         }
 
         $StockpileItem = Stockpile::where('item', $item)
@@ -83,11 +77,11 @@ class StockpileController extends Controller
             $InventoryItem = $this->inventoryService->findItem($item);
             // Check if the user has the inventory item and correct amount
             if (! $InventoryItem instanceof Inventory) {
-                return $Response->addMessage('You don\'t have the item in your inventory')
-                    ->setStatus(400)->toResponse($request);
+                return advResponse([], 400)
+                    ->addMessage(GameLogService::addErrorLog('You don\'t have the item in your inventory'));
             } elseif ($InventoryItem->amount < $amount) {
-                return $Response->addMessage('You don\'t have that many in your inventory')
-                    ->setStatus(400)->toResponse($request);
+                return advResponse([], 400)
+                    ->addMessage(GameLogService::addErrorLog('You don\'t have that many in your inventory'));
             }
 
             // If stockpile item does not exists, create ite
@@ -112,13 +106,12 @@ class StockpileController extends Controller
             }
 
             if ($matched_stockpile_item === false) {
-                return $Response->addMessage('You don\'t have that item in your stockpile')
-                    ->setStatus(400)
-                    ->toResponse($request);
+
+                return advResponse([], 400)
+                    ->addMessage(GameLogService::addErrorLog('You don\'t have that item in your stockpile'));
             } elseif ($StockpileItem->amount < $amount) {
-                return $Response->addMessage('You don\'t have that many in your stockpile')
-                    ->setStatus(400)
-                    ->toResponse($request);
+                return advResponse([], 400)
+                    ->addMessage(GameLogService::addErrorLog('You don\'t have that many in your stockpile'));
             }
 
             // If stockpile item does not exists, create ite
@@ -138,6 +131,6 @@ class StockpileController extends Controller
             ->with('max_amount', $stockpile_max_amount)
             ->render();
 
-        return $Response->addTemplate('stockpile', $blade)->toResponse($request);
+        return advResponse()->addTemplate('stockpile', $blade);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Responses\AdvResponse;
+use App\Services\GameLogService;
 use App\Services\StoreService;
 use App\Stores\ZinssStore;
 use Illuminate\Contracts\View\Factory;
@@ -15,8 +16,7 @@ class ZinsstoreController extends Controller
     public function __construct(
         private ZinssStore $zinssStore,
         private StoreService $storeService,
-    ) {
-    }
+    ) {}
 
     /**
      * @return View|Factory
@@ -54,7 +54,7 @@ class ZinsstoreController extends Controller
         } else {
             $successMessage = sprintf('%d x %s sold for %d', $amount, $item, $result['totalPrice']);
 
-            return advResponse()->addSuccessMessage($successMessage);
+            return advResponse()->addMessage(GameLogService::addSuccessLog($successMessage));
         }
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Responses\AdvResponse;
+use App\Services\GameLogService;
 use App\Services\StoreService;
 use App\Stores\SmithyStore;
 use Illuminate\Contracts\View\Factory;
@@ -15,8 +16,7 @@ class SmithyController extends Controller
     public function __construct(
         protected StoreService $storeService,
         protected SmithyStore $smithyStore,
-    ) {
-    }
+    ) {}
 
     /**
      * @return View|Factory
@@ -53,7 +53,8 @@ class SmithyController extends Controller
         } else {
             $message = sprintf('%d x %s smithed for %d {gold}', $result['totalAmount'], $item, $result['totalPrice']);
 
-            return advResponse()->addSuccessMessage($message);
+            return advResponse()->addMessage(
+                GameLogService::addSuccessLog($message));
         }
 
     }

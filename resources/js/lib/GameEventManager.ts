@@ -10,7 +10,7 @@ export const createGameEventManager = <T extends GameEventsMapping>(
         },
         notify(event) {
             if (Array.isArray(event)) {
-                events.forEach(event => {
+                event.forEach(event => {
                     this.handle(event);
                 });
             } else {

@@ -152,7 +152,7 @@ export const itemPrices = {
     get() {
         CustomFetchApi.get<ItemPricesResponse>('/inventory/prices')
             .then(response => {
-                this.prices = response.prices;
+                this.prices = response.data.prices;
             })
             .catch(() => false);
     },

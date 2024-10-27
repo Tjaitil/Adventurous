@@ -8,6 +8,7 @@ use App\Models\Inventory;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 
 class InventoryService
@@ -85,10 +86,12 @@ class InventoryService
         }
     }
 
-    public function handleInventoryFull(): JsonResponse
+    public function handleInventoryFull(): AdvResponse
     {
+        $log = App::make(GameLogService::class)->addWarningLog('Inventory is full');
+
         return (new AdvResponse([], 422))
-            ->addErrorMessage('Inventory is full')->toResponse(request());
+            ->addMessage($log);
     }
 
     /**
@@ -99,7 +102,8 @@ class InventoryService
     public function logNotEnoughAmount(string $name): JsonResponse
     {
         return (new AdvResponse([], 422))
-            ->addErrorMessage(sprintf("You don't have enough of %s", $name))->toResponse(request());
+            ->addMessage(GameLogService::addErrorLog(sprintf("You don't have enough of %s", $name)))
+            ->toResponse(request());
     }
 
     /**
@@ -119,7 +123,7 @@ class InventoryService
 
         if ($this->inventory_items?->count() >= 18 && ! $InventoryItem && $new_amount > 0) {
 
-            throw new InventoryFullException();
+            throw new InventoryFullException;
         } elseif ($InventoryItem === null) {
 
             Inventory::create([

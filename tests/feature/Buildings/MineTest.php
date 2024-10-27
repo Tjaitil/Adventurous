@@ -78,11 +78,11 @@ class MineTest extends SkillTestCase
         ]);
 
         $response->assertStatus(200);
-        $response->assertJsonStructure([
+        $response->assertJsonStructure(['data' => [
             'avail_workforce',
             'new_permits',
             'new_hunger',
-        ]);
+        ]]);
 
         $this->assertDatabaseHas('miner', [
             'username' => $this->RandomUser->username,
@@ -221,12 +221,11 @@ class MineTest extends SkillTestCase
         ]);
 
         $response->assertStatus(200);
-        $response->assertJsonStructure([
+        $response->assertJsonStructure(['data' => [
             'avail_workforce',
             'new_hunger',
-        ]);
-
-        $this->assertResponseHasEvent($response, GameEvents::XpGainedEvent->value);
+        ]]);
+        $this->assertContains(GameEvents::XpGainedEvent->value, $response->json('events'));
 
         $this->assertDatabaseHas('miner', [
             'username' => $this->RandomUser->username,

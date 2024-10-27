@@ -45,7 +45,7 @@ class CropsModule extends SkillActionContainer {
         });
     }
 
-    public grow() {
+    public async grow() {
         const workforce_amount = this.getWorkforceAmount();
         const crop_type = this.getSelectedType();
 
@@ -68,7 +68,7 @@ class CropsModule extends SkillActionContainer {
             crop_type,
         };
 
-        AdvApi.post<GrowCropsResponse>('/crops/start', data)
+        await AdvApi.post<GrowCropsResponse>('/crops/start', data)
             .then(response => {
                 Inventory.update();
                 updateHunger(response.new_hunger);
@@ -78,7 +78,7 @@ class CropsModule extends SkillActionContainer {
             .catch(() => false);
     }
 
-    public updateCrop(cancel: boolean) {
+    public async updateCrop(cancel: boolean) {
         if (Inventory.isFull() && !cancel) {
             GameLogger.addMessage(commonMessages.inventoryFull, true);
             return false;
@@ -88,9 +88,9 @@ class CropsModule extends SkillActionContainer {
             is_cancelling: cancel,
         };
 
-        AdvApi.post<HarvestCropsResponse>('/crops/end', data)
+        await AdvApi.post<HarvestCropsResponse>('/crops/end', data)
             .then(response => {
-                this.setAvailableWorkforce(response.avail_workforce);
+                this.setAvailableWorkforce(response.data.avail_workforce);
                 this.clearCountdownAndUpdateUI();
                 if (!cancel) {
                     this.getCountdown();
@@ -100,7 +100,7 @@ class CropsModule extends SkillActionContainer {
             .catch(() => false);
     }
 
-    public seedGenerator() {
+    public async seedGenerator() {
         const item = ItemSelector.selected;
 
         const data: SeedGeneratorRequest = {
@@ -108,7 +108,7 @@ class CropsModule extends SkillActionContainer {
             amount: item.amount,
         };
 
-        AdvApi.post('/crops/generate-seeds', data)
+        await AdvApi.post('/crops/generate-seeds', data)
             .then(() => {
                 Inventory.update();
                 ItemSelector.clearContainer();
@@ -140,6 +140,6 @@ interface GrowCropsResponse {
     availWorkforce: number;
 }
 
-interface HarvestCropsResponse extends advAPIResponse {
+type HarvestCropsResponse = advAPIResponse<{
     avail_workforce: number;
-}
+}>;

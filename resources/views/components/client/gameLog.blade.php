@@ -14,7 +14,7 @@
                                     'text-green-600' => $message['type'] === 'success',
                                 ])>
                                     {{ '[' . $message['timestamp'] . '] ' }}
-                                    {{ $message['text'] }}</p>
+                                    {{ $message['message'] }}</p>
                             </td>
                         </tr>
                     @endforeach

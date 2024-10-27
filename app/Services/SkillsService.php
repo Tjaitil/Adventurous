@@ -25,8 +25,7 @@ class SkillsService
 
     public function __construct(
         private CanLevelUpAction $canLevelUpAction,
-    ) {
-    }
+    ) {}
 
     private function setUserLevels(): void
     {
@@ -85,17 +84,19 @@ class SkillsService
     public function logNotRequiredLevel(string $profiency): JsonResponse
     {
         return (new AdvResponse([], 422))
-            ->addErrorMessage(sprintf('You have too low %s level', $profiency))
+            ->addMessage(GameLogService::addErrorLog(sprintf('You have too low %s level', $profiency)))
             ->toResponse(request());
     }
 
-    public function updateSkills(AdvResponse &$advResponse): void
+    public function updateSkills(?AdvResponse &$advResponse = null): void
     {
         $this->setUserLevels();
 
         $this->userLevels->save();
 
-        $advResponse->addEvent(GameEvents::XpGainedEvent->value);
+        if (! is_null($advResponse)) {
+            $advResponse->addEvent(GameEvents::XpGainedEvent->value);
+        }
     }
 
     public function updateFarmerXP(int $amount): self

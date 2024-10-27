@@ -139,7 +139,7 @@ export class Game {
         this.pauseWorld();
         await CustomFetchApi.get<GetWorldResponse>('/worldloader')
             .then(response => {
-                this.loadWorld(response);
+                this.loadWorld(response.data);
             })
             .catch(error => reportCatchError(error));
     }
@@ -166,7 +166,7 @@ export class Game {
 
         await CustomFetchApi.post<GetWorldResponse>('/worldloader/change', data)
             .then(async response => {
-                await this.loadWorld(response, parameters);
+                await this.loadWorld(response.data, parameters);
             })
             .catch(error => reportCatchError(error));
     }

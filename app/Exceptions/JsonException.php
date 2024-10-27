@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use App\Http\Responses\AdvResponse;
+use App\Services\GameLogService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -16,11 +17,13 @@ class JsonException extends Exception
         protected $code = 500,
     ) {
         parent::__construct($message, $code);
-        Log::critical($message, ["username" => Auth::user()?->username]);
+        Log::critical($message, ['username' => Auth::user()?->username]);
     }
 
     public function render(Request $request): JsonResponse
     {
-        return (new AdvResponse([], 500))->addErrorMessage('Unexpected issue happened')->toResponse($request);
+        return (new AdvResponse([], 500))
+            ->addMessage(GameLogService::addErrorLog('Unexpected issue happened'))
+            ->toResponse($request);
     }
 }
