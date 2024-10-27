@@ -48,9 +48,9 @@ import { reactive, ref, watch } from 'vue';
 import SkillInfoListItem from './SkillInfoListItem.vue';
 import { useSkillsStore } from '@/ui/stores/SkillsStore';
 import { UserLevels } from '@/types/UserLevels';
-import { AdvApi } from '@/AdvApi';
 import { LevelUpAbleSkills } from '@/types/Skill';
 import { UpdateSkillsResponse } from '@/types/Responses/UpdateSkillsResponse';
+import { CustomFetchApi } from '@/CustomFetchApi';
 
 interface Props {
     initLevels: UserLevels;
@@ -80,16 +80,19 @@ watch(
 );
 
 const updateSkills = async () => {
-    await AdvApi.post<UpdateSkillsResponse>('/skills/update').then(response => {
-        if (response.new_levels.length > 0) {
-            response.new_levels.forEach(levelUpSkill => {
-                levelUpStatus[levelUpSkill.skill] = true;
-                levels[levelUpSkill.skill + '_level'] = levelUpSkill.new_level;
-            });
-            store.UserLevelsResource = levels.value;
-        }
-        levels.value = response.user_levels;
-    });
+    await CustomFetchApi.post<UpdateSkillsResponse>('/skills/update').then(
+        response => {
+            if (response.data.new_levels.length > 0) {
+                response.data.new_levels.forEach(levelUpSkill => {
+                    levelUpStatus[levelUpSkill.skill] = true;
+                    levels[levelUpSkill.skill + '_level'] =
+                        levelUpSkill.new_level;
+                });
+                store.UserLevelsResource = levels.value;
+            }
+            levels.value = response.data.user_levels;
+        },
+    );
     store.setHandleXpGainedEvent(false);
 };
 

@@ -43,8 +43,9 @@ const isLoading = ref(true);
 const getInventory = async () => {
     try {
         isLoading.value = true;
-        inventoryStore.inventoryItems =
+        const response =
             await CustomFetchApi.get<InventoryItem[]>('/inventory/items');
+        inventoryStore.inventoryItems = response.data;
 
         isLoading.value = false;
         inventoryStore.setShouldUpdateInventory(false);

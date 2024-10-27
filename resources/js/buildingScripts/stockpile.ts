@@ -59,7 +59,7 @@ const stockpileModule = {
                 }
             });
     },
-    stockpileAction(amountSet = false, event: Event) {
+    async stockpileAction(amountSet = false, event: Event) {
         const listItem = event.target as HTMLElement;
         const eventTarget = event.target as HTMLElement;
         const itemName = document.getElementById('stck-current-item').innerHTML;
@@ -119,7 +119,7 @@ const stockpileModule = {
             item,
         };
 
-        AdvApi.post<UpdateStockpileRequest>('/stockpile/update', data)
+        await AdvApi.post<UpdateStockpileRequest>('/stockpile/update', data)
             .then(async res => {
                 document.getElementById('stockpile-list').innerHTML =
                     res.html.stockpile;

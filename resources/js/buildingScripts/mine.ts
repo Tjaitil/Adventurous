@@ -25,20 +25,20 @@ class MineModule extends SkillActionContainer {
         this.getCountdown();
     }
 
-    private getCountdown() {
+    private async getCountdown() {
         this.infoActionElement.innerHTML = 'No miners at work';
 
-        CustomFetchApi.get<MineCountdownResponse>('/mine/countdown').then(
+        await CustomFetchApi.get<MineCountdownResponse>('/mine/countdown').then(
             response => {
                 this.startCountdownAndUpdateUI({
-                    endTime: response.mining_finishes_at * 1000,
-                    type: response.mineral_ore,
+                    endTime: response.data.mining_finishes_at * 1000,
+                    type: response.data.mineral_ore,
                 });
             },
         );
     }
 
-    private setMine() {
+    private async setMine() {
         const mineral_ore = this.getSelectedType();
         const workforce_amount = this.getWorkforceAmount();
 
@@ -61,25 +61,25 @@ class MineModule extends SkillActionContainer {
             workforce_amount,
         };
 
-        AdvApi.post<StartMiningResponse>('/mine/start', data)
+        await AdvApi.post<StartMiningResponse>('/mine/start', data)
             .then(response => {
-                updateHunger(response.new_hunger);
-                this.setAvailableWorkforce(response.avail_workforce);
+                updateHunger(response.data.new_hunger);
+                this.setAvailableWorkforce(response.data.avail_workforce);
                 this.getCountdown();
                 document.getElementById('total_permits').innerHTML =
-                    '' + response.new_permits;
+                    '' + response.data.new_permits;
             })
             .catch(() => false);
     }
 
-    private updateMine(cancel: boolean) {
+    private async updateMine(cancel: boolean) {
         const data: UpdateMiningRequest = {
             is_cancelling: cancel,
         };
 
-        AdvApi.post<FinishMiningResponse>('/mine/end', data)
+        await AdvApi.post<FinishMiningResponse>('/mine/end', data)
             .then(response => {
-                this.setAvailableWorkforce(response.avail_workforce);
+                this.setAvailableWorkforce(response.data.avail_workforce);
                 if (cancel) {
                     this.clearCountdownAndUpdateUI();
                 } else {
@@ -107,12 +107,12 @@ interface MineCountdownResponse {
     mineral_ore: string;
 }
 
-interface StartMiningResponse extends advAPIResponse {
+type StartMiningResponse = advAPIResponse<{
     avail_workforce: number;
     new_permits: number;
     new_hunger: number;
-}
+}>;
 
-interface FinishMiningResponse extends advAPIResponse {
+type FinishMiningResponse = advAPIResponse<{
     avail_workforce: number;
-}
+}>;
