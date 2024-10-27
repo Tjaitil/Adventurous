@@ -1,6 +1,7 @@
+import { GameLog } from './types/GameLog';
 import { advAPIResponse } from './types/Responses/AdvResponse';
 import { GameLogger } from './utilities/GameLogger';
-import axios, { Axios } from 'axios';
+import axios, { Axios, AxiosResponse, isAxiosError } from 'axios';
 
 export class BaseAxios {
     private static route = window.location.origin;
@@ -171,6 +172,41 @@ export function checkResponse(response: advAPIResponse) {
         GameLogger.logMessages();
     }
 }
+
+export const hasResponseKey = (
+    response: AxiosResponse,
+): response is AxiosResponse<{ logs: GameLog[] }> => {
+    return response.data.logs != null;
+};
+
+export const isAdvResponse = (
+    response: AxiosResponse,
+): response is AxiosResponse<advAPIResponse> => {
+    return (
+        response.data.gameMessage != null ||
+        response.data.levelUp != null ||
+        response.data.html != null ||
+        response.data.events != null
+    );
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const errorInterceptor = (error: any) => {
+    if (isAxiosError(error)) {
+        if (
+            error.response?.status != null &&
+            error.response?.status >= 500 &&
+            error.response?.status <= 511
+        ) {
+            GameLogger.addMessage(
+                'An error has occured. Please try again later.',
+                true,
+            );
+        } else if (error?.response && hasResponseKey(error?.response)) {
+            GameLogger.addMessages(error.response.data.logs);
+        }
+    }
+};
 
 // const response = await fetch("./handlers/handler_p.php", {
 //     method: "POST",
