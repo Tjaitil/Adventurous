@@ -119,10 +119,11 @@ return [
     |
     */
 
-    'include_helpers' => false,
+    'include_helpers' => true,
 
     'helper_files' => [
         base_path().'/vendor/laravel/framework/src/Illuminate/Support/helpers.php',
+        base_path().'_macro_ide_helper.php',
     ],
 
     /*
