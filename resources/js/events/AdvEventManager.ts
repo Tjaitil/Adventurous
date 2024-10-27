@@ -5,6 +5,8 @@ type AdvEvents = {
     XpGainedEvent: () => void;
 };
 
+export type AdvEventsType = keyof AdvEvents;
+
 export const AdvEventManager = createGameEventManager<AdvEvents>({
     XpGainedEvent: () => XpGainedEvent.handle(),
 });
