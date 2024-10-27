@@ -1,56 +1,35 @@
-import { isAxiosError } from 'axios';
-import { BaseAxios } from './ajax';
+import axios, { AxiosResponse } from 'axios';
+import { errorInterceptor, hasResponseKey } from './ajax';
 import { addModuleTester } from './devtools/ModuleTester';
 import { GameLogger } from './utilities/GameLogger';
 
-export class CustomFetchApi extends BaseAxios {
-    protected static interceptorsConfigured = false;
-
+export class CustomFetchApi {
     private static init() {
-        BaseAxios.getInstance().interceptors.response.use(
+        axios.interceptors.response.use(
             response => {
+                if (hasResponseKey(response)) {
+                    GameLogger.addMessages(response.data.logs, true);
+                }
                 return response;
             },
             error => {
-                if (isAxiosError(error)) {
-                    let text;
-                    if (
-                        error.response?.status != null &&
-                        error.response?.status >= 500 &&
-                        error.response?.status <= 511
-                    ) {
-                        text = 'An error has occured. Please try again later.';
-                    } else if (error?.response?.data.message != null) {
-                        text = error.response.data.message;
-                    }
-
-                    GameLogger.addMessage(
-                        {
-                            text,
-                            type: 'error',
-                        },
-                        true,
-                    );
-                }
+                errorInterceptor(error);
                 return Promise.reject(error);
             },
         );
 
-        this.interceptorsConfigured = true;
+        return axios;
     }
 
-    public static async get<T>(url: string): Promise<T> {
-        if (this.interceptorsConfigured === false) this.init();
-        return BaseAxios.get<T>(url);
+    public static async get<T>(url: string): Promise<AxiosResponse<T>> {
+        return this.init().get<T>(url);
     }
 
     public static async post<T, K extends object = object>(
         url: string,
         data: K,
-    ): Promise<T> {
-        if (this.interceptorsConfigured === false) this.init();
-
-        return BaseAxios.post<T>(url, data);
+    ): Promise<AxiosResponse<T>> {
+        return this.init().post<T>(url, data);
     }
 }
 
