@@ -9,7 +9,7 @@ import '../../css/overwrite.css';
 import InventoryContainer from './components/Inventory/InventoryContainer.vue';
 import { initErrorHandler } from '@/base/ErrorHandler';
 
-const i18n = createI18n({
+export const i18n = createI18n({
     locale: 'en',
     messages: { en: await getLanguageBundle() },
     legacy: false,
