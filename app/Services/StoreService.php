@@ -19,14 +19,10 @@ class StoreService
     }
 
     /**
-     * @param  array<mixed>  $items
+     * @param  array{store_items: array<int, array<string, mixed>>}  $items
      */
     public function makeStore(array $items): self
     {
-        if (isset($items['list'])) {
-            $items['store_items'] = $items['list'];
-        }
-
         $this->storeBuilder = $this->storeBuilder::create($items);
 
         return $this;
