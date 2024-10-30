@@ -19,7 +19,7 @@ class TravelBureauStore extends AbstractStore
             ->when(count($items) > 0, fn ($query) => $query->whereIn('name', $items))
             ->get();
 
-        return $this->StoreResource = $this->storeBuilder::create(['store_items' => $items])
+        return $this->StoreResource = $this->storeBuilder::create(['store_items' => $items->toArray()])
             ->setInfiniteAmount(true)
             ->setInventorable(false)
             ->build();

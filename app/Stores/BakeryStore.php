@@ -21,7 +21,7 @@ class BakeryStore extends AbstractStore
             ->when(count($items) > 0, fn ($query) => $query->whereIn('item', $items))
             ->where('bakery_item', 1)->get();
 
-        return $this->StoreResource = $this->storeBuilder::create(['store_items' => $items])
+        return $this->StoreResource = $this->storeBuilder::create(['store_items' => $items->toArray()])
             ->setAdjustedStoreValue($this->storeDiscountService->getDiscount('bakery'))
             ->setStoreName('bakery')
             ->setInfiniteAmount(true)
