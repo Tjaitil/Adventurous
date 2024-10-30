@@ -21,6 +21,11 @@ import merchantModule from '../buildingScripts/merchant';
 import workforceLodgeModule from '../buildingScripts/workforcelodge';
 import smithyModule from '../buildingScripts/smithy';
 import archeryShopModule from '../buildingScripts/archeryshop';
+import { i18n } from '@/ui/main';
+import AppVue from '@/ui/components/App.vue';
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
+import { ItemSelector } from '@/ItemSelector';
 
 enum Buildings {
     BAKERY = 'bakery',
@@ -33,6 +38,13 @@ enum Buildings {
     WORKFORCELODGE = 'workforcelodge',
     SMITHY = 'smithy',
     ARCHERYSHOP = 'archeryshop',
+    ARMORY = 'armory',
+}
+
+type VuePage = 'armory';
+
+function isVuePage(page: BuildingName): page is VuePage {
+    return page === 'armory';
 }
 
 type BuildingModuleMapping = {
@@ -46,6 +58,7 @@ type BuildingModuleMapping = {
     workforcelodge: typeof workforceLodgeModule;
     smithy: typeof smithyModule;
     archeryshop: typeof archeryShopModule;
+    armory: null;
 };
 
 function shouldSkipImport(building: string) {
@@ -60,6 +73,7 @@ function shouldSkipImport(building: string) {
         'workforcelodge',
         'smithy',
         'archeryshop',
+        'armory',
     ].includes(building);
 }
 
@@ -184,13 +198,25 @@ export const inputHandler: IInputHandler = {
                 return response.text();
             })
             .then(async data => {
-                let script: string;
+                let script: string = '';
                 let css;
                 let html: string;
                 let link;
                 let skipImport;
+                let isCurrentVuePage = false;
 
-                if (this.buildingAssetsRecord[building]) {
+                if (isVuePage(building)) {
+                    html = data;
+                    ClientOverlayInterface.show(html);
+                    const app = createApp({ AppVue, componens: {} });
+                    const pinia = createPinia();
+
+                    app.use(pinia).use(i18n).mount('#vue-building-app');
+                    ItemSelector.addSelectEventToInventory();
+
+                    isCurrentVuePage = true;
+                    return;
+                } else if (this.buildingAssetsRecord[building]) {
                     const buildingName = building as BuildingName;
                     if ('script' in this.buildingAssetsRecord[buildingName]) {
                         script = this.buildingAssetsRecord[buildingName].script;
@@ -249,7 +275,7 @@ export const inputHandler: IInputHandler = {
                         }
                         this.currentBuildingModule = data;
                     });
-                } else {
+                } else if (isCurrentVuePage === false) {
                     switch (building) {
                         case 'archeryshop':
                             this.currentBuildingModule = archeryShopModule;
@@ -290,7 +316,7 @@ export const inputHandler: IInputHandler = {
                             this.currentBuildingModule.init();
                             break;
                     }
-                    if (import.meta.env.DEV) {
+                    if (import.meta.env.DEV && !isCurrentVuePage) {
                         new ModuleTester(
                             this.currentBuildingModule,
                             Game.properties.building,
