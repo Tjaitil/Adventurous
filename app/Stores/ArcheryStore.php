@@ -36,7 +36,7 @@ class ArcheryStore extends AbstractStore
                 return $value->store_value;
             });
 
-        return $this->StoreResource = $this->storeBuilder::create(['store_items' => $items])
+        return $this->StoreResource = $this->storeBuilder::create(['store_items' => $items->toArray()])
             ->setAdjustedStoreValue($this->storeDiscountService->getDiscount('archeryShop'))
             ->setStoreName('archeryShop')
             ->setInfiniteAmount(true)

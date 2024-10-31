@@ -32,7 +32,7 @@ class SmithyStore extends AbstractStore
             return $minLevel;
         });
 
-        return $this->StoreResource = $this->storeBuilder::create(['store_items' => $items])
+        return $this->StoreResource = $this->storeBuilder::create(['store_items' => $items->toArray()])
             ->setAdjustedStoreValue($this->storeDiscountService->getDiscount('smithy'))
             ->setStoreName('smithy')
             ->setInfiniteAmount(true)
