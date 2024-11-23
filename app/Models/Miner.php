@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -16,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $id
  * @property int $user_id
  * @property-read \App\Models\MinerWorkforce $workforce
+ * @method static \Database\Factories\MinerFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Miner newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Miner newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Miner query()
@@ -30,6 +32,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Miner extends Model
 {
+    use HasFactory;
+
     public $timestamps = false;
 
     public $table = 'miner';
