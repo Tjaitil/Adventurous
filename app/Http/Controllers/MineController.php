@@ -37,11 +37,11 @@ class MineController extends Controller
     {
         $this->getViewData();
         $action_items = Mineral::all()->sortBy('miner_level')->values();
-        $workforce_data = MinerWorkforce::where('username', Auth::user()->username)
+        $workforce_data = MinerWorkforce::where('user_id', Auth::user()->id)
             ->first()
             ?->toArray();
 
-        $permits = Miner::select('permits')->where('username', Auth::user()->username)
+        $permits = Miner::select('permits')->where('user_id', Auth::user()->id)
             ->first()?->permits;
 
         return view('mine')
@@ -127,7 +127,7 @@ class MineController extends Controller
                 ->addMessage(GameLogService::addErrorLog('You don\'t have the required level to mine this mineral'));
         }
 
-        $Miner = Miner::where('username', Auth::user()->username)
+        $Miner = Miner::where('user_id', Auth::user()->id)
             ->where('location', $location)->first();
 
         if (! $Miner instanceof Miner) {
@@ -156,7 +156,7 @@ class MineController extends Controller
 
         $new_workforce_amount = $MinerWorkforce->avail_workforce - $workforce;
 
-        if (! $new_workforce_amount > 0 || $MinerWorkforce->avail_workforce === 0) {
+        if (! $new_workforce_amount < 0 || $MinerWorkforce->avail_workforce === 0) {
             return advResponse([], 422)
                 ->addMessage(GameLogService::addErrorLog('You don\'t have enough workers ready'));
         }

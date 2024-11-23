@@ -39,7 +39,7 @@ class CropsController extends Controller
     public function index()
     {
         $action_items = Crop::all()->sortBy('farmer_level');
-        $workforce_data = FarmerWorkforce::where('username', Auth::user()->username)
+        $workforce_data = FarmerWorkforce::where('user_id', Auth::user()->id)
             ->first()
             ?->toArray();
 
@@ -52,7 +52,7 @@ class CropsController extends Controller
     public function getViewData(): JsonResponse
     {
         $Crop = Crop::all();
-        $Workforce = FarmerWorkforce::where('username', Auth::user()->username)->first();
+        $Workforce = FarmerWorkforce::where('user_id', Auth::user()->id)->first();
         $Farmer = Farmer::where('user_id', Auth::user()->id)
             ->where('location', $this->sessionService->getCurrentLocation())
             ->first();
@@ -117,7 +117,7 @@ class CropsController extends Controller
             return $this->hungerService->logHungerTooLow();
         }
 
-        $Farmer = Farmer::where('username', $this->sessionService->getCurrentUsername())
+        $Farmer = Farmer::where('user_id', Auth::user()->id)
             ->where('location', $location)
             ->first();
 
@@ -143,7 +143,7 @@ class CropsController extends Controller
                 ->addMessage(GameLogService::addErrorLog('You have too low farmer level'));
         }
 
-        $FarmerWorkforce = FarmerWorkforce::where('username', $this->sessionService->getCurrentUsername())->first();
+        $FarmerWorkforce = FarmerWorkforce::where('user_id', Auth::user()->id)->first();
         if (! $FarmerWorkforce instanceof FarmerWorkforce) {
             throw new JsonException(FarmerWorkforce::class.' model could not be retrieved for user');
         }
@@ -215,7 +215,7 @@ class CropsController extends Controller
                 ->addMessage(GameLogService::addErrorLog('You are in the wrong location to grow crops'));
         }
 
-        $Farmer = Farmer::where('username', $this->sessionService->getCurrentUsername())
+        $Farmer = Farmer::where('user_id', Auth::user()->id)
             ->where('location', $location)
             ->first();
 
@@ -233,7 +233,7 @@ class CropsController extends Controller
                 ->addMessage(GameLogService::addErrorLog('Unvalid crop'));
         }
 
-        $Workforce = FarmerWorkforce::where('username', $this->sessionService->getCurrentUsername())->firstOrFail();
+        $Workforce = FarmerWorkforce::where('user_id', Auth::user()->id)->firstOrFail();
 
         if (! $Workforce instanceof FarmerWorkforce) {
             throw new JsonException(FarmerWorkforce::class, ' model could not be retrieved');
