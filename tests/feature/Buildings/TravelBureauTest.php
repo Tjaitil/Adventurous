@@ -45,7 +45,7 @@ class TravelBureauTest extends TestCase
 
         $skillRequirement = $cart->skillRequirements->first();
 
-        UserLevels::where('username', $this->RandomUser->username)->update(['trader_level' => $skillRequirement->level]);
+        UserLevels::where('user_id', $this->RandomUser->id)->update(['trader_level' => $skillRequirement->level]);
 
         foreach ($cart->requiredItems as $key => $required_item) {
             $this->insertItemToInventory($this->RandomUser, $required_item->required_item, $required_item->amount);
