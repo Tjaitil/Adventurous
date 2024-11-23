@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -24,6 +25,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool $wujkin_items
  * @property int|null $stockpile_max_amount
  *
+ * @method static \Database\Factories\UserDataFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|UserData newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserData newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserData query()
@@ -48,6 +50,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserData extends Model
 {
+    use HasFactory;
+
+    protected $table = 'user_data';
+
     public $timestamps = false;
 
     public $guarded = [];
@@ -61,9 +67,4 @@ class UserData extends Model
             'wujkin_items' => 'boolean',
             'arrive_time' => 'datetime',
         ];
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
 }
