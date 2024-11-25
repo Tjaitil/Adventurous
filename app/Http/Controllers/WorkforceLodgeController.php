@@ -30,10 +30,10 @@ class WorkforceLodgeController extends Controller
      */
     public function index()
     {
-        $FarmerWorkforce = FarmerWorkforce::where('username', Auth::user()->username)->first();
-        $MinerWorkforce = MinerWorkforce::where('username', Auth::user()->username)->first();
+        $FarmerWorkforce = FarmerWorkforce::where('user_id', Auth::user()->id)->first();
+        $MinerWorkforce = MinerWorkforce::where('user_id', Auth::user()->id)->first();
 
-        $UserLevels = UserLevels::where('username', Auth::user()->username)->first();
+        $UserLevels = UserLevels::where('user_id', Auth::user()->id)->first();
 
         if (! $UserLevels instanceof UserLevels) {
             throw new JsonException('Could not find userlevels');
@@ -66,10 +66,10 @@ class WorkforceLodgeController extends Controller
 
         if ($skill === SkillNames::FARMER->value) {
             $skillLevel = $UserLevels->farmer_level;
-            $Workforce = FarmerWorkforce::where('username', Auth::user()->username)->first();
+            $Workforce = FarmerWorkforce::where('user_id', Auth::user()->id)->first();
         } elseif ($skill === SkillNames::MINER->value) {
             $skillLevel = $UserLevels->miner_level;
-            $Workforce = MinerWorkforce::where('username', Auth::user()->username)->first();
+            $Workforce = MinerWorkforce::where('user_id', Auth::user()->id)->first();
         } else {
             Log::warning('Could not find skill', [
                 'skill' => $skill,

@@ -15,7 +15,7 @@ trait UserLevelsTrait
 
     public function __constructUserLevelsTrait()
     {
-        $this->TestUser = User::find(3);
+        $this->TestUser = User::find(1);
         $this->TestUserLevels = $this->getUserLevels();
     }
 
@@ -35,7 +35,7 @@ trait UserLevelsTrait
 
     public function incrementMinerLevel(): void
     {
-        $this->setMinerLevel($this->TestUserLevels->miner + 1);
+        $this->setMinerLevel($this->TestUserLevels->miner_level + 1);
     }
 
     public function setFarmerLevel(int $level): void
@@ -46,7 +46,7 @@ trait UserLevelsTrait
 
     public function incrementFarmerLevel(): void
     {
-        $this->setFarmerLevel($this->TestUserLevels->farmer + 1);
+        $this->setFarmerLevel($this->TestUserLevels->farmer_level + 1);
     }
 
     /**
@@ -92,7 +92,7 @@ trait UserLevelsTrait
                 $this->TestUserLevels->trader_xp = $xpNextLevel;
                 break;
             case SkillNames::WARRIOR->value:
-                $this->TestUserLevels->builder_xp = $xpNextLevel;
+                $this->TestUserLevels->warrior_xp = $xpNextLevel;
                 break;
 
             default:

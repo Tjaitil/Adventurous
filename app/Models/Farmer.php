@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -17,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int $id
  * @property int $user_id
  * @property-read \App\Models\FarmerWorkforce|null $workforce
+ * @method static \Database\Factories\FarmerFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Farmer newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Farmer newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Farmer query()
@@ -32,6 +34,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 class Farmer extends Model
 {
+    use HasFactory;
+
     public $timestamps = false;
 
     public $table = 'farmer';

@@ -85,7 +85,7 @@ class MineTest extends SkillTestCase
         ]]);
 
         $this->assertDatabaseHas('miner', [
-            'username' => $this->RandomUser->username,
+            'user_id' => $this->RandomUser->id,
             'mineral_ore' => $Mineral?->mineral_ore,
             'location' => $location,
         ]);
@@ -117,8 +117,7 @@ class MineTest extends SkillTestCase
     public function test_user_cannot_start_mining_with_too_few_permits(string $location, string $mineralOre)
     {
         $this->setUserCurrentLocation($location, $this->RandomUser);
-        $Mineral = Mineral::where('mineral_ore', $mineralOre)->firstOrFail();
-        $Miner = Miner::where('username', $this->RandomUser->username)->where('location', $location)->firstOrFail();
+        $Miner = Miner::where('user_id', $this->RandomUser->id)->where('location', $location)->firstOrFail();
         $Miner->permits = 0;
         $Miner->save();
 
@@ -162,7 +161,7 @@ class MineTest extends SkillTestCase
         $this->setUserCurrentLocation($location, $this->RandomUser);
 
         $Mineral = Mineral::where('mineral_ore', $mineralOre)->firstOrFail();
-        $Miner = Miner::where('username', $this->RandomUser->username)->where('location', $location)->firstOrFail();
+        $Miner = Miner::where('user_id', $this->RandomUser->id)->where('location', $location)->firstOrFail();
 
         $this->setMinerLevel($Mineral->miner_level);
 
@@ -211,7 +210,7 @@ class MineTest extends SkillTestCase
     {
         $this->setUserCurrentLocation($location, $this->RandomUser);
 
-        Miner::where('username', $this->RandomUser->username)->where('location', $location)->update([
+        Miner::where('user_id', $this->RandomUser->id)->where('location', $location)->update([
             'mineral_ore' => $mineralOre,
             'mining_finishes_at' => Carbon::now()->subMinutes(1),
         ]);
@@ -228,7 +227,7 @@ class MineTest extends SkillTestCase
         $this->assertContains(GameEvents::XpGainedEvent->value, $response->json('events'));
 
         $this->assertDatabaseHas('miner', [
-            'username' => $this->RandomUser->username,
+            'user_id' => $this->RandomUser->id,
             'mineral_ore' => null,
             'location' => $location,
         ]);
@@ -243,7 +242,7 @@ class MineTest extends SkillTestCase
         $this->setUserCurrentLocation($location, $this->RandomUser);
         $this->setMinerLevel(44);
 
-        $Miner = Miner::where('username', $this->RandomUser->username)->where('location', $location)->firstOrFail();
+        $Miner = Miner::where('user_id', $this->RandomUser->id)->where('location', $location)->firstOrFail();
 
         $Miner->mineral_ore = null;
         $Miner->save();
@@ -274,7 +273,7 @@ class MineTest extends SkillTestCase
         $this->setUserCurrentLocation($location, $this->RandomUser);
         $this->setMinerLevel($Mineral->miner_level);
 
-        $Miner = Miner::where('username', $this->RandomUser->username)->where('location', $location)->firstOrFail();
+        $Miner = Miner::where('user_id', $this->RandomUser->id)->where('location', $location)->firstOrFail();
 
         $Miner->mineral_ore = $mineralOre;
         $Miner->mining_finishes_at = Carbon::now()->addMinutes(15);
@@ -307,7 +306,7 @@ class MineTest extends SkillTestCase
         $this->setUserCurrentLocation($location, $this->RandomUser);
         $this->setMinerLevel($Mineral->miner_level);
 
-        $Miner = Miner::where('username', $this->RandomUser->username)->where('location', $location)->firstOrFail();
+        $Miner = Miner::where('user_id', $this->RandomUser->id)->where('location', $location)->firstOrFail();
 
         $Miner->mineral_ore = $mineralOre;
         $Miner->mining_finishes_at = Carbon::now()->addMinutes(5);
@@ -340,7 +339,7 @@ class MineTest extends SkillTestCase
         $this->setUserCurrentLocation($location, $this->RandomUser);
         $this->setMinerLevel($Mineral->miner_level);
 
-        $Miner = Miner::where('username', $this->RandomUser->username)->where('location', $location)->firstOrFail();
+        $Miner = Miner::where('user_id', $this->RandomUser->id)->where('location', $location)->firstOrFail();
 
         $Miner->mineral_ore = $mineralOre;
         $Miner->mining_finishes_at = Carbon::now()->addMinutes(5);

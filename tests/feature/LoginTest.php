@@ -34,7 +34,7 @@ class LoginTest extends TestCase
     {
         $response = $this->post('/authenticate', [
             'email' => $this->getRandomUser()->email,
-            'password' => 'wertyd456',
+            'password' => 'password',
         ]);
 
         $response->assertSessionHas('_token');

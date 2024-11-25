@@ -14,7 +14,7 @@ trait UserTrait
 
     public function __constructUserTrait()
     {
-        $this->User = User::find(3);
+        $this->User = User::find(1);
         $this->RandomUser = $this->getRandomUser();
     }
 
@@ -23,13 +23,13 @@ trait UserTrait
      */
     public function setUserData(array $user_data, ?int $user_id)
     {
-        $user_id = $user_id ?? 2;
+        $user_id = $user_id ?? 1;
         UserData::where('id', $user_id)->update($user_data);
     }
 
     public function getRandomUser(): User
     {
-        return User::find(3);
+        return User::find(1);
     }
 
     /**

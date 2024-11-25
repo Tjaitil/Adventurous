@@ -45,16 +45,16 @@ class WorkforceLodgeTest extends TestCase
             ->first();
 
         if ($profiency === 'farmer') {
-            UserLevels::where('username', $this->RandomUser->username)
+            UserLevels::where('user_id', $this->RandomUser->id)
                 ->update(['farmer_level' => $LevelData->level]);
 
-            FarmerWorkforce::where('username', $this->RandomUser->username)
+            FarmerWorkforce::where('user_id', $this->RandomUser->id)
                 ->update(['efficiency_level' => $LevelDataUnder->max_efficiency_level]);
         } else {
-            UserLevels::where('username', $this->RandomUser->username)
+            UserLevels::where('user_id', $this->RandomUser->id)
                 ->update(['miner_level' => $LevelData->level]);
 
-            MinerWorkforce::where('username', $this->RandomUser->username)
+            MinerWorkforce::where('user_id', $this->RandomUser->id)
                 ->update(['efficiency_level' => $LevelDataUnder->max_efficiency_level]);
         }
 
@@ -82,16 +82,16 @@ class WorkforceLodgeTest extends TestCase
         $LevelData = LevelData::where('max_efficiency_level', $efficiency_level)->first();
 
         if ($profiency === 'farmer') {
-            UserLevels::where('username', $this->RandomUser->username)
+            UserLevels::where('user_id', $this->RandomUser->id)
                 ->update(['farmer_level' => $LevelData->level]);
 
-            FarmerWorkforce::where('username', $this->RandomUser->username)
+            FarmerWorkforce::where('user_id', $this->RandomUser->id)
                 ->update(['efficiency_level' => $LevelData->max_efficiency_level]);
         } else {
-            UserLevels::where('username', $this->RandomUser->username)
+            UserLevels::where('user_id', $this->RandomUser->id)
                 ->update(['miner_level' => $LevelData->level]);
 
-            MinerWorkforce::where('username', $this->RandomUser->username)
+            MinerWorkforce::where('user_id', $this->RandomUser->id)
                 ->update(['efficiency_level' => $LevelData->max_efficiency_level]);
         }
 

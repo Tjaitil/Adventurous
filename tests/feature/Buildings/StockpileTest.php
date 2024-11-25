@@ -114,6 +114,16 @@ class StockpileTest extends TestCase
 
     public function test_withdraw_item_with_invalid_amount()
     {
+        $Item = Item::inRandomOrder()->limit(1)->first();
+        if (! $Item instanceof Item) {
+            $this->fail('Item not found');
+        }
+        Stockpile::insert([
+            'username' => $this->RandomUser->username,
+            'item' => $Item->name,
+            'amount' => 1,
+        ]);
+
         $StockpileItem = Stockpile::where('username', $this->RandomUser->username)->inRandomOrder()->limit(1)->first();
 
         $response = $this->actingAs($this->RandomUser)
