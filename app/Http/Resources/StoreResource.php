@@ -20,7 +20,7 @@ class StoreResource extends Resource
      *  name?: string,
      *  store_value_modifier?: float,
      *  store_name?: string,
-     *  store_items: array<int, array<string, mixed>>,
+     *  store_items: array<int, array<string, mixed>>|\Illuminate\Database\Eloquent\Collection<int, covariant \Illuminate\Database\Eloquent\Model>,
      *  infinite_amount?: bool,
      *  is_inventorable?: bool,
      * } $resource
