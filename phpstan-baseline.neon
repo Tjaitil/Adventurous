@@ -4945,37 +4945,3 @@ parameters:
 			count: 2
 			path: app/Services/WarriorService.php
 
-		-
-			message: "#^Anonymous function should return Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\> but returns Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<App\\\\Models\\\\MerchantOffer\\>\\.$#"
-			count: 1
-			path: app/Stores/MerchantStore.php
-
-		-
-			message: "#^Method App\\\\Services\\\\LocationService\\:\\:isDiplomacyLocation\\(\\) invoked with 2 parameters, 1 required\\.$#"
-			count: 1
-			path: app/Stores/MerchantStore.php
-
-		-
-			message: "#^Method App\\\\Stores\\\\MerchantStore\\:\\:adjustPriceWhenDiplomacy\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: app/Stores/MerchantStore.php
-
-		-
-			message: "#^Parameter \\#1 \\$resource of static method App\\\\Http\\\\Builders\\\\StoreBuilder\\:\\:create\\(\\) expects array\\{name\\?\\: string, store_value_modifier\\?\\: float, store_name\\?\\: string, store_items\\: array\\<int, array\\<string, mixed\\>\\>, infinite_amount\\?\\: bool, is_inventorable\\?\\: bool\\}\\|null, array\\{store_items\\: Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\} given\\.$#"
-			count: 1
-			path: app/Stores/MerchantStore.php
-
-		-
-			message: "#^Parameter \\#2 \\$price of method App\\\\Http\\\\Builders\\\\StoreBuilder\\:\\:setStoreBuyPriceForItem\\(\\) expects int, float given\\.$#"
-			count: 1
-			path: app/Stores/MerchantStore.php
-
-		-
-			message: "#^Parameter \\#2 \\$value of method App\\\\Http\\\\Builders\\\\StoreBuilder\\:\\:setAdjustedStoreValueForItem\\(\\) expects int, float\\|int given\\.$#"
-			count: 1
-			path: app/Stores/MerchantStore.php
-
-		-
-			message: "#^Parameter \\#1 \\$resource of static method App\\\\Http\\\\Builders\\\\StoreBuilder\\:\\:create\\(\\) expects array\\{name\\?\\: string, store_value_modifier\\?\\: float, store_name\\?\\: string, store_items\\: array\\<int, array\\<string, mixed\\>\\>, infinite_amount\\?\\: bool, is_inventorable\\?\\: bool\\}\\|null, array\\{store_items\\: Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, App\\\\Models\\\\Item\\>\\} given\\.$#"
-			count: 1
-			path: app/Stores/ZinssStore.php
