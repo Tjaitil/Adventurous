@@ -13,7 +13,7 @@ final class StoreBuilder
      *  name?: string,
      *  store_value_modifier?: float,
      *  store_name?: string,
-     *  store_items: array<int, array<string, mixed>>,
+     *  store_items: array<int, array<string, mixed>>|\Illuminate\Database\Eloquent\Collection<int, covariant \Illuminate\Database\Eloquent\Model>,
      *  infinite_amount?: bool,
      *  is_inventorable?: bool,
      * } $resource
@@ -28,7 +28,7 @@ final class StoreBuilder
      *  name?: string,
      *  store_value_modifier?: float,
      *  store_name?: string,
-     *  store_items: array<int, array<string, mixed>>,
+     *  store_items: array<int, array<string, mixed>>|\Illuminate\Database\Eloquent\Collection<int, covariant \Illuminate\Database\Eloquent\Model>,
      *  infinite_amount?: bool,
      *  is_inventorable?: bool,
      * } $resource
@@ -85,8 +85,9 @@ final class StoreBuilder
      *
      * @return void
      */
-    public function setAdjustedStoreValueForItem(string $itemName, int $value)
+    public function setAdjustedStoreValueForItem(string $itemName, int|float $value)
     {
+        $value = (int) $value;
         foreach ($this->resource->store_items as $key => $item) {
             if ($item->name === $itemName) {
                 $item->adjusted_store_value = $value;
