@@ -3,6 +3,8 @@ includes:
     - phpstan-baseline.neon
 
 parameters:
+    tmpDir: tmp
+    phpVersion: 80300
 
     paths:
         - app/
