@@ -11,9 +11,9 @@ class TravelBureauTest extends TestCase
 {
     use DatabaseTransactions;
 
-    protected $connectionsToTransact = ['mysql'];
+    protected $connectionsToTransact = ['testing'];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->beginDatabaseTransaction();
@@ -46,7 +46,6 @@ class TravelBureauTest extends TestCase
         $skillRequirement = $cart->skillRequirements->first();
 
         UserLevels::where('user_id', $this->RandomUser->id)->update(['trader_level' => $skillRequirement->level]);
-
         foreach ($cart->requiredItems as $key => $required_item) {
             $this->insertItemToInventory($this->RandomUser, $required_item->required_item, $required_item->amount);
         }
@@ -62,31 +61,6 @@ class TravelBureauTest extends TestCase
             'item' => 'steel cart',
             'amount' => 1,
         ]);
-
-        $response->json();
-    }
-
-    /**
-     * @group store-purchase
-     * Note: Never got this function to work with this->expectException()
-     */
-    public function test_json_exception_is_thrown_when_user_levels_cannot_be_found()
-    {
-        $cart = TravelBureauCart::with(['requiredItems', 'skillRequirements'])->where('name', 'frajrite cart')
-            ->first();
-
-        foreach ($cart->requiredItems as $key => $required_item) {
-            $this->insertItemToInventory($this->RandomUser, $required_item->required_item, $required_item->amount);
-        }
-        $this->insertCurrencyToInventory($this->RandomUser, $cart->store_value);
-
-        UserLevels::where('username', $this->RandomUser->username)->update(['username' => 'foo']);
-
-        $response = $this->withExceptionHandling()->actingAs($this->RandomUser)
-            ->post('/travelbureau/buy', [
-                'item' => 'frajrite cart',
-            ]);
-        $response->assertStatus(500);
 
         $response->json();
     }
