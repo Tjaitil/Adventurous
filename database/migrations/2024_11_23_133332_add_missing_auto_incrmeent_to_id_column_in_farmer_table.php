@@ -11,9 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('farmer', function (Blueprint $table) {
-            $table->integer('id', true)->unsigned()->change();
+        Schema::dropIfExists('farmer');
+
+        Schema::create('farmer', function (Blueprint $table) {
+            $table->id();
+            $table->string('username');
+            $table->unsignedBigInteger('user_id');
+            $table->integer('fields');
+            $table->string('crop_type')->nullable();
+            $table->integer('crop_quant');
+            $table->timestamp('crop_finishes_at')->nullable();
+            $table->string('location');
         });
+
     }
 
     /**
