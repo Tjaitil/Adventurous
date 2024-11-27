@@ -17,11 +17,11 @@ class MineTest extends SkillTestCase
 {
     use DatabaseTransactions, ExperienceAssertions;
 
-    public $connectionsToTransact = ['mysql'];
+    public $connectionsToTransact = ['testing'];
 
     public MinerWorkforce $MinerWorkforce;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->beginDatabaseTransaction();

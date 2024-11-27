@@ -11,7 +11,7 @@ class PesrConversationTest extends TestCase implements ConversationContract
 {
     use ConversationTester, UserTrait;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
