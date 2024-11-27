@@ -10,9 +10,9 @@ class SmithyTest extends TestCase
 {
     use DatabaseTransactions;
 
-    protected $connectionsToTransact = ['mysql'];
+    protected $connectionsToTransact = ['testing'];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 

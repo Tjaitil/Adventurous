@@ -20,7 +20,6 @@ class DatabaseSeeder extends Seeder
         $this->call(MineralSeeder::class);
         $this->call(CropSeeder::class);
         $this->call(SmithyItemSeeder::class);
-        $this->call(ArmoryItemSeeder::class);
         $this->call(EfficiencyUpgradeSeeder::class);
         $this->call(TravelBureauCartSeeder::class);
         $this->call(SkillRequirementSeeder::class);

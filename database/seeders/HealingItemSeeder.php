@@ -42,7 +42,7 @@ class HealingItemSeeder extends Seeder
             ['item_id' => 221, 'item' => 'healing potion', 'price' => 100, 'heal' => 45, 'bakery_item' => 0],
         ];
 
-        HealingItem::factory()->createMany($healingItems);
+        HealingItem::insert($healingItems);
 
         $healing_items_required = [
             ['item_id' => 20, 'required_item' => 'potato', 'amount' => 1, 'id' => 1],

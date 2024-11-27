@@ -15,13 +15,13 @@ class CropsTest extends SkillTestCase
 {
     use DatabaseTransactions;
 
-    public $connectionsToTransact = ['mysql'];
+    public $connectionsToTransact = ['testing'];
 
     public FarmerWorkforce $FarmerWorkforce;
 
     public Farmer $Farmer;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -257,7 +257,7 @@ class CropsTest extends SkillTestCase
         ]);
 
         $this->assertDatabaseHas('farmer_workforce', [
-            $location => $location,
+            $location => 0,
             'user_id' => $this->RandomUser->id,
             'avail_workforce' => $this->FarmerWorkforce->avail_workforce + 3,
         ]);

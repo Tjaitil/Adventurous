@@ -12,9 +12,9 @@ class WorldLoaderTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public $connectionsToTransact = ['mysql'];
+    public $connectionsToTransact = ['testing'];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->beginDatabaseTransaction();

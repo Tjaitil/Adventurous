@@ -13,7 +13,7 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication, EventAssertions, InventoryTrait, UserLevelsTrait, UserTrait;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->__constructUserTrait();
