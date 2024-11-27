@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read int $warrior_next_level_xp
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LevelData> $nextLevel
  * @property-read int|null $next_level_count
+ *
  * @method static \Database\Factories\UserLevelsFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|UserLevels newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserLevels newQuery()
@@ -43,18 +44,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder|UserLevels whereUsername($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserLevels whereWarriorLevel($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserLevels whereWarriorXp($value)
+ *
  * @mixin \Eloquent
  */
 class UserLevels extends Model
 {
     use HasFactory;
-
-    protected $appends = [
-        'farmer_next_level_xp',
-        'miner_next_level_xp',
-        'trader_next_level_xp',
-        'warrior_next_level_xp',
-    ];
 
     public $timestamps = false;
 
@@ -64,45 +59,5 @@ class UserLevels extends Model
     public function nextLevel(): HasMany
     {
         return $this->hasMany(LevelData::class);
-    }
-
-    /**
-     * Get experience needed for next farmer level
-     *
-     * @return int
-     */
-    public function getFarmerNextLevelXpAttribute()
-    {
-        return LevelData::where('level', $this->farmer_level)->value('next_level');
-    }
-
-    /**
-     * Get experience needed for next miner level
-     *
-     * @return int
-     */
-    public function getMinerNextLevelXpAttribute()
-    {
-        return LevelData::where('level', $this->miner_level)->value('next_level');
-    }
-
-    /**
-     * Get experience needed for next trader level
-     *
-     * @return int
-     */
-    public function getTraderNextLevelXpAttribute()
-    {
-        return LevelData::where('level', $this->trader_level)->value('next_level');
-    }
-
-    /**
-     * Get experience needed for next warrior level
-     *
-     * @return int
-     */
-    public function getWarriorNextLevelXpAttribute()
-    {
-        return LevelData::where('level', $this->warrior_level)->value('next_level');
     }
 }
