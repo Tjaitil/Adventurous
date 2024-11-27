@@ -16,7 +16,9 @@ class HarvestCropsTest extends SkillTestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected $connectionsToTransact = ['testing'];
+
+    protected function setUp(): void
     {
         parent::setUp();
 
