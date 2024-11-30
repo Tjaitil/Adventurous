@@ -53,4 +53,24 @@ class UpdateSkillsTest extends TestCase
             'miner_level' => $CurrentLevel + 1,
         ]);
     }
+
+    public function test_route_doesnt_update_skills()
+    {
+        $response = $this->post('/skills/update');
+        $response->assertStatus(200);
+
+        $response->json();
+
+        $response->assertJsonStructure([
+            'new_levels',
+            'user_levels',
+        ]);
+
+        $this->assertEquals( [], $response['new_levels']);
+
+        $this->assertDatabaseHas('user_levels', [
+            'user_id' => $this->TestUser->id,
+            'miner_level' => $this->TestUserLevels->miner_level,
+        ]);
+    }
 }

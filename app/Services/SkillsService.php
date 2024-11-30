@@ -12,7 +12,6 @@ use App\Models\LevelData;
 use App\Models\UserLevels;
 use Exception;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -143,22 +142,8 @@ class SkillsService
         $this->setUserLevels();
 
         $skills = [];
-        /**
-         * @var Collection<int, LevelData> $LevelData
-         */
-        $LevelData = LevelData::whereIn('level', [
-            $this->userLevels->farmer_level,
-            $this->userLevels->miner_level,
-            $this->userLevels->trader_level,
-            $this->userLevels->warrior_level,
-        ])->get();
 
-        $farmerNextLevelXp = $LevelData->where('level', $this->userLevels->farmer_level)->first()?->next_Level;
-        $minerNextLevelXp = $LevelData->where('level', $this->userLevels->miner_level)->first()?->next_Level;
-        $traderNextLevelXp = $LevelData->where('level', $this->userLevels->trader_level)->first()?->next_Level;
-        $warriorNextLevelXp = $LevelData->where('level', $this->userLevels->warrior_level)->first()?->next_Level;
-
-        if ($this->canLevelUpAction->handle($this->userLevels->farmer_xp, $farmerNextLevelXp)) {
+        if ($this->canLevelUpAction->handle($this->userLevels->farmer_xp, $this->userLevels->farmer_next_level_xp)) {
 
             $this->userLevels->farmer_level = $this->getNextLevelFromExperience($this->userLevels->farmer_xp);
             $skills[] = [
@@ -167,7 +152,7 @@ class SkillsService
             ];
         }
 
-        if ($this->canLevelUpAction->handle($this->userLevels->miner_xp, $minerNextLevelXp)) {
+        if ($this->canLevelUpAction->handle($this->userLevels->miner_xp, $this->userLevels->miner_next_level_xp)) {
 
             $this->userLevels->miner_level = $this->getNextLevelFromExperience($this->userLevels->miner_xp);
             $skills[] = [
@@ -176,7 +161,7 @@ class SkillsService
             ];
         }
 
-        if ($this->canLevelUpAction->handle($this->userLevels->trader_xp, $traderNextLevelXp)) {
+        if ($this->canLevelUpAction->handle($this->userLevels->trader_xp, $this->userLevels->trader_next_level_xp)) {
 
             $this->userLevels->trader_level = $this->getNextLevelFromExperience($this->userLevels->trader_xp);
             $skills[] = [
@@ -185,7 +170,7 @@ class SkillsService
             ];
         }
 
-        if ($this->canLevelUpAction->handle($this->userLevels->warrior_xp, $warriorNextLevelXp)) {
+        if ($this->canLevelUpAction->handle($this->userLevels->warrior_xp, $this->userLevels->warrior_next_level_xp)) {
 
             $this->userLevels->warrior_level = $this->getNextLevelFromExperience($this->userLevels->warrior_xp);
             $skills[] = [

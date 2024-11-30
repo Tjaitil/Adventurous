@@ -29,4 +29,14 @@ use Illuminate\Database\Eloquent\Model;
 class LevelData extends Model
 {
     public $timestamps = false;
+
+    public static function getNextLevelXp(int $level): ?int
+    {
+        $nextLevel = self::where('level', $level)->first();
+        if (! $nextLevel instanceof self) {
+            return null;
+        }
+
+        return $nextLevel->next_Level;
+    }
 }

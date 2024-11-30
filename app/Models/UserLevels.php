@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * App\Models\UserLevels
@@ -21,43 +21,83 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $warrior_level
  * @property int $warrior_xp
  * @property int|null $user_id
- * @property-read int $farmer_next_level_xp
- * @property-read int $miner_next_level_xp
- * @property-read int $trader_next_level_xp
- * @property-read int $warrior_next_level_xp
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LevelData> $nextLevel
- * @property-read int|null $next_level_count
- *
+ * @property-read mixed $farmer_next_level_xp
+ * @property-read mixed $miner_next_level_xp
+ * @property-read mixed $trader_next_level_xp
+ * @property-read mixed $warrior_next_level_xp
  * @method static \Database\Factories\UserLevelsFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder|UserLevels newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|UserLevels newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|UserLevels query()
- * @method static \Illuminate\Database\Eloquent\Builder|UserLevels whereAdventurerRespect($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserLevels whereFarmerLevel($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserLevels whereFarmerXp($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserLevels whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserLevels whereMinerLevel($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserLevels whereMinerXp($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserLevels whereTraderLevel($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserLevels whereTraderXp($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserLevels whereUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserLevels whereUsername($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserLevels whereWarriorLevel($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserLevels whereWarriorXp($value)
- *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserLevels newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserLevels newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserLevels query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserLevels whereAdventurerRespect($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserLevels whereFarmerLevel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserLevels whereFarmerXp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserLevels whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserLevels whereMinerLevel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserLevels whereMinerXp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserLevels whereTraderLevel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserLevels whereTraderXp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserLevels whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserLevels whereUsername($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserLevels whereWarriorLevel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserLevels whereWarriorXp($value)
  * @mixin \Eloquent
  */
 class UserLevels extends Model
 {
+    /** @use HasFactory<\Database\Factories\UserLevelsFactory> */
     use HasFactory;
 
     public $timestamps = false;
 
     /**
-     * @return HasMany<LevelData>
+     * @var list<string>
      */
-    public function nextLevel(): HasMany
+    protected $appends = [
+        'farmer_next_level_xp',
+        'trader_next_level_xp',
+        'miner_next_level_xp',
+        'warrior_next_level_xp',
+    ];
+
+    /**
+     * @return Attribute<int, never>
+     */
+    protected function farmerNextLevelXp(): Attribute
     {
-        return $this->hasMany(LevelData::class);
+        return Attribute::make(
+            get: fn () => LevelData::getNextLevelXp($this->farmer_level),
+        );
+    }
+
+    /**
+     * @return Attribute<int|null, never>
+     */
+    protected function minerNextLevelXp(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => LevelData::getNextLevelXp($this->miner_level),
+        );
+    }
+
+    /**
+     * @return Attribute<int|null, never>
+     */
+    protected function traderNextLevelXp(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => LevelData::getNextLevelXp($this->trader_level),
+
+        );
+    }
+
+    /**
+     * @return Attribute<int|null, never>
+     */
+    protected function warriorNextLevelXp(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => LevelData::getNextLevelXp($this->warrior_level),
+        );
     }
 }
