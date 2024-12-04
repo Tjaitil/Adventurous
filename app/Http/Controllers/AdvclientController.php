@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Diplomacy;
 use App\Models\Hunger;
+use App\Models\Inventory;
 use App\Models\UserData;
 use App\Models\UserLevels;
 use App\Services\InventoryService;
@@ -16,8 +17,7 @@ class AdvclientController extends Controller
     public function __construct(
         private InventoryService $inventoryService,
         private ProfiencyService $profiencyService,
-    ) {
-    }
+    ) {}
 
     /**
      * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse
@@ -38,7 +38,7 @@ class AdvclientController extends Controller
             ->with('Levels', UserLevels::where('username', Auth::user()->username)->first()?->toArray())
             ->with('profiency', $user_data->profiency)
             ->with('Hunger', Hunger::where('user_id', Auth::user()->id)->first())
-            ->with('Inventory', $this->inventoryService->getInventory())
+            ->with('Inventory', Inventory::where('user_id', Auth::user()->id)->get())
             ->with('profiency_status', $this->profiencyService->calculateProfienciesStatuses())
             ->with('Diplomacy', Diplomacy::where('username', Auth::user()->username)->get()->toArray())
             ->with('map_location', UserData::where('username', Auth::user()->username)->first()?->map_location);

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Responses\AdvResponse;
+use App\Models\User;
 use App\Services\GameLogService;
 use App\Services\StoreService;
 use App\Stores\ZinssStore;
+use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -21,9 +23,9 @@ class ZinsstoreController extends Controller
     /**
      * @return View|Factory
      */
-    public function index()
+    public function index(#[CurrentUser] User $User)
     {
-        $storeResource = $this->zinssStore->getStore();
+        $storeResource = $this->zinssStore->makeStore($User);
 
         return view('zinsstore')
             ->with('title', 'Zins Store')
@@ -33,22 +35,24 @@ class ZinsstoreController extends Controller
     /**
      * @return JsonResponse
      */
-    public function getStoreItems()
+    public function getStoreItems(#[CurrentUser] User $User)
     {
-        return $this->zinssStore->getStoreItemsResponse();
+        $store = $this->zinssStore->makeStore($User);
+
+        return $this->zinssStore->toStoreItemResponse($store);
     }
 
     /**
      * @return JsonResponse|AdvResponse
      */
-    public function sellItem(Request $request)
+    public function sellItem(#[CurrentUser] User $User, Request $request)
     {
         $item = $request->input('item');
         $amount = $request->integer('amount');
 
-        $initial_store = $this->zinssStore->makeStore([$item]);
+        $initial_store = $this->zinssStore->makeStore($User, [$item]);
         $this->storeService->storeBuilder->setResource($initial_store);
-        $result = $this->storeService->sellItem($item, $amount);
+        $result = $this->storeService->sellItem($User->inventory, $item, $amount, $User->id);
         if (! is_array($result)) {
             return $result;
         } else {

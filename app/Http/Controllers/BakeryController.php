@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Responses\AdvResponse;
+use App\Models\User;
 use App\Services\GameLogService;
 use App\Services\StoreService;
 use App\Stores\BakeryStore;
+use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -22,9 +24,9 @@ class BakeryController extends Controller
     /**
      * @return void
      */
-    public function index()
+    public function index(#[CurrentUser] User $User)
     {
-        $storeResource = $this->bakeryStore->getStore();
+        $storeResource = $this->bakeryStore->makeStore($User);
 
         return view('bakery')
             ->with('title', 'Bakery')
@@ -35,23 +37,25 @@ class BakeryController extends Controller
     /**
      * @return JsonResponse
      */
-    public function getStoreItems()
+    public function getStoreItems(#[CurrentUser] User $User)
     {
-        return $this->bakeryStore->getStoreItemsResponse();
+        $store = $this->bakeryStore->makeStore($User);
+
+        return $this->bakeryStore->toStoreItemResponse($store);
     }
 
     /**
      * @return JsonResponse|AdvResponse
      */
-    public function makeItem(Request $request)
+    public function makeItem(#[CurrentUser] User $User, Request $request)
     {
         $item = $request->input('item');
         $amount = $request->integer('amount');
 
-        $initial_store = $this->bakeryStore->makeStore();
+        $initial_store = $this->bakeryStore->makeStore($User);
         $this->storeService->storeBuilder->setResource($initial_store);
 
-        $result = $this->storeService->buyItem($item, $amount);
+        $result = $this->storeService->buyItem($User->inventory, $item, $amount, $User->id);
         if (! is_array($result)) {
             return $result;
         } else {

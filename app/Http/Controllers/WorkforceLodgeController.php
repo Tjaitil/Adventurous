@@ -8,11 +8,13 @@ use App\Http\Responses\AdvResponse;
 use App\Models\EfficiencyUpgrade;
 use App\Models\FarmerWorkforce;
 use App\Models\MinerWorkforce;
+use App\Models\User;
 use App\Models\UserLevels;
 use App\Services\GameLogService;
 use App\Services\InventoryService;
 use App\Services\LevelDataService;
 use App\Services\SkillsService;
+use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -58,7 +60,7 @@ class WorkforceLodgeController extends Controller
     /**
      * @return \App\Http\Responses\AdvResponse|\Illuminate\Http\JsonResponse
      */
-    public function upgradeEfficiency(Request $request)
+    public function upgradeEfficiency(#[CurrentUser] User $User, Request $request)
     {
         $skill = $request->input('skill');
 
@@ -93,7 +95,7 @@ class WorkforceLodgeController extends Controller
 
         $price = EfficiencyUpgrade::where('level', $Workforce->efficiency_level)->first()->price;
 
-        if (! $this->inventoryService->hasEnoughAmount(config('adventurous.currency'), $price)) {
+        if (! $this->inventoryService->hasEnoughAmount($User->inventory, config('adventurous.currency'), $price, $User->id)) {
             return $this->inventoryService->logNotEnoughAmount(config('adventurous.currency'));
         }
 

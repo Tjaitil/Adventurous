@@ -3,47 +3,23 @@
 namespace App\Services;
 
 use App\Models\Hunger;
-use Illuminate\Support\Facades\Auth;
 
 class HungerService
 {
-    private ?Hunger $Hunger;
-
-    private function getHunger(): void
-    {
-        if (! isset($this->Hunger)) {
-            $this->Hunger = Hunger::find(Auth::user()->id);
-        }
-    }
-
     /**
      * Get hunger
      */
-    public function getCurrentHunger(): int
+    public function getCurrentHunger(int $userId): Hunger
     {
-        $this->getHunger();
-
-        return $this->Hunger->current;
-    }
-
-    /**
-     * Get hunger data
-     */
-    public function getHungerData(): ?Hunger
-    {
-        $this->getHunger();
-
-        return $this->Hunger;
+        return Hunger::find($userId)->first();
     }
 
     /**
      * Check if hunger is too low for action
      */
-    public function isHungerTooLow(): bool
+    public function isHungerTooLow(Hunger $Hunger): bool
     {
-        $this->getHunger();
-
-        if ($this->Hunger->current < 10) {
+        if ($Hunger->current < 10) {
             return true;
         } else {
             return false;
@@ -61,40 +37,38 @@ class HungerService
 
     /**
      * Set new hunger based on action
-     *
-     * @param  'skill'  $action
      */
-    public function setNewHunger(string $action): void
+    public function setNewHunger(Hunger $Hunger, string $action): void
     {
         if ($action === 'skill') {
-            $this->decreaseHunger(10);
+            $this->decreaseHunger($Hunger, 10);
         }
     }
 
-    public function setHungerForSkillAction(): void
+    public function setHungerForSkillAction(Hunger $Hunger): void
     {
-        $this->setNewHunger('skill');
+        $this->setNewHunger($Hunger, 'skill');
     }
 
-    public function updateHunger(int $new_hunger): void
+    public function updateHunger(Hunger $Hunger, int $adjustBy): Hunger
     {
-        $this->getHunger();
-
-        $this->Hunger->current = $new_hunger;
-        if ($this->Hunger->current > 100) {
-            $this->Hunger->current = 100;
+        $Hunger->current += $adjustBy ;
+        if ($Hunger->current > 100) {
+            $Hunger->current = 100;
         }
 
-        $this->Hunger->save();
+        $Hunger->save();
+
+        return $Hunger;
     }
 
-    public function decreaseHunger(int $amount): void
+    public function decreaseHunger(Hunger $Hunger, int $amount): Hunger
     {
-        $this->updateHunger($this->Hunger->current + $amount);
+        return $this->updateHunger($Hunger, +$amount);
     }
 
-    public function increaseHunger(int $amount): void
+    public function increaseHunger(Hunger $Hunger, int $amount): Hunger
     {
-        $this->updateHunger($this->Hunger->current - $amount);
+        return $this->updateHunger($Hunger, -$amount);
     }
 }

@@ -6,10 +6,12 @@ use App\Exceptions\JsonException;
 use App\Http\Responses\AdvResponse;
 use App\Models\Trader;
 use App\Models\TravelBureauCart;
+use App\Models\User;
 use App\Services\GameLogService;
 use App\Services\SessionService;
 use App\Services\StoreService;
 use App\Stores\TravelBureauStore;
+use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -27,10 +29,10 @@ class TravelBureauController extends Controller
     /**
      * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
      */
-    public function index()
+    public function index(#[CurrentUser] User $User)
     {
         $current_cart = Trader::where('username', $this->sessionService->getCurrentUsername())->first()?->cart;
-        $store_resource = $this->travelBureauStore->getStore();
+        $store_resource = $this->travelBureauStore->makeStore($User);
 
         return view('travelbureau')
             ->with('title', 'Travel Bureau')
@@ -41,9 +43,11 @@ class TravelBureauController extends Controller
     /**
      * @return JsonResponse
      */
-    public function getStoreItems()
+    public function getStoreItems(#[CurrentUser] User $User)
     {
-        return $this->travelBureauStore->getStoreItemsResponse();
+        $store = $this->travelBureauStore->makeStore($User);
+
+        return $this->travelBureauStore->toStoreItemResponse($store);
     }
 
     /**
@@ -51,7 +55,7 @@ class TravelBureauController extends Controller
      *
      * @throws \Exception|JsonException
      */
-    public function buyCart(Request $request)
+    public function buyCart(#[CurrentUser] User $User, Request $request)
     {
         $item = $request->string('item');
 
@@ -67,10 +71,10 @@ class TravelBureauController extends Controller
                 ->toResponse($request);
         }
 
-        $initial_store = $this->travelBureauStore->makeStore([$item]);
+        $initial_store = $this->travelBureauStore->makeStore($User, [$item]);
         $this->storeService->storeBuilder->setResource($initial_store);
 
-        $result = $this->storeService->buyItem($item, 1);
+        $result = $this->storeService->buyItem($User->inventory, $item, 1, $User->id);
         if ($result !== true) {
             return $result;
         }

@@ -72,14 +72,14 @@ class SmithyTest extends TestCase
         $response->json();
 
         $this->assertDatabaseHas('inventory', [
-            'username' => $this->RandomUser->username,
+            'user_id' => $this->RandomUser->id,
             'item' => $SmithyItem->item,
             'amount' => $amount * $SmithyItem->item_multiplier,
         ]);
 
         foreach ($RequiredItems as $key => $RequiredItem) {
             $this->assertDatabaseHas('inventory', [
-                'username' => $this->RandomUser->username,
+                'user_id' => $this->RandomUser->id,
                 'item' => $RequiredItem->required_item,
                 'amount' => 2,
             ]);

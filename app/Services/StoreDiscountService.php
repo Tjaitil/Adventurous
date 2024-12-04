@@ -3,25 +3,21 @@
 namespace App\Services;
 
 use App\Models\StoreDiscount;
+use App\Models\User;
 
 class StoreDiscountService
 {
-    public function __construct(public SessionService $sessionService)
-    {
-    }
-
+    public function __construct(public SessionService $sessionService) {}
 
     /**
-     * 
-     * @param string $storeName 
-     * @return float 
+     * @return float
      */
-    public function getDiscount(string $storeName)
+    public function getDiscount(string $storeName, User $User)
     {
         $StoreDiscount = StoreDiscount::where('store', $storeName)->first();
-        if (\is_null($StoreDiscount) || !$StoreDiscount instanceof StoreDiscount) {
+        if (\is_null($StoreDiscount) || ! $StoreDiscount instanceof StoreDiscount) {
             return 1.00;
-        } else if ($this->sessionService->isProfiency($StoreDiscount->profiency)) {
+        } elseif ($User->player->profiency === $StoreDiscount->profiency) {
             return $StoreDiscount->discount;
         } else {
             return 1.00;

@@ -79,7 +79,7 @@ class HungerTest extends TestCase
         $response->json();
 
         $this->assertDatabaseHas('inventory', [
-            'username' => $this->RandomUser->username,
+            'user_id' => $this->RandomUser->id,
             'item' => $HealingItem->item,
             'amount' => 2,
         ]);

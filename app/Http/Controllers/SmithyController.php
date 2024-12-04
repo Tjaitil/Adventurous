@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Responses\AdvResponse;
+use App\Models\User;
 use App\Services\GameLogService;
 use App\Services\StoreService;
 use App\Stores\SmithyStore;
+use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -21,9 +23,9 @@ class SmithyController extends Controller
     /**
      * @return View|Factory
      */
-    public function index()
+    public function index(#[CurrentUser] User $User)
     {
-        $storeResource = $this->smithyStore->makeStore();
+        $storeResource = $this->smithyStore->makeStore($User);
 
         return view('smithy')
             ->with('title', 'Smithy')
@@ -31,23 +33,25 @@ class SmithyController extends Controller
             ->with('store_resource', $storeResource);
     }
 
-    public function getStoreItems(): JsonResponse
+    public function getStoreItems(#[CurrentUser] User $User): JsonResponse
     {
-        return $this->smithyStore->getStoreItemsResponse();
+        $store = $this->smithyStore->makeStore($User);
+
+        return $this->smithyStore->toStoreItemResponse($store);
     }
 
     /**
      * @return JsonResponse|AdvResponse
      */
-    public function smithItem(Request $request)
+    public function smithItem(#[CurrentUser] User $User, Request $request)
     {
         $item = $request->input('item');
         $amount = $request->integer('amount');
 
-        $initial_store = $this->smithyStore->makeStore();
+        $initial_store = $this->smithyStore->makeStore($User);
         $this->storeService->storeBuilder->setResource($initial_store);
 
-        $result = $this->storeService->buyItem($item, $amount);
+        $result = $this->storeService->buyItem($User->inventory, $item, $amount, $User->id);
         if (! is_array($result)) {
             return $result;
         } else {

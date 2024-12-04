@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Http\Builders\StoreBuilder;
 use App\Http\Resources\StoreItemResource;
 use App\Http\Responses\AdvResponse;
+use App\Models\Inventory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 
@@ -31,11 +33,11 @@ class StoreService
     /**
      * Return true on success otherwise a jsonResponse
      *
+     * @param  Collection<int, Inventory>  $Inventory
      * @return JsonResponse|AdvResponse|array{'totalPrice': int, 'totalAmount': int}
      */
-    public function buyItem(string $item, int $amount)
+    public function buyItem(Collection $Inventory, string $item, int $amount, int $userId)
     {
-
         try {
             $store_item = $this->getStoreItem($item);
 
@@ -50,32 +52,35 @@ class StoreService
             }
             foreach ($store_item->required_items as $key => $value) {
                 if (! $this->inventoryService->hasEnoughAmount(
+                    $Inventory,
                     $value->name,
-                    $value->amount * $amount
+                    $value->amount * $amount,
                 )) {
                     return $this->inventoryService->logNotEnoughAmount($value->name);
                 }
             }
 
             foreach ($store_item->required_items as $key => $value) {
-                $this->inventoryService->edit($value->name, -$value->amount * $amount);
+                $this->inventoryService->edit($Inventory, $value->name, -$value->amount * $amount, $userId);
             }
 
-            if (! $this->inventoryService->hasEnoughAmount(config('adventurous.currency'), $store_item->store_value)) {
+            if (! $this->inventoryService->hasEnoughAmount($Inventory, config('adventurous.currency'), $store_item->store_value)) {
                 return $this->inventoryService->logNotEnoughAmount(config('adventurous.currency'));
             } else {
                 $totalPrice = $this->calculateItemCost($store_item, $amount);
 
                 $this->inventoryService
                     ->edit(
+                        $Inventory,
                         config('adventurous.currency'),
-                        -$this->calculateItemCost($store_item, $amount)
+                        -$this->calculateItemCost($store_item, $amount),
+                        $userId
                     );
             }
 
             $totalAmount = $amount * $store_item->item_multiplier;
             if ($this->storeBuilder->build()->is_inventorable === true) {
-                $this->inventoryService->edit($store_item->name, $totalAmount);
+                $this->inventoryService->edit($Inventory, $store_item->name, $totalAmount, $userId);
             }
 
             return ['totalPrice' => $totalPrice, 'totalAmount' => $totalAmount];
@@ -86,9 +91,10 @@ class StoreService
     }
 
     /**
+     * @param  Collection<int, Inventory>  $Inventory
      * @return JsonResponse|array{'totalPrice': int}|AdvResponse
      */
-    public function sellItem(string $item, int $amount)
+    public function sellItem(Collection $Inventory, string $item, int $amount, int $userId)
     {
         try {
             $store_item = $this->getStoreItem($item);
@@ -103,20 +109,23 @@ class StoreService
                     ->toResponse(request());
             }
 
-            if (! $this->inventoryService->hasEnoughAmount($store_item->name, $amount)) {
+            if (! $this->inventoryService->hasEnoughAmount($Inventory, $store_item->name, $amount)) {
                 return $this->inventoryService->logNotEnoughAmount($store_item->name);
             }
 
-            $this->inventoryService->edit($store_item->name, -$amount);
+            $this->inventoryService->edit($Inventory, $store_item->name, -$amount, $userId);
 
             $totalPrice = $this->calculateItemCost($store_item, $amount);
             $this->inventoryService->edit(
+                $Inventory,
                 config('adventurous.currency'),
                 $totalPrice,
+                $userId
             );
 
             return ['totalPrice' => $totalPrice];
         } catch (\Exception $e) {
+
             return (new AdvResponse([], 500))
                 ->addMessage(GameLogService::addErrorLog('Something went wrong'));
         }
@@ -172,8 +181,10 @@ class StoreService
 
     /**
      * Log that item is not a store item
+     *
+     * @param  Collection<int, Inventory>  $Inventory
      */
-    public function hasRequiredItems(string $name, int $amount = 1): bool
+    public function hasRequiredItems(Collection $Inventory, string $name, int $amount): bool
     {
         $result = true;
         $store_item = $this->getStoreItem($name);
@@ -182,7 +193,7 @@ class StoreService
         }
 
         foreach ($store_item->required_items as $key => $value) {
-            if (! $this->inventoryService->hasEnoughAmount($value->name, $value->amount * $amount)) {
+            if (! $this->inventoryService->hasEnoughAmount($Inventory, $value->name, $value->amount * $amount)) {
                 $result = false;
                 break;
             }

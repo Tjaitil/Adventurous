@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -17,21 +18,24 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property string|null $remember_token
  * @property \Carbon\CarbonInterface|null $created_at
  * @property \Carbon\CarbonInterface|null $updated_at
- * @property-read \App\Models\UserData|null $player
- * @property-read \App\Models\UserData|null $userData
+ * @property-read \App\Models\Hunger $hunger
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Inventory> $inventory
+ * @property-read int|null $inventory_count
+ * @property-read \App\Models\UserData $player
+ * @property-read \App\Models\UserData $userData
  * @property-read \App\Models\UserLevels|null $userLevels
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|User query()
- * @method static \Illuminate\Database\Eloquent\Builder|User whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereEmailVerifiedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User wherePassword($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereRememberToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereUsername($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmailVerifiedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePassword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUsername($value)
  * @mixin \Eloquent
  */
 class User extends Authenticatable
@@ -48,26 +52,42 @@ class User extends Authenticatable
     ];
 
     /**
-     * @return HasOne<UserData>
+     * @return HasOne<UserData, $this>
      */
     public function userData(): HasOne
     {
-        return $this->hasOne(UserData::class, 'username', 'username');
+        return $this->hasOne(UserData::class, 'username', 'username')->withDefault();
     }
 
     /**
-     * @return HasOne<UserData>
+     * @return HasOne<UserData, $this>
      */
     public function player(): HasOne
     {
-        return $this->userData();
+        return $this->hasOne(UserData::class, 'username', 'username')->withDefault();
     }
 
     /**
-     * @return HasOne<UserLevels>
+     * @return HasOne<UserLevels, $this>
      */
     public function userLevels(): HasOne
     {
         return $this->hasOne(UserLevels::class);
+    }
+
+    /**
+     * @return HasMany<Inventory, User>
+     */
+    public function inventory(): HasMany
+    {
+        return $this->hasMany(Inventory::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne<\App\Models\Hunger, $this>
+     */
+    public function hunger(): HasOne
+    {
+        return $this->hasOne(Hunger::class)->withDefault();
     }
 }

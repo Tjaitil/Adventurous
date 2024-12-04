@@ -3,20 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Enums\SkillNames;
+use App\libs\controller;
 use App\libs\Request;
 use App\libs\Response;
-use App\libs\controller;
-use App\Services\HungerService;
-use App\Services\SkillsService;
-use App\Services\SessionService;
 use App\libs\TemplateFetcher;
 use App\Models\Trader;
 use App\Models\TraderAssignment;
 use App\Models\TraderAssignmentType;
 use App\Services\DiplomacyService;
+use App\Services\HungerService;
 use App\Services\InventoryService;
 use App\Services\LocationService;
+use App\Services\SessionService;
+use App\Services\SkillsService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class TraderAssignmentController extends controller
 {
@@ -35,14 +36,11 @@ class TraderAssignmentController extends controller
     public function getAssignmentCountdown()
     {
         $Trader = Trader::where('username', $this->sessionService->getCurrentUsername())->first();
+
         return Response::addData('traderAssigmentCountdown', $Trader->trading_countdown->timestamp);
     }
 
-
-
     /**
-     * 
-     * @param \App\libs\Request $request 
      * @return Response
      */
     public function newAssignment(Request $request)
@@ -57,17 +55,16 @@ class TraderAssignmentController extends controller
             return $this->hungerService->logHungerTooLow();
         }
         if ($Trader->assignment_id !== 0) {
-            return Response::addMessage("You already have an assignment");
+            return Response::addMessage('You already have an assignment');
         }
 
         if (is_null($TraderAssignment)) {
-            return Response::addMessage("The assignment is not valid")->setStatus(422);
-        } else if ($TraderAssignment->type->required_level > $this->skillsService->userLevels->trader_level) {
+            return Response::addMessage('The assignment is not valid')->setStatus(422);
+        } elseif ($TraderAssignment->type->required_level > $this->skillsService->userLevels->trader_level) {
             return Response::addMessage("You don't have the required level to do this assignment")->setStatus(422);
-        } else if ($TraderAssignment->base !== $this->sessionService->getLocation()) {
+        } elseif ($TraderAssignment->base !== $this->sessionService->getLocation()) {
             return Response::addMessage(WRONG_LOCATION_ERROR)->setStatus(400);
         }
-
 
         $Trader->assignment_id = $assignment_id;
         $Trader->trading_countdown = Carbon::now()->addMinutes($TraderAssignment->assignment_time);
@@ -77,25 +74,20 @@ class TraderAssignmentController extends controller
         $this->skillsService->updateTraderXP($TraderAssignment->type->xp_started)->updateSkills();
         $this->hungerService->setHungerForSkillAction();
 
-
         $blade = $this->bladeRender->run(
             'templates.traderAssignment_tpl',
             ['CurrentAssignment' => $TraderAssignment, 'Trader' => $Trader]
         );
 
-        return Response::addMessage("Assignment started!")
+        return Response::addMessage('Assignment started!')
             ->addTemplate(
                 'TraderAssignment',
                 $blade,
             );
     }
 
-
-
     /**
-     * 
-     * @param \App\libs\Request $request 
-     * @param mixed $inventoryService 
+     * @param  mixed  $inventoryService
      * @return Response
      */
     public function updateAssignment(Request $request, $inventoryService)
@@ -117,7 +109,7 @@ class TraderAssignmentController extends controller
                 $this->sessionService->getLocation() !==
                 $TraderAssignment->destination
             ) {
-                return Response::addMessage("You are in the wrong location to deliver items")->setStatus(422);
+                return Response::addMessage('You are in the wrong location to deliver items')->setStatus(422);
             }
             // If user doesn't have any items to deliver
             if ($Trader->cart_amount === 0) {
@@ -139,7 +131,8 @@ class TraderAssignmentController extends controller
                 if ($TraderAssignment->assignment_type === TraderAssignmentType::$FAVOR_TYPE) {
                     $this->diplomacyService->setNewDiplomacy(
                         $this->sessionService->getLocation(),
-                        $TraderAssignment->type->diplomacy_percentage
+                        $TraderAssignment->type->diplomacy_percentage,
+                        Auth::user()->id
                     );
                 } else {
                     if ($this->sessionService->isProfiency(SkillNames::TRADER->value)) {
@@ -152,7 +145,7 @@ class TraderAssignmentController extends controller
 
                     $this->inventoryService->edit($item, $amount);
                     Response::addMessage(
-                        sprintf("You got %d of %s for completing the trader assignment", $amount, $item)
+                        sprintf('You got %d of %s for completing the trader assignment', $amount, $item)
                     );
                     $Trader->delivered = 0;
                     $Trader->assignment_id = 0;
@@ -170,14 +163,14 @@ class TraderAssignmentController extends controller
 
             $this->skillsService->updateSkills();
             $return_data = [
-                "isAssignmentFinished" => $is_assignment_finished,
-                "delivered" => $Trader->delivered,
+                'isAssignmentFinished' => $is_assignment_finished,
+                'delivered' => $Trader->delivered,
             ];
 
             Response::setData($return_data);
         } else {
             if ($Trader->cart_amount === $Trader->cart->capasity) {
-                return Response::addMessage("Your cart is full. Empty before picking up")->setStatus(422);
+                return Response::addMessage('Your cart is full. Empty before picking up')->setStatus(422);
             }
 
             // Check location
@@ -185,13 +178,13 @@ class TraderAssignmentController extends controller
                 $this->sessionService->getLocation() !==
                 $TraderAssignment->base
             ) {
-                return Response::addMessage("You are in the wrong location to pick up items")->setStatus(422);
+                return Response::addMessage('You are in the wrong location to pick up items')->setStatus(422);
             }
 
             $Trader->cart_amount = $Trader->cart->capasity;
 
             $return_data = [
-                "cartAmount" => $Trader->cart_amount,
+                'cartAmount' => $Trader->cart_amount,
             ];
 
             Response::setData($return_data);

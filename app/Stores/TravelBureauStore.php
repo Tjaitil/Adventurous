@@ -5,6 +5,7 @@ namespace App\Stores;
 use App\Abstracts\AbstractStore;
 use App\Http\Resources\StoreResource;
 use App\Models\TravelBureauCart;
+use App\Models\User;
 
 class TravelBureauStore extends AbstractStore
 {
@@ -13,7 +14,7 @@ class TravelBureauStore extends AbstractStore
         parent::__construct();
     }
 
-    public function makeStore(array $items = []): StoreResource
+    public function makeStore(User $User, array $items = []): StoreResource
     {
         $items = TravelBureauCart::with('requiredItems', 'skillRequirements')
             ->when(count($items) > 0, fn ($query) => $query->whereIn('name', $items))
