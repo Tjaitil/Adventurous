@@ -60,14 +60,14 @@ class BakeryTest extends TestCase
         $response->json();
 
         $this->assertDatabaseHas('inventory', [
-            'username' => $this->RandomUser->username,
+            'user_id' => $this->RandomUser->id,
             'item' => $HealingItem->item,
             'amount' => $amount,
         ]);
 
         foreach ($RequiredItems as $key => $RequiredItem) {
             $this->assertDatabaseHas('inventory', [
-                'username' => $this->RandomUser->username,
+                'user_id' => $this->RandomUser->id,
                 'item' => $RequiredItem->required_item,
                 'amount' => 2,
             ]);
