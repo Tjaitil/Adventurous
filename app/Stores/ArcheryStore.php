@@ -5,6 +5,7 @@ namespace App\Stores;
 use App\Abstracts\AbstractStore;
 use App\Http\Resources\StoreResource;
 use App\Models\ArcheryShopItem;
+use App\Models\User;
 use App\Services\StoreDiscountService;
 
 class ArcheryStore extends AbstractStore
@@ -14,7 +15,7 @@ class ArcheryStore extends AbstractStore
         parent::__construct();
     }
 
-    public function makeStore(array $items = []): StoreResource
+    public function makeStore(User $User, array $items = []): StoreResource
     {
 
         $items = ArcheryShopItem::with('requiredItems')
@@ -37,7 +38,7 @@ class ArcheryStore extends AbstractStore
             });
 
         return $this->StoreResource = $this->storeBuilder::create(['store_items' => $items->toArray()])
-            ->setAdjustedStoreValue($this->storeDiscountService->getDiscount('archeryShop'))
+            ->setAdjustedStoreValue($this->storeDiscountService->getDiscount('archeryShop', $User))
             ->setStoreName('archeryShop')
             ->setInfiniteAmount(true)
             ->build();

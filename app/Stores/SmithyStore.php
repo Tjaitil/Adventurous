@@ -5,6 +5,7 @@ namespace App\Stores;
 use App\Abstracts\AbstractStore;
 use App\Http\Resources\StoreResource;
 use App\Models\SmithyItem;
+use App\Models\User;
 use App\Services\StoreDiscountService;
 
 class SmithyStore extends AbstractStore
@@ -15,7 +16,7 @@ class SmithyStore extends AbstractStore
         parent::__construct();
     }
 
-    public function makeStore(array $items = []): StoreResource
+    public function makeStore(User $User, array $items = []): StoreResource
     {
         $items = SmithyItem::with('requiredItems')
             ->when(count($items) > 0, fn ($query) => $query->whereIn('item', $items))
@@ -33,7 +34,7 @@ class SmithyStore extends AbstractStore
         });
 
         return $this->StoreResource = $this->storeBuilder::create(['store_items' => $items->toArray()])
-            ->setAdjustedStoreValue($this->storeDiscountService->getDiscount('smithy'))
+            ->setAdjustedStoreValue($this->storeDiscountService->getDiscount('smithy', $User))
             ->setStoreName('smithy')
             ->setInfiniteAmount(true)
             ->build();

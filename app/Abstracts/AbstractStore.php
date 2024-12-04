@@ -4,6 +4,7 @@ namespace App\Abstracts;
 
 use App\Http\Builders\StoreBuilder;
 use App\Http\Resources\StoreResource;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 
 abstract class AbstractStore
@@ -18,28 +19,13 @@ abstract class AbstractStore
     }
 
     /**
-     *
-     * @param array<int,mixed> $items
-     *
-     * @return \App\Http\Resources\StoreResource
+     * @param  array<int,mixed>  $items
      */
-    abstract public function makeStore(array $items = []): StoreResource;
+    abstract public function makeStore(User $User, array $items = []): StoreResource;
 
-    /**
-     * @return StoreResource
-     */
-    public function getStore()
+    public function toStoreItemResponse(StoreResource $StoreResource): JsonResponse
     {
-        if (\is_null($this->StoreResource)) {
-            $this->StoreResource = $this->makeStore();
-        }
-
-        return $this->StoreResource;
-    }
-
-    public function getStoreItemsResponse(): JsonResponse
-    {
-        $data = ['store_items' => $this->getStore()->toArray()['store_items']];
+        $data = ['store_items' => $StoreResource->store_items];
 
         return response()->json(['data' => $data], 200);
     }

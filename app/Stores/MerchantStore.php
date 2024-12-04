@@ -5,6 +5,7 @@ namespace App\Stores;
 use App\Abstracts\AbstractStore;
 use App\Http\Resources\StoreResource;
 use App\Models\MerchantOffer;
+use App\Models\User;
 use App\Services\DiplomacyService;
 use App\Services\LocationService;
 use App\Services\SessionService;
@@ -17,7 +18,7 @@ class MerchantStore extends AbstractStore
         parent::__construct();
     }
 
-    public function makeStore(array $items = []): StoreResource
+    public function makeStore(User $User, array $items = []): StoreResource
     {
 
         $items = MerchantOffer::where('location', $this->sessionService->getCurrentLocation())
@@ -26,19 +27,20 @@ class MerchantStore extends AbstractStore
 
         $this->storeBuilder = $this->storeBuilder::create(['store_items' => $items])->setStoreName('merchant');
 
-        $this->adjustPriceWhenDiplomacy();
+        $this->adjustPriceWhenDiplomacy($User);
 
         return $this->StoreResource = $this->storeBuilder->build();
     }
 
-    public function adjustPriceWhenDiplomacy(): void
+    public function adjustPriceWhenDiplomacy(User $User): void
     {
         $store_items = $this->storeBuilder->build()->store_items;
         if ($this->locationService->isDiplomacyLocation($this->sessionService->getLocation())) {
             foreach ($store_items as $key => $value) {
                 $adjusted_price = $this->diplomacyService->calculateNewMerchantPrice(
                     $value->store_value,
-                    $this->sessionService->getCurrentLocation()
+                    $this->sessionService->getCurrentLocation(),
+                    $User->id
                 );
                 $adjusted_store_value = ($adjusted_price < $value->store_buy_price) ? $value->store_buy_price : $adjusted_price;
                 $adjusted_store_buy_price = (int) floor($adjusted_store_value * 0.97);
