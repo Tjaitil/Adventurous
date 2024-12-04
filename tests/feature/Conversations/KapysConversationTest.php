@@ -20,13 +20,9 @@ class KapysConversationTest extends TestCase implements ConversationContract
 
         $this->hasServerEventTestCallbacks['kpsQrrS'] =
             [
+                fn () => false,
                 function () {
-                    Inventory::where('username', $this->RandomUser->username)->where('item', 'gold')
-                        ->update(['amount' => 0]);
-                },
-                function () {
-                    Inventory::where('username', $this->RandomUser->username)->where('item', 'gold')
-                        ->update(['amount' => 10000]);
+                    Inventory::upsert(['amount' => 10000, 'item' => 'gold', 'user_id' => $this->RandomUser->id], ['item', 'user_id']);
                 },
             ];
 
