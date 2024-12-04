@@ -9,44 +9,24 @@ use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Auth;
+use Log;
 
 class InventoryService
 {
-    /**
-     * @var Collection<int, Inventory>
-     */
-    private ?Collection $inventory_items;
-
     public function __construct(
-        protected Inventory $inventory,
-    ) {
-        $this->inventory_items = $this->getInventory();
-    }
-
-    /**
-     * Get inventory
-     *
-     * @return Collection<int, \App\Models\Inventory>
-     */
-    public function getInventory()
-    {
-        return $this->inventory_items = $this->inventory->all()->where('username', Auth::user()?->username);
-    }
+    ) {}
 
     /**
      * Find item in inventory
      *
-     *
+     * @param  Collection<int, Inventory>  $Inventory
      * @return null|Inventory
      *
      * @throws Exception If user does not have item
      */
-    public function findItem(string $item)
+    public function findItem(Collection $Inventory, string $item)
     {
-        $this->getInventory();
-
-        $item = $this->inventory_items?->firstWhere('item', $item);
+        $item = $Inventory->firstWhere('item', $item);
 
         return $item;
     }
@@ -54,12 +34,12 @@ class InventoryService
     /**
      * Check if user has enough of a item
      *
-     *
+     * @param  Collection<int, Inventory>  $Inventory
      * @return bool
      */
-    public function hasEnoughAmount(string $name, int $amount)
+    public function hasEnoughAmount(Collection $Inventory, string $name, int $amount)
     {
-        $item_data = $this->findItem($name);
+        $item_data = $this->findItem($Inventory, $name);
 
         // if ($this->checkSkipInventory()) {
         //     return true;
@@ -74,15 +54,14 @@ class InventoryService
     /**
      * @param  null|int  $plusAmont  Can be used to check if inventory is full included a plus amount
      */
-    public function isInventoryIsFull(?int $plusAmont = null): bool
+    public function isInventoryIsFull(int $inventoryCount, ?int $plusAmont = null): bool
     {
-        $currentCount = Inventory::where('username', Auth::user()->username)->count();
         if (isset($plusAmont)) {
-            $newAmount = $currentCount += $plusAmont;
+            $newAmount = $inventoryCount += $plusAmont;
 
             return $newAmount > 18;
         } else {
-            return $currentCount >= 18;
+            return $inventoryCount >= 18;
         }
     }
 
@@ -109,27 +88,29 @@ class InventoryService
     /**
      * Edit item in inventory
      *
+     * @param  Collection<int, Inventory>  $Inventory
      * @param  string  $item  Item to edit
      * @param  int  $amount  Positive will add and negative will subtract
      * @return self
      *
-     * @throws Exception On full inventory
+     * @throws InventoryFullException
      */
-    public function edit(string $item, int $amount)
+    public function edit(Collection $Inventory, string $item, int $amount, int $userId)
     {
-        $InventoryItem = $this->findItem($item);
+        $InventoryItem = $this->findItem($Inventory, $item);
+        Log::debug('InventoryItem', [$InventoryItem]);
 
         $new_amount = (is_null($InventoryItem)) ? $amount : $InventoryItem->amount + $amount;
 
-        if ($this->inventory_items?->count() >= 18 && ! $InventoryItem && $new_amount > 0) {
+        if ($Inventory->count() >= 18 && ! $InventoryItem && $new_amount > 0) {
 
             throw new InventoryFullException;
         } elseif ($InventoryItem === null) {
-
+            // dd($amount);
             Inventory::create([
                 'item' => $item,
                 'amount' => $amount,
-                'username' => Auth::user()->username,
+                'user_id' => $userId,
             ]);
         } else {
 

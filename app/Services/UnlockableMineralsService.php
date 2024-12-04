@@ -10,21 +10,18 @@ class UnlockableMineralsService
     public $unlockable_minerals_status = [];
 
     public function __construct(
-        private UserData $userData,
         private SessionService $sessionService
     ) {
-        $this->unlockable_minerals_status = $this->userData->select('wujkin_items', 'frajrite_items')
-            ->where('username', $sessionService->getCurrentUsername())->first();
     }
 
-    public function isWujkinItemUnlocked(): bool
+    public function isWujkinItemUnlocked(UserData $UserData): bool
     {
-        return $this->unlockable_minerals_status->wujkin_items === 1;
+        return $UserData->wujkin_items === true;
     }
 
-    public function isFrajriteItemUnlocked(): bool
+    public function isFrajriteItemUnlocked(UserData $UserData): bool
     {
-        return $this->unlockable_minerals_status->frajrite_items === 1;
+        return $UserData->frajrite_items === true;
     }
 
     /**

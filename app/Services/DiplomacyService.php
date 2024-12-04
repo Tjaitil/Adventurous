@@ -9,34 +9,26 @@ use Exception;
 
 class DiplomacyService
 {
-    public function __construct(
-        protected CityRelation $CityRelation,
-        protected SessionService $sessionService,
-        protected LocationService $locationService
-    ) {
-    }
-
-
+    public function __construct() {}
 
     /**
      * Set new diplomacy for a location
      *
-     * @param string $current_location
-     * @param int $percentage
      * @return void
-     * @throws Exception 
+     *
+     * @throws Exception
      */
-    public function setNewDiplomacy(string $current_location, int $percentage)
+    public function setNewDiplomacy(string $current_location, int $percentage, int $userId)
     {
         $CityRelation = CityRelation::where('city', $current_location)->first();
 
-        if (!$CityRelation instanceof CityRelation) {
-            throw new Exception("City relation not found");
+        if (! $CityRelation instanceof CityRelation) {
+            throw new Exception('City relation not found');
         }
 
-        $Diplomacy = Diplomacy::where('username', $this->sessionService->getCurrentUsername())->first();
-        if (!$Diplomacy instanceof Diplomacy) {
-            throw new Exception("Diplomacy not found");
+        $Diplomacy = Diplomacy::where('user_id', $userId)->first();
+        if (! $Diplomacy instanceof Diplomacy) {
+            throw new Exception('Diplomacy not found');
         }
 
         for ($i = 0; $i < count(GameLocations::getDiplomacyLocations()); $i++) {
@@ -60,26 +52,21 @@ class DiplomacyService
         $Diplomacy->save();
     }
 
-
-
     /**
      * Calculate new merchant price
      *
-     * @param int $price
-     * @param string $location
      *
      * @return float
      */
-    public function calculateNewMerchantPrice(int $price, string $location)
+    public function calculateNewMerchantPrice(int $price, string $location, int $userId): float
     {
 
         $diplomacy_price_adjust = 1;
-        $location = str_replace("-", "", $location);
+        $location = str_replace('-', '', $location);
 
-        $Diplomacy = Diplomacy::where('username', $this->sessionService->getCurrentUsername())->first();
+        $Diplomacy = Diplomacy::where('user_id',  $userId)->first();
 
         $diplomacy_price_ratio = floatval($Diplomacy->{$location});
-
 
         // Calculate price adjust. Subtract 1 which is middle point
         $diplomacy_price_adjust = abs(($diplomacy_price_ratio - 1) / 2);
