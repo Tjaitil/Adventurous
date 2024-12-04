@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Responses\AdvResponse;
+use App\Models\User;
 use App\Services\GameLogService;
 use App\Services\StoreService;
 use App\Stores\ArcheryStore;
+use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -21,9 +23,9 @@ class ArcheryShopController extends Controller
     /**
      * @return View|Factory
      */
-    public function index()
+    public function index(#[CurrentUser] User $User)
     {
-        $storeResource = $this->archeryStore->makeStore();
+        $storeResource = $this->archeryStore->makeStore($User, []);
 
         return view('archeryshop')
             ->with('title', 'Archery Shop')
@@ -31,23 +33,25 @@ class ArcheryShopController extends Controller
             ->with('store_resource', $storeResource);
     }
 
-    public function getStoreItems(): JsonResponse
+    public function getStoreItems(#[CurrentUser] User $User): JsonResponse
     {
-        return $this->archeryStore->getStoreItemsResponse();
+        $store = $this->archeryStore->makeStore($User);
+
+        return $this->archeryStore->toStoreItemResponse($store);
     }
 
     /**
      * @return JsonResponse|AdvResponse
      */
-    public function fletchItem(Request $request)
+    public function fletchItem(#[CurrentUser] User $User, Request $request)
     {
         $item = $request->input('item');
         $amount = $request->integer('amount');
 
-        $initial_store = $this->archeryStore->makeStore();
+        $initial_store = $this->archeryStore->makeStore($User);
         $this->storeService->storeBuilder->setResource($initial_store);
 
-        $result = $this->storeService->buyItem($item, $amount);
+        $result = $this->storeService->buyItem($User->inventory, $item, $amount, $User->id);
         if (! is_array($result)) {
             return $result;
         } else {

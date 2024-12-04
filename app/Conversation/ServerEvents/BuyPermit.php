@@ -11,13 +11,11 @@ use Illuminate\Support\Facades\Auth;
 class BuyPermit
 {
     public function __construct(
-        private InventoryService $inventoryService)
-    {
-    }
+        private InventoryService $inventoryService) {}
 
     public function locationConditional(string $location): bool
     {
-        return Auth::user()->player?->location === $location;
+        return Auth::user()->player->location === $location;
     }
 
     public function priceReplacer(string $location): int
@@ -29,13 +27,15 @@ class BuyPermit
 
     public function hasEnoughGold(string $location): bool
     {
+        $Inventory = Auth::user()->inventory;
         $MinerPermitCost = MinerPermitCost::where('location', $location)->firstOrFail();
 
-        return $this->inventoryService->hasEnoughAmount(config('adventurous.currency'), $MinerPermitCost->permit_cost);
+        return $this->inventoryService->hasEnoughAmount($Inventory, config('adventurous.currency'), $MinerPermitCost->permit_cost);
     }
 
     public function buyPermits(string $location): void
     {
+        $Inventory = Auth::user()->inventory;
         $Miner = Miner::where('user_id', Auth::user()->id)
             ->where('location', $location)
             ->first();
@@ -51,7 +51,7 @@ class BuyPermit
             throw new Exception('MinerPermitCost model not found');
         }
 
-        $this->inventoryService->edit(config('adventurous.currency'), -$MinerPermitCost->permit_cost);
+        $this->inventoryService->edit($Inventory, config('adventurous.currency'), -$MinerPermitCost->permit_cost, Auth::user()->id);
 
         $Miner->permits += $MinerPermitCost->permit_amount;
         $Miner->save();

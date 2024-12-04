@@ -28,7 +28,7 @@ class InventoryController extends Controller
 
     public function getItems(): JsonResponse
     {
-        $Inventory = Inventory::where('username', Auth::user()->username)
+        $Inventory = Inventory::where('user_id', Auth::user()->id)
             ->get();
 
         return response()->json($Inventory);
@@ -37,7 +37,7 @@ class InventoryController extends Controller
     public function getPrices(): JsonResponse
     {
         $Inventory_prices = Item::select('name', 'store_value')->join('inventory', 'items.name', '=', 'inventory.item')
-            ->where('inventory.username', Auth::user()->username)
+            ->where('inventory.user_id', Auth::user()->id)
             ->get();
 
         $Stockpile_prices = Item::select('name', 'store_value')->join('stockpile', 'items.name', '=', 'stockpile.item')

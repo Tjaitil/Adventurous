@@ -43,6 +43,7 @@ class HungerController extends Controller
     {
         $item = $request->input('item');
         $amount = $request->integer('amount');
+        $User = Auth::user();
 
         $validator = Validator::make($request->all(), [
             'item' => 'required|string',
@@ -53,12 +54,17 @@ class HungerController extends Controller
             return new JsonResponse('Invalid input', 422);
         }
 
-        if ($this->inventoryService->hasEnoughAmount($item, $amount) === false) {
+        if ($this->inventoryService->hasEnoughAmount($User->inventory,$item, $amount) === false) {
             return advResponse([], 422)->addMessage(
                 GameLogService::addErrorLog('You do not have enough of that item'));
         }
 
-        if ($this->hungerService->getCurrentHunger() >= 100) {
+        $Hunger = Hunger::where('user_id', Auth::user()->id)->first();
+        if (! $Hunger instanceof Hunger) {
+            return advResponse([], 422)->addMessage(
+                GameLogService::addErrorLog('Unvalid user'));
+        }
+        if ($Hunger->current >= 100) {
             return advResponse([], 422)->addMessage(
                 GameLogService::addErrorLog('You are not hungry'));
         }
@@ -70,11 +76,11 @@ class HungerController extends Controller
                 GameLogService::addErrorLog('That item does not affect your hunger status'));
         }
 
-        $this->hungerService->decreaseHunger($amount);
+        $Hunger = $this->hungerService->decreaseHunger($Hunger, $amount);
 
-        $this->inventoryService->edit($item, -$amount);
+        $this->inventoryService->edit($User->inventory, $item, -$amount, $User->id);
 
-        return advResponse(['hunger' => $this->hungerService->getCurrentHunger()], 200)
+        return advResponse(['hunger' => $Hunger->current], 200)
             ->addMessage(GameLogService::addSuccessLog('You eat and you relive hunger'));
     }
 
@@ -95,7 +101,7 @@ class HungerController extends Controller
 
         $HealingItem = HealingItem::where('item', $item)->first();
 
-        $heal = $HealingItem?->heal ?? 0;
+        $heal = $HealingItem->heal ?? 0;
 
         return new JsonResponse(['heal' => $heal]);
     }

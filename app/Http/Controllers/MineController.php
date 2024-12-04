@@ -7,13 +7,16 @@ use App\Http\Responses\AdvResponse;
 use App\Models\Miner;
 use App\Models\Mineral;
 use App\Models\MinerWorkforce;
+use App\Models\User;
 use App\Services\GameLogService;
 use App\Services\HungerService;
 use App\Services\InventoryService;
 use App\Services\LocationService;
 use App\Services\SessionService;
 use App\Services\SkillsService;
+use App\Updaters\UserLevelsUpdater;
 use Carbon\Carbon;
+use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -87,7 +90,7 @@ class MineController extends Controller
         ]);
     }
 
-    public function start(Request $request): AdvResponse
+    public function start(#[CurrentUser] User $User, Request $request): AdvResponse
     {
         $mineralOre = strtolower($request->string('mineral_ore'));
         $workforce = $request->integer('workforce_amount');
@@ -108,7 +111,7 @@ class MineController extends Controller
         if (! $this->locationService->isMineLocation($location)) {
             return advResponse([], 422)
                 ->addMessage(GameLogService::addErrorLog('You are in the wrong location to mine minerals'));
-        } elseif ($this->hungerService->isHungerTooLow()) {
+        } elseif ($this->hungerService->isHungerTooLow($User->hunger)) {
             return advResponse([], 422)
                 ->addMessage(GameLogService::addErrorLog('Your hunger status is too low'));
         }
@@ -122,7 +125,7 @@ class MineController extends Controller
         } elseif ($Mineral->location !== $location) {
             return advResponse([], 422)
                 ->addMessage(GameLogService::addErrorLog('You are in the wrong location to mine this mineral'));
-        } elseif (! $this->skillsService->hasRequiredLevel($Mineral->miner_level, 'miner')) {
+        } elseif (! $this->skillsService->hasRequiredLevel($User->userLevels, $Mineral->miner_level, 'miner')) {
             return advResponse([], 422)
                 ->addMessage(GameLogService::addErrorLog('You don\'t have the required level to mine this mineral'));
         }
@@ -161,7 +164,7 @@ class MineController extends Controller
                 ->addMessage(GameLogService::addErrorLog('You don\'t have enough workers ready'));
         }
 
-        $this->hungerService->setHungerForSkillAction();
+        $this->hungerService->setHungerForSkillAction($User->hunger);
         $addTime = $Mineral->time - (0.1 * $MinerWorkforce->efficiency_level + $workforce * 0.05);
 
         $Miner->mineral_ore = $mineralOre;
@@ -175,12 +178,12 @@ class MineController extends Controller
         return advresponse([
             'avail_workforce' => $new_workforce_amount,
             'new_permits' => $new_permits,
-            'new_hunger' => $this->hungerService->getCurrentHunger(),
+            'new_hunger' => $User->hunger->refresh()->current,
         ])
             ->addMessage(GameLogService::addSuccessLog("You have started mining for $mineralOre"));
     }
 
-    public function endMining(Request $request, GameLogService $loggertService): AdvResponse
+    public function endMining(#[CurrentUser] User $User, Request $request, GameLogService $loggertService): AdvResponse
     {
 
         $is_cancelling = $request->boolean('is_cancelling');
@@ -247,11 +250,12 @@ class MineController extends Controller
         if (! $is_cancelling) {
 
             $amount = rand($Mineral->min_per_period, $Mineral->max_per_period);
-            $this->inventoryService->edit($Mineral->mineral_ore, $amount);
+            $this->inventoryService->edit($User->inventory, $Mineral->mineral_ore, $amount, $User->id);
 
-            $this->skillsService
-                ->updateMinerXP($Mineral->experience)
-                ->updateSkills($response);
+            UserLevelsUpdater::create($User->userLevels)
+                ->addMinerXP($Mineral->experience)
+                ->update();
+                
             $response->addEvent(GameEvents::XpGainedEvent);
 
             $message = sprintf('You have finished mining %s', $Mineral->mineral_ore);
@@ -261,7 +265,7 @@ class MineController extends Controller
 
         return $response->setData([
             'avail_workforce' => $MinerWorkforce->avail_workforce,
-            'new_hunger' => $this->hungerService->getCurrentHunger(),
+            'new_hunger' => $User->hunger->refresh()->current,
         ])
             ->addMessage($loggertService->addSuccessLog($message));
     }

@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Responses\AdvResponse;
 use App\Models\Inventory;
 use App\Models\Stockpile;
+use App\Models\User;
 use App\Models\UserData;
 use App\Services\GameLogService;
 use App\Services\InventoryService;
 use App\Services\SessionService;
+use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -43,7 +45,7 @@ class StockpileController extends Controller
         return Stockpile::where('username', $this->sessionService->getCurrentUsername())->get();
     }
 
-    public function update(Request $request): AdvResponse
+    public function update(#[CurrentUser] User $User, Request $request): AdvResponse
     {
         $item = $request->string('item');
         $amount = $request->input('amount');
@@ -74,7 +76,7 @@ class StockpileController extends Controller
         }
 
         if ($insert === true) {
-            $InventoryItem = $this->inventoryService->findItem($item);
+            $InventoryItem = $this->inventoryService->findItem($User->inventory, $item);
             // Check if the user has the inventory item and correct amount
             if (! $InventoryItem instanceof Inventory) {
                 return advResponse([], 400)
@@ -101,7 +103,7 @@ class StockpileController extends Controller
 
             $adjust_inventory_item_amount = -$amount;
         } else {
-            if ($this->inventoryService->isInventoryIsFull()) {
+            if ($this->inventoryService->isInventoryIsFull($User->inventory->count())) {
                 return $this->inventoryService->handleInventoryFull();
             }
 
@@ -125,7 +127,7 @@ class StockpileController extends Controller
             $adjust_inventory_item_amount = $amount;
         }
         // Update inventory
-        $this->inventoryService->edit($item, $adjust_inventory_item_amount);
+        $this->inventoryService->edit($User->inventory, $item, $adjust_inventory_item_amount, $User->id);
         $blade = view('components.stockpile.itemList')
             ->with('stockpile', $this->get())
             ->with('max_amount', $stockpile_max_amount)

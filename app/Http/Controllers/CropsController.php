@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Enums\GameEvents;
 use App\Enums\SkillNames;
 use App\Exceptions\JsonException;
+use App\Http\Builders\SkillsBuilder;
 use App\Http\Responses\AdvResponse;
 use App\Models\Crop;
 use App\Models\Farmer;
 use App\Models\FarmerWorkforce;
+use App\Models\User;
 use App\Services\CountdownService;
 use App\Services\GameLogService;
 use App\Services\HungerService;
@@ -17,6 +19,7 @@ use App\Services\LocationService;
 use App\Services\SessionService;
 use App\Services\SkillsService;
 use Carbon\Carbon;
+use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -86,12 +89,13 @@ class CropsController extends Controller
     /**
      * Grow new crops
      */
-    public function growCrops(Request $request): AdvResponse|JsonResponse
+    public function growCrops(#[CurrentUser] User $User, Request $request): AdvResponse|JsonResponse
     {
         // Get data and validate
         $crop_type = strtolower($request->input('crop_type'));
         $workforce = $request->integer('workforce_amount');
-
+        $User = Auth::user();
+        $Inventory = $User->inventory;
         $validator = Validator::make($request->all(),
             [
                 'crop_type' => 'required|string',
@@ -113,7 +117,7 @@ class CropsController extends Controller
                 ->addMessage(
                     GameLogService::addErrorLog('You are in the wrong location to grow crops')
                 );
-        } elseif ($this->hungerService->isHungerTooLow()) {
+        } elseif ($this->hungerService->isHungerTooLow($User->hunger)) {
             return $this->hungerService->logHungerTooLow();
         }
 
@@ -138,7 +142,7 @@ class CropsController extends Controller
                 ->addMessage(
                     GameLogService::addErrorLog('You are in the wrong location to grow this crop')
                 );
-        } elseif (! $this->skillsService->hasRequiredLevel($Crop->farmer_level, SkillNames::FARMER->value)) {
+        } elseif (! $this->skillsService->hasRequiredLevel($User->userLevels, $Crop->farmer_level, SkillNames::FARMER->value)) {
             return advResponse([], 422)
                 ->addMessage(GameLogService::addErrorLog('You have too low farmer level'));
         }
@@ -153,7 +157,7 @@ class CropsController extends Controller
                 ->addMessage(GameLogService::addErrorLog('Your previous crops are not finished growing yet'));
         }
 
-        if (! $this->inventoryService->hasEnoughAmount($Crop->seed_item, $Crop->seed_required)) {
+        if (! $this->inventoryService->hasEnoughAmount($Inventory, $Crop->seed_item, $Crop->seed_required)) {
             return advResponse([], 422)
                 ->addMessage(GameLogService::addErrorLog('You don\'t have enough seeds to grow this crop'));
         }
@@ -182,20 +186,20 @@ class CropsController extends Controller
         $Farmer->crop_type = $crop_type;
         $Farmer->save();
 
-        $this->inventoryService->edit($Crop->seed_item, -$Crop->seed_required);
+        $this->inventoryService->edit($User->inventory, $Crop->seed_item, -$Crop->seed_required, $User->id);
 
         return advResponse([
             'avail_workforce' => $new_workforce_amount,
-            'new_hunger' => $this->hungerService->getCurrentHunger(),
+            'new_hunger' => $User->hunger->refresh(),
         ])->addMessage(GameLogService::addSuccessLog("You have started growing $crop_type"));
     }
 
     /**
      * Harvest crops
      */
-    public function harvestCrops(Request $request, GameLogService $gameLogService): AdvResponse
+    public function harvestCrops(Request $request): AdvResponse
     {
-
+        $User = Auth::user();
         $is_cancelling = $request->boolean('is_cancelling');
 
         $validator = Validator::make($request->all(),
@@ -259,9 +263,12 @@ class CropsController extends Controller
 
             $experience = intval($Crop->experience + (round($Crop->experience / 100 * $amount)));
 
-            $this->inventoryService->edit($Farmer->crop_type, $amount);
+            $this->inventoryService->edit($User->inventory, $Farmer->crop_type, $amount, $User->id);
 
-            $this->skillsService->updateFarmerXP($experience)->updateSkills();
+            SkillsBuilder::create($User->userLevels)
+                ->addFarmerXP($experience)
+                ->update();
+                
             $response->addEvent(GameEvents::XpGainedEvent);
         }
 
@@ -286,7 +293,7 @@ class CropsController extends Controller
         return $response;
     }
 
-    public function collectSeeds(Request $request, GameLogService $gameLogService): AdvResponse
+    public function collectSeeds(#[CurrentUser] User $User, Request $request, GameLogService $gameLogService): AdvResponse
     {
         $item = $request->input('item');
         $amount = $request->integer('amount');
@@ -309,8 +316,8 @@ class CropsController extends Controller
                 ->addMessage(GameLogService::addErrorLog('Unvalid crop'));
         }
 
-        $this->inventoryService->edit($Crop->seed_item, 1 * $amount);
-        $this->inventoryService->edit($item, -$amount);
+        $this->inventoryService->edit($User->inventory, $Crop->seed_item, 1 * $amount, $User->id);
+        $this->inventoryService->edit($User->inventory, $item, -$amount, $User->id);
 
         return advResponse([], 200)
             ->addMessage(GameLogService::addSuccessLog("You have generated $amount seed"));
