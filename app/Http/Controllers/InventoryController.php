@@ -17,7 +17,7 @@ class InventoryController extends Controller
 
     public function get(Request $request): JsonResponse
     {
-        $Inventory = Inventory::where('username', Auth::user()->username)->get();
+        $Inventory = Inventory::where('user_id', Auth::user()->id)->get();
 
         $template = view('inventory')
             ->with('Inventory', $Inventory)
