@@ -381,7 +381,7 @@ section img {
 table button {
     margin-top: 5px;
 }
-button:not(.custom-button) {
+button:not(.custom-button, .bk-button) {
     background-color: #f2e6d9;
     border-radius: 5px;
     border: 1px outset;
@@ -393,7 +393,7 @@ button:not(.custom-button) {
     cursor: pointer;
     transition: filter 0.5s ease-out;
 }
-button:hover {
+button:hover:not(.bk-button) {
     filter: brightness(var(--transitionDuration));
 }
 .button_disabled {
@@ -403,7 +403,7 @@ button:hover {
 button:not(.building-tab):active {
     background-color: #ebd9c6;
 }
-button:focus {
+button:not(.bk-button):focus {
     outline: 0;
 }
 .button_link {
