@@ -69,7 +69,6 @@ export class GameLogger {
         instantLog = false,
         shouldLogToApi = false,
     ) {
-        console.log(message);
         if (typeof message !== 'string') {
             this.messages.push(message);
         } else {
@@ -89,7 +88,7 @@ export class GameLogger {
 
     public static addMessages(
         messages: GameLog[],
-        instantLog = false,
+        instantLog = true,
         shouldLogToApi = false,
     ) {
         messages.forEach(message =>
