@@ -259,7 +259,10 @@ section input:not([type='radio']):not([type='checkbox']):not(.custom-input) {
     background-color: #e5cdb3;
     padding: 2px 2px 2px 8px;
     margin: 3px;
-    width: 40px;
+    &:focus-visible {
+        outline: 2px solid var(--borderColor);
+        box-shadow: 0 0 7px var(--borderColorDark);
+    }
 }
 label {
     margin-inline: 0.5rem;
