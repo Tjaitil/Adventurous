@@ -14,6 +14,8 @@ export const i18n = createI18n({
     legacy: false,
 });
 
+export const pinia = createPinia();
+
 const components = {
     SkillInfoList,
     InventoryContainer,
@@ -28,7 +30,6 @@ document.querySelectorAll('.vue-app').forEach(element => {
 
         ErrorHandler.logError({ text: errorToLog });
     };
-    const pinia = createPinia();
 
     app.use(pinia).use(i18n).mount(element);
 });
