@@ -4,7 +4,10 @@ import { addModuleTester } from './devtools/ModuleTester';
 import { GameLogger } from './utilities/GameLogger';
 
 export class CustomFetchApi {
+    private static isInterceptorInitialized = false;
     private static init() {
+        if (this.isInterceptorInitialized) return axios;
+
         axios.interceptors.response.use(
             response => {
                 if (hasResponseKey(response)) {
@@ -18,6 +21,7 @@ export class CustomFetchApi {
             },
         );
 
+        this.isInterceptorInitialized = true;
         return axios;
     }
 
