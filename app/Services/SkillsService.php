@@ -43,24 +43,27 @@ class SkillsService
      * Check if user has required profiency level
      *
      * @param  int  $required_level  Required profiency level
-     * @param  string  $skill  Name of skill
      */
-    public function hasRequiredLevel(UserLevels $UserLevels, int $required_level, string $skill): bool
+    public function hasRequiredLevel(UserLevels $UserLevels, int $required_level, string|SkillNames $skill): bool
     {
+        if (! $skill instanceof SkillNames) {
+            $skill = SkillNames::from($skill);
+        }
+
         switch ($skill) {
-            case 'farmer':
+            case $skill::FARMER:
                 $skill_level = $UserLevels->farmer_level;
                 break;
 
-            case 'miner':
+            case $skill::MINER:
                 $skill_level = $UserLevels->miner_level;
                 break;
 
-            case 'trader':
+            case $skill::TRADER:
                 $skill_level = $UserLevels->trader_level;
                 break;
 
-            case 'warrior':
+            case $skill::WARRIOR:
                 $skill_level = $UserLevels->warrior_level;
                 break;
 
