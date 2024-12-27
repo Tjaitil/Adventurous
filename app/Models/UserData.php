@@ -67,4 +67,14 @@ class UserData extends Model
             'wujkin_items' => 'boolean',
             'arrive_time' => 'datetime',
         ];
+
+    public function isWujkinItemUnlocked(): bool
+    {
+        return $this->wujkin_items === 1;
+    }
+
+    public function isFrajriteItemUnlocked(): bool
+    {
+        return $this->frajrite_items === 1;
+    }
 }

@@ -5,7 +5,6 @@ import SkillInfoList from './components/skills/SkillInfoList.vue';
 import { createI18n } from 'vue-i18n';
 import { getLanguageBundle } from './localeSetup';
 import 'baks-components-vue/dist/style.css';
-import '../../css/overwrite.css';
 import InventoryContainer from './components/Inventory/InventoryContainer.vue';
 import { initErrorHandler } from '@/base/ErrorHandler';
 
@@ -14,6 +13,8 @@ export const i18n = createI18n({
     messages: { en: await getLanguageBundle() },
     legacy: false,
 });
+
+export const pinia = createPinia();
 
 const components = {
     SkillInfoList,
@@ -29,7 +30,6 @@ document.querySelectorAll('.vue-app').forEach(element => {
 
         ErrorHandler.logError({ text: errorToLog });
     };
-    const pinia = createPinia();
 
     app.use(pinia).use(i18n).mount(element);
 });

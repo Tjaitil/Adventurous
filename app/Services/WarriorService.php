@@ -3,14 +3,15 @@
 namespace App\Services;
 
 use App\Actions\MergeIntoSubArrayAction;
-use App\Http\Builders\WarriorBuilder;
 use App\Enums\GameLocations;
-use App\libs\Response;
+use App\Http\Builders\WarriorBuilder;
+use App\Http\Responses\AdvResponse;
 use App\Models\Warriors;
-use App\Models\Warriors_model;
 use App\Models\WarriorsArmory;
-use App\Models\WarriorsLevels_model;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Collection as SupportCollection;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * @property WarriorBuilder[] $warriors_builder
@@ -18,29 +19,24 @@ use Illuminate\Database\Eloquent\Collection;
  */
 class WarriorService
 {
-
     public $warrior_count = 0;
-
 
     public function __construct(
         public WarriorsArmory $armory_model,
-        public Warriors_model $warriors_model,
-        private SessionService $sessionService,
+        // public Warriors_model $warriors_model,
         private MergeIntoSubArrayAction $mergeIntoSubArrayAction
-    ) {
-    }
+    ) {}
 
     /**
      * Get warriors associated with a username
      *
-     * @param array|null $selected (Optional) Warrior ids to select
-     *
+     * @param  array|null  $selected  (Optional) Warrior ids to select
      * @return Collection
      */
-    public function getWarriors(array $selected = null)
+    public function getWarriors(?array $selected = null)
     {
         $query = Warriors::where([
-            ['username', $this->sessionService->getCurrentUsername()],
+            ['username', Auth::user()->username],
         ]);
         if ($selected !== null) {
             $query->whereIn('warrior_id', $selected);
@@ -55,14 +51,13 @@ class WarriorService
     /**
      * Get available warriors
      *
-     * @param array|null $selected (Optional) Warrior ids to select
-     *
+     * @param  array|null  $selected  (Optional) Warrior ids to select
      * @return Collection
      */
-    public function getAvailableWarriors(array $selected = null)
+    public function getAvailableWarriors(?array $selected = null)
     {
         $query = Warriors::where([
-            ['username', $this->sessionService->getCurrentUsername()],
+            ['username', Auth::user()->username],
             ['fetch_report', 0],
             ['army_mission', 0],
             ['rest', 0],
@@ -79,17 +74,16 @@ class WarriorService
     /**
      * Get available warriors with all relations
      *
-     * @param array|null $selected (Optional) Warrior ids to select
-     *
+     * @param  array|null  $selected  (Optional) Warrior ids to select
      * @return Collection
      */
-    public function getAvailableWarriorsWithRelations(array $selected = null)
+    public function getAvailableWarriorsWithRelations(?array $selected = null)
     {
         $query = Warriors::with('levels')->where([
             ['fetch_report', 0],
             ['army_mission', 0],
             ['rest', 0],
-            ['username', $this->sessionService->getCurrentUsername()]
+            ['username', Auth::user()->username],
         ]);
         if ($selected !== false) {
             $query->whereIn('warrior_id', $selected);
@@ -101,21 +95,19 @@ class WarriorService
     }
 
     /**
-     *
-     * @return Collection 
+     * @return Collection
      */
     public function getWarriorDataWithRelations($all = false)
     {
-        return Warriors::with('levels')->where('username', $this->sessionService->getCurrentUsername())->get();
+        return Warriors::with('levels')->where('username', Auth::user()->username)->get();
     }
 
     /**
-     *
-     * @return Collection 
+     * @return Collection
      */
     public function getWarriorData(array $warrior_ids, string $username)
     {
-        return Warriors::whereIn('warrior_id', $warrior_ids)->where('username', $this->sessionService->getCurrentUsername());
+        return Warriors::whereIn('warrior_id', $warrior_ids)->where('username', Auth::user()->username);
     }
 
     /**
@@ -136,14 +128,12 @@ class WarriorService
     /**
      * Merge multiple datasets of warrior data, each index will be based on data connected to a warrior_id
      *
-     * @param array ...$data
-     *
+     * @param  array  ...$data
      * @return void
      */
     public function mergeWarriorData(...$data)
     {
         // $this->data = [];
-
 
         // function isWarriorIDInArray(array $data_array, array $arr)
         // {
@@ -188,69 +178,47 @@ class WarriorService
     /**
      * Check if warriors is available for an action
      *
-     * @param bool|array $use_resources Use resources or pass in array of warriors
-     *
-     * @return bool
+     * @param  SupportCollection<int, \App\Models\Soldier>  $Soldiers
      */
-    public function isWarriorsAvailable($use_resources = true)
+    public function isSoldiersAvailable(SupportCollection $Soldiers): bool
     {
         $is_available = true;
 
-        if ($use_resources !== true) {
-            $warriors = $use_resources;
-        } else {
-            $warriors = $this->warriors_builder;
-        }
-
-        foreach ($warriors as $key => $warrior) {
-
-            if ($warrior instanceof WarriorBuilder) {
-                $warrior = $warrior->build();
-            }
-
+        $Soldiers->each(function ($Soldier) use (&$is_available) {
             if (
-                $warrior->army_mission !== 0 &&
-                $warrior->rest !== 0 &&
-                $warrior->fetch_report !== 0
+                $Soldier->army_mission !== 0 &&
+                $Soldier->is_resting === true &&
+                $Soldier->is_training === true
             ) {
                 $is_available = false;
             }
-        }
+        });
 
         return $is_available;
     }
 
     /**
      * Helper functions to log warriors not available
-     *
-     * @return Response
      */
-    public function logWarriorsNotAvailable()
+    public function logWarriorsNotAvailable(): JsonResponse
     {
-        return Response::addMessage("One or more of your selected warriors is not available")->setStatus(400);
+        return response()->jsonWithGameLogs([], [GameLogService::addWarningLog('One or more of your selected warriors is not available')], 400);
     }
 
     /**
-     *
-     * @param string $location
-     *
      * @return bool
      */
     public function isValidWarriorLocation(string $location)
     {
-        if (!in_array($location, GameLocations::getWarriorLocations())) {
+        if (! in_array($location, GameLocations::getWarriorLocations())) {
             return false;
         }
 
         return true;
     }
 
-    /**
-     *
-     * @return Response
-     */
-    public function logInvalidWarriorLocation()
+    public function logInvalidWarriorLocation(): AdvResponse
     {
-        return Response::addMessage("You are in the wrong location to this action")->setStatus(400);
+        return advResponse([], 400)->addWarningMessage('You are in the wrong location to this action');
     }
 }

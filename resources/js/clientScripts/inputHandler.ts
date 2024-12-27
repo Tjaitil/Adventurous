@@ -21,11 +21,11 @@ import merchantModule from '../buildingScripts/merchant';
 import workforceLodgeModule from '../buildingScripts/workforcelodge';
 import smithyModule from '../buildingScripts/smithy';
 import archeryShopModule from '../buildingScripts/archeryshop';
-import { i18n } from '@/ui/main';
+import { i18n, pinia } from '@/ui/main';
 import AppVue from '@/ui/components/App.vue';
 import { createApp } from 'vue';
-import { createPinia } from 'pinia';
 import { ItemSelector } from '@/ItemSelector';
+import ArmoryPage from '@/ui/pages/ArmoryPage.vue';
 
 enum Buildings {
     BAKERY = 'bakery',
@@ -208,8 +208,12 @@ export const inputHandler: IInputHandler = {
                 if (isVuePage(building)) {
                     html = data;
                     ClientOverlayInterface.show(html);
-                    const app = createApp({ AppVue, componens: {} });
-                    const pinia = createPinia();
+                    const app = createApp({
+                        AppVue,
+                        components: {
+                            ArmoryPage,
+                        },
+                    });
 
                     app.use(pinia).use(i18n).mount('#vue-building-app');
                     ItemSelector.addSelectEventToInventory();

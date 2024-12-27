@@ -26,5 +26,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ArcheryShopItemSeeder::class);
         $this->call(CityRelationSeeder::class);
         $this->call(UserSeeder::class);
+        $this->call(ArmoryItemSeeder::class);
     }
 }

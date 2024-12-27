@@ -100,9 +100,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/travelbureau/buy', [TravelBureauController::class, 'buyCart']);
     Route::get('/travelbureau/store', [TravelBureauController::class, 'getStoreItems']);
 
-    Route::post('/armory/add', [ArmoryController::class, 'add']);
-    Route::post('/armory/remove', [ArmoryController::class, 'remove']);
-
     Route::get('/bakery', [BakeryController::class, 'index']);
     Route::get('/bakery/get', [BakeryController::class, 'get']);
     Route::post('/bakery/make', [BakeryController::class, 'makeItem']);
@@ -136,6 +133,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/workforcelodge/efficiency/upgrade', [WorkforceLodgeController::class, 'upgradeEfficiency']);
 
     Route::post('/log', [GameLoggerController::class, 'log']);
+
+    Route::get('/armory', [ArmoryController::class, 'index']);
+    Route::get('/armory/soldiers', [ArmoryController::class, 'getSoldiers']);
+    Route::post('/armory/soldier/remove', [ArmoryController::class, 'remove']);
+    Route::post('/armory/soldier/add', [ArmoryController::class, 'add']);
     Route::post('/log/error', [LogController::class, 'logFrontendError']);
 });
 
