@@ -18,6 +18,9 @@ class TravelBureauCartRequiredItem extends Model
 
     public $table = 'travelbureau_carts_req_items';
 
+    /**
+     * @return BelongsTo<TravelBureauCart, $this>
+     */
     public function cart(): BelongsTo
     {
         return $this->belongsTo(TravelBureauCart::class, 'item_id', 'item_id');
