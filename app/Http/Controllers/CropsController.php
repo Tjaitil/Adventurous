@@ -18,6 +18,7 @@ use App\Services\InventoryService;
 use App\Services\LocationService;
 use App\Services\SessionService;
 use App\Services\SkillsService;
+use App\Updaters\UserLevelsUpdater;
 use Carbon\Carbon;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\JsonResponse;
@@ -265,7 +266,7 @@ class CropsController extends Controller
 
             $this->inventoryService->edit($User->inventory, $Farmer->crop_type, $amount, $User->id);
 
-            SkillsBuilder::create($User->userLevels)
+            UserLevelsUpdater::create($User->userLevels)
                 ->addFarmerXP($experience)
                 ->update();
                 

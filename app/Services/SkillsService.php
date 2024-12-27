@@ -104,7 +104,7 @@ class SkillsService
         if ($this->canLevelUpAction->handle($UserLevels->farmer_xp, $UserLevels->farmer_next_level_xp)) {
 
             $level = $this->getNextLevelFromExperience($UserLevels->farmer_xp);
-            $UsersLevelsUpdater->addFarmerLevel($level);
+            $UsersLevelsUpdater->setFarmerLevel($level);
             $skills[] = [
                 'skill' => SkillNames::FARMER->value,
                 'new_level' => $UserLevels->farmer_level,
@@ -114,8 +114,7 @@ class SkillsService
         if ($this->canLevelUpAction->handle($UserLevels->miner_xp, $UserLevels->miner_next_level_xp)) {
 
             $level = $this->getNextLevelFromExperience($UserLevels->miner_xp);
-            $UsersLevelsUpdater->addMinerLevel($level);
-
+            $UsersLevelsUpdater->setMinerLevel($level);
             $skills[] = [
                 'skill' => SkillNames::MINER->value,
                 'new_level' => $UserLevels->miner_level,
@@ -125,7 +124,7 @@ class SkillsService
         if ($this->canLevelUpAction->handle($UserLevels->trader_xp, $UserLevels->trader_next_level_xp)) {
 
             $level = $this->getNextLevelFromExperience($UserLevels->trader_xp);
-            $UsersLevelsUpdater->addTraderLevel($level);
+            $UsersLevelsUpdater->setTraderLevel($level);
 
             $skills[] = [
                 'skill' => SkillNames::TRADER->value,
@@ -137,7 +136,7 @@ class SkillsService
 
             $level = $this->getNextLevelFromExperience($UserLevels->warrior_xp);
 
-            $UsersLevelsUpdater->addWarriorLevel($level);
+            $UsersLevelsUpdater->setWarriorLevel($level);
             $skills[] = [
                 'skill' => SkillNames::WARRIOR->value,
                 'new_level' => $UserLevels->warrior_level,

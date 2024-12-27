@@ -6,6 +6,8 @@ use App\Http\Builders\StoreBuilder;
 use App\Http\Resources\StoreItemResource;
 use App\Http\Responses\AdvResponse;
 use App\Models\Inventory;
+use App\Models\User;
+use App\Models\UserLevels;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
@@ -38,6 +40,7 @@ class StoreService
      */
     public function buyItem(Collection $Inventory, string $item, int $amount, int $userId)
     {
+        $UserLevels = User::find($userId)->userLevels;
         try {
             $store_item = $this->getStoreItem($item);
 
@@ -45,7 +48,7 @@ class StoreService
                 return $this->logNotStoreItem($item);
             }
 
-            if (! $this->hasSkillRequirements($store_item)) {
+            if (! $this->hasSkillRequirements($store_item, $UserLevels)) {
                 return (new AdvResponse([], 422))
                     ->addMessage(GameLogService::addErrorLog('You do not have the required skill level'))
                     ->toResponse(request());
@@ -96,6 +99,8 @@ class StoreService
      */
     public function sellItem(Collection $Inventory, string $item, int $amount, int $userId)
     {
+        $UserLevels = User::find($userId)->userLevels;
+
         try {
             $store_item = $this->getStoreItem($item);
 
@@ -103,7 +108,7 @@ class StoreService
                 return $this->logNotStoreItem($item);
             }
 
-            if (! $this->hasSkillRequirements($store_item)) {
+            if (! $this->hasSkillRequirements($store_item, $UserLevels)) {
                 return (new AdvResponse([], 422))
                     ->addMessage(GameLogService::addErrorLog('You do not have the required skill level'))
                     ->toResponse(request());
@@ -255,7 +260,7 @@ class StoreService
     /**
      * Check if the user has skill requirements
      */
-    public function hasSkillRequirements(StoreItemResource $storeItemResource): bool
+    public function hasSkillRequirements(StoreItemResource $storeItemResource, UserLevels $UserLevels): bool
     {
         $result = false;
         $match = false;
@@ -268,7 +273,7 @@ class StoreService
             $skill = $value->skill;
             $level = $value->level;
 
-            if ($this->skillsService->hasRequiredLevel($level, $skill)) {
+            if ($this->skillsService->hasRequiredLevel($UserLevels, $level, $skill)) {
                 $result = true;
                 $match = true;
             } else {
