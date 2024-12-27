@@ -23,7 +23,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property-read int|null $inventory_count
  * @property-read \App\Models\UserData $player
  * @property-read \App\Models\UserData $userData
- * @property-read \App\Models\UserLevels|null $userLevels
+ * @property-read \App\Models\UserLevels $userLevels
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
@@ -72,7 +72,7 @@ class User extends Authenticatable
      */
     public function userLevels(): HasOne
     {
-        return $this->hasOne(UserLevels::class);
+        return $this->hasOne(UserLevels::class)->withDefault();
     }
 
     /**
