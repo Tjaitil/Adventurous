@@ -50,6 +50,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserData extends Model
 {
+    /**
+     * @use HasFactory<\Database\Factories\UserDataFactory>
+     */
     use HasFactory;
 
     protected $table = 'user_data';
@@ -70,11 +73,11 @@ class UserData extends Model
 
     public function isWujkinItemUnlocked(): bool
     {
-        return $this->wujkin_items === 1;
+        return $this->wujkin_items;
     }
 
     public function isFrajriteItemUnlocked(): bool
     {
-        return $this->frajrite_items === 1;
+        return $this->frajrite_items;
     }
 }
