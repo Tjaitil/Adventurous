@@ -15,9 +15,9 @@ final class UserLevelsUpdater
         return $this;
     }
 
-    public function addFarmerLevel(int $level)
+    public function setFarmerLevel(int $level)
     {
-        $this->userLevels->farmer_level += $level;
+        $this->userLevels->farmer_level = $level;
 
         return $this;
     }
@@ -29,9 +29,9 @@ final class UserLevelsUpdater
         return $this;
     }
 
-    public function addMinerLevel(int $level)
+    public function setMinerLevel(int $level)
     {
-        $this->userLevels->miner_level += $level;
+        $this->userLevels->miner_level = $level;
 
         return $this;
     }
@@ -43,9 +43,9 @@ final class UserLevelsUpdater
         return $this;
     }
 
-    public function addTraderLevel(int $level)
+    public function setTraderLevel(int $level)
     {
-        $this->userLevels->warrior_level += $level;
+        $this->userLevels->warrior_level = $level;
 
         return $this;
     }
@@ -57,9 +57,9 @@ final class UserLevelsUpdater
         return $this;
     }
 
-    public function addWarriorLevel(int $level)
+    public function setWarriorLevel(int $level)
     {
-        $this->userLevels->warrior_level += $level;
+        $this->userLevels->warrior_level = $level;
 
         return $this;
     }
@@ -73,6 +73,6 @@ final class UserLevelsUpdater
 
     public static function create(UserLevels $Userlevels): static
     {
-        return new static($Userlevels);
+        return new self($Userlevels);
     }
 }
