@@ -32,6 +32,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Miner extends Model
 {
+    /**
+     * @use HasFactory<\Database\Factories\MinerFactory>
+     */
     use HasFactory;
 
     public $timestamps = false;
@@ -42,6 +45,9 @@ class Miner extends Model
 
     protected $casts = ['mining_finishes_at' => 'datetime'];
 
+    /**
+     * @return BelongsTo<MinerWorkforce, $this>
+     */
     public function workforce(): BelongsTo
     {
         return $this->belongsTo(MinerWorkforce::class, 'user_id', 'user_id');
