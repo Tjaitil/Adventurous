@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\UserLevels;
 use App\Services\GameLogService;
 use App\Services\SkillsService;
+use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,9 +14,9 @@ class SkillsController extends Controller
 {
     public function __construct(private SkillsService $skillsService) {}
 
-    public function handleUpdate(GameLogService $logService): JsonResponse
+    public function handleUpdate(#[CurrentUser] User $User, GameLogService $logService): JsonResponse
     {
-        $skills = $this->skillsService->levelUpSkills();
+        $skills = $this->skillsService->levelUpSkills($User->userLevels);
 
         $UserLevels = UserLevels::where('username', Auth::user()->username)->first()?->toArray();
 
