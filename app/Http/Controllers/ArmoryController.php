@@ -2,187 +2,234 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ArmoryParts;
 use App\Enums\SkillNames;
-use App\libs\controller;
-use App\libs\Request;
-use App\libs\Response;
+use App\Exceptions\InventoryFullException;
 use App\Models\ArmoryItemsData;
-use App\Models\WarriorsArmory;
-use App\Http\Resources\WarriorArmoryResource;
+use App\Models\Soldier;
+use App\Models\SoldierArmory;
+use App\Models\User;
 use App\Services\ArmoryService;
-use App\Services\SessionService;
+use App\Services\GameLogService;
 use App\Services\InventoryService;
 use App\Services\SkillsService;
-use App\Services\UnlockableMineralsService;
 use App\Services\WarriorService;
-use Illuminate\Database\Eloquent\Collection;
-use Respect\Validation\Validator;
-use App\libs\TemplateFetcher;
+use Exception;
+use Illuminate\Container\Attributes\CurrentUser;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Log;
 
-class ArmoryController extends controller
+class ArmoryController extends Controller
 {
-    public $data;
-
-    function __construct(
+    public function __construct(
         private WarriorService $warriorService,
         private InventoryService $inventoryService,
         private ArmoryService $armoryService,
-        private TemplateFetcher $TemplateFetcher,
-        private SessionService $sessionService,
-        private WarriorsArmory $warriorsArmory,
         private ArmoryItemsData $armoryItemsData,
         private SkillsService $skillsService,
-        private UnlockableMineralsService $unlockableMineralsService,
-    ) {
-        parent::__construct();
+    ) {}
+
+    public function index(): Factory|View
+    {
+        return view('armory');
     }
 
-    public function index()
+    public function getSoldiers(#[CurrentUser()] User $User): JsonResponse
     {
-        $collection = new Collection(
-            $this->warriorsArmory->with('warrior:warrior_id,type')
-                ->where('username', $this->sessionService->getCurrentUsername())->get()
-        );
-        $this->data['warrior_armory'] = [];
-        foreach ($collection as $key => $value) {
-            $resource = new WarriorArmoryResource($value);
-            $this->data['warrior_armory'][] = $resource->toArray();
-        }
+        $ArmoryWarriors = Soldier::select(['id', 'warrior_id', 'type'])
+            ->with(['armory'])
+            ->where('user_id', $User->id)
+            ->get();
 
-        $this->render('armory', 'Armory', $this->data, true, true);
+        return response()->json($ArmoryWarriors, 200);
     }
 
     /**
      * Remove armor item
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
-    public function remove(Request $request)
+    public function remove(#[CurrentUser] User $User, Request $request): JsonResponse
     {
         $request->validate([
-            'warrior_id' => Validator::NumericVal()->min(1),
-            'part' => Validator::StringType()->notEmpty(),
-            'is_removing' => Validator::BoolType(),
-            'item' => Validator::StringType(),
-            'amount' => Validator::NumericVal(),
-            'hand' => Validator::StringType(),
-        ]);
-        return $this->changeArmor($request);
-    }
-
-    /**
-     * Add armor item
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function add(Request $request)
-    {
-        $request->validate([
-            'warrior_id' => Validator::NumericVal()->min(1),
-            'part' => Validator::StringType(),
-            'is_removing' => Validator::BoolType(),
-            'item' => Validator::StringType()->notEmpty(),
-            'amount' => Validator::NumericVal(),
-            'hand' => Validator::StringType(),
+            'warrior_id' => 'required|numeric|min:1',
+            'is_removing' => 'required|boolean',
+            'part' => ['required', Rule::enum(ArmoryParts::class)],
         ]);
 
-        return $this->changeArmor($request);
-    }
-
-    /**
-     * Change warrior Armor
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    private function changeArmor(Request $request)
-    {
-        $warrior_id = $request->getInput("warrior_id");
-        $part = $request->getInput("part");
-        $is_removing = $request->getInput("is_removing");
-        $item = strtolower($request->getInput("item"));
-        $amount = $request->getInput("amount");
-        $hand = $request->getInput("hand");
-
-
-        $warrior = $this->warriorsArmory->with('warrior')->where('warrior_id', $warrior_id)->firstOrFail();
-
-        if (!$this->warriorService->isWarriorsAvailable([$warrior->warrior])) {
-            return $this->warriorService->logWarriorsNotAvailable();
+        $armoryPart = $request->enum('part', ArmoryParts::class);
+        if ($armoryPart === null || $armoryPart == ArmoryParts::HAND) {
+            return response()->jsonWithGameLogs([],
+                [
+                    GameLogService::addErrorLog('Invalid part.'),
+                ], 400
+            );
         }
 
-        $item_data = $this->armoryItemsData->where('item', $item)->first();
-        if ($is_removing === false) {
+        $Armory = SoldierArmory::where('warrior_id', $request->input('warrior_id'))->first();
 
-            if ($item_data === null) {
-                return Response::addMessage("Unvalid item data")->setStatus(400);
+        if (! $Armory instanceof SoldierArmory) {
+            return response()->jsonWithGameLogs(
+                [],
+                GameLogService::addWarningLog('Something went wrong. Please try again later.'),
+                400
+            );
+        }
+        try {
+            $item = $Armory->{$armoryPart->value};
+            $ArmoryItem = ArmoryItemsData::where('item', $item)->first();
+            if ($item === null || ! $ArmoryItem instanceof ArmoryItemsData) {
+                return response()->jsonWithGameLogs(
+                    [], GameLogService::addWarningLog('No item to remove.'), 400
+                );
+            }
+            $amount = 1;
+
+            if ($armoryPart === ArmoryParts::AMMUNITION) {
+                $amount = $Armory->ammunition_amount;
             }
 
-            if (!$this->armoryService->hasCorrectWarriorTypeForItem($warrior, $item_data)) {
-                return Response::addMessage("This warrior cannot wear the requested item")->setStatus(400);
+            $removedItems = $this->armoryService->changeSoldierArmory(
+                true,
+                $ArmoryItem->item,
+                $amount,
+                null,
+                $armoryPart,
+                $Armory,
+            );
+
+            foreach ($removedItems as $key => $removedItem) {
+                $this->inventoryService->edit($User->inventory, $removedItem->name, $removedItem->amount, $User->id);
+            }
+            $Armory->save();
+
+            $SoldierArmoryResponse = [
+                'warrior_id' => $Armory->soldier->warrior_id,
+                'type' => $Armory->soldier->type,
+                'armory' => $Armory->toArray(),
+            ];
+
+            return response()->json($SoldierArmoryResponse, 200);
+        } catch (InventoryFullException $e) {
+            return response()->jsonWithGameLogs([], [GameLogService::addErrorLog('Inventory is full')], 400);
+        } catch (Exception $e) {
+            Log::error('Error while changing warrior part', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+
+            return response()->jsonWithGameLogs([], [GameLogService::addErrorLog('Something went wrong. Please try again later.')], 400);
+        }
+    }
+
+    public function add(#[CurrentUser] User $User, Request $request): JsonResponse
+    {
+        $request->validate([
+            'warrior_id' => 'required|numeric|min:1',
+            'item' => 'required|string',
+            'amount' => 'required|numeric|min:1',
+            'hand' => ['nullable', Rule::in(['right_hand', 'left_hand'])],
+        ]);
+
+        $item = strtolower($request->input('item'));
+
+        $amount = (int) $request->input('amount', 1);
+        $hand = $request->input('hand', null);
+
+        $ArmoryItem = $this->armoryService->isValidArmoryItem($item);
+        if ($ArmoryItem === false) {
+
+            return response()->jsonWithGameLogs(
+                [],
+                [
+                    GameLogService::addErrorLog('Invalid item.'),
+                ],
+                400
+            );
+        }
+
+        if (! $this->inventoryService->hasEnoughAmount($User->inventory, $ArmoryItem->item, $amount)) {
+
+            return $this->inventoryService->logNotEnoughAmount($ArmoryItem->item);
+        }
+
+        $armoryPart = $ArmoryItem->type;
+
+        $Armory = SoldierArmory::where('warrior_id', $request->input('warrior_id'))->first();
+
+        if (! $Armory instanceof SoldierArmory) {
+            return response()->jsonWithGameLogs(
+                [],
+                [
+                    GameLogService::addErrorLog('Something went wrong. Please try again later.'),
+                ],
+                400
+            );
+        }
+
+        try {
+            if (! $this->warriorService->isSoldiersAvailable(collect([$Armory->soldier]))) {
+
+                return $this->warriorService->logWarriorsNotAvailable();
             }
 
-            // Check if item needs to be unlocked first
-            $unlockable_status = true;
-            if (\strpos($item_data->item, 'wujkin') !== false) {
-                $mineral = "wujkin";
-                $unlockable_status = $this->unlockableMineralsService->isWujkinItemUnlocked();
-            } else if (\strpos($item_data->item, 'frajrite') !== false) {
-                $mineral = "frajrite";
-                $unlockable_status = $this->unlockableMineralsService->isFrajriteItemUnlocked();
+            $armoryPart = $ArmoryItem->type;
+
+            if (! $this->armoryService->hasCorrectSoldierTypeForItem($Armory->soldier, $ArmoryItem)) {
+
+                return response()->jsonWithGameLogs(
+                    [],
+                    [
+                        GameLogService::addWarningLog('This warrior cannot wear the requested item'),
+                    ],
+                    400
+                );
             }
 
-            if (!$unlockable_status) {
-                return $this->unlockableMineralsService->logNotUnlockedMineral($mineral);
+            $unlockable_status = $this->armoryService->isItemUnlocked($ArmoryItem, $User->player);
+
+            if (! $unlockable_status) {
+                $mineral = ArmoryItemsData::getMineralFromItem($ArmoryItem);
+
+                return response()->jsonWithGameLogs([], [GameLogService::addWarningLog("You need to unlock $mineral items first")], 400);
             }
 
-            if (!$this->skillsService->hasRequiredLevel($item_data->level, SkillNames::WARRIOR->value)) {
+            if (! $this->skillsService->hasRequiredLevel($User->userLevels, $ArmoryItem->level, SkillNames::WARRIOR)) {
+
                 return $this->skillsService->logNotRequiredLevel(SkillNames::WARRIOR->value);
             }
 
-            if (!$this->inventoryService->hasEnoughAmount($item, $amount)) {
-                return $this->inventoryService->logNotEnoughAmount($item);
+            $removedItems = $this->armoryService->changeSoldierArmory(
+                false,
+                $ArmoryItem->item,
+                $amount,
+                $hand,
+                $armoryPart,
+                $Armory,
+            );
+
+            foreach ($removedItems as $key => $removedItem) {
+                $this->inventoryService->edit($User->inventory, $removedItem->name, $removedItem->amount, $User->id);
             }
-        } else {
-            $warrior_array = $warrior->toArray();
-            if ($warrior_array[$part] === null) {
-                return Response::addMessage("You don't have item in this part")->setStatus(400);
-            }
+
+            // Remove item from inventory when adding
+            $this->inventoryService->edit($User->inventory, $ArmoryItem->item, -$amount, $User->id);
+
+            $Armory->save();
+
+            $SoldierArmoryResponse = [
+                'warrior_id' => $Armory->soldier->warrior_id,
+                'type' => $Armory->soldier->type,
+                'armory' => $Armory->toArray(),
+            ];
+
+            return response()->json($SoldierArmoryResponse, 200);
+        } catch (InventoryFullException $e) {
+            return response()->jsonWithGameLogs([], [GameLogService::addErrorLog('Inventory is full')], 400);
+        } catch (Exception $e) {
+            Log::error('Error while changing warrior part', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+
+            return response()->jsonWithGameLogs([], [GameLogService::addErrorLog('Something went wrong. Please try again later.')], 400);
+
         }
-
-        $warrior = $this->armoryService->changeWarriorPart(
-            $is_removing,
-            $item,
-            $amount,
-            $hand,
-            $item_data,
-            $warrior
-        );
-        if (!$warrior) {
-            return Response::addMessage("Unvalid type!")->setStatus(422);
-        }
-
-        $warrior->update();
-
-        // Remove old items
-        foreach ($this->armoryService->getInventoryItemsToUpdate() as $key => $value) {
-            $this->inventoryService->edit($value['item'], $value['amount']);
-        }
-
-        // Remove item from inventory when adding
-        if ($is_removing === false) {
-            $this->inventoryService->edit($item, -$amount);
-        }
-
-        $resource = new WarriorArmoryResource($warrior);
-        return Response::addTemplate(
-            'warrior_armory',
-            $this->TemplateFetcher->loadTemplate('armory', [$resource->toArray()])
-        )->setStatus(200);
     }
 }
