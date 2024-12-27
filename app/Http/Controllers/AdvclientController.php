@@ -7,7 +7,6 @@ use App\Models\Hunger;
 use App\Models\Inventory;
 use App\Models\UserData;
 use App\Models\UserLevels;
-use App\Services\InventoryService;
 use App\Services\ProfiencyService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -15,7 +14,6 @@ use Illuminate\Support\Facades\Log;
 class AdvclientController extends Controller
 {
     public function __construct(
-        private InventoryService $inventoryService,
         private ProfiencyService $profiencyService,
     ) {}
 
