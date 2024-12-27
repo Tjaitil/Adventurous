@@ -64,6 +64,9 @@ enum GameLocations: string
         ];
     }
 
+    /**
+     * @return string[]
+     */
     public static function values(): array
     {
         return [
