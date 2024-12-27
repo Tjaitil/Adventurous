@@ -29,7 +29,6 @@ class ArmoryController extends Controller
         private WarriorService $warriorService,
         private InventoryService $inventoryService,
         private ArmoryService $armoryService,
-        private ArmoryItemsData $armoryItemsData,
         private SkillsService $skillsService,
     ) {}
 
