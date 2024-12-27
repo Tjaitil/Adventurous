@@ -24,6 +24,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property-read \App\Models\UserData $player
  * @property-read \App\Models\UserData $userData
  * @property-read \App\Models\UserLevels $userLevels
+ *
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
@@ -36,10 +37,14 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUsername($value)
+ *
  * @mixin \Eloquent
  */
 class User extends Authenticatable
 {
+    /**
+     * @use HasFactory<\Database\Factories\UserFactory>
+     */
     use HasFactory;
 
     protected $fillable = ['username', 'password'];
@@ -76,7 +81,7 @@ class User extends Authenticatable
     }
 
     /**
-     * @return HasMany<Inventory, User>
+     * @return HasMany<Inventory, $this>
      */
     public function inventory(): HasMany
     {
