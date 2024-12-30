@@ -35,6 +35,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class FarmerWorkforce extends Model
 {
+    /**
+     * @use HasFactory<\Database\Factories\FarmerWorkforceFactory>
+     */
     use HasFactory;
 
     public $timestamps = false;
@@ -43,6 +46,9 @@ class FarmerWorkforce extends Model
 
     public $table = 'farmer_workforce';
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<Farmer, $this>
+     */
     public function farmer(): HasMany
     {
         return $this->hasMany(Farmer::class, 'username', 'username');
