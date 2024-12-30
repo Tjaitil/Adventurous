@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\Models\Hunger
@@ -23,6 +24,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Hunger extends Model
 {
+    /**
+     * @use HasFactory<\Database\Factories\HungerFactory>
+     */
     use HasFactory;
 
     protected $table = 'hunger';
@@ -31,7 +35,10 @@ class Hunger extends Model
 
     public $timestamps = false;
 
-    public function user()
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<User, $this>
+     */
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
