@@ -38,7 +38,7 @@ class ArmoryItemsData extends Model
     public $timestamps = false;
 
     /**
-     * @var string[]
+     * @var array<string, string>
      */
     public $casts = [
         'type' => ArmoryParts::class,
