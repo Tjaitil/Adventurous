@@ -34,6 +34,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 class Farmer extends Model
 {
+    /**
+     * @use HasFactory<\Database\Factories\FarmerFactory>
+     */
     use HasFactory;
 
     public $timestamps = false;
@@ -46,6 +49,9 @@ class Farmer extends Model
         'crop_finishes_at' => 'datetime',
     ];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne<FarmerWorkforce, $this>
+     */
     public function workforce(): HasOne
     {
         return $this->hasOne(FarmerWorkforce::class, 'user_id', 'user_id');
