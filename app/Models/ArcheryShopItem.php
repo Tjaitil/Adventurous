@@ -34,7 +34,7 @@ class ArcheryShopItem extends Model
     public $timestamps = false;
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<ArcheryShopItemsRequired>
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<ArcheryShopItemsRequired, $this>
      */
     public function requiredItems(): HasMany
     {
@@ -42,7 +42,7 @@ class ArcheryShopItem extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<SkillRequirement>
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<SkillRequirement, $this>
      */
     public function skillRequirements(): HasMany
     {
