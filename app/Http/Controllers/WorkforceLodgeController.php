@@ -95,7 +95,7 @@ class WorkforceLodgeController extends Controller
 
         $price = EfficiencyUpgrade::where('level', $Workforce->efficiency_level)->first()->price;
 
-        if (! $this->inventoryService->hasEnoughAmount($User->inventory, config('adventurous.currency'), $price, $User->id)) {
+        if (! $this->inventoryService->hasEnoughAmount($User->inventory, config('adventurous.currency'), $price)) {
             return $this->inventoryService->logNotEnoughAmount(config('adventurous.currency'));
         }
 
