@@ -34,11 +34,17 @@ class HealingItem extends Model
 {
     public $timestamps = false;
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<HealingItemRequired, $this>
+     */
     public function requiredItems(): HasMany
     {
         return $this->hasMany(HealingItemRequired::class, 'item_id', 'item_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<Inventory, $this>
+     */
     public function inventory(): HasMany
     {
         return $this->hasMany(Inventory::class, 'id', 'item_id');

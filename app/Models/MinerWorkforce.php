@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * App\Models\MinerWorkforce
@@ -20,6 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $user_id
  * @property-read Collection<int, \App\Models\Miner> $miner
  * @property-read int|null $miner_count
+ *
  * @method static \Database\Factories\MinerWorkforceFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|MinerWorkforce newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|MinerWorkforce newQuery()
@@ -33,10 +35,14 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|MinerWorkforce whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MinerWorkforce whereUsername($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MinerWorkforce whereWorkforceTotal($value)
+ *
  * @mixin \Eloquent
  */
 class MinerWorkforce extends Model
 {
+    /**
+     * @use HasFactory<\Database\Factories\MinerWorkforceFactory>
+     */
     use HasFactory;
 
     public $timestamps = false;
@@ -45,7 +51,10 @@ class MinerWorkforce extends Model
 
     public $guarded = [];
 
-    public function miner()
+    /**
+     * @return HasMany<\App\Models\Miner, $this>
+     */
+    public function miner(): HasMany
     {
         return $this->hasMany(Miner::class, 'username', 'username');
     }

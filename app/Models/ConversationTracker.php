@@ -28,5 +28,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class ConversationTracker extends Model
 {
+    /**
+     * @use HasFactory<\Database\Factories\ConversationTrackerFactory>
+     */
     use HasFactory;
 }

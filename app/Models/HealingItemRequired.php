@@ -30,6 +30,9 @@ class HealingItemRequired extends Model
 
     public $table = 'healing_items_required';
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<HealingItem, $this>
+     */
     public function healingItem(): BelongsTo
     {
         return $this->belongsTo(HealingItem::class);

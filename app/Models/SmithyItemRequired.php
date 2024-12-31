@@ -29,7 +29,7 @@ class SmithyItemRequired extends Model
     protected $table = 'smithy_items_required';
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<SmithyItem, SmithyItemRequired>
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<SmithyItem, $this>
      */
     public function smithyItem(): BelongsTo
     {

@@ -62,9 +62,7 @@ class ConversationService
 
     protected ConversationTracker $ConversationTracker;
 
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     public function getConversationTracker(): void
     {
@@ -145,9 +143,8 @@ class ConversationService
 
     /**
      * @param  array<int, mixed>  $serverEvents
-     * @return string|false
      */
-    private function triggerServerEvents(array $serverEvents)
+    private function triggerServerEvents(array $serverEvents): ?string
     {
         $nextIndex = null;
         foreach ($serverEvents as $key => $serverEvent) {

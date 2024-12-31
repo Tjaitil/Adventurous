@@ -75,7 +75,7 @@ class TravelBureauController extends Controller
         $this->storeService->storeBuilder->setResource($initial_store);
 
         $result = $this->storeService->buyItem($User->inventory, $item, 1, $User->id);
-        if ($result !== true) {
+        if ($result instanceof JsonResponse || $result instanceof AdvResponse) {
             return $result;
         }
 

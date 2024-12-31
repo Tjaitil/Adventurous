@@ -32,6 +32,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Diplomacy extends Model
 {
+    /**
+     * @use HasFactory<\Database\Factories\DiplomacyFactory>
+     */
     use HasFactory;
 
     public $timestamps = false;

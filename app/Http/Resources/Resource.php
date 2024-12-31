@@ -56,8 +56,6 @@ abstract class Resource
 
     public function __set($name, $value)
     {
-        if (is_array($this->default)) {
             $this->default[$name] = $value;
-        }
     }
 }

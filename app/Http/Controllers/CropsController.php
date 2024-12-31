@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Enums\GameEvents;
 use App\Enums\SkillNames;
 use App\Exceptions\JsonException;
-use App\Http\Builders\SkillsBuilder;
 use App\Http\Responses\AdvResponse;
 use App\Models\Crop;
 use App\Models\Farmer;
@@ -110,7 +109,7 @@ class CropsController extends Controller
                 );
         }
 
-        $location = Auth::user()->player?->location ?? '';
+        $location = Auth::user()->player->location;
 
         // Check if user is in right location
         if (! $this->locationService->isCropsLocation($location)) {
@@ -240,10 +239,6 @@ class CropsController extends Controller
 
         $Workforce = FarmerWorkforce::where('user_id', Auth::user()->id)->firstOrFail();
 
-        if (! $Workforce instanceof FarmerWorkforce) {
-            throw new JsonException(FarmerWorkforce::class, ' model could not be retrieved');
-        }
-
         if (
             Carbon::now()->isAfter($Farmer->crop_finishes_at) &&
             $Farmer->crop_type &&
@@ -269,7 +264,7 @@ class CropsController extends Controller
             UserLevelsUpdater::create($User->userLevels)
                 ->addFarmerXP($experience)
                 ->update();
-                
+
             $response->addEvent(GameEvents::XpGainedEvent);
         }
 

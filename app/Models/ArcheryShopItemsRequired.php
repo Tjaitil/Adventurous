@@ -29,7 +29,7 @@ class ArcheryShopItemsRequired extends Model
     public $timestamps = false;
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<ArcheryShopItem, ArcheryShopItemsRequired>
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<ArcheryShopItem, $this>
      */
     public function smithyItem(): BelongsTo
     {

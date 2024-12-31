@@ -38,7 +38,7 @@ class ArmoryItemsData extends Model
     public $timestamps = false;
 
     /**
-     * @var string[]
+     * @var array<string, string>
      */
     public $casts = [
         'type' => ArmoryParts::class,
@@ -47,7 +47,7 @@ class ArmoryItemsData extends Model
     public static function getMineralFromItem(ArmoryItemsData $item): ?string
     {
 
-        return match ($item) {
+        return match (true) {
             strpos($item->item, 'iron') !== false => 'iron',
             strpos($item->item, 'steel') !== false => 'steel',
             strpos($item->item, 'yeqdon') !== false => 'yeqdon',

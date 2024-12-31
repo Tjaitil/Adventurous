@@ -44,14 +44,14 @@ class StoreItemResource extends Resource
         $required_items = [];
 
         $required = $this->required_items;
-        if (\is_array($required) && count($required) > 0) {
+        if (count($required) > 0) {
             foreach ($this->required_items as $key => $item) {
                 array_push($required_items, $item->toArray());
             }
         }
 
         $skill_requirements = [];
-        if (\is_array($this->skill_requirements) && count($this->skill_requirements) > 0) {
+        if (count($this->skill_requirements) > 0) {
             foreach ($this->skill_requirements as $key => $value) {
                 array_push($skill_requirements, $value->toArray());
             }

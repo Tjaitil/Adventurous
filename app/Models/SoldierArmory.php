@@ -65,7 +65,7 @@ class SoldierArmory extends Model
 
     public function getAttackAttribute(): int
     {
-        return ArmoryItemsData::whereIn('item', [
+        return (int) ArmoryItemsData::whereIn('item', [
             $this->helm,
             $this->ammunition,
             $this->left_hand,
@@ -77,7 +77,7 @@ class SoldierArmory extends Model
 
     public function getDefenceAttribute(): int
     {
-        return ArmoryItemsData::whereIn('item', [
+        return (int) ArmoryItemsData::whereIn('item', [
             $this->helm,
             $this->ammunition,
             $this->left_hand,

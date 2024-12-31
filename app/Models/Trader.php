@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * 
@@ -35,6 +36,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Trader extends Model
 {
+    /**
+     * @use HasFactory<\Database\Factories\TraderFactory>
+     */
     use HasFactory;
 
     protected $guarded = [];
@@ -43,12 +47,18 @@ class Trader extends Model
 
     public $timestamps = false;
 
-    public function traderAssignment()
+    /**
+     * @return HasOne<TraderAssignment, $this>
+     */
+    public function traderAssignment(): HasOne
     {
         return $this->hasOne(TraderAssignment::class, 'id', 'assignment_id');
     }
 
-    public function cart()
+    /**
+     * @return HasOne<TravelBureauCart, $this>
+     */
+    public function cart(): HasOne
     {
         return $this->hasOne(TravelBureauCart::class, 'id', 'cart_id');
     }

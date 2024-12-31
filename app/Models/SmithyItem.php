@@ -34,7 +34,7 @@ class SmithyItem extends Model
     protected $table = 'smithy_items';
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<SmithyItemRequired>
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<SmithyItemRequired, $this>
      */
     public function requiredItems(): HasMany
     {
@@ -43,7 +43,7 @@ class SmithyItem extends Model
 
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<SkillRequirement>
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<SkillRequirement, $this>
      */
     public function skillRequirements(): HasMany
     {

@@ -10,18 +10,17 @@ use Illuminate\Support\Facades\Log;
 
 class ConversationController extends Controller
 {
-    public function __construct(private ConversationService $ConversationService)
-    {
-    }
+    public function __construct(private ConversationService $ConversationService) {}
 
     public function index(Request $request): JsonResponse
     {
+        $person = null;
         try {
-            $person = $request->string('person');
+            $person = $request->string('person')->toString();
             $nextKey = $request->integer('selected_option');
             $isStarting = $request->boolean('is_starting');
 
-            if (! $request->has('person')) {
+            if ($person === '') {
                 throw new Exception('person is required', 400);
             }
 

@@ -12,7 +12,6 @@ use App\Models\UserLevels;
 use App\Updaters\UserLevelsUpdater;
 use Exception;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 
 /**
  * @property UserLevels $userLevels
@@ -26,18 +25,6 @@ class SkillsService
     public function __construct(
         private CanLevelUpAction $canLevelUpAction,
     ) {}
-
-    private function setUserLevels(): void
-    {
-        if (! isset($this->userLevels)) {
-            $UserLevels = UserLevels::where('id', Auth::user()?->id)->first();
-            if (! $UserLevels instanceof UserLevels) {
-                throw new JsonException('UserLevels could not be found for user');
-            }
-            $this->userLevels = $UserLevels;
-        }
-
-    }
 
     /**
      * Check if user has required profiency level

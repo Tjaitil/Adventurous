@@ -7,14 +7,6 @@ use App\Models\Hunger;
 class HungerService
 {
     /**
-     * Get hunger
-     */
-    public function getCurrentHunger(int $userId): Hunger
-    {
-        return Hunger::find($userId)->first();
-    }
-
-    /**
      * Check if hunger is too low for action
      */
     public function isHungerTooLow(Hunger $Hunger): bool
@@ -52,7 +44,7 @@ class HungerService
 
     public function updateHunger(Hunger $Hunger, int $adjustBy): Hunger
     {
-        $Hunger->current += $adjustBy ;
+        $Hunger->current += $adjustBy;
         if ($Hunger->current > 100) {
             $Hunger->current = 100;
         }

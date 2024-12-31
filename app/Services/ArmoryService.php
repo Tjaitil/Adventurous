@@ -90,7 +90,7 @@ final class ArmoryService
                     $SoldierArmory->right_hand = null;
                 } else {
                     $SoldierArmory->right_hand = $item;
-                }   
+                }
                 break;
             case ArmoryParts::LEFT_HAND:
                 if ($SoldierArmory->left_hand !== null) {
@@ -204,7 +204,7 @@ final class ArmoryService
      */
     public function hasCorrectSoldierTypeForItem(Soldier $Soldier, ArmoryItemsData $item_data): bool
     {
-        if ($Soldier?->type === $item_data->warrior_type || $item_data->warrior_type === 'all') {
+        if ($Soldier->type === $item_data->warrior_type || $item_data->warrior_type === 'all') {
             return true;
         }
 
