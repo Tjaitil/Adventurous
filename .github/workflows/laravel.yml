@@ -29,4 +29,4 @@ jobs:
           php artisan key:generate
  
       - name: Run tests
-        run: php artisan test
+        run: php artisan migrate --seed && php artisan test
