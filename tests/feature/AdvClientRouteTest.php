@@ -7,6 +7,12 @@ use Tests\TestCase;
 
 class AdvClientRouteTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->withoutVite();
+    }
+
     public function test_advclient_route(): void
     {
         $User = User::find(1);
