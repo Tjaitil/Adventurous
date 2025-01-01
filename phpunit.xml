@@ -6,7 +6,7 @@
     <coverage />
     <testsuites>
         <testsuite name="Feature">
-            <directory>tests/Feature</directory>
+            <directory>tests/feature</directory>
         </testsuite>
     </testsuites>
     <php>
