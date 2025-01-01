@@ -31,25 +31,25 @@
             </x-tab>
         </x-tabList>
         <div id="sidebar-tabpanels" class="flex-grow overflow-y-scroll h-full max-h-[600px]">
-            <x-tabpanel id="sidebar-log-tabpanel" aria-labelled-by="log-tab">
+            <x-tabPanel id="sidebar-log-tabpanel" aria-labelled-by="log-tab">
                 <x-client.gameLog :messages="$gameLog" />
-            </x-tabpanel>
-            <x-tabpanel id="sidebar-adventure-tabpanel" aria-labelled-by="adventure-tab">
+            </x-tabPanel>
+            <x-tabPanel id="sidebar-adventure-tabpanel" aria-labelled-by="adventure-tab">
                 {{-- Add adventure tab here --}}
-            </x-tabpanel>
-            <x-tabpanel id="sidebar-countdowns-tabpanel" aria-labelled-by="countdown-tab">
+            </x-tabPanel>
+            <x-tabPanel id="sidebar-countdowns-tabpanel" aria-labelled-by="countdown-tab">
                 <x-profiencyStatus.profiencyStatusContainer :profiency-status="$profiency_status" />
-            </x-tabpanel>
-            <x-tabpanel id="sidebar-diplomacy-tabpanel" aria-labelled-by="diplomacy-tab">
+            </x-tabPanel>
+            <x-tabPanel id="sidebar-diplomacy-tabpanel" aria-labelled-by="diplomacy-tab">
                 <?php
                 // echo TemplateFetcher::loadTemplate('diplomacy', $data['diplomacy_data'])
                 ?>
-            </x-tabpanel>
-            <x-tabpanel id="sidebar-skills-tabpanel" aria-labelled-by="skills-tab">
+            </x-tabPanel>
+            <x-tabPanel id="sidebar-skills-tabpanel" aria-labelled-by="skills-tab">
                 <div class="vue-app">
                     <skill-info-list :init-levels="{{ json_encode($Levels) }}" />
                 </div>
-            </x-tabpanel>
+            </x-tabPanel>
             <x-tabPanel id="help-settings-tabPanel" aria-labelled-by="help-settings-tab">
                 @include('partials.clientHelp')
             </x-tabPanel>
