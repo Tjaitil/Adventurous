@@ -1,0 +1,105 @@
+{
+  "index": "kps",
+  "kps": {
+    "index": "kps",
+    "options": [
+      {
+        "person": "player",
+        "text": "Good day!",
+        "next_key": "Q",
+        "id": 0
+      }
+    ]
+  },
+  "kpsQ": {
+    "index": "kpsQ",
+    "options": [
+      {
+        "person": "kapys",
+        "text": "Good day! What can I do for you?",
+        "next_key": "r",
+        "id": 0
+      }
+    ]
+  },
+  "kpsQr": {
+    "index": "kpsQr",
+    "options": [
+      {
+        "id": 0,
+        "text": "I want to buy permits in golbak mine",
+        "next_key": "r",
+        "conditional": "BuyPermit@locationConditional",
+        "option_value": "golbak"
+      },
+      {
+        "id": 1,
+        "person": "",
+        "text": "I want to buy permits in snerpiir mine",
+        "next_key": "r",
+        "conditional": "BuyPermit@locationConditional",
+        "option_value": "snerpiir"
+      },
+      {
+        "id": 2,
+        "person": "",
+        "text": "Goobye",
+        "next_key": "end"
+      }
+    ]
+  },
+  "kpsQrr": {
+    "index": "kpsQrr",
+    "options": [
+      {
+        "person": "kapys",
+        "container": "A",
+        "text": "That will be :price gold",
+        "replacers": {
+          "price": "BuyPermit@priceReplacer"
+        },
+        "next_key": "S",
+        "id": 0
+      }
+    ]
+  },
+  "kpsQrrS": {
+    "index": "kpsQrrS",
+    "server_events": [
+      {
+        "type": "has",
+        "event": "BuyPermit@hasEnoughGold",
+        "callbacks": [
+          {
+            "event": "BuyPermit@buyPermits",
+            "type": "handle"
+          }
+        ],
+        "results": ["r0", "r1"]
+      }
+    ]
+  },
+  "kpsQrrSr0": {
+    "index": "kpsQrrSr0",
+    "client_events": ["Inventory.update"],
+    "options": [
+      {
+        "person": "kapys",
+        "text": "Here are your permits. Please doing business with you.",
+        "next_key": "end",
+        "id": 0
+      }
+    ]
+  },
+  "kpsQrrSr1": {
+    "index": "kpsQrrSr1",
+    "options": [
+      {
+        "person": "kapys",
+        "text": "Sorry. I can't sell you permits if you don't have enough gold. Come back later.",
+        "next_key": "end",
+        "id": 0
+      }
+    ]
+  }
+}

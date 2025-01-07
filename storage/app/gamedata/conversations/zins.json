@@ -1,0 +1,66 @@
+{
+  "index": "zr",
+  "zr": {
+    "options": [
+      {
+        "person": "player",
+        "next_key": "r",
+        "id": 0,
+        "container": "B",
+        "text": "What are you doing out here?"
+      }
+    ]
+  },
+  "zrr": {
+    "options": [
+      {
+        "person": "zins",
+        "next_key": "r",
+        "id": 0,
+        "container": "A",
+        "text": "I'm looking for daqloon items. Do you have some?"
+      }
+    ]
+  },
+  "zrrr": {
+    "options": [
+      {
+        "person": "player",
+        "next_key": "r1",
+        "id": 0,
+        "container": "B",
+        "text": "Yes"
+      },
+      {
+        "person": "player",
+        "next_key": "r2",
+        "id": 1,
+        "container": "B",
+        "text": "No"
+      }
+    ]
+  },
+  "zrrrr1": {
+    "options": [
+      {
+        "person": "zins",
+        "next_key": "end",
+        "callback": "loadBuilding#zinsstore",
+        "id": 0,
+        "container": "A",
+        "text": "Great! I will buy them from you."
+      }
+    ]
+  },
+  "zrrrr2": {
+    "options": [
+      {
+        "person": "zins",
+        "next_key": "end",
+        "id": 0,
+        "container": "A",
+        "text": "Oh, that is too bad. I'll keep looking. Bye"
+      }
+    ]
+  }
+}
