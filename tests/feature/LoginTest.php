@@ -14,6 +14,7 @@ class LoginTest extends TestCase
     {
         parent::setUp();
         session()->flush();
+        $this->withoutVite();
     }
 
     /**
