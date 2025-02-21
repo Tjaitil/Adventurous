@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
         User::factory()->count(1)
             ->has(UserData::factory()
                 ->count(1)
-                ->configure()
+                ->withDefaults()
                 ->state([
                     'username' => 'tjaitil',
                 ]), 'userData')
