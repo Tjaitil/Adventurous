@@ -18,7 +18,7 @@ class UserDataFactory extends Factory
 {
     protected $model = UserData::class;
 
-    public function configure(): UserDataFactory
+    public function withDefaults(): UserDataFactory
     {
         return $this->afterCreating(function (UserData $userData) {
             Hunger::factory()->create([
@@ -78,7 +78,7 @@ class UserDataFactory extends Factory
     public function definition(): array
     {
         $data = [
-            'username' => 'tjaitil',
+            'username' => $this->faker->userName,
             'location' => GameLocations::TOWHAR_LOCATION->value,
             'map_location' => '5.7',
             'game_id' => '',
