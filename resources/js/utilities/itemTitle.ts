@@ -23,19 +23,6 @@ export const itemTitle = {
         this.addTitleEvent();
     },
     addTitleEvent() {
-        const elements = document
-            .getElementById('inventory')
-            .querySelectorAll('figure');
-        elements.forEach(element => {
-            if (this.computerDevice) {
-                element.addEventListener('mouseenter', event =>
-                    itemTitle.show(event),
-                );
-                element.addEventListener('mouseleave', () => itemTitle.hide());
-            } else {
-                element.addEventListener('click', itemTitle.show);
-            }
-        });
         this.status = true;
     },
     removeTitleEvent() {
