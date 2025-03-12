@@ -334,8 +334,8 @@ export class Game {
     }
 
     private static loadGame() {
-        this.getWorld();
         HUD.setup(viewport.width, viewport.height, viewport.top, viewport.left);
+        this.getWorld();
         controls.checkDeviceType();
         itemPrices.get();
         // CookieTicket.checkCookieTicket("checkMeOut");

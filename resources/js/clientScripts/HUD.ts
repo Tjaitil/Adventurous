@@ -27,7 +27,6 @@ export const HUD = {
         tutorialProgressBar: null as ProgressBar,
     },
     setup(width: number, height: number, top: number, left: number) {
-        Inventory.init();
         itemTitle.init(true);
 
         // Setup game_hud container;
