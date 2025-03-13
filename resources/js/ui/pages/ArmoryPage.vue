@@ -9,7 +9,7 @@
             }}
         </p>
         <div class="flex flex-row">
-            <div class="sticky top-5 left-0 self-start w-1/5">
+            <div class="sticky top-5 left-0 w-1/5 self-start">
                 <BaksCard variant="light">
                     <form
                         class="flex flex-col gap-y-4"
@@ -28,7 +28,7 @@
                             >
                             <span
                                 v-if="hasSelectedWarriorError"
-                                class="text-red-600 block"
+                                class="block text-red-600"
                                 >{{ $t('Please select a solider') }}</span
                             >
                             <input
@@ -89,12 +89,12 @@
                         >
                         <BaseLoadingIcon
                             v-show="isLoading"
-                            class="justify-self-center w-6 h-6"
+                            class="h-6 w-6 justify-self-center"
                         />
                     </form>
                 </BaksCard>
             </div>
-            <div id="warrior_container" class="flex-grow">
+            <div id="warrior_container" class="grow">
                 <WarriorArmoryWrapper
                     v-for="warrior in warriors"
                     :key="warrior.warrior_id"

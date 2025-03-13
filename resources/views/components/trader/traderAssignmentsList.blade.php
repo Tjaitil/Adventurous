@@ -8,7 +8,7 @@
      */
 @endphp
 <div id="trader_assignments_container "
-    class="grid grid-cols-[repeat(auto-fit,_180px)] justify-center gap-4">
+    class="grid grid-cols-[repeat(auto-fit,180px)] justify-center gap-4">
     @forelse ($assignments as $value)
         @php
             $has_required_level = $traderLevel >= $value->type->required_level;

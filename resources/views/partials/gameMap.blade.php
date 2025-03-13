@@ -30,7 +30,7 @@
                 class="absolute left-0 top-0 h-[24px] w-[24px] rounded-xl bg-red-500"></span>
         </div>
         <div id="map_world_img_container"
-            class="relative hidden h-full grid-cols-[repeat(9,_200px)] bg-primary-500">
+            class="relative hidden h-full grid-cols-[repeat(9,200px)] bg-primary-500">
             @php
                 $y = 1;
                 $x = 1;

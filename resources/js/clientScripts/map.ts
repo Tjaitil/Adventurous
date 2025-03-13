@@ -379,7 +379,7 @@ export class Map {
             }
             const tag = document.createElement('img');
             tag.src = 'images/' + i.src + '.png';
-            tag.classList.add('mapTag', 'w-[32]', 'h-[32]');
+            tag.classList.add('mapTag', 'w-32', 'h-32');
             // Divide by 2 because the image is styled 1600px by 1600px. map.css -> #local_img
             tag.style.left = i.x / 2 + 'px';
             tag.style.top = i.y / 2 + 'px';

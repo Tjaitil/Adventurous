@@ -15,7 +15,7 @@
             :checked="isChecked === value"
         />
         <span
-            class="relative inline-block h-5 w-5 rounded-full border-2 border-transparent bg-neutral-100 after:absolute after:hidden after:h-3 after:w-3 after:rounded-full after:top-0.5 after:left-0.5 after:bg-white after:content-[''] hover:bg-gray-200 peer-checked:bg-orange-600 peer-checked:drop-shadow-xl after:peer-checked:block"
+            class="relative inline-block h-5 w-5 rounded-full border-2 border-transparent bg-neutral-100 after:absolute after:hidden after:h-3 after:w-3 after:rounded-full after:top-0.5 after:left-0.5 after:bg-white after:content-[''] hover:bg-gray-200 peer-checked:bg-orange-600 peer-checked:drop-shadow-xl peer-checked:after:block"
         ></span>
     </label>
 </template>

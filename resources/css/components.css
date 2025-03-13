@@ -1,0 +1,28 @@
+@reference './app.css';
+
+@layer components {
+    /* baks-card,
+    .bk-primary,
+    .bk-secondary,
+    .bk-dark,
+    .bk-light {
+        font-family: serif;
+    } */
+
+    baks-card::part(baks-card),
+    .bk-card {
+        @apply relative border-8 p-2 shadow-lg after:pointer-events-none after:absolute after:top-0 after:left-0 after:h-full after:w-full after:border-4 after:border-solid after:border-neutral-900/90 after:content-[''];
+        @apply pixelated-corners;
+        border-style: ridge;
+        border-color: rgb(135, 93, 49);
+
+        &.bk-light {
+            @apply border-yellow-700;
+        }
+
+        &.bk-dark {
+            border-color: rgb(135, 93, 49);
+            background-color: var(--dark-color);
+        }
+    }
+}

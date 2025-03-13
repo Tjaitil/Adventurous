@@ -3,6 +3,7 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import vue from '@vitejs/plugin-vue';
+import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
 
 export default defineConfig({
@@ -21,6 +22,7 @@ export default defineConfig({
         },
     },
     plugins: [
+        tailwindcss(),
         vue({
             template: {
                 transformAssetUrls: {
@@ -31,13 +33,12 @@ export default defineConfig({
         }),
         laravel({
             input: [
-                'resources/css/app.css',
                 'resources/js/app.js',
                 'resources/js/ui/web/index.ts',
                 'resources/js/ui/main.ts',
                 'resources/js/clientScripts/inventory.ts',
                 'resources/js/backgroundScroller.ts',
-                'resources/js/clientScripts/sidebar.ts',
+                // 'resources/js/clientScripts/sidebar.ts',
             ],
             refresh: false,
         }),
