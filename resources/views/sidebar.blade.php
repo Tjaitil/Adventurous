@@ -1,7 +1,7 @@
 <div id="sidebar" class="h-full pt-2 bg-primary-800 px-2 text-white transition-all duration-200">
     <button id="sidebar_button_toggle"
         class="sidebar_button rounded-md text-black bg-orange-50 border-2 shadow p-2
-        font-bold text-xs float-right invisible outline-none">
+        font-bold text-xs float-right invisible outline-hidden">
         {{ '<<' }} </button>
     <p>{{ ucfirst($username) }}</p>
     <p class="mb-1 mt-1">{{ ucfirst($profiency) }}</p>
@@ -30,7 +30,7 @@
                 <img class="mx-auto w-12 h-12" id="setting_button" src="{{ asset('images/settings icon.png') }}" />
             </x-tab>
         </x-tabList>
-        <div id="sidebar-tabpanels" class="flex-grow overflow-y-scroll h-full max-h-[600px]">
+        <div id="sidebar-tabpanels" class="grow overflow-y-scroll h-full max-h-[600px]">
             <x-tabPanel id="sidebar-log-tabpanel" aria-labelled-by="log-tab">
                 <x-client.gameLog :messages="$gameLog" />
             </x-tabPanel>

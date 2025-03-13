@@ -55,6 +55,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post(('conversation/next'), [ConversationController::class, 'index']);
 
+    Route::get('/profile', fn () => view('profile'));
     Route::get('/crops', [CropsController::class, 'index']);
     Route::post('/crops/start', [CropsController::class, 'growCrops']);
     Route::post('/crops/end', [CropsController::class, 'harvestCrops']);

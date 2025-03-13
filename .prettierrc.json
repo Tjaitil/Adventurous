@@ -4,6 +4,7 @@
   "singleQuote": true,
   "tabWidth": 4,
   "arrowParens": "avoid",
+  "plugins": ["prettier-plugin-tailwindcss"],
   "overrides": [
     {
       "files": "./storage/**/*.json",

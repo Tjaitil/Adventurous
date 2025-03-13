@@ -14,7 +14,7 @@
     <input
         {{ $attributes->merge([
             'class' =>
-                'custom-input m-auto block w-full rounded-lg border-2 border-stone-500 bg-primary-300 px-2 py-1 outline-none',
+                'custom-input m-auto block w-full rounded-lg border-2 border-stone-500 bg-primary-300 px-2 py-1 outline-hidden',
         ]) }}
         type="{{ $type }}"
         name="{{ $name }}" id="{{ $id }}"

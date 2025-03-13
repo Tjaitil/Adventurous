@@ -1,24 +1,116 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@import 'baks-components-vue/themes/default.css';
+@source '../../node_modules/baks-components-vue/dist/index.css';
 
-.border-outset {
-    border-style: outset;
+@theme {
+    --color-primary-50: #faf5f0;
+    --color-primary-100: #f4ebe1;
+    --color-primary-200: #e9d7c3;
+    --color-primary-300: #dfc3a5;
+    --color-primary-400: #d4af87;
+    --color-primary-500: #c99b69;
+    --color-primary-600: #b47c41;
+    --color-primary-700: #875d31;
+    --color-primary-800: #5a3e20;
+    --color-primary-900: #2d1f10;
+    --color-primary-950: #171008;
+    --light-color: var(--color-orange-50);
+    --light-color-hover: var(--color-orange-100);
+    --light-color-focus: var(--color-orange-100);
+    --light-color-active: var(--color-orange-100);
+    --light-color-border: var(--color-orange-100);
+    --light-color-text: black;
+    --color-mint-500: oklch(0.72 0.11 178);
+    --primary-color: var(--color-primary-500);
+    --primary-color-hover: var(--color-primary-600);
+    --primary-color-focus: var(--color-primary-600);
+    --primary-color-active: var(--color-primary-600);
+    --primary-color-border: var(--color-primary-600);
+
+    --secondary-color: var(--color-cyan-700);
+    --secondary-color-hover: var(--color-cyan-800);
+    --secondary-color-focus: var(--color-cyan-800);
+    --secondary-color-active: var(--color-cyan-800);
+    --secondary-color-border: var(--color-cyan-800);
+    --secondary-color-text: white;
+
+    --dark-color: #5a3e20;
+    --dark-color-hover: #5a3e20;
+    --dark-color-focus: #5a3e20;
+    --dark-color-active: #5a3e20;
+    --dark-color-border: #5a3e20;
 }
 
-.border-inset {
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentColor);
+    }
+}
+
+@utility bk-primary {
+    font-family: serif;
+}
+
+@utility bk-secondary {
+    font-family: serif;
+}
+
+@utility bk-dark {
+    font-family: serif;
+
+    & .bk-card {
+        border-color: rgb(135, 93, 49);
+    }
+}
+
+@utility bk-light {
+    font-family: serif;
+
+    & .bk-card {
+        @apply border-yellow-700;
+    }
+}
+
+/* .bk-card {
+    @apply pixelated-corners;
+    @apply relative border-8 p-2 shadow-lg after:pointer-events-none after:absolute after:top-0 after:left-0 after:h-full after:w-full after:border-4 after:border-solid after:border-neutral-900/90 after:content-[''];
+    border-style: ridge;
+    border-color: rgb(135, 93, 49);
+} */
+@utility tab-4 {
+    tab-size: 4;
+}
+
+@utility border-outset {
+    border-outset: outset;
+}
+
+@utility border-inset {
     border-style: inset;
 }
 
-.border-ridge {
+@utility border-ridge {
     border-style: ridge;
 }
 
-.image-crisp {
+@utility image-crisp {
     image-rendering: crisp-edges;
 }
 
-.image-auto-render {
+@utility image-auto-render {
     image-rendering: auto;
 }
 
@@ -28,107 +120,48 @@
         height 0.2s ease-out;
 }
 
-.pixelated-corners {
-    clip-path: polygon(
-        0px 12px,
-        6px 12px,
-        6px 6px,
-        12px 6px,
-        12px 0px,
-        calc(100% - 12px) 0px,
-        calc(100% - 12px) 6px,
-        calc(100% - 6px) 6px,
-        calc(100% - 6px) 12px,
-        100% 12px,
-        100% calc(100% - 12px),
-        calc(100% - 6px) calc(100% - 12px),
-        calc(100% - 6px) calc(100% - 6px),
-        calc(100% - 12px) calc(100% - 6px),
-        calc(100% - 12px) 100%,
-        12px 100%,
-        12px calc(100% - 6px),
-        6px calc(100% - 6px),
-        6px calc(100% - 12px),
-        0px calc(100% - 12px)
-    );
-}
-.pixelated-corners-sm {
-    clip-path: polygon(
-        0px 8px,
-        4px 8px,
-        4px 4px,
-        8px 4px,
-        8px 0px,
-        calc(100% - 8px) 0px,
-        calc(100% - 8px) 4px,
-        calc(100% - 4px) 4px,
-        calc(100% - 4px) 8px,
-        100% 8px,
-        100% calc(100% - 8px),
-        calc(100% - 4px) calc(100% - 8px),
-        calc(100% - 4px) calc(100% - 4px),
-        calc(100% - 8px) calc(100% - 4px),
-        calc(100% - 8px) 100%,
-        8px 100%,
-        8px calc(100% - 4px),
-        4px calc(100% - 4px),
-        4px calc(100% - 8px),
-        0px calc(100% - 8px)
-    );
+@utility pixelated-corners {
+    clip-path: polygon(0px 12px,
+            6px 12px,
+            6px 6px,
+            12px 6px,
+            12px 0px,
+            calc(100% - 12px) 0px,
+            calc(100% - 12px) 6px,
+            calc(100% - 6px) 6px,
+            calc(100% - 6px) 12px,
+            100% 12px,
+            100% calc(100% - 12px),
+            calc(100% - 6px) calc(100% - 12px),
+            calc(100% - 6px) calc(100% - 6px),
+            calc(100% - 12px) calc(100% - 6px),
+            calc(100% - 12px) 100%,
+            12px 100%,
+            12px calc(100% - 6px),
+            6px calc(100% - 6px),
+            6px calc(100% - 12px),
+            0px calc(100% - 12px));
 }
 
-@layer components {
-    :root {
-        --light-color: theme(colors.orange.50);
-        --light-color-hover: theme(colors.orange.100);
-        --light-color-focus: theme(colors.orange.100);
-        --light-color-active: theme(colors.orange.100);
-        --light-color-border: theme(colors.orange.100);
-        --light-color-text: black;
-
-        --primary-color: theme(colors.primary.500);
-        --primary-color-border: theme(colors.primary.600);
-        --primary-color-hover: theme(colors.primary.600);
-        --primary-color-focus: theme(colors.primary.600);
-        --primary-color-active: theme(colors.primary.600);
-        --primary-color-border: theme(colors.primary.600);
-
-        --secondary-color: theme(colors.cyan.700);
-        --secondary-color-hover: theme(colors.cyan.800);
-        --secondary-color-focus: theme(colors.cyan.800);
-        --secondary-color-active: theme(colors.cyan.800);
-        --secondary-color-border: theme(colors.cyan.800);
-        --secondary-color-text: white;
-
-        --dark-color: #5a3e20;
-        --dark-color-hover: #5a3e20;
-        --dark-color-focus: #5a3e20;
-        --dark-color-active: #5a3e20;
-        --dark-color-border: #5a3e20;
-    }
-    baks-card,
-    .bk-primary,
-    .bk-secondary,
-    .bk-dark,
-    .bk-light {
-        font-family: serif;
-    }
-
-    baks-card::part(baks-card),
-    .bk-card {
-        @apply relative p-2 border-8 shadow-lg after:border-neutral-900/90 after:pointer-events-none after:absolute after:top-0 after:left-0 after:content-[''] after:w-full after:h-full after:border-solid after:border-4;
-        @apply pixelated-corners;
-        border-style: ridge;
-        border-color: rgb(135, 93, 49);
-    }
-
-    baks-card[variant='dark']::part(baks-card),
-    .bk-card.bk-light {
-        @apply border-yellow-700;
-    }
-
-    baks-card[variant='dark']::part(baks-card),
-    .bk-card.bk-dark {
-        border-color: rgb(135, 93, 49);
-    }
+@utility pixelated-corners-sm {
+    clip-path: polygon(0px 8px,
+            4px 8px,
+            4px 4px,
+            8px 4px,
+            8px 0px,
+            calc(100% - 8px) 0px,
+            calc(100% - 8px) 4px,
+            calc(100% - 4px) 4px,
+            calc(100% - 4px) 8px,
+            100% 8px,
+            100% calc(100% - 8px),
+            calc(100% - 4px) calc(100% - 8px),
+            calc(100% - 4px) calc(100% - 4px),
+            calc(100% - 8px) calc(100% - 4px),
+            calc(100% - 8px) 100%,
+            8px 100%,
+            8px calc(100% - 4px),
+            4px calc(100% - 4px),
+            4px calc(100% - 8px),
+            0px calc(100% - 8px));
 }

@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>@yield('title')</title>
     <link rel='shortcut icon' type='image/x-icon' href="{{ asset('favicon.ico') }}" />
-    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/ui/web/index.ts'])
+    @vite(['resources/js/ui/web/index.ts', 'resources/js/app.js'])
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Old+Standard+TT&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Martel&display=swap" rel="stylesheet">
