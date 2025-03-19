@@ -2,7 +2,7 @@
     <baks-card
         id="inventory"
         variant="dark"
-        class="z-20 relative w-[29%] float-right h-[600px] mt-0"
+        class="relative z-20 float-right mt-0 h-[600px]"
     >
         <BaseLoading :is-loading>
             <p class="mb-4">
