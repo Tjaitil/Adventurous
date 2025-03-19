@@ -337,7 +337,6 @@ export class Game {
         HUD.setup(viewport.width, viewport.height, viewport.top, viewport.left);
         this.getWorld();
         controls.checkDeviceType();
-        itemPrices.get();
         // CookieTicket.checkCookieTicket("checkMeOut");
     }
 
@@ -421,5 +420,4 @@ export class Game {
         Game.properties.requestId = window.requestAnimationFrame(Game.update);
     }
 }
-
-window.addEventListener('load', () => Game.setup());
+window.addEventListener('DOMContentLoaded', () => Game.setup());

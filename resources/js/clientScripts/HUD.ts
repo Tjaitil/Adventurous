@@ -45,12 +45,29 @@ export const HUD = {
         const conversation_container = document.getElementById(
             'conversation-container',
         );
-        conversation_container.style.width = width + 'px';
+
+        if (!(conversation_container instanceof HTMLElement)) {
+            throw new Error('conversation_container element not found');
+        }
+
+        const gameBorderElement = document.getElementById('canvas-border');
+        if (!(gameBorderElement instanceof HTMLElement)) {
+            throw new Error('game_border element not found');
+        }
+
+        const gameBorderwidth =
+            window.getComputedStyle(gameBorderElement).borderWidth;
+
+        const gameCanvasElement = document.getElementById('game_canvas');
+        if (!(gameCanvasElement instanceof HTMLElement)) {
+            throw new Error('game_canvas element not found');
+        }
+
         conversation_container.style.top =
-            document.getElementById('game_canvas').offsetTop +
-            document.getElementById('game_canvas').offsetHeight -
-            conversation_container.offsetHeight -
-            8 +
+            gameCanvasElement.offsetTop +
+            gameCanvasElement.offsetHeight -
+            conversation_container.offsetHeight +
+            parseInt(gameBorderwidth) * 2 +
             'px';
         document.getElementById('news_content').style.width = width + 'px';
 

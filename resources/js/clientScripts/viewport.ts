@@ -104,15 +104,19 @@ export const viewport = {
         if (screen.width < 800) {
             newWidth =
                 document.getElementsByTagName('section')[0].offsetWidth * 0.97;
-        } else {
-            newWidth =
-                document.getElementsByTagName('section')[0].offsetWidth * 0.68;
         }
+
+        const gameCanvas = document.getElementById('game_canvas');
+        if (!(gameCanvas instanceof HTMLCanvasElement)) {
+            throw new Error('game_canvas is not an HTMLCanvasElement');
+        }
+        this.left = 6;
+
         const canvasContainer = document.getElementById('game-screen');
         if (canvasContainer) {
-            this.left = canvasContainer.offsetLeft;
             this.top = canvasContainer.offsetTop;
         }
+        newWidth = gameCanvas.parentElement?.offsetWidth - 12;
         let newHeight;
         // If the device is mobile check for the shortest dimension of height and width to compensate for already rotated devices
         if (Game.properties.device == 'mobile') {
