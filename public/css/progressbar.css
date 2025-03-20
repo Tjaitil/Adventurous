@@ -10,6 +10,7 @@
     border-radius: 6px;
     border: 3px solid #3d2500;
 }
+
 .progressBarOverlay {
     width: 0%;
     height: 70%;
@@ -21,6 +22,7 @@
     transition: width 0.7s ease-out;
     transform: translateY(-51%);
 }
+
 .progressBar {
     width: 100%;
     display: block;
@@ -29,9 +31,7 @@
     height: 100%;
     line-height: 32px;
 }
-.progressBar > * {
-    vertical-align: middle;
-}
+
 .progressBarOverlayShadow {
     background-color: #f90;
     position: absolute;
@@ -40,9 +40,11 @@
     filter: brightness(77%);
     border-radius: 5px;
 }
+
 .progressFinished {
     background-color: var(--greenColor);
 }
+
 .progressBarOverlayShadow,
 .progressBarOverlay,
 .progressBar {
