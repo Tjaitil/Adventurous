@@ -9,7 +9,7 @@
                 @include('partials.conversationContainer')
                 @include('partials.gameScreen')
                 <div id="game_hud" class="z-10 absolute">
-                    <x-progressBar id="hunger_progressBar" :current-value="$Hunger->current" :max-value="$Hunger->max" />
+                    <x-progressBar id="hunger_progressBar" :current-value="$Hunger->current" :max-value="100" />
                     <x-progressBar id="health_progressBar" :current-value="100" :max-value="100" />
                     <img src="{{ asset('/images/hunted icon.png') }}" id="HUD_hunted_icon" class="absolute hidden" />
                     <p id="HUD_hunted_locater" class="absolute text-white"></p>
