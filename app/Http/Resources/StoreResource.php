@@ -74,4 +74,15 @@ class StoreResource extends Resource
             'infinite_amount' => $this->infinite_amount,
         ];
     }
+
+    public function toStoreItemArray(): array
+    {
+        $store_items = [];
+
+        foreach ($this->store_items as $key => $item) {
+            array_push($store_items, $item->toArray());
+        }
+
+        return $store_items;
+    }
 }
