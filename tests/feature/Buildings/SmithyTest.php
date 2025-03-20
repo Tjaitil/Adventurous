@@ -33,8 +33,11 @@ class SmithyTest extends TestCase
         $response = $this->get('/smithy/store');
 
         $response->assertStatus(200);
-
-        $response->json();
+        $response->assertJsonStructure(([
+            'data' => [
+                'store_items',
+            ],
+        ]));
     }
 
     /**

@@ -25,7 +25,7 @@ abstract class AbstractStore
 
     public function toStoreItemResponse(StoreResource $StoreResource): JsonResponse
     {
-        $data = ['store_items' => $StoreResource->store_items];
+        $data = ['store_items' => $StoreResource->toStoreItemArray()];
 
         return response()->json(['data' => $data], 200);
     }
