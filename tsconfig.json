@@ -28,6 +28,6 @@
             "@/*": ["./resources/js/*"]
         },
     },
-    "include": ["resources/js/**/*.ts", "resources/js/**/*.vue", "tailwind.config.js"],
+    "include": ["resources/js/**/*.ts", "resources/js/**/*.vue", "tailwind.config.js", "eslint.config.ts"],
     "exclude": ["node_modules", "vendor"]
 }
