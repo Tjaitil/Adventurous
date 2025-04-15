@@ -1,0 +1,12 @@
+{
+    "eslint.useFlatConfig": true,
+    "editor.formatOnSave": true,
+    "[typescript, vue, json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit"
+    },
+    "laravel-pint.enable": true,
+    "php.version": "8.3",
+}

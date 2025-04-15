@@ -17,7 +17,6 @@ npm-debug.log
 yarn-error.log
 /.fleet
 /.idea
-/.vscode
 
 # IDE HELPER FILES
 _ide_helper.php
