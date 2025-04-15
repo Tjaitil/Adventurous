@@ -17,7 +17,7 @@ class ConversationTrackerFactory extends Factory
     public function definition(): array
     {
         return [
-            'conversation_option_value' => null,
+            'selected_option_values' => null,
             'user_id' => 1,
             'current_index' => null,
         ];

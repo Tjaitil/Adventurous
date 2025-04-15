@@ -11,6 +11,7 @@ import { jsUcWords } from '../utilities/uppercase';
 import { Inventory } from './inventory';
 import { addModuleTester } from '@/devtools/ModuleTester';
 import { loadBuildingCallback } from '@/conversationCallbacks/loadBuilding';
+import { pauseManager } from './pause';
 
 type ConversationCallback =
     | 'loadBuilding'

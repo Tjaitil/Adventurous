@@ -1,6 +1,7 @@
 {
   "index": "zr",
   "zr": {
+    "index": "zr",
     "options": [
       {
         "person": "player",
@@ -12,6 +13,7 @@
     ]
   },
   "zrr": {
+    "index": "zrr",
     "options": [
       {
         "person": "zins",
@@ -23,6 +25,7 @@
     ]
   },
   "zrrr": {
+    "index": "zrrr",
     "options": [
       {
         "person": "player",
@@ -41,11 +44,12 @@
     ]
   },
   "zrrrr1": {
+    "index": "zrrrr1",
     "options": [
       {
         "person": "zins",
         "next_key": "end",
-        "callback": "loadBuilding#zinsstore",
+        "client_callback": "LoadZinsStoreCallback",
         "id": 0,
         "container": "A",
         "text": "Great! I will buy them from you."
@@ -53,6 +57,7 @@
     ]
   },
   "zrrrr2": {
+    "index": "zrrrr2",
     "options": [
       {
         "person": "zins",

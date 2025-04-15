@@ -36,9 +36,7 @@ class ConversationController extends Controller
                 'exception' => $e,
             ]);
 
-            return response()->json([
-                'error' => 'Conversation file not found',
-            ], 422);
+            return response()->json([], 422);
         }
     }
 }

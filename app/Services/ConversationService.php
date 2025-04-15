@@ -62,11 +62,11 @@ class ConversationService
 
     protected ConversationTracker $ConversationTracker;
 
-    public function __construct() {}
+    public function __construct(private ConversationParamService $conversationParamService) {}
 
     public function getConversationTracker(): void
     {
-        $this->ConversationTracker = ConversationTracker::where('user_id', Auth::user()?->id)->firstOrFail();
+        $this->ConversationTracker = ConversationTracker::where('user_id', Auth::user()?->id)->firstOrFail()->refresh();
     }
 
     /**
@@ -81,7 +81,7 @@ class ConversationService
         if ($start === true) {
             $index = $this->conversationFile['index'];
             $this->setNewIndex($index);
-            $this->ConversationTracker->conversation_option_value = null;
+            $this->ConversationTracker->selected_option_values = null;
             $this->ConversationTracker->save();
         } else {
 
@@ -89,14 +89,15 @@ class ConversationService
             $this->setNewIndex($newIndex);
             $this->oldConversation = $this->getNextLine($this->newIndex, $this->conversationFile);
             $matchedOption = current(array_filter($this->oldConversation['options'] ?? [], fn ($key) => $key['id'] === $id));
-
             if ($matchedOption === false) {
                 throw new Exception(sprintf('Option %s not found', $id), 422);
             }
             $newIndex = $this->newIndex .= $matchedOption['next_key'];
-            if (isset($matchedOption['option_value'])) {
+
+            if (isset($matchedOption['option_values'])) {
+
                 ConversationTracker::where('user_id', Auth::user()?->id)
-                    ->update(['conversation_option_value' => $matchedOption['option_value']]);
+                    ->update(['selected_option_values' => $matchedOption['option_values']]);
             }
             $this->setNewIndex($newIndex);
         }
@@ -108,7 +109,7 @@ class ConversationService
         $currentConversation = $this->checkForConditional($currentConversation);
 
         $currentConversation = $this->checkForTextPlaceholders($currentConversation,
-            $this->ConversationTracker->conversation_option_value);
+            $this->ConversationTracker->selected_option_values);
 
         unset($currentConversation['serverEvents']);
 
@@ -148,49 +149,18 @@ class ConversationService
     {
         $nextIndex = null;
         foreach ($serverEvents as $key => $serverEvent) {
-            [$class, $className, $methodName] = $this->getClassInstance($serverEvent['event']);
-            if (method_exists($class, $methodName)) {
-                $hasParameter = $this->hasMethodParameter($class, $methodName);
-                if ($serverEvent['type'] === 'has') {
-                    if ($hasParameter) {
-                        $selected_option_value = $this->ConversationTracker->conversation_option_value;
-
-                        $result = $class->{$methodName}($selected_option_value);
-                        if ($result === true) {
-                            $nextIndex = $serverEvent['results'][0];
-                        } else {
-                            $nextIndex = $serverEvent['results'][1];
-                        }
-                    } else {
-                        $nextIndex = $class->{$methodName}();
-                    }
-
-                } elseif ($serverEvent['type'] === 'handle') {
-                    $selected_option_value = $this->ConversationTracker->conversation_option_value;
-                    $class->{$methodName}($selected_option_value);
-                }
-                if (isset($serverEvent['callbacks'])) {
-                    $this->triggerServerEvents($serverEvent['callbacks']);
-                }
+            if ($serverEvent['option_values'] === '__CURRENT_SELECTED_OPTION_VALUES__') {
+                $serverEvent['option_values'] = $this->ConversationTracker->selected_option_values;
+            }
+            $result = $this->conversationParamService->invokeServerEvent($serverEvent['event'], $serverEvent['option_values']);
+            if ($result === true) {
+                $nextIndex = $serverEvent['results'][0];
             } else {
-                throw new Exception(sprintf('Method %s not found in class %s', $methodName, $className), 422);
+                $nextIndex = $serverEvent['results'][1];
             }
         }
 
         return $nextIndex;
-    }
-
-    /**
-     * @return array{0: object, 1: class-string, 2: string}
-     */
-    private function getClassInstance(string $event)
-    {
-        [$className, $methodName] = $this->getClassNameAndMethodName($event);
-        if (! class_exists($className)) {
-            throw new Exception(sprintf('Class %s not found', $className), 422);
-        }
-
-        return [app()->make($className), $className, $methodName];
     }
 
     /**
@@ -241,7 +211,11 @@ class ConversationService
         $person = strtolower($person);
 
         $file = Storage::disk('gamedata')->json('conversations/'.$person.'.json');
-        if (! is_array($file)) {
+        if (is_null($file)) {
+            $file = require storage_path('app/gamedata/conversations/'.$person.'.php');
+        }
+
+        if (is_null($file)) {
             throw new Exception('Conversation file not found', 422);
         }
 
@@ -255,46 +229,71 @@ class ConversationService
         return $reflection->getNumberOfParameters() > 0;
     }
 
+    public function resolveMethodArgs(string $class, string $methodName, ?array $optionValues = []): array
+    {
+        $reflection = new ReflectionMethod($class, $methodName);
+        $parameters = $reflection->getParameters();
+        $args = [];
+        foreach ($parameters as $parameter) {
+            if ($parameter->getType()->getName() === \App\Models\User::class) {
+                $args[] = Auth::user();
+
+                continue;
+            }
+
+            $name = $parameter->getName();
+            if (! isset($optionValues[$name])) {
+                throw new Exception(sprintf('Option value %s not found', $name));
+            }
+
+        }
+
+        return $args;
+    }
+
     /**
      * @param  array<string, mixed>  $currentConversation
      * @return array<string, mixed>
      */
     public function checkForConditional(array $currentConversation): array
     {
+        $idToRemove = [];
+        // dd($currentConversation['options']);
         foreach ($currentConversation['options'] as $key => $value) {
             if (isset($value['conditional'])) {
-                $conditional = $value['conditional'];
-                $result = $this->handleConditional($conditional, $value['option_value']);
+                $result = $this->handleConditional($value['conditional'], $value['option_values']);
                 if ($result === false) {
-                    unset($currentConversation['options'][$key]);
-                    // Reindex the array
-                    $currentConversation['options'] = array_values($currentConversation['options']);
+                    $idToRemove[] = $value['id'];
                 }
             }
+        }
+
+        if (count($idToRemove) > 0) {
+            $currentConversation['options'] =
+                array_values(array_filter($currentConversation['options'], fn ($key) => ! in_array($key['id'], $idToRemove)));
         }
 
         return $currentConversation;
     }
 
-    public function handleConditional(string $conditional, string $option_value): bool
+    /**
+     * Check if the class is an event handler extending \App\Conversation\Handlers\BaseHandler
+     */
+    public function isEventHandlerClass(string $className): bool
     {
-        [$class, $className, $methodName] = $this->getClassInstance($conditional);
+        return str_contains($className, 'Handler');
+    }
 
-        if (method_exists($class, $methodName)) {
-            $hasParameter = $this->hasMethodParameter($class, $methodName);
-            $result = $hasParameter ? $class->{$methodName}($option_value) : $class->{$methodName}();
-        } else {
-            throw new Exception(sprintf('Method %s not found in class %s', $methodName, $className), 422);
-        }
-
-        return $result;
+    public function handleConditional(string $conditional, array $option_values): bool
+    {
+        return $this->conversationParamService->invokeConditional($conditional, $option_values);
     }
 
     /**
      * @param  array<string, mixed>  $currentConversation
      * @return array<string, mixed>
      */
-    public function checkForTextPlaceholders(array $currentConversation, ?string $option_value): array
+    public function checkForTextPlaceholders(array $currentConversation, ?array $option_values): array
     {
 
         foreach ($currentConversation['options'] as $key => $option) {
@@ -303,10 +302,8 @@ class ConversationService
                 continue;
             }
             foreach ($option['replacers'] as $replaceKey => $value) {
-                [$class, $className, $methodName] = $this->getClassInstance($value);
-                if (method_exists($class, $methodName)) {
-                    $option['replacers'][$replaceKey] = $class->{$methodName}($option_value);
-                }
+                $option['replacers'][$replaceKey] = $this->conversationParamService->invokeReplacer($value, $option_values);
+
                 $currentConversation['options'][$key]['text'] = __($option['text'], $option['replacers']);
             }
         }

@@ -71,23 +71,19 @@ trait ConversationTester
         if ($conversation === null) {
             $this->fail('Conversation segment not found when trying test server_events');
         }
-        // Check if server events array contains a 'has' server event
-        $hasServerEvent = array_filter($conversation['server_events'], fn ($key) => $key['type'] === 'has');
-        if ($hasServerEvent) {
 
-            // Call callbacks to test both states of server events
-            $this->getServerEventCallbacks($index, 0)();
-            $conversation = $this->ConversationService->getConversation('kapys', $optionValue['id'], false);
+        // Call callbacks to test both states of server events
+        $this->getServerEventCallbacks($index, 0)();
+        $conversation = $this->ConversationService->getConversation('kapys', $optionValue['id'], false);
 
-            // Reset the conversation index to the parent key. Somehow the conversationtracker save() doesnt work
-            ConversationTracker::where('user_id', $this->RandomUser->id)->update(['current_index' => $parentKey]);
+        // Reset the conversation index to the parent key. Somehow the conversationtracker save() doesnt work
+        ConversationTracker::where('user_id', $this->RandomUser->id)->update(['current_index' => $parentKey]);
 
-            $this->getServerEventCallbacks($index, 1)();
-            $conversation = $this->ConversationService->getConversation('kapys', $optionValue['id'], false);
+        $this->getServerEventCallbacks($index, 1)();
+        $conversation = $this->ConversationService->getConversation('kapys', $optionValue['id'], false);
 
-            // Reset the conversation index to the parent key. Somehow the conversationtracker save() doesnt work
-            ConversationTracker::where('user_id', $this->RandomUser->id)->update(['current_index' => $parentKey]);
-        }
+        // Reset the conversation index to the parent key. Somehow the conversationtracker save() doesnt work
+        ConversationTracker::where('user_id', $this->RandomUser->id)->update(['current_index' => $parentKey]);
     }
 
     public function getServerEventCallbacks(string $id, $index)

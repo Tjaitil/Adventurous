@@ -30,7 +30,9 @@
         "text": "I want to buy permits in golbak mine",
         "next_key": "r",
         "conditional": "BuyPermit@locationConditional",
-        "option_value": "golbak"
+        "option_values": {
+          "location": "golbak"
+        }
       },
       {
         "id": 1,
@@ -38,7 +40,9 @@
         "text": "I want to buy permits in snerpiir mine",
         "next_key": "r",
         "conditional": "BuyPermit@locationConditional",
-        "option_value": "snerpiir"
+        "option_values": {
+          "location": "snerpiir"
+        }
       },
       {
         "id": 2,
@@ -68,20 +72,14 @@
     "server_events": [
       {
         "type": "has",
-        "event": "BuyPermit@hasEnoughGold",
-        "callbacks": [
-          {
-            "event": "BuyPermit@buyPermits",
-            "type": "handle"
-          }
-        ],
+        "event": "KapysHandler@BuyPermits",
         "results": ["r0", "r1"]
       }
     ]
   },
   "kpsQrrSr0": {
     "index": "kpsQrrSr0",
-    "client_events": ["Inventory.update"],
+    "client_events": ["InventoryChangedEvent"],
     "options": [
       {
         "person": "kapys",

@@ -4,18 +4,16 @@ namespace App\Conversation\ServerEvents;
 
 use App\Models\Miner;
 use App\Models\MinerPermitCost;
+use App\Models\User;
 use App\Services\InventoryService;
 use Exception;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Container\Attributes\CurrentUser;
 
-class BuyPermit
+final class KapysHandler extends BaseHandler
 {
-    public function __construct(
-        private InventoryService $inventoryService) {}
-
-    public function locationConditional(string $location): bool
+    public function __construct(private InventoryService $inventoryService)
     {
-        return Auth::user()->player->location === $location;
+        parent::__construct();
     }
 
     public function priceReplacer(string $location): int
@@ -25,18 +23,18 @@ class BuyPermit
         return $MinerPermitCost->permit_cost;
     }
 
-    public function hasEnoughGold(string $location): bool
+    public function buyPermits(string $location, #[CurrentUser] User $User): bool
     {
-        $Inventory = Auth::user()->inventory;
+        $Inventory = $User->inventory;
         $MinerPermitCost = MinerPermitCost::where('location', $location)->firstOrFail();
 
-        return $this->inventoryService->hasEnoughAmount($Inventory, config('adventurous.currency'), $MinerPermitCost->permit_cost);
-    }
+        $hasEnoughGold = $this->inventoryService->hasEnoughAmount($Inventory, config('adventurous.currency'), $MinerPermitCost->permit_cost);
+        if (! $hasEnoughGold) {
+            return false;
+        }
 
-    public function buyPermits(string $location): void
-    {
-        $Inventory = Auth::user()->inventory;
-        $Miner = Miner::where('user_id', Auth::user()->id)
+        $Inventory = $User->inventory;
+        $Miner = Miner::where('user_id', $User->id)
             ->where('location', $location)
             ->first();
 
@@ -51,9 +49,11 @@ class BuyPermit
             throw new Exception('MinerPermitCost model not found');
         }
 
-        $this->inventoryService->edit($Inventory, config('adventurous.currency'), -$MinerPermitCost->permit_cost, Auth::user()->id);
+        $this->inventoryService->edit($Inventory, config('adventurous.currency'), -$MinerPermitCost->permit_cost, $User->id);
 
         $Miner->permits += $MinerPermitCost->permit_amount;
         $Miner->save();
+
+        return true;
     }
 }

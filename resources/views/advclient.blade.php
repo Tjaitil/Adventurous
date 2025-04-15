@@ -6,7 +6,9 @@
             <div class="grow relative">
                 @include('layout')
                 <x-client.logModal />
-                @include('partials.conversationContainer')
+                <div class="vue-app">
+                    <conversation-container />
+                </div>
                 @include('partials.gameScreen')
                 <div id="game_hud" class="z-10 absolute">
                     <x-progressBar id="hunger_progressBar" :current-value="$Hunger->current" :max-value="100" />
