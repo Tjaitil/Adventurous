@@ -4,7 +4,7 @@
         class="border-primary-700 absolute right-0 left-0 z-20 flex h-[190px] flex-col items-center rounded-sm border-4 bg-orange-50 p-1 shadow-lg transition-[scale] duration-300 ease-in after:pointer-events-none after:absolute after:top-[-1px] after:left-[-1px] after:h-[calc(100%+2px)] after:w-[calc(100%+2px)] after:rounded-sm after:border-4 after:border-solid after:border-gray-950 after:content-['']"
         :class="{ invisible: !showConversationContainer }"
     >
-        <div>
+        <div class="w-full">
             <img
                 class="cont_exit absolute"
                 src="images/exit.png"
@@ -85,6 +85,7 @@ import { ref, watch } from 'vue';
 import { useConversationStore } from '../stores/ConversationStore';
 import { Game } from '@/advclient';
 import { AdvEventManager } from '@/events/AdvEventManager';
+import { loadBuildingCallback } from '@/conversationCallbacks/loadBuilding';
 
 const showPersonAContainer = ref(false);
 const personASource = ref('');
@@ -175,12 +176,14 @@ const handleCallbacks = () => {
 
     if (selectedConversationOption.value == null) {
         return;
-    } else if (selectedConversationOption.value.option_values == null) {
-        return;
     }
 
     switch (selectedConversationOption.value.client_callback) {
         case 'GameTravelCallback':
+            if (selectedConversationOption.value.option_values == null) {
+                return;
+            }
+
             if (
                 !(
                     'location' in selectedConversationOption.value.option_values
@@ -196,6 +199,9 @@ const handleCallbacks = () => {
                 selectedConversationOption.value.option_values['location'],
                 store.currentPerson,
             );
+            break;
+        case 'LoadZinsStoreCallback':
+            loadBuildingCallback('zinsstore');
             break;
     }
 };
@@ -253,7 +259,7 @@ const handleNextLine = () => {
     } else {
         setButtonVisibility(false);
     }
-    handleToggleButton();
+    setHeaderText();
     handleClientEvents();
     togglePerson();
 };
@@ -261,13 +267,8 @@ const handleNextLine = () => {
 const setButtonVisibility = (value: boolean) => {
     showButton.value = value;
 };
-const handleToggleButton = () => {
-    if (!showButton.value) {
-        headerText.value = '';
-    } else {
-        headerText.value =
-            currentConversationSegment.value?.header ?? 'Select an answer';
-    }
+const setHeaderText = () => {
+    headerText.value = currentConversationSegment.value?.header ?? 'Select one';
 };
 
 const handleClientEvents = () => {
@@ -278,13 +279,7 @@ const handleClientEvents = () => {
         currentConversationSegment.value.client_events != null &&
         currentConversationSegment.value.client_events.length > 0
     ) {
-        currentConversationSegment.value.client_events.forEach(clientEvent => {
-            switch (clientEvent) {
-                case 'InventoryChangedEvent':
-                    AdvEventManager.notify('InventoryChangedEvent');
-                    break;
-            }
-        });
+        AdvEventManager.notify('InventoryChangedEvent');
     }
 };
 
@@ -312,7 +307,7 @@ watch(
     () => store.isActive,
     () => {
         if (store.isActive) {
-            loadConversation();
+            void loadConversation();
         } else {
             endConversation();
         }
