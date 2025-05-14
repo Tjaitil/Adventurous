@@ -409,17 +409,11 @@ section a:visited {
     text-decoration: none;
 }
 
-section img:not(#local_img, .world_img, .cont_exit) {
+section img:not([class*="w-"], [width]) {
     width: 48px;
     height: 48px;
     box-sizing: border-box;
     vertical-align: middle;
-}
-
-/* TODO remove this when the above is removed */
-#skill-action-container img {
-    width: 64px;
-    height: 64px;
 }
 
 table button {
