@@ -16,7 +16,7 @@
         "isolatedModules": true,
         "noEmit": true,
 
-        "types": ["vite/client"],
+        "types": ["vite/client", "vitest"],
         "lib": ["ES2022", "DOM", "DOM.Iterable"],
 
         "strict": true,
@@ -28,6 +28,6 @@
             "@/*": ["./resources/js/*"]
         },
     },
-    "include": ["resources/js/**/*.ts", "resources/js/**/*.vue", "tailwind.config.js", "eslint.config.ts"],
+    "include": ["resources/js/**/*.ts", "resources/js/**/*.vue", "tailwind.config.js", "eslint.config.ts", "vite.config.ts"],
     "exclude": ["node_modules", "vendor"]
 }

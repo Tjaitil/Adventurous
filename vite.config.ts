@@ -10,6 +10,8 @@ export default defineConfig({
     test: {
         environment: 'jsdom',
         setupFiles: ['./resources/js/mocks/setup.ts'],
+        exclude: ['**/node_modules/**', '**/vendor/**'],
+        globals: true,
         coverage: {
             exclude: ['vendor/**'],
             reporter: ['text', 'json', 'html'],

@@ -94,7 +94,7 @@
                         $src = $x . '.' . $y . 'm';
                     @endphp
                 @endif
-                <img class="world_img image-auto-render h-[200px] w-[200px] max-w-none" alt="map img" height="200px"
+                <img class="image-auto-render max-w-none" alt="map img" height="200px" width="200px"
                     src="{{ asset('images/' . $src . '.png') }}">
                 @php
                     $x++;
