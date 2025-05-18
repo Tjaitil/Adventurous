@@ -4,7 +4,6 @@ import { inputHandler } from './inputHandler';
 import { Game } from '../advclient';
 import { GameLogger } from '../utilities/GameLogger';
 import { GamePieces } from './gamePieces';
-import { conversation } from './conversation';
 import { useConversationStore } from '@/ui/stores/ConversationStore';
 
 export const controls = {
@@ -25,16 +24,16 @@ export const controls = {
     checkPlayerMovement() {
         GamePieces.player.speedX = 0;
         GamePieces.player.speedY = 0;
-        if (this.playerLeft === true) {
+        if (this.playerLeft) {
             GamePieces.player.speedX = -GamePieces.player.speed;
         }
-        if (this.playerRight === true) {
+        if (this.playerRight) {
             GamePieces.player.speedX = GamePieces.player.speed;
         }
-        if (this.playerUp === true) {
+        if (this.playerUp) {
             GamePieces.player.speedY = -GamePieces.player.speed;
         }
-        if (this.playerDown === true) {
+        if (this.playerDown) {
             GamePieces.player.speedY = GamePieces.player.speed;
         }
     },
@@ -49,7 +48,7 @@ export const controls = {
                     GamePieces.player.xpos < object.diameterRight &&
                     Math.abs(GamePieces.player.ypos - object.diameterDown) < 32
                 ) {
-                    if (Game.properties.inBuilding == false) {
+                    if (!Game.properties.inBuilding) {
                         inputHandler.fetchBuilding(object.src.split('.png')[0]);
                     }
                     break;
@@ -62,13 +61,10 @@ export const controls = {
             );
             GameLogger.logMessages();
         }
-        if (
-            Game.properties.inBuilding != true &&
-            Game.properties.device == 'pc'
-        ) {
+        if (!Game.properties.inBuilding && Game.properties.device == 'pc') {
             enterBuilding();
         } else if (
-            Game.properties.inBuilding != true &&
+            !Game.properties.inBuilding &&
             Game.properties.device == 'mobile'
         ) {
             // console.log("check building");
@@ -212,9 +208,9 @@ export const controls = {
         // Check for device type and bind events according to device
         if (
             window.screen.width > 830 ||
-            /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+            !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
                 navigator.userAgent,
-            ) == false
+            )
         ) {
             document.getElementById('control').style.display = 'none';
             this.actionText = 'Press x';
@@ -272,8 +268,12 @@ export const controls = {
             // document.getElementById("control").addEventListener("touchend", controls.endMobileMove);
         }
         // Set controls
-        controls.w = () => inputHandler.interactCharacter();
-        controls.p = () => pauseManager.togglePause();
+        controls.w = () => {
+            inputHandler.interactCharacter();
+        };
+        controls.p = () => {
+            pauseManager.togglePause();
+        };
 
         // Prevent user from scrolling with arrow keys on site
         window.addEventListener(
@@ -312,7 +312,7 @@ export const controls = {
                         // A
                         if (
                             GamePieces.player.cooldown <= 0 &&
-                            GamePieces.player.combat === true
+                            GamePieces.player.combat
                         ) {
                             GamePieces.player.combatActions.attack = true;
                             GamePieces.player.attack = true;
@@ -332,7 +332,7 @@ export const controls = {
                         // W
                         if (
                             Game.properties.gameState === 'playing' &&
-                            useConversationStore().isActive === false
+                            !useConversationStore().isActive
                         ) {
                             controls.w();
                         }
@@ -341,14 +341,14 @@ export const controls = {
                         // E
                         if (
                             Game.properties.gameState === 'playing' &&
-                            useConversationStore().isActive === false
+                            !useConversationStore().isActive
                         ) {
                             controls.e();
                         }
                         break;
                     case 80:
                         // P
-                        if (useConversationStore().isActive === false) {
+                        if (!useConversationStore().isActive) {
                             controls.p();
                         }
                         break;

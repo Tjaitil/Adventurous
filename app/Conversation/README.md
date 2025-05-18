@@ -18,3 +18,7 @@
     - q - question. Next segment is a question. Main question is Q. Often one will revert back to this if current conversation tree cannot be "progressed"
     - r - response. Next segment is a response. Can be numeric when multi-choice responses. E.g r1 / r2
     - S - server_event. Next segment is a server_response.
+  - Server event
+    - Call an invokable method that returns a new converationIndex based on result. E.g "Success" / "Too Little Gold" / "Full Inventory"
+    - Option values
+    - Some option specifies option_values that is saved on the ConversationTracker. This options are kept throughout the Conversation and can be used as parameters in server_event or conditional. Option_values are reset when new conversation is started

@@ -49,7 +49,7 @@
       {
         "person": "zins",
         "next_key": "end",
-        "client_callback": "LoadZinsStoreCallback",
+        "has_client_callback": true,
         "id": 0,
         "container": "A",
         "text": "Great! I will buy them from you."

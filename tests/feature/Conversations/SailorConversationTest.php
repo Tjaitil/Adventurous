@@ -8,7 +8,7 @@ use Tests\ConversationTestCase;
 use Tests\Support\UserTrait;
 use Tests\Utils\Contracts\ConversationContract;
 
-class PesrConversationTest extends ConversationTestCase implements ConversationContract
+class SailorConversationTest extends ConversationTestCase implements ConversationContract
 {
     use DatabaseTransactions, UserTrait;
 
@@ -18,7 +18,7 @@ class PesrConversationTest extends ConversationTestCase implements ConversationC
 
         $this->beginDatabaseTransaction();
 
-        $this->person = 'pesr';
+        $this->person = 'sailor';
         $this->loadConversationFile();
         $this->actingAs($this->getRandomUser());
     }
@@ -30,24 +30,29 @@ class PesrConversationTest extends ConversationTestCase implements ConversationC
 
     public function test_callables_exists(): void
     {
-        $this->check_handler_callables($this->app->make(\App\Conversation\Handlers\PesrHandler::class));
+        $this->check_handler_callables($this->app->make(\App\Conversation\Handlers\SailorHandler::class));
     }
 
-    #[TestWith(['golbak'])]
-    #[TestWith(['khanz'])]
-    #[TestWith(['krasnur'])]
-    #[TestWith(['tasnobil'])]
-    #[TestWith(['fagna'])]
-    #[TestWith(['snerpiir'])]
-    #[TestWith(['cruendo'])]
-    #[TestWith(['ter'])]
     #[TestWith(['towhar'])]
-    public function test_prrr_include_client_callback(string $location): void
+    #[TestWith(['pvitul'])]
+    #[TestWith(['hirtam'])]
+    #[TestWith(['krasnur'])]
+    #[TestWith(['fagna'])]
+    #[TestWith(['cruendo'])]
+    #[TestWith(['towhar'])]
+    public function test_prrr_include_client_callback_and_current_location_is_excluded(string $location): void
     {
         $this->setUserCurrentLocation($location, $this->getRandomUser());
-        $this->setConversationIndex('prr');
+        $this->setConversationIndex('slr');
 
         $result = $this->callNext(0);
+
+        $locations = array_map(
+            fn ($option) => $option['option_values']['location'] ?? null,
+            $result['conversation_segment']['options']
+        );
+
+        $this->assertNotContains($location, $locations);
 
         foreach ($result['conversation_segment']['options'] as $key => $value) {
             $this->assertEquals('GameTravelCallback', $value['client_callback']);

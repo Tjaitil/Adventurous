@@ -42,8 +42,8 @@ final class ConversationControllerTest extends TestCase
     public static function isStartingProvider(): array
     {
         return [
-            'true' => [true],
-            'false' => [false],
+            'is_starting true' => [true],
+            'is_starting false' => [false],
         ];
     }
 }

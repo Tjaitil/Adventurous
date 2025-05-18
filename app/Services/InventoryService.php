@@ -98,7 +98,6 @@ class InventoryService
     public function edit(Collection $Inventory, string $item, int $amount, int $userId)
     {
         $InventoryItem = $this->findItem($Inventory, $item);
-        Log::debug('InventoryItem', [$InventoryItem]);
 
         $new_amount = (is_null($InventoryItem)) ? $amount : $InventoryItem->amount + $amount;
 
@@ -106,7 +105,6 @@ class InventoryService
 
             throw new InventoryFullException;
         } elseif ($InventoryItem === null) {
-            // dd($amount);
             Inventory::create([
                 'item' => $item,
                 'amount' => $amount,

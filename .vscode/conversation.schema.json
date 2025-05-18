@@ -17,38 +17,20 @@
                 "header": {
                     "type": ["string"]
                 },
-                "client_events": {
+                "has_client_events": {
+                    "type": "boolean"
+                },
+                "has_server_event": {
+                    "type": "boolean"
+                },
+                "server_event_results": {
                     "type": "array",
                     "items": {
-                        "type": "string",
-                        "enum": ["InventoryChangedEvent"]
+                        "type": "string"
                     }
                 },
-                "server_events": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "type": {
-                                "type": "string",
-                                "enum": ["has"]
-                            },
-                            "event": {
-                                "type": "string"
-                            },
-                            "results": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            "option_values": {
-                                "type": ["object", "string"]
-                            }
-                        },
-                        "required": ["event", "type"],
-                        "additionalProperties": false
-                    }
+                "has_conditional": {
+                    "type": "boolean"
                 },
                 "options": {
                     "type": "array",
@@ -76,23 +58,18 @@
                                     "r5"
                                 ]
                             },
-                            "conditional": {
-                                "type": ["string", "null"]
+                            "has_replacer": {
+                                "type": "boolean"
                             },
-                            "replacers": {
-                                "type": "object",
-                                "patternProperties": {
-                                    "^.*$": {
-                                        "type": "string"
-                                    }
-                                }
+                            "has_conditional": {
+                                "type": "boolean"
                             },
                             "container": {
                                 "type": "string",
                                 "enum": ["A", "B"]
                             },
-                            "client_callback": {
-                                "type": ["string", "null"]
+                            "has_client_callback": {
+                                "type": "boolean"
                             },
                             "option_values": {
                                 "type": ["object"]
@@ -112,9 +89,12 @@
                     "required": ["options"]
                 },
                 {
-                    "required": ["server_events"]
+                    "required": ["has_server_event"]
                 }
             ],
+            "dependentRequired": {
+                "has_server_event": ["server_event_results"]
+            },
             "additionalProperties": false,
             "required": ["index"]
         }

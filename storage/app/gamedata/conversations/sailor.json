@@ -17,14 +17,14 @@
     "index": "slr",
     "options": [
       {
-        "id": 1,
+        "id": 0,
         "person": "sailor",
         "container": "B",
         "text": "I would like to travel with your ship",
         "next_key": "r"
       },
       {
-        "id": 2,
+        "id": 1,
         "text": "Bye",
         "person": "sailor",
         "container": "B",
@@ -36,51 +36,51 @@
     "index": "slrr",
     "options": [
       {
-        "id": 1,
+        "id": 0,
         "text": "Pvitul",
         "person": "sailor",
         "container": "B",
         "next_key": "end",
-        "client_callback": "GameTravelCallback"
+        "has_client_callback": true
       },
       {
-        "id": 2,
+        "id": 1,
         "text": "Hirtam",
         "person": "sailor",
         "container": "B",
         "next_key": "end",
-        "client_callback": "GameTravelCallback"
+        "has_client_callback": true
       },
       {
-        "id": 3,
+        "id": 2,
         "text": "Krasnur",
         "person": "sailor",
         "container": "B",
         "next_key": "end",
-        "client_callback": "GameTravelCallback"
+        "has_client_callback": true
       },
       {
-        "id": 4,
+        "id": 3,
         "text": "Fagna",
         "person": "sailor",
         "container": "B",
         "next_key": "end",
-        "client_callback": "GameTravelCallback"
+        "has_client_callback": true
       },
       {
-        "id": 5,
+        "id": 4,
         "text": "Cruendo",
         "person": "sailor",
         "container": "B",
         "next_key": "end",
-        "client_callback": "GameTravelCallback"
+        "has_client_callback": true
       },
       {
-        "id": 6,
+        "id": 5,
         "text": "Towhar",
         "person": "sailor",
         "container": "B",
-        "client_callback": "GameTravelCallback",
+        "has_client_callback": true,
         "next_key": "end"
       }
     ]

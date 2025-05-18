@@ -1,5 +1,5 @@
-import { render, screen, waitFor } from '@testing-library/vue';
-import { describe, test, expect, vi, beforeEach, Mock } from 'vitest';
+import { fireEvent, render, screen, waitFor } from '@testing-library/vue';
+import { describe, test, expect, vi, beforeEach, type Mock } from 'vitest';
 import '@testing-library/jest-dom';
 import ConversationContainer from '@/ui/components/ConversationContainer.vue';
 import { createTestingPinia } from '@pinia/testing';
@@ -7,6 +7,9 @@ import { CustomFetchApi } from '@/CustomFetchApi';
 import { useConversationStore } from '@/ui/stores/ConversationStore';
 import { GamePieces } from '@/clientScripts/gamePieces';
 import { gameTravel } from '@/clientScripts/gameTravel';
+import { PesrSelectLocationResponse } from '@/mocks/responses/conversations/Pesr';
+import { openZinsStoreResponse } from '@/mocks/responses/conversations/Zins';
+import { loadBuildingCallback } from '@/conversationCallbacks/loadBuilding';
 
 vi.mock('@/CustomFetchApi', () => {
     return {
@@ -31,14 +34,6 @@ vi.mock('@/clientScripts/clientOverlayInterface', () => {
     };
 });
 
-vi.mock('@/clientScripts/gameTravel', () => {
-    return {
-        gameTravel: {
-            travel: vi.fn(),
-        },
-    };
-});
-
 describe('ConversationContainer.vue', () => {
     beforeEach(() => {
         GamePieces.characters = [
@@ -57,14 +52,54 @@ describe('ConversationContainer.vue', () => {
                 diameterLeft: 1728.5,
                 diameterRight: 1760.5,
                 diameterUp: 0,
-                displayName: 'kapys',
+                displayName: 'Pesr',
+                noCollision: false,
+                src: 'pesr.png',
+                conversation: true,
+            },
+            {
+                height: 32,
+                id: false,
+                type: 'character',
+                visible: true,
+                width: 32,
+                x: 1728.5,
+                y: 2145,
+                sprite: new Image(),
+                drawX: 0,
+                drawY: 0,
+                diameterDown: 2177,
+                diameterLeft: 1728.5,
+                diameterRight: 1760.5,
+                diameterUp: 0,
+                displayName: 'Zins',
+                noCollision: false,
+                src: 'zins.png',
+                conversation: true,
+            },
+            {
+                height: 32,
+                id: false,
+                type: 'character',
+                visible: true,
+                width: 32,
+                x: 1728.5,
+                y: 2145,
+                sprite: new Image(),
+                drawX: 0,
+                drawY: 0,
+                diameterDown: 2177,
+                diameterLeft: 1728.5,
+                diameterRight: 1760.5,
+                diameterUp: 0,
+                displayName: 'Kapys',
                 noCollision: false,
                 src: 'kapys.png',
                 conversation: true,
             },
         ];
     });
-    test('renders the component correctly', () => {
+    test('renders the component correctly in loading state', () => {
         const { container } = render(ConversationContainer, {
             global: {
                 plugins: [createTestingPinia()],
@@ -76,6 +111,7 @@ describe('ConversationContainer.vue', () => {
                 .querySelector('#conversation-container')
                 ?.classList.contains('invisible'),
         ).toBe(true);
+        expect(screen.getByText('Loading...')).toBeInTheDocument();
     });
 
     test('calls loadConversation when store.isActive is true', async () => {
@@ -86,7 +122,7 @@ describe('ConversationContainer.vue', () => {
         });
 
         const conversationStore = useConversationStore();
-        conversationStore.triggerLoadConversation('kapys');
+        conversationStore.triggerLoadConversation('Pesr');
 
         (CustomFetchApi.post as Mock).mockResolvedValue({
             data: {
@@ -123,7 +159,7 @@ describe('ConversationContainer.vue', () => {
         });
 
         const conversationStore = useConversationStore();
-        conversationStore.triggerLoadConversation('kapys');
+        conversationStore.triggerLoadConversation('Kapys');
 
         (CustomFetchApi.post as Mock).mockResolvedValue({
             data: {
@@ -160,194 +196,156 @@ describe('ConversationContainer.vue', () => {
         });
     });
 
-    test('select conversation option calls travel function', async () => {
+    test('ends conversation correctly', async () => {
+        const { container } = render(ConversationContainer, {
+            global: {
+                plugins: [createTestingPinia({ stubActions: false })],
+            },
+        });
+
+        const closeButton = screen.getByAltText('exit symbol');
+
+        await fireEvent.click(closeButton);
+
+        expect(
+            container
+                .querySelector('#conversation-container')
+                ?.classList.contains('invisible'),
+        ).toBe(true);
+    });
+});
+
+describe('Pesr Conversation test', () => {
+    beforeEach(() => {
+        GamePieces.characters = [
+            {
+                height: 32,
+                id: false,
+                type: 'character',
+                visible: true,
+                width: 32,
+                x: 1728.5,
+                y: 2145,
+                sprite: new Image(),
+                drawX: 0,
+                drawY: 0,
+                diameterDown: 2177,
+                diameterLeft: 1728.5,
+                diameterRight: 1760.5,
+                diameterUp: 0,
+                displayName: 'Pesr',
+                noCollision: false,
+                src: 'pesr.png',
+                conversation: true,
+            },
+        ];
+    });
+    test.for([
+        'Golbak',
+        'Khanz',
+        'Krasnur',
+        'Tasnobil',
+        'Fagna',
+        'Snerpiir',
+        'Cruendo',
+        'Ter',
+        'Towhar',
+    ])(
+        'GameTravelCallback with Pesr is invoked when pressing %s',
+        async text => {
+            vi.mock('@/clientScripts/gameTravel', () => {
+                return {
+                    gameTravel: {
+                        travel: vi.fn(),
+                    },
+                };
+            });
+
+            const { container } = render(ConversationContainer, {
+                global: {
+                    plugins: [createTestingPinia({ stubActions: false })],
+                },
+            });
+
+            const conversationStore = useConversationStore();
+            conversationStore.triggerLoadConversation('Pesr');
+
+            (CustomFetchApi.post as Mock).mockResolvedValue(
+                PesrSelectLocationResponse,
+            );
+            await waitFor(() => {
+                expect(screen.getByText(text)).toBeInTheDocument();
+            }).then(async () => {
+                expect(
+                    container
+                        .querySelector('#conversation-container')
+                        ?.classList.contains('invisible'),
+                ).toBe(false);
+
+                await fireEvent.click(screen.getByText(text));
+                expect(gameTravel.travel).toHaveBeenCalledWith(text, 'Pesr');
+                expect(gameTravel.travel).toHaveBeenCalledTimes(1);
+                vi.resetAllMocks();
+            });
+        },
+    );
+});
+
+describe('Zins Conversation test', () => {
+    beforeEach(() => {
+        GamePieces.characters = [
+            {
+                height: 32,
+                id: false,
+                type: 'character',
+                visible: true,
+                width: 32,
+                x: 1728.5,
+                y: 2145,
+                sprite: new Image(),
+                drawX: 0,
+                drawY: 0,
+                diameterDown: 2177,
+                diameterLeft: 1728.5,
+                diameterRight: 1760.5,
+                diameterUp: 0,
+                displayName: 'Zins',
+                noCollision: false,
+                src: 'zins.png',
+                conversation: true,
+            },
+        ];
+    });
+    test('LoadZinsStoreCallback with Zins is invoked', async () => {
+        vi.mock('@/conversationCallbacks/loadBuilding', () => {
+            return {
+                loadBuildingCallback: vi.fn(),
+            };
+        });
         const { container } = render(ConversationContainer, {
             global: {
                 plugins: [createTestingPinia({ stubActions: false })],
             },
         });
         const conversationStore = useConversationStore();
-        conversationStore.triggerLoadConversation('kapys');
-        (CustomFetchApi.post as Mock).mockResolvedValue({
-            data: {
-                conversation_segment: {
-                    index: 'prrr',
-                    header: 'Where would you like to travel to?',
-                    options: [
-                        {
-                            person: '',
-                            text: 'Golbak',
-                            next_key: 'end',
-                            client_callback: 'GameTravelCallback',
-                            option_values: {
-                                location: 'golbak',
-                            },
-                            id: 0,
-                        },
-                        {
-                            person: '',
-                            text: 'Khanz',
-                            next_key: 'end',
-                            client_callback: 'GameTravelCallback',
-                            option_values: {
-                                location: 'khanz',
-                            },
-                            id: 1,
-                        },
-                        {
-                            person: '',
-                            text: 'Krasnur',
-                            next_key: 'end',
-                            client_callback: 'GameTravelCallback',
-                            option_values: {
-                                location: 'krasnur',
-                            },
-                            id: 2,
-                        },
-                        {
-                            person: '',
-                            text: 'Tasnobil',
-                            next_key: 'end',
-                            client_callback: 'GameTravelCallback',
-                            option_values: {
-                                location: 'tasnobil',
-                            },
-                            id: 3,
-                        },
-                        {
-                            person: '',
-                            text: 'Fagna',
-                            next_key: 'end',
-                            client_callback: 'GameTravelCallback',
-                            option_values: {
-                                location: 'fagna',
-                            },
-                            id: 4,
-                        },
-                        {
-                            person: '',
-                            text: 'Snerpiir',
-                            next_key: 'end',
-                            client_callback: 'GameTravelCallback',
-                            option_values: {
-                                location: 'snerpiir',
-                            },
-                            id: 5,
-                        },
-                        {
-                            person: '',
-                            text: 'Cruendo',
-                            next_key: 'end',
-                            client_callback: 'GameTravelCallback',
-                            option_values: {
-                                location: 'cruendo',
-                            },
-                            id: 6,
-                        },
-                        {
-                            person: '',
-                            text: 'Ter',
-                            next_key: 'end',
-                            client_callback: 'GameTravelCallback',
-                            option_values: {
-                                location: 'ter',
-                            },
-                            id: 7,
-                        },
-                        {
-                            person: '',
-                            text: 'Towhar',
-                            next_key: 'end',
-                            client_callback: 'GameTravelCallback',
-                            option_values: {
-                                location: 'towhar',
-                            },
-                            id: 8,
-                        },
-                    ],
-                },
-            },
-        });
+
+        conversationStore.triggerLoadConversation('Zins');
+
+        (CustomFetchApi.post as Mock).mockResolvedValue(openZinsStoreResponse);
         await waitFor(() => {
+            expect(
+                screen.getByText('Great! I will buy them from you.'),
+            ).toBeInTheDocument();
+        }).then(async () => {
             expect(
                 container
                     .querySelector('#conversation-container')
                     ?.classList.contains('invisible'),
             ).toBe(false);
-        });
 
-        const option = screen.getByText('Khanz');
-        await option.click();
-        await waitFor(() => {
-            expect(gameTravel.travel).toHaveBeenCalled();
-            expect(
-                container
-                    .querySelector('#conversation-container')
-                    ?.classList.contains('invisible'),
-            ).toBe(true);
+            await fireEvent.click(screen.getByText('Click here to continue'));
+            expect(loadBuildingCallback).toHaveBeenCalledTimes(1);
+            expect(loadBuildingCallback).toHaveBeenCalledWith('zinsstore');
         });
     });
-
-    // test('ends conversation correctly', async () => {
-    //     wrapper.vm.endConversation();
-
-    //     expect(wrapper.vm.currentConversationSegment).toBeNull();
-    //     expect(wrapper.vm.showConversationContainer).toBe(false);
-    //     expect(Game.setGameState).toHaveBeenCalledWith('playing');
-    // });
-
-    // test('displays loading message when isLoading is true', async () => {
-    //     wrapper.vm.isLoading = true;
-    //     await wrapper.vm.$nextTick();
-
-    //     expect(wrapper.find('#loading_message').text()).toBe('Loading...');
-    // });
-
-    // test('renders conversation options correctly', async () => {
-    //     wrapper.vm.currentConversationSegment = {
-    //         options: [
-    //             {
-    //                 id: 1,
-    //                 text: 'Option 1',
-    //                 person: 'Test Character',
-    //                 container: 'A',
-    //             },
-    //             {
-    //                 id: 2,
-    //                 text: 'Option 2',
-    //                 person: 'Test Character',
-    //                 container: 'B',
-    //             },
-    //         ],
-    //     };
-    //     wrapper.vm.isLoading = false;
-    //     await wrapper.vm.$nextTick();
-
-    //     const options = wrapper.findAll('.conv-link');
-    //     expect(options.length).toBe(2);
-    //     expect(options[0].text()).toBe('Option 1');
-    //     expect(options[1].text()).toBe('Option 2');
-    // });
-
-    // test('toggles visibility of elements based on state', async () => {
-    //     wrapper.vm.showPersonAContainer = true;
-    //     await wrapper.vm.$nextTick();
-
-    //     expect(wrapper.find('#conversation-a').isVisible()).toBe(true);
-
-    //     wrapper.vm.showPersonAContainer = false;
-    //     await wrapper.vm.$nextTick();
-
-    //     expect(wrapper.find('#conversation-a').isVisible()).toBe(false);
-    // });
-
-    // test('emits correct event when button is clicked', async () => {
-    //     wrapper.vm.showButton = true;
-    //     await wrapper.vm.$nextTick();
-
-    //     const button = wrapper.find('#conv_button');
-    //     await button.trigger('click');
-
-    //     expect(CustomFetchApi.post).toHaveBeenCalled();
-    // });
 });

@@ -2,16 +2,16 @@
 
 namespace Tests\Feature\Conversations;
 
-use App\Enums\GameEvents;
+use App\Conversation\Handlers\KapysHandler;
 use App\Enums\GameLocations;
-use App\Models\Miner;
-use App\Models\MinerPermitCost;
+use App\Models\ConversationTracker;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
-use Tests\ConversationTest;
+use Tests\ConversationTestCase;
+use Tests\Utils\Contracts\ConversationContract;
 
-class KapysConversationTest extends ConversationTest
+class KapysConversationTest extends ConversationTestCase implements ConversationContract
 {
     use DatabaseTransactions;
 
@@ -28,37 +28,52 @@ class KapysConversationTest extends ConversationTest
         $this->actingAs($this->getRandomUser());
     }
 
-    public function test_kpsqr()
+    public function test_conversation_tree(): void
     {
-        $this->setConversationIndex('kpsQ');
-
-        $response = $this->callNext(0);
-        $this->assertIsArray($response);
+        $this->check_conversation_structure($this->conversation_file['index']);
     }
 
-    #[DataProvider('genericConversationDataProvider')]
-    public function test_generic_conversation_segment(string $start, string $expected): void
+    public function test_callables_exists(): void
     {
-        $this->setConversationIndex($start);
+        $this->check_handler_callables($this->app->make(KapysHandler::class));
+    }
 
-        $this->callNext(0);
-
-        $this->assertDatabaseHas('conversation_trackers', [
-            'user_id' => $this->RandomUser->id,
-            'current_index' => $expected,
+    #[DataProvider('conditionalFalseProvider')]
+    public function test_conditional_returning_false_is_not_included(string $location, string $expectMissing): void
+    {
+        ConversationTracker::where('user_id', $this->RandomUser->id)->firstOrFail()->update([
+            'current_index' => 'kpsQ',
+            'selected_option_values' => [],
         ]);
+
+        $this->setUserCurrentLocation($location, $this->RandomUser);
+
+        /**
+         * @var \App\Services\ConversationService $conversationService
+         */
+        $conversationService = app()->make(\App\Services\ConversationService::class);
+
+        $result = $conversationService->getConversation('kapys', 0, false);
+
+        $conversationTexts = array_map(fn ($option) => $option['text'], $result['options']);
+
+        $this->assertContains("I want to buy permits in $location mine", $conversationTexts);
+
+        $this->assertContains('Goobye', $conversationTexts);
     }
 
-    public static function genericConversationDataProvider()
+    public static function conditionalFalseProvider(): array
     {
         return [
-            'kpsQ' => ['start' => 'kps', 'expected' => 'kpsQ'],
-            'kpsQr' => ['start' => 'kpsQ', 'expected' => 'kpsQr'],
+            'snerpiir' => ['location' => 'golbak', 'expectMissing' => 'snerpiir'],
+            'golbak' => ['location' => 'snerpiir', 'expectMissing' => 'golbak'],
         ];
     }
 
-    public function test_kps_qrr_price_replacer()
+    #[DataProvider('minerLocationProvider')]
+    public function test_kps_qrr_price_replacer(string $location)
     {
+        $this->setUserCurrentLocation($location, $this->RandomUser);
         $this->setConversationIndex('kpsQr');
 
         $response = $this->callNext(0);
@@ -98,83 +113,5 @@ class KapysConversationTest extends ConversationTest
             'snerpiir' => [GameLocations::SNERPIIR_LOCATION->value],
             'golbak' => [GameLocations::GOLBAK_LOCATION->value],
         ];
-    }
-
-    #[DataProvider('minerLocationProvider')]
-    public function test_kpsqrrs_buy_permit_with_not_enough_gold(string $location)
-    {
-        $this->setConversationIndex('kpsQrr', ['location' => $location]);
-
-        $this->setUserCurrentLocation($location, $this->RandomUser);
-
-        $this->insertCurrencyToInventory($this->RandomUser, 0);
-
-        $Miner = Miner::where('user_id', $this->RandomUser->id)
-            ->where('location', $location)
-            ->first();
-
-        $response = $this->post('conversation/next', [
-            'is_starting' => false,
-            'person' => $this->person,
-            'selected_option' => 0,
-        ]);
-
-        $response->assertStatus(200);
-
-        $this->assertConversationSegment($response);
-
-        $this->assertDatabaseHas('miner', [
-            'user_id' => $this->RandomUser->id,
-            'location' => $location,
-            'permits' => $Miner->permits,
-        ]);
-
-        $this->assertDatabaseHas('conversation_trackers', [
-            'user_id' => $this->RandomUser->id,
-            'current_index' => 'kpsQrrSr1',
-        ]);
-    }
-
-    #[DataProvider('minerLocationProvider')]
-    public function test_kpsqrrs_buy_permit_with_enough_gold(string $location)
-    {
-        $this->setConversationIndex('kpsQrr', ['location' => $location]);
-
-        $this->insertCurrencyToInventory($this->RandomUser, 10000);
-
-        $this->setUserCurrentLocation($location, $this->RandomUser);
-
-        $Miner = Miner::where('user_id', $this->RandomUser->id)
-            ->where('location', $location)
-            ->first();
-
-        $MinerPermitCost = MinerPermitCost::where('location', $location)->first();
-
-        $response = $this->post('conversation/next', [
-            'is_starting' => false,
-            'person' => $this->person,
-            'selected_option' => 0,
-        ]);
-
-        $response->assertJsonStructure(([
-            'conversation_segment' => [
-                'index',
-                'client_events',
-                'options',
-            ],
-        ]));
-
-        $this->assertContains(GameEvents::InventoryChangedEvent->value, $response['conversation_segment']['client_events']);
-
-        $this->assertDatabaseHas('miner', [
-            'user_id' => $this->RandomUser->id,
-            'location' => $location,
-            'permits' => $Miner->permits + $MinerPermitCost->permit_amount,
-        ]);
-
-        $this->assertDatabaseHas('conversation_trackers', [
-            'user_id' => $this->RandomUser->id,
-            'current_index' => 'kpsQrrSr0',
-        ]);
     }
 }

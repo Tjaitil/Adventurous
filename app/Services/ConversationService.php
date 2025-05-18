@@ -2,58 +2,22 @@
 
 namespace App\Services;
 
+use App\Conversation\Handlers\BaseHandler;
+use App\Dto\Conversation\SegmentDto;
 use App\Models\ConversationTracker;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use ReflectionMethod;
 
-/**
- * Explanation of the structure
- * Each conversation starts with an index
- *
- * Then each index will follow a similar pattern
- * index {
- *  id: int,
- *  header: string,
- *  client_events: string[] Fired when conversation is fetched on frontend,
- *  options: [
- *    {
- *      "person": person|player,
- *      "container": A | B,
- *      "text": string,
- *      "replacers": ["EventName@methodName"],
- *      "conditional": string,
- *      "next_key": "S",
- *      "id": 0
- *    }
- *  ]
- *  server_events: [
- *   {
- *    "event": "EventName@methodName",
- *   "type": "has",
- *  "results": ["S", "E"],
- *  "callbacks": server_events[]
- *  }
- * ]
- * }
- *
- * Q - main questions
- * q - question
- * r - response
- * end - end of conversation
- * S - server event
- */
-class ConversationService
+final class ConversationService
 {
     public int $selectedId;
 
     public string $newIndex;
 
-    /**
-     * @var array<string, mixed>
-     */
-    public array $oldConversation;
+    public BaseHandler $handlerClass;
+
+    public SegmentDto $oldConversation;
 
     /**
      * @var array<string, mixed>
@@ -62,20 +26,34 @@ class ConversationService
 
     protected ConversationTracker $ConversationTracker;
 
-    public function __construct(private ConversationParamService $conversationParamService) {}
+    public function __construct(private ConversationCallableService $conversationParamService) {}
 
-    public function getConversationTracker(): void
+    private function getConversationTracker(): void
     {
         $this->ConversationTracker = ConversationTracker::where('user_id', Auth::user()?->id)->firstOrFail()->refresh();
     }
 
     /**
-     * @return array<string,mixed>|void
+     * @throws Exception
      */
-    public function getConversation(string $person, int $id, bool $start)
+    private function loadHandlerClass(string $person): void
     {
+        $handlerClass = 'App\\Conversation\\Handlers\\'.ucfirst($person).'Handler';
+        if (class_exists($handlerClass)) {
+            $this->handlerClass = app()->make($handlerClass);
+        } else {
+            throw new Exception(sprintf('Handler class not found for person %s', $person), 422);
+        }
+    }
+
+    /**
+     * @return array<string,mixed>
+     */
+    public function getConversation(string $person, int $selectedOptionId, bool $start): array
+    {
+        $this->loadHandlerClass($person);
         $this->getConversationTracker();
-        $this->selectedId = $id;
+        $this->selectedId = $selectedOptionId;
         $this->conversationFile = $this->loadPerson($person);
 
         if ($start === true) {
@@ -84,36 +62,52 @@ class ConversationService
             $this->ConversationTracker->selected_option_values = null;
             $this->ConversationTracker->save();
         } else {
-
-            $newIndex = $this->ConversationTracker->current_index ?? '';
-            $this->setNewIndex($newIndex);
-            $this->oldConversation = $this->getNextLine($this->newIndex, $this->conversationFile);
-            $matchedOption = current(array_filter($this->oldConversation['options'] ?? [], fn ($key) => $key['id'] === $id));
+            $this->newIndex = $this->ConversationTracker->current_index ?? '';
+            $this->oldConversation = $this->getNextSegment($this->newIndex, $this->conversationFile);
+            $matchedOption = current(array_filter($this->oldConversation->options ?? [], fn ($key) => $key->id === $selectedOptionId));
             if ($matchedOption === false) {
-                throw new Exception(sprintf('Option %s not found', $id), 422);
+                throw new Exception(sprintf('Option %s not found', $selectedOptionId), 422);
             }
-            $newIndex = $this->newIndex .= $matchedOption['next_key'];
+            $newIndex = $this->newIndex .= $matchedOption->nextKey;
 
-            if (isset($matchedOption['option_values'])) {
+            if (isset($matchedOption->optionValues)) {
 
                 ConversationTracker::where('user_id', Auth::user()?->id)
-                    ->update(['selected_option_values' => $matchedOption['option_values']]);
+                    ->update(['selected_option_values' => $matchedOption->optionValues]);
             }
             $this->setNewIndex($newIndex);
         }
 
-        $currentConversation = $this->getNextLine($this->newIndex, $this->conversationFile);
+        $currentSegment = $this->getNextSegment($this->newIndex, $this->conversationFile);
 
-        $currentConversation = $this->checkForServerEvents($currentConversation);
+        $currentSegment = $this->checkForServerEvents($currentSegment);
 
-        $currentConversation = $this->checkForConditional($currentConversation);
+        $currentSegment = $this->checkForConditional($currentSegment);
 
-        $currentConversation = $this->checkForTextPlaceholders($currentConversation,
-            $this->ConversationTracker->selected_option_values);
+        $currentSegment = $this->checkForTextPlaceholders($currentSegment);
 
-        unset($currentConversation['serverEvents']);
+        $clientEvents = $this->handlerClass->getClientEvent($this->newIndex);
 
-        return $currentConversation;
+        $currentSegment = $this->attachClientCallback($currentSegment);
+
+        return [...$currentSegment->toArray(),
+            'client_events' => $clientEvents,
+        ];
+    }
+
+    public function attachClientCallback(SegmentDto $segment): SegmentDto
+    {
+        foreach ($segment->options as $key => $option) {
+            if ($option->hasClientCallback) {
+
+                $optionIdIndex = $this->generateOptionIdIndex($this->newIndex, $option->id);
+                $option->setClientCallback(
+                    $this->handlerClass->getClientCallBack($optionIdIndex)
+                );
+            }
+        }
+
+        return $segment;
     }
 
     private function setNewIndex(string $newIndex): void
@@ -121,68 +115,32 @@ class ConversationService
         $this->newIndex = $newIndex;
         $this->ConversationTracker->current_index = $this->newIndex;
         $this->ConversationTracker->save();
+
         $this->ConversationTracker->refresh();
     }
 
-    /**
-     * @param  array<string, mixed>  $currentConversation
-     * @return array<string, mixed>
-     */
-    public function checkForServerEvents(array $currentConversation): array
+    private function checkForServerEvents(SegmentDto $currentSegment): SegmentDto
     {
-        if (isset($currentConversation['server_events'])) {
-            $result = $this->triggerServerEvents($currentConversation['server_events']);
-            if ($result !== null) {
-                $newIndex = $this->newIndex.$result;
-                $this->setNewIndex($newIndex);
-                $currentConversation = $this->getNextLine($newIndex, $this->conversationFile);
-            }
+        if (! $currentSegment->hasServerEvent) {
+            return $currentSegment;
         }
 
-        return $currentConversation;
-    }
+        $serverEventname = $this->handlerClass->getServerEvent($this->newIndex);
 
-    /**
-     * @param  array<int, mixed>  $serverEvents
-     */
-    private function triggerServerEvents(array $serverEvents): ?string
-    {
-        $nextIndex = null;
-        foreach ($serverEvents as $key => $serverEvent) {
-            if ($serverEvent['option_values'] === '__CURRENT_SELECTED_OPTION_VALUES__') {
-                $serverEvent['option_values'] = $this->ConversationTracker->selected_option_values;
-            }
-            $result = $this->conversationParamService->invokeServerEvent($serverEvent['event'], $serverEvent['option_values']);
-            if ($result === true) {
-                $nextIndex = $serverEvent['results'][0];
-            } else {
-                $nextIndex = $serverEvent['results'][1];
-            }
+        if (! is_null($serverEventname)) {
+            $nextKey = $this->conversationParamService->invokeServerEvent($this->handlerClass, $serverEventname, $this->ConversationTracker->selected_option_values);
+            $newIndex = $this->newIndex.$nextKey;
+            $this->setNewIndex($newIndex);
+            $currentSegment = $this->getNextSegment($newIndex, $this->conversationFile);
         }
 
-        return $nextIndex;
-    }
-
-    /**
-     * Get className and methodName from $eventString from the $event variable.
-     *
-     * @return array{0: string, 1: string}
-     */
-    protected function getClassNameAndMethodName(string $event): array
-    {
-        $eventParts = explode('@', $event);
-        $className = 'App\\Conversation\\ServerEvents\\'.$eventParts[0];
-        $methodName = $eventParts[1];
-        $result = [$className, $methodName];
-
-        return $result;
+        return $currentSegment;
     }
 
     /**
      * @param  array<string, mixed>  $conversation
-     * @return array<string, mixed>
      */
-    public function getNextLine(?string $index, array $conversation): array
+    private function getNextSegment(?string $index, array $conversation): SegmentDto
     {
         $matchedValue = null;
         foreach ($conversation as $key => $value) {
@@ -196,7 +154,7 @@ class ConversationService
             throw new Exception(sprintf('Conversation line %s not found', $index), 422);
         }
 
-        return $matchedValue;
+        return new SegmentDto($matchedValue);
     }
 
     /**
@@ -206,7 +164,7 @@ class ConversationService
      * @throws \League\Flysystem\FilesystemException
      * @throws \Exception
      */
-    public function loadPerson(string $person)
+    private function loadPerson(string $person)
     {
         $person = strtolower($person);
 
@@ -222,92 +180,61 @@ class ConversationService
         return $file;
     }
 
-    public function hasMethodParameter(string|object $class, string $methodName): bool
-    {
-        $reflection = new ReflectionMethod($class, $methodName);
-
-        return $reflection->getNumberOfParameters() > 0;
-    }
-
-    public function resolveMethodArgs(string $class, string $methodName, ?array $optionValues = []): array
-    {
-        $reflection = new ReflectionMethod($class, $methodName);
-        $parameters = $reflection->getParameters();
-        $args = [];
-        foreach ($parameters as $parameter) {
-            if ($parameter->getType()->getName() === \App\Models\User::class) {
-                $args[] = Auth::user();
-
-                continue;
-            }
-
-            $name = $parameter->getName();
-            if (! isset($optionValues[$name])) {
-                throw new Exception(sprintf('Option value %s not found', $name));
-            }
-
-        }
-
-        return $args;
-    }
-
-    /**
-     * @param  array<string, mixed>  $currentConversation
-     * @return array<string, mixed>
-     */
-    public function checkForConditional(array $currentConversation): array
+    private function checkForConditional(SegmentDto $currentSegment): SegmentDto
     {
         $idToRemove = [];
-        // dd($currentConversation['options']);
-        foreach ($currentConversation['options'] as $key => $value) {
-            if (isset($value['conditional'])) {
-                $result = $this->handleConditional($value['conditional'], $value['option_values']);
+        foreach ($currentSegment->options as $key => $option) {
+            if ($option->hasConditional) {
+
+                $conditionalIndex = $this->generateOptionIdIndex($this->newIndex, $option->id);
+                $conditional = $this->handlerClass->getConditional($conditionalIndex);
+
+                if (is_null($conditional)) {
+                    throw new Exception(sprintf('Conditional %s not found', $conditionalIndex), 422);
+                }
+
+                $result = $this->conversationParamService->invokeConditional($this->handlerClass, $conditional, $option->optionValues, $this->ConversationTracker->selected_option_values ?? []);
                 if ($result === false) {
-                    $idToRemove[] = $value['id'];
+                    $idToRemove[] = $option->id;
                 }
             }
         }
 
         if (count($idToRemove) > 0) {
-            $currentConversation['options'] =
-                array_values(array_filter($currentConversation['options'], fn ($key) => ! in_array($key['id'], $idToRemove)));
+            $currentSegment->options =
+                array_values(array_filter($currentSegment->options, fn ($key) => ! in_array($key->id, $idToRemove)));
         }
 
-        return $currentConversation;
+        return $currentSegment;
     }
 
-    /**
-     * Check if the class is an event handler extending \App\Conversation\Handlers\BaseHandler
-     */
-    public function isEventHandlerClass(string $className): bool
+    private function checkForTextPlaceholders(SegmentDto $currentSegment): SegmentDto
     {
-        return str_contains($className, 'Handler');
-    }
-
-    public function handleConditional(string $conditional, array $option_values): bool
-    {
-        return $this->conversationParamService->invokeConditional($conditional, $option_values);
-    }
-
-    /**
-     * @param  array<string, mixed>  $currentConversation
-     * @return array<string, mixed>
-     */
-    public function checkForTextPlaceholders(array $currentConversation, ?array $option_values): array
-    {
-
-        foreach ($currentConversation['options'] as $key => $option) {
-
-            if (! isset($option['replacers'])) {
+        foreach ($currentSegment->options as $key => $option) {
+            if ($option->hasReplacer === false) {
                 continue;
             }
-            foreach ($option['replacers'] as $replaceKey => $value) {
-                $option['replacers'][$replaceKey] = $this->conversationParamService->invokeReplacer($value, $option_values);
 
-                $currentConversation['options'][$key]['text'] = __($option['text'], $option['replacers']);
+            $replacers = $this->handlerClass->getReplacers($this->generateOptionIdIndex($this->newIndex, $option->id));
+
+            if (is_null($replacers)) {
+                continue;
+            }
+            foreach ($replacers as $placeHolder => $replaceMethod) {
+                $replacementstring = $this->conversationParamService->invokeReplacer($this->handlerClass, $replaceMethod, $this->ConversationTracker->selected_option_values ?? []);
+
+                $option->text = str_replace($placeHolder, $replacementstring, $option->text);
             }
         }
 
-        return $currentConversation;
+        return $currentSegment;
+    }
+
+    /**
+     * Used to generate the index for the option id to get callables
+     */
+    private function generateOptionIdIndex(string $index, int $id): string
+    {
+        return $index.'#'.$id;
     }
 }

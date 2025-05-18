@@ -2,7 +2,6 @@ import { viewport } from './viewport';
 import { GamePieces } from './gamePieces';
 import { HUD } from './HUD';
 import { ProgressBar } from '../progressBar';
-import { conversation } from './conversation';
 
 export const tutorial = {
     step: 1,
@@ -83,7 +82,7 @@ export const tutorial = {
 
     conversationCount: 0,
     startTutorial() {
-        if (this.onGoing === true) return;
+        if (this.onGoing) return;
         this.onGoing = !this.onGoing;
         HUD.makeTutorialHUD();
         conversation.loadConversation('hassen', '');
