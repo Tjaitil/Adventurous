@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\GameEvents;
 use App\Http\Responses\AdvResponse;
 use App\Models\Miner;
 use App\Models\Mineral;
@@ -255,8 +254,6 @@ class MineController extends Controller
             UserLevelsUpdater::create($User->userLevels)
                 ->addMinerXP($Mineral->experience)
                 ->update();
-                
-            $response->addEvent(GameEvents::XpGainedEvent);
 
             $message = sprintf('You have finished mining %s', $Mineral->mineral_ore);
         } else {
@@ -265,7 +262,7 @@ class MineController extends Controller
 
         return $response->setData([
             'avail_workforce' => $MinerWorkforce->avail_workforce,
-            'new_hunger' => $User->hunger->refresh()->current,
+            'new_hunger' => $User->xhunger->refresh()->current,
         ])
             ->addMessage($loggertService->addSuccessLog($message));
     }
