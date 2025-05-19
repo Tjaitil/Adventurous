@@ -1,6 +1,6 @@
-import { AdvEventsType } from '@/events/AdvEventManager';
-import { LevelUpSkill } from '../Skill';
-import { GameLog } from '../GameLog';
+import type { GameLog } from '../GameLog';
+import type { LevelUpSkill } from '../Skill';
+
 export interface advAPIResponse<T = object> {
     logs: GameLog[];
     data: T;
@@ -8,5 +8,4 @@ export interface advAPIResponse<T = object> {
     html?: {
         [key: string]: string;
     };
-    events: AdvEventsType[];
 }

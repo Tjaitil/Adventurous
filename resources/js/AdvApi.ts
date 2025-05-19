@@ -1,7 +1,6 @@
 import { advAPIResponse } from './types/Responses/AdvResponse';
 import { BaseAxios, errorInterceptor, isAdvResponse } from './ajax';
 import { GameLogger } from './utilities/GameLogger';
-import { AdvEventManager } from './events/AdvEventManager';
 
 export class AdvApi extends BaseAxios {
     protected static interceptorsConfigured = false;
@@ -11,8 +10,6 @@ export class AdvApi extends BaseAxios {
             response => {
                 if (isAdvResponse(response)) {
                     GameLogger.addMessages(response.data.logs, true);
-
-                    AdvEventManager.notify(response.data.events);
                 }
 
                 return response;
@@ -27,7 +24,7 @@ export class AdvApi extends BaseAxios {
     }
 
     public static async get<T = advAPIResponse>(url: string): Promise<T> {
-        if (this.interceptorsConfigured === false) this.init();
+        if (!this.interceptorsConfigured) this.init();
 
         return BaseAxios.get<T>(url);
     }
@@ -36,7 +33,7 @@ export class AdvApi extends BaseAxios {
         url: string,
         data: K,
     ): Promise<T> {
-        if (this.interceptorsConfigured === false) this.init();
+        if (!this.interceptorsConfigured) this.init();
 
         return BaseAxios.post<T>(url, data);
     }
