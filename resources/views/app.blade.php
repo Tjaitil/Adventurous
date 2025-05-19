@@ -23,6 +23,9 @@
         @include('header')
     </header>
     @yield('content')
+    <script>
+        window.user_id = {{ auth()->user()->id }}
+    </script>
 </body>
 
 </html>
