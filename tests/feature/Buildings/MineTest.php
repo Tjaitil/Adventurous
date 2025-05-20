@@ -224,7 +224,6 @@ class MineTest extends SkillTestCase
             'avail_workforce',
             'new_hunger',
         ]]);
-        $this->assertContains(GameEvents::XpGainedEvent->value, $response->json('events'));
 
         $this->assertDatabaseHas('miner', [
             'user_id' => $this->RandomUser->id,

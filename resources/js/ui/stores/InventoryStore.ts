@@ -32,5 +32,8 @@ export const useInventoryStore = defineStore('inventory', {
         async setShouldUpdateInventory(val: boolean) {
             this.shouldUpdateInventory = val;
         },
+        setInventoryItems(items: InventoryItem[]) {
+            this.inventoryItems = items;
+        },
     },
 });

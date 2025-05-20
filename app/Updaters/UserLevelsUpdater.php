@@ -2,6 +2,7 @@
 
 namespace App\Updaters;
 
+use App\Events\SkillsUpdated;
 use App\Models\UserLevels;
 
 final class UserLevelsUpdater
@@ -67,6 +68,7 @@ final class UserLevelsUpdater
     public function update(): self
     {
         $this->userLevels->save();
+        event(new SkillsUpdated);
 
         return $this;
     }
