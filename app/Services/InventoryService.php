@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\InventoryUpdated;
 use App\Exceptions\InventoryFullException;
 use App\Http\Responses\AdvResponse;
 use App\Models\Inventory;
@@ -121,6 +122,7 @@ class InventoryService
                 $InventoryItem->save();
             }
         }
+        event(new InventoryUpdated($Inventory));
 
         return $this;
     }

@@ -2,7 +2,6 @@
 
 namespace App\Http\Responses;
 
-use App\Enums\GameEvents;
 use App\ValueObjects\GameLog;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\JsonResponse;
@@ -64,16 +63,6 @@ class AdvResponse implements Responsable
             'skill' => $skillName,
             'new_level' => $new_level,
         ];
-
-        return $this;
-    }
-
-    /**
-     * @param  value-of<\App\Enums\GameEvents>|\App\Enums\GameEvents  $event
-     */
-    public function addEvent(string|GameEvents $event): self
-    {
-        $this->data['events'][] = $event;
 
         return $this;
     }

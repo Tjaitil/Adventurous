@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\GameEvents;
 use App\Enums\SkillNames;
 use App\Exceptions\JsonException;
 use App\Http\Responses\AdvResponse;
@@ -264,8 +263,6 @@ class CropsController extends Controller
             UserLevelsUpdater::create($User->userLevels)
                 ->addFarmerXP($experience)
                 ->update();
-
-            $response->addEvent(GameEvents::XpGainedEvent);
         }
 
         $Farmer->crop_type = null;
