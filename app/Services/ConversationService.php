@@ -86,12 +86,9 @@ final class ConversationService
 
         $currentSegment = $this->checkForTextPlaceholders($currentSegment);
 
-        $clientEvents = $this->handlerClass->getClientEvent($this->newIndex);
-
         $currentSegment = $this->attachClientCallback($currentSegment);
 
         return [...$currentSegment->toArray(),
-            'client_events' => $clientEvents,
         ];
     }
 

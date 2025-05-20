@@ -6,7 +6,6 @@ export interface ConversationSegment {
     header?: string;
     index: string;
     options: ConversationOption[];
-    client_events?: ConversationClientEvent[];
 }
 export interface ConversationOption {
     person: string | null;

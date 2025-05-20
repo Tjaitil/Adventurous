@@ -11,9 +11,6 @@
     4. Invoke conditionals on conversation_segments if specified and then filter out
     5. Invoke text placeholders and switch out text
     6. The next segment is returned based on next_key.
-- Frontend events
-    - client_events, happens when the conversation is loaded and displayed
-    - client_callback, tied to one option after one option is selected. NOTE: Remember to use next_key "end" if the user is navigated away from the conversation
 - Next Key
     - q - question. Next segment is a question. Main question is Q. Often one will revert back to this if current conversation tree cannot be "progressed"
     - r - response. Next segment is a response. Can be numeric when multi-choice responses. E.g r1 / r2

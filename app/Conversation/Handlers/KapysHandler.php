@@ -23,10 +23,6 @@ final class KapysHandler extends BaseHandler
         ],
     ];
 
-    protected array $clientEvents = [
-        'kpsQrrSr0' => ['InventoryChangedEvent'],
-    ];
-
     protected array $serverEvent = [
         'kpsQrrS' => 'buyPermits',
     ];

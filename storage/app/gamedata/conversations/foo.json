@@ -106,7 +106,6 @@
   },
   "foorrrrSr0": {
     "index": "foorrrrSr0",
-    "has_client_events": true,
     "options": [
       {
         "text": "Some text",
@@ -118,7 +117,6 @@
   },
   "foorrrrSr1": {
     "index": "foorrrrSr1",
-    "has_client_events": true,
     "options": [
       {
         "text": "Some text",

@@ -36,7 +36,6 @@ import { GameLogger } from '@/utilities/GameLogger';
 import { ref, watch } from 'vue';
 import { useConversationStore } from '../stores/ConversationStore';
 import { Game } from '@/advclient';
-import { AdvEventManager } from '@/events/AdvEventManager';
 import { loadBuildingCallback } from '@/conversationCallbacks/loadBuilding';
 import ConversationHeader from './conversation/ConversationHeader.vue';
 import type {
@@ -188,22 +187,10 @@ const handleNextLine = () => {
     } else {
         setButtonVisibility(false);
     }
-    handleClientEvents();
 };
 
 const setButtonVisibility = (value: boolean) => {
     showButton.value = value;
-};
-const handleClientEvents = () => {
-    if (currentConversationSegment.value == null) {
-        return;
-    }
-    if (
-        currentConversationSegment.value.client_events != null &&
-        currentConversationSegment.value.client_events.length > 0
-    ) {
-        AdvEventManager.notify('InventoryChangedEvent');
-    }
 };
 
 const endConversation = () => {

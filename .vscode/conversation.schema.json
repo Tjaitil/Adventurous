@@ -17,9 +17,6 @@
                 "header": {
                     "type": ["string"]
                 },
-                "has_client_events": {
-                    "type": "boolean"
-                },
                 "has_server_event": {
                     "type": "boolean"
                 },

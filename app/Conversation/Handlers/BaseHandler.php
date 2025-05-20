@@ -30,11 +30,6 @@ abstract class BaseHandler
      */
     protected array $clientCallBacks = [];
 
-    /**
-     * @var array<string, array<int, string>>
-     */
-    protected array $clientEvents = [];
-
     public function currentLocationConditional(string $location, #[CurrentUser] User $User): bool
     {
         return $User->player->location === $location;
@@ -43,16 +38,6 @@ abstract class BaseHandler
     public function getServerEvent(string $index): ?string
     {
         return $this->getCallable($index, 'serverEvent');
-    }
-
-    /**
-     * @return array<int, string>|null
-     */
-    public function getClientEvent(string $index): ?array
-    {
-        $foo = $this->getCallable($index, 'clientEvents');
-
-        return $foo;
     }
 
     public function createIndexWithOptionId(string $index, int $id): string
