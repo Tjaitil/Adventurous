@@ -22,6 +22,9 @@ vi.mock('@/CustomFetchApi', () => {
 vi.mock('@/advclient', () => ({
     Game: {
         setGameState: vi.fn(),
+        properties: {
+            gameState: 'playing',
+        },
     },
 }));
 
@@ -257,6 +260,14 @@ describe('Pesr Conversation test', () => {
                 return {
                     gameTravel: {
                         travel: vi.fn(),
+                    },
+                };
+            });
+
+            vi.mock('@/clientScripts/pause', () => {
+                return {
+                    pauseManager: {
+                        resumeGame: vi.fn(),
                     },
                 };
             });
