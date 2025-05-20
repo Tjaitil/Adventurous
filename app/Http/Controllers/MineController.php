@@ -262,7 +262,7 @@ class MineController extends Controller
 
         return $response->setData([
             'avail_workforce' => $MinerWorkforce->avail_workforce,
-            'new_hunger' => $User->xhunger->refresh()->current,
+            'new_hunger' => $User->hunger->refresh()->current,
         ])
             ->addMessage($loggertService->addSuccessLog($message));
     }
