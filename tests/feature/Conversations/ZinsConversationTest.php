@@ -10,7 +10,7 @@ final class ZinsConversationTest extends ConversationTestCase implements Convers
     protected function setUp(): void
     {
         parent::setUp();
-        $this->person = 'Zins';
+        $this->person = 'zins';
         $this->loadConversationFile();
     }
 
