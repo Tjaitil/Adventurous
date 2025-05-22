@@ -17,14 +17,14 @@ class ConversationController extends Controller
         $person = null;
         try {
             $person = $request->string('person')->toString();
-            $nextKey = $request->integer('selected_option');
+            $selectedOptionId = $request->integer('selected_option');
             $isStarting = $request->boolean('is_starting');
 
             if ($person === '') {
                 throw new Exception('person is required', 400);
             }
 
-            $currentConversationSegment = $this->ConversationService->getConversation($person, $nextKey, $isStarting);
+            $currentConversationSegment = $this->ConversationService->getConversation($person, $selectedOptionId, $isStarting);
 
             return response()->json([
                 'conversation_segment' => $currentConversationSegment,
@@ -36,9 +36,7 @@ class ConversationController extends Controller
                 'exception' => $e,
             ]);
 
-            return response()->json([
-                'error' => 'Conversation file not found',
-            ], 422);
+            return response()->json([], 422);
         }
     }
 }

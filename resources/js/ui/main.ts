@@ -6,6 +6,7 @@ import { createI18n } from 'vue-i18n';
 import { getLanguageBundle } from './localeSetup';
 import InventoryContainer from './components/Inventory/InventoryContainer.vue';
 import { initErrorHandler } from '@/base/ErrorHandler';
+import ConversationContainer from './components/ConversationContainer.vue';
 
 export const i18n = createI18n({
     locale: 'en',
@@ -17,6 +18,7 @@ export const pinia = createPinia();
 
 const components = {
     SkillInfoList,
+    ConversationContainer,
     InventoryContainer,
 };
 const ErrorHandler = initErrorHandler();

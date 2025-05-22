@@ -9,4 +9,12 @@
     },
     "laravel-pint.enable": true,
     "php.version": "8.3",
+    "json.schemas": [
+        {
+            "fileMatch": [
+                "storage/app/gamedata/conversations/*.json",
+            ],
+            "url": "./.vscode/conversation.schema.json"
+        }
+    ]
 }

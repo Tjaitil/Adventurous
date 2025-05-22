@@ -39,14 +39,3 @@ echo.private(`game-state.${window.user_id.toString()}`)
     .listen('SkillsUpdated', () => {
         useSkillsStore().setHandleXpGainedEvent(true);
     });
-
-/** Mock values */
-window.setTimeout(async () => {
-    console.log('sending test event');
-    try {
-        const data = await axios.get('/foo');
-        console.log(data, 'data');
-    } catch (e) {
-        console.error(e);
-    }
-}, 3000);

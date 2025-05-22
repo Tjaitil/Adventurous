@@ -29,20 +29,22 @@
         "id": 0,
         "text": "I want to buy permits in golbak mine",
         "next_key": "r",
-        "conditional": "BuyPermit@locationConditional",
-        "option_value": "golbak"
+        "has_conditional": true,
+        "option_values": {
+          "location": "golbak"
+        }
       },
       {
         "id": 1,
-        "person": "",
         "text": "I want to buy permits in snerpiir mine",
         "next_key": "r",
-        "conditional": "BuyPermit@locationConditional",
-        "option_value": "snerpiir"
+        "has_conditional": true,
+        "option_values": {
+          "location": "snerpiir"
+        }
       },
       {
         "id": 2,
-        "person": "",
         "text": "Goobye",
         "next_key": "end"
       }
@@ -55,9 +57,7 @@
         "person": "kapys",
         "container": "A",
         "text": "That will be :price gold",
-        "replacers": {
-          "price": "BuyPermit@priceReplacer"
-        },
+        "has_replacer": true,
         "next_key": "S",
         "id": 0
       }
@@ -65,23 +65,11 @@
   },
   "kpsQrrS": {
     "index": "kpsQrrS",
-    "server_events": [
-      {
-        "type": "has",
-        "event": "BuyPermit@hasEnoughGold",
-        "callbacks": [
-          {
-            "event": "BuyPermit@buyPermits",
-            "type": "handle"
-          }
-        ],
-        "results": ["r0", "r1"]
-      }
-    ]
+    "has_server_event": true,
+    "server_event_results": ["r0", "r1"]
   },
   "kpsQrrSr0": {
     "index": "kpsQrrSr0",
-    "client_events": ["Inventory.update"],
     "options": [
       {
         "person": "kapys",

@@ -15,13 +15,11 @@
     "index": "prr",
     "options": [
       {
-        "person": "",
         "text": "I would like to travel to",
         "next_key": "r",
         "id": 0
       },
       {
-        "person": "",
         "text": "Bye",
         "next_key": "end",
         "id": 1
@@ -33,75 +31,93 @@
     "header": "Where would you like to travel to?",
     "options": [
       {
-        "person": "",
         "text": "Golbak",
         "next_key": "end",
-        "callback": "gameTravel.travel",
-        "option_value": "golbak",
+        "has_conditional": true,
+        "has_client_callback": true,
+        "option_values": {
+          "location": "golbak"
+        },
         "id": 0
       },
       {
-        "person": "",
         "text": "Khanz",
         "next_key": "end",
-        "callback": "gameTravel.travel",
-        "option_value": "khanz",
+        "has_conditional": true,
+        "has_client_callback": true,
+        "option_values": {
+          "location": "khanz"
+        },
         "id": 1
       },
       {
-        "person": "",
         "text": "Krasnur",
         "next_key": "end",
-        "callback": "gameTravel.travel",
-        "option_value": "krasnur",
+        "has_conditional": true,
+        "has_client_callback": true,
+        "option_values": {
+          "location": "krasnur"
+        },
         "id": 2
       },
       {
-        "person": "",
         "text": "Tasnobil",
         "next_key": "end",
-        "callback": "gameTravel.travel",
-        "option_value": "tasnobil",
+        "has_conditional": true,
+        "has_client_callback": true,
+        "option_values": {
+          "location": "tasnobil"
+        },
         "id": 3
       },
       {
-        "person": "",
         "text": "Fagna",
         "next_key": "end",
-        "callback": "gameTravel.travel",
-        "option_value": "fagna",
+        "has_conditional": true,
+        "has_client_callback": true,
+        "option_values": {
+          "location": "fagna"
+        },
         "id": 4
       },
       {
-        "person": "",
         "text": "Snerpiir",
         "next_key": "end",
-        "callback": "gameTravel.travel",
-        "option_value": "snerpiir",
+        "has_conditional": true,
+        "has_client_callback": true,
+        "option_values": {
+          "location": "snerpiir"
+        },
         "id": 5
       },
       {
-        "person": "",
         "text": "Cruendo",
         "next_key": "end",
-        "callback": "gameTravel.travel",
-        "option_value": "cruendo",
+        "has_conditional": true,
+        "has_client_callback": true,
+        "option_values": {
+          "location": "cruendo"
+        },
         "id": 6
       },
       {
-        "person": "",
         "text": "Ter",
         "next_key": "end",
-        "callback": "gameTravel.travel",
-        "option_value": "ter",
+        "has_conditional": true,
+        "has_client_callback": true,
+        "option_values": {
+          "location": "ter"
+        },
         "id": 7
       },
       {
-        "person": "",
         "text": "Towhar",
         "next_key": "end",
-        "callback": "gameTravel.travel",
-        "option_value": "towhar",
+        "has_conditional": true,
+        "has_client_callback": true,
+        "option_values": {
+          "location": "towhar"
+        },
         "id": 8
       }
     ]

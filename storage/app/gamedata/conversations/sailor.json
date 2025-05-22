@@ -1,14 +1,88 @@
 {
   "index": "sl",
-  "sl": "a,sailor|Hello, what can i do you for sir?|r",
-  "slr": ["b|I would like to travel with your ship|r", "b|Bye|end"],
-  "slrr": [
-    "b|Pvitul|end|gameTravel.newDestination",
-    "b|Hirtam|end|gameTravel.newDestination",
-    "b|Krasnur|end|gameTravel.newDestination",
-    "b|Fagna|end|gameTravel.newDestination",
-    "b|Cruendo|end|gameTravel.newDestination",
-    "b|Towhar|end|gameTravel.newDestination"
-  ],
-  "hallo": {}
+
+  "sl": {
+    "index": "sl",
+    "options": [
+      {
+        "id": 1,
+        "person": "sailor",
+        "container": "A",
+        "text": "Hello, what can i do you for sir?",
+        "next_key": "r"
+      }
+    ]
+  },
+  "slr": {
+    "index": "slr",
+    "options": [
+      {
+        "id": 0,
+        "person": "sailor",
+        "container": "B",
+        "text": "I would like to travel with your ship",
+        "next_key": "r"
+      },
+      {
+        "id": 1,
+        "text": "Bye",
+        "person": "sailor",
+        "container": "B",
+        "next_key": "end"
+      }
+    ]
+  },
+  "slrr": {
+    "index": "slrr",
+    "options": [
+      {
+        "id": 0,
+        "text": "Pvitul",
+        "person": "sailor",
+        "container": "B",
+        "next_key": "end",
+        "has_client_callback": true
+      },
+      {
+        "id": 1,
+        "text": "Hirtam",
+        "person": "sailor",
+        "container": "B",
+        "next_key": "end",
+        "has_client_callback": true
+      },
+      {
+        "id": 2,
+        "text": "Krasnur",
+        "person": "sailor",
+        "container": "B",
+        "next_key": "end",
+        "has_client_callback": true
+      },
+      {
+        "id": 3,
+        "text": "Fagna",
+        "person": "sailor",
+        "container": "B",
+        "next_key": "end",
+        "has_client_callback": true
+      },
+      {
+        "id": 4,
+        "text": "Cruendo",
+        "person": "sailor",
+        "container": "B",
+        "next_key": "end",
+        "has_client_callback": true
+      },
+      {
+        "id": 5,
+        "text": "Towhar",
+        "person": "sailor",
+        "container": "B",
+        "has_client_callback": true,
+        "next_key": "end"
+      }
+    ]
+  }
 }

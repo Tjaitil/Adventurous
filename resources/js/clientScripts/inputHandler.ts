@@ -26,6 +26,7 @@ import AppVue from '@/ui/components/App.vue';
 import { createApp } from 'vue';
 import { ItemSelector } from '@/ItemSelector';
 import ArmoryPage from '@/ui/pages/ArmoryPage.vue';
+import { useConversationStore } from '@/ui/stores/ConversationStore';
 
 enum Buildings {
     BAKERY = 'bakery',
@@ -185,7 +186,7 @@ export const inputHandler: IInputHandler = {
         Game.properties.inBuilding = true;
         Game.properties.building = building;
 
-        conversation.endConversation();
+        useConversationStore().triggerEndConversation();
 
         ClientOverlayInterface.loadingScreen();
 
@@ -382,7 +383,9 @@ export const inputHandler: IInputHandler = {
                 true,
             );
         } else {
-            conversation.loadConversation(this.characterMatch.displayName);
+            useConversationStore().triggerLoadConversation(
+                this.characterMatch.displayName,
+            );
         }
     },
 };

@@ -3,7 +3,6 @@ import { loadingCanvas } from './clientScripts/canvasText';
 import { ClientOverlayInterface } from './clientScripts/clientOverlayInterface';
 import { collisionCheck } from './clientScripts/collision';
 import { controls } from './clientScripts/controls';
-import { conversation } from './clientScripts/conversation';
 import { eventHandler } from './clientScripts/gameEventHandler';
 import { GamePieces } from './clientScripts/gamePieces';
 import { HUD } from './clientScripts/HUD';
@@ -19,6 +18,7 @@ import { setUpTabList } from './utilities/tabs';
 import { AssetPaths } from './clientScripts/ImagePath';
 import { GetWorldResponse } from './types/Responses/WorldLoaderResponse';
 import { initErrorHandler, reportCatchError } from './base/ErrorHandler';
+import { useConversationStore } from './ui/stores/ConversationStore';
 
 const CookieTicket = {
     checkCookieTicket(cookieNoob = 'getOut') {
@@ -303,7 +303,6 @@ export class Game {
 
     public static setup() {
         initErrorHandler();
-        conversation.setup();
         setUpTabList();
 
         ClientOverlayInterface.setup();
@@ -386,7 +385,7 @@ export class Game {
         if (
             // (GamePieces.player.speedX != 0 || GamePieces.player.speedY != 0) &&
             Game.properties.inBuilding == false &&
-            conversation.isActive === false
+            useConversationStore().isActive === false
         ) {
             eventHandler.checkEvent();
             viewport.checkViewportGamePieces();

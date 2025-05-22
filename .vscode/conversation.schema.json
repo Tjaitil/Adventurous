@@ -1,0 +1,100 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "index": {
+            "type": "string"
+        }
+    },
+    "required": ["index"],
+    "patternProperties": {
+        "^.*$": {
+            "type": "object",
+            "properties": {
+                "index": {
+                    "type": "string"
+                },
+                "header": {
+                    "type": ["string"]
+                },
+                "has_server_event": {
+                    "type": "boolean"
+                },
+                "server_event_results": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "has_conditional": {
+                    "type": "boolean"
+                },
+                "options": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "person": {
+                                "type": "string"
+                            },
+                            "text": {
+                                "type": "string"
+                            },
+                            "next_key": {
+                                "type": "string",
+                                "enum": [
+                                    "Q",
+                                    "q",
+                                    "r",
+                                    "S",
+                                    "end",
+                                    "r1",
+                                    "r2",
+                                    "r3",
+                                    "r4",
+                                    "r5"
+                                ]
+                            },
+                            "has_replacer": {
+                                "type": "boolean"
+                            },
+                            "has_conditional": {
+                                "type": "boolean"
+                            },
+                            "container": {
+                                "type": "string",
+                                "enum": ["A", "B"]
+                            },
+                            "has_client_callback": {
+                                "type": "boolean"
+                            },
+                            "option_values": {
+                                "type": ["object"]
+                            },
+                            "id": {
+                                "type": ["number"]
+                            }
+                        },
+                        "required": ["text", "next_key", "id"],
+                        "additionalProperties": false
+                    },
+                    "additionalProperties": false
+                }
+            },
+            "oneOf": [
+                {
+                    "required": ["options"]
+                },
+                {
+                    "required": ["has_server_event"]
+                }
+            ],
+            "dependentRequired": {
+                "has_server_event": ["server_event_results"]
+            },
+            "additionalProperties": false,
+            "required": ["index"]
+        }
+    },
+    "additionalProperties": false
+}

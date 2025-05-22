@@ -1,0 +1,129 @@
+{
+  "index": "foo",
+  "foo": {
+    "index": "foo",
+    "options": [
+      {
+        "person": "player",
+        "text": "Good day!",
+        "next_key": "r",
+        "id": 0
+      }
+    ]
+  },
+  "foor": {
+    "index": "foor",
+    "options": [
+      {
+        "person": "foo",
+        "text": "Good day! What can I do for you?",
+        "next_key": "r",
+        "id": 0,
+        "has_client_callback": true,
+        "has_conditional": true,
+        "option_values": {
+          "id": 0
+        }
+      },
+      {
+        "id": 1,
+        "person": "foo",
+        "text": "This is a conditional conversation.",
+        "next_key": "r",
+        "has_conditional": true,
+        "option_values": {
+          "id": 1
+        }
+      }
+    ]
+  },
+  "foorr": {
+    "index": "foorr",
+    "options": [
+      {
+        "person": "foo",
+        "text": "Good day! What can I do for you?",
+        "next_key": "r",
+        "id": 0,
+        "has_client_callback": true,
+        "option_values": {
+          "id": 0
+        }
+      },
+      {
+        "id": 1,
+        "person": "foo",
+        "text": "This is a conditional conversation.",
+        "next_key": "r",
+        "option_values": {
+          "id": 1
+        }
+      }
+    ]
+  },
+  "foorrr": {
+    "index": "foorrr",
+    "options": [
+      {
+        "person": "foo",
+        "text": ":foo :bar",
+        "next_key": "r",
+        "id": 0,
+        "has_replacer": true,
+        "option_values": {
+          "id": 0
+        }
+      },
+      {
+        "id": 1,
+        "person": "foo",
+        "text": "This is a conditional conversation.",
+        "next_key": "r",
+        "option_values": {
+          "id": 1
+        }
+      }
+    ]
+  },
+  "foorrrr": {
+    "index": "foorrrr",
+    "options": [
+      {
+        "text": "Some text",
+        "person": "foo",
+        "next_key": "S",
+        "id": 0,
+        "option_values": {
+          "someValue": "foo"
+        }
+      }
+    ]
+  },
+  "foorrrrS": {
+    "index": "foorrrrS",
+    "has_server_event": true,
+    "server_event_results": ["r0", "r1"]
+  },
+  "foorrrrSr0": {
+    "index": "foorrrrSr0",
+    "options": [
+      {
+        "text": "Some text",
+        "person": "foo",
+        "next_key": "end",
+        "id": 0
+      }
+    ]
+  },
+  "foorrrrSr1": {
+    "index": "foorrrrSr1",
+    "options": [
+      {
+        "text": "Some text",
+        "person": "foo",
+        "next_key": "end",
+        "id": 0
+      }
+    ]
+  }
+}

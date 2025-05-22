@@ -42,13 +42,13 @@ export const HUD = {
         const HUDSpacer = 20;
 
         // Set width on elements that should be same with as canvas
-        const conversation_container = document.getElementById(
-            'conversation-container',
-        );
+        // const conversation_container = document.getElementById(
+        //     'conversation-container',
+        // );
 
-        if (!(conversation_container instanceof HTMLElement)) {
-            throw new Error('conversation_container element not found');
-        }
+        // if (!(conversation_container instanceof HTMLElement)) {
+        //     throw new Error('conversation_container element not found');
+        // }
 
         const gameBorderElement = document.getElementById('canvas-border');
         if (!(gameBorderElement instanceof HTMLElement)) {
@@ -63,12 +63,12 @@ export const HUD = {
             throw new Error('game_canvas element not found');
         }
 
-        conversation_container.style.top =
-            gameCanvasElement.offsetTop +
-            gameCanvasElement.offsetHeight -
-            conversation_container.offsetHeight +
-            parseInt(gameBorderwidth) * 2 +
-            'px';
+        // conversation_container.style.top =
+        //     gameCanvasElement.offsetTop +
+        //     gameCanvasElement.offsetHeight -
+        //     conversation_container.offsetHeight +
+        //     parseInt(gameBorderwidth) * 2 +
+        //     'px';
         document.getElementById('news_content').style.width = width + 'px';
 
         if (document.getElementById('control').style.display === 'block') {
