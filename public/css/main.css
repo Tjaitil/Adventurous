@@ -1,100 +1,101 @@
 #main-title {
-    letter-spacing: 5px;
+  letter-spacing: 5px;
 }
 #public_chat {
-    border: 1px solid black;
-    height: 250px;
-    width: 90%;
-    overflow: hidden;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    margin: 0 auto;
-    margin-bottom: 10px;
+  border: 1px solid black;
+  height: 250px;
+  width: 90%;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  margin-bottom: 10px;
 }
 #public_chat h3 {
-    background-color: #f2e6d9;
-    color: #c90;
+  background-color: #f2e6d9;
+  color: #c90;
 }
-#chat  {
-    border: 1px solid black;
-    height: 78%;
-    width: 100%;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    padding: 0px 0px 0px 3px;
-    box-sizing: border-box;
-    background-color: #f2e6d9;
+#chat {
+  border: 1px solid black;
+  height: 78%;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  padding: 0px 0px 0px 3px;
+  box-sizing: border-box;
+  background-color: #f2e6d9;
 }
 #chat ul {
-    list-style-type: none;
-    float: left;
+  list-style-type: none;
+  float: left;
 }
 #chat ul li {
-    text-align: left;
-    display: block
+  text-align: left;
+  display: block;
 }
 #chat_inputs {
-    display: flex;
-    margin-bottom: 0px;
+  display: flex;
+  margin-bottom: 0px;
 }
-#public_chat input[type="text"] {
-    float: left;
-    width: 91%;
-    /*margin-right: 5px;*/
-    padding-right: 20%;
-    margin: 0px 0px 0px 0px;
-    height: 21px;
+#public_chat input[type='text'] {
+  float: left;
+  width: 91%;
+  /*margin-right: 5px;*/
+  padding-right: 20%;
+  margin: 0px 0px 0px 0px;
+  height: 21px;
 }
 #public_chat button {
-    padding: 6px 8px 6px 8px;
+  padding: 6px 8px 6px 8px;
 }
 #main_wrapper {
-    display: flex;
-    justify-content: center;
-    margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
 }
 #client-link-background {
-    width: 80%;
-    height: 100px;
-    background-color: var(--layoutBgColorDark);
-    margin-right: auto;
-    margin-left: auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 100px;
-    letter-spacing: 5px;
-    margin-block: 2rem;
-    font-size: 28px;
+  width: 80%;
+  height: 100px;
+  background-color: var(--layoutBgColorDark);
+  margin-right: auto;
+  margin-left: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100px;
+  letter-spacing: 5px;
+  margin-block: 2rem;
+  font-size: 28px;
 }
 #client-link {
-
 }
 #main-client-link {
-    font-size: 28px;
-    text-decoration: none;
-    color: var(--textColor);
+  font-size: 28px;
+  text-decoration: none;
+  color: var(--textColor);
 }
 #game_news {
-    width: 400px;
-    float: left;
-    padding: 0px 10px;
-    border-radius: 5px;
-    background-color: #f2e6d9;
+  width: 400px;
+  float: left;
+  padding: 0px 10px;
+  border-radius: 5px;
+  background-color: #f2e6d9;
 }
 #game_news h2 {
-    color: #c90;
+  color: #c90;
 }
 #countdowns {
-    width: 32%;
-    margin: 0px 0px 0px 0px;
+  width: 32%;
+  margin: 0px 0px 0px 0px;
 }
 #diplomacy {
-    float: left;    
-    width: 50%;
-    margin-top: 10px;
+  float: left;
+  width: 50%;
+  margin-top: 10px;
 }
 @media all and (max-width: 830px) {
-    #public_chat input[type="text"] {width: 85%;}
+  #public_chat input[type='text'] {
+    width: 85%;
+  }
 }

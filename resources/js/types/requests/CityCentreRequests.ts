@@ -1,3 +1,3 @@
 export interface UpgradeEfficiencyRequest {
-    skill: string;
+  skill: string;
 }

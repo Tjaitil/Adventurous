@@ -1,69 +1,71 @@
 #show_adventure {
-    
 }
 
 #pending_adventure {
-    float: left;
+  float: left;
 }
 #current_adventure {
 }
 #tabs {
-    margin: 5px 0px 0px 0px;
+  margin: 5px 0px 0px 0px;
 }
 #new_adventure {
 }
 #new_adventure_form {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 5px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 5px;
 }
 #new_adventure_form > button {
-    grid-column: span 2;
+  grid-column: span 2;
 }
 #people figure {
-    display: inline-block;
-    padding-inline: 0.5rem;
+  display: inline-block;
+  padding-inline: 0.5rem;
 }
 #people img {
-    width: 100px;
-    height: 100px;
+  width: 100px;
+  height: 100px;
 }
 #invite span {
-    margin-left: 5px;
+  margin-left: 5px;
 }
 #report {
-    margin: 5px 0px 0px 0px;
+  margin: 5px 0px 0px 0px;
 }
 .error {
-    color: red;
-    font-size: 13px;
-    margin: 5px 0px 5px 0px;
-    position: absolute;   
+  color: red;
+  font-size: 13px;
+  margin: 5px 0px 5px 0px;
+  position: absolute;
 }
 #requirements {
 }
 #provide {
-    width: 100%;
+  width: 100%;
 }
 #adventure_rewards {
-    box-sizing: border-box;
-    width: auto;
-    border: 3px double black;
-    overflow: scroll;
-    /*background-color: #a6a6a6;*/
-    background-color: #724e27;
-    color: white;
-    margin-bottom: 5px;
+  box-sizing: border-box;
+  width: auto;
+  border: 3px double black;
+  overflow: scroll;
+  /*background-color: #a6a6a6;*/
+  background-color: #724e27;
+  color: white;
+  margin-bottom: 5px;
 }
 #adventure_stats {
-    float: left;
+  float: left;
 }
 #battle_stats {
-    float: right;
+  float: right;
 }
 #adventure_rewards figure {
-    position: relative;
+  position: relative;
 }
 @media all and (max-width: 632px) {
-    #people img {width: 75px; height: 75px;}
+  #people img {
+    width: 75px;
+    height: 75px;
+  }
 }

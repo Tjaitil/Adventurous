@@ -1,4 +1,4 @@
 export interface BaseBuyStoreItemRequest {
-    item: string;
-    amount: number;
+  item: string;
+  amount: number;
 }

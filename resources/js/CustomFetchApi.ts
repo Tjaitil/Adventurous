@@ -4,37 +4,37 @@ import { addModuleTester } from './devtools/ModuleTester';
 import { GameLogger } from './utilities/GameLogger';
 
 export class CustomFetchApi {
-    private static isInterceptorInitialized = false;
-    private static init() {
-        if (this.isInterceptorInitialized) return axios;
+  private static isInterceptorInitialized = false;
+  private static init() {
+    if (this.isInterceptorInitialized) return axios;
 
-        axios.interceptors.response.use(
-            response => {
-                if (hasResponseKey(response)) {
-                    GameLogger.addMessages(response.data.logs, true);
-                }
-                return response;
-            },
-            error => {
-                errorInterceptor(error);
-                return Promise.reject(error);
-            },
-        );
+    axios.interceptors.response.use(
+      response => {
+        if (hasResponseKey(response)) {
+          GameLogger.addMessages(response.data.logs, true);
+        }
+        return response;
+      },
+      error => {
+        errorInterceptor(error);
+        return Promise.reject(error);
+      },
+    );
 
-        this.isInterceptorInitialized = true;
-        return axios;
-    }
+    this.isInterceptorInitialized = true;
+    return axios;
+  }
 
-    public static async get<T>(url: string): Promise<AxiosResponse<T>> {
-        return this.init().get<T>(url);
-    }
+  public static async get<T>(url: string): Promise<AxiosResponse<T>> {
+    return this.init().get<T>(url);
+  }
 
-    public static async post<T, K extends object = object>(
-        url: string,
-        data: K,
-    ): Promise<AxiosResponse<T>> {
-        return this.init().post<T>(url, data);
-    }
+  public static async post<T, K extends object = object>(
+    url: string,
+    data: K,
+  ): Promise<AxiosResponse<T>> {
+    return this.init().post<T>(url, data);
+  }
 }
 
 addModuleTester(CustomFetchApi, 'CustomFetchApi');

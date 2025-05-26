@@ -1,6 +1,6 @@
 export interface InventoryItem {
-    username: string;
-    item: string;
-    amount: number;
-    id: number;
+  username: string;
+  item: string;
+  amount: number;
+  id: number;
 }

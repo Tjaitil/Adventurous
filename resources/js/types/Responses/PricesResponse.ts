@@ -1,8 +1,8 @@
 export interface ItemPriceResponse {
-    name: string;
-    store_value: number;
+  name: string;
+  store_value: number;
 }
 
 export interface ItemPricesResponse {
-    prices: ItemPriceResponse[];
+  prices: ItemPriceResponse[];
 }

@@ -1,6 +1,6 @@
 const battleResult = {
-    open() {},
-    close() {},
+  open() {},
+  close() {},
 };
 
 export default battleResult;

@@ -5,32 +5,32 @@ import { BaseBuyStoreItemRequest } from '../types/requests/BaseBuyStoreItemReque
 import { StoreItemResponse } from '../types/Responses/StoreItemResponse';
 
 const bakeryModule = {
-    async init() {
-        await this.getData().then(() => {
-            storeContainer.init();
-            storeContainer.addSelectTrade();
-            storeContainer.addSelectedItemButtonEvent(this.make, 'Make');
-        });
-    },
-    make() {
-        const { item, amount } = storeContainer.getSelectedTrade() || {};
+  async init() {
+    await this.getData().then(() => {
+      storeContainer.init();
+      storeContainer.addSelectTrade();
+      storeContainer.addSelectedItemButtonEvent(this.make, 'Make');
+    });
+  },
+  make() {
+    const { item, amount } = storeContainer.getSelectedTrade() || {};
 
-        const data: BaseBuyStoreItemRequest = {
-            item,
-            amount,
-        };
+    const data: BaseBuyStoreItemRequest = {
+      item,
+      amount,
+    };
 
-        AdvApi.post('/bakery/make', data).then(response => {
-            Inventory.update();
-        });
-    },
-    async getData() {
-        AdvApi.get<StoreItemResponse>('/bakery/store').then(response => {
-            storeContainer.setStoreItems(response.data.store_items);
-        });
-    },
-    onClose() {
-        storeContainer.checkItemTooltip();
-    },
+    AdvApi.post('/bakery/make', data).then(response => {
+      Inventory.update();
+    });
+  },
+  async getData() {
+    AdvApi.get<StoreItemResponse>('/bakery/store').then(response => {
+      storeContainer.setStoreItems(response.data.store_items);
+    });
+  },
+  onClose() {
+    storeContainer.checkItemTooltip();
+  },
 };
 export default bakeryModule;

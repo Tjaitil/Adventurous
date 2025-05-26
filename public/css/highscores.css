@@ -1,21 +1,21 @@
 #content_wrapper {
-    display: grid;
-    justify-content: center;
-    grid-gap: 10px;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 198px));
+  display: grid;
+  justify-content: center;
+  grid-gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 198px));
 }
 .highscores {
-    margin: 1%;
-    border-collapse: collapse;
-    box-sizing: border-box;
-    font-size: 12px;
+  margin: 1%;
+  border-collapse: collapse;
+  box-sizing: border-box;
+  font-size: 12px;
 }
 .highscores img {
-    width: 50px;
-    height: 50px;
-    vertical-align: middle;
+  width: 50px;
+  height: 50px;
+  vertical-align: middle;
 }
 #total caption {
-    height: 50px;
-    line-height: 55px;
+  height: 50px;
+  line-height: 55px;
 }

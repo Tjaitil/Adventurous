@@ -1,20 +1,18 @@
 {
-    "eslint.useFlatConfig": true,
-    "editor.formatOnSave": true,
-    "[typescript, vue, json]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": "explicit"
-    },
-    "laravel-pint.enable": true,
-    "php.version": "8.3",
-    "json.schemas": [
-        {
-            "fileMatch": [
-                "storage/app/gamedata/conversations/*.json",
-            ],
-            "url": "./.vscode/conversation.schema.json"
-        }
-    ]
+  "eslint.useFlatConfig": true,
+  "editor.formatOnSave": true,
+  "[typescript, vue, json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "laravel-pint.enable": true,
+  "php.version": "8.3",
+  "json.schemas": [
+    {
+      "fileMatch": ["storage/app/gamedata/conversations/*.json"],
+      "url": "./.vscode/conversation.schema.json"
+    }
+  ]
 }

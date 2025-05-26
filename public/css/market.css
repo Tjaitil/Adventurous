@@ -1,114 +1,116 @@
 #new_off {
-    float: left;
-    width: 40%;
+  float: left;
+  width: 40%;
 }
 #offer_types {
-    position: relative;
+  position: relative;
 }
-#offer_types button{
-    padding-right: 40px;
-    position: relative;
+#offer_types button {
+  padding-right: 40px;
+  position: relative;
 }
 #offer_types button:nth-of-type(1):after {
-    width: 0px;
-    height: 0px;
-    border-left: 12px solid transparent;
-    border-right: 12px solid transparent;
-    border-bottom: 15px solid #333300;
-    position: absolute;
-    top: 18%;
-    left: 52%;
-    content: '';
+  width: 0px;
+  height: 0px;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-bottom: 15px solid #333300;
+  position: absolute;
+  top: 18%;
+  left: 52%;
+  content: '';
 }
 #offer_types button:nth-of-type(2):after {
-    width: 0px;
-    height: 0px;
-    border-right: 12px solid transparent;
-    border-left: 12px solid transparent;
-    border-top: 15px solid #333300;
-    position: absolute;
-    top: 18%;
-    left: 52%;
-    content: '';
+  width: 0px;
+  height: 0px;
+  border-right: 12px solid transparent;
+  border-left: 12px solid transparent;
+  border-top: 15px solid #333300;
+  position: absolute;
+  top: 18%;
+  left: 52%;
+  content: '';
 }
-#offer_form input[type="text"] {
-    text-align: center;
+#offer_form input[type='text'] {
+  text-align: center;
 }
 #form_cont {
-    display: none;
-    height: 150px;
+  display: none;
+  height: 150px;
 }
-#form_cont input, #form_cont select {
-    width: 100%;
+#form_cont input,
+#form_cont select {
+  width: 100%;
 }
 #form_cont input:nth-child(2) {
-    max-width: 92px;
+  max-width: 92px;
 }
-#form_cont input[type="number"], #form_cont select {
-    max-width: 70px;
+#form_cont input[type='number'],
+#form_cont select {
+  max-width: 70px;
 }
 #item {
-    float: left;
-    height: 100%;
-    width: 55%;
-    padding: 5px;
-    min-width: 150px;
+  float: left;
+  height: 100%;
+  width: 55%;
+  padding: 5px;
+  min-width: 150px;
 }
 #selected {
-    margin: 0 auto;
+  margin: 0 auto;
 }
 #selected img {
-    width: 50px;
-    height: 50px;
+  width: 50px;
+  height: 50px;
 }
 #item_name {
-    width: 100%;
+  width: 100%;
 }
 #form_inputs {
-    width: 45%;
-    float: right;
+  width: 45%;
+  float: right;
 }
 #form_inputs * {
-    float: left;
+  float: left;
 }
 #form_inputs p {
-    height: 5px;
-    width: 100%;
+  height: 5px;
+  width: 100%;
 }
 #form_inputs label {
-    width: 100%;
-    text-align: left;
+  width: 100%;
+  text-align: left;
 }
 #item_b {
-    visibility: hidden;
-    display: none;
+  visibility: hidden;
+  display: none;
 }
 #item_srch {
-    max-width: 50px;
+  max-width: 50px;
 }
 #offers input {
-    width: 92px;
+  width: 92px;
 }
-#offers input[type="number"] {
-    max-width: 30px;
+#offers input[type='number'] {
+  max-width: 30px;
 }
 #s_item {
-    float: right;
+  float: right;
 }
 #sch_button {
-    float: left;
-    display: none;
+  float: left;
+  display: none;
 }
 #my_offers {
-    margin: 1px;
+  margin: 1px;
 }
 #my_offers td {
-    border: none;
+  border: none;
 }
 #my_offers td:nth-child(5) {
-    max-width: 101px;
+  max-width: 101px;
 }
 #my_offers td:nth-child(6) {
-    max-width: 92px;
-    padding-right: 8px;
+  max-width: 92px;
+  padding-right: 8px;
 }

@@ -1,11 +1,11 @@
 #password {
-    display: none;
+  display: none;
 }
 #user_info label {
-    width: 120px;
-    text-align: right;
-    display: inline-block;
+  width: 120px;
+  text-align: right;
+  display: inline-block;
 }
 #user_info input {
-    width: 120px;
+  width: 120px;
 }

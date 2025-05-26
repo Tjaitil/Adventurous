@@ -8,38 +8,37 @@ import { useInventoryStore } from './ui/stores/InventoryStore';
  * @depcrated
  */
 function select(event) {
-    const element = event.target.closest('figure');
-    const figure = element.cloneNode(true);
+  const element = event.target.closest('figure');
+  const figure = element.cloneNode(true);
 
-    figure.children[0].style.height = '50px';
-    figure.children[0].style.width = '50px';
-    figure.children[1].style.visibility = 'hidden';
+  figure.children[0].style.height = '50px';
+  figure.children[0].style.width = '50px';
+  figure.children[1].style.visibility = 'hidden';
 
-    const item = element
-        .querySelectorAll('figcaption .tooltip_item')[0]
-        .innerHTML.toLowerCase()
-        .trim();
+  const item = element
+    .querySelectorAll('figcaption .tooltip_item')[0]
+    .innerHTML.toLowerCase()
+    .trim();
 
-    useInventoryStore().setSelectedItem(item);
-    const parent = document.getElementById('selected');
-    if (parent === null) {
-        return;
-    }
-    parent.innerHTML = '';
-    parent.appendChild(figure);
-    const pageTitle = <HTMLElement>(
-        document.getElementsByClassName('page_title')[0]
-    );
-    switch (pageTitle.innerText) {
-        case 'Tavern':
-            inputHandler.currentBuildingModule.default.getHealingAmount(
-                element.querySelectorAll('figcaption .tooltip_item')[0]
-                    .innerHTML,
-            );
-            break;
-        default:
-            break;
-    }
+  useInventoryStore().setSelectedItem(item);
+  const parent = document.getElementById('selected');
+  if (parent === null) {
+    return;
+  }
+  parent.innerHTML = '';
+  parent.appendChild(figure);
+  const pageTitle = <HTMLElement>(
+    document.getElementsByClassName('page_title')[0]
+  );
+  switch (pageTitle.innerText) {
+    case 'Tavern':
+      inputHandler.currentBuildingModule.default.getHealingAmount(
+        element.querySelectorAll('figcaption .tooltip_item')[0].innerHTML,
+      );
+      break;
+    default:
+      break;
+  }
 }
 // function select_i() {
 //     var element = event.target.closest("figure");
@@ -60,165 +59,162 @@ function select(event) {
 // }
 
 export class ItemSelector {
-    private static eventStatus: boolean = false;
-    private static page: string = '';
-    private static container: HTMLElement;
-    private static selectedWrapper: HTMLElement;
-    private static selectedItemAmountInput: HTMLInputElement;
-    private static isSelectedAmountInputVisible: boolean = true;
+  private static eventStatus: boolean = false;
+  private static page: string = '';
+  private static container: HTMLElement;
+  private static selectedWrapper: HTMLElement;
+  private static selectedItemAmountInput: HTMLInputElement;
+  private static isSelectedAmountInputVisible: boolean = true;
 
-    public static setup() {
-        this.container = document.getElementById('selected-item-container');
-        this.selectedWrapper = document.getElementById('selected');
-        this.selectedItemAmountInput = document.getElementById(
-            'selected-item-amount',
-        ) as HTMLInputElement;
-        this.addSelectEventToInventory();
-    }
+  public static setup() {
+    this.container = document.getElementById('selected-item-container');
+    this.selectedWrapper = document.getElementById('selected');
+    this.selectedItemAmountInput = document.getElementById(
+      'selected-item-amount',
+    ) as HTMLInputElement;
+    this.addSelectEventToInventory();
+  }
 
-    public static get isEventSet() {
-        return this.eventStatus;
-    }
+  public static get isEventSet() {
+    return this.eventStatus;
+  }
 
-    public static set isEventSet(value: boolean) {
-        this.eventStatus = value;
-    }
+  public static set isEventSet(value: boolean) {
+    this.eventStatus = value;
+  }
 
-    public static addSelectEventToInventory() {
-        this.eventStatus = true;
-        useInventoryStore().setInventoryItemEvent('selectItem');
-    }
+  public static addSelectEventToInventory() {
+    this.eventStatus = true;
+    useInventoryStore().setInventoryItemEvent('selectItem');
+  }
 
-    public static removeSelectEventFromInventory() {
-        this.eventStatus = false;
+  public static removeSelectEventFromInventory() {
+    this.eventStatus = false;
 
-        const inventory = document.getElementById('inventory');
-        const newInventory = inventory.cloneNode(true);
-        document
-            .getElementById('client-container')
-            .replaceChild(newInventory, inventory);
-        itemTitle.addTitleEvent();
-    }
+    const inventory = document.getElementById('inventory');
+    const newInventory = inventory.cloneNode(true);
+    document
+      .getElementById('client-container')
+      .replaceChild(newInventory, inventory);
+    itemTitle.addTitleEvent();
+  }
 
-    public static selectItem(event) {
-        const element = event.target.closest('figure');
-        const figure = element.cloneNode(true);
+  public static selectItem(event) {
+    const element = event.target.closest('figure');
+    const figure = element.cloneNode(true);
 
-        figure.children[0].style.height = '50px';
-        figure.children[0].style.width = '50px';
-        figure.children[1].style.visibility = 'hidden';
+    figure.children[0].style.height = '50px';
+    figure.children[0].style.width = '50px';
+    figure.children[1].style.visibility = 'hidden';
 
-        this.selectedWrapper.innerHTML = '';
-        this.selectedWrapper.appendChild(figure);
-        const pageTitle = <HTMLElement>(
-            document.getElementsByClassName('page_title')[0]
+    this.selectedWrapper.innerHTML = '';
+    this.selectedWrapper.appendChild(figure);
+    const pageTitle = <HTMLElement>(
+      document.getElementsByClassName('page_title')[0]
+    );
+    switch (pageTitle.innerText) {
+      case 'Armory':
+        inputHandler.currentBuildingModule.default.toggleOption();
+        break;
+      case 'Tavern':
+        inputHandler.currentBuildingModule.default.getHealingAmount(
+          element.querySelectorAll('figcaption .tooltip_item')[0].innerHTML,
         );
-        switch (pageTitle.innerText) {
-            case 'Armory':
-                inputHandler.currentBuildingModule.default.toggleOption();
-                break;
-            case 'Tavern':
-                inputHandler.currentBuildingModule.default.getHealingAmount(
-                    element.querySelectorAll('figcaption .tooltip_item')[0]
-                        .innerHTML,
-                );
-                break;
-            default:
-                break;
-        }
+        break;
+      default:
+        break;
     }
+  }
 
-    public static isItemValid(): boolean {
-        if (
-            document.getElementById('selected').getElementsByTagName('figure')
-                .length == 0
-        ) {
-            GameLogger.addMessage('Please select a valid item');
-            GameLogger.logMessages();
-            return false;
-        }
-        if (this.isSelectedAmountInputVisible) {
-            const amount = parseInt(this.selectedItemAmountInput.value);
-
-            if (amount <= 0) {
-                GameLogger.addMessage('Please enter a valid amount');
-                GameLogger.logMessages();
-                return false;
-            }
-        }
+  public static isItemValid(): boolean {
+    if (
+      document.getElementById('selected').getElementsByTagName('figure')
+        .length == 0
+    ) {
+      GameLogger.addMessage('Please select a valid item');
+      GameLogger.logMessages();
+      return false;
     }
+    if (this.isSelectedAmountInputVisible) {
+      const amount = parseInt(this.selectedItemAmountInput.value);
 
-    public static get selected(): { name: string; amount: number } {
-        if (this.selectedWrapper.getElementsByTagName('figure').length === 0) {
-            GameLogger.addMessage('Please select a valid item', true);
-        }
-        const name = this.selectedWrapper
-            .querySelectorAll('figcaption .tooltip_item')[0]
-            .innerHTML.toLowerCase()
-            .trim();
-        // Is input visible?
-        if (this.isSelectedAmountInputVisible) {
-            const amount = parseInt(this.selectedItemAmountInput.value);
-            return { name, amount };
-        } else {
-            return { name, amount: 1 };
-        }
+      if (amount <= 0) {
+        GameLogger.addMessage('Please enter a valid amount');
+        GameLogger.logMessages();
+        return false;
+      }
     }
+  }
 
-    public static hideSelectedAmountInput() {
-        this.isSelectedAmountInputVisible = false;
-        this.selectedItemAmountInput.style.display = 'none';
+  public static get selected(): { name: string; amount: number } {
+    if (this.selectedWrapper.getElementsByTagName('figure').length === 0) {
+      GameLogger.addMessage('Please select a valid item', true);
     }
+    const name = this.selectedWrapper
+      .querySelectorAll('figcaption .tooltip_item')[0]
+      .innerHTML.toLowerCase()
+      .trim();
+    // Is input visible?
+    if (this.isSelectedAmountInputVisible) {
+      const amount = parseInt(this.selectedItemAmountInput.value);
+      return { name, amount };
+    } else {
+      return { name, amount: 1 };
+    }
+  }
 
-    public static showSelectedAmountInput() {
-        this.isSelectedAmountInputVisible = true;
-        this.selectedItemAmountInput.style.display = 'block';
-    }
+  public static hideSelectedAmountInput() {
+    this.isSelectedAmountInputVisible = false;
+    this.selectedItemAmountInput.style.display = 'none';
+  }
 
-    public static clearContainer() {
-        this.selectedWrapper.innerHTML = '';
-        if (this.isSelectedAmountInputVisible) {
-            this.selectedItemAmountInput.value = '0';
-        }
+  public static showSelectedAmountInput() {
+    this.isSelectedAmountInputVisible = true;
+    this.selectedItemAmountInput.style.display = 'block';
+  }
+
+  public static clearContainer() {
+    this.selectedWrapper.innerHTML = '';
+    if (this.isSelectedAmountInputVisible) {
+      this.selectedItemAmountInput.value = '0';
     }
+  }
 }
 
 export const selectItemEvent = {
-    selectItemStatus: false,
-    page: '',
-    addSelectEvent() {
-        this.selectItemStatus = true;
-        const figures = document
-            .getElementById('inventory')
-            .querySelectorAll('figure');
-        figures.forEach(element => {
-            const page_title = <HTMLElement>(
-                document.getElementsByClassName('page_title')[0]
-            );
-            this.page = page_title.innerText;
-            if (this.page === 'Market') {
-                // element.addEventListener("click", select_i);
-            } else if (this.page === 'Merchant') {
-                element.addEventListener('click', event =>
-                    inputHandler.currentBuildingModule.default.selectTrade(
-                        event,
-                    ),
-                );
-            } else {
-                element.addEventListener('click', select);
-            }
-        });
-    },
-    removeSelectEvent() {
-        this.selectItemStatus = false;
+  selectItemStatus: false,
+  page: '',
+  addSelectEvent() {
+    this.selectItemStatus = true;
+    const figures = document
+      .getElementById('inventory')
+      .querySelectorAll('figure');
+    figures.forEach(element => {
+      const page_title = <HTMLElement>(
+        document.getElementsByClassName('page_title')[0]
+      );
+      this.page = page_title.innerText;
+      if (this.page === 'Market') {
+        // element.addEventListener("click", select_i);
+      } else if (this.page === 'Merchant') {
+        element.addEventListener('click', event =>
+          inputHandler.currentBuildingModule.default.selectTrade(event),
+        );
+      } else {
+        element.addEventListener('click', select);
+      }
+    });
+  },
+  removeSelectEvent() {
+    this.selectItemStatus = false;
 
-        const inventory = document.getElementById('inventory');
-        const newInventory = inventory.cloneNode(true);
-        document
-            .getElementById('client-container')
-            .replaceChild(newInventory, inventory);
-        itemTitle.addTitleEvent();
-    },
+    const inventory = document.getElementById('inventory');
+    const newInventory = inventory.cloneNode(true);
+    document
+      .getElementById('client-container')
+      .replaceChild(newInventory, inventory);
+    itemTitle.addTitleEvent();
+  },
 };
 // export const selectItemConv = {
 //     eventStatus: false,
@@ -253,33 +249,33 @@ export const selectItemEvent = {
  * @depcrated
  */
 export function selectedCheck(amount_r = true) {
-    if (
-        document.getElementById('selected').getElementsByTagName('figure')
-            .length == 0
-    ) {
-        GameLogger.addMessage('Please select a valid item');
-        GameLogger.logMessages();
-        return false;
+  if (
+    document.getElementById('selected').getElementsByTagName('figure').length ==
+    0
+  ) {
+    GameLogger.addMessage('Please select a valid item');
+    GameLogger.logMessages();
+    return false;
+  }
+  const div = document.getElementById('selected');
+  const item = document
+    .getElementById('selected')
+    .querySelectorAll('figcaption .tooltip_item')[0]
+    .innerHTML.toLowerCase()
+    .trim();
+  // amount_r is variable that opens up for checking only item or item and amount
+  if (amount_r === true) {
+    const inputElement = <HTMLInputElement>(
+      document.getElementById('selected_amount')
+    );
+    const amount = parseInt(inputElement.value);
+    if (amount === 0) {
+      GameLogger.addMessage('Please select a valid amount');
+      GameLogger.logMessages();
+      return false;
     }
-    const div = document.getElementById('selected');
-    const item = document
-        .getElementById('selected')
-        .querySelectorAll('figcaption .tooltip_item')[0]
-        .innerHTML.toLowerCase()
-        .trim();
-    // amount_r is variable that opens up for checking only item or item and amount
-    if (amount_r === true) {
-        const inputElement = <HTMLInputElement>(
-            document.getElementById('selected_amount')
-        );
-        const amount = parseInt(inputElement.value);
-        if (amount === 0) {
-            GameLogger.addMessage('Please select a valid amount');
-            GameLogger.logMessages();
-            return false;
-        }
-        return { item, amount };
-    } else {
-        return { item, amount: 1 };
-    }
+    return { item, amount };
+  } else {
+    return { item, amount: 1 };
+  }
 }

@@ -3,42 +3,42 @@
 @source '../../node_modules/baks-components-vue/dist/index.css';
 
 @theme {
-    --color-primary-50: #faf5f0;
-    --color-primary-100: #f4ebe1;
-    --color-primary-200: #e9d7c3;
-    --color-primary-300: #dfc3a5;
-    --color-primary-400: #d4af87;
-    --color-primary-500: #c99b69;
-    --color-primary-600: #b47c41;
-    --color-primary-700: #875d31;
-    --color-primary-800: #5a3e20;
-    --color-primary-900: #2d1f10;
-    --color-primary-950: #171008;
-    --light-color: var(--color-orange-50);
-    --light-color-hover: var(--color-orange-100);
-    --light-color-focus: var(--color-orange-100);
-    --light-color-active: var(--color-orange-100);
-    --light-color-border: var(--color-orange-100);
-    --light-color-text: black;
-    --color-mint-500: oklch(0.72 0.11 178);
-    --primary-color: var(--color-primary-500);
-    --primary-color-hover: var(--color-primary-600);
-    --primary-color-focus: var(--color-primary-600);
-    --primary-color-active: var(--color-primary-600);
-    --primary-color-border: var(--color-primary-600);
+  --color-primary-50: #faf5f0;
+  --color-primary-100: #f4ebe1;
+  --color-primary-200: #e9d7c3;
+  --color-primary-300: #dfc3a5;
+  --color-primary-400: #d4af87;
+  --color-primary-500: #c99b69;
+  --color-primary-600: #b47c41;
+  --color-primary-700: #875d31;
+  --color-primary-800: #5a3e20;
+  --color-primary-900: #2d1f10;
+  --color-primary-950: #171008;
+  --light-color: var(--color-orange-50);
+  --light-color-hover: var(--color-orange-100);
+  --light-color-focus: var(--color-orange-100);
+  --light-color-active: var(--color-orange-100);
+  --light-color-border: var(--color-orange-100);
+  --light-color-text: black;
+  --color-mint-500: oklch(0.72 0.11 178);
+  --primary-color: var(--color-primary-500);
+  --primary-color-hover: var(--color-primary-600);
+  --primary-color-focus: var(--color-primary-600);
+  --primary-color-active: var(--color-primary-600);
+  --primary-color-border: var(--color-primary-600);
 
-    --secondary-color: var(--color-cyan-700);
-    --secondary-color-hover: var(--color-cyan-800);
-    --secondary-color-focus: var(--color-cyan-800);
-    --secondary-color-active: var(--color-cyan-800);
-    --secondary-color-border: var(--color-cyan-800);
-    --secondary-color-text: white;
+  --secondary-color: var(--color-cyan-700);
+  --secondary-color-hover: var(--color-cyan-800);
+  --secondary-color-focus: var(--color-cyan-800);
+  --secondary-color-active: var(--color-cyan-800);
+  --secondary-color-border: var(--color-cyan-800);
+  --secondary-color-text: white;
 
-    --dark-color: #5a3e20;
-    --dark-color-hover: #5a3e20;
-    --dark-color-focus: #5a3e20;
-    --dark-color-active: #5a3e20;
-    --dark-color-border: #5a3e20;
+  --dark-color: #5a3e20;
+  --dark-color-hover: #5a3e20;
+  --dark-color-focus: #5a3e20;
+  --dark-color-active: #5a3e20;
+  --dark-color-border: #5a3e20;
 }
 
 /*
@@ -50,38 +50,37 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
-
-    *,
-    ::after,
-    ::before,
-    ::backdrop,
-    ::file-selector-button {
-        border-color: var(--color-gray-200, currentColor);
-    }
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
 }
 
 @utility bk-primary {
-    font-family: serif;
+  font-family: serif;
 }
 
 @utility bk-secondary {
-    font-family: serif;
+  font-family: serif;
 }
 
 @utility bk-dark {
-    font-family: serif;
+  font-family: serif;
 
-    & .bk-card {
-        border-color: rgb(135, 93, 49);
-    }
+  & .bk-card {
+    border-color: rgb(135, 93, 49);
+  }
 }
 
 @utility bk-light {
-    font-family: serif;
+  font-family: serif;
 
-    & .bk-card {
-        @apply border-yellow-700;
-    }
+  & .bk-card {
+    @apply border-yellow-700;
+  }
 }
 
 /* .bk-card {
@@ -91,77 +90,81 @@
     border-color: rgb(135, 93, 49);
 } */
 @utility tab-4 {
-    tab-size: 4;
+  tab-size: 4;
 }
 
 @utility border-outset {
-    border-outset: outset;
+  border-outset: outset;
 }
 
 @utility border-inset {
-    border-style: inset;
+  border-style: inset;
 }
 
 @utility border-ridge {
-    border-style: ridge;
+  border-style: ridge;
 }
 
 @utility image-crisp {
-    image-rendering: crisp-edges;
+  image-rendering: crisp-edges;
 }
 
 @utility image-auto-render {
-    image-rendering: auto;
+  image-rendering: auto;
 }
 
 #log-modal {
-    transition:
-        opacity 0.5s ease-out,
-        height 0.2s ease-out;
+  transition:
+    opacity 0.5s ease-out,
+    height 0.2s ease-out;
 }
 
 @utility pixelated-corners {
-    clip-path: polygon(0px 12px,
-            6px 12px,
-            6px 6px,
-            12px 6px,
-            12px 0px,
-            calc(100% - 12px) 0px,
-            calc(100% - 12px) 6px,
-            calc(100% - 6px) 6px,
-            calc(100% - 6px) 12px,
-            100% 12px,
-            100% calc(100% - 12px),
-            calc(100% - 6px) calc(100% - 12px),
-            calc(100% - 6px) calc(100% - 6px),
-            calc(100% - 12px) calc(100% - 6px),
-            calc(100% - 12px) 100%,
-            12px 100%,
-            12px calc(100% - 6px),
-            6px calc(100% - 6px),
-            6px calc(100% - 12px),
-            0px calc(100% - 12px));
+  clip-path: polygon(
+    0px 12px,
+    6px 12px,
+    6px 6px,
+    12px 6px,
+    12px 0px,
+    calc(100% - 12px) 0px,
+    calc(100% - 12px) 6px,
+    calc(100% - 6px) 6px,
+    calc(100% - 6px) 12px,
+    100% 12px,
+    100% calc(100% - 12px),
+    calc(100% - 6px) calc(100% - 12px),
+    calc(100% - 6px) calc(100% - 6px),
+    calc(100% - 12px) calc(100% - 6px),
+    calc(100% - 12px) 100%,
+    12px 100%,
+    12px calc(100% - 6px),
+    6px calc(100% - 6px),
+    6px calc(100% - 12px),
+    0px calc(100% - 12px)
+  );
 }
 
 @utility pixelated-corners-sm {
-    clip-path: polygon(0px 8px,
-            4px 8px,
-            4px 4px,
-            8px 4px,
-            8px 0px,
-            calc(100% - 8px) 0px,
-            calc(100% - 8px) 4px,
-            calc(100% - 4px) 4px,
-            calc(100% - 4px) 8px,
-            100% 8px,
-            100% calc(100% - 8px),
-            calc(100% - 4px) calc(100% - 8px),
-            calc(100% - 4px) calc(100% - 4px),
-            calc(100% - 8px) calc(100% - 4px),
-            calc(100% - 8px) 100%,
-            8px 100%,
-            8px calc(100% - 4px),
-            4px calc(100% - 4px),
-            4px calc(100% - 8px),
-            0px calc(100% - 8px));
+  clip-path: polygon(
+    0px 8px,
+    4px 8px,
+    4px 4px,
+    8px 4px,
+    8px 0px,
+    calc(100% - 8px) 0px,
+    calc(100% - 8px) 4px,
+    calc(100% - 4px) 4px,
+    calc(100% - 4px) 8px,
+    100% 8px,
+    100% calc(100% - 8px),
+    calc(100% - 4px) calc(100% - 8px),
+    calc(100% - 4px) calc(100% - 4px),
+    calc(100% - 8px) calc(100% - 4px),
+    calc(100% - 8px) 100%,
+    8px 100%,
+    8px calc(100% - 4px),
+    4px calc(100% - 4px),
+    4px calc(100% - 8px),
+    0px calc(100% - 8px)
+  );
 }
