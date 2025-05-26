@@ -1,132 +1,131 @@
 .gameguide-article {
-    width: 150px;
-    height: 100px;
-    background-color: var(--layoutBgColorDark);
-    box-shadow: 5px 0px 10px #000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px;
+  width: 150px;
+  height: 100px;
+  background-color: var(--layoutBgColorDark);
+  box-shadow: 5px 0px 10px #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
 }
 .gameguide-section {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 150px);
-    grid-gap: 20px;
-    justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 150px);
+  grid-gap: 20px;
+  justify-content: center;
 }
 .gameguide-article-link {
-    text-decoration: none;
-    color: var(--textColor);
+  text-decoration: none;
+  color: var(--textColor);
 }
 #welcome_butt a {
-    color: white;
-    text-decoration: none;
-    padding: 10px 5px;
-    background-color: #ff8400;
-    box-shadow: #ffe6cc 2px 2px 5px 3px inset;
+  color: white;
+  text-decoration: none;
+  padding: 10px 5px;
+  background-color: #ff8400;
+  box-shadow: #ffe6cc 2px 2px 5px 3px inset;
 }
 #welcome_butt a:visited {
-    color:white;
+  color: white;
 }
 #welcome_butt a:hover {
-    background-color: #ff901a;
+  background-color: #ff901a;
 }
 #updates {
-    border:2px solid black;
-    width:45%;
-    float:left;
-    margin: 0px 0px 10px 30px;
-    padding:5px;
+  border: 2px solid black;
+  width: 45%;
+  float: left;
+  margin: 0px 0px 10px 30px;
+  padding: 5px;
 }
 #news {
-    border:2px solid black;
-    width:45%;
-    float:right;
-    margin: 0px 30px 0px 0px;
-    padding:5px;
-    height:117px;
+  border: 2px solid black;
+  width: 45%;
+  float: right;
+  margin: 0px 30px 0px 0px;
+  padding: 5px;
+  height: 117px;
 }
 #profiencies {
-    text-align: left;
-    margin: 0px 0px 0px 3px;
-    float:left;
+  text-align: left;
+  margin: 0px 0px 0px 3px;
+  float: left;
 }
 #profiencies span {
-    text-align: left;
-    font-size: 16px;
+  text-align: left;
+  font-size: 16px;
 }
 #profienciesCards {
-    margin: 0px 0px 10px 0px;
+  margin: 0px 0px 10px 0px;
 }
 #profienciesCards ul {
-    list-style-type: none;
+  list-style-type: none;
 }
 #profienciesCards li {
-    width:200px;
-    height:400px;
-    background-color: white;
-    display: inline-block;
+  width: 200px;
+  height: 400px;
+  background-color: white;
+  display: inline-block;
 }
 #profienciesCards li:hover {
-    transition: 1s;
-    transform: rotateY(180deg);
+  transition: 1s;
+  transform: rotateY(180deg);
 }
 #farmer table {
-    border-collapse: collapse;
+  border-collapse: collapse;
 }
 #farmer table th {
-    margin:5px 0px 0px 0px;
-    padding:5px;
-    width:120px;
-    text-align: center;
-    border:1px solid black;
+  margin: 5px 0px 0px 0px;
+  padding: 5px;
+  width: 120px;
+  text-align: center;
+  border: 1px solid black;
 }
 #farmer table td {
-    padding:5px;
-    width:100px;
-    text-align: center;
-    border:1px solid black;
+  padding: 5px;
+  width: 100px;
+  text-align: center;
+  border: 1px solid black;
 }
 #guide_title {
-    
 }
 #content_table {
-    width: 30%;
-    box-sizing: border-box;
-    border: 1px solid black;
-    margin: 0px 5px 0px 0px;
-    float: left;
-    display: block;
-    background-color: #f2e6d9;
-    padding: 10px 0px;
+  width: 30%;
+  box-sizing: border-box;
+  border: 1px solid black;
+  margin: 0px 5px 0px 0px;
+  float: left;
+  display: block;
+  background-color: #f2e6d9;
+  padding: 10px 0px;
 }
 #content_table li {
-    padding: 2px;
+  padding: 2px;
 }
 #content_table a {
-    text-decoration: none;
+  text-decoration: none;
 }
-#content_table a:visited, :hover {
-    text-decoration: none;
+#content_table a:visited,
+:hover {
+  text-decoration: none;
 }
 #content_table a:visited {
-    color: blue;
+  color: blue;
 }
 #content {
-    box-sizing: border-box;
-    text-align: left;
+  box-sizing: border-box;
+  text-align: left;
 }
 .p_header {
-    border-bottom: 1px solid black;
+  border-bottom: 1px solid black;
 }
 #content table {
-    text-align: center;
+  text-align: center;
 }
 #content table img {
-    vertical-align: middle;
+  vertical-align: middle;
 }
 .building_img {
-    width: 128px;
-    height: 128px;
+  width: 128px;
+  height: 128px;
 }
-    

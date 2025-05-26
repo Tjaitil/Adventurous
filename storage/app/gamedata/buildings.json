@@ -1,570 +1,598 @@
-{ "columns":0,
- "grid":
+{
+  "columns": 0,
+  "grid": {
+    "height": 1,
+    "orientation": "orthogonal",
+    "width": 1
+  },
+  "margin": 0,
+  "name": "buildings",
+  "spacing": 0,
+  "tilecount": 30,
+  "tiledversion": "1.6.0",
+  "tileheight": 256,
+  "tiles": [
     {
-     "height":1,
-     "orientation":"orthogonal",
-     "width":1
+      "id": 1,
+      "image": "travel bureau.png",
+      "imageheight": 128,
+      "imagewidth": 128,
+      "properties": [
+        {
+          "name": "render",
+          "type": "bool",
+          "value": false
+        },
+        {
+          "name": "src",
+          "type": "string",
+          "value": "travel bureau.png"
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "value": "building"
+        }
+      ],
+      "type": "object"
     },
- "margin":0,
- "name":"buildings",
- "spacing":0,
- "tilecount":30,
- "tiledversion":"1.6.0",
- "tileheight":256,
- "tiles":[
+    {
+      "id": 4,
+      "image": "market.png",
+      "imageheight": 128,
+      "imagewidth": 128,
+      "properties": [
         {
-         "id":1,
-         "image":"travel bureau.png",
-         "imageheight":128,
-         "imagewidth":128,
-         "properties":[
-                {
-                 "name":"render",
-                 "type":"bool",
-                 "value":false
-                }, 
-                {
-                 "name":"src",
-                 "type":"string",
-                 "value":"travel bureau.png"
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"building"
-                }],
-         "type":"object"
-        }, 
+          "name": "src",
+          "type": "string",
+          "value": "market.png"
+        },
         {
-         "id":4,
-         "image":"market.png",
-         "imageheight":128,
-         "imagewidth":128,
-         "properties":[
-                {
-                 "name":"src",
-                 "type":"string",
-                 "value":"market.png"
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"building"
-                }],
-         "type":"object"
-        }, 
+          "name": "type",
+          "type": "string",
+          "value": "building"
+        }
+      ],
+      "type": "object"
+    },
+    {
+      "id": 7,
+      "image": "crops1.png",
+      "imageheight": 128,
+      "imagewidth": 136,
+      "properties": [
         {
-         "id":7,
-         "image":"crops1.png",
-         "imageheight":128,
-         "imagewidth":136,
-         "properties":[
-                {
-                 "name":"src",
-                 "type":"string",
-                 "value":"crops.png"
-                }]
-        }, 
+          "name": "src",
+          "type": "string",
+          "value": "crops.png"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "image": "archery shop.png",
+      "imageheight": 128,
+      "imagewidth": 128,
+      "objectgroup": {
+        "draworder": "index",
+        "id": 2,
+        "name": "",
+        "objects": [
+          {
+            "height": 102,
+            "id": 1,
+            "name": "",
+            "rotation": 0,
+            "type": "",
+            "visible": true,
+            "width": 122,
+            "x": 3,
+            "y": 23
+          }
+        ],
+        "opacity": 1,
+        "type": "objectgroup",
+        "visible": true,
+        "x": 0,
+        "y": 0
+      },
+      "properties": [
         {
-         "id":9,
-         "image":"archery shop.png",
-         "imageheight":128,
-         "imagewidth":128,
-         "objectgroup":
-            {
-             "draworder":"index",
-             "id":2,
-             "name":"",
-             "objects":[
-                    {
-                     "height":102,
-                     "id":1,
-                     "name":"",
-                     "rotation":0,
-                     "type":"",
-                     "visible":true,
-                     "width":122,
-                     "x":3,
-                     "y":23
-                    }],
-             "opacity":1,
-             "type":"objectgroup",
-             "visible":true,
-             "x":0,
-             "y":0
-            },
-         "properties":[
-                {
-                 "name":"src",
-                 "type":"string",
-                 "value":"archery shop.png"
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"building"
-                }],
-         "type":"object"
-        }, 
+          "name": "src",
+          "type": "string",
+          "value": "archery shop.png"
+        },
         {
-         "id":10,
-         "image":"stockpile.png",
-         "imageheight":128,
-         "imagewidth":128,
-         "properties":[
-                {
-                 "name":"src",
-                 "type":"string",
-                 "value":"stockpile.png"
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"building"
-                }],
-         "type":"object"
-        }, 
+          "name": "type",
+          "type": "string",
+          "value": "building"
+        }
+      ],
+      "type": "object"
+    },
+    {
+      "id": 10,
+      "image": "stockpile.png",
+      "imageheight": 128,
+      "imagewidth": 128,
+      "properties": [
         {
-         "id":12,
-         "image":"smithy.png",
-         "imageheight":128,
-         "imagewidth":128,
-         "properties":[
-                {
-                 "name":"src",
-                 "type":"string",
-                 "value":"smithy.png"
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"building"
-                }],
-         "type":"object"
-        }, 
+          "name": "src",
+          "type": "string",
+          "value": "stockpile.png"
+        },
         {
-         "id":13,
-         "image":"tavern.png",
-         "imageheight":128,
-         "imagewidth":256,
-         "properties":[
-                {
-                 "name":"src",
-                 "type":"string",
-                 "value":"tavern.png"
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"building"
-                }],
-         "type":"object"
-        }, 
+          "name": "type",
+          "type": "string",
+          "value": "building"
+        }
+      ],
+      "type": "object"
+    },
+    {
+      "id": 12,
+      "image": "smithy.png",
+      "imageheight": 128,
+      "imagewidth": 128,
+      "properties": [
         {
-         "id":14,
-         "image":"mine.png",
-         "imageheight":128,
-         "imagewidth":128,
-         "properties":[
-                {
-                 "name":"src",
-                 "type":"string",
-                 "value":"mine.png"
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"building"
-                }],
-         "type":"object"
-        }, 
+          "name": "src",
+          "type": "string",
+          "value": "smithy.png"
+        },
         {
-         "id":15,
-         "image":"workforce lodge.png",
-         "imageheight":128,
-         "imagewidth":128,
-         "properties":[
-                {
-                 "name":"render",
-                 "type":"bool",
-                 "value":true
-                }, 
-                {
-                 "name":"src",
-                 "type":"string",
-                 "value":"workforce lodge.png"
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"building"
-                }],
-         "type":"object"
-        }, 
+          "name": "type",
+          "type": "string",
+          "value": "building"
+        }
+      ],
+      "type": "object"
+    },
+    {
+      "id": 13,
+      "image": "tavern.png",
+      "imageheight": 128,
+      "imagewidth": 256,
+      "properties": [
         {
-         "id":18,
-         "image":"armycamp.png",
-         "imageheight":236,
-         "imagewidth":236,
-         "objectgroup":
-            {
-             "draworder":"index",
-             "id":2,
-             "name":"",
-             "objects":[
-                    {
-                     "height":113.334,
-                     "id":1,
-                     "name":"",
-                     "rotation":0,
-                     "type":"",
-                     "visible":true,
-                     "width":224,
-                     "x":4.66667,
-                     "y":117.333
-                    }],
-             "opacity":1,
-             "type":"objectgroup",
-             "visible":true,
-             "x":0,
-             "y":0
-            },
-         "properties":[
-                {
-                 "name":"render",
-                 "type":"bool",
-                 "value":false
-                }, 
-                {
-                 "name":"src",
-                 "type":"string",
-                 "value":"armycamp.png"
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"building"
-                }],
-         "type":"object"
-        }, 
+          "name": "src",
+          "type": "string",
+          "value": "tavern.png"
+        },
         {
-         "id":19,
-         "image":"citycentre.png",
-         "imageheight":256,
-         "imagewidth":256,
-         "objectgroup":
-            {
-             "draworder":"index",
-             "id":2,
-             "name":"",
-             "objects":[
-                    {
-                     "height":116.5,
-                     "id":1,
-                     "name":"",
-                     "rotation":0,
-                     "type":"",
-                     "visible":true,
-                     "width":255,
-                     "x":0,
-                     "y":139.5
-                    }],
-             "opacity":1,
-             "type":"objectgroup",
-             "visible":true,
-             "x":0,
-             "y":0
-            },
-         "properties":[
-                {
-                 "name":"src",
-                 "type":"string",
-                 "value":"citycentre.png"
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"building"
-                }],
-         "type":"object"
-        }, 
+          "name": "type",
+          "type": "string",
+          "value": "building"
+        }
+      ],
+      "type": "object"
+    },
+    {
+      "id": 14,
+      "image": "mine.png",
+      "imageheight": 128,
+      "imagewidth": 128,
+      "properties": [
         {
-         "id":20,
-         "image":"bakery.png",
-         "imageheight":128,
-         "imagewidth":128,
-         "properties":[
-                {
-                 "name":"src",
-                 "type":"string",
-                 "value":"bakery.png"
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"building"
-                }],
-         "type":"object"
-        }, 
+          "name": "src",
+          "type": "string",
+          "value": "mine.png"
+        },
         {
-         "id":21,
-         "image":"crops2.png",
-         "imageheight":128,
-         "imagewidth":128
-        }, 
+          "name": "type",
+          "type": "string",
+          "value": "building"
+        }
+      ],
+      "type": "object"
+    },
+    {
+      "id": 15,
+      "image": "workforce lodge.png",
+      "imageheight": 128,
+      "imagewidth": 128,
+      "properties": [
         {
-         "id":22,
-         "image":"house1.png",
-         "imageheight":128,
-         "imagewidth":128,
-         "properties":[
-                {
-                 "name":"src",
-                 "type":"string",
-                 "value":"house1.png"
-                }],
-         "type":"object"
-        }, 
+          "name": "render",
+          "type": "bool",
+          "value": true
+        },
         {
-         "id":23,
-         "image":"house2.png",
-         "imageheight":128,
-         "imagewidth":128,
-         "properties":[
-                {
-                 "name":"src",
-                 "type":"string",
-                 "value":"house2.png"
-                }],
-         "type":"object"
-        }, 
+          "name": "src",
+          "type": "string",
+          "value": "workforce lodge.png"
+        },
         {
-         "id":24,
-         "image":"house3.png",
-         "imageheight":128,
-         "imagewidth":128,
-         "properties":[
-                {
-                 "name":"src",
-                 "type":"string",
-                 "value":"house3.png"
-                }],
-         "type":"object"
-        }, 
+          "name": "type",
+          "type": "string",
+          "value": "building"
+        }
+      ],
+      "type": "object"
+    },
+    {
+      "id": 18,
+      "image": "armycamp.png",
+      "imageheight": 236,
+      "imagewidth": 236,
+      "objectgroup": {
+        "draworder": "index",
+        "id": 2,
+        "name": "",
+        "objects": [
+          {
+            "height": 113.334,
+            "id": 1,
+            "name": "",
+            "rotation": 0,
+            "type": "",
+            "visible": true,
+            "width": 224,
+            "x": 4.66667,
+            "y": 117.333
+          }
+        ],
+        "opacity": 1,
+        "type": "objectgroup",
+        "visible": true,
+        "x": 0,
+        "y": 0
+      },
+      "properties": [
         {
-         "id":26,
-         "image":"merchant.png",
-         "imageheight":128,
-         "imagewidth":128,
-         "properties":[
-                {
-                 "name":"src",
-                 "type":"string",
-                 "value":"merchant.png"
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"building"
-                }],
-         "type":"object"
-        }, 
+          "name": "render",
+          "type": "bool",
+          "value": false
+        },
         {
-         "id":27,
-         "image":"mine_entrance.png",
-         "imageheight":64,
-         "imagewidth":64,
-         "properties":[
-                {
-                 "name":"path",
-                 "type":"object",
-                 "value":0
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"teleport"
-                }],
-         "type":"object"
-        }, 
+          "name": "src",
+          "type": "string",
+          "value": "armycamp.png"
+        },
         {
-         "id":28,
-         "image":"adventures.png",
-         "imageheight":128,
-         "imagewidth":128,
-         "properties":[
-                {
-                 "name":"src",
-                 "type":"string",
-                 "value":"adventures.png"
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"building"
-                }],
-         "type":"object"
-        }, 
+          "name": "type",
+          "type": "string",
+          "value": "building"
+        }
+      ],
+      "type": "object"
+    },
+    {
+      "id": 19,
+      "image": "citycentre.png",
+      "imageheight": 256,
+      "imagewidth": 256,
+      "objectgroup": {
+        "draworder": "index",
+        "id": 2,
+        "name": "",
+        "objects": [
+          {
+            "height": 116.5,
+            "id": 1,
+            "name": "",
+            "rotation": 0,
+            "type": "",
+            "visible": true,
+            "width": 255,
+            "x": 0,
+            "y": 139.5
+          }
+        ],
+        "opacity": 1,
+        "type": "objectgroup",
+        "visible": true,
+        "x": 0,
+        "y": 0
+      },
+      "properties": [
         {
-         "id":29,
-         "image":"house6.png",
-         "imageheight":128,
-         "imagewidth":128,
-         "properties":[
-                {
-                 "name":"src",
-                 "type":"string",
-                 "value":"house6.png"
-                }],
-         "type":"object"
-        }, 
+          "name": "src",
+          "type": "string",
+          "value": "citycentre.png"
+        },
         {
-         "id":30,
-         "image":"house7.png",
-         "imageheight":128,
-         "imagewidth":128,
-         "properties":[
-                {
-                 "name":"src",
-                 "type":"string",
-                 "value":"house7.png"
-                }],
-         "type":"object"
-        }, 
+          "name": "type",
+          "type": "string",
+          "value": "building"
+        }
+      ],
+      "type": "object"
+    },
+    {
+      "id": 20,
+      "image": "bakery.png",
+      "imageheight": 128,
+      "imagewidth": 128,
+      "properties": [
         {
-         "id":31,
-         "image":"house8.png",
-         "imageheight":128,
-         "imagewidth":128,
-         "properties":[
-                {
-                 "name":"src",
-                 "type":"string",
-                 "value":"house8.png"
-                }],
-         "type":"object"
-        }, 
+          "name": "src",
+          "type": "string",
+          "value": "bakery.png"
+        },
         {
-         "id":32,
-         "image":"crops.png",
-         "imageheight":128,
-         "imagewidth":128,
-         "properties":[
-                {
-                 "name":"render",
-                 "type":"bool",
-                 "value":true
-                }, 
-                {
-                 "name":"src",
-                 "type":"string",
-                 "value":"crops.png"
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"building"
-                }],
-         "type":"object"
-        }, 
+          "name": "type",
+          "type": "string",
+          "value": "building"
+        }
+      ],
+      "type": "object"
+    },
+    {
+      "id": 21,
+      "image": "crops2.png",
+      "imageheight": 128,
+      "imagewidth": 128
+    },
+    {
+      "id": 22,
+      "image": "house1.png",
+      "imageheight": 128,
+      "imagewidth": 128,
+      "properties": [
         {
-         "id":33,
-         "image":"potato field.png",
-         "imageheight":128,
-         "imagewidth":136
-        }, 
+          "name": "src",
+          "type": "string",
+          "value": "house1.png"
+        }
+      ],
+      "type": "object"
+    },
+    {
+      "id": 23,
+      "image": "house2.png",
+      "imageheight": 128,
+      "imagewidth": 128,
+      "properties": [
         {
-         "id":34,
-         "image":"stockpile desert.png",
-         "imageheight":128,
-         "imagewidth":128,
-         "properties":[
-                {
-                 "name":"src",
-                 "type":"string",
-                 "value":"stockpile desert.png"
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"buildiing"
-                }],
-         "type":"object"
-        }, 
+          "name": "src",
+          "type": "string",
+          "value": "house2.png"
+        }
+      ],
+      "type": "object"
+    },
+    {
+      "id": 24,
+      "image": "house3.png",
+      "imageheight": 128,
+      "imagewidth": 128,
+      "properties": [
         {
-         "id":35,
-         "image":"merchant desert.png",
-         "imageheight":128,
-         "imagewidth":128,
-         "properties":[
-                {
-                 "name":"src",
-                 "type":"string",
-                 "value":"merchant.png"
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"building"
-                }],
-         "type":"object"
-        }, 
+          "name": "src",
+          "type": "string",
+          "value": "house3.png"
+        }
+      ],
+      "type": "object"
+    },
+    {
+      "id": 26,
+      "image": "merchant.png",
+      "imageheight": 128,
+      "imagewidth": 128,
+      "properties": [
         {
-         "id":36,
-         "image":"house3 tudor.png",
-         "imageheight":128,
-         "imagewidth":128
-        }, 
+          "name": "src",
+          "type": "string",
+          "value": "merchant.png"
+        },
         {
-         "id":37,
-         "image":"house6 desert.png",
-         "imageheight":128,
-         "imagewidth":128,
-         "properties":[
-                {
-                 "name":"src",
-                 "type":"string",
-                 "value":"house6 desert.png"
-                }],
-         "type":"object"
-        }, 
+          "name": "type",
+          "type": "string",
+          "value": "building"
+        }
+      ],
+      "type": "object"
+    },
+    {
+      "id": 27,
+      "image": "mine_entrance.png",
+      "imageheight": 64,
+      "imagewidth": 64,
+      "properties": [
         {
-         "id":38,
-         "image":"market desert.png",
-         "imageheight":128,
-         "imagewidth":128,
-         "properties":[
-                {
-                 "name":"src",
-                 "type":"string",
-                 "value":"market.png"
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"building"
-                }],
-         "type":"object"
-        }, 
+          "name": "path",
+          "type": "object",
+          "value": 0
+        },
         {
-         "id":39,
-         "image":"adventure base desert.png",
-         "imageheight":128,
-         "imagewidth":128,
-         "properties":[
-                {
-                 "name":"src",
-                 "type":"string",
-                 "value":"adventure base.png"
-                }, 
-                {
-                 "name":"type",
-                 "type":"string",
-                 "value":"building"
-                }],
-         "type":"object"
-        }],
- "tilewidth":256,
- "type":"tileset",
- "version":"1.6"
+          "name": "type",
+          "type": "string",
+          "value": "teleport"
+        }
+      ],
+      "type": "object"
+    },
+    {
+      "id": 28,
+      "image": "adventures.png",
+      "imageheight": 128,
+      "imagewidth": 128,
+      "properties": [
+        {
+          "name": "src",
+          "type": "string",
+          "value": "adventures.png"
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "value": "building"
+        }
+      ],
+      "type": "object"
+    },
+    {
+      "id": 29,
+      "image": "house6.png",
+      "imageheight": 128,
+      "imagewidth": 128,
+      "properties": [
+        {
+          "name": "src",
+          "type": "string",
+          "value": "house6.png"
+        }
+      ],
+      "type": "object"
+    },
+    {
+      "id": 30,
+      "image": "house7.png",
+      "imageheight": 128,
+      "imagewidth": 128,
+      "properties": [
+        {
+          "name": "src",
+          "type": "string",
+          "value": "house7.png"
+        }
+      ],
+      "type": "object"
+    },
+    {
+      "id": 31,
+      "image": "house8.png",
+      "imageheight": 128,
+      "imagewidth": 128,
+      "properties": [
+        {
+          "name": "src",
+          "type": "string",
+          "value": "house8.png"
+        }
+      ],
+      "type": "object"
+    },
+    {
+      "id": 32,
+      "image": "crops.png",
+      "imageheight": 128,
+      "imagewidth": 128,
+      "properties": [
+        {
+          "name": "render",
+          "type": "bool",
+          "value": true
+        },
+        {
+          "name": "src",
+          "type": "string",
+          "value": "crops.png"
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "value": "building"
+        }
+      ],
+      "type": "object"
+    },
+    {
+      "id": 33,
+      "image": "potato field.png",
+      "imageheight": 128,
+      "imagewidth": 136
+    },
+    {
+      "id": 34,
+      "image": "stockpile desert.png",
+      "imageheight": 128,
+      "imagewidth": 128,
+      "properties": [
+        {
+          "name": "src",
+          "type": "string",
+          "value": "stockpile desert.png"
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "value": "buildiing"
+        }
+      ],
+      "type": "object"
+    },
+    {
+      "id": 35,
+      "image": "merchant desert.png",
+      "imageheight": 128,
+      "imagewidth": 128,
+      "properties": [
+        {
+          "name": "src",
+          "type": "string",
+          "value": "merchant.png"
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "value": "building"
+        }
+      ],
+      "type": "object"
+    },
+    {
+      "id": 36,
+      "image": "house3 tudor.png",
+      "imageheight": 128,
+      "imagewidth": 128
+    },
+    {
+      "id": 37,
+      "image": "house6 desert.png",
+      "imageheight": 128,
+      "imagewidth": 128,
+      "properties": [
+        {
+          "name": "src",
+          "type": "string",
+          "value": "house6 desert.png"
+        }
+      ],
+      "type": "object"
+    },
+    {
+      "id": 38,
+      "image": "market desert.png",
+      "imageheight": 128,
+      "imagewidth": 128,
+      "properties": [
+        {
+          "name": "src",
+          "type": "string",
+          "value": "market.png"
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "value": "building"
+        }
+      ],
+      "type": "object"
+    },
+    {
+      "id": 39,
+      "image": "adventure base desert.png",
+      "imageheight": 128,
+      "imagewidth": 128,
+      "properties": [
+        {
+          "name": "src",
+          "type": "string",
+          "value": "adventure base.png"
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "value": "building"
+        }
+      ],
+      "type": "object"
+    }
+  ],
+  "tilewidth": 256,
+  "type": "tileset",
+  "version": "1.6"
 }

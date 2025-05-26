@@ -1,29 +1,29 @@
 export interface conversationSegmentResponse {
-    conversation_segment: ConversationSegment;
+  conversation_segment: ConversationSegment;
 }
 
 export interface ConversationSegment {
-    header?: string;
-    index: string;
-    options: ConversationOption[];
+  header?: string;
+  index: string;
+  options: ConversationOption[];
 }
 export interface ConversationOption {
-    person: string | null;
-    text: string;
-    next_key: 'Q' | 'q' | 'r' | 'S' | 'end';
-    container: 'A' | 'B';
-    client_callback?: ConversationCallback;
-    option_values?: object;
-    id: number;
+  person: string | null;
+  text: string;
+  next_key: 'Q' | 'q' | 'r' | 'S' | 'end';
+  container: 'A' | 'B';
+  client_callback?: ConversationCallback;
+  option_values?: object;
+  id: number;
 }
 export interface ConversationRequest {
-    person: string;
-    is_starting: boolean;
-    selected_option?: number;
+  person: string;
+  is_starting: boolean;
+  selected_option?: number;
 }
 
 export type ConversationCallback =
-    | 'GameTravelCallback'
-    | 'LoadZinsStoreCallback';
+  | 'GameTravelCallback'
+  | 'LoadZinsStoreCallback';
 
 export type ConversationClientEvent = 'InventoryChangedEvent';

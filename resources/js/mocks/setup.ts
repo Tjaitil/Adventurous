@@ -5,11 +5,9 @@ import { UpdateSkillsResponse } from '@/types/Responses/UpdateSkillsResponse';
 import { MockedUpdateSkillsResponse } from './responses/UpdateSkillsResponse';
 
 export const restHandlers = [
-    http.post('/skills/update', () => {
-        return HttpResponse.json<UpdateSkillsResponse>(
-            MockedUpdateSkillsResponse,
-        );
-    }),
+  http.post('/skills/update', () => {
+    return HttpResponse.json<UpdateSkillsResponse>(MockedUpdateSkillsResponse);
+  }),
 ];
 
 const server = setupServer(...restHandlers);

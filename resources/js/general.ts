@@ -8,67 +8,65 @@ import { ClientOverlayInterface } from './clientScripts/clientOverlayInterface';
 // TODO: Remove this file
 
 const generalProperties = {
-    computerDevice: true,
-    setDeviceType() {
-        if (/Mobi|Android/i.test(navigator.userAgent)) {
-            this.computerDevice = false;
-        }
-    },
+  computerDevice: true,
+  setDeviceType() {
+    if (/Mobi|Android/i.test(navigator.userAgent)) {
+      this.computerDevice = false;
+    }
+  },
 };
 window.addEventListener('load', () => generalInit());
 function generalInit() {
-    console.log('init');
-    generalProperties.setDeviceType();
-    itemTitle.init(generalProperties.computerDevice);
-    // document.getElementById("help_button").addEventListener("click", () => helpContainer.toggle());
-    // helpContainer.helpElement = document.getElementById("help");
-    const log = document.getElementById('log');
-    if (log != null) {
-        log.scrollTop = log.scrollHeight - log.clientHeight;
+  console.log('init');
+  generalProperties.setDeviceType();
+  itemTitle.init(generalProperties.computerDevice);
+  // document.getElementById("help_button").addEventListener("click", () => helpContainer.toggle());
+  // helpContainer.helpElement = document.getElementById("help");
+  const log = document.getElementById('log');
+  if (log != null) {
+    log.scrollTop = log.scrollHeight - log.clientHeight;
+  }
+  if (document.getElementById('sidebar') != null) {
+    document.getElementById('sidebar').style.width =
+      document.getElementsByTagName('aside')[0].clientWidth + 'px';
+    sidebar.addClickEvent();
+  }
+  if (document.getElementById('inventory') != null) {
+    if (window.location.href.indexOf('stockpile') == -1) {
     }
-    if (document.getElementById('sidebar') != null) {
-        document.getElementById('sidebar').style.width =
-            document.getElementsByTagName('aside')[0].clientWidth + 'px';
-        sidebar.addClickEvent();
+    if (/Safari|Chrome/i.test(navigator.userAgent)) {
+      const span = document.getElementsByClassName('item_amount');
+      for (let i = 0; i < span.length; i++) {
+        // TODO: Fix
+        // span[i].style.left = "-20%";
+        // span[i].style.display = "block";
+      }
     }
-    if (document.getElementById('inventory') != null) {
-        if (window.location.href.indexOf('stockpile') == -1) {
-        }
-        if (/Safari|Chrome/i.test(navigator.userAgent)) {
-            const span = document.getElementsByClassName('item_amount');
-            for (let i = 0; i < span.length; i++) {
-                // TODO: Fix
-                // span[i].style.left = "-20%";
-                // span[i].style.display = "block";
-            }
-        }
-    }
-    if (location.href.indexOf('advclient') != -1) {
-        const linksDiv = document.querySelectorAll('.top_bar');
-        linksDiv.forEach((element, index) => {
-            // If the device is mobile the first a is not displayed
-            if (linksDiv.length - 1 === index) return;
-            if (element.querySelectorAll('a')[0].style.display != 'none') {
-                element
-                    .querySelectorAll('a')[0]
-                    .setAttribute('target', '_blank');
-            }
-            element.querySelectorAll('a')[1].setAttribute('target', '_blank');
-        });
-    }
-    // Check screen width
-    if (window.screen.width < 830) {
-        const inventory = document.getElementById('inventory');
-        inventory.style.visibility = 'hidden';
-        inventory.style.transition = 'width 0.5s';
-        inventory.style.transitionTimingFunction = 'ease-out';
-        document
-            .getElementById('inv_toggle_button')
-            .addEventListener('click', inventorySidebarMob.toggleInventory);
-    }
-    if (location.href.indexOf('gameguide') == -1) {
-        // checkInboxMessages();
-    }
+  }
+  if (location.href.indexOf('advclient') != -1) {
+    const linksDiv = document.querySelectorAll('.top_bar');
+    linksDiv.forEach((element, index) => {
+      // If the device is mobile the first a is not displayed
+      if (linksDiv.length - 1 === index) return;
+      if (element.querySelectorAll('a')[0].style.display != 'none') {
+        element.querySelectorAll('a')[0].setAttribute('target', '_blank');
+      }
+      element.querySelectorAll('a')[1].setAttribute('target', '_blank');
+    });
+  }
+  // Check screen width
+  if (window.screen.width < 830) {
+    const inventory = document.getElementById('inventory');
+    inventory.style.visibility = 'hidden';
+    inventory.style.transition = 'width 0.5s';
+    inventory.style.transitionTimingFunction = 'ease-out';
+    document
+      .getElementById('inv_toggle_button')
+      .addEventListener('click', inventorySidebarMob.toggleInventory);
+  }
+  if (location.href.indexOf('gameguide') == -1) {
+    // checkInboxMessages();
+  }
 }
 
 /*window.addEventListener("scroll", function(e) {
@@ -99,10 +97,10 @@ function generalInit() {
 //     }
 // }
 function addZero(i) {
-    if (i < 10) {
-        i = '0' + i;
-    }
-    return i;
+  if (i < 10) {
+    i = '0' + i;
+  }
+  return i;
 }
 // function getgMessage() {
 //     let ajaxRequest = new XMLHttpRequest();
@@ -118,17 +116,17 @@ function addZero(i) {
 /*window.addEventListener("load", getgMessage, false);*/
 
 const mainContentHelpContainer = {
-    helpElement: null,
-    toggled: false,
-    toggle() {
-        if (this.toggled === false) {
-            this.helpElement.style.height = '250px';
-            this.toggled = true;
-        } else {
-            this.helpElement.style.height = '0px';
-            this.toggled = false;
-        }
-    },
+  helpElement: null,
+  toggled: false,
+  toggle() {
+    if (this.toggled === false) {
+      this.helpElement.style.height = '250px';
+      this.toggled = true;
+    } else {
+      this.helpElement.style.height = '0px';
+      this.toggled = false;
+    }
+  },
 };
 
 // function alertMessage(page, pIdentifier = false) {
@@ -173,32 +171,29 @@ const mainContentHelpContainer = {
 const timeID = [];
 
 function getAdventure() {
-    const building = 'Adventures';
-    const ajaxRequest = new XMLHttpRequest();
-    ajaxRequest.onload = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            const responseText = this.responseText;
-            console.log(responseText);
-            document
-                .getElementById('sidebar')
-                .getElementsByTagName('div')[0].innerHTML = responseText;
-        }
-    };
-    ajaxRequest.open(
-        'GET',
-        'handlers/handler_v.php?' + '&building=' + building,
-    );
-    ajaxRequest.send();
+  const building = 'Adventures';
+  const ajaxRequest = new XMLHttpRequest();
+  ajaxRequest.onload = function () {
+    if (this.readyState == 4 && this.status == 200) {
+      const responseText = this.responseText;
+      console.log(responseText);
+      document
+        .getElementById('sidebar')
+        .getElementsByTagName('div')[0].innerHTML = responseText;
+    }
+  };
+  ajaxRequest.open('GET', 'handlers/handler_v.php?' + '&building=' + building);
+  ajaxRequest.send();
 }
 
 function checkCombatCalculator() {
-    const data = 'model=combatTest' + '&method=test';
-    ajaxP(data, function (response) {
-        if (response[0] !== false) {
-            console.log(response[1]);
-            const responseText = response[1];
+  const data = 'model=combatTest' + '&method=test';
+  ajaxP(data, function (response) {
+    if (response[0] !== false) {
+      console.log(response[1]);
+      const responseText = response[1];
 
-            ClientOverlayInterface.show(responseText.html);
-        }
-    });
+      ClientOverlayInterface.show(responseText.html);
+    }
+  });
 }

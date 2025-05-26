@@ -1,13 +1,13 @@
 export interface StartGrowingRequest {
-    crop_type: string;
-    workforce_amount: number;
+  crop_type: string;
+  workforce_amount: number;
 }
 
 export interface UpdateCropsRequest {
-    is_cancelling: boolean;
+  is_cancelling: boolean;
 }
 
 export interface SeedGeneratorRequest {
-    item: string;
-    amount: number;
+  item: string;
+  amount: number;
 }

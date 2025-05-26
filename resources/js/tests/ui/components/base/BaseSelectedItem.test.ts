@@ -3,92 +3,92 @@ import { describe, expect, test } from 'vitest';
 import BaseSelectedItem from '@/ui/components/base/BaseSelectedItem.vue';
 
 describe('BaseSelectedItem component', () => {
-    test('item is rendered correctly when item is passed', () => {
-        const wrapper = mount(BaseSelectedItem, {
-            props: {
-                item: 'iron sword',
-                amount: 0,
-            },
-        });
-
-        const image = wrapper.find('img');
-        expect(image.element.src).toContain('iron%20sword.png');
+  test('item is rendered correctly when item is passed', () => {
+    const wrapper = mount(BaseSelectedItem, {
+      props: {
+        item: 'iron sword',
+        amount: 0,
+      },
     });
 
-    test('item is removed when image is clicked', async () => {
-        const wrapper = mount(BaseSelectedItem, {
-            props: {
-                item: 'iron sword',
-                amount: 0,
-            },
-        });
+    const image = wrapper.find('img');
+    expect(image.element.src).toContain('iron%20sword.png');
+  });
 
-        const image = wrapper.find('img');
-        await image.trigger('click');
-
-        const updateEvent = wrapper.emitted('update:item');
-        expect(updateEvent && updateEvent[0]).toEqual([null]);
+  test('item is removed when image is clicked', async () => {
+    const wrapper = mount(BaseSelectedItem, {
+      props: {
+        item: 'iron sword',
+        amount: 0,
+      },
     });
 
-    // test('item is rendered correctly when item is not passed', () => {
+    const image = wrapper.find('img');
+    await image.trigger('click');
 
-    test('amount input is rendered when prop is passed', () => {
-        const wrapper = mount(BaseSelectedItem, {
-            props: {
-                item: 'iron sword',
-                amount: 0,
-                showAmountInput: true,
-            },
-        });
+    const updateEvent = wrapper.emitted('update:item');
+    expect(updateEvent && updateEvent[0]).toEqual([null]);
+  });
 
-        const image = wrapper.find('img');
-        expect(image.element.src).toContain('iron%20sword.png');
+  // test('item is rendered correctly when item is not passed', () => {
 
-        const input = wrapper.find('#selected-item-amount');
-
-        expect(input.exists()).toBe(true);
+  test('amount input is rendered when prop is passed', () => {
+    const wrapper = mount(BaseSelectedItem, {
+      props: {
+        item: 'iron sword',
+        amount: 0,
+        showAmountInput: true,
+      },
     });
 
-    test('item is empty when no item', () => {
-        const wrapper = mount(BaseSelectedItem, {
-            props: {
-                item: null,
-                amount: 0,
-            },
-        });
+    const image = wrapper.find('img');
+    expect(image.element.src).toContain('iron%20sword.png');
 
-        expect(wrapper.find('img').exists()).toBe(false);
+    const input = wrapper.find('#selected-item-amount');
+
+    expect(input.exists()).toBe(true);
+  });
+
+  test('item is empty when no item', () => {
+    const wrapper = mount(BaseSelectedItem, {
+      props: {
+        item: null,
+        amount: 0,
+      },
     });
 
-    test('amount input is not rendered when prop is not passed', () => {
-        const wrapper = mount(BaseSelectedItem, {
-            props: {
-                item: 'iron sword',
-                amount: 0,
-            },
-        });
+    expect(wrapper.find('img').exists()).toBe(false);
+  });
 
-        const image = wrapper.find('img');
-        expect(image.element.src).toContain('iron%20sword.png');
-
-        const input = wrapper.find('#selected-item-amount');
-
-        expect(input.exists()).toBe(false);
+  test('amount input is not rendered when prop is not passed', () => {
+    const wrapper = mount(BaseSelectedItem, {
+      props: {
+        item: 'iron sword',
+        amount: 0,
+      },
     });
 
-    test('amount input is updated when amount is changed', async () => {
-        const wrapper = mount(BaseSelectedItem, {
-            props: {
-                item: 'iron sword',
-                amount: 0,
-                showAmountInput: true,
-            },
-        });
+    const image = wrapper.find('img');
+    expect(image.element.src).toContain('iron%20sword.png');
 
-        const input = wrapper.find('#selected-item-amount');
+    const input = wrapper.find('#selected-item-amount');
 
-        await input.setValue(10);
+    expect(input.exists()).toBe(false);
+  });
 
-        expect(wrapper.emitted()).toHaveProperty('update:amount');
+  test('amount input is updated when amount is changed', async () => {
+    const wrapper = mount(BaseSelectedItem, {
+      props: {
+        item: 'iron sword',
+        amount: 0,
+        showAmountInput: true,
+      },
     });
+
+    const input = wrapper.find('#selected-item-amount');
+
+    await input.setValue(10);
+
+    expect(wrapper.emitted()).toHaveProperty('update:amount');
+  });
 });

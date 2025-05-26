@@ -1,12 +1,12 @@
-    {
-        "indentSize": 4,
-        "wrapAttributes": "auto",
-        "wrapLineLength": 100,
-        "endWithNewLine": true,
-        "noMultipleEmptyLines": false,
-        "useTabs": false,
-        "sortTailwindcssClasses": true,
-        "sortHtmlAttributes": "none",
-        "noPhpSyntaxCheck": false,
-        "noSingleQuote": false
-    }
+{
+  "indentSize": 4,
+  "wrapAttributes": "auto",
+  "wrapLineLength": 100,
+  "endWithNewLine": true,
+  "noMultipleEmptyLines": false,
+  "useTabs": false,
+  "sortTailwindcssClasses": true,
+  "sortHtmlAttributes": "none",
+  "noPhpSyntaxCheck": false,
+  "noSingleQuote": false
+}

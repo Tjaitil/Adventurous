@@ -1,4 +1,4 @@
 export interface GameEvent {
-    name: string;
-    handle: () => void;
+  name: string;
+  handle: () => void;
 }

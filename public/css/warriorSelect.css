@@ -1,83 +1,83 @@
 .warrior_warning {
-    color: red;
+  color: red;
 }
 #warriors_container {
-    overflow-x: scroll;
-    overflow-y: hidden;
-    margin: 0.5rem;
-    white-space: nowrap;
-    height: auto;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  margin: 0.5rem;
+  white-space: nowrap;
+  height: auto;
 }
 .warrior-card-skill-container img {
-    width: 30px;
-    height: 30px;
+  width: 30px;
+  height: 30px;
 }
 .warrior-card-skill-container {
-    display: flex;
-    justify-content: center;
-    gap: 3px;
+  display: flex;
+  justify-content: center;
+  gap: 3px;
 }
 .warrior-card-skill {
-    display: flex;
-    width: 30px;
-    flex-direction: column;
+  display: flex;
+  width: 30px;
+  flex-direction: column;
 }
 #warriors_container figcaption {
-    display: none;
+  display: none;
 }
 .warrior-select-cards span {
-    position: relative;
-    top: 62%;
-    left: -70%;
-    color: black;
-    text-align: right;
-    float: none;
+  position: relative;
+  top: 62%;
+  left: -70%;
+  color: black;
+  text-align: right;
+  float: none;
 }
 .warrior-select-card {
-    position: relative;
-    display: inline-grid;
-    height: 260px;
-    width: 140px;
-    margin: 2px;
-    border-radius: 5px;
-    padding: 5px 0px 0px 0px;
-    box-sizing: border-box;
-    border: 1px ridge #5f4121;
-    cursor: pointer;
-    transition: transform 1s;
-    perspective: 140px;
-    transform-style: preserve-3d;
-    background-color: var(--contentBgColor);
+  position: relative;
+  display: inline-grid;
+  height: 260px;
+  width: 140px;
+  margin: 2px;
+  border-radius: 5px;
+  padding: 5px 0px 0px 0px;
+  box-sizing: border-box;
+  border: 1px ridge #5f4121;
+  cursor: pointer;
+  transition: transform 1s;
+  perspective: 140px;
+  transform-style: preserve-3d;
+  background-color: var(--contentBgColor);
 }
 .warrior-select-card-selected {
-    border: 3px ridge #5f4121;
+  border: 3px ridge #5f4121;
 }
-.warrior-select-card input[type="checkbox"] {
-    visibility: hidden;
-    position: absolute;
+.warrior-select-card input[type='checkbox'] {
+  visibility: hidden;
+  position: absolute;
 }
 .warrior-select-card button {
-    position: absolute;
-    right: 5px;
-    bottom: 0px;
-    padding: 0px;
-    height: 25px;
-    width: 30px;
-    z-index: 999;
+  position: absolute;
+  right: 5px;
+  bottom: 0px;
+  padding: 0px;
+  height: 25px;
+  width: 30px;
+  z-index: 999;
 }
 .warrior_back {
-    transform: rotateY(180deg);
+  transform: rotateY(180deg);
 }
 .warrior_back ul {
-    list-style-type: none;
+  list-style-type: none;
 }
 .warrior-side {
-    position: absolute;
-    width: 100%;
-    height: calc(100% - 5px);
-    top: 5px;
-    transition: transform 1s;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    background-color: var(--contentBgColor);
+  position: absolute;
+  width: 100%;
+  height: calc(100% - 5px);
+  top: 5px;
+  transition: transform 1s;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background-color: var(--contentBgColor);
 }

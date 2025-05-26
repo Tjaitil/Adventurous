@@ -9,28 +9,28 @@ import { initErrorHandler } from '@/base/ErrorHandler';
 import ConversationContainer from './components/ConversationContainer.vue';
 
 export const i18n = createI18n({
-    locale: 'en',
-    messages: { en: await getLanguageBundle() },
-    legacy: false,
+  locale: 'en',
+  messages: { en: await getLanguageBundle() },
+  legacy: false,
 });
 
 export const pinia = createPinia();
 
 const components = {
-    SkillInfoList,
-    ConversationContainer,
-    InventoryContainer,
+  SkillInfoList,
+  ConversationContainer,
+  InventoryContainer,
 };
 const ErrorHandler = initErrorHandler();
 
 document.querySelectorAll('.vue-app').forEach(element => {
-    const app = createApp({ AppVue, components });
+  const app = createApp({ AppVue, components });
 
-    app.config.errorHandler = async (err, vm, info) => {
-        const errorToLog = err + ' ' + JSON.stringify(vm) + ' ' + info;
+  app.config.errorHandler = async (err, vm, info) => {
+    const errorToLog = err + ' ' + JSON.stringify(vm) + ' ' + info;
 
-        ErrorHandler.logError({ text: errorToLog });
-    };
+    ErrorHandler.logError({ text: errorToLog });
+  };
 
-    app.use(pinia).use(i18n).mount(element);
+  app.use(pinia).use(i18n).mount(element);
 });

@@ -1,28 +1,28 @@
 <template>
-    <baks-card
-        id="inventory"
-        variant="dark"
-        class="relative z-20 float-right mt-0 h-[600px] w-full"
-    >
-        <BaseLoading :is-loading>
-            <p class="mb-4">
-                Inventory
-                <span
-                    id="inventory-status"
-                    :class="{
-                        'not-able-color': inventoryStore.isInventoryFull,
-                    }"
-                >
-                    {{ inventoryStore.inventoryItems.length }} / {{ 18 }}
-                </span>
-            </p>
-            <InventoryItemWrapper
-                v-for="item in inventoryStore.inventoryItems"
-                :key="item.id"
-                :item="item"
-            />
-        </BaseLoading>
-    </baks-card>
+  <baks-card
+    id="inventory"
+    variant="dark"
+    class="relative z-20 float-right mt-0 h-[600px] w-full"
+  >
+    <BaseLoading :is-loading>
+      <p class="mb-4">
+        Inventory
+        <span
+          id="inventory-status"
+          :class="{
+            'not-able-color': inventoryStore.isInventoryFull,
+          }"
+        >
+          {{ inventoryStore.inventoryItems.length }} / {{ 18 }}
+        </span>
+      </p>
+      <InventoryItemWrapper
+        v-for="item in inventoryStore.inventoryItems"
+        :key="item.id"
+        :item="item"
+      />
+    </BaseLoading>
+  </baks-card>
 </template>
 
 <script lang="ts" setup>
@@ -41,24 +41,24 @@ const inventoryStore = useInventoryStore();
 const isLoading = ref(true);
 
 const getInventory = async () => {
-    try {
-        isLoading.value = true;
-        const response =
-            await CustomFetchApi.get<InventoryItem[]>('/inventory/items');
-        inventoryStore.inventoryItems = response.data;
+  try {
+    isLoading.value = true;
+    const response =
+      await CustomFetchApi.get<InventoryItem[]>('/inventory/items');
+    inventoryStore.inventoryItems = response.data;
 
-        isLoading.value = false;
-        inventoryStore.setShouldUpdateInventory(false);
-        itemPrices.get();
-    } catch (e) {
-        reportCatchError(e);
-    }
+    isLoading.value = false;
+    inventoryStore.setShouldUpdateInventory(false);
+    itemPrices.get();
+  } catch (e) {
+    reportCatchError(e);
+  }
 };
 getInventory();
 
 inventoryStore.$subscribe((mutation, state) => {
-    if (state.shouldUpdateInventory && !isLoading.value) {
-        getInventory();
-    }
+  if (state.shouldUpdateInventory && !isLoading.value) {
+    getInventory();
+  }
 });
 </script>

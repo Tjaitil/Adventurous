@@ -1,97 +1,95 @@
 #warriors {
-
 }
 #warrior_container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 200px));
-    grid-gap: 5px;
-    justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 200px));
+  grid-gap: 5px;
+  justify-content: center;
 }
 .armory_view {
-    width: 200px;
-    border: 3px ridge #322c10;
-    margin: 5px;
-    position: relative;
-    background-color: var(--layoutBgColorDark);
-    box-sizing: border-box;
-    color: var(--textColor);
-    padding: 10px 0px 10px 0px;
+  width: 200px;
+  border: 3px ridge #322c10;
+  margin: 5px;
+  position: relative;
+  background-color: var(--layoutBgColorDark);
+  box-sizing: border-box;
+  color: var(--textColor);
+  padding: 10px 0px 10px 0px;
 }
 .armory_view_info {
-    display: flex;
-    justify-content: center;
-    gap: 16px;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
 }
 .armory_view_info_text_wrapper {
-    text-align: left;
+  text-align: left;
 }
 .armory_view_info p {
-    margin-top: 0px;
-    margin-bottom: 0.5rem;
+  margin-top: 0px;
+  margin-bottom: 0.5rem;
 }
 .armory_view img {
-    width: 48px;
-    height: 48px;
-    box-sizing: border-box;
+  width: 48px;
+  height: 48px;
+  box-sizing: border-box;
 }
 .armory_view img:not(.type_icon) {
-    border: 3px ridge #322c10
+  border: 3px ridge #322c10;
 }
 .armory_view_part_grid {
-    display: grid;
-    grid-template-columns: repeat(3, 48px);
-    grid-auto-rows: 48px;
-    grid-template-areas: ". helm ammunition" "right_hand body left_hand" ". legs ." ". boots . ";
-    justify-content: center;
-    gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, 48px);
+  grid-auto-rows: 48px;
+  grid-template-areas: '. helm ammunition' 'right_hand body left_hand' '. legs .' '. boots . ';
+  justify-content: center;
+  gap: 10px;
 }
 .type_icon {
-    max-width: 48px;
-    max-height: 48px;
-    flex-basis: 50%;
-    border: none;
+  max-width: 48px;
+  max-height: 48px;
+  flex-basis: 50%;
+  border: none;
 }
 .armory_view_div {
-    position: relative;
-    grid-area: ammunition;
-
+  position: relative;
+  grid-area: ammunition;
 }
 .ammunition_amount {
-    position: absolute;
-    top: 0px;
-    right: 5px;
-    color: var(--textColor);
+  position: absolute;
+  top: 0px;
+  right: 5px;
+  color: var(--textColor);
 }
 .helm {
-    grid-area: helm;
+  grid-area: helm;
 }
 .left_hand {
-    grid-area: left_hand;
+  grid-area: left_hand;
 }
 .body {
-    grid-area: body;
+  grid-area: body;
 }
 .right_hand {
-    grid-area: right_hand;
+  grid-area: right_hand;
 }
 .legs {
-    grid-area: legs;
+  grid-area: legs;
 }
 .boots {
-    grid-area: boots;
+  grid-area: boots;
 }
 #type {
-    visibility: hidden;
+  visibility: hidden;
 }
 #ranged_alt {
-    visibility: hidden;
+  visibility: hidden;
 }
 #put_on {
-    width: 100%;
+  width: 100%;
 }
 @media all and (max-width: 830px) {
-    #armory_view_span {
-        top: -75%;
-        left: 26%;
-    }
+  #armory_view_span {
+    top: -75%;
+    left: 26%;
+  }
 }

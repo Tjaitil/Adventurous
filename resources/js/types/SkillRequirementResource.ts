@@ -1,4 +1,4 @@
 export interface SkillRequirementResource {
-    skill: string;
-    level: number;
+  skill: string;
+  level: number;
 }

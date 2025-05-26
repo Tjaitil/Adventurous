@@ -1,104 +1,104 @@
 #calculator {
 }
 #calc_result {
-    visibility: hidden;
+  visibility: hidden;
 }
 #stats_individ {
 }
 #warriors {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(156px, 225px));
-    justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(156px, 225px));
+  justify-content: center;
 }
 .warrior {
-    padding: 1rem 0.5rem;
-    min-width: 156px;
-    margin: 5px;
-    background-color: #f2e6d9;
-    border-radius: 5px;
+  padding: 1rem 0.5rem;
+  min-width: 156px;
+  margin: 5px;
+  background-color: #f2e6d9;
+  border-radius: 5px;
 }
 .info {
-    width: 100%;
-    margin-bottom: 3px;
+  width: 100%;
+  margin-bottom: 3px;
 }
 .info img {
-    width: 30%;
-    height: 30%;
-    float: left;
+  width: 30%;
+  height: 30%;
+  float: left;
 }
 .warrior-selected {
-    border: 3px ridge #5f4121;
+  border: 3px ridge #5f4121;
 }
 .warrior-info-container {
-    display: flex;
-    gap: 30px;
+  display: flex;
+  gap: 30px;
 }
 .warrior-info-container > * {
-    flex-basis: 50%;
+  flex-basis: 50%;
 }
 .warrior-info-container > p {
-    flex-basis: 30%;
+  flex-basis: 30%;
 }
 .warrior_level_up {
-    height: 30px;
+  height: 30px;
 }
 .warrior_level_up button {
-    padding-top: 4px;
-    padding-bottom: 4px;
+  padding-top: 4px;
+  padding-bottom: 4px;
 }
 .levels {
-    width: 100%;
+  width: 100%;
 }
 .warrior-skill-container {
-    width: 100%;
-    display: flex;
-    gap: 10px;
+  width: 100%;
+  display: flex;
+  gap: 10px;
 }
 .warrior-skill-container figure {
-    flex-basis: 25%;
+  flex-basis: 25%;
 }
 .warrior figure img {
-    float: left;
+  float: left;
 }
 .skill_bar {
-    height: 25px;
-    width: 80%;
-    border: 1px solid black;
-    background-color: #995c00;
-    position: relative;
-    font-size: 14px;
+  height: 25px;
+  width: 80%;
+  border: 1px solid black;
+  background-color: #995c00;
+  position: relative;
+  font-size: 14px;
 }
 .skill_bar2 {
-    width: 0%;
-    height: 100%;
-    background-color: #ff9900;
-    position: absolute;
-    top: 0px;
-    left: 0px;
+  width: 0%;
+  height: 100%;
+  background-color: #ff9900;
+  position: absolute;
+  top: 0px;
+  left: 0px;
 }
 .skill_bar_progress {
-    width: 100%;
-    display: block;
-    text-align: center;
-    position: relative;
-    height: 100%;
-    /*line-height: 25px;*/
+  width: 100%;
+  display: block;
+  text-align: center;
+  position: relative;
+  height: 100%;
+  /*line-height: 25px;*/
 }
 #overview {
-    margin-top: 10px;
-    width: 100%;
+  margin-top: 10px;
+  width: 100%;
 }
 #transfer {
-    display: none;
+  display: none;
 }
 #rest {
-    display: none;
+  display: none;
 }
 
 .action-additional-div {
-    display: none;
+  display: none;
 }
 
 #multiple-warrior-action-warning {
-    visibility: hidden;
+  visibility: hidden;
 }
