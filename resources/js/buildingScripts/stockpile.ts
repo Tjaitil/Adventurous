@@ -116,7 +116,7 @@ const stockpileModule = {
       .then(async res => {
         document.getElementById('stockpile-list').innerHTML =
           res.html.stockpile;
-        document.getElementById('stck_menu').style.visibility = 'hidden';
+        document.getElementById('stck_menu')?.classList.add('hidden');
 
         stckMenuInput.value = '';
 
@@ -144,7 +144,7 @@ const stockpileModule = {
 
     // Insert item name at the first li
     document.getElementById('stck-current-item').innerHTML = item;
-    menu.style.visibility = 'visible';
+    menu?.classList.remove('hidden');
     // Declare menu top by measuring the positon from top of parent and also if inventory/stockpile is scrolled
     let menuTop;
     const listItems = list.querySelectorAll('li');
@@ -197,7 +197,7 @@ const stockpileModule = {
   },
   hideMenu() {
     const menu = document.getElementById('stck_menu');
-    menu.style.visibility = 'hidden';
+    menu?.classList.add('hidden');
     document.getElementById('news_content').appendChild(menu);
   },
   onClose() {

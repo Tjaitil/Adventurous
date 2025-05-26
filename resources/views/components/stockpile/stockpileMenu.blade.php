@@ -1,5 +1,5 @@
 <div id="stck_menu"
-    class="visible absolute z-10 w-36 max-w-[144px] overflow-scroll rounded-md border-2 border-stone-600 bg-stone-700 py-2 text-center text-xs text-white drop-shadow-xl">
+    class="absolute z-10 w-36 max-w-[144px] overflow-scroll rounded-md border-2 border-stone-600 bg-stone-700 py-2 text-center text-xs text-white drop-shadow-xl hidden">
     <p id="stck-current-item" class="mb-2 mt-0 font-bold"></p>
     <ul id="stck-menu-option-list">
         <x-stockpile.stockpileMenuItem :action-amount="'1'" />
