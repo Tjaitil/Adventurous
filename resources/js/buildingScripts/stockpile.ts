@@ -25,17 +25,11 @@ const stockpileModule = {
     const figures = document
       .getElementById('stockpile')
       .querySelectorAll('figure');
-    figures.forEach(element =>
-      element.addEventListener('click', e => this.show_menu(e)),
-    );
-    if (/Safari|Chrome/i.test(navigator.userAgent)) {
-      const spans = document.getElementsByClassName('item_amount');
-      for (let i = 0; i < spans.length; i++) {
-        const span = spans[i] as HTMLSpanElement;
-        span[i].style.left = '-20%';
-        span[i].style.display = 'block';
-      }
-    }
+    figures.forEach(element => {
+      element.addEventListener('click', e => {
+        this.show_menu(e);
+      });
+    });
   },
   addStockpileActions() {
     const listElements = document
