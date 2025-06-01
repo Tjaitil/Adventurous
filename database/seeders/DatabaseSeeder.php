@@ -28,5 +28,8 @@ class DatabaseSeeder extends Seeder
         $this->call(UserSeeder::class);
         $this->call(ArmoryItemSeeder::class);
         $this->call(WarriorLevelsDataSeeder::class);
+
+        $this->call(TavernRecruitTypeSeeder::class);
+        $this->call(TavernRecruitSeeder::class);
     }
 }
