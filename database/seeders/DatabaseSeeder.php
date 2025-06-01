@@ -27,5 +27,6 @@ class DatabaseSeeder extends Seeder
         $this->call(CityRelationSeeder::class);
         $this->call(UserSeeder::class);
         $this->call(ArmoryItemSeeder::class);
+        $this->call(WarriorLevelsDataSeeder::class);
     }
 }
