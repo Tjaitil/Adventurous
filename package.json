@@ -9,7 +9,7 @@
     "coverage": "vitest run --coverage --coverage.enabled=true"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.0.9",
+    "@tailwindcss/vite": "^4.1.8",
     "axios": "^1.6.8",
     "baks-components-vue": "^0.9.0",
     "baks-components-web": "^0.4.3",
@@ -37,12 +37,12 @@
     "eslint-plugin-vue": "~10.0.0",
     "jsdom": "^25.0.0",
     "laravel-echo": "^2.1.4",
-    "laravel-vite-plugin": "^1.0.1",
+    "laravel-vite-plugin": "^1.2.0",
     "msw": "^2.2.13",
     "prettier": "3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "pusher-js": "^8.4.0",
-    "tailwindcss": "^4.0.9",
+    "tailwindcss": "^4.1.8",
     "typescript": "^5.3.3",
     "vitest": "^3.0.9"
   }
