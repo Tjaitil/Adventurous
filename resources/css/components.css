@@ -11,18 +11,28 @@
 
   baks-card::part(baks-card),
   .bk-card {
-    @apply relative border-8 p-2 shadow-lg after:pointer-events-none after:absolute after:top-0 after:left-0 after:h-full after:w-full after:border-4 after:border-solid after:border-neutral-900/90 after:content-[''];
-    @apply pixelated-corners;
-    border-style: ridge;
-    border-color: rgb(135, 93, 49);
+    border: none;
+    @apply p-2 shadow-lg;
+    @apply after:pointer-events-none after:absolute after:top-0 after:left-0 after:h-full after:w-full after:border-4 after:border-solid after:border-neutral-900/90 after:content-[''];
+    &::before {
+      @apply pixelated-corners pointer-events-none absolute top-[-8px] left-[-8px] border-8 border-solid content-[''];
+      border-style: ridge;
+      height: calc(100% + 16px);
+      width: calc(100% + 16px);
+      border-color: rgb(135, 93, 49);
+    }
 
     &.bk-light {
-      @apply border-yellow-700;
+      &::before {
+        @apply border-yellow-700;
+      }
     }
 
     &.bk-dark {
-      border-color: rgb(135, 93, 49);
       background-color: var(--dark-color);
+      &::before {
+        border-color: rgb(135, 93, 49);
+      }
     }
   }
 }
