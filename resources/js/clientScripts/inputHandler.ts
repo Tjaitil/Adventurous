@@ -27,6 +27,7 @@ import { createApp } from 'vue';
 import { ItemSelector } from '@/ItemSelector';
 import ArmoryPage from '@/ui/pages/ArmoryPage.vue';
 import { useConversationStore } from '@/ui/stores/ConversationStore';
+import PageWrapper from '@/ui/components/PageWrapper.vue';
 
 enum Buildings {
   BAKERY = 'bakery',
@@ -210,6 +211,7 @@ export const inputHandler: IInputHandler = {
           const app = createApp({
             AppVue,
             components: {
+              PageWrapper,
               ArmoryPage,
             },
           });
@@ -269,7 +271,7 @@ export const inputHandler: IInputHandler = {
             }
             this.currentBuildingModule = data;
           });
-        } else if (isCurrentVuePage === false) {
+        } else if (!isCurrentVuePage) {
           switch (building) {
             case 'archeryshop':
               this.currentBuildingModule = archeryShopModule;
