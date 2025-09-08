@@ -1,32 +1,46 @@
 <?php
+
+namespace App\Models;
+
+use App\libs\database;
+use model;
+
+/**
+ * @deprecated It set to be deleted. Use \App\Http\Controllers\SkillsController
+ */
 class LevelUp_model extends model
 {
     public $username;
-    public $session;
-    public $profiency;
-    public $new_levels = array();
-    public $db;
 
-    function __construct($session, Database $db)
+    public $session;
+
+    public $profiency;
+
+    public $new_levels = [];
+
+    public database $db;
+
+    public function __construct($session, database $db)
     {
         $this->username = $session['username'];
         $this->session = $session;
         $this->db = $db;
     }
+
     public function updateData()
     {
         // Update levels
-        $profiencies = array('farmer' . 'miner', 'warrior', 'trader', 'adventurer');
-        $new_level = array();
+        $profiencies = ['farmer'.'miner', 'warrior', 'trader', 'adventurer'];
+        $new_level = [];
         if (in_array($this->session['level_up'], $profiencies) !== false) {
-            throw new Exception($this->username, "Not valid skill: " . $this->session['level_up'] . __METHOD__);
+            throw new Exception($this->username, 'Not valid skill: '.$this->session['level_up'].__METHOD__);
 
             return false;
         }
         $param_xp = 1000;
-        $sql = "SELECT level, next_level FROM level_data WHERE next_level > :xp ORDER BY next_level ASC LIMIT 1";
+        $sql = 'SELECT level, next_level FROM level_data WHERE next_level > :xp ORDER BY next_level ASC LIMIT 1';
         $stmt = $this->db->conn->prepare($sql);
-        $stmt->bindParam(":xp", $param_xp);
+        $stmt->bindParam(':xp', $param_xp);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $this->session['level_up'] = array_unique($this->session['level_up']);
@@ -37,15 +51,15 @@ class LevelUp_model extends model
 
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             // $value is the profiency
-            $this->new_levels[] = array($value, $row['level'], $row['next_level']);
+            $this->new_levels[] = [$value, $row['level'], $row['next_level']];
         }
         foreach ($this->new_levels as $key) {
             $param_level = $key[1];
             $param_username = $this->username;
             $sql = "UPDATE user_levels SET {$key[0]}_level=:level WHERE username=:username";
             $stmt = $this->db->conn->prepare($sql);
-            $stmt->bindParam(":level", $param_level, PDO::PARAM_INT);
-            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+            $stmt->bindParam(':level', $param_level, PDO::PARAM_INT);
+            $stmt->bindParam(':username', $param_username, PDO::PARAM_STR);
             $stmt->execute();
         }
         // Select next_level for leveled up profiencies which prevents the message from repeating
@@ -61,22 +75,24 @@ class LevelUp_model extends model
                 $_SESSION['gamedata']['profiency_xp_nextlevel'] = $next_level;
             }
         }
-        $_SESSION['gamedata']['level_up'] = array();
-        return array("skill" => $skill, "new_level" => $level);
+        $_SESSION['gamedata']['level_up'] = [];
+
+        return ['skill' => $skill, 'new_level' => $level];
         /*$this->levelupData();*/
     }
+
     public function levelupData()
     {
         //Get data for the level that you have unlocked
-        $data = array();
+        $data = [];
 
-        $sql = "SELECT image, unlocked FROM levelup_data WHERE profiency= ? AND level= ?";
+        $sql = 'SELECT image, unlocked FROM levelup_data WHERE profiency= ? AND level= ?';
         $stmt = $this->db->conn->prepare($sql);
 
         $i = 0;
         foreach ($this->new_levels as $key) {
-            $stmt->execute(array($key[0], $key[1]));
-            $data[$i] = array();
+            $stmt->execute([$key[0], $key[1]]);
+            $data[$i] = [];
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 $data[$i]['content'][] = $row;
             }
