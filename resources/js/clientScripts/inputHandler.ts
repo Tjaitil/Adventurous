@@ -25,7 +25,7 @@ import { i18n, pinia } from '@/ui/main';
 import AppVue from '@/ui/components/App.vue';
 import { createApp } from 'vue';
 import { ItemSelector } from '@/ItemSelector';
-import ArmoryPage from '@/ui/pages/ArmoryPage.vue';
+import ArmoryPage from '@/ui/buildings/ArmoryPage.vue';
 import { useConversationStore } from '@/ui/stores/ConversationStore';
 import PageWrapper from '@/ui/components/PageWrapper.vue';
 
