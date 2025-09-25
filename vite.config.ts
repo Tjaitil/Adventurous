@@ -62,17 +62,20 @@ export default defineConfig({
           variants: {
             variant: {
               outline: {
-                // bg-[#ebd9c6]
-                root: 'bg-orange-100 before:border-orange-200',
+                root: 'bg-orange-100 before:border-stone-400',
+                body: 'p-4 sm:p-4',
               },
               soft: {
-                root: 'before:border-orange-200',
+                root: 'before:border-stone-400',
+                body: 'p-4 sm:p-4',
               },
               subtle: {
-                root: 'before:border-orange-200',
+                root: 'before:border-stone-400',
+                body: 'p-4 sm:p-4',
               },
               solid: {
                 root: 'before:border-stone-700 after:border-primary-800',
+                body: 'p-4 sm:p-4',
               },
             },
           },
@@ -111,7 +114,6 @@ export default defineConfig({
         'resources/js/backgroundScroller.ts',
         'resources/js/clientScripts/sidebar.ts',
         'resources/css/app.css',
-        'resources/css/theme.css',
       ],
       refresh: false,
     }),
