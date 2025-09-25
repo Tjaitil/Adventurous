@@ -23,17 +23,17 @@ html {
   font-size: 100%;
 }
 
-body {
-  /*padding: 10px 8%;*/
+.body-layout {
+  padding: 10px 8%;
   background-color: #120e07;
-  /*font-family: 'Source Sans Pro', 'bold';*/
+  font-family: 'Source Sans Pro', 'bold';
   font-family: serif;
   font-size: 16px;
   padding: 10px 5px;
   display: grid;
   grid-gap: 10px;
   width: 100%;
-  /*grid-templates-areas: 'header header header aside section section section footer footer footer';*/
+  grid-templates-areas: 'header header header aside section section section footer footer footer';
   grid-template-rows: 200px auto 100px;
   grid-template-columns: 12% 87%;
   box-sizing: border-box;
@@ -420,11 +420,10 @@ section img:not([class*='w-'], [width]) {
   vertical-align: middle;
 }
 
-table button {
+table .adv-button {
   margin-top: 5px;
 }
-
-button:not(.custom-button, .bk-button) {
+.adv-button {
   background-color: #f2e6d9;
   border-radius: 5px;
   border: 1px outset;
@@ -437,7 +436,7 @@ button:not(.custom-button, .bk-button) {
   transition: filter 0.5s ease-out;
 }
 
-button:hover:not(.bk-button) {
+.adv-button:hover {
   filter: brightness(var(--transitionDuration));
 }
 
@@ -446,11 +445,11 @@ button:hover:not(.bk-button) {
   color: #999;
 }
 
-button:not(.building-tab):active {
+.adv-button {
   background-color: #ebd9c6;
 }
 
-button:not(.bk-button):focus {
+.adv-button:focus {
   outline: 0;
 }
 
@@ -966,7 +965,7 @@ input::-webkit-inner-spin-button {
 
 .loading-icon {
   height: 32px;
-  width: auto;
+  width: 32px;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
   will-change: filter;

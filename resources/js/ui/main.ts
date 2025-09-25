@@ -6,6 +6,7 @@ import { createI18n } from 'vue-i18n';
 import { getLanguageBundle } from './localeSetup';
 import InventoryContainer from './components/Inventory/InventoryContainer.vue';
 import { initErrorHandler } from '@/base/ErrorHandler';
+import ui from '@nuxt/ui/vue-plugin';
 import ConversationContainer from './components/ConversationContainer.vue';
 
 export const i18n = createI18n({
@@ -32,5 +33,5 @@ document.querySelectorAll('.vue-app').forEach(element => {
     ErrorHandler.logError({ text: errorToLog });
   };
 
-  app.use(pinia).use(i18n).mount(element);
+  app.use(pinia).use(ui).use(i18n).mount(element);
 });

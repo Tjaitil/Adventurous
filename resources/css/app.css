@@ -1,44 +1,40 @@
 @import 'tailwindcss';
-@import 'baks-components-vue/themes/default.css';
-@source '../../node_modules/baks-components-vue/dist/index.css';
+@import '@nuxt/ui';
+@source '../js/**/*.{ts,vue}';
+@source '../../vite.config.ts';
+/* @import 'baks-components-vue/themes/default.css'; */
+/* @source '../../node_modules/baks-components-vue/dist/index.css'; */
+:root {
+  --ui-radius: 0rem;
+  --ui-text: black;
+}
 
-@theme {
+@theme static {
   --color-primary-50: #faf5f0;
   --color-primary-100: #f4ebe1;
   --color-primary-200: #e9d7c3;
   --color-primary-300: #dfc3a5;
   --color-primary-400: #d4af87;
-  --color-primary-500: #c99b69;
-  --color-primary-600: #b47c41;
+  --color-primary-500: #b47c41;
+  --color-primary-600: #9d6a38;
   --color-primary-700: #875d31;
   --color-primary-800: #5a3e20;
   --color-primary-900: #2d1f10;
   --color-primary-950: #171008;
-  --light-color: var(--color-orange-50);
-  --light-color-hover: var(--color-orange-100);
-  --light-color-focus: var(--color-orange-100);
-  --light-color-active: var(--color-orange-100);
-  --light-color-border: var(--color-orange-100);
-  --light-color-text: black;
-  --color-mint-500: oklch(0.72 0.11 178);
+
   --primary-color: var(--color-primary-500);
-  --primary-color-hover: var(--color-primary-600);
-  --primary-color-focus: var(--color-primary-600);
-  --primary-color-active: var(--color-primary-600);
-  --primary-color-border: var(--color-primary-600);
 
-  --secondary-color: var(--color-cyan-700);
-  --secondary-color-hover: var(--color-cyan-800);
-  --secondary-color-focus: var(--color-cyan-800);
-  --secondary-color-active: var(--color-cyan-800);
-  --secondary-color-border: var(--color-cyan-800);
-  --secondary-color-text: white;
-
-  --dark-color: #5a3e20;
-  --dark-color-hover: #5a3e20;
-  --dark-color-focus: #5a3e20;
-  --dark-color-active: #5a3e20;
-  --dark-color-border: #5a3e20;
+  --color-secondary-50: var(--color-cyan-50);
+  --color-secondary-100: var(--color-cyan-100);
+  --color-secondary-200: var(--color-cyan-200);
+  --color-secondary-300: var(--color-cyan-300);
+  --color-secondary-400: var(--color-cyan-400);
+  --color-secondary-500: var(--color-cyan-700);
+  --color-secondary-600: var(--color-cyan-700);
+  --color-secondary-700: var(--color-cyan-700);
+  --color-secondary-800: var(--color-cyan-800);
+  --color-secondary-900: var(--color-cyan-900);
+  --color-secondary-950: var(--color-cyan-950);
 }
 
 /*
@@ -167,4 +163,8 @@
     4px calc(100% - 8px),
     0px calc(100% - 8px)
   );
+}
+
+.card::before {
+  border-style: ridge;
 }
