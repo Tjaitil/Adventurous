@@ -1,7 +1,7 @@
 import { StaticGameObject } from '../types/gamepieces/StaticGameObject';
 import viewport from '../clientScripts/viewport';
-import { NonDrawingTypes } from './NonDrawingTypes';
 import { AssetPaths } from '../clientScripts/ImagePath';
+import { GamePieces } from '@/clientScripts/gamePieces';
 
 export class BaseStaticGameObject implements StaticGameObject {
   public type: string;
@@ -50,10 +50,10 @@ export class BaseStaticGameObject implements StaticGameObject {
     this.sprite = new Image(this.width, this.height);
 
     this.sprite.src = AssetPaths.getImagePath(this.src);
-    if (!this.src && !NonDrawingTypes.includes(this.type)) {
-      console.error('No image source found for ' + initObjectData);
+    if (!this.src && !GamePieces.nonDrawingTypes.includes(this.type)) {
+      console.error('No image source found for ' + this.src);
     }
     // check source for missing format
-    if (this.sprite.src.includes('.png') === false) this.sprite.src += '.png';
+    if (!this.sprite.src.includes('.png')) this.sprite.src += '.png';
   }
 }

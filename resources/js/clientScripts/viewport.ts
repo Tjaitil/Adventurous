@@ -1,9 +1,6 @@
-import { GamePieces } from './gamePieces';
 import { Game } from '../advclient';
 import { CanvasSprite } from '../types/CanvasSprite';
-import { Character } from '../gamepieces/Character';
-import { Building } from '../gamepieces/Building';
-import { NonDrawingTypes } from '../gamepieces/NonDrawingTypes';
+import { AssetPaths } from './ImagePath';
 
 interface IViewport {
   counter: number;
@@ -75,7 +72,7 @@ export const viewport = {
   zoom: 1.2,
   worldImage: new Image(3200, 3200),
   width: 0,
-  height: 0,
+  height: 850,
   top: 0,
   left: 0,
   offsetX: 0,
@@ -189,12 +186,16 @@ export const viewport = {
     this.layer.frontObjects.scale(this.zoom, this.zoom);
     this.layer.hud.scale(this.zoom, this.zoom);
   },
-  adjustViewport(xbase, ybase, src) {
+  setImageWorldSrc() {
+    this.worldImage.src = AssetPaths.getImagePath(
+      Game.properties.currentMap + '.png',
+    );
+  },
+  adjustViewport(xbase, ybase) {
     this.playerCanvasX = Math.floor(this.width / 2 - 45);
     this.playerCanvasY = Math.floor(this.height / 2 - 45);
     this.offsetX = xbase - this.playerCanvasX;
     this.offsetY = ybase - this.playerCanvasY;
-    this.worldImage.src = src;
   },
   init() {
     this.drawBackground(0, 0);
@@ -238,7 +239,9 @@ export const viewport = {
     if (layer === 'background') {
       this.layer.background.drawImage(img, spriteX, spriteY, width, height);
     } else if (layer === 'frontObjects') {
-      this.layer.frontObjects.drawImage(img, spriteX, spriteY, width, height);
+      if (!img.src.includes('/.png')) {
+        this.layer.frontObjects.drawImage(img, spriteX, spriteY, width, height);
+      }
     }
   },
   resetSpriteLayer() {
@@ -281,47 +284,6 @@ export const viewport = {
   drawDaqloonHealthbar(fillstyle, x, y, width, height) {
     this.layer.sprite.fillStyle = fillstyle;
     this.layer.sprite.fillRect(x, y, width, height);
-  },
-  checkViewportGamePieces(first = false) {
-    // If player has moved a certain amount of pixels update object that will be drawn
-
-    if (
-      Math.abs(GamePieces.player.xTracker) > 100 ||
-      Math.abs(GamePieces.player.yTracker) > 100 ||
-      first == true
-    ) {
-      GamePieces.nearObjects = GamePieces.objects.filter(object => {
-        return (
-          (Math.abs(object.diameterRight - GamePieces.player.xpos) <=
-            this.width + 50 ||
-            Math.abs(object.diameterLeft - GamePieces.player.xpos) <=
-              this.width + 50) &&
-          (Math.abs(object.diameterUp - GamePieces.player.ypos) <=
-            this.height + 50 ||
-            Math.abs(object.diameterDown - GamePieces.player.ypos) <=
-              this.height + 50)
-        );
-      });
-
-      GamePieces.nearBuildings = [];
-      GamePieces.nearCharacters = [];
-      GamePieces.visibleObjects = [];
-
-      GamePieces.nearObjects.forEach(object => {
-        if (object instanceof Character && object.type === 'character') {
-          GamePieces.nearCharacters.push(object);
-        } else if (object instanceof Building && object.type === 'building') {
-          GamePieces.nearBuildings.push(object);
-        }
-
-        if (!NonDrawingTypes.includes(object.type) && object.visible) {
-          GamePieces.visibleObjects.push(object);
-        }
-      });
-
-      GamePieces.player.xTracker = 0;
-      GamePieces.player.yTracker = 0;
-    }
   },
 };
 

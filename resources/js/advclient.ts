@@ -1,4 +1,3 @@
-import { ajaxP } from './ajax';
 import { loadingCanvas } from './clientScripts/canvasText';
 import { ClientOverlayInterface } from './clientScripts/clientOverlayInterface';
 import { collisionCheck } from './clientScripts/collision';
@@ -6,83 +5,18 @@ import { controls } from './clientScripts/controls';
 import { eventHandler } from './clientScripts/gameEventHandler';
 import { GamePieces } from './clientScripts/gamePieces';
 import { HUD } from './clientScripts/HUD';
-import { itemPrices } from './clientScripts/inventory';
 import { Map } from './clientScripts/map';
 import { pauseManager } from './clientScripts/pause';
-import { tutorial } from './clientScripts/tutorial';
 import viewport from './clientScripts/viewport';
 import { CustomFetchApi } from './CustomFetchApi';
 import { GameProperties, loadWorldParameters } from './types/Advclient';
 import { jsUcWords } from './utilities/uppercase';
 import { setUpTabList } from './utilities/tabs';
-import { AssetPaths } from './clientScripts/ImagePath';
-import { GetWorldResponse } from './types/Responses/WorldLoaderResponse';
+import type { GetWorldResponse } from './types/Responses/WorldLoaderResponse';
 import { initErrorHandler, reportCatchError } from './base/ErrorHandler';
 import { useConversationStore } from './ui/stores/ConversationStore';
 
-const CookieTicket = {
-  checkCookieTicket(cookieNoob = 'getOut') {
-    const today = new Date();
-    let cookieTicket;
-    if (CookieTicket.sweetCookie === null) {
-      cookieTicket = today.getMonth() + today.getDate() + '|';
-      for (let i = 0; i < 10; i++) {
-        cookieTicket += Math.floor(Math.random() * (10 - 1) + 1);
-      }
-      CookieTicket.sweetCookie = cookieTicket;
-    } else {
-      cookieTicket = CookieTicket.sweetCookie;
-    }
-    const data =
-      'model=cookieMaker' +
-      '&method=yummyCookies' +
-      '&cookieTicket=' +
-      cookieTicket +
-      '&cookieNoob=' +
-      cookieNoob;
-    ajaxP(data, function (response) {
-      console.log(response);
-      const responseText = response[1].status;
-      if (responseText.status === 'false') {
-        // Session check return false, go to logout
-        alert(
-          'A newer session is ongoing. You are being logged out from this session',
-        );
-        setTimeout(() => {
-          location.href = '/logout';
-        }, 5000);
-      } else {
-        return;
-      }
-    });
-  },
-  disposeGarbage(event) {
-    const ego = event.target.innerText;
-    if (ego === '') {
-      this.checkCookieTicket();
-    } else {
-      this.burntCookie();
-    }
-  },
-  burntCookie() {
-    const data =
-      'model=cookieMaker' +
-      '&method=delicCookies' +
-      '&cookieTicket=' +
-      CookieTicket.sweetCookie;
-    ajaxP(data, function (response) {
-      console.log(response);
-      if (response[1] == false) {
-        window.cancelAnimationFrame(Game.properties.requestId);
-        // Game.loadWorld({});
-      } else {
-        return;
-      }
-    });
-  },
-  sweetCookie: null,
-};
-
+// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class Game {
   public static properties: GameProperties = {
     duration: 0,
@@ -101,6 +35,8 @@ export class Game {
     checkingPerson: 'none',
     delta: 0,
   };
+
+  public static worldData: GetWorldResponse['data'];
 
   public static getProperty(val: keyof GameProperties) {
     return this.properties[val];
@@ -132,14 +68,21 @@ export class Game {
 
   public static async getWorld() {
     this.pauseWorld();
+
     await CustomFetchApi.get<GetWorldResponse>('/worldloader')
       .then(response => {
         this.loadWorld(response.data);
       })
-      .catch(error => reportCatchError(error));
+      .catch((error: unknown) => {
+        reportCatchError(error);
+      });
   }
 
-  public static async setWorld(parameters: loadWorldParameters) {
+  public static setWorldData(data: GetWorldResponse['data']) {
+    this.worldData = data;
+  }
+
+  public static setWorld(parameters: loadWorldParameters) {
     this.pauseWorld();
 
     let data;
@@ -159,11 +102,25 @@ export class Game {
       };
     }
 
-    await CustomFetchApi.post<GetWorldResponse>('/worldloader/change', data)
-      .then(async response => {
-        await this.loadWorld(response.data, parameters);
+    CustomFetchApi.post<GetWorldResponse>('/worldloader/change', data)
+      .then(response => {
+        this.loadWorld(response.data, parameters);
+
+        viewport.adjustViewport(Game.properties.xbase, Game.properties.ybase);
+        GamePieces.loadAssets(
+          Game.properties.xbase,
+          Game.properties.ybase,
+          this.worldData.map_data,
+        );
+        Map.load(Game.properties.currentMap);
+        setTimeout(() => {
+          void loadingCanvas.loadingAnimationTracker.start('open');
+          Game.startGame();
+        }, 3000);
       })
-      .catch(error => reportCatchError(error));
+      .catch((error: unknown) => {
+        reportCatchError(error);
+      });
   }
 
   private static pauseWorld() {
@@ -172,12 +129,12 @@ export class Game {
 
     GamePieces.player.travel = false;
     if (loadingCanvas.opacity !== 1)
-      loadingCanvas.loadingAnimationTracker.start('close');
+      void loadingCanvas.loadingAnimationTracker.start('close');
 
     GamePieces.reset();
   }
 
-  public static async loadWorld(
+  public static loadWorld(
     response: GetWorldResponse,
     parameters?: loadWorldParameters,
   ) {
@@ -186,62 +143,28 @@ export class Game {
     if (data.changed_location) {
       document.title = jsUcWords(data.changed_location.replace('-', ' '));
     }
-    // for (let x = 0; x < data.events.length; x++) {
-    //     eventHandler.events.push(data.events[x]);
-    // }
-    function findStartPoint(object) {
-      return object.type === 'start_point';
-    }
-    function removeStartPoint(object) {
-      return object.type !== 'start_point';
-    }
+    const findStartPoint = (object: { type: string }) =>
+      object.type === 'start_point';
+    const removeStartPoint = (object: { type: string }) =>
+      object.type !== 'start_point';
     const startPoints = data.map_data.objects.filter(findStartPoint);
-    GamePieces.objects = GamePieces.objects.filter(removeStartPoint);
+    response.data.map_data.objects =
+      response.data.map_data.objects.filter(removeStartPoint);
 
-    if (parameters?.method === 'nextMap' && parameters.newxBase != null) {
-      // Legge til xbase i JSON map filene
+    if (parameters?.method === 'nextMap') {
       Game.properties.xbase = parameters.newxBase;
     } else if (startPoints.length > 0) {
       Game.properties.xbase = startPoints[0].x;
     }
 
-    if (parameters?.method === 'nextMap' && parameters.newxBase !== null) {
-      // Legge til ybase i JSON map filene
+    if (parameters?.method === 'nextMap') {
       Game.properties.ybase = parameters.newyBase;
     } else if (startPoints.length > 0) {
       Game.properties.ybase = startPoints[0].y;
     }
 
-    const worldMapSrc = AssetPaths.getImagePath(
-      Game.properties.currentMap + '.png',
-    );
-    viewport.adjustViewport(
-      Game.properties.xbase,
-      Game.properties.ybase,
-      worldMapSrc,
-    );
-
-    GamePieces.loadAssets(
-      Game.properties.xbase,
-      Game.properties.ybase,
-      data.map_data,
-    );
-    viewport.checkViewportGamePieces(true);
-
-    Map.load(Game.properties.currentMap);
-
-    setTimeout(() => {
-      loadingCanvas.loadingAnimationTracker.start('open');
-      Game.startGame();
-      // if (
-      //     parameters.method !== 'changeMap' &&
-      //     Game.properties.currentMap == '9.9'
-      // ) {
-      //     if (Game.properties.currentMap == '9.9') {
-      //         tutorial.startTutorial();
-      //     }
-      // }
-    }, 3000);
+    viewport.setImageWorldSrc();
+    this.setWorldData(response.data);
   }
 
   private static getNextWorld() {
@@ -282,7 +205,7 @@ export class Game {
       match = true;
     }
 
-    if (match !== true) {
+    if (!match) {
       return false;
     } else {
       GamePieces.player.travel = true;
@@ -312,60 +235,60 @@ export class Game {
       text: document.getElementById('text_canvas') as HTMLCanvasElement,
       hud: document.getElementById('hud_canvas') as HTMLCanvasElement,
     });
-    // Initial loading screen
-    loadingCanvas.loadingScreen();
+    viewport.adjustViewport(Game.properties.xbase, Game.properties.ybase);
 
-    this.loadGame();
+    HUD.setup(viewport.width, viewport.height, viewport.top, viewport.left);
+    controls.setup();
+    Map.load(Game.properties.currentMap);
+
+    GamePieces.loadAssets(
+      Game.properties.xbase,
+      Game.properties.ybase,
+      this.worldData.map_data,
+    );
+
+    loadingCanvas.loadingScreen();
     setTimeout(() => {
-      document.getElementById('client-container').style.opacity = '' + 1;
+      void loadingCanvas.loadingAnimationTracker.start('open');
+      Game.startGame();
+    }, 3000);
+
+    setTimeout(() => {
+      const clientContainer = document.getElementById('client-container');
+      if (clientContainer) {
+        clientContainer.style.opacity = '1';
+      }
     }, 500);
   }
 
-  private static loadGame() {
-    HUD.setup(viewport.width, viewport.height, viewport.top, viewport.left);
-    this.getWorld();
-    controls.checkDeviceType();
-    // CookieTicket.checkCookieTicket("checkMeOut");
-  }
-
   private static startGame() {
-    Game.properties.requestId = null;
+    Game.properties.requestId = 0;
     GamePieces.player.draw();
     GamePieces.init();
     pauseManager.resumeGame(true);
   }
 
-  public static update(timestamp) {
+  public static update = (timestamp: number) => {
     Game.properties.delta =
       (timestamp - Game.properties.timestamp) / 1000 / viewport.zoom;
     if (Game.properties.delta > 0.08) {
       Game.properties.delta = Math.round(0.16 / viewport.zoom) * 2;
     }
     Game.properties.timestamp = timestamp;
-    // Calculate the number of seconds passed since the last frame
-    // let secondsPassed = (timestamp - Game.properties.timestamp) / 1000;
-    // Calculate fps
-    // if (!FPS_TRACKER[Math.round(1 / secondsPassed)]) {
-    //     FPS_TRACKER[Math.round(1 / secondsPassed)] = 1;
-    // } else {
-    //     FPS_TRACKER[Math.round(1 / secondsPassed)]++;
-    // }
-    // console.log("FPS: " + Math.round(1 / secondsPassed));
-
     if (Game.properties.gameState !== 'playing') {
       return false;
     }
 
-    if (controls.playerLeft === true) {
+    if (controls.playerLeft) {
       GamePieces.player.speedX = -GamePieces.player.speed;
-    } else if (controls.playerRight === true) {
+    } else if (controls.playerRight) {
       GamePieces.player.speedX = GamePieces.player.speed;
     } else {
       GamePieces.player.speedX = 0;
     }
-    if (controls.playerUp === true) {
+    if (controls.playerUp) {
       GamePieces.player.speedY = -GamePieces.player.speed;
-    } else if (controls.playerDown === true) {
+    } else if (controls.playerDown) {
       GamePieces.player.speedY = GamePieces.player.speed;
     } else {
       GamePieces.player.speedY = 0;
@@ -373,14 +296,14 @@ export class Game {
     viewport.resetSpriteLayer();
     if (
       // (GamePieces.player.speedX != 0 || GamePieces.player.speedY != 0) &&
-      Game.properties.inBuilding == false &&
-      useConversationStore().isActive === false
+      !Game.properties.inBuilding &&
+      !useConversationStore().isActive
     ) {
       eventHandler.checkEvent();
-      viewport.checkViewportGamePieces();
+      GamePieces.checkViewportGamePieces();
       collisionCheck(GamePieces.player, false);
       GamePieces.player.newPos();
-    } else if (GamePieces.player.animationEnd != true) {
+    } else if (!GamePieces.player.animationEnd) {
       GamePieces.player.newPos(false);
     }
 
@@ -404,6 +327,12 @@ export class Game {
     }
     Game.properties.duration++;
     Game.properties.requestId = window.requestAnimationFrame(Game.update);
-  }
+  };
 }
-window.addEventListener('DOMContentLoaded', () => Game.setup());
+window.addEventListener('DOMContentLoaded', () => {
+  void (async () => {
+    await Game.getWorld().finally(() => {
+      Game.setup();
+    });
+  })();
+});
