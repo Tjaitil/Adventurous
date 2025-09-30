@@ -5,6 +5,7 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import type { DefineComponent } from 'vue';
 import { createApp, h } from 'vue';
+import ui from '@nuxt/ui/vue-plugin';
 
 void createInertiaApp({
   resolve: async name => {
@@ -18,6 +19,7 @@ void createInertiaApp({
   setup({ el, App, props, plugin }) {
     createApp({ render: () => h(App, props) })
       .use(plugin)
+      .use(ui)
       .mount(el);
   },
   progress: {

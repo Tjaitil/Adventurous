@@ -7,24 +7,32 @@
     "module": "ES2022",
     "useDefineForClassFields": true,
     "skipLibCheck": true,
-
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-
-    "types": ["vite/client", "vitest"],
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
-
+    "types": [
+      "vite/client",
+      "vitest"
+    ],
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-
     "paths": {
-      "@/*": ["./resources/js/*"]
+      "@/*": [
+        "./resources/js/*"
+      ],
+      "#build/ui": [
+        "./node_modules/@nuxt/ui/.nuxt/ui"
+      ]
     }
   },
   "include": [
@@ -32,7 +40,12 @@
     "resources/js/**/*.vue",
     "tailwind.config.js",
     "eslint.config.ts",
-    "vite.config.ts"
+    "vite.config.ts",
+    "auto-imports.d.ts",
+    "components.d.ts"
   ],
-  "exclude": ["node_modules", "vendor"]
+  "exclude": [
+    "node_modules",
+    "vendor"
+  ]
 }
