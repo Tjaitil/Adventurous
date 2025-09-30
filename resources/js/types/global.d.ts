@@ -1,12 +1,20 @@
-import { PageProps as InertiaPageProps, Page } from '@inertiajs/core';
+import type { PageProps as InertiaPageProps, Page } from '@inertiajs/core';
+import type { Player } from './Player';
 
-export interface SharedProps extends InertiaPageProps {
+export interface AuthSharedProps extends InertiaPageProps {
   /**
    * SharedProps defined in middleware
    */
-  // player: Player;
+  player: Player;
+}
+
+export interface UnauthSharedProps extends InertiaPageProps {
+  /**
+   * SharedProps defined in middleware
+   */
+  player: null;
 }
 
 declare module '@inertiajs/vue3' {
-  export function usePage(): Page<SharedProps>;
+  export function usePage<T = AuthSharedProps>(): Page<T>;
 }
