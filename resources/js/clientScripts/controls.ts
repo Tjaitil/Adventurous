@@ -204,7 +204,7 @@ export const controls = {
     this.playerRight = false;
     this.playerDown = false;
   },
-  checkDeviceType() {
+  setup() {
     // Check for device type and bind events according to device
     if (
       window.screen.width > 830 ||

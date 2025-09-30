@@ -22,6 +22,8 @@ let draw = false;
 
 // TODO: Create class
 export const GamePieces = {
+  nonDrawingTypes: ['figure', 'nc_object', 'start_point'],
+  assets: [],
   events: [],
   items: [] as Item[],
   objects: [] as gameObjectTypes[],
@@ -43,6 +45,7 @@ export const GamePieces = {
     this.daqloon_fighting_area = undefined;
   },
   loadAssets(xbase, ybase, mapData: WorldMapData) {
+    console.log(mapData);
     this.player.load(xbase, ybase, null);
     this.loadDaqloonFightingArea(mapData.daqloon_fighting_areas);
     this.loadStaticPieces(mapData.objects);
@@ -61,6 +64,13 @@ export const GamePieces = {
     }
   },
   loadStaticPieces(initObjects: GameObject[]) {
+    GamePieces.objects = [];
+    GamePieces.visibleObjects = [];
+    GamePieces.nearObjects = [];
+    GamePieces.nearCharacters = [];
+    GamePieces.nearBuildings = [];
+    GamePieces.buildings = [];
+    GamePieces.characters = [];
     initObjects.forEach(object => {
       let instantiatedObject;
 
@@ -85,6 +95,8 @@ export const GamePieces = {
     GamePieces.objects.sort((a, b) => {
       return a.diameterDown - b.diameterDown;
     });
+
+    this.checkViewportGamePieces(true);
   },
   init() {
     GamePieces.drawStaticPieces();
@@ -138,7 +150,7 @@ export const GamePieces = {
     inputHandler.checkCharacter();
     inputHandler.checkBuilding();
 
-    if (draw === true) {
+    if (draw) {
       addModuleTester(GamePieces.objects, 'GamePieces');
       addModuleTester(GamePieces.visibleObjects, 'visibleObjects');
       for (let i = 0, n = GamePieces.objects.length; i < n; i++) {
@@ -165,6 +177,48 @@ export const GamePieces = {
       }
     }
   },
+  checkViewportGamePieces(first = false) {
+    // If player has moved a certain amount of pixels update object that will be drawn
+
+    if (
+      Math.abs(GamePieces.player.xTracker) > 100 ||
+      Math.abs(GamePieces.player.yTracker) > 100 ||
+      first
+    ) {
+      this.nearObjects = this.objects.filter(object => {
+        return (
+          (Math.abs(object.diameterRight - this.player.xpos) <=
+            viewport.width + 50 ||
+            Math.abs(object.diameterLeft - this.player.xpos) <=
+              viewport.width + 50) &&
+          (Math.abs(object.diameterUp - this.player.ypos) <=
+            viewport.height + 50 ||
+            Math.abs(object.diameterDown - this.player.ypos) <=
+              viewport.height + 50)
+        );
+      });
+
+      this.nearBuildings = [];
+      this.nearCharacters = [];
+      this.visibleObjects = [];
+
+      this.nearObjects.forEach(object => {
+        if (object instanceof Character && object.type === 'character') {
+          this.nearCharacters.push(object);
+        } else if (object instanceof Building && object.type === 'building') {
+          this.nearBuildings.push(object);
+        }
+
+        if (!this.nonDrawingTypes.includes(object.type) && object.visible) {
+          this.visibleObjects.push(object);
+        }
+      });
+
+      this.player.xTracker = 0;
+      this.player.yTracker = 0;
+    }
+  },
+
   drawDaqloons() {
     if (this.daqloon.length > 0) {
       for (const daqloon of this.daqloon) {

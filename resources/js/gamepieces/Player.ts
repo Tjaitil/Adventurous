@@ -41,7 +41,7 @@ export class Player implements MovingGameObject {
   down: DirectionBlockedCheck;
   right: DirectionBlockedCheck;
   playerSize = 38;
-  diameterUp = this.y;
+  diameterUp = this.y + 0;
   diameterRight = this.x + this.width - 5;
   diameterDown = this.y + 28;
   diameterLeft = this.x + 5;
@@ -152,13 +152,11 @@ export class Player implements MovingGameObject {
       canvasTextHeader.setDraw('You died!', 2);
 
       this.health = 100;
-      setTimeout(
-        () =>
-          Game.setWorld({
-            method: 'respawn',
-          }),
-        2000,
-      );
+      setTimeout(() => {
+        Game.setWorld({
+          method: 'respawn',
+        });
+      }, 2000);
     }
     HUD.elements.healthProgressBar.setCurrentValue(this.health);
   }
@@ -210,7 +208,7 @@ export class Player implements MovingGameObject {
     let spriteY;
 
     // Determine which image and calculate spriteX and spriteY there after
-    if (this.combat === true) {
+    if (this.combat) {
       drawImage = this.spriteAttack;
       spriteX = 41 * this.loopIndex + this.imageFix;
       spriteY = 38 * this.indexY;
@@ -219,6 +217,7 @@ export class Player implements MovingGameObject {
       spriteX = this.indexX * this.loopIndex;
       spriteY = this.indexY;
     }
+    document.getElementById('demo')?.appendChild(drawImage);
 
     viewport.drawPlayer({
       img: drawImage,
@@ -243,7 +242,7 @@ export class Player implements MovingGameObject {
 
   setHuntedStatus(status: boolean) {
     this.hunted = status;
-    if (this.hunted === true) {
+    if (this.hunted) {
       HUD.elements.huntedIcon.style.visibility = 'visible';
     } else {
       HUD.elements.huntedIcon.style.visibility = 'hidden';
@@ -258,16 +257,18 @@ export class Player implements MovingGameObject {
     this.regenerateCoundown = false;
   }
   newPos(newPos = true) {
-    if (this.health < 100 && this.regenerateCoundown === false) {
+    if (this.health < 100 && !this.regenerateCoundown) {
       this.regenerateCoundown = true;
-      setTimeout(() => this.regenerateHealth(), 7000);
+      setTimeout(() => {
+        this.regenerateHealth();
+      }, 7000);
     }
     this.up = '';
     this.left = '';
     this.down = '';
     this.right = '';
     //drawing starts at x (diameterLeft) and y (diameterUp) line
-    if (newPos !== false) {
+    if (newPos) {
       this.xpos = Game.properties.xbase + this.xMovement;
       this.ypos = Game.properties.ybase + this.yMovement;
       // game.properties.xMapMin = this.xpos - 320;
@@ -279,14 +280,14 @@ export class Player implements MovingGameObject {
       this.diameterDown = this.ypos + this.height;
       this.diameterLeft = this.xpos + 4;
     }
-    if (this.combat === true) {
+    if (this.combat) {
       let newDirection = 'none';
-      if (controls.playerDown === true) {
+      if (controls.playerDown) {
         newDirection = 'down';
         this.direction = 'down';
         this.indexY = 0;
         this.imageFix = 10;
-      } else if (controls.playerUp === true) {
+      } else if (controls.playerUp) {
         newDirection = 'up';
         this.direction = 'up';
         this.indexY = 2;
@@ -295,7 +296,7 @@ export class Player implements MovingGameObject {
       // If direction direction is left or right then draw sprite heading down
       if (
         (newDirection === 'undefined' || newDirection == 'none') &&
-        (controls.playerRight === true || controls.playerLeft === true)
+        (controls.playerRight || controls.playerLeft)
       ) {
         if (this.direction === 'up') {
           this.indexY = 2;
@@ -306,7 +307,7 @@ export class Player implements MovingGameObject {
         }
       }
       if (
-        this.attack === true &&
+        this.attack &&
         Game.properties.duration % 2 === 0 &&
         this.cooldown <= 0
       ) {
@@ -343,7 +344,7 @@ export class Player implements MovingGameObject {
         } else {
           this.attackLoop++;
         }
-      } else if (Game.properties.duration % 10 === 0 && this.attack === false) {
+      } else if (Game.properties.duration % 10 === 0 && !this.attack) {
         if (this.loopIndex > 3) {
           this.loopIndex = 0;
         }
@@ -352,46 +353,34 @@ export class Player implements MovingGameObject {
       }
     } else {
       let newdirection = 'none';
-      if (controls.playerLeft == true && controls.playerDown == true) {
+      if (controls.playerLeft && controls.playerDown) {
         newdirection = 'left, down';
       }
-      if (
-        controls.playerRight == true &&
-        controls.playerUp == false &&
-        controls.playerDown == false
-      ) {
+      if (controls.playerRight && !controls.playerUp && !controls.playerDown) {
         newdirection = 'right';
         this.indexY = 32;
       }
-      if (
-        controls.playerLeft == true &&
-        controls.playerUp == false &&
-        controls.playerDown == false
-      ) {
+      if (controls.playerLeft && !controls.playerUp && !controls.playerDown) {
         newdirection = 'left';
         this.indexY = 64;
       }
-      if (controls.playerDown == true) {
+      if (controls.playerDown) {
         newdirection = 'right, down';
         this.indexY = 0;
       }
-      if (controls.playerUp == true) {
+      if (controls.playerUp) {
         newdirection = 'right, up';
         this.indexY = 96;
       }
-      if (
-        controls.playerRight == true &&
-        controls.playerUp == false &&
-        controls.playerDown == false
-      ) {
+      if (controls.playerRight && !controls.playerUp && !controls.playerDown) {
         newdirection = 'right';
         this.indexY = 32;
       }
       if (
-        controls.playerUp == false &&
-        controls.playerLeft == false &&
-        controls.playerRight == false &&
-        controls.playerDown == false
+        !controls.playerUp &&
+        !controls.playerLeft &&
+        !controls.playerRight &&
+        !controls.playerDown
       ) {
         newdirection = 'none';
       }
@@ -581,46 +570,34 @@ export class Player implements MovingGameObject {
 
   determineDirection() {
     this.newDirection = 'none';
-    if (controls.playerLeft == true && controls.playerDown == true) {
+    if (controls.playerLeft && controls.playerDown) {
       this.newDirection = 'left, down';
     }
-    if (
-      controls.playerRight == true &&
-      controls.playerUp == false &&
-      controls.playerDown == false
-    ) {
+    if (controls.playerRight && !controls.playerUp && !controls.playerDown) {
       this.newDirection = 'right';
       this.indexY = 32;
     }
-    if (
-      controls.playerLeft == true &&
-      controls.playerUp == false &&
-      controls.playerDown == false
-    ) {
+    if (controls.playerLeft && !controls.playerUp && !controls.playerDown) {
       this.newDirection = 'left';
       this.indexY = 64;
     }
-    if (controls.playerDown == true) {
+    if (controls.playerDown) {
       this.newDirection = 'right, down';
       this.indexY = 0;
     }
-    if (controls.playerUp == true) {
+    if (controls.playerUp) {
       this.newDirection = 'right, up';
       this.indexY = 96;
     }
-    if (
-      controls.playerRight == true &&
-      controls.playerUp == false &&
-      controls.playerDown == false
-    ) {
+    if (controls.playerRight && !controls.playerUp && !controls.playerDown) {
       this.newDirection = 'right';
       this.indexY = 32;
     }
     if (
-      controls.playerUp == false &&
-      controls.playerLeft == false &&
-      controls.playerRight == false &&
-      controls.playerDown == false
+      !controls.playerUp &&
+      !controls.playerLeft &&
+      !controls.playerRight &&
+      !controls.playerDown
     ) {
       this.newDirection = 'none';
     }
