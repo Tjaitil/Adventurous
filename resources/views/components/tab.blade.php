@@ -10,6 +10,6 @@
 @endphp
 <button id="{{ $id ?? '' }}" role="tab" aria-controls="{{ $ariaControls }}"
     data-tab-id="{{ $id }}" aria-selected="{{ $active ? 'true' : 'false' }}"
-    {{ $attributes->merge(['type' => 'button', 'class' => $tabGroup . ' bg-orange-50', 'data-toggle' => 'tab']) }}>
+    {{ $attributes->merge(['type' => 'button', 'class' => $tabGroup . 'adv-button bg-orange-50 text-black', 'data-toggle' => 'tab']) }}>
     {{ $tabText }} {!! $slot !!}
 </button>
