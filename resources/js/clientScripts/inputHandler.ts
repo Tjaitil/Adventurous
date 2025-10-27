@@ -28,8 +28,9 @@ import { ItemSelector } from '@/ItemSelector';
 import ArmoryPage from '@/ui/buildings/ArmoryPage.vue';
 import { useConversationStore } from '@/ui/stores/ConversationStore';
 import PageWrapper from '@/ui/components/PageWrapper.vue';
+import { gameEventBus } from '@/gameEventsBus';
 
-enum Buildings {
+export enum Buildings {
   BAKERY = 'bakery',
   TRAVELBUREAU = 'travelbureau',
   STOCKPILE = 'stockpile',
@@ -193,8 +194,9 @@ export const inputHandler: IInputHandler = {
 
     await fetch('/' + building)
       .then(response => {
-        if (!response.ok)
+        if (!response.ok) {
           throw new Error('Something unexpected happened. Please try again');
+        }
         return response.text();
       })
       .then(async data => {
@@ -220,7 +222,6 @@ export const inputHandler: IInputHandler = {
           ItemSelector.addSelectEventToInventory();
 
           isCurrentVuePage = true;
-          return;
         } else if (this.buildingAssetsRecord[building]) {
           const buildingName = building as BuildingName;
           if ('script' in this.buildingAssetsRecord[buildingName]) {
@@ -245,7 +246,11 @@ export const inputHandler: IInputHandler = {
           link.href = 'public/css/' + css;
           document.getElementsByTagName('head')[0].appendChild(link);
         }
-        ClientOverlayInterface.show(html);
+
+        gameEventBus.emit('RENDER_BUILDING', {
+          content: html,
+        });
+
         itemTitle.addItemClassEvents();
         const src = '/public/dist/js/buildingScripts/';
         if (skipImport == false && script.length === 0) {
@@ -322,6 +327,8 @@ export const inputHandler: IInputHandler = {
             );
           }
         }
+        console.log('fetch building done');
+        return;
       })
       .catch(error => {
         console.log(error);

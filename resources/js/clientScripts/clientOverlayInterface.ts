@@ -1,3 +1,4 @@
+import { gameEventBus } from '@/gameEventsBus';
 import { Game } from '../advclient';
 import merchant from '../buildingScripts/merchant';
 import { selectItemEvent } from '../ItemSelector';
@@ -7,19 +8,30 @@ import { inputHandler } from './inputHandler';
 import viewport from './viewport';
 
 export class ClientOverlayInterface {
-  public static shadowContainer = document.getElementById('news');
-  public static outerContainer = document.getElementById('news_content');
-  public static wrapper = document.getElementById('news_content_main_content');
-  public static sidePanel = document.getElementById('news_content_side_panel');
-  public static activeButton = null;
-  public static interfaceExitButton = null;
+  public static shadowContainer: HTMLElement | null = null;
+  public static outerContainer: HTMLElement | null = null;
+  public static wrapper: HTMLElement | null = null;
+  public static sidePanel: HTMLElement | null = null;
+  public static activeButton: HTMLElement | null = null;
+  public static interfaceExitButton: HTMLElement | null = null;
   private static interfacePageTitle = '';
 
   public static setup() {
+    this.shadowContainer = document.getElementById('news');
+    this.outerContainer = document.getElementById('news_content');
+    this.wrapper = document.getElementById('news_content_main_content');
+    this.sidePanel = document.getElementById('news_content_side_panel');
+
     this.interfaceExitButton = this.outerContainer.querySelectorAll(
       '.cont_exit',
     )[0] as HTMLElement;
-    this.interfaceExitButton.addEventListener('click', () => this.hide());
+    this.interfaceExitButton.addEventListener('click', () => {
+      this.hide();
+    });
+
+    gameEventBus.subscribe('RENDER_BUILDING', ({ building, content }) => {
+      this.show(content);
+    });
   }
 
   public static loadingScreen() {
@@ -44,11 +56,11 @@ export class ClientOverlayInterface {
     this.outerContainer.style.visibility = 'visible';
 
     if (typeof content === 'object') {
-      this.wrapper?.appendChild(<HTMLElement>content);
+      this.wrapper?.appendChild(content);
     } else {
       this.wrapper.innerHTML = '' + content;
     }
-    if (sidebar == true) {
+    if (sidebar) {
       this.createSidePanelTabs();
     }
   }
@@ -122,7 +134,7 @@ export class ClientOverlayInterface {
         button.appendChild(text);
         button.classList.add('building-tab');
         this.sidePanel.appendChild(button);
-        if (divFirst === false) {
+        if (!divFirst) {
           childElement.style.visibility = 'visible';
           divFirst = true;
           this.showContent(undefined, button);
@@ -220,7 +232,9 @@ export class ClientOverlayInterface {
     const buttons = [...document.getElementsByClassName('building-tab')];
     buttons.forEach(element => {
       // Add eventListener to each node
-      element.addEventListener('click', event => this.showContent(event));
+      element.addEventListener('click', event => {
+        this.showContent(event);
+      });
     });
   }
 
@@ -445,9 +459,9 @@ export class ClientOverlayInterface {
 function underscoreTreatment(string: string, addUnderscore: boolean): string {
   const result = string.search('_');
   let editedString;
-  if (result != -1 && addUnderscore === false) {
+  if (result != -1 && !addUnderscore) {
     editedString = string.replace('_', ' ');
-  } else if (result == -1 && addUnderscore === true) {
+  } else if (result == -1 && addUnderscore) {
     editedString = string.replace(' ', '_');
   } else {
     return string;

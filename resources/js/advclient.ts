@@ -9,7 +9,7 @@ import { Map } from './clientScripts/map';
 import { pauseManager } from './clientScripts/pause';
 import viewport from './clientScripts/viewport';
 import { CustomFetchApi } from './CustomFetchApi';
-import { GameProperties, loadWorldParameters } from './types/Advclient';
+import type { GameProperties, loadWorldParameters } from './types/Advclient';
 import { jsUcWords } from './utilities/uppercase';
 import { setUpTabList } from './utilities/tabs';
 import type { GetWorldResponse } from './types/Responses/WorldLoaderResponse';
@@ -238,7 +238,9 @@ export class Game {
     viewport.adjustViewport(Game.properties.xbase, Game.properties.ybase);
 
     HUD.setup(viewport.width, viewport.height, viewport.top, viewport.left);
+
     controls.setup();
+    Map.setup();
     Map.load(Game.properties.currentMap);
 
     GamePieces.loadAssets(
@@ -329,10 +331,3 @@ export class Game {
     Game.properties.requestId = window.requestAnimationFrame(Game.update);
   };
 }
-window.addEventListener('DOMContentLoaded', () => {
-  void (async () => {
-    await Game.getWorld().finally(() => {
-      Game.setup();
-    });
-  })();
-});
