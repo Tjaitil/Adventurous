@@ -1,4 +1,4 @@
-import {
+import type {
   MovingGameObject,
   DirectionBlockedCheck,
 } from '../types/gamepieces/MovingGameObject';
@@ -10,6 +10,7 @@ import { GamePieces } from '../clientScripts/gamePieces';
 import { HUD } from '../clientScripts/HUD';
 import { AssetPaths } from '../clientScripts/ImagePath';
 import { addModuleTester } from '@/devtools/ModuleTester';
+import { gameEventBus } from '@/gameEventsBus';
 
 export class Player implements MovingGameObject {
   width = 36;
@@ -89,7 +90,7 @@ export class Player implements MovingGameObject {
   ranged = false;
 
   setup() {
-    this.setHuntedStatus(false);
+    // this.setHuntedStatus(false);
     this.draw();
     this.sprite.src = AssetPaths.getImagePath('character1.png');
     this.spriteAttack.src = AssetPaths.getImagePath('character attack2.png');
@@ -158,7 +159,9 @@ export class Player implements MovingGameObject {
         });
       }, 2000);
     }
-    HUD.elements.healthProgressBar.setCurrentValue(this.health);
+    gameEventBus.emit('PLAYER_HEALTH_CHANGE', {
+      playerHealthChange: this.health,
+    });
   }
 
   drawHead() {
@@ -242,17 +245,17 @@ export class Player implements MovingGameObject {
 
   setHuntedStatus(status: boolean) {
     this.hunted = status;
-    if (this.hunted) {
-      HUD.elements.huntedIcon.style.visibility = 'visible';
-    } else {
-      HUD.elements.huntedIcon.style.visibility = 'hidden';
-    }
+    gameEventBus.emit('PLAYER_HUNTED_UPDATE', {
+      isHunted: this.hunted,
+    });
   }
 
   regenerateHealth() {
     if (this.health <= 0) return;
     this.health + 10 > 100 ? (this.health = 100) : (this.health += 10);
-    HUD.elements.healthProgressBar.setCurrentValue(this.health);
+    gameEventBus.emit('PLAYER_HEALTH_CHANGE', {
+      playerHealthChange: this.health,
+    });
 
     this.regenerateCoundown = false;
   }

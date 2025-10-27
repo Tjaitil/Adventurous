@@ -10,6 +10,7 @@ use App\Models\UserLevels;
 use App\Services\ProfiencyService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
 
 class AdvclientController extends Controller
 {
@@ -29,16 +30,31 @@ class AdvclientController extends Controller
             return redirect()->route('login');
         }
 
-        return View('advclient')
-            ->with('gameLog', session()->get('log') ?? [])
-            ->with('username', Auth::user()->username)
-            ->with('location', $user_data->location)
-            ->with('Levels', UserLevels::where('username', Auth::user()->username)->first()?->toArray())
-            ->with('profiency', $user_data->profiency)
-            ->with('Hunger', Hunger::where('user_id', Auth::user()->id)->first())
-            ->with('Inventory', Inventory::where('user_id', Auth::user()->id)->get())
-            ->with('profiency_status', $this->profiencyService->calculateProfienciesStatuses())
-            ->with('Diplomacy', Diplomacy::where('username', Auth::user()->username)->get()->toArray())
-            ->with('map_location', UserData::where('username', Auth::user()->username)->first()?->map_location);
+        return Inertia::render('AdvClient', [
+            'gameLog' => session()->get('log') ?? [],
+            'username' => Auth::user()->username,
+            'location' => $user_data->location,
+            'levels' => UserLevels::where('username', Auth::user()->username)->first()
+                ?->toArray(),
+            'profiency' => $user_data->profiency,
+            'hunger' => Hunger::where('user_id', Auth::user()->id)->first(),
+            'inventory' => Inventory::where('user_id', Auth::user()->id)->get(),
+            'profiency_status' => $this->profiencyService->calculateProfienciesStatuses(),
+            'diplomacy' => Diplomacy::where('username', Auth::user()->username)->get()->toArray(),
+            'mapHtml' => view('partials.gameMap', ['map_location' => $user_data->map_location])->render(),
+            'sidebarHtml' => view('sidebar', [
+                'gameLog' => session()->get('log') ?? [],
+                'username' => Auth::user()->username,
+                'location' => $user_data->location,
+                'mapLocation' => UserData::where('username', Auth::user()->username)->first()?->map_location,
+                'Levels' => UserLevels::where('username', Auth::user()->username)->first()
+                    ?->toArray(),
+                'profiency' => $user_data->profiency,
+                'hunger' => Hunger::where('user_id', Auth::user()->id)->first(),
+                'inventory' => Inventory::where('user_id', Auth::user()->id)->get(),
+                'profiency_status' => $this->profiencyService->calculateProfienciesStatuses(),
+                'diplomacy' => Diplomacy::where('username', Auth::user()->username)->get()->toArray(),
+            ])->render(),
+        ]);
     }
 }

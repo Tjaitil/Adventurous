@@ -5,35 +5,10 @@ import { jsUcfirst } from '../utilities/uppercase';
 import { Game } from '../advclient';
 import { GamePieces } from './gamePieces';
 
-window.addEventListener('load', () => {
-  document
-    .getElementById('toggle_world_image')
-    .addEventListener('click', () => Map.toggleMapType());
-  document
-    .getElementById('map_type_toggle_overlay')
-    .addEventListener('click', () => Map.toggleMapType());
-  document
-    .getElementById('toggle_icon_list_image')
-    .addEventListener('click', () => Map.toggleIconList());
-  // Add events to both toggle map button on canvas and the close button in map container
-  document
-    .getElementById('toggle_map_icon')
-    .addEventListener('click', () => Map.toggle());
-  document
-    .getElementById('close_map_button')
-    .addEventListener('click', Map.toggle);
-});
-
 export class Map {
-  private static worldImgContainer = document.getElementById(
-    'map_world_img_container',
-  );
-  private static localIMGElement = <HTMLImageElement>(
-    document.getElementById('local_img')
-  );
-  private static mapIconListElement = <HTMLElement>(
-    document.getElementById('map_icon_list')
-  );
+  private static worldImgContainer: HTMLElement | null = null;
+  private static localIMGElement: HTMLElement | null = null;
+  private static mapIconListElement: HTMLElement | null = null;
   private static fontProperties: MapFontProperties = {
     city: 32,
     placeName: 24,
@@ -245,7 +220,38 @@ export class Map {
   ];
   private static mapType: string = 'local';
 
+  public static setup() {
+    document
+      .getElementById('toggle_world_image')
+      .addEventListener('click', () => {
+        Map.toggleMapType();
+      });
+    document
+      .getElementById('map_type_toggle_overlay')
+      .addEventListener('click', () => {
+        Map.toggleMapType();
+      });
+    document
+      .getElementById('toggle_icon_list_image')
+      .addEventListener('click', () => {
+        Map.toggleIconList();
+      });
+
+    // Add events to both toggle map button on canvas and the close button in map container
+    document.getElementById('toggle_map_icon').addEventListener('click', () => {
+      Map.toggle();
+    });
+    document
+      .getElementById('close_map_button')
+      .addEventListener('click', Map.toggle);
+
+    this.worldImgContainer = document.getElementById('map_world_img_container');
+    this.localIMGElement = document.getElementById('local_img');
+    this.mapIconListElement = document.getElementById('map_icon_list');
+  }
   public static load(currentMap) {
+    console.log(document.getElementById('local_img'));
+
     this.localIMGElement.src = 'images/' + currentMap + 'm.png';
     this.drawTags();
     this.checkImages();
@@ -306,7 +312,7 @@ export class Map {
   private static findLocalMapTags(
     variable: string,
     type: string,
-  ): Object | boolean {
+  ): object | boolean {
     if (type === 'character') {
       const objects = GamePieces.characters.filter(
         object =>
@@ -368,7 +374,7 @@ export class Map {
       }
     }
     for (const i of this.localMapTags) {
-      if (i.visible === false) {
+      if (!i.visible) {
         continue;
       }
       const tag = document.createElement('img');

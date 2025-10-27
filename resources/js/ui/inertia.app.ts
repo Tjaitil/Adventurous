@@ -6,6 +6,10 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import type { DefineComponent } from 'vue';
 import { createApp, h } from 'vue';
 import ui from '@nuxt/ui/vue-plugin';
+import { createPinia } from 'pinia';
+import { i18n } from './main';
+
+const pinia = createPinia();
 
 void createInertiaApp({
   resolve: async name => {
@@ -19,7 +23,9 @@ void createInertiaApp({
   setup({ el, App, props, plugin }) {
     createApp({ render: () => h(App, props) })
       .use(plugin)
+      .use(pinia)
       .use(ui)
+      .use(i18n)
       .mount(el);
   },
   progress: {

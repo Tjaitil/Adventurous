@@ -60,7 +60,6 @@ export const GamePieces = {
       // checkDaqloon(GamePieces.daqloon_fighting_area.daqloon_amount);
     } else {
       this.daqloon = [];
-      HUD.elements.huntedLocator.innerHTML = '';
     }
   },
   loadStaticPieces(initObjects: GameObject[]) {
@@ -228,8 +227,13 @@ export const GamePieces = {
   },
 };
 window.addEventListener('load', () => {
-  document.getElementById('draw_checkbox').addEventListener('change', event => {
-    const element = <HTMLInputElement>event.currentTarget;
-    draw = element.checked;
-  });
+  // TODO: This of course be refactored to not rely on setTimeout
+  window.setTimeout(() => {
+    document
+      .getElementById('draw_checkbox')
+      .addEventListener('change', event => {
+        const element = <HTMLInputElement>event.currentTarget;
+        draw = element.checked;
+      });
+  }, 5000);
 });

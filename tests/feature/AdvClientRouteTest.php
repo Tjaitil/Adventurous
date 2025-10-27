@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
+use Inertia\Testing\AssertableInertia;
 use Tests\TestCase;
 
 class AdvClientRouteTest extends TestCase
@@ -13,12 +13,16 @@ class AdvClientRouteTest extends TestCase
         $this->withoutVite();
     }
 
-    public function test_advclient_route(): void
+    public function test_index_renders_correctly(): void
     {
-        $User = User::find(1);
-        $response = $this->actingAS($User)->get('/advclient');
+        $this->actingAs($this->getRandomUser());
+
+        $response = $this->get('/advclient');
 
         $response->assertStatus(200);
+        $response->assertInertia(fn (AssertableInertia $page) => $page->component('AdvClient')
+
+        );
     }
 
     public function test_advclient_route_with_invalid_user_redirects_to_login(): void

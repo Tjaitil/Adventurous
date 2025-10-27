@@ -1,8 +1,7 @@
 <template>
-  <baks-card
-    id="inventory"
-    variant="dark"
-    class="relative z-20 float-right mt-0 h-[600px] w-full"
+  <UCard
+    variant="soft"
+    class="relative z-20 float-right mt-0 h-[600px] w-full text-white"
   >
     <BaseLoading :is-loading>
       <p class="mb-4">
@@ -22,7 +21,7 @@
         :item="item"
       />
     </BaseLoading>
-  </baks-card>
+  </UCard>
 </template>
 
 <script lang="ts" setup>
