@@ -7,7 +7,6 @@ on:
     paths:
       - .github/workflows/node.js.yml
       - "resources/js/**"
-    branches: ["master"]
 
 env:
   LARAVEL_BYPASS_ENV_CHECK: 1
