@@ -13,6 +13,5 @@ if (! function_exists('advResponse')) {
     function advResponse($data = [], $status = Response::HTTP_OK, $headers = [])
     {
         return new AdvResponse($data, $status, $headers);
-        var_dump('advResponse helper called');
     }
 }
