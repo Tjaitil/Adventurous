@@ -4,14 +4,8 @@ on:
   push:
     branches: ["master"]
   pull_request:
-    paths:
-      - app/**
-      - bootstrap/**
-      - config/**
-      - database/**
-      - routes/**
-      - resources/views/**
-      - tests/**
+    paths-ignore:
+      - resources/js/**
 
 jobs:
   tests:

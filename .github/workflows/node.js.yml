@@ -4,9 +4,8 @@ on:
   push:
     branches: ["master"]
   pull_request:
-    paths:
-      - .github/workflows/node.js.yml
-      - resources/js/**
+    paths-ignore:
+      - app/**
 
 env:
   LARAVEL_BYPASS_ENV_CHECK: 1
