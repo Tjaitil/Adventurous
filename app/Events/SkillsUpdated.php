@@ -16,7 +16,10 @@ class SkillsUpdated implements ShouldBroadcast
     /**
      * Create a new event instance.
      */
-    public function __construct() {}
+    public function __construct()
+    {
+        // this should trigger a new CI
+    }
 
     /**
      * Get the channels the event should broadcast on.
