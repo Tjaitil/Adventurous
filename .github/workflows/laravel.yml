@@ -6,7 +6,6 @@ on:
   pull_request:
     branches: ["master"]
     paths:
-      - .github/workflows/laravel.yml
       - app/**
       - bootstrap/**
       - config/**
