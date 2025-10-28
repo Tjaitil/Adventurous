@@ -1,8 +1,6 @@
 name: Test laravel
 
 on:
-  push:
-    branches: ["master"]
   pull_request:
     paths-ignore:
       - resources/js/**
