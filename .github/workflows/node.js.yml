@@ -6,7 +6,7 @@ on:
   pull_request:
     paths:
       - .github/workflows/node.js.yml
-      - "resources/js/**"
+      - resources/js/**
 
 env:
   LARAVEL_BYPASS_ENV_CHECK: 1
