@@ -1,32 +1,47 @@
 name: Test laravel
- 
+
 on:
-    push:
-        branches: ['master']
-    pull_request:
-        branches: ['master']
- 
+  push:
+    branches: ["master"]
+  pull_request:
+    paths:
+      - "app/**"
+      - "bootstrap/**"
+      - "config/**"
+      - "database/**"
+      - "helpers/**"
+      - "lang/**"
+      - "resources/views/**"
+      - "routes/**"
+      - "tests/**"
+      - "composer.json"
+      - "composer.lock"
+      - "phpstan.neon"
+      - "phpstan-baseline.neon"
+      - "phpunit.xml"
+
+
 jobs:
   tests:
     name: Run tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
- 
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: "8.2"
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
           coverage: none
- 
+
       - name: Run composer install
         run: composer install -n --prefer-dist
- 
+
       - name: Prepare Laravel Application
         run: |
           cp .env.testing .env
           php artisan key:generate
- 
+
       - name: Run tests
         run: php artisan migrate --seed && php artisan test
