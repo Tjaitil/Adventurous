@@ -1,10 +1,11 @@
 name: Node.js CI
 
 on:
+  push:
+    branches: ["master"]
   pull_request:
-    paths-ignore:
-      - app/**
-
+    paths:
+      - "resources/js/*"
 env:
   LARAVEL_BYPASS_ENV_CHECK: 1
 
