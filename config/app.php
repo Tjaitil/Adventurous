@@ -141,7 +141,6 @@ return [
 
     'maintenance' => [
         'driver' => 'file',
-        var_dump('app.php maintenance mode config loaded');
         // 'store'  => 'redis',
     ],
 
