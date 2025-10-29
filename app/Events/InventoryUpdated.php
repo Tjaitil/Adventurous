@@ -27,7 +27,6 @@ class InventoryUpdated implements ShouldBroadcast
     public function __construct($Inventory)
     {
         $this->Inventory = $Inventory;
-        var_dump('InventoryUpdated event fired');
     }
 
     /**
