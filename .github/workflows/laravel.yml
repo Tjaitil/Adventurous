@@ -1,9 +1,11 @@
 name: Test laravel
 
 on:
+  push:
+    branches: ["master"]
   pull_request:
     paths:
-      - "app/**"
+      - "!resources/js/**"
 
 jobs:
   tests:
