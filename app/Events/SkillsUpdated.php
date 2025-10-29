@@ -25,6 +25,8 @@ class SkillsUpdated implements ShouldBroadcast
      */
     public function broadcastOn(): array
     {
+        var_dump('SkillsUpdated event broadcastOn called');
+
         return [
             new PrivateChannel('game-state.'.Auth::user()->id),
         ];
