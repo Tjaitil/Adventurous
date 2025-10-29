@@ -2,8 +2,8 @@ name: Test laravel
 
 on:
   pull_request:
-    paths-ignore:
-      - resources/js/**
+    paths:
+      - "app/**"
 
 jobs:
   tests:
