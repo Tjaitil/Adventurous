@@ -16,7 +16,10 @@ class SkillsUpdated implements ShouldBroadcast
     /**
      * Create a new event instance.
      */
-    public function __construct() {}
+    public function __construct()
+    {
+        var_dump('hello from SkillsUpdated event');
+    }
 
     /**
      * Get the channels the event should broadcast on.
