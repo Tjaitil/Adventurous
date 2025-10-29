@@ -5,7 +5,7 @@ on:
     branches: ["master"]
   pull_request:
     paths:
-      - "resources/js/*"
+      - "resources/js/**"
 env:
   LARAVEL_BYPASS_ENV_CHECK: 1
 
