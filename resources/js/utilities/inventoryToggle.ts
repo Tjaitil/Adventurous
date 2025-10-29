@@ -1,5 +1,4 @@
 // Toggle inventory for smaller devices where inventory is not visible
-console.log('test');
 export const inventorySidebarMob = {
   toggleInventory() {
     const inventory = document.getElementById('inventory');
