@@ -122,3 +122,4 @@ export default defineConfig({
     target: 'ES2022',
   },
 });
+console.log('VITE CONFIG LOADED');
