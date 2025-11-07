@@ -36,10 +36,8 @@
     "mockery/mockery": "^1.4.4",
     "nunomaduro/collision": "^8.1",
     "phpunit/phpunit": "^10.1",
-    "psalm/plugin-laravel": "^2.8",
     "spatie/laravel-ignition": "^2.3",
-    "timacdonald/log-fake": "^2.1",
-    "vimeo/psalm": "^5.16"
+    "timacdonald/log-fake": "^2.1"
   },
   "autoload": {
     "files": [
@@ -75,7 +73,6 @@
       "@php artisan key:generate --ansi"
     ],
     "phpstan": "./vendor/bin/phpstan analyse --memory-limit=2G",
-    "psalm": "./vendor/bin/psalm",
     "dev": [
       "Composer\\Config::disableProcessTimeout",
       "npx concurrently -k -c \"#93c5fd,#c4b5fd,#d4d4d8,#86efac,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail\" \"php artisan reverb:start\" \"npm run dev\" --names=server,queue,logs,reverb,vite"
