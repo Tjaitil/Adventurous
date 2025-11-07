@@ -4,6 +4,7 @@ import { ProgressBar } from '../progressBar';
 import viewport from './viewport';
 import { itemTitle } from '../utilities/itemTitle';
 import { Inventory } from './inventory';
+import { gameEventBus } from '@/gameEventsBus';
 
 export const HUD = {
   container: null,
@@ -88,17 +89,17 @@ export const HUD = {
     hungerProgressBar.style.width = '250px';
     hungerProgressBar.style.position = 'absolute';
 
-    const currentHunger = parseInt(
-      hungerProgressBar.querySelectorAll('.progressBar_currentValue')[0]
-        .innerHTML,
-    );
-    this.elements.hungerProgressBar = new ProgressBar(
-      document.getElementById('hunger_progressBar'),
-      {
-        currentValue: currentHunger,
-        maxValue: 100,
-      },
-    );
+    // const currentHunger = parseInt(
+    //   hungerProgressBar.querySelectorAll('.progressBar_currentValue')[0]
+    //     .innerHTML,
+    // );
+    // this.elements.hungerProgressBar = new ProgressBar(
+    //   document.getElementById('hunger_progressBar'),
+    //   {
+    //     currentValue: currentHunger,
+    //     maxValue: 100,
+    //   },
+    // );
 
     const healthProgressBar = document.getElementById('health_progressBar');
     healthProgressBar.style.top = HUDTopPosition + HUDrowHeight * 0 + 'px';
@@ -109,17 +110,17 @@ export const HUD = {
       'px';
     healthProgressBar.style.width = '100px';
     healthProgressBar.style.position = 'absolute';
-    healthProgressBar.querySelectorAll(
-      '.progressBar_currentValue',
-    )[0].innerHTML = '' + GamePieces.player.health;
+    // healthProgressBar.querySelectorAll(
+    //   '.progressBar_currentValue',
+    // )[0].innerHTML = '' + GamePieces.player.health;
 
-    this.elements.healthProgressBar = new ProgressBar(
-      document.getElementById('health_progressBar'),
-      {
-        currentValue: 100,
-        maxValue: 100,
-      },
-    );
+    // this.elements.healthProgressBar = new ProgressBar(
+    //   document.getElementById('health_progressBar'),
+    //   {
+    //     currentValue: 100,
+    //     maxValue: 100,
+    //   },
+    // );
 
     // Position help button and help container
     const help_button = document.getElementById('HUD_help_button');
@@ -180,6 +181,18 @@ export const HUD = {
       cont_exit_button.style.margin = '0 auto';
       cont_exit_button.style.marginBottom = '20px';
     }
+
+    gameEventBus.subscribe('PLAYER_HUNTED_UPDATE', ({ isHunted }) => {
+      if (isHunted) {
+        HUD.elements.huntedIcon.style.visibility = 'visible';
+      } else {
+        HUD.elements.huntedIcon.style.visibility = 'hidden';
+      }
+    });
+
+    gameEventBus.subscribe('PLAYER_HEALTH_UPDATE', ({ health }) => {
+      HUD.elements.healthProgressBar.setCurrentValue(health);
+    });
   },
   makeTutorialHUD() {
     const tutorial_progressContainer = document.createElement('div');
