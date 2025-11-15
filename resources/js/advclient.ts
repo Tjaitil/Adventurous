@@ -4,8 +4,6 @@ import { collisionCheck } from './clientScripts/collision';
 import { controls } from './clientScripts/controls';
 import { eventHandler } from './clientScripts/gameEventHandler';
 import { GamePieces } from './clientScripts/gamePieces';
-import { HUD } from './clientScripts/HUD';
-import { Map } from './clientScripts/map';
 import { pauseManager } from './clientScripts/pause';
 import viewport from './clientScripts/viewport';
 import { CustomFetchApi } from './CustomFetchApi';
@@ -112,7 +110,6 @@ export class Game {
           Game.properties.ybase,
           this.worldData.map_data,
         );
-        Map.load(Game.properties.currentMap);
         setTimeout(() => {
           void loadingCanvas.loadingAnimationTracker.start('open');
           Game.startGame();
@@ -237,11 +234,7 @@ export class Game {
     });
     viewport.adjustViewport(Game.properties.xbase, Game.properties.ybase);
 
-    HUD.setup(viewport.width, viewport.height, viewport.top, viewport.left);
-
     controls.setup();
-    Map.setup();
-    Map.load(Game.properties.currentMap);
 
     GamePieces.loadAssets(
       Game.properties.xbase,

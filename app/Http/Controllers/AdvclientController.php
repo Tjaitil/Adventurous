@@ -34,6 +34,7 @@ class AdvclientController extends Controller
             'gameLog' => session()->get('log') ?? [],
             'username' => Auth::user()->username,
             'location' => $user_data->location,
+            'mapLocation' => UserData::where('username', Auth::user()->username)->first()?->map_location,
             'levels' => UserLevels::where('username', Auth::user()->username)->first()
                 ?->toArray(),
             'profiency' => $user_data->profiency,
@@ -41,7 +42,6 @@ class AdvclientController extends Controller
             'inventory' => Inventory::where('user_id', Auth::user()->id)->get(),
             'profiency_status' => $this->profiencyService->calculateProfienciesStatuses(),
             'diplomacy' => Diplomacy::where('username', Auth::user()->username)->get()->toArray(),
-            'mapHtml' => view('partials.gameMap', ['map_location' => $user_data->map_location])->render(),
             'sidebarHtml' => view('sidebar', [
                 'gameLog' => session()->get('log') ?? [],
                 'username' => Auth::user()->username,

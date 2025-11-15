@@ -17,7 +17,7 @@
         <GameScreen />
         <ScreenHUD :hunger="hunger" :health="{ current: 100, max: 100 }" />
         <ItemTooltip />
-        <div v-html="mapHtml"></div>
+        <GameMap :map-location="mapLocation" />
         <div id="news"></div>
         <div id="news_content" class="gap-x-2">
           <img
@@ -61,11 +61,11 @@ interface Props {
     max: number;
   };
   //TODO: Set up health from backend
+  mapLocation: string;
   username: string;
   profiency: string;
   location: string;
   sidebarHtml: string;
-  mapHtml: string;
 }
 defineProps<Props>();
 

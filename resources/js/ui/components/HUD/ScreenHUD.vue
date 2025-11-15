@@ -5,7 +5,7 @@
       v-model="currentHunger"
       :max="hunger.max"
       :ui="{
-        base: 'h-6 absolute border-primary-800 border-3 pixelated-corners-sm rounded-none w-68',
+        base: 'h-6 absolute left-4 top-2 border-primary-800 border-3 pixelated-corners-sm rounded-none w-68',
         indicator: 'rounded-none',
       }"
     />
@@ -14,26 +14,25 @@
       v-model="currentHealth"
       :max="health.max"
       :ui="{
-        base: 'h-6 absolute border-primary-800 border-3 pixelated-corners-sm rounded-none w-68',
+        base: 'h-6 absolute left-[19rem] top-2 border-primary-800 border-3 pixelated-corners-sm rounded-none w-68',
         indicator: 'rounded-none',
       }"
     />
-    <img
-      v-show="showHuntedIcon"
-      id="HUD_hunted_icon"
-      :src="'/images/hunted icon.png'"
-      class="absolute top-8 left-4"
-      :alt="$t('Hunted Icon icon')"
-    />
-    <p id="HUD_hunted_locater" class="absolute text-white"></p>
-    <div id="HUD-left-icons-container" class="absolute top-[10px] right-2 flex">
+    <div v-if="showHuntedIcon" class="absolute top-10 left-4">
       <img
-        id="toggle_map_icon"
-        class="z-10 cursor-pointer"
-        :src="'/images/globe.png'"
-        :alt="$t('Map icon')"
+        id="HUD_hunted_icon"
+        :src="'/images/hunted icon.png'"
+        :alt="$t('Hunted Icon icon')"
       />
+      <p id="HUD_hunted_locater" class="absolute text-white"></p>
     </div>
+    <img
+      id="toggle_map_icon"
+      class="absolute top-2 right-4 z-10 cursor-pointer"
+      :src="'/images/globe.png'"
+      :alt="$t('Map icon')"
+      @click="useMapStore().toggleMapVisibility(true)"
+    />
     <div id="control_text" class="absolute bottom-18 left-8 text-white">
       <p class="extendedControls my-0 text-left">
         C - {{ $t('Toggle Attack Mode') }}
@@ -59,6 +58,7 @@
 
 <script setup lang="ts" vapor>
 import { gameEventBus } from '@/gameEventsBus';
+import { useMapStore } from '@/ui/stores/MapStore';
 import { ref } from 'vue';
 
 interface Props {
@@ -79,6 +79,10 @@ const currentHealth = ref(health.current);
 const showHuntedIcon = ref(false);
 
 gameEventBus.subscribe('PLAYER_HUNTED_UPDATE', ({ isHunted }) => {
-  showHuntedIcon.value = isHunted;
+  if (isHunted) {
+    showHuntedIcon.value = true;
+  } else {
+    showHuntedIcon.value = false;
+  }
 });
 </script>
