@@ -3,40 +3,40 @@
     <SkillInfoListItem
       skill="adventurer"
       :next-level-xp="0"
-      :level="levels.adventurer_respect"
+      :level="store.UserLevelsResource.adventurer_respect"
       :experience="0"
       :is-level-up="false"
       @toggle-tooltip="toggleSelectedSkillTooltip"
     />
     <SkillInfoListItem
       skill="farmer"
-      :next-level-xp="levels.farmer_next_level_xp"
-      :level="levels.farmer_level"
-      :experience="levels.farmer_xp"
+      :next-level-xp="store.UserLevelsResource.farmer_next_level_xp"
+      :level="store.UserLevelsResource.farmer_level"
+      :experience="store.UserLevelsResource.farmer_xp"
       :is-level-up="levelUpStatus.farmer"
       @toggle-tooltip="toggleSelectedSkillTooltip"
     />
     <SkillInfoListItem
       skill="miner"
-      :next-level-xp="levels.miner_next_level_xp"
-      :level="levels.miner_level"
-      :experience="levels.miner_xp"
+      :next-level-xp="store.UserLevelsResource.miner_next_level_xp"
+      :level="store.UserLevelsResource.miner_level"
+      :experience="store.UserLevelsResource.miner_xp"
       :is-level-up="levelUpStatus.miner"
       @toggle-tooltip="toggleSelectedSkillTooltip"
     />
     <SkillInfoListItem
       skill="trader"
-      :next-level-xp="levels.trader_next_level_xp"
-      :level="levels.trader_level"
-      :experience="levels.trader_xp"
+      :next-level-xp="store.UserLevelsResource.trader_next_level_xp"
+      :level="store.UserLevelsResource.trader_level"
+      :experience="store.UserLevelsResource.trader_xp"
       :is-level-up="levelUpStatus.trader"
       @toggle-tooltip="toggleSelectedSkillTooltip"
     />
     <SkillInfoListItem
       skill="warrior"
-      :next-level-xp="levels.warrior_next_level_xp"
-      :level="levels.warrior_level"
-      :experience="levels.warrior_xp"
+      :next-level-xp="store.UserLevelsResource.warrior_next_level_xp"
+      :level="store.UserLevelsResource.warrior_level"
+      :experience="store.UserLevelsResource.warrior_xp"
       :is-level-up="levelUpStatus.warrior"
       @toggle-tooltip="toggleSelectedSkillTooltip"
     />
@@ -47,20 +47,12 @@
 import { reactive, ref, watch } from 'vue';
 import SkillInfoListItem from './SkillInfoListItem.vue';
 import { useSkillsStore } from '@/ui/stores/SkillsStore';
-import { UserLevels } from '@/types/UserLevels';
-import { LevelUpAbleSkills } from '@/types/Skill';
-import { UpdateSkillsResponse } from '@/types/Responses/UpdateSkillsResponse';
+import type { LevelUpAbleSkills } from '@/types/Skill';
+import type { UpdateSkillsResponse } from '@/types/Responses/UpdateSkillsResponse';
 import { CustomFetchApi } from '@/CustomFetchApi';
 
-interface Props {
-  initLevels: UserLevels;
-}
-
-const props = defineProps<Props>();
 const store = useSkillsStore();
 
-const levels = ref<UserLevels>(props.initLevels);
-store.setUserLevelsResource(props.initLevels);
 const levelUpStatus = reactive({
   farmer: false,
   miner: false,
@@ -74,7 +66,7 @@ watch(
   () => store.handleXpGainedEvent,
   newValue => {
     if (newValue) {
-      updateSkills();
+      void updateSkills();
     }
   },
 );
@@ -85,18 +77,17 @@ const updateSkills = async () => {
       if (response.data.new_levels.length > 0) {
         response.data.new_levels.forEach(levelUpSkill => {
           levelUpStatus[levelUpSkill.skill] = true;
-          levels[levelUpSkill.skill + '_level'] = levelUpSkill.new_level;
         });
-        store.UserLevelsResource = levels.value;
+        store.UserLevelsResource = response.data.user_levels;
       }
-      levels.value = response.data.user_levels;
+      store.setUserLevelsResource(response.data.user_levels);
     },
   );
   store.setHandleXpGainedEvent(false);
 };
 
 const toggleSelectedSkillTooltip = (skill: LevelUpAbleSkills) => {
-  if (levelUpStatus[skill] === true) {
+  if (levelUpStatus[skill]) {
     levelUpStatus[skill] = false;
   }
   if (selectedSkillTooltip.value === skill) {

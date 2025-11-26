@@ -5,14 +5,7 @@
       class="flex flex-row gap-x-4 transition-opacity duration-500 ease-in"
     >
       <div class="relative grow">
-        <div
-          id="log-modal"
-          class="bg-primary-200 border-primary-900 fixed right-0 bottom-0 z-50 flex h-0 w-full max-w-[500px] items-center justify-center overflow-hidden overflow-x-scroll border-4 opacity-0"
-        >
-          <div class="flex items-center">
-            <p class="my-0 h-full"></p>
-          </div>
-        </div>
+        <LogModal />
         <ConversationContainer />
         <GameScreen />
         <ScreenHUD :hunger="hunger" :health="{ current: 100, max: 100 }" />
@@ -39,7 +32,15 @@
       </div>
     </div>
     <template #aside>
-      <div class="h-full" v-html="sidebarHtml"></div>
+      <SidebarSection
+        :profiency-statuses
+        :username
+        :profiency
+        :location
+        :init-messages
+        :init-levels
+        :diplomacy-resource
+      />
     </template>
   </AppLayoutWithAside>
 </template>
@@ -54,6 +55,12 @@ import ItemTooltip from '../components/HUD/ItemTooltip.vue';
 import GameMap from '../components/HUD/GameMap.vue';
 import { Game } from '@/advclient';
 import { onMounted } from 'vue';
+import LogModal from '../components/HUD/LogModal.vue';
+import SidebarSection from '../components/HUD/SidebarSection.vue';
+import type { DiplomacyResource } from '@/types/Diplomacy';
+import type { UserLevels } from '@/types/UserLevels';
+import type { GameLog } from '@/types/GameLog';
+import type { ProficiencyStatuses } from '@/types/ProficiencyStatuses';
 
 interface Props {
   hunger: {
@@ -65,7 +72,10 @@ interface Props {
   username: string;
   profiency: string;
   location: string;
-  sidebarHtml: string;
+  initMessages: GameLog[];
+  initLevels: UserLevels;
+  diplomacyResource: DiplomacyResource;
+  profiencyStatuses: ProficiencyStatuses;
 }
 defineProps<Props>();
 

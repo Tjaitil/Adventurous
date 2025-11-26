@@ -1,10 +1,11 @@
-export interface GameEventMap {
+import type { GameLoggerEvents } from '@/utilities/GameLogger';
+export type GameEventMap = {
   PLAYER_HEALTH_UPDATE: { health: number };
   PLAYER_HUNTED_UPDATE: { isHunted: boolean };
   RENDER_BUILDING: {
     content: string;
   };
-}
+} & GameLoggerEvents;
 
 type GameEventType = keyof GameEventMap;
 
@@ -19,6 +20,7 @@ class GameEventBus {
     RENDER_BUILDING: [],
     PLAYER_HEALTH_UPDATE: [],
     PLAYER_HUNTED_UPDATE: [],
+    GAMELOGGER_MESSAGE_LOGGED: [],
   };
 
   subscribe<K extends GameEventType>(event: K, listener: GameEventListener<K>) {
@@ -34,3 +36,5 @@ class GameEventBus {
 }
 
 export const gameEventBus = new GameEventBus();
+
+gameEventBus.subscribe('GAMELOGGER_MESSAGE_LOGGED', () => {});
