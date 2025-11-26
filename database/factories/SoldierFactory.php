@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class SoldierFactory extends Factory
 {
+    private static $warriorIdCounter = 1;
+
     /**
      * Define the model's default state.
      *
@@ -18,7 +20,7 @@ class SoldierFactory extends Factory
     {
         return [
             'username' => 'tjaitil',
-            'warrior_id' => $this->faker->randomNumber(2),
+            'warrior_id' => self::$warriorIdCounter++,
             'type' => 'ranged',
             'training_countdown' => $this->faker->dateTime(),
             'is_training' => false,
