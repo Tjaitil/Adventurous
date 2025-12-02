@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Enums\GameLocations;
 use App\Models\ConversationTracker;
+use App\Models\Diplomacy;
 use App\Models\Farmer;
 use App\Models\FarmerWorkforce;
 use App\Models\Hunger;
@@ -64,6 +65,11 @@ class UserDataFactory extends Factory
             ]);
 
             Trader::factory()->create([
+                'username' => $userData->username,
+                'user_id' => $userData->id,
+            ]);
+
+            Diplomacy::factory()->create([
                 'username' => $userData->username,
                 'user_id' => $userData->id,
             ]);
