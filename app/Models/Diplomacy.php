@@ -10,24 +10,24 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property string $username
- * @property string $hirtam
- * @property string $pvitul
- * @property string $khanz
- * @property string $ter
- * @property string $fansalplains
  * @property int $user_id
+ * @property float $hirtam
+ * @property float $pvitul
+ * @property float $khanz
+ * @property float $ter
+ * @property float $fansalplains
  * @method static \Database\Factories\DiplomacyFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder|Diplomacy newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Diplomacy newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Diplomacy query()
- * @method static \Illuminate\Database\Eloquent\Builder|Diplomacy whereFansalplains($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Diplomacy whereHirtam($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Diplomacy whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Diplomacy whereKhanz($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Diplomacy wherePvitul($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Diplomacy whereTer($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Diplomacy whereUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Diplomacy whereUsername($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Diplomacy newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Diplomacy newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Diplomacy query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Diplomacy whereFansalplains($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Diplomacy whereHirtam($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Diplomacy whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Diplomacy whereKhanz($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Diplomacy wherePvitul($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Diplomacy whereTer($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Diplomacy whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Diplomacy whereUsername($value)
  * @mixin \Eloquent
  */
 class Diplomacy extends Model

@@ -17,7 +17,13 @@ class DiplomacyFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'username' => $this->faker->userName(),
+            'hirtam' => $this->faker->randomFloat(1, 0, 1),
+            'pvitul' => $this->faker->randomFloat(1, 0, 1),
+            'khanz' => $this->faker->randomFloat(1, 0, 1),
+            'ter' => $this->faker->randomFloat(1, 0, 1),
+            'fansalplains' => $this->faker->randomFloat(1, 0, 1),
+            'user_id' => $this->faker->numberBetween(1, 100),
         ];
     }
 }
