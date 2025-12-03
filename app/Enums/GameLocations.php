@@ -8,7 +8,7 @@ enum GameLocations: string
     case PVITUL_LOCATION = 'pvitul';
     case KHANZ_LOCATION = 'khanz';
     case TER_LOCATION = 'ter';
-    case FANSALPLAINS_LOCATION = 'fansalplains';
+    case FANSALPLAINS_LOCATION = 'fansal_plains';
     case KRASNUR_LOCATION = 'krasnur';
     case TOWHAR_LOCATION = 'towhar';
     case GOLBAK_LOCATION = 'golbak';
