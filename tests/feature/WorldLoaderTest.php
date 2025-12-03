@@ -40,7 +40,7 @@ class WorldLoaderTest extends TestCase
             'golbak' => ['destination' => 'golbak'],
             'krasnur' => ['destination' => 'krasnur'],
             'ter' => ['destination' => 'ter'],
-            'fansalplains' => ['destination' => 'fansalplains'],
+            'fansal_plains' => ['destination' => 'fansal_plains'],
             'cruendo' => ['destination' => 'cruendo'],
             'snerpiir' => ['destination' => 'snerpiir'],
             'fagna' => ['destination' => 'fagna'],

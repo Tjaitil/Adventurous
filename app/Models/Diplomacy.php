@@ -15,12 +15,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property float $pvitul
  * @property float $khanz
  * @property float $ter
- * @property float $fansalplains
+ * @property float $fansal_plains
  * @method static \Database\Factories\DiplomacyFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Diplomacy newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Diplomacy newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Diplomacy query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Diplomacy whereFansalplains($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Diplomacy whereFansalPlains($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Diplomacy whereHirtam($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Diplomacy whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Diplomacy whereKhanz($value)
