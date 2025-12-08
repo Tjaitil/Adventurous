@@ -3,5 +3,5 @@ export interface DiplomacyResource {
   pvitul: number;
   khanz: number;
   ter: number;
-  fansalplains: number;
+  fansal_plains: number;
 }
