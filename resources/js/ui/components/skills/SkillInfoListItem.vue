@@ -1,21 +1,22 @@
 <template>
   <div
-    class="skill-level-wrapper relative w-1/2 max-w-[80px] border-2 border-black bg-orange-50 p-2 text-black"
+    class="skill-level-wrapper relative w-1/2 max-w-[80px] border-2 border-black bg-orange-50 p-2 text-center text-black"
     data-wrapper-skill="{{ $skill }}"
     :class="{ 'animate-pulse-custom animate-pulse': isLevelUp }"
     @click="toggleTooltip()"
   >
     <img
-      class="mx-auto h-12 w-12"
+      class="mx-auto h-12 w-12 pb-1"
       :src="`images/${$props.skill.toLowerCase()} icon.png`"
+      :alt="t('{skill} icon', { skill })"
     />
-    {{ props.level }}
+    {{ level }}
     <span
       v-if="isTooltipToggled && skill !== 'adventurer'"
       class="skill_tooltip absolute bottom-0 left-0 z-20 float-right inline-block w-auto border-2 border-black bg-orange-50 p-1 text-center text-xs font-bold text-black shadow-2xl"
-      >Current experience {{ props.experience }}
+      >{{ t('Current experience') }} {{ experience }}
       <br />
-      Next level {{ props.nextLevelXp }}
+      {{ t('Next level') }} {{ nextLevelXp }}
     </span>
   </div>
 </template>
@@ -23,6 +24,7 @@
 <script setup lang="ts">
 import { LevelUpAbleSkills } from '@/types/Skill';
 import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 interface Props {
   skill: LevelUpAbleSkills | 'adventurer';
@@ -38,6 +40,7 @@ const emit = defineEmits<{
   toggleTooltip: [skill: string];
 }>();
 
+const { t } = useI18n();
 const isTooltipToggled = ref(false);
 
 const toggleTooltip = () => {
