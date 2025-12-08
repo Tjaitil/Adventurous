@@ -1,57 +1,55 @@
 <template>
-  <div>
-    <div class="mt-1">
-      <img src="/images/diplomacy icon.png" alt="Diplomacy icon" />
+  <div class="space-y-6">
+    <div>
+      <img
+        src="/images/diplomacy icon.png"
+        alt="Diplomacy icon"
+        class="mx-auto w-12"
+      />
     </div>
 
-    <table class="lightTextColor middle-align">
-      <thead>
-        <tr>
-          <td>{{ $t('Location') }}</td>
-          <td>{{ $t('Diplomacy') }}</td>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Hirtam</td>
-          <td :class="diplomacyClass(data.hirtam)">{{ data.hirtam }}</td>
-        </tr>
-        <tr>
-          <td>Pvitul</td>
-          <td :class="diplomacyClass(data.pvitul)">{{ data.pvitul }}</td>
-        </tr>
-        <tr>
-          <td>Khanz</td>
-          <td :class="diplomacyClass(data.khanz)">{{ data.khanz }}</td>
-        </tr>
-        <tr>
-          <td>Ter</td>
-          <td :class="diplomacyClass(data.ter)">{{ data.ter }}</td>
-        </tr>
-        <tr>
-          <td>Fansal Plains</td>
-          <td :class="diplomacyClass(data.fansalplains)">
-            {{ data.fansalplains }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="grid grid-cols-2 gap-6">
+      <div v-for="(value, key) in diplomacyData" :key="key" class="text-center">
+        <div class="mb-2">
+          <span class="border-b-2 border-stone-300 px-2 pb-0.5 text-stone-300">
+            {{ jsUcWords(key.replace('_', ' ')) }}
+          </span>
+        </div>
+        <p class="text-lg font-bold" :class="computedDiplomacyClasses[key]">
+          {{ value }}
+        </p>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { DiplomacyResource } from '@/types/Diplomacy';
+import { jsUcWords } from '@/utilities/uppercase';
+import { computed, ref } from 'vue';
 
 interface Props {
-  data: DiplomacyResource;
+  initData: DiplomacyResource;
 }
 
-const { data } = defineProps<Props>();
+const { initData: data } = defineProps<Props>();
+
+const diplomacyData = ref<Props['initData']>(data);
 
 const diplomacyClass = (diplomacy: number) => {
   if (typeof diplomacy !== 'number') return '';
-  if (diplomacy > 1) return 'positiveDiplomacy';
-  if (diplomacy < 1) return 'negativeDiplomacy';
+  if (diplomacy > 1) return 'text-green-500';
+  if (diplomacy < 1) return 'text-red-500';
   return '';
 };
+
+const computedDiplomacyClasses = computed(() => {
+  return {
+    hirtam: diplomacyClass(data.hirtam),
+    pvitul: diplomacyClass(data.pvitul),
+    khanz: diplomacyClass(data.khanz),
+    ter: diplomacyClass(data.ter),
+    fansal_plains: diplomacyClass(data.fansal_plains),
+  };
+});
 </script>

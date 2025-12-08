@@ -2,39 +2,27 @@
 
 namespace App\Http\Resources;
 
-/**
- * @property mixed $hirtam
- * @property mixed $pvitul 
- * @property mixed $khanz
- * @property mixed $ter
- * @property mixed $fansalplains
- */
-class DiplomacyResource extends Resource
-{
-    public function __construct($resource = null)
-    {
-        parent::__construct([
-            "hirtam" => 0,
-            "pvitul" => 0,
-            "khanz" => 0,
-            "ter" => 0,
-            "fansalplains" => 0
-        ], $resource);
-    }
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-    public function toArray(): array
+/**
+ * @mixin \App\Models\Diplomacy
+ */
+class DiplomacyResource extends JsonResource
+{
+    /**
+     * Transform the resource into an array.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(Request $request): array
     {
         return [
-            "hirtam" => $this->hirtam,
-            "pvitul" => $this->pvitul,
-            "khanz" => $this->khanz,
-            "ter" => $this->ter,
-            "fansalplains" => $this->fansalplains
+            'hirtam' => $this->hirtam,
+            'pvitul' => $this->pvitul,
+            'khanz' => $this->khanz,
+            'ter' => $this->ter,
+            'fansal_plains' => $this->fansal_plains,
         ];
-    }
-
-    public static function mapping(array $data): array
-    {
-        return $data;
     }
 }

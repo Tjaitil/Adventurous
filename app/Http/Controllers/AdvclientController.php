@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\DiplomacyResource;
 use App\Models\Diplomacy;
 use App\Models\Hunger;
 use App\Models\Inventory;
@@ -45,7 +46,9 @@ class AdvclientController extends Controller
             'initLevels' => UserLevels::where('username', Auth::user()->username)->first()
                 ?->toArray(),
             'initMessages' => session()->get('log') ?? [],
-            'diplomacyResource' => Diplomacy::where('username', Auth::user()->username)->get()->toArray(),
+            'diplomacyResource' => new DiplomacyResource(
+                Diplomacy::where('username', Auth::user()->username)->first()
+            ),
         ]);
     }
 }

@@ -36,7 +36,7 @@
           <div>Adventure</div>
         </template>
         <template #diplomacy>
-          <DiplomacyTab :data="diplomacyResource" />
+          <DiplomacyTab :init-data="diplomacyResource" />
         </template>
         <template #skills><SkillInfoList /></template>
         <template #help><HelpTab /></template>
