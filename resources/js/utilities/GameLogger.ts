@@ -1,16 +1,24 @@
 import { AssetPaths } from '@/clientScripts/ImagePath';
 import { addModuleTester } from '@/devtools/ModuleTester';
+import { gameEventBus } from '@/gameEventsBus';
 import { GameLog } from '@/types/GameLog';
 import axios from 'axios';
 
 export enum commonMessages {
   'inventoryFull' = 'Remove some items from inventory before doing this action',
 }
+export interface GameLoggerEvents {
+  GAMELOGGER_MESSAGE_LOGGED: { message: GameLog };
+}
 
 export class GameLogger {
   private static messages: GameLog[] = [];
   private static currentlyLogging = false;
   private static currentIndex = 0;
+
+  public static getMessages(): GameLog[] {
+    return this.messages;
+  }
 
   public static addErrorMessage(
     message: string,
@@ -69,42 +77,25 @@ export class GameLogger {
     instantLog = false,
     shouldLogToApi = false,
   ) {
-    if (typeof message !== 'string') {
-      this.messages.push(message);
-    } else {
-      this.messages.push({
-        message: message,
-        type: GameLogTypes.INFO,
-      });
-    }
-
-    if (shouldLogToApi === true) {
-      this.logMessageToApi(message);
-    }
-
-    // Use to start this.logMessages instead of having to call it directly in another file
-    if (instantLog) this.logMessages();
+    gameEventBus.emit('GAMELOGGER_MESSAGE_LOGGED', {
+      message:
+        typeof message === 'string'
+          ? { message, type: GameLogTypes.INFO }
+          : message,
+    });
   }
 
-  public static addMessages(
-    messages: GameLog[],
-    instantLog = true,
-    shouldLogToApi = false,
-  ) {
-    messages.forEach(message =>
-      this.addMessage(message, false, shouldLogToApi),
-    );
-    if (instantLog) this.logMessages();
+  public static addMessages(messages: GameLog[], shouldLogToApi = false) {
+    messages.forEach(message => {
+      this.addMessage(message, false, shouldLogToApi);
+    });
   }
 
+  /**
+   * @deprecated Use individual log functions or addMessage instead
+   */
   public static logMessages() {
-    if (this.messages.length === 0) return false;
-    // Start new loop only if none is set
-
-    if (!this.currentlyLogging) {
-      this.clientLog();
-    }
-    this.currentlyLogging = true;
+    return;
   }
 
   private static mainLog() {
