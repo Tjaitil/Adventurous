@@ -5,6 +5,6 @@ export function jsUcfirst(string: string): string {
 export function jsUcWords(string: string): string {
   // Return uppercase first letter each word
   return string.replace(/\w\S*/g, function (txt) {
-    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    return txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase();
   });
 }
