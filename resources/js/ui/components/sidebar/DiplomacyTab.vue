@@ -12,7 +12,7 @@
       <div v-for="(value, key) in diplomacyData" :key="key" class="text-center">
         <div class="mb-2">
           <span class="border-b-2 border-stone-300 px-2 pb-0.5 text-stone-300">
-            {{ jsUcWords(key.replace('_', ' ')) }}
+            {{ formatLocationName(key) }}
           </span>
         </div>
         <p class="text-lg font-bold" :class="computedDiplomacyClasses[key]">
@@ -26,6 +26,7 @@
 <script setup lang="ts">
 import type { DiplomacyResource } from '@/types/Diplomacy';
 import { jsUcWords } from '@/utilities/uppercase';
+import { formatLocationName } from '@/utilities/formatters';
 import { computed, ref } from 'vue';
 
 interface Props {
