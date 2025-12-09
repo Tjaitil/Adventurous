@@ -1,5 +1,6 @@
 import { BaseStaticGameObject } from './BaseStaticGameObject';
 import { StaticGameObject } from '../types/gamepieces/StaticGameObject';
+import { formatCharacterName } from '@/utilities/formatters';
 
 export interface ICharacter extends StaticGameObject {
   conversation: boolean;
@@ -15,6 +16,6 @@ export class Character extends BaseStaticGameObject implements ICharacter {
     super(initCharacterData);
     this.y += 6;
     this.diameterUp += 6;
-    this.displayName = initCharacterData.displayName.replace('_', ' ');
+    this.displayName = formatCharacterName(this.displayName);
   }
 }

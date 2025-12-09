@@ -8,7 +8,7 @@ import { pauseManager } from './clientScripts/pause';
 import viewport from './clientScripts/viewport';
 import { CustomFetchApi } from './CustomFetchApi';
 import type { GameProperties, loadWorldParameters } from './types/Advclient';
-import { jsUcWords } from './utilities/uppercase';
+import { formatLocationName } from './utilities/formatters';
 import { setUpTabList } from './utilities/tabs';
 import type { GetWorldResponse } from './types/Responses/WorldLoaderResponse';
 import { initErrorHandler, reportCatchError } from './base/ErrorHandler';
@@ -138,7 +138,7 @@ export class Game {
     const data = response.data;
     Game.properties.currentMap = data.current_map;
     if (data.changed_location) {
-      document.title = jsUcWords(data.changed_location.replace('-', ' '));
+      document.title = formatLocationName(data.changed_location);
     }
     const findStartPoint = (object: { type: string }) =>
       object.type === 'start_point';
