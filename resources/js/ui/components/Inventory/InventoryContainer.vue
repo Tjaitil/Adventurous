@@ -1,5 +1,6 @@
 <template>
   <UCard
+    id="inventory"
     variant="soft"
     class="relative z-20 float-right mt-0 h-[600px] w-full text-white"
   >
@@ -28,7 +29,6 @@
 import { CustomFetchApi } from '@/CustomFetchApi';
 import { InventoryItem } from '@/types/InventoryItem';
 import { ref } from 'vue';
-import { BaksCard } from 'baks-components-vue';
 import InventoryItemWrapper from './InventoryItemWrapper.vue';
 import BaseLoading from '@/ui/components/base/BaseLoading.vue';
 import { useInventoryStore } from '@/ui/stores/InventoryStore';
