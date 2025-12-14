@@ -49,11 +49,14 @@ export const itemTitle = {
       element.addEventListener('mouseenter', event =>
         itemTitle.show(<MouseEvent>event),
       );
-      element.addEventListener('mouseleave', () => itemTitle.hide());
+      element.addEventListener('mouseleave', () => {
+        itemTitle.hide();
+      });
     });
   },
   show(event: MouseEvent) {
     const element = (event.target as HTMLElement).closest('div');
+    if (!(element instanceof HTMLElement)) return false;
     this.currentEvent = event;
     this.currentTitle = element;
     const item = element.getElementsByTagName('figcaption')[0].innerHTML;
@@ -73,32 +76,45 @@ export const itemTitle = {
     const menu = document.getElementById('item_tooltip');
     if (
       menu.children[0].children[0].innerHTML === item &&
-      menu.classList.contains('invisible') === false
+      !menu.classList.contains('invisible')
     ) {
       return false;
     }
     // Insert item name at the first li
     menu.children[0].children[0].innerHTML = item;
+    const clientRect = element?.getBoundingClientRect();
     menu.classList.remove('invisible');
     // Declare menu top by measuring the positon from top of parent and also if inventory/stockpile is scrolled
-    let menuTop;
     const menuFirstChild = <HTMLElement>menu.children[0];
     const textChild = <HTMLElement>menuFirstChild.children[0];
 
-    menuTop =
-      event.clientY -
-      document.getElementsByTagName('section')[0].offsetTop +
-      window.scrollY;
-    menuFirstChild.style.top = menuTop + 'px';
+    const elementImage = element.querySelectorAll('img');
+
+    const minpositionOffset =
+      elementImage.length > 0
+        ? elementImage[0].clientWidth + 10
+        : element.clientWidth;
+
+    const positionTop =
+      clientRect.y + window.scrollY - menuFirstChild.clientHeight / 4;
+    const positionLeft = clientRect.x + minpositionOffset;
+    menuFirstChild.style.top = `${positionTop.toString()}px`;
     menuFirstChild.style.left =
-      this.isClippingOutsideScreen(event.clientX) + 'px';
+      this.isClippingOutsideScreen(positionLeft, clientRect).toString() + 'px';
     textChild.classList.add('text-center');
   },
-  isClippingOutsideScreen(leftPositon: number): number {
-    const tooltipItem = document.getElementById('item_tooltip').children[0];
+  /**
+   * If tooltip is clipping outside screen, adjust position to the left
+   */
+  isClippingOutsideScreen(
+    leftPositon: number,
+    hostelementRec: DOMRect,
+  ): number {
+    const tooltipItem = document.getElementById('item_tooltip')?.children[0];
+    if (!(tooltipItem instanceof HTMLElement)) return leftPositon;
     const calculatedPosition = leftPositon + this.subtractLeft;
     if (leftPositon + tooltipItem.clientWidth > window.innerWidth) {
-      return calculatedPosition - tooltipItem.clientWidth;
+      return hostelementRec.x - tooltipItem.clientWidth - 10;
     }
 
     return calculatedPosition;
