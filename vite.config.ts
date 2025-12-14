@@ -66,15 +66,18 @@ export default defineConfig({
                 body: 'p-4 sm:p-4',
               },
               soft: {
-                root: 'before:border-stone-400',
+                root: 'before:border-stone-400 bg-[#a89a8a]',
                 body: 'p-4 sm:p-4',
               },
+              /**
+               * This uses a opacity background. Adjust when needed a variant
+               */
               subtle: {
                 root: 'before:border-stone-400',
                 body: 'p-4 sm:p-4',
               },
               solid: {
-                root: 'before:border-stone-700 after:border-primary-800',
+                root: 'before:border-stone-800 after:border-primary-800 bg-stone-700',
                 body: 'p-4 sm:p-4',
               },
             },
@@ -122,4 +125,3 @@ export default defineConfig({
     target: 'ES2022',
   },
 });
-console.log('VITE CONFIG LOADED');
