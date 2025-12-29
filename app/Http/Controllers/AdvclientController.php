@@ -41,7 +41,7 @@ class AdvclientController extends Controller
             'profiency' => $user_data->profiency,
             'hunger' => Hunger::where('user_id', Auth::user()->id)->first(),
             'inventory' => Inventory::where('user_id', Auth::user()->id)->get(),
-            'profiencyStatuses' => $this->profiencyService->calculateProfienciesStatuses(),
+            'profiencyStatuses' => $this->profiencyService->calculateProfienciesStatuses(Auth::user()->id),
             'diplomacy' => Diplomacy::where('username', Auth::user()->username)->get()->toArray(),
             'initLevels' => UserLevels::where('username', Auth::user()->username)->first()
                 ?->toArray(),
