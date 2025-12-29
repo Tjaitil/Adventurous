@@ -168,3 +168,17 @@
 .card::before {
   border-style: ridge;
 }
+
+.progress-status-overlay-text {
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 10;
+  position: absolute;
+  left: 0px;
+  /** Add top: 1px to account to trim "font padding" */
+  top: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 1.8;
+}
