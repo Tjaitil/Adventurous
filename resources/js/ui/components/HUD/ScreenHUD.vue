@@ -5,19 +5,31 @@
       v-model="currentHunger"
       :max="hunger.max"
       :ui="{
-        base: 'h-6 absolute left-4 top-2 border-primary-800 border-3 pixelated-corners-sm rounded-none w-68',
+        root: 'absolute left-4 top-2 w-68 h-6',
+        base: 'h-6 absolute  border-primary-800 border-3 pixelated-corners-sm rounded-none',
         indicator: 'rounded-none',
+        status: 'progress-status-overlay-text text-black',
       }"
-    />
+    >
+      <template #status>
+        <span> {{ currentHunger }} / {{ hunger.max }} </span>
+      </template>
+    </UProgress>
     <UProgress
       id="health_progressBar"
       v-model="currentHealth"
       :max="health.max"
       :ui="{
-        base: 'h-6 absolute left-[19rem] top-2 border-primary-800 border-3 pixelated-corners-sm rounded-none w-68',
+        root: 'absolute left-[19rem] top-2 w-68 h-6',
+        base: 'h-6 absolute border-primary-800 border-3 pixelated-corners-sm rounded-none',
         indicator: 'rounded-none',
+        status: 'progress-status-overlay-text text-black',
       }"
-    />
+    >
+      <template #status>
+        <span> {{ currentHealth }} / {{ health.max }} </span>
+      </template>
+    </UProgress>
     <div v-if="showHuntedIcon" class="absolute top-10 left-4">
       <img
         id="HUD_hunted_icon"
