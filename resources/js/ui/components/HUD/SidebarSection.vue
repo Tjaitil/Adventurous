@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-primary-800 h-full overflow-x-hidden px-2 pt-2 text-white transition-all duration-200"
+    class="bg-primary-800 h-full overflow-x-hidden px-2 pt-2 pr-6 text-white transition-all duration-200"
     :class="expanded ? 'w-md' : 'w-full'"
   >
     <button
@@ -30,7 +30,7 @@
           <GameLogTab :init-messages />
         </template>
         <template #countdown>
-          <ProfiencyStatusTab :profiency-statuses />
+          <ProfiencyStatusTab :init-profiency-statuses="profiencyStatuses" />
         </template>
         <template #adventure>
           <div>Adventure</div>

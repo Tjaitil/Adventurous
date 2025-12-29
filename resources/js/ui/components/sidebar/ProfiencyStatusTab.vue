@@ -1,63 +1,53 @@
 <template>
-  <div>
-    <div class="mt-1">
-      <img src="/images/proficiency icon.png" :alt="t('Proficiency icon')" />
-    </div>
+  <div class="space-y-6 px-4">
+    <UCard variant="soft">
+      <img
+        src="/images/farmer icon.png"
+        :alt="$t('Farmer icon')"
+        class="mx-auto w-12"
+      />
+      <FarmerStatus
+        v-for="farmer in profiencyStatuses.farmers"
+        :key="farmer.id"
+        :status="farmer"
+      />
+    </UCard>
 
-    <table class="lightTextColor middle-align">
-      <thead>
-        <tr>
-          <td>{{ t('proficiency.skill') }}</td>
-          <td>{{ t('proficiency.level') }}</td>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(item, idx) in entries" :key="item.key + idx">
-          <td>{{ labelForKey(item.key) }}</td>
-          <td>{{ item.value }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <UCard variant="soft">
+      <img
+        src="/images/miner icon.png"
+        :alt="$t('Miner icon')"
+        class="mx-auto w-12"
+      />
+      <MinerStatus
+        v-for="miner in profiencyStatuses.miners"
+        :key="miner.id"
+        :status="miner"
+      >
+      </MinerStatus>
+    </UCard>
+    <TraderStatus :status="profiencyStatuses.trader"></TraderStatus>
+    <WarriorStatus :status="profiencyStatuses.warrior_statuses" />
   </div>
 </template>
 
 <script setup lang="ts">
 import type { ProficiencyStatuses } from '@/types/ProficiencyStatuses';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
+import FarmerStatus from '../profiency-status/FarmerStatus.vue';
+import MinerStatus from '../profiency-status/MinerStatus.vue';
+import TraderStatus from '../profiency-status/TraderStatus.vue';
+import WarriorStatus from '../profiency-status/WarriorStatus.vue';
+import { reactive } from 'vue';
 
 interface Props {
-  profiencyStatuses: ProficiencyStatuses;
+  initProfiencyStatuses: ProficiencyStatuses;
 }
 
-const { profiencyStatuses } = defineProps<Props>();
+const { initProfiencyStatuses } = defineProps<Props>();
 
-const { t } = useI18n();
+const profiencyStatuses = reactive<ProficiencyStatuses>(initProfiencyStatuses);
 
-type ProficiencyKey = keyof ProficiencyStatuses;
-
-const entries = computed(() => {
-  const keys: ProficiencyKey[] = [
-    'Farmers',
-    'Trader',
-    'Miners',
-    'warrior_statuses',
-  ];
-  return keys.map(key => ({ key, value: profiencyStatuses[key] }));
-});
-
-const prettyLabel = (key: string) => {
-  const spaced = key.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/[_-]+/g, ' ');
-
-  return spaced
-    .split(' ')
-    .map(s => s.charAt(0).toUpperCase() + s.slice(1))
-    .join(' ');
-};
-
-const labelForKey = (key: string) => {
-  const lookup = `proficiency.${key}`;
-  const translated = t(lookup);
-  return translated === lookup ? prettyLabel(key) : translated;
+const updateProfiencyStatuses = () => {
+  // update
 };
 </script>
