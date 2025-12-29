@@ -1,4 +1,3 @@
-import { sidebar } from './clientScripts/sidebar';
 import { itemTitle } from './utilities/itemTitle';
 import { inventorySidebarMob } from './utilities/inventoryToggle';
 import { ajaxP } from './ajax';
@@ -15,7 +14,9 @@ const generalProperties = {
     }
   },
 };
-window.addEventListener('load', () => generalInit());
+window.addEventListener('load', () => {
+  generalInit();
+});
 function generalInit() {
   console.log('init');
   generalProperties.setDeviceType();
@@ -29,7 +30,6 @@ function generalInit() {
   if (document.getElementById('sidebar') != null) {
     document.getElementById('sidebar').style.width =
       document.getElementsByTagName('aside')[0].clientWidth + 'px';
-    sidebar.addClickEvent();
   }
   if (document.getElementById('inventory') != null) {
     if (window.location.href.indexOf('stockpile') == -1) {
@@ -119,7 +119,7 @@ const mainContentHelpContainer = {
   helpElement: null,
   toggled: false,
   toggle() {
-    if (this.toggled === false) {
+    if (!this.toggled) {
       this.helpElement.style.height = '250px';
       this.toggled = true;
     } else {

@@ -82,8 +82,6 @@ defineProps<Props>();
 onMounted(async () => {
   await Game.getWorld().then(() => {
     Game.setup();
-    // TODO: Remove this once sidebar is converted to Vue
-    void import('@/clientScripts/sidebar.ts');
   });
 });
 </script>
