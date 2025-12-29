@@ -1,4 +1,4 @@
-    @vite(['resources/js/clientScripts/inventory.ts', 'resources/js/clientScripts/sidebar.ts'])
+    @vite(['resources/js/clientScripts/inventory.ts'])
     @extends('layoutSectionAside')
     @section('title', 'Adventurous')
     @section('sectionContent')

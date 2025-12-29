@@ -115,7 +115,6 @@ export default defineConfig({
         'resources/js/ui/main.ts',
         'resources/js/clientScripts/inventory.ts',
         'resources/js/backgroundScroller.ts',
-        'resources/js/clientScripts/sidebar.ts',
         'resources/css/app.css',
       ],
       refresh: false,
