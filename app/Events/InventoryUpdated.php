@@ -22,9 +22,9 @@ class InventoryUpdated implements ShouldBroadcast
     /**
      * Create a new event instance.
      *
-     * @param  Collection<int, Inventory>  $Inventory
+     * @param  Collection<int, \App\Models\Inventory>  $Inventory
      */
-    public function __construct($Inventory)
+    public function __construct(Collection $Inventory)
     {
         $this->Inventory = $Inventory;
     }
