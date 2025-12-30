@@ -3,6 +3,7 @@
 namespace App\tests;
 
 use App\Enums\SkillNames;
+use App\Models\EfficiencyUpgrade;
 use App\Models\FarmerWorkforce;
 use App\Models\LevelData;
 use App\Models\MinerWorkforce;
@@ -41,7 +42,9 @@ class WorkforceLodgeTest extends TestCase
         $LevelData = LevelData::where('max_efficiency_level', $efficiency_level)
             ->first();
 
-        $LevelDataUnder = LevelData::where('max_efficiency_level', $efficiency_level - 1)
+        $efficiencyLevelToUse = $efficiency_level - 1;
+
+        $LevelDataUnder = LevelData::where('max_efficiency_level', $efficiencyLevelToUse)
             ->first();
 
         if ($profiency === 'farmer') {
@@ -58,6 +61,8 @@ class WorkforceLodgeTest extends TestCase
                 ->update(['efficiency_level' => $LevelDataUnder->max_efficiency_level]);
         }
 
+        $cost = EfficiencyUpgrade::where('level', $efficiencyLevelToUse)->first()->price;
+
         $response = $this->post('/workforcelodge/efficiency/upgrade', [
             'skill' => $profiency,
         ]);
@@ -70,6 +75,12 @@ class WorkforceLodgeTest extends TestCase
             'efficiency_level',
             'new_efficiency_price',
         ]]);
+
+        $this->assertDatabaseHas('inventory', [
+            'user_id' => $this->RandomUser->id,
+            'item' => config('adventurous.currency'),
+            'amount' => 100000 - $cost,
+        ]);
     }
 
     /**

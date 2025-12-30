@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\SkillNames;
+use App\Events\InventoryUpdated;
 use App\Exceptions\JsonException;
 use App\Http\Responses\AdvResponse;
 use App\Models\EfficiencyUpgrade;
@@ -98,6 +99,8 @@ class WorkforceLodgeController extends Controller
         if (! $this->inventoryService->hasEnoughAmount($User->inventory, config('adventurous.currency'), $price)) {
             return $this->inventoryService->logNotEnoughAmount(config('adventurous.currency'));
         }
+        
+        $this->inventoryService->edit($User->inventory, config('adventurous.currency'), -$price, $User->id);
 
         $Workforce->efficiency_level += 1;
         $Workforce->save();
