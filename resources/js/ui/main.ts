@@ -13,6 +13,9 @@ export const i18n = createI18n({
   locale: 'en',
   messages: { en: await getLanguageBundle() },
   legacy: false,
+  missingWarn: false,
+  silentFallbackWarn: true,
+  silentTranslationWarn: true,
 });
 
 export const pinia = createPinia();
