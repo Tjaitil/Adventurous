@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Enums\SkillNames;
-use App\Events\InventoryUpdated;
 use App\Exceptions\JsonException;
 use App\Http\Responses\AdvResponse;
 use App\Models\EfficiencyUpgrade;
