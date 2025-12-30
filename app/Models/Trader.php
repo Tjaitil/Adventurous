@@ -10,28 +10,28 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 /**
  * 
  *
+ * @property int $id
  * @property string $username
- * @property int $assignment_id
+ * @property int $user_id
  * @property int $cart_id
  * @property int $cart_amount
  * @property int $delivered
  * @property string|null $trading_countdown
- * @property int $user_id
- * @property int $id
+ * @property int $assignment_id
  * @property-read \App\Models\TravelBureauCart|null $cart
  * @property-read \App\Models\TraderAssignment|null $traderAssignment
  * @method static \Database\Factories\TraderFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder|Trader newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Trader newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Trader query()
- * @method static \Illuminate\Database\Eloquent\Builder|Trader whereAssignmentId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Trader whereCartAmount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Trader whereCartId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Trader whereDelivered($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Trader whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Trader whereTradingCountdown($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Trader whereUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Trader whereUsername($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trader newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trader newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trader query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trader whereAssignmentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trader whereCartAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trader whereCartId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trader whereDelivered($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trader whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trader whereTradingCountdown($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trader whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trader whereUsername($value)
  * @mixin \Eloquent
  */
 class Trader extends Model

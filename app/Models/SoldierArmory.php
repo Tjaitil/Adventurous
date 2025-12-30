@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
+ * 
+ *
  * @property int $id
  * @property string $username
  * @property int $warrior_id
@@ -21,7 +23,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $attack
  * @property int $defence
  * @property-read \App\Models\Soldier $soldier
- *
+ * @method static \Database\Factories\SoldierArmoryFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SoldierArmory newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SoldierArmory newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SoldierArmory query()
@@ -38,7 +40,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SoldierArmory whereRightHand($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SoldierArmory whereUsername($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SoldierArmory whereWarriorId($value)
- *
  * @mixin \Eloquent
  */
 class SoldierArmory extends Model

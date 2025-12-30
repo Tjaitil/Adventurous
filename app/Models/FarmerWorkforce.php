@@ -20,17 +20,17 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Farmer> $farmer
  * @property-read int|null $farmer_count
  * @method static \Database\Factories\FarmerWorkforceFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder|FarmerWorkforce newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|FarmerWorkforce newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|FarmerWorkforce query()
- * @method static \Illuminate\Database\Eloquent\Builder|FarmerWorkforce whereAvailWorkforce($value)
- * @method static \Illuminate\Database\Eloquent\Builder|FarmerWorkforce whereEfficiencyLevel($value)
- * @method static \Illuminate\Database\Eloquent\Builder|FarmerWorkforce whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|FarmerWorkforce whereKrasnur($value)
- * @method static \Illuminate\Database\Eloquent\Builder|FarmerWorkforce whereTowhar($value)
- * @method static \Illuminate\Database\Eloquent\Builder|FarmerWorkforce whereUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|FarmerWorkforce whereUsername($value)
- * @method static \Illuminate\Database\Eloquent\Builder|FarmerWorkforce whereWorkforceTotal($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FarmerWorkforce newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FarmerWorkforce newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FarmerWorkforce query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FarmerWorkforce whereAvailWorkforce($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FarmerWorkforce whereEfficiencyLevel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FarmerWorkforce whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FarmerWorkforce whereKrasnur($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FarmerWorkforce whereTowhar($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FarmerWorkforce whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FarmerWorkforce whereUsername($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FarmerWorkforce whereWorkforceTotal($value)
  * @mixin \Eloquent
  */
 class FarmerWorkforce extends Model

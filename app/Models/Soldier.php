@@ -14,14 +14,14 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string $username
  * @property int $warrior_id
  * @property string $type
- * @property \Carbon\CarbonInterface $training_countdown
+ * @property \Carbon\Carbon $training_countdown
  * @property bool|null $is_training
  * @property string|null $training_type
  * @property int $army_mission
  * @property int $health
  * @property string $location
  * @property bool $is_resting
- * @property \Carbon\CarbonInterface $rest_start
+ * @property \Carbon\Carbon $rest_start
  * @property int $user_id
  * @property-read \App\Models\SoldierArmory|null $armory
  * @property-read \App\Models\WarriorsLevels|null $levels

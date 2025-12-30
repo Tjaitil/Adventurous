@@ -17,14 +17,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read int|null $required_items_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SkillRequirement> $skillRequirements
  * @property-read int|null $skill_requirements_count
- * @method static \Illuminate\Database\Eloquent\Builder|SmithyItem newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|SmithyItem newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|SmithyItem query()
- * @method static \Illuminate\Database\Eloquent\Builder|SmithyItem whereItem($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SmithyItem whereItemId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SmithyItem whereItemMultiplier($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SmithyItem whereMineral($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SmithyItem whereStoreValue($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SmithyItem newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SmithyItem newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SmithyItem query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SmithyItem whereItem($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SmithyItem whereItemId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SmithyItem whereItemMultiplier($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SmithyItem whereMineral($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SmithyItem whereStoreValue($value)
  * @mixin \Eloquent
  */
 class SmithyItem extends Model

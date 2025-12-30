@@ -16,18 +16,18 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $min_crop_count
  * @property int $max_crop_count
  * @property string $location
- * @method static \Illuminate\Database\Eloquent\Builder|Crop newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Crop newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Crop query()
- * @method static \Illuminate\Database\Eloquent\Builder|Crop whereCropType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Crop whereExperience($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Crop whereFarmerLevel($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Crop whereLocation($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Crop whereMaxCropCount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Crop whereMinCropCount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Crop whereSeedItem($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Crop whereSeedRequired($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Crop whereTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Crop newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Crop newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Crop query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Crop whereCropType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Crop whereExperience($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Crop whereFarmerLevel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Crop whereLocation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Crop whereMaxCropCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Crop whereMinCropCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Crop whereSeedItem($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Crop whereSeedRequired($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Crop whereTime($value)
  * @mixin \Eloquent
  */
 class Crop extends Model

@@ -18,16 +18,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read int|null $inventory_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\HealingItemRequired> $requiredItems
  * @property-read int|null $required_items_count
- *
- * @method static Builder|HealingItem newModelQuery()
- * @method static Builder|HealingItem newQuery()
- * @method static Builder|HealingItem query()
- * @method static Builder|HealingItem whereBakeryItem($value)
- * @method static Builder|HealingItem whereHeal($value)
- * @method static Builder|HealingItem whereItem($value)
- * @method static Builder|HealingItem whereItemId($value)
- * @method static Builder|HealingItem wherePrice($value)
- *
+ * @method static Builder<static>|HealingItem newModelQuery()
+ * @method static Builder<static>|HealingItem newQuery()
+ * @method static Builder<static>|HealingItem query()
+ * @method static Builder<static>|HealingItem whereBakeryItem($value)
+ * @method static Builder<static>|HealingItem whereHeal($value)
+ * @method static Builder<static>|HealingItem whereItem($value)
+ * @method static Builder<static>|HealingItem whereItemId($value)
+ * @method static Builder<static>|HealingItem wherePrice($value)
  * @mixin \Eloquent
  */
 class HealingItem extends Model

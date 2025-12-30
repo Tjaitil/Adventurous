@@ -13,17 +13,15 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $max_mine_workers
  * @property int|null $max_warriors
  * @property int|null $max_efficiency_level
- *
- * @method static \Illuminate\Database\Eloquent\Builder|LevelData newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|LevelData newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|LevelData query()
- * @method static \Illuminate\Database\Eloquent\Builder|LevelData whereLevel($value)
- * @method static \Illuminate\Database\Eloquent\Builder|LevelData whereMaxEfficiencyLevel($value)
- * @method static \Illuminate\Database\Eloquent\Builder|LevelData whereMaxFarmWorkers($value)
- * @method static \Illuminate\Database\Eloquent\Builder|LevelData whereMaxMineWorkers($value)
- * @method static \Illuminate\Database\Eloquent\Builder|LevelData whereMaxWarriors($value)
- * @method static \Illuminate\Database\Eloquent\Builder|LevelData whereNextLevel($value)
- *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LevelData newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LevelData newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LevelData query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LevelData whereLevel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LevelData whereMaxEfficiencyLevel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LevelData whereMaxFarmWorkers($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LevelData whereMaxMineWorkers($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LevelData whereMaxWarriors($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LevelData whereNextLevel($value)
  * @mixin \Eloquent
  */
 class LevelData extends Model
