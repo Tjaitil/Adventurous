@@ -1711,12 +1711,6 @@ parameters:
 			path: app/Http/Controllers/TraderAssignmentController.php
 
 		-
-			message: '#^Cannot access property \$currency_reward_amount on App\\Models\\TraderAssignmentType\|null\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: app/Http/Controllers/TraderAssignmentController.php
-
-		-
 			message: '#^Cannot access property \$delivered on App\\Models\\Trader\|null\.$#'
 			identifier: property.nonObject
 			count: 4
@@ -1724,24 +1718,6 @@ parameters:
 
 		-
 			message: '#^Cannot access property \$destination on App\\Models\\TraderAssignment\|null\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: app/Http/Controllers/TraderAssignmentController.php
-
-		-
-			message: '#^Cannot access property \$diplomacy_percentage on App\\Models\\TraderAssignmentType\|null\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: app/Http/Controllers/TraderAssignmentController.php
-
-		-
-			message: '#^Cannot access property \$item_reward_amount on App\\Models\\TraderAssignmentType\|null\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: app/Http/Controllers/TraderAssignmentController.php
-
-		-
-			message: '#^Cannot access property \$required_level on App\\Models\\TraderAssignmentType\|null\.$#'
 			identifier: property.nonObject
 			count: 1
 			path: app/Http/Controllers/TraderAssignmentController.php
@@ -1762,24 +1738,6 @@ parameters:
 			message: '#^Cannot access property \$type on App\\Models\\TraderAssignment\|null\.$#'
 			identifier: property.nonObject
 			count: 5
-			path: app/Http/Controllers/TraderAssignmentController.php
-
-		-
-			message: '#^Cannot access property \$xp_finished on App\\Models\\TraderAssignmentType\|null\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: app/Http/Controllers/TraderAssignmentController.php
-
-		-
-			message: '#^Cannot access property \$xp_per_cargo on App\\Models\\TraderAssignmentType\|null\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: app/Http/Controllers/TraderAssignmentController.php
-
-		-
-			message: '#^Cannot access property \$xp_started on App\\Models\\TraderAssignmentType\|null\.$#'
-			identifier: property.nonObject
-			count: 1
 			path: app/Http/Controllers/TraderAssignmentController.php
 
 		-
@@ -3215,6 +3173,384 @@ parameters:
 			identifier: missingType.property
 			count: 1
 			path: app/Models/CityCentre_model.php
+
+		-
+			message: '#^Function get_template not found\.$#'
+			identifier: function.notFound
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Method Combat_model\:\:__construct\(\) has parameter \$provided_db with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Method Combat_model\:\:__construct\(\) has parameter \$session with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Method Combat_model\:\:calculateBattleResult\(\) has parameter \$POST with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Method Combat_model\:\:calculateBattleResult\(\) with return type void returns mixed but should not return anything\.$#'
+			identifier: return.void
+			count: 2
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Method Combat_model\:\:daqloonHit\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Method Combat_model\:\:daqloonHit\(\) has parameter \$daqloon with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Method Combat_model\:\:daqloonHit\(\) has parameter \$number with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Method Combat_model\:\:daqloonHit\(\) has parameter \$warrior with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Method Combat_model\:\:dbStats\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Method Combat_model\:\:dbStats\(\) has parameter \$calc with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Method Combat_model\:\:dbStats\(\) has parameter \$type with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Method Combat_model\:\:findNextTarget\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Method Combat_model\:\:findNextTarget\(\) has parameter \$starting_index with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Method Combat_model\:\:findNextTarget\(\) has parameter \$targets with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Method Combat_model\:\:getDaqloons\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Method Combat_model\:\:getDaqloons\(\) has parameter \$type with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Method Combat_model\:\:getStatistics\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Method Combat_model\:\:getStatistics\(\) has parameter \$fetch with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Method Combat_model\:\:warriorHit\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Method Combat_model\:\:warriorHit\(\) has parameter \$daqloon with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Method Combat_model\:\:warriorHit\(\) has parameter \$number with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Method Combat_model\:\:warriorHit\(\) has parameter \$second with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Method Combat_model\:\:warriorHit\(\) has parameter \$warrior with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^PHPDoc tag @param has invalid value \(\[type\] \$POST\)\: Unexpected token "\[", expected type at offset 47 on line 4$#'
+			identifier: phpDoc.parseError
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Parameter \#2 \$code of class Exception constructor expects int, string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$POST has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$adventure_data has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$adventure_data is never written, only read\.$#'
+			identifier: property.onlyRead
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$battle_progress has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$battle_result has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$battle_statistics has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$blocked has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$blocked is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$combo_attack has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$daqloon_amount has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$daqloon_damage has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$daqloon_i has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$daqloon_status has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$daqloons has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$data has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$data is unused\.$#'
+			identifier: property.unused
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$duration has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$duration_multiplier has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$error has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$errorHTML has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$provided_db has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$provided_db is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$session has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$stats has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$test_warriors has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$username has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$warrior_amount has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$warrior_army has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$warrior_army is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$warrior_damage has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$warrior_i has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$warrior_status has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$warriors has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$weapons has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Property Combat_model\:\:\$weapons is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: app/Models/Combat_model.php
+
+		-
+			message: '#^Variable \$battle_result in empty\(\) always exists and is always falsy\.$#'
+			identifier: empty.variable
+			count: 1
+			path: app/Models/Combat_model.php
 
 		-
 			message: '#^Method App\\Models\\FarmerWorkforce_model\:\:all\(\) has no return type specified\.$#'
@@ -4679,372 +5015,6 @@ parameters:
 			identifier: missingType.parameter
 			count: 1
 			path: app/Models/Workforce_model.php
-
-		-
-			message: '#^Access to an undefined property Combat_model\:\:\$adventure_data\.$#'
-			identifier: property.notFound
-			count: 4
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Access to an undefined property Combat_model\:\:\$battle_statistics\.$#'
-			identifier: property.notFound
-			count: 4
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Access to an undefined property Combat_model\:\:\$daqloon_amount\.$#'
-			identifier: property.notFound
-			count: 10
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Access to an undefined property Combat_model\:\:\$provided_db\.$#'
-			identifier: property.notFound
-			count: 2
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Access to an undefined property Combat_model\:\:\$test_warriors\.$#'
-			identifier: property.notFound
-			count: 2
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Function get_template not found\.$#'
-			identifier: function.notFound
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Method Combat_model\:\:__construct\(\) has parameter \$provided_db with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Method Combat_model\:\:__construct\(\) has parameter \$session with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Method Combat_model\:\:calculateBattleResult\(\) has parameter \$POST with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Method Combat_model\:\:calculateBattleResult\(\) with return type void returns mixed but should not return anything\.$#'
-			identifier: return.void
-			count: 2
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Method Combat_model\:\:daqloonHit\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Method Combat_model\:\:daqloonHit\(\) has parameter \$daqloon with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Method Combat_model\:\:daqloonHit\(\) has parameter \$number with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Method Combat_model\:\:daqloonHit\(\) has parameter \$warrior with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Method Combat_model\:\:dbStats\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Method Combat_model\:\:dbStats\(\) has parameter \$calc with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Method Combat_model\:\:dbStats\(\) has parameter \$type with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Method Combat_model\:\:findNextTarget\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Method Combat_model\:\:findNextTarget\(\) has parameter \$starting_index with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Method Combat_model\:\:findNextTarget\(\) has parameter \$targets with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Method Combat_model\:\:getDaqloons\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Method Combat_model\:\:getDaqloons\(\) has parameter \$type with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Method Combat_model\:\:getStatistics\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Method Combat_model\:\:getStatistics\(\) has parameter \$fetch with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Method Combat_model\:\:warriorHit\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Method Combat_model\:\:warriorHit\(\) has parameter \$daqloon with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Method Combat_model\:\:warriorHit\(\) has parameter \$number with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Method Combat_model\:\:warriorHit\(\) has parameter \$second with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Method Combat_model\:\:warriorHit\(\) has parameter \$warrior with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^PHPDoc tag @param has invalid value \(\[type\] \$POST\)\: Unexpected token "\[", expected type at offset 47 on line 4$#'
-			identifier: phpDoc.parseError
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Parameter \#2 \$code of class Exception constructor expects int, string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Property Combat_model\:\:\$POST has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Property Combat_model\:\:\$battle_progress has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Property Combat_model\:\:\$battle_result has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Property Combat_model\:\:\$blocked has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Property Combat_model\:\:\$blocked is never read, only written\.$#'
-			identifier: property.onlyWritten
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Property Combat_model\:\:\$combo_attack has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Property Combat_model\:\:\$daqloon_damage has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Property Combat_model\:\:\$daqloon_i has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Property Combat_model\:\:\$daqloon_status has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Property Combat_model\:\:\$daqloons has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Property Combat_model\:\:\$data has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Property Combat_model\:\:\$data is unused\.$#'
-			identifier: property.unused
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Property Combat_model\:\:\$duration has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Property Combat_model\:\:\$duration_multiplier has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Property Combat_model\:\:\$error has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Property Combat_model\:\:\$errorHTML has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Property Combat_model\:\:\$session has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Property Combat_model\:\:\$stats has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Property Combat_model\:\:\$username has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Property Combat_model\:\:\$warrior_amount has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Property Combat_model\:\:\$warrior_army has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Property Combat_model\:\:\$warrior_army is never read, only written\.$#'
-			identifier: property.onlyWritten
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Property Combat_model\:\:\$warrior_damage has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Property Combat_model\:\:\$warrior_i has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Property Combat_model\:\:\$warrior_status has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Property Combat_model\:\:\$warriors has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Property Combat_model\:\:\$weapons has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Property Combat_model\:\:\$weapons is never read, only written\.$#'
-			identifier: property.onlyWritten
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Variable \$battle_result in empty\(\) always exists and is always falsy\.$#'
-			identifier: empty.variable
-			count: 1
-			path: app/Models/combat_model.php
 
 		-
 			message: '#^Method eventLoader_model\:\:__construct\(\) has parameter \$session with no type specified\.$#'
