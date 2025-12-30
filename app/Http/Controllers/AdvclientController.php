@@ -9,9 +9,11 @@ use App\Models\Inventory;
 use App\Models\UserData;
 use App\Models\UserLevels;
 use App\Services\ProfiencyService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class AdvclientController extends Controller
 {
@@ -19,10 +21,7 @@ class AdvclientController extends Controller
         private ProfiencyService $profiencyService,
     ) {}
 
-    /**
-     * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse
-     */
-    public function index()
+    public function index(): Response|RedirectResponse
     {
         $user_data = UserData::where('username', Auth::user()->username ?? '')->first();
         if (! $user_data instanceof UserData) {

@@ -15,7 +15,7 @@ class InventoryUpdated implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
-     * @var Collection<int, Inventory>
+     * @var Collection<int, \App\Models\Inventory>
      */
     public Collection $Inventory;
 
@@ -37,7 +37,7 @@ class InventoryUpdated implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('game-state.'.Auth::user()->id),
+            new PrivateChannel('game-state.'.auth_user()?->id),
         ];
     }
 }

@@ -6,21 +6,22 @@ use App\libs\Response;
 use App\libs\controller;
 use App\Services\ProfiencyService;
 use App\libs\TemplateFetcher;
+use App\Models\User;
+use Illuminate\Container\Attributes\CurrentUser;
 
 class ProfiencyStatusController extends controller
 {
     public function __construct(
         private ProfiencyService $profiencyService,
-        private TemplateFetcher $TemplateFetcher,
     ) {
         parent::__construct();
     }
 
-    public function getStatuses()
+    public function getStatuses(#[CurrentUser()] User $User)
     {
         $template = TemplateFetcher::loadTemplate(
             'profiencyStatus',
-            $this->profiencyService->calculateProfienciesStatuses()
+            $this->profiencyService->calculateProfienciesStatuses($User->id)
         );
 
         return Response::addTemplate('profiencyStatusTemplate', $template);

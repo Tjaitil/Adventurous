@@ -75,6 +75,9 @@ class StoreResource extends Resource
         ];
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function toStoreItemArray(): array
     {
         $store_items = [];

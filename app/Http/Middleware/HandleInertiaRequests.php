@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -38,7 +39,7 @@ class HandleInertiaRequests extends Middleware
     {
         return [
             ...parent::share($request),
-            'player' => fn () => Auth::user()->player,
+            'player' => fn () => Auth::user() instanceof User ? Auth::user()->player : null,
         ];
     }
 }

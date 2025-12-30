@@ -229,6 +229,10 @@ class CropsController extends Controller
             return advResponse([], 422)
                 ->addMessage(GameLogService::addErrorLog('You are in the wrong location to grow crops'));
         }
+        if($Farmer->crop_finishes_at === null) {
+            return advResponse([], 422)
+                ->addMessage(GameLogService::addErrorLog('You have no crops growing'));
+        }
         $Crop = Crop::where('crop_type', $Farmer->crop_type)->first();
 
         if (! $Crop instanceof Crop) {
