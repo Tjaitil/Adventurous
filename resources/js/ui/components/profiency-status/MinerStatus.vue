@@ -29,6 +29,7 @@ import type { Miner } from '@/types/ProficiencyStatuses';
 import { useCalculateTimer } from '@/ui/composables/useCalculateTimer';
 import { formatLocationName } from '@/utilities/formatters';
 import BaseIcon from '../base/BaseIcon.vue';
+import BaseItem from '../base/BaseItem.vue';
 
 interface Props {
   status: Miner;
