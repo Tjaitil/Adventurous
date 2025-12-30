@@ -2,7 +2,6 @@
 
 namespace App\Events;
 
-use Auth;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
@@ -26,7 +25,7 @@ class SkillsUpdated implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('game-state.'.Auth::user()->id),
+            new PrivateChannel('game-state.'.auth_user()?->id),
         ];
     }
 }

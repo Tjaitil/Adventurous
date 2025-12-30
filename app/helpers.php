@@ -15,3 +15,18 @@ if (! function_exists('advResponse')) {
         return new AdvResponse($data, $status, $headers);
     }
 }
+
+if (! function_exists('auth_user')) {
+    /**
+     * @return \App\Models\User|null
+     */
+    function auth_user()
+    {
+        $user = Auth::user();
+        if ($user instanceof \App\Models\User === false) {
+            return null;
+        }
+
+        return $user;
+    }
+}

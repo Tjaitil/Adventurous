@@ -42,7 +42,8 @@
   "autoload": {
     "files": [
       "app/helpers.php",
-      "libs/GlobalModel.php"
+      "libs/GlobalModel.php",
+      "libs/GlobalController.php"
     ],
     "psr-4": {
       "App\\": "app/",

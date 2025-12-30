@@ -1,8 +1,10 @@
 <?php
+/**
+ * @deprecated outdated system. need rewrite
+ */
     class Combat_model extends model {
         public $username;
         public $session;
-        protected $db;
         private $data;
         private $daqloon_status = array();
         private $warrior_status = array();
@@ -30,6 +32,11 @@
         private $warrior_i;
         private $daqloon_i;
         private $POST;
+        private $provided_db;
+        private $test_warriors;
+        private $adventure_data;
+        private $battle_statistics;
+        private $daqloon_amount;
 
         function __construct ($session, $provided_db = false) {
             if (!is_object($provided_db)) {

@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $store_value
  * @property int $store_buy_price
  * @property int $amount
- * @property Carbon $date_inserted
+ * @property \Carbon\Carbon $date_inserted
  * @mixin \Eloquent
  */
 class MerchantOffer extends Model
