@@ -1,4 +1,8 @@
 <?php
+
+/**
+ * @deprecated relies on outdated App\libs\model
+ */
     class Combat_model extends model {
         public $username;
         public $session;
