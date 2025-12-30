@@ -98,6 +98,8 @@ class WorkforceLodgeController extends Controller
         if (! $this->inventoryService->hasEnoughAmount($User->inventory, config('adventurous.currency'), $price)) {
             return $this->inventoryService->logNotEnoughAmount(config('adventurous.currency'));
         }
+        
+        $this->inventoryService->edit($User->inventory, config('adventurous.currency'), -$price, $User->id);
 
         $Workforce->efficiency_level += 1;
         $Workforce->save();
