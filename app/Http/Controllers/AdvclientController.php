@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\DiplomacyResource;
 use App\Models\Diplomacy;
 use App\Models\Hunger;
 use App\Models\Inventory;
@@ -40,21 +41,14 @@ class AdvclientController extends Controller
             'profiency' => $user_data->profiency,
             'hunger' => Hunger::where('user_id', Auth::user()->id)->first(),
             'inventory' => Inventory::where('user_id', Auth::user()->id)->get(),
-            'profiency_status' => $this->profiencyService->calculateProfienciesStatuses(),
+            'profiencyStatuses' => $this->profiencyService->calculateProfienciesStatuses(Auth::user()->id),
             'diplomacy' => Diplomacy::where('username', Auth::user()->username)->get()->toArray(),
-            'sidebarHtml' => view('sidebar', [
-                'gameLog' => session()->get('log') ?? [],
-                'username' => Auth::user()->username,
-                'location' => $user_data->location,
-                'mapLocation' => UserData::where('username', Auth::user()->username)->first()?->map_location,
-                'Levels' => UserLevels::where('username', Auth::user()->username)->first()
-                    ?->toArray(),
-                'profiency' => $user_data->profiency,
-                'hunger' => Hunger::where('user_id', Auth::user()->id)->first(),
-                'inventory' => Inventory::where('user_id', Auth::user()->id)->get(),
-                'profiency_status' => $this->profiencyService->calculateProfienciesStatuses(),
-                'diplomacy' => Diplomacy::where('username', Auth::user()->username)->get()->toArray(),
-            ])->render(),
+            'initLevels' => UserLevels::where('username', Auth::user()->username)->first()
+                ?->toArray(),
+            'initMessages' => session()->get('log') ?? [],
+            'diplomacyResource' => new DiplomacyResource(
+                Diplomacy::where('username', Auth::user()->username)->first()
+            ),
         ]);
     }
 }

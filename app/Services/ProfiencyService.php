@@ -2,49 +2,39 @@
 
 namespace App\Services;
 
-use App\libs\Response;
 use App\Models\Farmer;
 use App\Models\Miner;
+use App\Models\Soldier;
 use App\Models\Trader;
-use App\Models\Warriors;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Collection;
 
 class ProfiencyService
 {
-    private $warrior_statuses = [];
-
     public function __construct(
         private CountdownService $countdownService,
-        // private WarriorService $warriorService,
-    ) {
-    }
+    ) {}
 
     /**
-     * Calculate profiency statuses
-     *
-     * @return Response
+     * @return array{farmers: Collection<int, Farmer>|null, trader: Trader|null, miners: Collection<int, Miner>|null, warrior_statuses: array{statuses: array{finished_training: int, training: int, on_mission: int, idle: int, resting: int}}}
      */
-    public function calculateProfienciesStatuses()
+    public function calculateProfienciesStatuses(int $userId)
     {
         return [
-            'Farmers' => $this->getFarmerData(),
-            'Trader' => $this->getTraderData(),
-            'Miners' => $this->getMinerData(),
-            'warrior_statuses' => $this->calculateWarriorStatus(),
+            'farmers' => $this->getFarmerData($userId),
+            'trader' => $this->getTraderData($userId),
+            'miners' => $this->getMinerData($userId),
+            'warrior_statuses' => $this->calculateWarriorStatus($userId),
         ];
     }
 
     /**
-     * @return int[][]
+     * @return array{statuses: array{finished_training: int, training: int, on_mission: int, idle: int, resting: int}}
      */
-    private function calculateWarriorStatus()
+    public function calculateWarriorStatus(int $userId): array
     {
-        // $data = $this->warriorService->warriors_model
-        //     ->select('*')
-        //     ->where('username', [$this->sessionService->getCurrentUsername()])
-        //     ->get();
+        $Soldier = Soldier::where('user_id', $userId)->get();
 
-        return [
+        $status = [
             'statuses' => [
                 'finished_training' => 0,
                 'training' => 0,
@@ -54,50 +44,52 @@ class ProfiencyService
             ],
         ];
 
-        $warriors = Warriors::where('username', Auth::user()->username);
-
-        foreach ($warriors as $key => $value) {
+        foreach ($Soldier as $key => $value) {
             $training_countdown_passed = $this->countdownService->hasTimestampPassed($value->training_countdown);
-            if ($value->fetch_report && $training_countdown_passed) {
-                $this->warrior_statuses['statuses']['training']++;
-            } elseif ($value->fetch_report && $training_countdown_passed) {
-                $this->warrior_statuses['statuses']['training']++;
-            } elseif ($value->rest) {
-                $this->warrior_statuses['statuses']['resting']++;
+            if ($value->is_training && $training_countdown_passed) {
+                $status['statuses']['training']++;
+            } elseif ($value->is_training && $training_countdown_passed) {
+                $status['statuses']['training']++;
+            } elseif ($value->army_mission > 0) {
+                $status['statuses']['on_mission']++;
+            } elseif ($value->is_resting) {
+                $status['statuses']['resting']++;
             } else {
-                $this->warrior_statuses['statuses']['idle']++;
+                $status['statuses']['idle']++;
             }
         }
+
+        return $status;
     }
 
     /**
-     * @return Collection<Farmer>|null
+     * @return Collection<int, Farmer>|null
      */
-    private function getFarmerData()
+    public function getFarmerData(int $userId)
     {
-
-        $Farmer = Farmer::with(['workforce'])->where('username', Auth::user()->username)->get();
+        // Original query (commented out for dummy data)
+        $Farmer = Farmer::with(['workforce'])->where('user_id', $userId)->get();
 
         return $Farmer;
     }
 
     /**
-     * @return Collection<Miner>|null
+     * @return Collection<int, Miner>|null
      */
-    private function getMinerData()
+    public function getMinerData(int $userId)
     {
         return Miner::with(['workforce'])
-            ->where('username', Auth::user()->username)
+            ->where('user_id', $userId)
             ->get();
     }
 
     /**
      * @return Trader|null
      */
-    private function getTraderData()
+    public function getTraderData(int $userId)
     {
         return Trader::with(['traderAssignment', 'cart'])
-            ->where('username', Auth::user()->username)
+            ->where('user_id', $userId)
             ->first();
     }
 }

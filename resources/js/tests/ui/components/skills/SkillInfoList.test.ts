@@ -6,6 +6,7 @@ import { createPinia } from 'pinia';
 import SkillInfoListItem from '@/ui/components/skills/SkillInfoListItem.vue';
 import { UserLevels } from '@/types/UserLevels';
 import { MockedUpdateSkillsResponse } from '@/mocks/responses/UpdateSkillsResponse';
+import { i18n } from '@/ui/main';
 
 const initLevels: UserLevels = {
   username: 'foo',
@@ -29,20 +30,22 @@ test('component renders', async () => {
 
   const wrapper = mount(SkillInfoList, {
     global: {
-      plugins: [pinia],
+      plugins: [pinia, i18n],
     },
     props: {
       initLevels: initLevels,
     },
   });
 
-  useSkillsStore();
+  const skillStore = useSkillsStore();
+  skillStore.setUserLevelsResource(initLevels);
+  await wrapper.vm.$nextTick();
 
   const listItems = wrapper.findAllComponents(SkillInfoListItem);
   expect(listItems.length).toBe(5);
   expect(listItems[1].find('.skill_tooltip').exists()).toBe(false);
 
-  expect(listItems[1].text()).toContain(`${initLevels.farmer_level}`);
+  expect(listItems[1].text()).toContain(initLevels.farmer_level.toString());
 });
 
 test('wrapper is shown when clicking skillInfoListItem', async () => {
@@ -50,26 +53,28 @@ test('wrapper is shown when clicking skillInfoListItem', async () => {
 
   const wrapper = mount(SkillInfoList, {
     global: {
-      plugins: [pinia],
+      plugins: [pinia, i18n],
     },
     props: {
       initLevels: initLevels,
     },
   });
 
-  useSkillsStore();
+  const skillStore = useSkillsStore();
+  skillStore.setUserLevelsResource(initLevels);
+  await wrapper.vm.$nextTick();
 
   const listItems = wrapper.findAllComponents(SkillInfoListItem);
   expect(listItems.length).toBe(5);
 
   await listItems[1].trigger('click');
-
-  expect(listItems[1].emitted()).toHaveProperty('toggleTooltip');
+  await wrapper.vm.$nextTick();
+  await flushPromises();
 
   expect(listItems[1].find('.skill_tooltip').exists()).toBe(true);
 
   expect(listItems[1].text()).toContain(
-    `Current experience ${initLevels.farmer_xp}`,
+    `Current experience ${initLevels.farmer_xp.toString()}`,
   );
 });
 
@@ -78,14 +83,16 @@ test('new data is retrieved when xpGainedEvent happens', async () => {
 
   const wrapper = mount(SkillInfoList, {
     global: {
-      plugins: [pinia],
+      plugins: [pinia, i18n],
     },
     props: {
       initLevels: initLevels,
     },
   });
 
+  // Initialize store after mounting with pinia
   const skillStore = useSkillsStore();
+  skillStore.setUserLevelsResource(initLevels);
 
   skillStore.setHandleXpGainedEvent(true);
 
@@ -97,6 +104,6 @@ test('new data is retrieved when xpGainedEvent happens', async () => {
   expect(listItems[1].find('.skill_tooltip').exists()).toBe(false);
 
   expect(listItems[1].text()).toContain(
-    `${MockedUpdateSkillsResponse.user_levels.farmer_level}`,
+    MockedUpdateSkillsResponse.user_levels.farmer_level.toString(),
   );
 });

@@ -4,11 +4,15 @@ export interface GameLog {
   timestamp?: string;
 }
 
-enum GameLogTypes {
+export type ParsedGameLog = Pick<GameLog, 'timestamp' | 'type'> & {
+  message: string | string[];
+};
+
+export enum GameLogTypes {
   INFO = 'info',
   ERROR = 'error',
   WARNING = 'warning',
   SUCCESS = 'success',
 }
 
-type GameLogType = `${GameLogTypes}`;
+export type GameLogType = `${GameLogTypes}`;
