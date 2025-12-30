@@ -1,8 +1,10 @@
 <?php
+/**
+ * @deprecated outdated system. need rewrite
+ */
     class Combat_model extends model {
         public $username;
         public $session;
-        public $db;
         private $data;
         private $daqloon_status = array();
         private $warrior_status = array();
