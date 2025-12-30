@@ -1069,18 +1069,6 @@ parameters:
 			path: app/Http/Controllers/CityCentreController.php
 
 		-
-			message: '#^Parameter \#1 \$date of method Carbon\\Carbon\:\:isAfter\(\) expects DateTimeInterface\|string, Illuminate\\Support\\Carbon\|null given\.$#'
-			identifier: argument.type
-			count: 2
-			path: app/Http/Controllers/CropsController.php
-
-		-
-			message: '#^Property App\\Models\\Farmer\:\:\$crop_finishes_at \(Illuminate\\Support\\Carbon\|null\) does not accept Carbon\\Carbon\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: app/Http/Controllers/CropsController.php
-
-		-
 			message: '#^Cannot call method toArray\(\) on App\\Models\\UserLevels\|null\.$#'
 			identifier: method.nonObject
 			count: 1
@@ -1390,18 +1378,6 @@ parameters:
 			message: '#^Parameter \#1 \$object of function date_timestamp_get expects DateTimeInterface, App\\Http\\Controllers\\DateTime given\.$#'
 			identifier: argument.type
 			count: 2
-			path: app/Http/Controllers/ProfiencyStatusController.php
-
-		-
-			message: '#^Parameter \#2 \$data of static method App\\libs\\TemplateFetcher\:\:loadTemplate\(\) expects array, App\\libs\\Response given\.$#'
-			identifier: argument.type
-			count: 1
-			path: app/Http/Controllers/ProfiencyStatusController.php
-
-		-
-			message: '#^Property App\\Http\\Controllers\\ProfiencyStatusController\:\:\$TemplateFetcher is never read, only written\.$#'
-			identifier: property.onlyWritten
-			count: 1
 			path: app/Http/Controllers/ProfiencyStatusController.php
 
 		-
@@ -1735,6 +1711,12 @@ parameters:
 			path: app/Http/Controllers/TraderAssignmentController.php
 
 		-
+			message: '#^Cannot access property \$currency_reward_amount on App\\Models\\TraderAssignmentType\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/TraderAssignmentController.php
+
+		-
 			message: '#^Cannot access property \$delivered on App\\Models\\Trader\|null\.$#'
 			identifier: property.nonObject
 			count: 4
@@ -1742,6 +1724,24 @@ parameters:
 
 		-
 			message: '#^Cannot access property \$destination on App\\Models\\TraderAssignment\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/TraderAssignmentController.php
+
+		-
+			message: '#^Cannot access property \$diplomacy_percentage on App\\Models\\TraderAssignmentType\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/TraderAssignmentController.php
+
+		-
+			message: '#^Cannot access property \$item_reward_amount on App\\Models\\TraderAssignmentType\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/TraderAssignmentController.php
+
+		-
+			message: '#^Cannot access property \$required_level on App\\Models\\TraderAssignmentType\|null\.$#'
 			identifier: property.nonObject
 			count: 1
 			path: app/Http/Controllers/TraderAssignmentController.php
@@ -1762,6 +1762,24 @@ parameters:
 			message: '#^Cannot access property \$type on App\\Models\\TraderAssignment\|null\.$#'
 			identifier: property.nonObject
 			count: 5
+			path: app/Http/Controllers/TraderAssignmentController.php
+
+		-
+			message: '#^Cannot access property \$xp_finished on App\\Models\\TraderAssignmentType\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/TraderAssignmentController.php
+
+		-
+			message: '#^Cannot access property \$xp_per_cargo on App\\Models\\TraderAssignmentType\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/TraderAssignmentController.php
+
+		-
+			message: '#^Cannot access property \$xp_started on App\\Models\\TraderAssignmentType\|null\.$#'
+			identifier: property.nonObject
+			count: 1
 			path: app/Http/Controllers/TraderAssignmentController.php
 
 		-
@@ -1867,24 +1885,6 @@ parameters:
 			path: app/Http/Controllers/WorldLoaderController.php
 
 		-
-			message: '#^Access to an undefined property adventures\:\:\$model\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Controllers/adventures.php
-
-		-
-			message: '#^Call to an undefined method adventures\:\:loadModel\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Http/Controllers/adventures.php
-
-		-
-			message: '#^Call to an undefined method adventures\:\:render\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Http/Controllers/adventures.php
-
-		-
 			message: '#^Method adventures\:\:calculateContribution\(\) has no return type specified\.$#'
 			identifier: missingType.return
 			count: 1
@@ -1915,12 +1915,6 @@ parameters:
 			path: app/Http/Controllers/adventures.php
 
 		-
-			message: '#^adventures\:\:__construct\(\) calls parent\:\:__construct\(\) but adventures does not extend any class\.$#'
-			identifier: class.noParent
-			count: 1
-			path: app/Http/Controllers/adventures.php
-
-		-
 			message: '#^Method App\\Http\\Controllers\\ArmymissionsController\:\:index\(\) has no return type specified\.$#'
 			identifier: missingType.return
 			count: 1
@@ -1937,12 +1931,6 @@ parameters:
 			identifier: missingType.return
 			count: 1
 			path: app/Http/Controllers/error.php
-
-		-
-			message: '#^Call to an undefined method gameguide\:\:render\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Http/Controllers/gameguide.php
 
 		-
 			message: '#^Method gameguide\:\:__construct\(\) has parameter \$url with no type specified\.$#'
@@ -1993,12 +1981,6 @@ parameters:
 			path: app/Http/Controllers/gameguide.php
 
 		-
-			message: '#^gameguide\:\:__construct\(\) calls parent\:\:__construct\(\) but gameguide does not extend any class\.$#'
-			identifier: class.noParent
-			count: 1
-			path: app/Http/Controllers/gameguide.php
-
-		-
 			message: '#^Method logout\:\:__construct\(\) has parameter \$session with no type specified\.$#'
 			identifier: missingType.parameter
 			count: 1
@@ -2015,24 +1997,6 @@ parameters:
 			identifier: missingType.property
 			count: 1
 			path: app/Http/Controllers/logout.php
-
-		-
-			message: '#^Access to an undefined property market\:\:\$model\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Controllers/market.php
-
-		-
-			message: '#^Call to an undefined method market\:\:loadModel\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Http/Controllers/market.php
-
-		-
-			message: '#^Call to an undefined method market\:\:render\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Http/Controllers/market.php
 
 		-
 			message: '#^Method market\:\:index\(\) has no return type specified\.$#'
@@ -2053,46 +2017,10 @@ parameters:
 			path: app/Http/Controllers/market.php
 
 		-
-			message: '#^market\:\:__construct\(\) calls parent\:\:__construct\(\) but market does not extend any class\.$#'
-			identifier: class.noParent
-			count: 1
-			path: app/Http/Controllers/market.php
-
-		-
-			message: '#^Call to an undefined method news\:\:render\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Http/Controllers/news.php
-
-		-
 			message: '#^Method news\:\:index\(\) has no return type specified\.$#'
 			identifier: missingType.return
 			count: 1
 			path: app/Http/Controllers/news.php
-
-		-
-			message: '#^news\:\:__construct\(\) calls parent\:\:__construct\(\) but news does not extend any class\.$#'
-			identifier: class.noParent
-			count: 1
-			path: app/Http/Controllers/news.php
-
-		-
-			message: '#^Access to an undefined property newuser\:\:\$model\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Controllers/newuser.php
-
-		-
-			message: '#^Call to an undefined method newuser\:\:loadModel\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Http/Controllers/newuser.php
-
-		-
-			message: '#^Call to an undefined method newuser\:\:renderWE\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Http/Controllers/newuser.php
 
 		-
 			message: '#^Method newuser\:\:index\(\) has no return type specified\.$#'
@@ -2111,42 +2039,6 @@ parameters:
 			identifier: missingType.property
 			count: 1
 			path: app/Http/Controllers/newuser.php
-
-		-
-			message: '#^newuser\:\:__construct\(\) calls parent\:\:__construct\(\) but newuser does not extend any class\.$#'
-			identifier: class.noParent
-			count: 1
-			path: app/Http/Controllers/newuser.php
-
-		-
-			message: '#^Access to an undefined property profile\:\:\$model\.$#'
-			identifier: property.notFound
-			count: 3
-			path: app/Http/Controllers/profile.php
-
-		-
-			message: '#^Call to an undefined method profile\:\:loadModel\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Http/Controllers/profile.php
-
-		-
-			message: '#^Call to an undefined method profile\:\:render\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Http/Controllers/profile.php
-
-		-
-			message: '#^Call to method checkData\(\) on an unknown class formhandler\.$#'
-			identifier: class.notFound
-			count: 1
-			path: app/Http/Controllers/profile.php
-
-		-
-			message: '#^Instantiated class formhandler not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: app/Http/Controllers/profile.php
 
 		-
 			message: '#^Method profile\:\:bindData\(\) has no return type specified\.$#'
@@ -2171,36 +2063,6 @@ parameters:
 			identifier: missingType.property
 			count: 1
 			path: app/Http/Controllers/profile.php
-
-		-
-			message: '#^profile\:\:__construct\(\) calls parent\:\:__construct\(\) but profile does not extend any class\.$#'
-			identifier: class.noParent
-			count: 1
-			path: app/Http/Controllers/profile.php
-
-		-
-			message: '#^Access to an undefined property registration\:\:\$model\.$#'
-			identifier: property.notFound
-			count: 2
-			path: app/Http/Controllers/registration.php
-
-		-
-			message: '#^Call to an undefined method registration\:\:renderWE\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Http/Controllers/registration.php
-
-		-
-			message: '#^Call to method checkData\(\) on an unknown class formhandler\.$#'
-			identifier: class.notFound
-			count: 1
-			path: app/Http/Controllers/registration.php
-
-		-
-			message: '#^Instantiated class formhandler not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: app/Http/Controllers/registration.php
 
 		-
 			message: '#^Method registration\:\:bindData\(\) has no return type specified\.$#'
@@ -2237,36 +2099,6 @@ parameters:
 			identifier: missingType.property
 			count: 1
 			path: app/Http/Controllers/registration.php
-
-		-
-			message: '#^registration\:\:__construct\(\) calls parent\:\:__construct\(\) but registration does not extend any class\.$#'
-			identifier: class.noParent
-			count: 1
-			path: app/Http/Controllers/registration.php
-
-		-
-			message: '#^Method App\\Http\\Resources\\DiplomacyResource\:\:__construct\(\) has parameter \$resource with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Http/Resources/DiplomacyResource.php
-
-		-
-			message: '#^Method App\\Http\\Resources\\DiplomacyResource\:\:mapping\(\) has parameter \$data with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Http/Resources/DiplomacyResource.php
-
-		-
-			message: '#^Method App\\Http\\Resources\\DiplomacyResource\:\:mapping\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Http/Resources/DiplomacyResource.php
-
-		-
-			message: '#^Method App\\Http\\Resources\\DiplomacyResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Http/Resources/DiplomacyResource.php
 
 		-
 			message: '#^Method App\\Http\\Resources\\Resource\:\:__construct\(\) has parameter \$data with no type specified\.$#'
@@ -3463,68 +3295,80 @@ parameters:
 			path: app/Models/Highscores_model.php
 
 		-
+			message: '#^Access to constant FETCH_ASSOC on an unknown class App\\Models\\PDO\.$#'
+			identifier: class.notFound
+			count: 3
+			path: app/Models/LevelUp_model.php
+
+		-
+			message: '#^Access to constant PARAM_INT on an unknown class App\\Models\\PDO\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Models/LevelUp_model.php
+
+		-
+			message: '#^Access to constant PARAM_STR on an unknown class App\\Models\\PDO\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Models/LevelUp_model.php
+
+		-
 			message: '#^Function get_template not found\.$#'
 			identifier: function.notFound
 			count: 1
 			path: app/Models/LevelUp_model.php
 
 		-
-			message: '#^Method LevelUp_model\:\:__construct\(\) has parameter \$session with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Models/LevelUp_model.php
-
-		-
-			message: '#^Method LevelUp_model\:\:levelupData\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: app/Models/LevelUp_model.php
-
-		-
-			message: '#^Method LevelUp_model\:\:updateData\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: app/Models/LevelUp_model.php
-
-		-
-			message: '#^Parameter \#2 \$code of class Exception constructor expects int, string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: app/Models/LevelUp_model.php
-
-		-
-			message: '#^Parameter \$db of method LevelUp_model\:\:__construct\(\) has invalid type Database\.$#'
+			message: '#^Instantiated class App\\Models\\Exception not found\.$#'
 			identifier: class.notFound
 			count: 1
 			path: app/Models/LevelUp_model.php
 
 		-
-			message: '#^Property LevelUp_model\:\:\$db has no type specified\.$#'
+			message: '#^Method App\\Models\\LevelUp_model\:\:__construct\(\) has parameter \$session with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Models/LevelUp_model.php
+
+		-
+			message: '#^Method App\\Models\\LevelUp_model\:\:levelupData\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/LevelUp_model.php
+
+		-
+			message: '#^Method App\\Models\\LevelUp_model\:\:updateData\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/LevelUp_model.php
+
+		-
+			message: '#^Property App\\Models\\LevelUp_model\:\:\$new_levels has no type specified\.$#'
 			identifier: missingType.property
 			count: 1
 			path: app/Models/LevelUp_model.php
 
 		-
-			message: '#^Property LevelUp_model\:\:\$new_levels has no type specified\.$#'
+			message: '#^Property App\\Models\\LevelUp_model\:\:\$profiency has no type specified\.$#'
 			identifier: missingType.property
 			count: 1
 			path: app/Models/LevelUp_model.php
 
 		-
-			message: '#^Property LevelUp_model\:\:\$profiency has no type specified\.$#'
+			message: '#^Property App\\Models\\LevelUp_model\:\:\$session has no type specified\.$#'
 			identifier: missingType.property
 			count: 1
 			path: app/Models/LevelUp_model.php
 
 		-
-			message: '#^Property LevelUp_model\:\:\$session has no type specified\.$#'
+			message: '#^Property App\\Models\\LevelUp_model\:\:\$username has no type specified\.$#'
 			identifier: missingType.property
 			count: 1
 			path: app/Models/LevelUp_model.php
 
 		-
-			message: '#^Property LevelUp_model\:\:\$username has no type specified\.$#'
-			identifier: missingType.property
+			message: '#^Throwing object of an unknown class App\\Models\\Exception\.$#'
+			identifier: class.notFound
 			count: 1
 			path: app/Models/LevelUp_model.php
 
@@ -3815,12 +3659,6 @@ parameters:
 			identifier: missingType.property
 			count: 1
 			path: app/Models/Market_model.php
-
-		-
-			message: '#^PHPDoc tag @property for property App\\Models\\MerchantOffer\:\:\$date_inserted contains unknown class App\\Models\\Carbon\.$#'
-			identifier: class.notFound
-			count: 1
-			path: app/Models/MerchantOffer.php
 
 		-
 			message: '#^Property App\\Models\\MerchantOffer\:\:\$dates has no type specified\.$#'
@@ -4477,18 +4315,6 @@ parameters:
 			path: app/Models/TraderAssignment.php
 
 		-
-			message: '#^PHPDoc tag @property for property App\\Models\\TraderAssignment\:\:\$date_inserted contains unknown class App\\Models\\Carbon\.$#'
-			identifier: class.notFound
-			count: 1
-			path: app/Models/TraderAssignment.php
-
-		-
-			message: '#^PHPDoc tag @property has invalid value \(string \$\$cargo\)\: Unexpected token "\$\$cargo", expected variable at offset 49 on line 4$#'
-			identifier: phpDoc.parseError
-			count: 1
-			path: app/Models/TraderAssignment.php
-
-		-
 			message: '#^Property App\\Models\\TraderAssignmentType\:\:\$FAVOR_TYPE has no type specified\.$#'
 			identifier: missingType.property
 			count: 1
@@ -5109,12 +4935,6 @@ parameters:
 		-
 			message: '#^Property Combat_model\:\:\$data is unused\.$#'
 			identifier: property.unused
-			count: 1
-			path: app/Models/combat_model.php
-
-		-
-			message: '#^Property Combat_model\:\:\$db has no type specified\.$#'
-			identifier: missingType.property
 			count: 1
 			path: app/Models/combat_model.php
 
