@@ -12,8 +12,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $user_id
  * @property string|null $current_index
  * @property array<array-key, mixed>|null $selected_option_values
- * @property \Carbon\Carbon|null $updated_at
- * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\CarbonInterface|null $updated_at
+ * @property \Carbon\CarbonInterface|null $created_at
  * @method static \Database\Factories\ConversationTrackerFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConversationTracker newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ConversationTracker newQuery()

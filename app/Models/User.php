@@ -16,14 +16,15 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property string|null $email_verified_at
  * @property string $password
  * @property string|null $remember_token
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
+ * @property \Carbon\CarbonInterface|null $created_at
+ * @property \Carbon\CarbonInterface|null $updated_at
  * @property-read \App\Models\Hunger $hunger
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Inventory> $inventory
  * @property-read int|null $inventory_count
  * @property-read \App\Models\UserData $player
  * @property-read \App\Models\UserData $userData
  * @property-read \App\Models\UserLevels $userLevels
+ *
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
@@ -36,6 +37,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUsername($value)
+ *
  * @mixin \Eloquent
  */
 class User extends Authenticatable

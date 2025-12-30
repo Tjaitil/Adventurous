@@ -11,13 +11,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $item
  * @property string $skill
  * @property int $level
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SkillRequirement newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SkillRequirement newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SkillRequirement query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SkillRequirement whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SkillRequirement whereItem($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SkillRequirement whereLevel($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SkillRequirement whereSkill($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SkillRequirement newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|SkillRequirement newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|SkillRequirement query()
+ * @method static \Illuminate\Database\Eloquent\Builder|SkillRequirement whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SkillRequirement whereItem($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SkillRequirement whereLevel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SkillRequirement whereSkill($value)
  * @mixin \Eloquent
  */
 class SkillRequirement extends Model

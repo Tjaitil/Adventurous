@@ -6,8 +6,6 @@ use App\Enums\ArmoryParts;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 
- *
  * @property int $item_id
  * @property string $item
  * @property int $mineral_required
@@ -18,19 +16,21 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $price
  * @property ArmoryParts $type
  * @property string $warrior_type
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ArmoryItemsData newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ArmoryItemsData newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ArmoryItemsData query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ArmoryItemsData whereAttack($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ArmoryItemsData whereDefence($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ArmoryItemsData whereItem($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ArmoryItemsData whereItemId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ArmoryItemsData whereLevel($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ArmoryItemsData whereMineralRequired($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ArmoryItemsData wherePrice($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ArmoryItemsData whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ArmoryItemsData whereWarriorType($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ArmoryItemsData whereWoodRequired($value)
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|ArmoryItemsData newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ArmoryItemsData newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ArmoryItemsData query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ArmoryItemsData whereAttack($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ArmoryItemsData whereDefence($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ArmoryItemsData whereItem($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ArmoryItemsData whereItemId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ArmoryItemsData whereLevel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ArmoryItemsData whereMineralRequired($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ArmoryItemsData wherePrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ArmoryItemsData whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ArmoryItemsData whereWarriorType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ArmoryItemsData whereWoodRequired($value)
+ *
  * @mixin \Eloquent
  */
 class ArmoryItemsData extends Model

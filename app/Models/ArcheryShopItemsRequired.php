@@ -12,14 +12,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $required_item
  * @property int $amount
  * @property int $id
- * @property-read \App\Models\ArcheryShopItem $smithyItem
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ArcheryShopItemsRequired newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ArcheryShopItemsRequired newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ArcheryShopItemsRequired query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ArcheryShopItemsRequired whereAmount($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ArcheryShopItemsRequired whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ArcheryShopItemsRequired whereItemId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ArcheryShopItemsRequired whereRequiredItem($value)
+ * @property-read \App\Models\ArcheryShopItem|null $smithyItem
+ * @method static \Illuminate\Database\Eloquent\Builder|ArcheryShopItemsRequired newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ArcheryShopItemsRequired newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ArcheryShopItemsRequired query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ArcheryShopItemsRequired whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ArcheryShopItemsRequired whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ArcheryShopItemsRequired whereItemId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ArcheryShopItemsRequired whereRequiredItem($value)
  * @mixin \Eloquent
  */
 class ArcheryShopItemsRequired extends Model

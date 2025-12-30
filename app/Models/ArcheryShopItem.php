@@ -17,14 +17,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read int|null $required_items_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SkillRequirement> $skillRequirements
  * @property-read int|null $skill_requirements_count
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ArcheryShopItem newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ArcheryShopItem newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ArcheryShopItem query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ArcheryShopItem whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ArcheryShopItem whereItem($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ArcheryShopItem whereItemId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ArcheryShopItem whereItemMultiplier($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ArcheryShopItem whereStoreValue($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ArcheryShopItem newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ArcheryShopItem newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ArcheryShopItem query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ArcheryShopItem whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ArcheryShopItem whereItem($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ArcheryShopItem whereItemId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ArcheryShopItem whereItemMultiplier($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ArcheryShopItem whereStoreValue($value)
  * @mixin \Eloquent
  */
 class ArcheryShopItem extends Model

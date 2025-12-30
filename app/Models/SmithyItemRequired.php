@@ -12,12 +12,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $required_item
  * @property int $amount
  * @property-read \App\Models\SmithyItem $smithyItem
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SmithyItemRequired newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SmithyItemRequired newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SmithyItemRequired query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SmithyItemRequired whereAmount($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SmithyItemRequired whereItemId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SmithyItemRequired whereRequiredItem($value)
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|SmithyItemRequired newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|SmithyItemRequired newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|SmithyItemRequired query()
+ * @method static \Illuminate\Database\Eloquent\Builder|SmithyItemRequired whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SmithyItemRequired whereItemId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SmithyItemRequired whereRequiredItem($value)
+ *
  * @mixin \Eloquent
  */
 class SmithyItemRequired extends Model

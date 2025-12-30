@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $game_id
  * @property int $session_id
  * @property string $destination
- * @property \Carbon\Carbon $arrive_time
+ * @property \Carbon\CarbonInterface $arrive_time
  * @property string $profiency
  * @property string $horse
  * @property string $artefact
@@ -24,26 +24,28 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool $frajrite_items
  * @property bool $wujkin_items
  * @property int|null $stockpile_max_amount
+ *
  * @method static \Database\Factories\UserDataFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserData newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserData newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserData query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserData whereArriveTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserData whereArtefact($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserData whereDestination($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserData whereFrajriteItems($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserData whereGameId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserData whereHorse($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserData whereHunger($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserData whereHungerDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserData whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserData whereLocation($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserData whereMapLocation($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserData whereProfiency($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserData whereSessionId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserData whereStockpileMaxAmount($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserData whereUsername($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserData whereWujkinItems($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData query()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData whereArriveTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData whereArtefact($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData whereDestination($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData whereFrajriteItems($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData whereGameId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData whereHorse($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData whereHunger($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData whereHungerDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData whereLocation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData whereMapLocation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData whereProfiency($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData whereSessionId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData whereStockpileMaxAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData whereUsername($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData whereWujkinItems($value)
+ *
  * @mixin \Eloquent
  */
 class UserData extends Model

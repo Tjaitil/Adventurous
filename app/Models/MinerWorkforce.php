@@ -21,19 +21,21 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $user_id
  * @property-read Collection<int, \App\Models\Miner> $miner
  * @property-read int|null $miner_count
+ *
  * @method static \Database\Factories\MinerWorkforceFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder<static>|MinerWorkforce newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|MinerWorkforce newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|MinerWorkforce query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|MinerWorkforce whereAvailWorkforce($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|MinerWorkforce whereEfficiencyLevel($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|MinerWorkforce whereGolbak($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|MinerWorkforce whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|MinerWorkforce whereMineralQuantLevel($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|MinerWorkforce whereSnerpiir($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|MinerWorkforce whereUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|MinerWorkforce whereUsername($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|MinerWorkforce whereWorkforceTotal($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MinerWorkforce newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|MinerWorkforce newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|MinerWorkforce query()
+ * @method static \Illuminate\Database\Eloquent\Builder|MinerWorkforce whereAvailWorkforce($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MinerWorkforce whereEfficiencyLevel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MinerWorkforce whereGolbak($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MinerWorkforce whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MinerWorkforce whereMineralQuantLevel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MinerWorkforce whereSnerpiir($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MinerWorkforce whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MinerWorkforce whereUsername($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MinerWorkforce whereWorkforceTotal($value)
+ *
  * @mixin \Eloquent
  */
 class MinerWorkforce extends Model
