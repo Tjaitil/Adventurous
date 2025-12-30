@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Model;
  * 
  *
  * @property int $id
- * @property int|null $level
- * @property int|null $price
+ * @property int $level
+ * @property int $price
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EfficiencyUpgrade newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EfficiencyUpgrade newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EfficiencyUpgrade query()
