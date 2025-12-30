@@ -6,6 +6,10 @@ parameters:
     tmpDir: tmp
     phpVersion: 80300
 
+    scanFiles:
+        - libs/GlobalController.php
+        - helpers/formhandler.php
+
     paths:
         - app/
 
