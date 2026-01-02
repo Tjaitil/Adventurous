@@ -49,7 +49,7 @@ export default defineConfig({
               },
             },
             color: {
-              primary: 'border-amber-900 after:content-["foo"]',
+              primary: 'border-amber-900',
             },
           },
         },
