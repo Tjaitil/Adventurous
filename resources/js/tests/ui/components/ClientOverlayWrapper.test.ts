@@ -16,7 +16,7 @@ interface RenderOptions {
   stubs?: Record<string, unknown>;
 }
 
-function renderClientOverlay(options: RenderOptions = {}): RenderResult {
+const renderClientOverlay = (options: RenderOptions = {}): RenderResult => {
   return render(ClientOverlayWrapper, {
     global: {
       plugins: [createPinia(), i18n],
@@ -26,7 +26,7 @@ function renderClientOverlay(options: RenderOptions = {}): RenderResult {
       },
     },
   });
-}
+};
 
 describe('ClientOverlayWrapper.vue', () => {
   beforeEach(() => {
