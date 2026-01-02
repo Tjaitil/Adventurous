@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-v-html -->
 <template>
   <div v-show="isOpen" id="news"></div>
   <div v-show="isOpen" id="news_content" class="gap-x-2">
@@ -39,7 +40,6 @@
 <script setup lang="ts">
 import { gameEventBus } from '@/gameEventsBus';
 import {
-  type ComponentInstance,
   computed,
   ref,
   shallowRef,
@@ -54,7 +54,8 @@ const isOpen = ref(false);
 const loadingElement = useTemplateRef('loadingIcon');
 const externalContent = ref<HTMLElement | null>(null);
 
-const internalComponent = shallowRef<ComponentInstance | null>(null);
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+const internalComponent = shallowRef<typeof ArmoryPage | null>(null);
 
 const currentComponent = computed({
   get() {
