@@ -111,7 +111,6 @@ export default defineConfig({
       input: [
         'resources/js/ui/inertia.app.ts',
         'resources/js/app.js',
-        'resources/js/ui/web/index.ts',
         'resources/js/ui/main.ts',
         'resources/js/clientScripts/inventory.ts',
         'resources/js/backgroundScroller.ts',

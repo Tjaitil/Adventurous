@@ -2,8 +2,6 @@
 @import '@nuxt/ui';
 @source '../js/**/*.{ts,vue}';
 @source '../../vite.config.ts';
-/* @import 'baks-components-vue/themes/default.css'; */
-/* @source '../../node_modules/baks-components-vue/dist/index.css'; */
 :root {
   --ui-radius: 0rem;
   --ui-text: black;
@@ -55,36 +53,6 @@
   }
 }
 
-@utility bk-primary {
-  font-family: serif;
-}
-
-@utility bk-secondary {
-  font-family: serif;
-}
-
-@utility bk-dark {
-  font-family: serif;
-
-  & .bk-card {
-    border-color: rgb(135, 93, 49);
-  }
-}
-
-@utility bk-light {
-  font-family: serif;
-
-  & .bk-card {
-    @apply border-yellow-700;
-  }
-}
-
-/* .bk-card {
-    @apply pixelated-corners;
-    @apply relative border-8 p-2 shadow-lg after:pointer-events-none after:absolute after:top-0 after:left-0 after:h-full after:w-full after:border-4 after:border-solid after:border-neutral-900/90 after:content-[''];
-    border-style: ridge;
-    border-color: rgb(135, 93, 49);
-} */
 @utility tab-4 {
   tab-size: 4;
 }
