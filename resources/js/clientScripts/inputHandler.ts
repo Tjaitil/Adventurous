@@ -194,7 +194,6 @@ export const inputHandler: IInputHandler = {
         let html: string;
         let link;
         let skipImport;
-        const isCurrentVuePage = false;
         if (this.buildingAssetsRecord[building]) {
           const buildingName = building;
           if ('script' in this.buildingAssetsRecord[buildingName]) {
@@ -250,7 +249,7 @@ export const inputHandler: IInputHandler = {
             }
             this.currentBuildingModule = data;
           });
-        } else if (!isCurrentVuePage) {
+        } else {
           // Make sure DOM is loaded before initializing building module
           await new Promise(resolve => setTimeout(resolve, 300));
           switch (building) {
@@ -293,7 +292,7 @@ export const inputHandler: IInputHandler = {
               this.currentBuildingModule.init();
               break;
           }
-          if (import.meta.env.DEV && !isCurrentVuePage) {
+          if (import.meta.env.DEV) {
             new ModuleTester(
               this.currentBuildingModule,
               Game.properties.building,
@@ -303,14 +302,7 @@ export const inputHandler: IInputHandler = {
             );
           }
         }
-        console.log('fetch building done');
         return;
-      })
-      .catch(error => {
-        console.log(error);
-        // closeNews();
-        // alert(error);
-        // return;
       });
   },
   characterMatch: <undefined | Character>null,
