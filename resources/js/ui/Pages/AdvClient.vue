@@ -11,20 +11,7 @@
         <ScreenHUD :hunger="hunger" :health="{ current: 100, max: 100 }" />
         <ItemTooltip />
         <GameMap :map-location="mapLocation" />
-        <div id="news"></div>
-        <div id="news_content" class="gap-x-2">
-          <img
-            class="cont_exit absolute top-4 right-4"
-            src="/images/exit.png"
-            :alt="$t('Close icon')"
-            width="20px"
-            height="20px"
-          />
-          <div class="flex grow">
-            <div id="news_content_side_panel" class="hidden w-1/4"></div>
-            <div id="news_content_main_content" class="mt-2 mb-2 grow"></div>
-          </div>
-        </div>
+        <ClientOverlayWrapper />
         <input id="draw_checkbox" type="checkbox" name="" />
       </div>
       <div class="w-[29%]">
@@ -61,6 +48,7 @@ import type { DiplomacyResource } from '@/types/Diplomacy';
 import type { UserLevels } from '@/types/UserLevels';
 import type { GameLog } from '@/types/GameLog';
 import type { ProficiencyStatuses } from '@/types/ProficiencyStatuses';
+import ClientOverlayWrapper from '../components/ClientOverlayWrapper.vue';
 
 interface Props {
   hunger: {
