@@ -6,7 +6,7 @@ import { tutorial } from './tutorial';
 import { itemTitle } from '../utilities/itemTitle';
 import { Game } from '../advclient';
 import { GameLogger } from '../utilities/GameLogger';
-import { conversation } from './conversation';
+import { BuildingName, isVuePage, VuePage } from '@/types/Building';
 import { GamePieces } from './gamePieces';
 import { Building } from '../gamepieces/Building';
 import { HUD } from './HUD';
@@ -21,13 +21,7 @@ import merchantModule from '../buildingScripts/merchant';
 import workforceLodgeModule from '../buildingScripts/workforcelodge';
 import smithyModule from '../buildingScripts/smithy';
 import archeryShopModule from '../buildingScripts/archeryshop';
-import { i18n, pinia } from '@/ui/main';
-import AppVue from '@/ui/components/App.vue';
-import { createApp } from 'vue';
-import { ItemSelector } from '@/ItemSelector';
-import ArmoryPage from '@/ui/buildings/ArmoryPage.vue';
 import { useConversationStore } from '@/ui/stores/ConversationStore';
-import PageWrapper from '@/ui/components/PageWrapper.vue';
 import { gameEventBus } from '@/gameEventsBus';
 
 export enum Buildings {
@@ -44,25 +38,15 @@ export enum Buildings {
   ARMORY = 'armory',
 }
 
-type VuePage = 'armory';
-
-function isVuePage(page: BuildingName): page is VuePage {
-  return page === 'armory';
+export interface InputHandlerEvents {
+  RENDER_BUILDING:
+    | {
+        content: string;
+        building: Exclude<BuildingName, VuePage>;
+      }
+    | { building: VuePage }
+    | { loading: true };
 }
-
-type BuildingModuleMapping = {
-  bakery: typeof bakeryModule;
-  travelbureau: typeof travelBureauModule;
-  stockpile: typeof stockpileModule;
-  mine: typeof MineModule;
-  crops: typeof CropsModule;
-  zinsstore: typeof zinsStoreModule;
-  merchant: typeof merchantModule;
-  workforcelodge: typeof workforceLodgeModule;
-  smithy: typeof smithyModule;
-  archeryshop: typeof archeryShopModule;
-  armory: null;
-};
 
 function shouldSkipImport(building: string) {
   return [
@@ -79,8 +63,6 @@ function shouldSkipImport(building: string) {
     'armory',
   ].includes(building);
 }
-
-type BuildingName = keyof BuildingModuleMapping;
 
 interface BuildingAssetsTypes {
   stylesheets?: string[];
@@ -190,6 +172,13 @@ export const inputHandler: IInputHandler = {
 
     useConversationStore().triggerEndConversation();
 
+    if (isVuePage(building)) {
+      gameEventBus.emit('RENDER_BUILDING', {
+        building: building,
+      });
+      return;
+    }
+
     ClientOverlayInterface.loadingScreen();
 
     await fetch('/' + building)
@@ -205,25 +194,9 @@ export const inputHandler: IInputHandler = {
         let html: string;
         let link;
         let skipImport;
-        let isCurrentVuePage = false;
-
-        if (isVuePage(building)) {
-          html = data;
-          ClientOverlayInterface.show(html);
-          const app = createApp({
-            AppVue,
-            components: {
-              PageWrapper,
-              ArmoryPage,
-            },
-          });
-
-          app.use(pinia).use(i18n).mount('#vue-building-app');
-          ItemSelector.addSelectEventToInventory();
-
-          isCurrentVuePage = true;
-        } else if (this.buildingAssetsRecord[building]) {
-          const buildingName = building as BuildingName;
+        const isCurrentVuePage = false;
+        if (this.buildingAssetsRecord[building]) {
+          const buildingName = building;
           if ('script' in this.buildingAssetsRecord[buildingName]) {
             script = this.buildingAssetsRecord[buildingName].script;
           } else {
@@ -248,6 +221,7 @@ export const inputHandler: IInputHandler = {
         }
 
         gameEventBus.emit('RENDER_BUILDING', {
+          building: building,
           content: html,
         });
 
@@ -277,6 +251,8 @@ export const inputHandler: IInputHandler = {
             this.currentBuildingModule = data;
           });
         } else if (!isCurrentVuePage) {
+          // Make sure DOM is loaded before initializing building module
+          await new Promise(resolve => setTimeout(resolve, 300));
           switch (building) {
             case 'archeryshop':
               this.currentBuildingModule = archeryShopModule;
