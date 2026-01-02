@@ -1,11 +1,10 @@
 import type { GameLoggerEvents } from '@/utilities/GameLogger';
+import type { InputHandlerEvents } from './clientScripts/inputHandler';
 export type GameEventMap = {
   PLAYER_HEALTH_UPDATE: { health: number };
   PLAYER_HUNTED_UPDATE: { isHunted: boolean };
-  RENDER_BUILDING: {
-    content: string;
-  };
-} & GameLoggerEvents;
+} & InputHandlerEvents &
+  GameLoggerEvents;
 
 type GameEventType = keyof GameEventMap;
 
