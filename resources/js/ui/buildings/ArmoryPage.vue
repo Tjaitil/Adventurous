@@ -10,7 +10,7 @@
     </p>
     <div class="flex flex-row">
       <div class="sticky top-5 left-0 w-1/5 self-start">
-        <BaksCard variant="light">
+        <UCard variant="soft">
           <form class="flex flex-col gap-y-4" @submit.prevent="wearArmor()">
             <h2 class="text-bold text-xl">
               {{ $t('Add') }}
@@ -68,21 +68,20 @@
                 class="w-full"
               />
             </div>
-            <BaksButton
-              id="put_on_button"
+            <UButton
+              color="primary"
               :disabled="
                 inventoryStore.selectedItem === null || selectedWarrior === null
               "
               type="submit"
-              variant="secondary"
-              >{{ $t('Wear') }}</BaksButton
+              >{{ $t('Wear') }}</UButton
             >
             <BaseLoadingIcon
               v-show="isLoading"
               class="h-6 w-6 justify-self-center"
             />
           </form>
-        </BaksCard>
+        </UCard>
       </div>
       <div id="warrior_container" class="grow">
         <WarriorArmoryWrapper
@@ -101,8 +100,7 @@
 <script setup lang="ts">
 import { ArmoryWarrior, ItemParts } from '@/types/Warrior';
 import { AdvApi } from '@/AdvApi';
-import { ref } from 'vue';
-import { BaksButton, BaksCard } from 'baks-components-vue';
+import { onUnmounted, ref } from 'vue';
 import BaseSelectedItem from '../components/base/BaseSelectedItem.vue';
 import WarriorArmoryWrapper from '../components/armory/WarriorArmoryWrapper.vue';
 import { useInventoryStore } from '../stores/InventoryStore';
@@ -117,7 +115,10 @@ const isLoading = ref(false);
 
 const warriors = ref<ArmoryWarrior[]>([]);
 
+inventoryStore.setInventoryItemEvent('selectItem');
+
 inventoryStore.$onAction(({ name, after }) => {
+  console.log('InventoryStore action:', name);
   if (name === 'setSelectedItem') {
     after(() => {
       toggleItemOptions();
@@ -141,11 +142,11 @@ const fetchWarriors = async () => {
     isLoading.value = true;
     warriors.value = await AdvApi.get<ArmoryWarrior[]>('/armory/soldiers');
     isLoading.value = false;
-  } catch (error) {
+  } catch {
     return;
   }
 };
-fetchWarriors();
+void fetchWarriors();
 
 const showWarriorHandOption = ref(false);
 const toggleItemOptions = () => {
@@ -258,6 +259,10 @@ const updateWarriorArmory = (warrior: ArmoryWarrior) => {
 
   warriors.value[index] = warrior;
 };
+
+onUnmounted(() => {
+  inventoryStore.setInventoryItemEvent(null);
+});
 
 interface WearArmorRequest {
   item: string;
