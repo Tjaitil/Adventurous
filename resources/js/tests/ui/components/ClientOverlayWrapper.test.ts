@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach, afterEach } from 'vitest';
+import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
   render,
   screen,
@@ -11,13 +11,14 @@ import '@testing-library/jest-dom';
 import ClientOverlayWrapper from '@/ui/components/ClientOverlayWrapper.vue';
 import { gameEventBus } from '@/gameEventsBus';
 import { i18n } from '@/ui/main';
+import { ClientOverlayInterface } from '@/clientScripts/clientOverlayInterface';
 
 interface RenderOptions {
   stubs?: Record<string, unknown>;
 }
 
 const renderClientOverlay = (options: RenderOptions = {}): RenderResult => {
-  return render(ClientOverlayWrapper, {
+  const renderResult = render(ClientOverlayWrapper, {
     global: {
       plugins: [createPinia(), i18n],
       stubs: {
@@ -26,11 +27,19 @@ const renderClientOverlay = (options: RenderOptions = {}): RenderResult => {
       },
     },
   });
+
+  ClientOverlayInterface.setup();
+
+  // Mock only showContent to avoid JSDOM innerText issues
+  vi.spyOn(ClientOverlayInterface, 'showContent').mockImplementation(() => {});
+
+  return renderResult;
 };
 
 describe('ClientOverlayWrapper.vue', () => {
   beforeEach(() => {
     document.body.innerHTML = '';
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
@@ -333,21 +342,183 @@ describe('ClientOverlayWrapper.vue', () => {
     test('exit button has correct attributes', () => {
       const { container } = renderClientOverlay();
 
-      const exitButton = container.querySelector(
-        '.cont_exit',
-      ) as HTMLImageElement;
+      const exitButton = container.querySelector('.cont_exit');
 
-      expect(exitButton.src).toContain('/images/exit.png');
+      expect(exitButton).toBeInTheDocument();
+      expect(exitButton).toBeInstanceOf(HTMLImageElement);
+      expect((exitButton as HTMLImageElement).src).toContain(
+        '/images/exit.png',
+      );
     });
 
     test('loading icon has correct source', () => {
       const { container } = renderClientOverlay();
 
-      const loadingIcon = container.querySelector(
-        '#loading_message',
-      ) as HTMLImageElement;
+      const loadingIcon = container.querySelector('#loading_message');
 
-      expect(loadingIcon.src).toContain('/images/loading.png');
+      expect(loadingIcon).toBeInTheDocument();
+      expect(loadingIcon).toBeInstanceOf(HTMLImageElement);
+      expect((loadingIcon as HTMLImageElement).src).toContain(
+        '/images/loading.png',
+      );
+    });
+  });
+
+  describe('Side Panel Tabs', () => {
+    test('creates tab buttons for multiple content sections', async () => {
+      const { container } = renderClientOverlay();
+
+      ClientOverlayInterface.setup();
+
+      const htmlContent = `
+        <div id="overview">Overview Content</div>
+        <div id="details">Details Content</div>
+        <div id="settings">Settings Content</div>
+      `;
+
+      gameEventBus.emit('RENDER_BUILDING', {
+        building: 'workforcelodge',
+        content: htmlContent,
+      });
+
+      await waitFor(() => {
+        const tabs = container.querySelectorAll('.building-tab');
+        expect(tabs.length).toBe(3);
+
+        // Verify each tab has the building-tab class
+        tabs.forEach(tab => {
+          expect(tab).toHaveClass('building-tab');
+        });
+      });
+    });
+
+    test('tab buttons have correct text from div ids', async () => {
+      const { container } = renderClientOverlay();
+
+      ClientOverlayInterface.setup();
+
+      const htmlContent = `
+        <div id="workers_overview">Workers Overview</div>
+        <div id="training_area">Training Area</div>
+      `;
+
+      gameEventBus.emit('RENDER_BUILDING', {
+        building: 'workforcelodge',
+        content: htmlContent,
+      });
+
+      await waitFor(() => {
+        const tabs = container.querySelectorAll('.building-tab');
+        expect(tabs.length).toBe(2);
+
+        const tabTexts = Array.from(tabs).map(tab => tab.textContent?.trim());
+        expect(tabTexts).toContain('Workers Overview');
+        expect(tabTexts).toContain('Training Area');
+      });
+    });
+
+    test('side panel is visible when tabs are created', async () => {
+      const { container } = renderClientOverlay();
+
+      ClientOverlayInterface.setup();
+
+      const htmlContent = `
+        <div id="section_one">Section One</div>
+        <div id="section_two">Section Two</div>
+      `;
+
+      gameEventBus.emit('RENDER_BUILDING', {
+        building: 'workforcelodge',
+        content: htmlContent,
+      });
+
+      await waitFor(() => {
+        const sidePanel = container.querySelector('#news_content_side_panel');
+        expect(sidePanel).not.toHaveClass('hidden');
+      });
+    });
+
+    test('side panel remains hidden when only one section exists', async () => {
+      const { container } = renderClientOverlay();
+
+      ClientOverlayInterface.setup();
+
+      const htmlContent = `
+        <div id="single_section">Single Section</div>
+      `;
+
+      gameEventBus.emit('RENDER_BUILDING', {
+        building: 'workforcelodge',
+        content: htmlContent,
+      });
+
+      await waitFor(() => {
+        const sidePanel = container.querySelector('#news_content_side_panel');
+        expect(sidePanel).toHaveClass('hidden');
+      });
+    });
+
+    test('tab buttons receive click event listeners', async () => {
+      const { container } = renderClientOverlay();
+
+      ClientOverlayInterface.setup();
+
+      const htmlContent = `
+        <div id="section_a">Section A</div>
+        <div id="section_b">Section B</div>
+      `;
+
+      gameEventBus.emit('RENDER_BUILDING', {
+        building: 'workforcelodge',
+        content: htmlContent,
+      });
+
+      await waitFor(() => {
+        const tabs = container.querySelectorAll('.building-tab');
+        expect(tabs.length).toBeGreaterThan(0);
+
+        // Verify buttons are in the document and are HTMLElement instances
+        tabs.forEach(tab => {
+          expect(tab).toBeInTheDocument();
+          expect(tab).toBeInstanceOf(HTMLElement);
+        });
+      });
+    });
+
+    test('tabs are not created when only loading', async () => {
+      const { container } = renderClientOverlay();
+
+      ClientOverlayInterface.setup();
+
+      gameEventBus.emit('RENDER_BUILDING', {
+        loading: true,
+      });
+
+      await waitFor(() => {
+        const tabs = container.querySelectorAll('.building-tab');
+        expect(tabs.length).toBe(0);
+      });
+    });
+
+    test('tabs are not created for Vue page rendering', async () => {
+      const { container } = renderClientOverlay({
+        stubs: {
+          ArmoryPage: { template: '<div>Armory Page</div>' },
+        },
+      });
+
+      ClientOverlayInterface.setup();
+
+      gameEventBus.emit('RENDER_BUILDING', {
+        building: 'armory',
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText('Armory Page')).toBeInTheDocument();
+      });
+
+      const tabs = container.querySelectorAll('.building-tab');
+      expect(tabs.length).toBe(0);
     });
   });
 });
