@@ -11,6 +11,7 @@ export class ClientOverlayInterface {
   public static shadowContainer: HTMLElement | null = null;
   public static outerContainer: HTMLElement | null = null;
   public static wrapper: HTMLElement | null = null;
+  public static wrapperInner: HTMLElement | null = null;
   public static sidePanel: HTMLElement | null = null;
   public static activeButton: HTMLElement | null = null;
   public static interfaceExitButton: HTMLElement | null = null;
@@ -21,6 +22,9 @@ export class ClientOverlayInterface {
     this.outerContainer = document.getElementById('news_content');
     this.wrapper = document.getElementById('news_content_main_content');
     this.sidePanel = document.getElementById('news_content_side_panel');
+    this.wrapperInner = document.getElementById(
+      'news_content_main_content_inner',
+    );
 
     this.interfaceExitButton = this.outerContainer.querySelectorAll(
       '.cont_exit',
@@ -28,28 +32,20 @@ export class ClientOverlayInterface {
     this.interfaceExitButton.addEventListener('click', () => {
       this.hide();
     });
-
-    gameEventBus.subscribe('RENDER_BUILDING', ({ building, content }) => {
-      this.show(content);
-    });
   }
 
   public static loadingScreen() {
-    const div = document.createElement('div');
+    document.getElementById('loading_message')?.classList.remove('hidden');
 
-    const img = document.createElement('img');
-
-    img.src = 'images/loading.png';
-    img.classList.add('loading-icon');
-    img.classList.add('mx-auto');
-    div.appendChild(img);
-    div.classList.add('mt-5');
-    div.id = 'loading_message';
-    this.show(div, false);
+    gameEventBus.emit('RENDER_BUILDING', {
+      loading: true,
+    });
   }
 
+  /**
+   * @deprecated Use gameEventbus.emit('RENDER_BUILDING') instead
+   */
   public static show(content: string | HTMLElement, sidebar = true) {
-    this.wrapper.innerHTML = '';
     this.outerContainer.style.top =
       viewport.elements.background.offsetTop + 'px';
     this.shadowContainer.style.visibility = 'visible';
@@ -88,13 +84,6 @@ export class ClientOverlayInterface {
       }
     }
 
-    this.wrapper.innerHTML = '';
-    this.sidePanel?.classList.add('hidden');
-
-    this.outerContainer.style.visibility = 'hidden';
-    this.shadowContainer.style.visibility = 'hidden';
-
-    this.outerContainer.style.top = '200px';
     if (typeof Game.properties.inBuilding !== 'undefined') {
       Game.properties.inBuilding = false;
     }
@@ -104,8 +93,13 @@ export class ClientOverlayInterface {
     if (this.sidePanel?.classList.contains('hidden')) {
       this.sidePanel.classList.remove('hidden');
     }
+
+    this.wrapperInner = document.getElementById(
+      'news_content_main_content_inner',
+    );
+
     this.sidePanel.innerHTML = '';
-    const divChildren = this.wrapper.children;
+    const divChildren = this.wrapperInner.children;
 
     // Exceptions that should not be rendered
     const exceptions = [
@@ -160,9 +154,9 @@ export class ClientOverlayInterface {
       // } else {
       // }
 
-      this.wrapper.style.height =
-        this.wrapper.querySelectorAll('div')[0].offsetHeight + 40 + 'px';
-      this.wrapper.querySelectorAll('div')[0].getBoundingClientRect();
+      this.wrapperInner.style.height =
+        this.wrapperInner.querySelectorAll('div')[0].offsetHeight + 40 + 'px';
+      this.wrapperInner.querySelectorAll('div')[0].getBoundingClientRect();
       this.sidePanel?.classList.add('hidden');
     } else {
       this.addEventSidePanelTab();
@@ -183,21 +177,26 @@ export class ClientOverlayInterface {
       const button = buttons[i] as HTMLElement;
       if (button.innerText == this.activeButton) {
         button.style.backgroundColor = '#474700';
-        // document.getElementById(underscoreTreatment(button.innerText, true).toLowerCase()).style.position = "";
-        document.getElementById(
-          underscoreTreatment(button.innerText, true).toLowerCase(),
-        ).style.visibility = 'visible';
-        document.getElementById(
-          underscoreTreatment(button.innerText, true).toLowerCase(),
-        ).style.display = 'block';
+        const elementId = underscoreTreatment(
+          button.innerText,
+          true,
+        ).toLowerCase();
+        const element = document.getElementById(elementId);
+        if (element) {
+          element.style.visibility = 'visible';
+          element.style.display = 'block';
+        }
       } else {
         button.style.backgroundColor = '';
-        document.getElementById(
-          underscoreTreatment(button.innerText, true).toLowerCase(),
-        ).style.visibility = 'hidden';
-        document.getElementById(
-          underscoreTreatment(button.innerText, true).toLowerCase(),
-        ).style.display = 'none';
+        const elementId = underscoreTreatment(
+          button.innerText,
+          true,
+        ).toLowerCase();
+        const element = document.getElementById(elementId);
+        if (element) {
+          element.style.visibility = 'hidden';
+          element.style.display = 'none';
+        }
       }
     }
     if (
