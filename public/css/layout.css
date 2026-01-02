@@ -489,48 +489,6 @@ table .adv-button {
   border: 0.5px solid black;
 }
 
-#news {
-  box-sizing: border-box;
-  position: absolute;
-  height: 100%;
-  width: 101%;
-  border: 1px solid black;
-  z-index: var(--newsZIndex);
-  visibility: hidden;
-  margin-left: -2%;
-  color: #ffffff;
-  background-color: black;
-  opacity: 0.8;
-}
-
-#news_content {
-  visibility: hidden;
-  position: absolute;
-  margin: 2% 0% 2% 0%;
-  background: radial-gradient(
-    var(--layoutBgColor),
-    var(--layoutBgColorShadowPerc),
-    var(--layoutBgColorShadow)
-  );
-  z-index: var(--newsZIndex);
-  width: 68%;
-  padding: 1%;
-  transition: top 0.5s ease-out;
-  top: 200px;
-  box-shadow: 0px 0px 30px 15px;
-  box-sizing: border-box;
-}
-
-#news_content table {
-  margin: 0px auto;
-  margin-bottom: 15px;
-}
-
-#news_content_side_panel {
-  height: auto;
-  box-sizing: border-box;
-}
-
 .building-tab {
   background-color: #333300;
   width: 100%;
