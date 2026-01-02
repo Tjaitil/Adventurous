@@ -18,6 +18,15 @@ export default defineConfigWithVueTs(
   {
     rules: {
       'prettier/prettier': ['off'],
+      /**
+       * vueTsConfigs.strictTypeChecked sets allowNumber to false, but it is very strict
+       */
+      '@typescript-eslint/restrict-template-expressions': [
+        'error',
+        {
+          allowNumber: true,
+        },
+      ],
     },
   },
 );
