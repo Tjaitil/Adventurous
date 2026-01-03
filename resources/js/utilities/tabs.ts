@@ -5,7 +5,7 @@ export function setUpTabList() {
   tabLists.forEach((tabList: HTMLElement) => {
     const tabs = tabList.querySelectorAll('[role="tab"]');
     tabs.forEach((tab: HTMLElement) => {
-      tab.addEventListener('click', e => changeTabs(e));
+      tab.addEventListener('click', e => { changeTabs(e); });
       if (tab.getAttribute('aria-selected') === 'true') {
         const tabPanelId = tab.getAttribute('aria-controls');
         console.log(tabPanelId);

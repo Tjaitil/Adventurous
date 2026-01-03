@@ -15,7 +15,7 @@ export function collisionCheck(
   gamePiece.left = '';
 
   for (let i = 0, n = GamePieces.nearObjects.length; i < n; i++) {
-    if (GamePieces.nearObjects[i].noCollision == true) {
+    if (GamePieces.nearObjects[i].noCollision) {
       continue;
     }
 
@@ -35,7 +35,7 @@ export function collisionCheck(
       gamePiece.diameterLeft <= GamePieces.nearObjects[i].diameterRight
     ) {
       gamePiece.down = 'blocked';
-      if (debug == true) {
+      if (debug) {
         console.log(GamePieces.nearObjects[i]);
         console.log('player_down');
       }
@@ -48,7 +48,7 @@ export function collisionCheck(
       gamePiece.diameterDown >= GamePieces.nearObjects[i].diameterUp
     ) {
       gamePiece.right = 'blocked';
-      if (debug == true) {
+      if (debug) {
         console.log(GamePieces.nearObjects[i]);
         console.log('player right');
       }
@@ -60,7 +60,7 @@ export function collisionCheck(
       gamePiece.diameterLeft <= GamePieces.nearObjects[i].diameterRight
     ) {
       gamePiece.up = 'blocked';
-      if (debug == true) {
+      if (debug) {
         console.log(GamePieces.nearObjects[i]);
         console.log('player up');
       }
@@ -73,7 +73,7 @@ export function collisionCheck(
       gamePiece.diameterDown >= GamePieces.nearObjects[i].diameterUp
     ) {
       gamePiece.left = 'blocked';
-      if (debug == true) {
+      if (debug) {
         console.log(GamePieces.nearObjects[i]);
         console.log('player left');
       }

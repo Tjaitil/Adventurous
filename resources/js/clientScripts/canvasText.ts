@@ -12,8 +12,8 @@ export const canvasTextHeader = {
       return false;
     }
     this.text = text;
-    this.intervalID = setInterval(() => this.adjustOpacity(), 75);
-    setTimeout(() => this.unsetDraw(), timer * 1000);
+    this.intervalID = setInterval(() => { this.adjustOpacity(); }, 75);
+    setTimeout(() => { this.unsetDraw(); }, timer * 1000);
   },
   adjustOpacity() {
     if (this.opacity <= 0.4) {
@@ -65,7 +65,7 @@ export const loadingCanvas = {
       return new Promise((resolve, reject) => {
         this.resolve = resolve;
         loadingCanvas.intervalID = window.requestAnimationFrame(() =>
-          loadingCanvas.drawCurtain(),
+          { loadingCanvas.drawCurtain(); },
         );
       });
     },
@@ -116,6 +116,6 @@ export const loadingCanvas = {
     viewport.layer.text.fillStyle = 'rgba(0, 0, 0, ' + this.opacity + ')';
     viewport.layer.text.clearRect(0, 0, viewport.width, viewport.height);
     viewport.layer.text.fillRect(0, 0, viewport.width, viewport.height);
-    this.intervalID = window.requestAnimationFrame(() => this.drawCurtain());
+    this.intervalID = window.requestAnimationFrame(() => { this.drawCurtain(); });
   },
 };

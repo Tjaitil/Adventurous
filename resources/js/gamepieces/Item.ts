@@ -56,7 +56,7 @@ export class Item {
       this.height * this.scale,
     );
     this.shadow.draw();
-    if (this.checking === false) this.pickUpItem();
+    if (!this.checking) this.pickUpItem();
     if (Game.properties.duration % 20 === 0) this.loopIndex++;
   }
 

@@ -12,8 +12,8 @@ export const restHandlers = [
 
 const server = setupServer(...restHandlers);
 
-beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
+beforeAll(() => { server.listen({ onUnhandledRequest: 'error' }); });
 
-afterAll(() => server.close());
+afterAll(() => { server.close(); });
 
-afterEach(() => server.resetHandlers());
+afterEach(() => { server.resetHandlers(); });

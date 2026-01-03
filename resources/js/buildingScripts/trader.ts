@@ -15,9 +15,9 @@ const traderModule = {
       .getElementById('start_trader_assignment')
       .addEventListener('click', () => this.newAssignment());
     [...document.getElementsByClassName('trader_assignment')].forEach(element =>
-      element.addEventListener('click', event =>
-        traderModule.selectTrade(event),
-      ),
+      { element.addEventListener('click', event =>
+        { traderModule.selectTrade(event); },
+      ); },
     );
 
     this.getTraderAssignmentCountdown();
@@ -44,11 +44,11 @@ const traderModule = {
     const pickupButton = document.getElementById('traderAssignment-pick-up');
     const deliverButton = document.getElementById('traderAssignment-deliver');
     if (pickupButton) {
-      pickupButton.addEventListener('click', () => this.pickUp());
+      pickupButton.addEventListener('click', () => { this.pickUp(); });
     }
 
     if (deliverButton) {
-      deliverButton.addEventListener('click', () => this.deliver());
+      deliverButton.addEventListener('click', () => { this.deliver(); });
     }
   },
   getTraderAssignmentCountdown() {
@@ -144,7 +144,7 @@ const traderModule = {
     AdvApi.post<AssignmentDeliverResponse>('/trader/assignment/update', data)
       .then(response => {
         // updateCountdownTab();
-        if (response.data.isAssignmentFinished === true) {
+        if (response.data.isAssignmentFinished) {
           this.updateAssignmentInterface(response.html.TraderAssignment);
           Inventory.update();
           ClientOverlayInterface.adjustWrapperHeight();

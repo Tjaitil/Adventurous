@@ -4,10 +4,10 @@ const warriorSelect = {
   addWarriorEvents() {
     [...document.getElementsByClassName('warrior-select-card')].forEach(
       element => {
-        element.addEventListener('click', event => this.selectWarrior(event));
+        element.addEventListener('click', event => { this.selectWarrior(event); });
         element
           .querySelectorAll('button')[0]
-          .addEventListener('click', event => this.flipWarriorCard(event));
+          .addEventListener('click', event => { this.flipWarriorCard(event); });
       },
     );
   },

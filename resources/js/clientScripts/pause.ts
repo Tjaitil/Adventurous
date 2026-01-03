@@ -15,15 +15,15 @@ export const pauseManager = {
     if (
       document.getElementById('conversation-container').style.visibility ==
         'visible' ||
-      Game.properties.inBuilding == true
+      Game.properties.inBuilding
     ) {
       return false;
     }
     if (
-      (controls.playerUp !== false ||
-        controls.playerRight !== false ||
-        controls.playerDown !== false ||
-        controls.playerLeft !== false) &&
+      (controls.playerUp ||
+        controls.playerRight ||
+        controls.playerDown ||
+        controls.playerLeft) &&
       Game.properties.device == 'pc' &&
       Game.properties.gameState === 'playing'
     ) {

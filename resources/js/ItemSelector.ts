@@ -264,7 +264,7 @@ export function selectedCheck(amount_r = true) {
     .innerHTML.toLowerCase()
     .trim();
   // amount_r is variable that opens up for checking only item or item and amount
-  if (amount_r === true) {
+  if (amount_r) {
     const inputElement = <HTMLInputElement>(
       document.getElementById('selected_amount')
     );

@@ -98,7 +98,7 @@ export class ProgressBar {
 
     this.progressElement.getBoundingClientRect();
 
-    if (this.progressIndicator >= 100 && this.finishedClassToggled === true) {
+    if (this.progressIndicator >= 100 && this.finishedClassToggled) {
       this.progressIndicator = 100;
       this.progressBarElement
         .querySelectorAll('.progressBar')[0]

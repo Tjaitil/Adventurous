@@ -1,4 +1,4 @@
-window.addEventListener('load', () => backgroundImageSlider());
+window.addEventListener('load', () => { backgroundImageSlider(); });
 function backgroundImageSlider() {
   let direction = -1;
   requestAnimationFrame(animate);

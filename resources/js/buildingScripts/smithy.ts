@@ -16,7 +16,7 @@ const smithyModule = {
   data: null,
   async getData() {
     AdvApi.get<StoreItemResponse>('/smithy/store')
-      .then(response => storeContainer.setStoreItems(response.data.store_items))
+      .then(response => { storeContainer.setStoreItems(response.data.store_items); })
       .catch(() => false);
   },
   smith() {

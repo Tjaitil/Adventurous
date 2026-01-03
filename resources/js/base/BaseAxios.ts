@@ -21,7 +21,7 @@ export class BaseAxios {
   protected static fetchInstance<T extends {}>(
     method: 'PUT' | 'GET' | 'POST',
     url: string,
-    data?: Object,
+    data?: object,
   ): Promise<T> {
     const requestInfo: RequestInit = {
       method: method,
@@ -58,7 +58,7 @@ export class BaseAxios {
 
   public static async basePost<T = advAPIResponse>(
     url: string,
-    data: Object,
+    data: object,
   ): Promise<T> {
     if (!this.Axios) this.createAxiosInstance();
 
