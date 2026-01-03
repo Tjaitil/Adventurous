@@ -20,10 +20,10 @@ export async function getInventory() {
         .getElementById('inventory')
         .querySelectorAll('figure');
       figures.forEach(element =>
-        element.addEventListener(
+        { element.addEventListener(
           'click',
           inputHandler.currentBuildingModule.show_menu,
-        ),
+        ); },
       );
       itemTitle.removeTitleEvent();
     } else {
@@ -52,10 +52,10 @@ export async function updateInventory(page = false, addSelect = false) {
           .getElementById('inventory')
           .querySelectorAll('figure');
         figures.forEach(element =>
-          element.addEventListener(
+          { element.addEventListener(
             'click',
             inputHandler.currentBuildingModule.show_menu,
-          ),
+          ); },
         );
         itemTitle.removeTitleEvent();
       } else {

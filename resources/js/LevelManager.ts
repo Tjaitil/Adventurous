@@ -30,7 +30,7 @@ export const LevelManager = {
       default:
         break;
     }
-    if (hasRequiredLevel === false) {
+    if (!hasRequiredLevel) {
       uiElement.classList.add('not-able-color');
     } else {
       uiElement.classList.remove('not-able-color');

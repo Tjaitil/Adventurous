@@ -106,7 +106,7 @@ const storeContainer: IStoreContainer = {
   addSelectTrade(): void {
     [...document.getElementsByClassName('store-container-item')].forEach(
       element =>
-        element.addEventListener('click', event => this.selectTrade(event)),
+        { element.addEventListener('click', event => { this.selectTrade(event); }); },
     );
   },
 
@@ -115,9 +115,9 @@ const storeContainer: IStoreContainer = {
    */
   addSelectTradeToInventory(): void {
     [...document.getElementsByClassName('inventory_item')].forEach(element =>
-      element.addEventListener('click', event =>
-        this.selectInventoryTrade(event),
-      ),
+      { element.addEventListener('click', event =>
+        { this.selectInventoryTrade(event); },
+      ); },
     );
   },
 
@@ -241,7 +241,7 @@ const storeContainer: IStoreContainer = {
       this.selectedTradeWrapper.querySelectorAll('figcaption .tooltip_item')[0]
     );
     nameElement.classList.remove('tooltip');
-    const imageElement = <HTMLImageElement>(
+    const imageElement = (
       this.selectedTradeWrapper.querySelectorAll('img')[0]
     );
     imageElement.classList.add('mx-auto');
@@ -295,7 +295,7 @@ const storeContainer: IStoreContainer = {
   addRequirementEvent(funcName: CallableFunction): void {
     if (!funcName && funcName.length === 0) return;
     [...document.getElementsByClassName('store-container-item')].forEach(
-      element => element.addEventListener('click', event => funcName(event)),
+      element => { element.addEventListener('click', event => funcName(event)); },
     );
   },
 

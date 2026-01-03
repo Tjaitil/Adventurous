@@ -22,7 +22,7 @@ const tavernModule = {
     selectItemEvent.addSelectEvent();
     [...document.getElementsByClassName('tavern-worker-recrute')].forEach(
       element =>
-        element.addEventListener('click', event => this.recruitWorker(event)),
+        { element.addEventListener('click', event => this.recruitWorker(event)); },
     );
     const hungerBar = document.getElementById('hunger_progressBar');
     const tavernHungerBar = hungerBar.cloneNode(true);

@@ -41,7 +41,7 @@ export class SkillActionContainer {
 
   public addSelectEvent() {
     [...document.getElementsByClassName('item-type')].forEach(element =>
-      element.addEventListener('click', event => this.showSelect(event)),
+      { element.addEventListener('click', event => { this.showSelect(event); }); },
     );
   }
 
@@ -209,7 +209,7 @@ export class SkillActionContainer {
       }
     }, 1000);
 
-    setTimeout(() => ClientOverlayInterface.adjustWrapperHeight(), 1100);
+    setTimeout(() => { ClientOverlayInterface.adjustWrapperHeight(); }, 1100);
   }
 
   public clearCountdownAndUpdateUI() {

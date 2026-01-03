@@ -40,7 +40,7 @@ const armycampModule = {
     document
       .getElementById('actions')
       .children[1].addEventListener('change', () =>
-        this.toggleAdditionalActionElements(),
+        { this.toggleAdditionalActionElements(); },
       );
     document
       .getElementById('actions')
@@ -48,7 +48,7 @@ const armycampModule = {
       .addEventListener('click', () => this.runWarriorAction());
     document
       .getElementsByName('action')[0]
-      .addEventListener('change', () => this.checkWarriorAmountForAction());
+      .addEventListener('change', () => { this.checkWarriorAmountForAction(); });
 
     selectItemEvent.addSelectEvent();
     await this.getWarriorData();
@@ -106,7 +106,7 @@ const armycampModule = {
           this.warriors.push(warrior);
         });
       })
-      .catch(err => console.log(err));
+      .catch(err => { console.log(err); });
   },
   checkWarriorAmountForAction() {
     const select = document.getElementsByName('action')[0];
@@ -370,7 +370,7 @@ class Warrior {
     ) {
       const button = document.createElement('button');
       button.innerHTML = 'Level up ' + '&#9650';
-      button.addEventListener('click', () => this.levelUPWarrior());
+      button.addEventListener('click', () => { this.levelUPWarrior(); });
       this.wrapper.querySelectorAll('.warrior_level_up')[0].appendChild(button);
     } else {
       this.wrapper.querySelectorAll('.warrior_level_up')[0].innerHTML = '';
@@ -471,7 +471,7 @@ class Warrior {
       const btn = document.createElement('BUTTON');
       const t = document.createTextNode('Get report');
       btn.appendChild(t);
-      btn.addEventListener('click', () => this.endTraining());
+      btn.addEventListener('click', () => { this.endTraining(); });
       this.countdownElement.innerHTML = '';
       this.countdownElement.appendChild(btn);
     } else if (remainder < 0) {

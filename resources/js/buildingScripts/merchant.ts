@@ -25,7 +25,7 @@ const merchantModule = {
   updateStockCountdown(pause = false, end?: boolean) {
     if (end === true) {
       clearTimeout(this.stockTimerId);
-    } else if (pause == true) {
+    } else if (pause) {
       this.resetStockTimer();
     }
   },

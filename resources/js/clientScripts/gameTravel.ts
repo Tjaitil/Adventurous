@@ -26,11 +26,11 @@ export const gameTravel: IgameTravel = {
 
     setTimeout(
       () =>
-        Game.setWorld({
+        { Game.setWorld({
           method: 'travel',
           newDestination: destination,
           hasStartPointType,
-        }),
+        }); },
       16000,
     );
 

@@ -57,7 +57,7 @@ export class Daqloon implements MovingGameObject {
   // TODO: Fix object
   fighting_area = null;
 
-  constructor(id: number, x: number, y: number, fighting_area: Object) {
+  constructor(id: number, x: number, y: number, fighting_area: object) {
     this.id = id;
     this.x = x;
     this.y = y;
@@ -199,9 +199,9 @@ export class Daqloon implements MovingGameObject {
       Math.abs(
         this.diameterUp + this.height / 2 - GamePieces.player.diameterUp,
       ) < 20 &&
-      this.attack === false &&
-      this.cooldown === false &&
-      this.spawn === false
+      !this.attack &&
+      !this.cooldown &&
+      !this.spawn
     ) {
       this.attack = true;
       this.cooldown = true;
@@ -224,7 +224,7 @@ export class Daqloon implements MovingGameObject {
     }
     if (this.currentAnimation === 'damage') {
       this.setStartAnimationPoint('idle');
-    } else if (this.spawn == true && this.dead == false) {
+    } else if (this.spawn && !this.dead) {
       if (Game.properties.duration % 10 === 0) {
         if (this.spriteXIndex >= 2) {
           this.spriteYIndex = 2;
@@ -236,7 +236,7 @@ export class Daqloon implements MovingGameObject {
           this.spriteXIndex++;
         }
       }
-    } else if (this.dead === true && Game.properties.duration % 10 === 0) {
+    } else if (this.dead && Game.properties.duration % 10 === 0) {
       // If spriteXIndex is 5, the death animation is complete
       this.setStartAnimationPoint('death');
       if (this.spriteXIndex == 5) {
@@ -250,9 +250,9 @@ export class Daqloon implements MovingGameObject {
       this.spriteXIndex++;
     } else if (
       Game.properties.duration % 6 === 0 &&
-      this.attack === true &&
-      this.dead === false &&
-      this.spawn === false
+      this.attack &&
+      !this.dead &&
+      !this.spawn
     ) {
       // Set start xIndex for attack animation
       if (this.spriteXIndex < 5) {
@@ -271,9 +271,9 @@ export class Daqloon implements MovingGameObject {
       }
     } else if (
       Game.properties.duration % 10 === 0 &&
-      this.dead === false &&
-      this.spawn === false &&
-      this.attack === false
+      !this.dead &&
+      !this.spawn &&
+      !this.attack
     ) {
       this.spriteXIndex++;
       if (this.spriteXIndex > 4) {

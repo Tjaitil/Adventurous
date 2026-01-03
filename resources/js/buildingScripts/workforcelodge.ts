@@ -47,7 +47,7 @@ const workforceLodgeModule: IWorkforceLodgeModule = {
 
     document
       .getElementById('efficiency-upgrade-form')
-      .addEventListener('submit', () => this.upgradeEffiency());
+      .addEventListener('submit', () => { this.upgradeEffiency(); });
   },
   setInfo(element: HTMLInputElement) {
     const upgradeCost = <ActiveInfoSection>(

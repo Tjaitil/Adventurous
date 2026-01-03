@@ -36,7 +36,7 @@ export class BaseAxios {
 
   public static async post<T = advAPIResponse>(
     url: string,
-    data: Object,
+    data: object,
   ): Promise<T> {
     if (!this.AxiosInstance) this.createAxiosInstance();
 
@@ -75,7 +75,7 @@ function checkError(responseText) {
       break;
     }
   }
-  if (match === true) {
+  if (match) {
     return true;
   } else {
     return false;

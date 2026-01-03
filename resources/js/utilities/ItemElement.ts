@@ -42,7 +42,7 @@ export class ItemElement {
       this.element.addEventListener('mouseenter', event =>
         itemTitle.show(event),
       );
-      this.element.addEventListener('mouseleave', () => itemTitle.hide());
+      this.element.addEventListener('mouseleave', () => { itemTitle.hide(); });
     } else {
       this.element = <HTMLElement>element;
       if (!this.element) throw new Error(`Element not found`);
