@@ -4,11 +4,11 @@ import { GameLogger } from '../utilities/GameLogger';
 import { AdvApi } from './../AdvApi';
 import { ClientOverlayInterface } from './../clientScripts/clientOverlayInterface';
 import { ProgressBar } from './../progressBar';
-import {
+import type {
   RecruitWorkerRequest,
   RestoreHealthRequest,
 } from './../types/requests/TavernRequests';
-import {
+import type {
   GetHealDataResponse,
   RestoreHealthResponse,
 } from './../types/Responses/TavernResponses';

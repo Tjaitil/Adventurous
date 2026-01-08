@@ -1,4 +1,4 @@
-import { advAPIResponse } from './types/Responses/AdvResponse';
+import type { advAPIResponse } from './types/Responses/AdvResponse';
 import { BaseAxios, errorInterceptor, isAdvResponse } from './ajax';
 import { GameLogger } from './utilities/GameLogger';
 

@@ -1,5 +1,5 @@
 import { BaseStaticGameObject } from './BaseStaticGameObject';
-import { StaticGameObject } from '../types/gamepieces/StaticGameObject';
+import type { StaticGameObject } from '../types/gamepieces/StaticGameObject';
 import { formatCharacterName } from '@/utilities/formatters';
 
 export interface ICharacter extends StaticGameObject {

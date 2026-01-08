@@ -22,7 +22,7 @@ import { jsUcWords } from '@/utilities/uppercase';
 import { computed } from 'vue';
 import { itemTitle } from '@/utilities/itemTitle';
 import { formatItemAmount } from '@/utilities/formatters';
-import { Item } from '@/types/Item';
+import type { Item } from '@/types/Item';
 
 interface Props {
   item: Item['item'];

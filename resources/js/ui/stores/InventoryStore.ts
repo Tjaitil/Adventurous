@@ -1,5 +1,5 @@
-import { InventoryItem } from '@/types/InventoryItem';
-import { InventoryItemEvent } from '@/types/InventoryItemEvent';
+import type { InventoryItem } from '@/types/InventoryItem';
+import type { InventoryItemEvent } from '@/types/InventoryItemEvent';
 import { defineStore } from 'pinia';
 
 interface State {

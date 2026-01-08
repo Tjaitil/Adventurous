@@ -16,7 +16,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { gameEventBus } from '@/gameEventsBus';
-import { GameLog, GameLogTypes } from '@/types/GameLog';
+import type { GameLog} from '@/types/GameLog';
+import { GameLogTypes } from '@/types/GameLog';
 import { parseGameLog } from '@/utilities/parseGameLog';
 import GameLogItem from '../GameLogItem.vue';
 

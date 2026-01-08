@@ -1,7 +1,7 @@
-import { DaqloonFightingArea } from './../gamepieces/DaqloonFightingArea';
-import { Building } from './../gamepieces/Building';
-import { HUD } from './../clientScripts/HUD';
-import { StaticGameObject } from './gamepieces/StaticGameObject';
+import type { DaqloonFightingArea } from './../gamepieces/DaqloonFightingArea';
+import type { Building } from './../gamepieces/Building';
+import type { HUD } from './../clientScripts/HUD';
+import type { StaticGameObject } from './gamepieces/StaticGameObject';
 
 export interface GameProperties {
   HUD?: typeof HUD;

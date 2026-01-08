@@ -69,7 +69,7 @@
 </template>
 
 <script setup lang="ts">
-import { ArmoryWarrior, ItemParts } from '@/types/Warrior';
+import type { ArmoryWarrior, ItemParts } from '@/types/Warrior';
 import { AssetPaths } from '@/clientScripts/ImagePath';
 import WarriorArmoryPart from './WarriorArmoryPart.vue';
 

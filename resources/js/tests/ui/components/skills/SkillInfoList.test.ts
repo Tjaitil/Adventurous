@@ -4,7 +4,7 @@ import { expect, test } from 'vitest';
 import { useSkillsStore } from '@/ui/stores/SkillsStore';
 import { createPinia } from 'pinia';
 import SkillInfoListItem from '@/ui/components/skills/SkillInfoListItem.vue';
-import { UserLevels } from '@/types/UserLevels';
+import type { UserLevels } from '@/types/UserLevels';
 import { MockedUpdateSkillsResponse } from '@/mocks/responses/UpdateSkillsResponse';
 import { i18n } from '@/ui/main';
 

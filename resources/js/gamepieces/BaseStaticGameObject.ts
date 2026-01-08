@@ -1,4 +1,4 @@
-import { StaticGameObject } from '../types/gamepieces/StaticGameObject';
+import type { StaticGameObject } from '../types/gamepieces/StaticGameObject';
 import viewport from '../clientScripts/viewport';
 import { AssetPaths } from '../clientScripts/ImagePath';
 import { GamePieces } from '@/clientScripts/gamePieces';

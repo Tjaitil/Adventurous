@@ -48,7 +48,7 @@
 
 <script setup lang="ts">
 import { jsUcfirst } from '@/utilities/uppercase';
-import { TabsItem } from '@nuxt/ui';
+import type { TabsItem } from '@nuxt/ui';
 import { ref, watch } from 'vue';
 import DiplomacyTab from '../sidebar/DiplomacyTab.vue';
 import { useI18n } from 'vue-i18n';

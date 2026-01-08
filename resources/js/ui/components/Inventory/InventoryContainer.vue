@@ -27,7 +27,7 @@
 
 <script lang="ts" setup>
 import { CustomFetchApi } from '@/CustomFetchApi';
-import { InventoryItem } from '@/types/InventoryItem';
+import type { InventoryItem } from '@/types/InventoryItem';
 import { ref } from 'vue';
 import InventoryItemWrapper from './InventoryItemWrapper.vue';
 import BaseLoading from '@/ui/components/base/BaseLoading.vue';

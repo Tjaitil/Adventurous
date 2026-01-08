@@ -1,4 +1,4 @@
-import { BaseMapTag } from './BaseMapTag';
+import type { BaseMapTag } from './BaseMapTag';
 
 export interface LocalMapTags extends BaseMapTag {
   tagIdentifier: string;

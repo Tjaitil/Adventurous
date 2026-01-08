@@ -1,10 +1,11 @@
 import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
+import type {
+  RenderResult} from '@testing-library/vue';
 import {
   render,
   screen,
   waitFor,
-  fireEvent,
-  RenderResult,
+  fireEvent
 } from '@testing-library/vue';
 import { createPinia } from 'pinia';
 import '@testing-library/jest-dom';

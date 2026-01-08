@@ -1,4 +1,4 @@
-import { AdvApi } from '../../AdvApi';
+import type { AdvApi } from '../../AdvApi';
 
 export interface GetHealDataResponse extends AdvApi {
   data: {

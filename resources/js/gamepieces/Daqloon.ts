@@ -1,4 +1,4 @@
-import {
+import type {
   MovingGameObject,
   DirectionBlockedCheck,
 } from '../types/gamepieces/MovingGameObject';

@@ -3,7 +3,7 @@ import { GamePieces } from '../clientScripts/gamePieces';
 import viewport from '../clientScripts/viewport';
 import { ajaxP } from '../ajax';
 import { updateInventory } from '../clientScripts/inventory';
-import { ItemSprite } from '../types/ItemSprite';
+import type { ItemSprite } from '../types/ItemSprite';
 import { makeSprite } from '../clientScripts/spritesContainer';
 
 export class Item {

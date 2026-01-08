@@ -1,7 +1,7 @@
 import { viewport } from './viewport';
 import { GamePieces } from './gamePieces';
 import { HUD } from './HUD';
-import { ProgressBar } from '../progressBar';
+import type { ProgressBar } from '../progressBar';
 
 export const tutorial = {
   step: 1,

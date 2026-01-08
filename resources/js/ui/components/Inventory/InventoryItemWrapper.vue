@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import { InventoryItem } from '@/types/InventoryItem';
+import type { InventoryItem } from '@/types/InventoryItem';
 import { jsUcWords } from '@/utilities/uppercase';
 import { computed } from 'vue';
 import { itemTitle } from '@/utilities/itemTitle';

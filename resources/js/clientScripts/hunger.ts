@@ -1,6 +1,6 @@
 import { HUD } from './HUD';
 import { AdvApi } from '../AdvApi';
-import { advAPIResponse } from '../types/Responses/AdvResponse';
+import type { advAPIResponse } from '../types/Responses/AdvResponse';
 
 export function getHunger() {
   AdvApi.get<GetHungerResponse>('/hunger/get')

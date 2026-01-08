@@ -27,6 +27,7 @@ export default defineConfigWithVueTs(
           allowNumber: true,
         },
       ],
+      '@typescript-eslint/consistent-type-imports': 'error',
     },
   },
 );

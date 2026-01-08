@@ -1,4 +1,4 @@
-import { ProfiencyStatusResponse } from './types/responses/ProfiencyStatus';
+import type { ProfiencyStatusResponse } from './types/responses/ProfiencyStatus';
 import { AdvApi } from './AdvApi.js';
 import { ajaxJS } from './ajax.js';
 

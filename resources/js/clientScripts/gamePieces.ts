@@ -1,18 +1,20 @@
 import { inputHandler } from './inputHandler';
-import { GameObject } from '../types/gamepieces/GameObject';
+import type { GameObject } from '../types/gamepieces/GameObject';
 import { BaseStaticGameObject } from '../gamepieces/BaseStaticGameObject';
 import { Building } from '../gamepieces/Building';
-import { Character, ICharacter } from '../gamepieces/Character';
+import type { ICharacter } from '../gamepieces/Character';
+import { Character } from '../gamepieces/Character';
+import type {
+  IDaqloonFightingArea} from '../gamepieces/DaqloonFightingArea';
 import {
-  IDaqloonFightingArea,
   DaqloonFightingArea,
 } from '../gamepieces/DaqloonFightingArea';
-import { Daqloon } from '../gamepieces/Daqloon';
+import type { Daqloon } from '../gamepieces/Daqloon';
 import { Player } from '../gamepieces/Player';
 import viewport from './viewport';
-import { Item } from '../gamepieces/Item';
-import { StaticGameObject } from '../types/gamepieces/StaticGameObject';
-import { WorldMapData } from '../types/Advclient';
+import type { Item } from '../gamepieces/Item';
+import type { StaticGameObject } from '../types/gamepieces/StaticGameObject';
+import type { WorldMapData } from '../types/Advclient';
 import { HUD } from './HUD';
 import { addModuleTester } from '@/devtools/ModuleTester';
 

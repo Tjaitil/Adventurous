@@ -1,6 +1,6 @@
 import { AdvApi } from '../AdvApi';
 import { Inventory } from '../clientScripts/inventory';
-import { advAPIResponse } from '../types/Responses/AdvResponse';
+import type { advAPIResponse } from '../types/Responses/AdvResponse';
 import { GoldCostElement } from '../utilities/GoldCostElement';
 
 const workforceLodgeModule: IWorkforceLodgeModule = {

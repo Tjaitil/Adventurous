@@ -1,4 +1,4 @@
-import { WarriorLevelsResource } from './WarriorLevelsResource';
+import type { WarriorLevelsResource } from './WarriorLevelsResource';
 import { TimeResource } from './TimeResource';
 
 export interface WarriorResource {

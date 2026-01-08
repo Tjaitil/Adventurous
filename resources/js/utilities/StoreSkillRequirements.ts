@@ -1,5 +1,5 @@
 import { AssetPaths } from '../clientScripts/ImagePath';
-import { SkillRequirementResource } from '../types/SkillRequirementResource';
+import type { SkillRequirementResource } from '../types/SkillRequirementResource';
 
 export class StoreSkillRequirements {
   private SkillRequirements: SkillRequirementResource[] = [];

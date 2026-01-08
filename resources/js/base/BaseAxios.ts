@@ -1,5 +1,5 @@
 import { checkResponse } from '../ajax';
-import { advAPIResponse } from '../types/Responses/AdvResponse';
+import type { advAPIResponse } from '../types/Responses/AdvResponse';
 import { Axios } from 'axios';
 
 type responseType<T> = T extends advAPIResponse ? T : T;

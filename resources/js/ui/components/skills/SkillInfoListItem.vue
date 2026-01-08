@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import { LevelUpAbleSkills } from '@/types/Skill';
+import type { LevelUpAbleSkills } from '@/types/Skill';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 

@@ -1,7 +1,7 @@
 import { AdvApi } from './AdvApi';
 import { Game } from './advclient';
 import { jsUcWords, jsUcfirst } from './utilities/uppercase';
-import { CropResource } from './types/CropResource';
+import type { CropResource } from './types/CropResource';
 import { LevelManager } from './LevelManager';
 import countdown from './utilities/countdown';
 import { ClientOverlayInterface } from './clientScripts/clientOverlayInterface';

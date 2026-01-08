@@ -1,5 +1,5 @@
-import { BaseBuyStoreItemRequest } from '../types/requests/BaseBuyStoreItemRequest';
-import { StoreItemResponse } from './../types/Responses/StoreItemResponse';
+import type { BaseBuyStoreItemRequest } from '../types/requests/BaseBuyStoreItemRequest';
+import type { StoreItemResponse } from './../types/Responses/StoreItemResponse';
 import { AdvApi } from './../AdvApi';
 import storeContainer from '../utilities/storeContainer';
 import { Inventory } from '../clientScripts/inventory';

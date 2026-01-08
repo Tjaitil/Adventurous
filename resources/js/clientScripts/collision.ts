@@ -1,5 +1,5 @@
 import { Player } from './../gamepieces/Player';
-import { MovingGameObjectTypes } from '../types/gamepieces/MovingGameObject';
+import type { MovingGameObjectTypes } from '../types/gamepieces/MovingGameObject';
 import { controls } from './controls';
 import { GamePieces } from './gamePieces';
 

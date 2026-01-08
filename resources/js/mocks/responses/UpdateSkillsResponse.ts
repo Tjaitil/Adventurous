@@ -1,4 +1,4 @@
-import { UpdateSkillsResponse } from '@/types/Responses/UpdateSkillsResponse';
+import type { UpdateSkillsResponse } from '@/types/Responses/UpdateSkillsResponse';
 
 export const MockedUpdateSkillsResponse: UpdateSkillsResponse = {
   new_levels: [],

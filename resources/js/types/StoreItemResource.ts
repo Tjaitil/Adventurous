@@ -1,4 +1,4 @@
-import { SkillRequirementResource } from './SkillRequirementResource';
+import type { SkillRequirementResource } from './SkillRequirementResource';
 
 export interface StoreItemResource {
   name: string;
