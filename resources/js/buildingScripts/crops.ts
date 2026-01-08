@@ -1,5 +1,5 @@
-import { UpdateCropsRequest } from './../types/requests/CropsRequests';
-import {
+import type { UpdateCropsRequest } from './../types/requests/CropsRequests';
+import type {
   StartGrowingRequest,
   SeedGeneratorRequest,
 } from '../types/requests/CropsRequests';
@@ -9,7 +9,7 @@ import { ItemSelector } from '../ItemSelector';
 import { updateHunger } from '../clientScripts/hunger';
 import { Inventory } from '../clientScripts/inventory';
 import { AdvApi } from '../AdvApi';
-import { advAPIResponse } from '../types/Responses/AdvResponse';
+import type { advAPIResponse } from '../types/Responses/AdvResponse';
 
 class CropsModule extends SkillActionContainer {
   constructor() {

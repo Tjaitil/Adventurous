@@ -1,7 +1,7 @@
 import { AdvApi } from '../AdvApi';
 import { Inventory } from '../clientScripts/inventory';
-import { advAPIResponse } from '../types/Responses/AdvResponse';
-import { StoreItemResponse } from '../types/Responses/StoreItemResponse';
+import type { advAPIResponse } from '../types/Responses/AdvResponse';
+import type { StoreItemResponse } from '../types/Responses/StoreItemResponse';
 import { ItemElement } from '../utilities/ItemElement';
 import storeContainer from '../utilities/storeContainer';
 

@@ -1,4 +1,4 @@
-import { ItemSprite } from '../types/ItemSprite';
+import type { ItemSprite } from '../types/ItemSprite';
 import { AssetPaths } from './ImagePath';
 
 export function makeSprite(

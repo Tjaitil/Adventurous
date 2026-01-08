@@ -1,4 +1,4 @@
-import { ItemPricesResponse } from './../types/Responses/PricesResponse';
+import type { ItemPricesResponse } from './../types/Responses/PricesResponse';
 import { ItemSelector } from '../ItemSelector';
 import { itemTitle } from '../utilities/itemTitle';
 import { inputHandler } from './inputHandler';

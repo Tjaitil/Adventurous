@@ -1,4 +1,4 @@
-import { SkillTypes } from './types/Skill';
+import type { SkillTypes } from './types/Skill';
 import { useSkillsStore } from './ui/stores/SkillsStore';
 
 export const LevelManager = {

@@ -1,7 +1,7 @@
 import { GameLogger } from './GameLogger';
 import { itemTitle } from './itemTitle';
 import { StoreSkillRequirements } from './StoreSkillRequirements';
-import { SkillRequirementResource } from '../types/SkillRequirementResource';
+import type { SkillRequirementResource } from '../types/SkillRequirementResource';
 import { ItemElement } from './ItemElement';
 import { itemPrices } from '../clientScripts/inventory';
 

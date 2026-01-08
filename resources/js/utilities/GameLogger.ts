@@ -1,7 +1,7 @@
 import { AssetPaths } from '@/clientScripts/ImagePath';
 import { addModuleTester } from '@/devtools/ModuleTester';
 import { gameEventBus } from '@/gameEventsBus';
-import { GameLog } from '@/types/GameLog';
+import type { GameLog } from '@/types/GameLog';
 import axios from 'axios';
 
 export enum commonMessages {

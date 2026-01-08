@@ -1,4 +1,4 @@
-import { UserLevels } from '@/types/UserLevels';
+import type { UserLevels } from '@/types/UserLevels';
 import { defineStore } from 'pinia';
 
 interface State {

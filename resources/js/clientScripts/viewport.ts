@@ -1,5 +1,5 @@
 import { Game } from '../advclient';
-import { CanvasSprite } from '../types/CanvasSprite';
+import type { CanvasSprite } from '../types/CanvasSprite';
 import { AssetPaths } from './ImagePath';
 
 interface IViewport {

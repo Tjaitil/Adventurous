@@ -5,19 +5,19 @@ import countdown from '../utilities/countdown';
 import { GameLogger } from '../utilities/GameLogger';
 import { AdvApi } from './../AdvApi';
 import { Inventory } from './../clientScripts/inventory';
-import {
+import type {
   BaseRunWarriorActionRequest,
   ChangeWarriorTypeRequest,
   RestWarriorsRequest,
   RunSingleWarriorActionRequest,
   StartTrainingRequest,
 } from './../types/requests/ArmyCampRequests';
-import {
+import type {
   RunSingleWarriorActionResponse,
   RunWarriorActionResponse,
 } from './../types/Responses/ArmycampResponses';
 import { WarriorActions } from './../types/WarriorActions';
-import { WarriorResource } from './../types/WarriorResource';
+import type { WarriorResource } from './../types/WarriorResource';
 import { WarriorStatus } from './../types/WarriorStatus';
 import { AssetPaths } from '../clientScripts/ImagePath';
 

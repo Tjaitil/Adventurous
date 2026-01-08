@@ -1,5 +1,5 @@
-import { WarriorResource } from './../WarriorResource';
-import { AdvApi } from './../../AdvApi';
+import type { WarriorResource } from './../WarriorResource';
+import type { AdvApi } from './../../AdvApi';
 
 export interface RunWarriorActionResponse extends AdvApi {
   data: {

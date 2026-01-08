@@ -1,14 +1,15 @@
 import { ModuleTester, addModuleTester } from './../devtools/ModuleTester';
-import { Character } from './../gamepieces/Character';
+import type { Character } from './../gamepieces/Character';
 import { controls } from './controls';
 import { ClientOverlayInterface } from './clientOverlayInterface';
 import { tutorial } from './tutorial';
 import { itemTitle } from '../utilities/itemTitle';
 import { Game } from '../advclient';
 import { GameLogger } from '../utilities/GameLogger';
-import { BuildingName, isVuePage, VuePage } from '@/types/Building';
+import type { BuildingName, VuePage } from '@/types/Building';
+import { isVuePage } from '@/types/Building';
 import { GamePieces } from './gamePieces';
-import { Building } from '../gamepieces/Building';
+import type { Building } from '../gamepieces/Building';
 import { HUD } from './HUD';
 import { setUpTabList } from '../utilities/tabs';
 import stockpileModule from '../buildingScripts/stockpile';

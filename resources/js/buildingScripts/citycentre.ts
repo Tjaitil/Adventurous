@@ -2,8 +2,8 @@ import { UpgradeEfficiencyRequest } from './../types/requests/CityCentreRequests
 import { Inventory } from '../clientScripts/inventory';
 import { AdvApi } from './../AdvApi';
 import { gameLogger } from '../utilities/gameLogger';
-import { BuyPermitsRequest } from '../types/requests/MineRequests';
-import { BuyPermitsResponse } from '../types/responses/MineResponses';
+import type { BuyPermitsRequest } from '../types/requests/MineRequests';
+import type { BuyPermitsResponse } from '../types/responses/MineResponses';
 const cityCentreModule = {
   init() {
     // let keep_buttons = document.getElementById("keep").querySelectorAll("button");

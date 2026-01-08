@@ -1,9 +1,10 @@
 import { Inventory } from './../clientScripts/inventory';
 import traderModule from './trader';
 import { AdvApi } from '../AdvApi';
-import storeContainer, { StoreItemResource } from '../utilities/storeContainer';
-import { StoreItemResponse } from '../types/Responses/StoreItemResponse';
-import { advAPIResponse } from '../types/Responses/AdvResponse';
+import type { StoreItemResource } from '../utilities/storeContainer';
+import storeContainer from '../utilities/storeContainer';
+import type { StoreItemResponse } from '../types/Responses/StoreItemResponse';
+import type { advAPIResponse } from '../types/Responses/AdvResponse';
 
 const merchantModule = {
   stockTimerId: null,

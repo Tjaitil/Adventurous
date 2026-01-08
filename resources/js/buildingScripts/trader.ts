@@ -4,7 +4,7 @@ import { ProgressBar } from './../progressBar';
 import { AdvApi } from './../AdvApi';
 import countdown from '../utilities/countdown';
 import { GameLogger } from '../utilities/GameLogger';
-import { advAPIResponse } from '../types/Responses/AdvResponse';
+import type { advAPIResponse } from '../types/Responses/AdvResponse';
 import { updateHunger } from '../clientScripts/hunger';
 
 const traderModule = {

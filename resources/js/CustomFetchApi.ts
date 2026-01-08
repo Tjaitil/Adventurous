@@ -1,4 +1,5 @@
-import axios, { AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
+import axios from 'axios';
 import { errorInterceptor, hasResponseKey } from './ajax';
 import { addModuleTester } from './devtools/ModuleTester';
 import { GameLogger } from './utilities/GameLogger';

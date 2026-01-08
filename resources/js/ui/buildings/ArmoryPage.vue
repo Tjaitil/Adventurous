@@ -98,7 +98,7 @@
 </template>
 
 <script setup lang="ts">
-import { ArmoryWarrior, ItemParts } from '@/types/Warrior';
+import type { ArmoryWarrior, ItemParts } from '@/types/Warrior';
 import { AdvApi } from '@/AdvApi';
 import { onUnmounted, ref } from 'vue';
 import BaseSelectedItem from '../components/base/BaseSelectedItem.vue';

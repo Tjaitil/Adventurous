@@ -3,7 +3,7 @@ import { Inventory } from '../clientScripts/inventory';
 import { GameLogger } from '../utilities/GameLogger';
 import { SkillActionContainer } from '../SkillActionContainer';
 import { updateHunger } from '../clientScripts/hunger';
-import { advAPIResponse } from '../types/Responses/AdvResponse';
+import type { advAPIResponse } from '../types/Responses/AdvResponse';
 import { CustomFetchApi } from '../CustomFetchApi';
 
 class MineModule extends SkillActionContainer {

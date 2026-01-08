@@ -1,7 +1,8 @@
-import { GameLog } from './types/GameLog';
-import { advAPIResponse } from './types/Responses/AdvResponse';
+import type { GameLog } from './types/GameLog';
+import type { advAPIResponse } from './types/Responses/AdvResponse';
 import { GameLogger } from './utilities/GameLogger';
-import axios, { Axios, AxiosResponse, isAxiosError } from 'axios';
+import type { Axios, AxiosResponse} from 'axios';
+import axios, { isAxiosError } from 'axios';
 
 export class BaseAxios {
   private static route = window.location.origin;

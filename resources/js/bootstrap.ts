@@ -18,7 +18,7 @@ import Echo from 'laravel-echo';
 
 import Pusher from 'pusher-js';
 import { useInventoryStore } from './ui/stores/InventoryStore';
-import { InventoryItem } from '@/types/InventoryItem';
+import type { InventoryItem } from '@/types/InventoryItem';
 import { useSkillsStore } from './ui/stores/SkillsStore';
 
 window.Pusher = Pusher;

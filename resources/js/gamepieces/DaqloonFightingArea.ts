@@ -1,6 +1,6 @@
 import { Player } from './../gamepieces/Player';
 import { Daqloon } from './../gamepieces/Daqloon';
-import { GameObject } from '../types/gamepieces/GameObject';
+import type { GameObject } from '../types/gamepieces/GameObject';
 import { getRandomInteger } from '../utilities/getRandomInteger';
 import { GamePieces } from '../clientScripts/gamePieces';
 

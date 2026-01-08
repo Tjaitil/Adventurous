@@ -1,5 +1,5 @@
-import { WorldMapData } from '../Advclient';
-import { advAPIResponse } from './AdvResponse';
+import type { WorldMapData } from '../Advclient';
+import type { advAPIResponse } from './AdvResponse';
 
 export type GetWorldResponse = advAPIResponse<{
   current_map: string;

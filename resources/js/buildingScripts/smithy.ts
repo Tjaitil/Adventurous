@@ -2,8 +2,8 @@ import { ClientOverlayInterface } from './../clientScripts/clientOverlayInterfac
 import { AdvApi } from './../AdvApi';
 import storeContainer from '../utilities/storeContainer';
 import { Inventory } from '../clientScripts/inventory';
-import { StoreItemResponse } from '../types/Responses/StoreItemResponse';
-import { BaseBuyStoreItemRequest } from '../types/requests/BaseBuyStoreItemRequest';
+import type { StoreItemResponse } from '../types/Responses/StoreItemResponse';
+import type { BaseBuyStoreItemRequest } from '../types/requests/BaseBuyStoreItemRequest';
 
 const smithyModule = {
   async init() {

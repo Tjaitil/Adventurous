@@ -1,5 +1,5 @@
-import { LevelUpSkill } from '../Skill';
-import { UserLevels } from '../UserLevels';
+import type { LevelUpSkill } from '../Skill';
+import type { UserLevels } from '../UserLevels';
 
 export interface UpdateSkillsResponse {
   new_levels: LevelUpSkill[];
