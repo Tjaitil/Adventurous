@@ -3,17 +3,26 @@ import type { StoreItemResponse } from './../types/Responses/StoreItemResponse';
 import { AdvApi } from './../AdvApi';
 import storeContainer from '../utilities/storeContainer';
 import { Inventory } from '../clientScripts/inventory';
+import { buildingDataPreloader } from '@/ui/services/buildingDataPreloader';
+import { archeryShopDataLoader } from './buildingLoaders';
 
 const archeryShopModule = {
   async init() {
-    this.getData().then(() => {
+    await this.getData().then(() => {
       storeContainer.init();
       storeContainer.addSelectTrade();
       storeContainer.addSelectedItemButtonEvent(this.fletch, 'fletch');
     });
   },
   async getData() {
-    AdvApi.get<StoreItemResponse>('/archeryshop/get')
+    const cache = buildingDataPreloader.getBuildingCache('archeryshop');
+    if (cache?.store_items) {
+      storeContainer.setStoreItems(cache.store_items);
+      return;
+    }
+
+    await archeryShopDataLoader
+      .store_items()
       .then(response => {
         storeContainer.setStoreItems(response.data.store_items);
       })

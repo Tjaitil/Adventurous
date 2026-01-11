@@ -2,8 +2,9 @@ import { ClientOverlayInterface } from './../clientScripts/clientOverlayInterfac
 import { AdvApi } from './../AdvApi';
 import storeContainer from '../utilities/storeContainer';
 import { Inventory } from '../clientScripts/inventory';
-import type { StoreItemResponse } from '../types/Responses/StoreItemResponse';
 import type { BaseBuyStoreItemRequest } from '../types/requests/BaseBuyStoreItemRequest';
+import { buildingDataPreloader } from '@/ui/services/buildingDataPreloader';
+import { smithyDataLoader } from './buildingLoaders';
 
 const smithyModule = {
   async init() {
@@ -15,8 +16,17 @@ const smithyModule = {
   },
   data: null,
   async getData() {
-    AdvApi.get<StoreItemResponse>('/smithy/store')
-      .then(response => { storeContainer.setStoreItems(response.data.store_items); })
+    const cache = buildingDataPreloader.getBuildingCache('smithy');
+    if (cache?.store_items) {
+      storeContainer.setStoreItems(cache.store_items);
+      return;
+    }
+
+    await smithyDataLoader
+      .store_items()
+      .then(response => {
+        storeContainer.setStoreItems(response.data.store_items);
+      })
       .catch(() => false);
   },
   smith() {
