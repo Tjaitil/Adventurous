@@ -13,6 +13,11 @@ import { setUpTabList } from './utilities/tabs';
 import type { GetWorldResponse } from './types/Responses/WorldLoaderResponse';
 import { initErrorHandler, reportCatchError } from './base/ErrorHandler';
 import { useConversationStore } from './ui/stores/ConversationStore';
+import { gameEventBus } from './gameEventsBus';
+
+export type AdvClientEvents = {
+  CHANGED_LOCATION: { locationName: string };
+};
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class Game {
@@ -139,6 +144,9 @@ export class Game {
     Game.properties.currentMap = data.current_map;
     if (data.changed_location) {
       document.title = formatLocationName(data.changed_location);
+      gameEventBus.emit('CHANGED_LOCATION', {
+        locationName: data.changed_location,
+      });
     }
     const findStartPoint = (object: { type: string }) =>
       object.type === 'start_point';

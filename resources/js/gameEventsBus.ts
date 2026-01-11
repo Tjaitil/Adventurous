@@ -1,10 +1,12 @@
 import type { GameLoggerEvents } from '@/utilities/GameLogger';
+import type { AdvClientEvents } from '@/advclient';
 import type { InputHandlerEvents } from './clientScripts/inputHandler';
 export type GameEventMap = {
   PLAYER_HEALTH_UPDATE: { health: number };
   PLAYER_HUNTED_UPDATE: { isHunted: boolean };
 } & InputHandlerEvents &
-  GameLoggerEvents;
+  GameLoggerEvents &
+  AdvClientEvents;
 
 type GameEventType = keyof GameEventMap;
 
@@ -20,6 +22,7 @@ class GameEventBus {
     PLAYER_HEALTH_UPDATE: [],
     PLAYER_HUNTED_UPDATE: [],
     GAMELOGGER_MESSAGE_LOGGED: [],
+    CHANGED_LOCATION: [],
   };
 
   subscribe<K extends GameEventType>(event: K, listener: GameEventListener<K>) {
