@@ -99,7 +99,6 @@
 
 <script setup lang="ts">
 import type { ArmoryWarrior, ItemParts } from '@/types/Warrior';
-import { AdvApi } from '@/AdvApi';
 import { onUnmounted, ref } from 'vue';
 import BaseSelectedItem from '../components/base/BaseSelectedItem.vue';
 import WarriorArmoryWrapper from '../components/armory/WarriorArmoryWrapper.vue';
@@ -107,6 +106,8 @@ import { useInventoryStore } from '../stores/InventoryStore';
 import BaseLoadingIcon from '../components/base/BaseLoadingIcon.vue';
 import BaseRadio from '../components/base/BaseRadio.vue';
 import { CustomFetchApi } from '@/CustomFetchApi';
+import { buildingDataPreloader } from '@/ui/services/buildingDataPreloader';
+import { ArmoryDataLoader } from '@/buildingScripts/armory';
 
 const inventoryStore = useInventoryStore();
 const hasSelectedItemError = ref(false);
@@ -118,7 +119,6 @@ const warriors = ref<ArmoryWarrior[]>([]);
 inventoryStore.setInventoryItemEvent('selectItem');
 
 inventoryStore.$onAction(({ name, after }) => {
-  console.log('InventoryStore action:', name);
   if (name === 'setSelectedItem') {
     after(() => {
       toggleItemOptions();
@@ -138,12 +138,18 @@ const handleToggleSelectWarrior = (id: number) => {
 };
 
 const fetchWarriors = async () => {
+  const cachedData = buildingDataPreloader.getArmoryData();
+  if (cachedData) {
+    warriors.value = cachedData.warriors;
+    return;
+  }
+
   try {
     isLoading.value = true;
-    warriors.value = await AdvApi.get<ArmoryWarrior[]>('/armory/soldiers');
+    warriors.value = await ArmoryDataLoader.warriors();
     isLoading.value = false;
   } catch {
-    return;
+    isLoading.value = false;
   }
 };
 void fetchWarriors();
