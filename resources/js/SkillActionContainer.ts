@@ -79,7 +79,6 @@ export class SkillActionContainer {
     const clone = targetElement.cloneNode(true);
     clone.removeAttribute('onclick');
     const item = targetElement.getAttribute('alt');
-    console.log(item);
 
     [...document.getElementsByClassName('item-type')].forEach(element => {
       if (targetElement === element) {
@@ -199,6 +198,11 @@ export class SkillActionContainer {
     type,
   }: SkillActionCountdownData) {
     this.countdownCancelledManually = false;
+
+    if (endTime === null) {
+      this.clearCountdownAndUpdateUI();
+      return;
+    }
 
     this.intervalID = setInterval(() => {
       const { remainder, hours, minutes, seconds } =
