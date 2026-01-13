@@ -1,10 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { cropsDataLoader } from '@/buildingScripts/buildingLoaders';
+import { mineDataLoader } from '@/buildingScripts/buildingLoaders';
 import { buildingDataPreloader } from '@/ui/services/buildingDataPreloader';
-import CropsModule from '@/buildingScripts/crops';
+import MineModule from '@/buildingScripts/mine';
 
 vi.mock('@/buildingScripts/buildingLoaders', () => ({
-  cropsDataLoader: {
+  mineDataLoader: {
     countdown: vi.fn(),
     action_items: vi.fn(),
   },
@@ -16,7 +16,7 @@ vi.mock('@/ItemSelector', () => ({
   },
 }));
 
-describe('Crops Building Script - Cache Integration', () => {
+describe('Mine Building Script - Cache Integration', () => {
   beforeEach(() => {
     document.body.innerHTML = `
       <input id="workforce_amount" />
@@ -40,15 +40,15 @@ describe('Crops Building Script - Cache Integration', () => {
     buildingDataPreloader.clearCache();
   });
 
-  it('should skip API call when crops cache is valid', async () => {
-    const mockedCropsDataLoader = vi.mocked(cropsDataLoader);
+  it('should skip API call when mine cache is valid', async () => {
+    const mockedMineDataLoader = vi.mocked(mineDataLoader);
 
-    mockedCropsDataLoader.countdown.mockResolvedValue({
-      crop_finishes_at: null,
-      crop_type: null,
+    mockedMineDataLoader.countdown.mockResolvedValue({
+      mining_finishes_at: null,
+      mineral_ore: null,
     });
 
-    mockedCropsDataLoader.action_items.mockResolvedValue({
+    mockedMineDataLoader.action_items.mockResolvedValue({
       workforce: {
         avail_workforce: 0,
       },
@@ -56,18 +56,18 @@ describe('Crops Building Script - Cache Integration', () => {
       minerals: [],
     });
 
-    await buildingDataPreloader.preloadCrops();
+    await buildingDataPreloader.preloadMine();
 
-    const spy = vi.spyOn(mockedCropsDataLoader, 'action_items');
+    const spy = vi.spyOn(mockedMineDataLoader, 'action_items');
 
-    new CropsModule().init();
+    new MineModule().init();
 
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it('should call API and cache result when crops cache is empty', async () => {
-    const mockedCropsDataLoader = vi.mocked(cropsDataLoader);
-    mockedCropsDataLoader.action_items.mockResolvedValue({
+  it('should call API and cache result when mine cache is empty', async () => {
+    const mockedMineDataLoader = vi.mocked(mineDataLoader);
+    mockedMineDataLoader.action_items.mockResolvedValue({
       workforce: {
         avail_workforce: 0,
       },
@@ -75,8 +75,8 @@ describe('Crops Building Script - Cache Integration', () => {
       minerals: [],
     });
 
-    new CropsModule().init();
+    new MineModule().init();
 
-    expect(mockedCropsDataLoader.action_items).toHaveBeenCalled();
+    expect(mockedMineDataLoader.action_items).toHaveBeenCalled();
   });
 });
