@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, test, expect, beforeEach, vi } from 'vitest';
 import { zinsStoreDataLoader } from '@/buildingScripts/buildingLoaders';
 import { buildingDataPreloader } from '@/ui/services/buildingDataPreloader';
 import zinsStoreModule from '@/buildingScripts/zinsstore';
@@ -26,7 +26,7 @@ describe('ZinsStore Building Script - Cache Integration', () => {
     buildingDataPreloader.clearCache();
   });
 
-  it('should skip API call when zinsstore cache is valid', async () => {
+  test('should skip API call when zinsstore cache is valid', async () => {
     const mockedZinsStoreDataLoader = vi.mocked(zinsStoreDataLoader);
     mockedZinsStoreDataLoader.store_items.mockResolvedValue({
       logs: [],
@@ -57,7 +57,7 @@ describe('ZinsStore Building Script - Cache Integration', () => {
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it('should call API and cache result when zinsstore cache is empty', async () => {
+  test('should call API and cache result when zinsstore cache is empty', async () => {
     const mockedZinsStoreDataLoader = vi.mocked(zinsStoreDataLoader);
     mockedZinsStoreDataLoader.store_items.mockResolvedValue({
       logs: [],

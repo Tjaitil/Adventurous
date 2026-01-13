@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, expect, beforeEach, vi, test } from 'vitest';
 import { bakeryDataLoader } from '@/buildingScripts/buildingLoaders';
 import { buildingDataPreloader } from '@/ui/services/buildingDataPreloader';
 import bakeryModule from '@/buildingScripts/bakery';
@@ -26,7 +26,7 @@ describe('Bakery Building Script - Cache Integration', () => {
     buildingDataPreloader.clearCache();
   });
 
-  it('should skip API call when bakery cache is valid', async () => {
+  test('should skip API call when bakery cache is valid', async () => {
     const mockedBakeryDataLoader = vi.mocked(bakeryDataLoader);
     mockedBakeryDataLoader.store_items.mockResolvedValue({
       logs: [],
@@ -57,7 +57,7 @@ describe('Bakery Building Script - Cache Integration', () => {
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it('should call API and cache result when bakery cache is empty', async () => {
+  test('should call API and cache result when bakery cache is empty', async () => {
     const mockedBakeryDataLoader = vi.mocked(bakeryDataLoader);
     mockedBakeryDataLoader.store_items.mockResolvedValue({
       logs: [],

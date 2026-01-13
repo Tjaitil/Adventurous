@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, test, expect, beforeEach, vi } from 'vitest';
 import { archeryShopDataLoader } from '@/buildingScripts/buildingLoaders';
 import { buildingDataPreloader } from '@/ui/services/buildingDataPreloader';
 import archeryShopModule from '@/buildingScripts/archeryshop';
@@ -26,7 +26,7 @@ describe('ArcheryShop Building Script - Cache Integration', () => {
     buildingDataPreloader.clearCache();
   });
 
-  it('should skip API call when archeryshop cache is valid', async () => {
+  test('should skip API call when archeryshop cache is valid', async () => {
     const mockedArcheryShopDataLoader = vi.mocked(archeryShopDataLoader);
     mockedArcheryShopDataLoader.store_items.mockResolvedValue({
       logs: [],
@@ -57,7 +57,7 @@ describe('ArcheryShop Building Script - Cache Integration', () => {
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it('should call API and cache result when archeryshop cache is empty', async () => {
+  test('should call API and cache result when archeryshop cache is empty', async () => {
     const mockedArcheryShopDataLoader = vi.mocked(archeryShopDataLoader);
     mockedArcheryShopDataLoader.store_items.mockResolvedValue({
       logs: [],

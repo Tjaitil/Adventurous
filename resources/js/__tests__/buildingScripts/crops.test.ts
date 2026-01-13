@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, expect, beforeEach, vi, test } from 'vitest';
 import { cropsDataLoader } from '@/buildingScripts/buildingLoaders';
 import { buildingDataPreloader } from '@/ui/services/buildingDataPreloader';
 import CropsModule from '@/buildingScripts/crops';
@@ -40,7 +40,7 @@ describe('Crops Building Script - Cache Integration', () => {
     buildingDataPreloader.clearCache();
   });
 
-  it('should skip API call when crops cache is valid', async () => {
+  test('should skip API call when crops cache is valid', async () => {
     const mockedCropsDataLoader = vi.mocked(cropsDataLoader);
 
     mockedCropsDataLoader.countdown.mockResolvedValue({
@@ -65,7 +65,7 @@ describe('Crops Building Script - Cache Integration', () => {
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it('should call API and cache result when crops cache is empty', async () => {
+  test('should call API and cache result when crops cache is empty', () => {
     const mockedCropsDataLoader = vi.mocked(cropsDataLoader);
     mockedCropsDataLoader.action_items.mockResolvedValue({
       workforce: {

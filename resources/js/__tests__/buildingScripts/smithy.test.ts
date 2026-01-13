@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, expect, beforeEach, vi, test } from 'vitest';
 import smithyModule from '@/buildingScripts/smithy';
 import { buildingDataPreloader } from '@/ui/services/buildingDataPreloader';
 import { AdvApi } from '@/AdvApi';
@@ -34,7 +34,7 @@ describe('Smithy Building Script - Cache Integration', () => {
     buildingDataPreloader.clearCache();
   });
 
-  it('should skip API call when smithy cache is valid', async () => {
+  test('should skip API call when smithy cache is valid', async () => {
     const mockedAdvApi = vi.mocked(AdvApi);
     mockedAdvApi.get.mockResolvedValue({
       data: { store_items: [{ item: 'new_sword', amount: 1 }] },
@@ -49,7 +49,7 @@ describe('Smithy Building Script - Cache Integration', () => {
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it('should call API and cache result when smithy cache is empty', async () => {
+  test('should call API and cache result when smithy cache is empty', async () => {
     const mockedAdvApi = vi.mocked(AdvApi);
     mockedAdvApi.get.mockResolvedValue({
       data: { store_items: [{ item: 'test_sword', amount: 1 }] },

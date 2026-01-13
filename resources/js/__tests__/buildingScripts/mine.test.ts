@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, expect, beforeEach, vi, test } from 'vitest';
 import { mineDataLoader } from '@/buildingScripts/buildingLoaders';
 import { buildingDataPreloader } from '@/ui/services/buildingDataPreloader';
 import MineModule from '@/buildingScripts/mine';
@@ -40,7 +40,7 @@ describe('Mine Building Script - Cache Integration', () => {
     buildingDataPreloader.clearCache();
   });
 
-  it('should skip API call when mine cache is valid', async () => {
+  test('should skip API call when mine cache is valid', async () => {
     const mockedMineDataLoader = vi.mocked(mineDataLoader);
 
     mockedMineDataLoader.countdown.mockResolvedValue({
@@ -65,7 +65,7 @@ describe('Mine Building Script - Cache Integration', () => {
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it('should call API and cache result when mine cache is empty', async () => {
+  test('should call API and cache result when mine cache is empty', () => {
     const mockedMineDataLoader = vi.mocked(mineDataLoader);
     mockedMineDataLoader.action_items.mockResolvedValue({
       workforce: {

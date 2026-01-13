@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, expect, beforeEach, vi, test } from 'vitest';
 import travelBureauModule from '@/buildingScripts/travelbureau';
 import { travelbureauDataLoader } from '@/buildingScripts/buildingLoaders';
 import { buildingDataPreloader } from '@/ui/services/buildingDataPreloader';
@@ -27,7 +27,7 @@ describe('Travel Bureau Building Script - Cache Integration', () => {
   });
 
   describe('Cache Integration', () => {
-    it('should skip API call when travelbureau cache is valid', async () => {
+    test('should skip API call when travelbureau cache is valid', async () => {
       const travelbureauDataLoaderMock = vi.mocked(travelbureauDataLoader);
 
       travelbureauDataLoaderMock.store_items.mockResolvedValue({
@@ -59,7 +59,7 @@ describe('Travel Bureau Building Script - Cache Integration', () => {
       expect(spy).not.toHaveBeenCalled();
     });
 
-    it('should call API when travelbureau cache is empty', async () => {
+    test('should call API when travelbureau cache is empty', async () => {
       const travelbureauDataLoaderMock = vi.mocked(travelbureauDataLoader);
 
       travelbureauDataLoaderMock.store_items.mockResolvedValue({
