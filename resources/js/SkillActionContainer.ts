@@ -1,11 +1,13 @@
-import { AdvApi } from './AdvApi';
-import { Game } from './advclient';
 import { jsUcWords, jsUcfirst } from './utilities/uppercase';
 import type { CropResource } from './types/CropResource';
 import { LevelManager } from './LevelManager';
 import countdown from './utilities/countdown';
-import { ClientOverlayInterface } from './clientScripts/clientOverlayInterface';
 import { AssetPaths } from './clientScripts/ImagePath';
+import { buildingDataPreloader } from './ui/services/buildingDataPreloader';
+import {
+  cropsDataLoader,
+  mineDataLoader,
+} from './buildingScripts/buildingLoaders';
 
 export class SkillActionContainer {
   private typeData = <CropResource[] | MineralResource[]>[];
@@ -29,20 +31,28 @@ export class SkillActionContainer {
 
   public actionText: string;
   public noActionText: string;
+  private buildingType: 'crops' | 'mine';
 
   public selectedActionType = <HTMLInputElement>(
     document.getElementById('selected-action-type')
   );
 
-  constructor(actionText: string, noActionText: string) {
+  constructor(
+    actionText: string,
+    noActionText: string,
+    buildingType: 'crops' | 'mine',
+  ) {
     this.actionText = actionText;
     this.noActionText = noActionText;
+    this.buildingType = buildingType;
   }
 
   public addSelectEvent() {
-    [...document.getElementsByClassName('item-type')].forEach(element =>
-      { element.addEventListener('click', event => { this.showSelect(event); }); },
-    );
+    [...document.getElementsByClassName('item-type')].forEach(element => {
+      element.addEventListener('click', event => {
+        this.showSelect(event);
+      });
+    });
   }
 
   public getWorkforceAmount(): number {
@@ -92,7 +102,7 @@ export class SkillActionContainer {
     let matchedType: CropResource | MineralResource;
 
     // Check wether or not the player are in crops or mine
-    if (Game.getProperty('building') === 'crops') {
+    if (this.buildingType === 'crops') {
       const data = this.typeData as CropResource[];
       matchedType = data.find(type => type.crop_type === item);
       if (matchedType === undefined) return;
@@ -104,9 +114,8 @@ export class SkillActionContainer {
       seedInputField.value = matchedType.seed_required + '';
 
       levelInputField.value = matchedType.farmer_level + '';
-    } else if (Game.getProperty('building') === 'mine') {
+    } else {
       const data = this.typeData as MineralResource[];
-      console.log(data);
       matchedType = data.find(type => type.mineral_ore === item);
       if (matchedType === undefined) return;
 
@@ -116,8 +125,6 @@ export class SkillActionContainer {
       permitsInputField.value = matchedType.permit_cost + '';
 
       levelInputField.value = matchedType.miner_level + '';
-    } else {
-      return;
     }
     let levelRequired: number;
 
@@ -157,12 +164,26 @@ export class SkillActionContainer {
       img.style.border = '';
     }
   }
-  public fetchData(site: 'crops' | 'mine') {
-    const url = site === 'crops' ? '/crops/data' : '/mine/data';
+  public async fetchData(site: 'crops' | 'mine') {
+    const cache = buildingDataPreloader.getBuildingCache(site);
+    if (cache?.action_items) {
+      this.workforceData = cache.action_items.workforce;
+      if (this.buildingType === 'crops') {
+        this.typeData = cache.action_items.crops;
+      } else {
+        this.typeData = cache.action_items.minerals;
+      }
+      document
+        .getElementById('workforce_amount')
+        .setAttribute('max', cache.action_items.workforce.avail_workforce + '');
+      return;
+    }
 
-    AdvApi.get<GetSkillActionDataRequest>(url).then(response => {
+    const loader = site === 'crops' ? cropsDataLoader : mineDataLoader;
+
+    await loader.action_items().then(response => {
       this.workforceData = response.workforce;
-      if (Game.getProperty('building') === 'crops') {
+      if (this.buildingType === 'crops') {
         this.typeData = response.crops;
       } else {
         this.typeData = response.minerals;
@@ -208,8 +229,6 @@ export class SkillActionContainer {
           hours + 'h ' + minutes + 'm ' + seconds + 's ';
       }
     }, 1000);
-
-    setTimeout(() => { ClientOverlayInterface.adjustWrapperHeight(); }, 1100);
   }
 
   public clearCountdownAndUpdateUI() {
@@ -223,8 +242,8 @@ export class SkillActionContainer {
 }
 
 export interface SkillActionCountdownData {
-  endTime: number;
-  type: string;
+  endTime: number | null;
+  type: string | null;
 }
 
 export interface GetSkillActionDataRequest {
