@@ -6,7 +6,7 @@ import { tutorial } from './tutorial';
 import { itemTitle } from '../utilities/itemTitle';
 import { Game } from '../advclient';
 import { GameLogger } from '../utilities/GameLogger';
-import type { BuildingName, isVuePage, VuePage } from '@/types/Building';
+import { isVuePage, type VuePage } from '@/types/Building';
 import { GamePieces } from './gamePieces';
 import type { Building } from '../gamepieces/Building';
 import { HUD } from './HUD';
