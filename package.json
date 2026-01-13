@@ -38,7 +38,7 @@
     "jsdom": "^25.0.0",
     "laravel-echo": "^2.1.4",
     "laravel-vite-plugin": "^2.0.1",
-    "msw": "^2.2.13",
+    "msw": "^2.12.7",
     "prettier": "3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "pusher-js": "^8.4.0",
