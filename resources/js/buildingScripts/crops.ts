@@ -14,7 +14,7 @@ import { cropsDataLoader } from './buildingLoaders';
 
 class CropsModule extends SkillActionContainer {
   constructor() {
-    super('Growing', 'No crops growing');
+    super('Growing', 'No crops growing', 'crops');
     this.init();
   }
 
@@ -40,7 +40,9 @@ class CropsModule extends SkillActionContainer {
     this.infoActionElement.innerHTML = 'No crops growing';
     await cropsDataLoader.countdown().then(response => {
       this.startCountdownAndUpdateUI({
-        endTime: response.crop_finishes_at * 1000,
+        endTime: response.crop_finishes_at
+          ? response.crop_finishes_at * 1000
+          : null,
         type: response.crop_type,
       });
     });

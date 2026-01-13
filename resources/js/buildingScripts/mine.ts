@@ -8,7 +8,7 @@ import { mineDataLoader } from './buildingLoaders';
 
 class MineModule extends SkillActionContainer {
   constructor() {
-    super('Mining for', 'No miners at work');
+    super('Mining for', 'No miners at work', 'mine');
     this.init();
   }
 
@@ -30,7 +30,9 @@ class MineModule extends SkillActionContainer {
 
     await mineDataLoader.countdown().then(response => {
       this.startCountdownAndUpdateUI({
-        endTime: response.mining_finishes_at * 1000,
+        endTime: response.mining_finishes_at
+          ? response.mining_finishes_at * 1000
+          : null,
         type: response.mineral_ore,
       });
     });
