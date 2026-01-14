@@ -24,6 +24,10 @@ export class ItemElement {
 
       this.nameElement = document.createElement('figcaption');
       this.nameElement.classList.add('tooltip');
+
+      const tooltipItem = document.createElement('span');
+      tooltipItem.classList.add('tooltip_item');
+      this.nameElement.appendChild(tooltipItem);
       figure.appendChild(this.nameElement);
       this.element.appendChild(figure);
       this.imageElement = figure.querySelector('img')[0];
@@ -42,7 +46,9 @@ export class ItemElement {
       this.element.addEventListener('mouseenter', event =>
         itemTitle.show(event),
       );
-      this.element.addEventListener('mouseleave', () => { itemTitle.hide(); });
+      this.element.addEventListener('mouseleave', () => {
+        itemTitle.hide();
+      });
     } else {
       this.element = <HTMLElement>element;
       if (!this.element) throw new Error(`Element not found`);
