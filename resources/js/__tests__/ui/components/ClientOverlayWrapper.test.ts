@@ -18,6 +18,12 @@ interface RenderOptions {
   stubs?: Record<string, unknown>;
 }
 
+vi.mock('@/AdvApi', () => ({
+  AdvApi: {
+    get: vi.fn(),
+  },
+}));
+
 const renderClientOverlay = (options: RenderOptions = {}): RenderResult => {
   const renderResult = render(ClientOverlayWrapper, {
     global: {
@@ -412,7 +418,7 @@ describe('ClientOverlayWrapper.vue', () => {
         const tabs = container.querySelectorAll('.building-tab');
         expect(tabs.length).toBe(2);
 
-        const tabTexts = Array.from(tabs).map(tab => tab.textContent?.trim());
+        const tabTexts = Array.from(tabs).map(tab => tab.textContent.trim());
         expect(tabTexts).toContain('Workers Overview');
         expect(tabTexts).toContain('Training Area');
       });

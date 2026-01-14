@@ -10,10 +10,11 @@ import { updateHunger } from '../clientScripts/hunger';
 import { Inventory } from '../clientScripts/inventory';
 import { AdvApi } from '../AdvApi';
 import type { advAPIResponse } from '../types/Responses/AdvResponse';
+import { cropsDataLoader } from './buildingLoaders';
 
 class CropsModule extends SkillActionContainer {
   constructor() {
-    super('Growing', 'No crops growing');
+    super('Growing', 'No crops growing', 'crops');
     this.init();
   }
 
@@ -35,11 +36,13 @@ class CropsModule extends SkillActionContainer {
     ItemSelector.setup();
   }
 
-  private getCountdown() {
+  private async getCountdown() {
     this.infoActionElement.innerHTML = 'No crops growing';
-    AdvApi.get<CropCountdownResponse>('/crops/countdown').then(response => {
+    await cropsDataLoader.countdown().then(response => {
       this.startCountdownAndUpdateUI({
-        endTime: response.crop_finishes_at * 1000,
+        endTime: response.crop_finishes_at
+          ? response.crop_finishes_at * 1000
+          : null,
         type: response.crop_type,
       });
     });
@@ -116,20 +119,9 @@ class CropsModule extends SkillActionContainer {
 
 export default CropsModule;
 
-interface CropCountdownResponse {
-  crop_finishes_at: number;
-  crop_type: string;
-  date: number;
-}
-
 interface GrowCropsResponse {
   new_hunger: number;
   avail_workforce: number;
-}
-
-interface CropCountdownResponse {
-  harvest: number;
-  date: number;
 }
 
 interface GrowCropsResponse {

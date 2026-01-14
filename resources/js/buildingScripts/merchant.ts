@@ -19,9 +19,11 @@ const merchantModule = {
     if (traderModule.init) traderModule.init();
   },
   async getData() {
-    AdvApi.get<StoreItemResponse>('/merchant/store/items').then(response => {
-      storeContainer.setStoreItems(response.data.store_items);
-    });
+    await AdvApi.get<StoreItemResponse>('/merchant/store/items')
+      .then(response => {
+        storeContainer.setStoreItems(response.data.store_items);
+      })
+      .catch(() => false);
   },
   updateStockCountdown(pause = false, end?: boolean) {
     if (end === true) {

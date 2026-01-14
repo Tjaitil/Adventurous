@@ -1,7 +1,8 @@
 import { Inventory } from './../clientScripts/inventory';
 import { AdvApi } from '../AdvApi';
 import storeContainer from '../utilities/storeContainer';
-import type { StoreItemResponse } from '../types/Responses/StoreItemResponse';
+import { buildingDataPreloader } from '@/ui/services/buildingDataPreloader';
+import { zinsStoreDataLoader } from './buildingLoaders';
 
 const zinsStoreModule = {
   async init() {
@@ -12,15 +13,24 @@ const zinsStoreModule = {
     });
   },
   async getData() {
-    AdvApi.get<StoreItemResponse>('/zinsstore/store').then(response => {
-      storeContainer.setStoreItems(response.data.store_items);
-    });
+    const cache = buildingDataPreloader.getBuildingCache('zinsstore');
+    if (cache?.store_items) {
+      storeContainer.setStoreItems(cache.store_items);
+      return;
+    }
+
+    await zinsStoreDataLoader
+      .store_items()
+      .then(response => {
+        storeContainer.setStoreItems(response.data.store_items);
+      })
+      .catch(() => false);
   },
-  trade() {
+  async trade() {
     const { item, amount } = storeContainer.getSelectedTrade() || {};
     if (!item) return;
 
-    AdvApi.post('/zinsstore/sell', {
+    await AdvApi.post('/zinsstore/sell', {
       item,
       amount,
     }).then(() => {

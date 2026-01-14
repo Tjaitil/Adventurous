@@ -4,6 +4,8 @@ import type { advAPIResponse } from '../types/Responses/AdvResponse';
 import type { StoreItemResponse } from '../types/Responses/StoreItemResponse';
 import { ItemElement } from '../utilities/ItemElement';
 import storeContainer from '../utilities/storeContainer';
+import { buildingDataPreloader } from '@/ui/services/buildingDataPreloader';
+import { travelbureauDataLoader } from './buildingLoaders';
 
 const travelBureauModule = {
   async init() {
@@ -14,11 +16,18 @@ const travelBureauModule = {
     });
   },
   async getData() {
-    AdvApi.get<StoreItemResponse>('/travelbureau/store')
+    const cache = buildingDataPreloader.getBuildingCache('travelbureau');
+    if (cache?.store_items) {
+      storeContainer.setStoreItems(cache.store_items);
+      return;
+    }
+
+    await travelbureauDataLoader
+      .store_items()
       .then(response => {
         storeContainer.setStoreItems(response.data.store_items);
       })
-      .then(() => false);
+      .catch(() => false);
   },
   buyItem() {
     const { item, amount } = storeContainer.getSelectedTrade() || {};

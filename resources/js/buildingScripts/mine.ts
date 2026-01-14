@@ -4,11 +4,11 @@ import { GameLogger } from '../utilities/GameLogger';
 import { SkillActionContainer } from '../SkillActionContainer';
 import { updateHunger } from '../clientScripts/hunger';
 import type { advAPIResponse } from '../types/Responses/AdvResponse';
-import { CustomFetchApi } from '../CustomFetchApi';
+import { mineDataLoader } from './buildingLoaders';
 
 class MineModule extends SkillActionContainer {
   constructor() {
-    super('Mining for', 'No miners at work');
+    super('Mining for', 'No miners at work', 'mine');
     this.init();
   }
 
@@ -28,14 +28,14 @@ class MineModule extends SkillActionContainer {
   private async getCountdown() {
     this.infoActionElement.innerHTML = 'No miners at work';
 
-    await CustomFetchApi.get<MineCountdownResponse>('/mine/countdown').then(
-      response => {
-        this.startCountdownAndUpdateUI({
-          endTime: response.data.mining_finishes_at * 1000,
-          type: response.data.mineral_ore,
-        });
-      },
-    );
+    await mineDataLoader.countdown().then(response => {
+      this.startCountdownAndUpdateUI({
+        endTime: response.mining_finishes_at
+          ? response.mining_finishes_at * 1000
+          : null,
+        type: response.mineral_ore,
+      });
+    });
   }
 
   private async setMine() {
@@ -94,11 +94,6 @@ interface StartMiningRequest {
 
 interface UpdateMiningRequest {
   is_cancelling: boolean;
-}
-
-interface MineCountdownResponse {
-  mining_finishes_at: number;
-  mineral_ore: string;
 }
 
 type StartMiningResponse = advAPIResponse<{

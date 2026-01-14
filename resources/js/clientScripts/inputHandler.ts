@@ -6,8 +6,7 @@ import { tutorial } from './tutorial';
 import { itemTitle } from '../utilities/itemTitle';
 import { Game } from '../advclient';
 import { GameLogger } from '../utilities/GameLogger';
-import type { BuildingName, VuePage } from '@/types/Building';
-import { isVuePage } from '@/types/Building';
+import { isVuePage, type VuePage } from '@/types/Building';
 import { GamePieces } from './gamePieces';
 import type { Building } from '../gamepieces/Building';
 import { HUD } from './HUD';
@@ -24,6 +23,7 @@ import smithyModule from '../buildingScripts/smithy';
 import archeryShopModule from '../buildingScripts/archeryshop';
 import { useConversationStore } from '@/ui/stores/ConversationStore';
 import { gameEventBus } from '@/gameEventsBus';
+import { buildingDataPreloader } from '@/ui/services/buildingDataPreloader';
 
 export enum Buildings {
   BAKERY = 'bakery',
@@ -107,6 +107,7 @@ export const inputHandler: IInputHandler = {
     },
     [Buildings.WORKFORCELODGE]: {},
     [Buildings.ARCHERYSHOP]: {},
+    [Buildings.ARMORY]: {},
   },
   buildingMatch: <undefined | Building>undefined,
   buildingMatchUIChanged: false,
@@ -181,130 +182,130 @@ export const inputHandler: IInputHandler = {
     }
 
     ClientOverlayInterface.loadingScreen();
+    let response:
+      | string
+      | ReturnType<typeof buildingDataPreloader.getBuildingCache>;
 
-    await fetch('/' + building)
-      .then(response => {
+    const cache = buildingDataPreloader.getBuildingCache(building);
+    if (cache !== undefined && 'view' in cache) {
+      response = cache.view;
+    } else {
+      const buildingResponse = await fetch('/' + building).then(response => {
         if (!response.ok) {
           throw new Error('Something unexpected happened. Please try again');
         }
         return response.text();
-      })
-      .then(async data => {
-        let script: string = '';
-        let css;
-        let html: string;
-        let link;
-        let skipImport;
-        if (this.buildingAssetsRecord[building]) {
-          const buildingName = building;
-          if ('script' in this.buildingAssetsRecord[buildingName]) {
-            script = this.buildingAssetsRecord[buildingName].script;
-          } else {
-            skipImport = true;
-          }
-          css = this.buildingAssetsRecord[buildingName].stylesheets;
-          html = data;
-        } else {
-          const dataArray = data.split('|');
-          css = dataArray[0].trim();
-          script = dataArray[1];
-          html = dataArray[2];
-        }
-
-        // Support this until all buildings are updated
-        if (css && (css.length > 2 || css !== '#')) {
-          link = document.createElement('link');
-          link.type = 'text/css';
-          link.rel = 'stylesheet';
-          link.href = 'public/css/' + css;
-          document.getElementsByTagName('head')[0].appendChild(link);
-        }
-
-        gameEventBus.emit('RENDER_BUILDING', {
-          building: building,
-          content: html,
-        });
-
-        itemTitle.addItemClassEvents();
-        const src = '/public/dist/js/buildingScripts/';
-        if (skipImport == false && script.length === 0) {
-          GameLogger.addMessage('Building could not be retrieved', true);
-          return;
-        }
-        if (!shouldSkipImport(building)) {
-          // stockpileModule.init();
-          await import(src + script).then(data => {
-            setUpTabList();
-            if (typeof this.currentBuildingModule.default === 'function') {
-              const classInstance = new this.currentBuildingModule.default();
-              new ModuleTester(classInstance, Game.properties.building, {
-                defaultExport: false,
-              });
-            } else if (this.currentBuildingModule.default.init) {
-              this.currentBuildingModule.default.init();
-              new ModuleTester(
-                this.currentBuildingModule,
-                Game.properties.building,
-                { defaultExport: true },
-              );
-            }
-            this.currentBuildingModule = data;
-          });
-        } else {
-          // Make sure DOM is loaded before initializing building module
-          await new Promise(resolve => setTimeout(resolve, 300));
-          switch (building) {
-            case 'archeryshop':
-              this.currentBuildingModule = archeryShopModule;
-              this.currentBuildingModule.init();
-              break;
-            case 'stockpile':
-              this.currentBuildingModule = stockpileModule;
-              this.currentBuildingModule.init();
-              break;
-            case 'travelbureau':
-              this.currentBuildingModule = travelBureauModule;
-              this.currentBuildingModule.init();
-              break;
-            case 'bakery':
-              this.currentBuildingModule = bakeryModule;
-              this.currentBuildingModule.init();
-              break;
-            case 'mine':
-              this.currentBuildingModule = new MineModule();
-              break;
-            case 'crops':
-              this.currentBuildingModule = new CropsModule();
-              break;
-            case 'zinsstore':
-              this.currentBuildingModule = zinsStoreModule;
-              this.currentBuildingModule.init();
-              break;
-            case 'merchant':
-              this.currentBuildingModule = merchantModule;
-              this.currentBuildingModule.init();
-              break;
-            case 'smithy':
-              this.currentBuildingModule = smithyModule;
-              this.currentBuildingModule.init();
-              break;
-            case 'workforcelodge':
-              this.currentBuildingModule = workforceLodgeModule;
-              this.currentBuildingModule.init();
-              break;
-          }
-          if (import.meta.env.DEV) {
-            new ModuleTester(
-              this.currentBuildingModule,
-              Game.properties.building,
-              {
-                defaultExport: this.isCurrentBuildingDefaultExport,
-              },
-            );
-          }
-        }
-        return;
       });
+      response = buildingResponse;
+    }
+
+    let script: string = '';
+    let css;
+    let html: string;
+    let link;
+    let skipImport;
+    if (this.buildingAssetsRecord[building]) {
+      const buildingName = building;
+      if ('script' in this.buildingAssetsRecord[buildingName]) {
+        script = this.buildingAssetsRecord[buildingName].script;
+      } else {
+        skipImport = true;
+      }
+      css = this.buildingAssetsRecord[buildingName].stylesheets;
+      html = response;
+    } else {
+      const dataArray = response.split('|');
+      css = dataArray[0].trim();
+      script = dataArray[1];
+      html = dataArray[2];
+    }
+
+    // Support this until all buildings are updated
+    if (css && (css.length > 2 || css !== '#')) {
+      link = document.createElement('link');
+      link.type = 'text/css';
+      link.rel = 'stylesheet';
+      link.href = 'public/css/' + css;
+      document.getElementsByTagName('head')[0].appendChild(link);
+    }
+
+    gameEventBus.emit('RENDER_BUILDING', {
+      building: building,
+      content: html,
+    });
+
+    itemTitle.addItemClassEvents();
+    const src = '/public/dist/js/buildingScripts/';
+    if (skipImport == false && script.length === 0) {
+      GameLogger.addMessage('Building could not be retrieved', true);
+      return;
+    }
+    if (!shouldSkipImport(building)) {
+      // stockpileModule.init();
+      await import(src + script).then(data => {
+        setUpTabList();
+        if (typeof this.currentBuildingModule.default === 'function') {
+          const classInstance = new this.currentBuildingModule.default();
+          new ModuleTester(classInstance, Game.properties.building, {
+            defaultExport: false,
+          });
+        } else if (this.currentBuildingModule.default.init) {
+          this.currentBuildingModule.default.init();
+          new ModuleTester(
+            this.currentBuildingModule,
+            Game.properties.building,
+            { defaultExport: true },
+          );
+        }
+        this.currentBuildingModule = data;
+      });
+    } else {
+      // Make sure DOM is loaded before initializing building module
+      await new Promise(resolve => setTimeout(resolve, 300));
+      switch (building) {
+        case 'archeryshop':
+          this.currentBuildingModule = archeryShopModule;
+          this.currentBuildingModule.init();
+          break;
+        case 'stockpile':
+          this.currentBuildingModule = stockpileModule;
+          this.currentBuildingModule.init();
+          break;
+        case 'travelbureau':
+          this.currentBuildingModule = travelBureauModule;
+          this.currentBuildingModule.init();
+          break;
+        case 'bakery':
+          this.currentBuildingModule = bakeryModule;
+          this.currentBuildingModule.init();
+          break;
+        case 'mine':
+          this.currentBuildingModule = new MineModule();
+          break;
+        case 'crops':
+          this.currentBuildingModule = new CropsModule();
+          break;
+        case 'zinsstore':
+          this.currentBuildingModule = zinsStoreModule;
+          this.currentBuildingModule.init();
+          break;
+
+        case 'smithy':
+          this.currentBuildingModule = smithyModule;
+          this.currentBuildingModule.init();
+          break;
+        case 'workforcelodge':
+          this.currentBuildingModule = workforceLodgeModule;
+          this.currentBuildingModule.init();
+          break;
+      }
+      if (import.meta.env.DEV) {
+        new ModuleTester(this.currentBuildingModule, Game.properties.building, {
+          defaultExport: this.isCurrentBuildingDefaultExport,
+        });
+      }
+    }
+    return;
   },
   characterMatch: <undefined | Character>null,
   characterMatchUIChanged: false,

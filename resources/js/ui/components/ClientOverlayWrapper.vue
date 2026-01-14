@@ -1,37 +1,39 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
-  <div v-show="isOpen" id="news"></div>
-  <div v-show="isOpen" id="news_content" class="gap-x-2">
-    <img
-      class="cont_exit absolute top-4 right-4"
-      src="/images/exit.png"
-      :alt="$t('Close icon')"
-      width="20px"
-      height="20px"
-      @click="internalClose"
-    />
-    <div class="flex grow">
-      <div id="news_content_side_panel" class="hidden w-1/4"></div>
-      <div id="news_content_main_content" class="mt-2 mb-2 grow">
-        <img
-          id="loading_message"
-          ref="loadingIcon"
-          :alt="$t('Loading icon')"
-          src="/images/loading.png"
-          class="loading-icon mx-auto mt-5 hidden"
-        />
-        <template v-if="!externalRendering">
-          <component :is="internalComponent" />
-        </template>
-        <template v-else>
-          <div
-            v-if="externalContent"
-            id="news_content_main_content_inner"
-            ref="externalContent"
-            class="news_content"
-            v-html="externalContent.innerHTML"
-          ></div>
-        </template>
+  <div>
+    <div v-show="isOpen" id="news"></div>
+    <div v-show="isOpen" id="news_content" class="gap-x-2">
+      <img
+        class="cont_exit absolute top-4 right-4"
+        src="/images/exit.png"
+        :alt="$t('Close icon')"
+        width="20px"
+        height="20px"
+        @click="internalClose"
+      />
+      <div class="flex grow">
+        <div id="news_content_side_panel" class="hidden w-1/4"></div>
+        <div id="news_content_main_content" class="mt-2 mb-2 grow">
+          <img
+            id="loading_message"
+            ref="loadingIcon"
+            :alt="$t('Loading icon')"
+            src="/images/loading.png"
+            class="loading-icon mx-auto mt-5 hidden"
+          />
+          <template v-if="!externalRendering">
+            <component :is="internalComponent" />
+          </template>
+          <template v-else>
+            <div
+              v-if="externalContent"
+              id="news_content_main_content_inner"
+              ref="externalContent"
+              class="news_content"
+              v-html="externalContent.innerHTML"
+            ></div>
+          </template>
+        </div>
       </div>
     </div>
   </div>
@@ -49,6 +51,7 @@ import {
 } from 'vue';
 import ArmoryPage from '../buildings/ArmoryPage.vue';
 import { ClientOverlayInterface } from '@/clientScripts/clientOverlayInterface';
+import { buildingDataPreloader } from '@/ui/services/buildingDataPreloader';
 
 const isOpen = ref(false);
 const loadingElement = useTemplateRef('loadingIcon');
@@ -83,6 +86,7 @@ gameEventBus.subscribe('RENDER_BUILDING', obj => {
   if (!('content' in obj) && !('loading' in obj)) {
     // Add logic once we have more buildings as VuePages
     currentComponent.value = ArmoryPage;
+    void buildingDataPreloader.preloadArmory();
 
     externalRendering.value = false;
     return;
