@@ -1,5 +1,5 @@
 <template>
-  <div id="game_hud" class="absolute z-10 h-full w-full">
+  <div id="game_hud" class="absolute left-1.5 z-10 h-full w-full">
     <UProgress
       id="hunger_progressBar"
       v-model="currentHunger"
@@ -45,7 +45,7 @@
       :alt="$t('Map icon')"
       @click="useMapStore().toggleMapVisibility(true)"
     />
-    <div id="control_text" class="absolute bottom-18 left-8 text-white">
+    <div id="control_text" class="absolute bottom-4 left-4 text-white">
       <p class="extendedControls my-0 text-left">
         C - {{ $t('Toggle Attack Mode') }}
       </p>

@@ -2,13 +2,15 @@
   <AppLayoutWithAside>
     <div
       id="client-container"
-      class="flex flex-row gap-x-4 transition-opacity duration-500 ease-in"
+      class="relative flex flex-row gap-x-4 transition-opacity duration-500 ease-in"
     >
       <div class="relative grow">
         <LogModal />
         <ConversationContainer />
-        <GameScreen />
-        <ScreenHUD :hunger="hunger" :health="{ current: 100, max: 100 }" />
+        <div id="game-screen-container" class="relative">
+          <GameScreen />
+          <ScreenHUD :hunger="hunger" :health="{ current: 100, max: 100 }" />
+        </div>
         <ItemTooltip />
         <GameMap :map-location="mapLocation" />
         <ClientOverlayWrapper />

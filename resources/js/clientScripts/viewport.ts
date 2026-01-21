@@ -146,6 +146,14 @@ export const viewport = {
     this.layer.hud = layers.hud.getContext('2d');
     this.elements.hud = layers.hud;
 
+    const gameScreenContainer = document.getElementById(
+      'game-screen-container',
+    );
+    if (gameScreenContainer) {
+      gameScreenContainer.style.width = this.width + 'px';
+      gameScreenContainer.style.height = this.height + 'px';
+    }
+
     this.elements.background.width = this.width;
     this.elements.background.height = this.height;
     this.elements.background.style.left = this.left + 'px';
