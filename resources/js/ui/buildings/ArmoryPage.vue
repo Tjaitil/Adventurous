@@ -7,7 +7,7 @@
       </p>
       <div
         id="warrior_container"
-        class="auto-fit-grid grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] justify-center gap-4"
+        class="auto-fit-grid grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] justify-center gap-6"
       >
         <template v-if="!isLoading">
           <WarriorArmoryCard
