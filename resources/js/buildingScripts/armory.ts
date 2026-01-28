@@ -4,10 +4,10 @@ import { Inventory } from './../clientScripts/inventory';
 import { inputHandler } from '../clientScripts/inputHandler';
 import { ItemSelector } from '../ItemSelector';
 import { AdvApi } from '../AdvApi';
-import type { ArmoryWarrior } from '@/types/Warrior';
+import type { MinimalWarriorWithArmory } from '@/types/WarriorArmory';
 
 export const ArmoryDataLoader = {
-  warriors: () => AdvApi.get<ArmoryWarrior[]>('/armory/soldiers'),
+  warriors: () => AdvApi.get<MinimalWarriorWithArmory[]>('/armory/soldiers'),
 };
 
 const armoryModule = {
