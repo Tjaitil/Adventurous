@@ -35,7 +35,7 @@
     "laravel/sail": "^1.18",
     "mockery/mockery": "^1.4.4",
     "nunomaduro/collision": "^8.1",
-    "phpunit/phpunit": "^10.1",
+    "phpunit/phpunit": "^10.5.62",
     "spatie/laravel-ignition": "^2.3",
     "timacdonald/log-fake": "^2.1"
   },
