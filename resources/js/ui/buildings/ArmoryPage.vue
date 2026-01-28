@@ -1,141 +1,62 @@
 <template>
   <div class="flex flex-col gap-4">
-    <h1 class="page_title">Armory</h1>
-    <p>
-      {{
-        $t(
-          'Select a soldier to add equipment or click on worn equipment to remove',
-        )
-      }}
-    </p>
-    <div class="flex flex-row">
-      <div class="sticky top-5 left-0 w-1/5 self-start">
-        <UCard variant="soft">
-          <form class="flex flex-col gap-y-4" @submit.prevent="wearArmor()">
-            <h2 class="text-bold text-xl">
-              {{ $t('Add') }}
-            </h2>
-            <div>
-              <p>{{ $t('Selected soldier') }}</p>
-              <span v-if="selectedWarrior === null">{{ $t('None') }}</span>
-              <span v-else> {{ $t('Soldier #') }}{{ selectedWarrior }}</span>
-              <span v-if="hasSelectedWarriorError" class="block text-red-600">{{
-                $t('Please select a solider')
-              }}</span>
-              <input
-                v-model="selectedWarrior"
-                type="hidden"
-                name="warrior_id"
-              />
-            </div>
-            <div>
-              <span>{{ $t('Selected item') }}</span>
-              <BaseSelectedItem
-                v-model:amount="ammunitionAmount"
-                v-model:item="inventoryStore.selectedItem"
-              />
-            </div>
-            <div v-if="showWarriorHandOption">
-              <p>{{ $t('Select hand') }}</p>
-              <BaseRadio
-                id="warrior-hand-right"
-                v-model="warriorHand"
-                class="justify-start"
-                name="warrior-hand"
-                value="right_hand"
-              >
-                {{ $t('Right hand') }}
-              </BaseRadio>
-              <BaseRadio
-                id="warrior-hand-left"
-                v-model="warriorHand"
-                class="justify-start"
-                name="warrior-hand"
-                value="left_hand"
-              >
-                {{ $t('Left hand') }}
-              </BaseRadio>
-            </div>
-            <div v-if="showAmountOption" id="ranged_alt">
-              <label for="ammunition-amount" class="block">{{
-                $t('Select Amount')
-              }}</label>
-              <input
-                id="ammunition-amount"
-                name="ammunition-amount"
-                type="number"
-                min="1"
-                class="w-full"
-              />
-            </div>
-            <UButton
-              color="primary"
-              :disabled="
-                inventoryStore.selectedItem === null || selectedWarrior === null
-              "
-              type="submit"
-              >{{ $t('Wear') }}</UButton
-            >
-            <BaseLoadingIcon
-              v-show="isLoading"
-              class="h-6 w-6 justify-self-center"
-            />
-          </form>
-        </UCard>
+    <h1 class="page_title">{{ $t('Armory') }}</h1>
+    <template v-if="selectedWarrior === null">
+      <p class="mb-4">
+        {{ $t('Click on a soldier to change their equipment') }}
+      </p>
+      <div
+        id="warrior_container"
+        class="auto-fit-grid grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] justify-center gap-6"
+      >
+        <template v-if="!isLoading">
+          <WarriorArmoryCard
+            v-for="warrior in warriors"
+            :key="warrior.warrior_id"
+            :warrior="warrior"
+            @select="handleSelectWarrior"
+          />
+        </template>
+        <BaseLoadingIcon v-else class="h-6 w-6 justify-self-center" />
       </div>
-      <div id="warrior_container" class="grow">
-        <WarriorArmoryWrapper
-          v-for="warrior in warriors"
-          :key="warrior.warrior_id"
-          :warrior="warrior"
-          :is-selected="selectedWarrior === warrior.warrior_id"
-          @toggle-select-warrior="handleToggleSelectWarrior"
-          @remove-armor="handleRemoveArmor"
-        />
-      </div>
-    </div>
+    </template>
+
+    <template v-else>
+      <UButton
+        icon="i-heroicons-arrow-left-20-solid"
+        color="gray"
+        variant="ghost"
+        @click="handleBackToOverview"
+      >
+        {{ $t('Back to Overview') }}
+      </UButton>
+      <CurrentWarriorForm
+        v-if="selectedWarriorData != null"
+        :selected-warrior="selectedWarriorData"
+        @back-to-overview="handleBackToOverview"
+        @update-warrior-armory="updateWarriorArmory"
+      />
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { ArmoryWarrior, ItemParts } from '@/types/Warrior';
-import { onUnmounted, ref } from 'vue';
-import BaseSelectedItem from '../components/base/BaseSelectedItem.vue';
-import WarriorArmoryWrapper from '../components/armory/WarriorArmoryWrapper.vue';
-import { useInventoryStore } from '../stores/InventoryStore';
-import BaseLoadingIcon from '../components/base/BaseLoadingIcon.vue';
-import BaseRadio from '../components/base/BaseRadio.vue';
-import { CustomFetchApi } from '@/CustomFetchApi';
+import type { MinimalWarriorWithArmory } from '@/types/WarriorArmory';
+import { computed, ref } from 'vue';
+import WarriorArmoryCard from '../components/armory/WarriorArmoryCard.vue';
 import { buildingDataPreloader } from '@/ui/services/buildingDataPreloader';
 import { ArmoryDataLoader } from '@/buildingScripts/armory';
-
-const inventoryStore = useInventoryStore();
-const hasSelectedItemError = ref(false);
+import CurrentWarriorForm from '../components/armory/SelectedWarriorForm.vue';
+import BaseLoadingIcon from '../components/base/BaseLoadingIcon.vue';
 
 const isLoading = ref(false);
-
-const warriors = ref<ArmoryWarrior[]>([]);
-
-inventoryStore.setInventoryItemEvent('selectItem');
-
-inventoryStore.$onAction(({ name, after }) => {
-  if (name === 'setSelectedItem') {
-    after(() => {
-      toggleItemOptions();
-    });
-  }
-});
-
-const warriorHand = ref<string>('right_hand');
-
-const ammunitionAmount = ref<number>(1);
+const warriors = ref<MinimalWarriorWithArmory[]>([]);
 
 const selectedWarrior = ref<number | null>(null);
-const hasSelectedWarriorError = ref(false);
 
-const handleToggleSelectWarrior = (id: number) => {
-  selectedWarrior.value = id;
-};
+const selectedWarriorData = computed(() =>
+  warriors.value.find(w => w.warrior_id === selectedWarrior.value),
+);
 
 const fetchWarriors = async () => {
   const cachedData = buildingDataPreloader.getArmoryData();
@@ -153,108 +74,14 @@ const fetchWarriors = async () => {
   }
 };
 void fetchWarriors();
-
-const showWarriorHandOption = ref(false);
-const toggleItemOptions = () => {
-  if (inventoryStore.selectedItem === null) {
-    showWarriorHandOption.value = false;
-    return;
-  }
-
-  if (
-    inventoryStore.selectedItem.includes('sword') ||
-    inventoryStore.selectedItem.includes('dagger')
-  ) {
-    showWarriorHandOption.value = true;
-    showAmountOption.value = false;
-  } else if (
-    inventoryStore.selectedItem.includes('arrow') ||
-    inventoryStore.selectedItem.includes('knives')
-  ) {
-    showWarriorHandOption.value = false;
-    showAmountOption.value = true;
-  } else {
-    showWarriorHandOption.value = false;
-    showAmountOption.value = false;
-  }
+const handleSelectWarrior = (id: number) => {
+  selectedWarrior.value = id;
+};
+const handleBackToOverview = () => {
+  selectedWarrior.value = null;
 };
 
-const showAmountOption = ref(false);
-
-const wearArmor = async () => {
-  hasSelectedItemError.value = false;
-  if (inventoryStore.selectedItem === null) {
-    hasSelectedItemError.value = true;
-    return;
-  }
-
-  if (selectedWarrior.value === null) {
-    hasSelectedWarriorError.value = true;
-    return;
-  } else {
-    hasSelectedWarriorError.value = false;
-  }
-  let hand;
-  if (showWarriorHandOption.value) {
-    hand = warriorHand.value;
-  } else {
-    hand = null;
-  }
-
-  try {
-    isLoading.value = true;
-
-    const response = await CustomFetchApi.post<ArmoryWarrior, WearArmorRequest>(
-      '/armory/soldier/add',
-      {
-        item: inventoryStore.selectedItem,
-        warrior_id: selectedWarrior.value,
-        hand,
-        amount: ammunitionAmount.value,
-      },
-    );
-
-    updateWarriorArmory(response.data);
-
-    ammunitionAmount.value = 1;
-
-    inventoryStore.resetSelectedItem();
-    inventoryStore.setShouldUpdateInventory(true);
-    isLoading.value = false;
-  } catch (error) {
-    isLoading.value = false;
-    return;
-  }
-};
-
-const handleRemoveArmor = async (
-  part: ItemParts,
-  warrior_id: ArmoryWarrior['warrior_id'],
-) => {
-  hasSelectedWarriorError.value = false;
-
-  try {
-    isLoading.value = true;
-    const response = await CustomFetchApi.post<
-      ArmoryWarrior,
-      RemoveArmorRequest
-    >('/armory/soldier/remove', {
-      warrior_id,
-      is_removing: true,
-      part,
-    });
-    updateWarriorArmory(response.data);
-
-    inventoryStore.resetSelectedItem();
-    inventoryStore.setShouldUpdateInventory(true);
-    isLoading.value = false;
-  } catch (error) {
-    isLoading.value = false;
-    return;
-  }
-};
-
-const updateWarriorArmory = (warrior: ArmoryWarrior) => {
+const updateWarriorArmory = (warrior: MinimalWarriorWithArmory) => {
   const index = warriors.value.findIndex(
     w => w.warrior_id === warrior.warrior_id,
   );
@@ -265,30 +92,4 @@ const updateWarriorArmory = (warrior: ArmoryWarrior) => {
 
   warriors.value[index] = warrior;
 };
-
-onUnmounted(() => {
-  inventoryStore.setInventoryItemEvent(null);
-});
-
-interface WearArmorRequest {
-  item: string;
-  warrior_id: number;
-  hand: string | null;
-  amount: number;
-}
-
-interface RemoveArmorRequest {
-  warrior_id: number;
-  is_removing: boolean;
-  part: ItemParts;
-}
 </script>
-
-<style>
-#warrior_container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 200px));
-  grid-gap: 16px;
-  justify-content: center;
-}
-</style>
