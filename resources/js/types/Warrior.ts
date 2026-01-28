@@ -28,17 +28,3 @@ export interface Armory {
   attack: number;
   defence: number;
 }
-
-export interface ArmoryWarrior
-  extends Pick<Warrior, 'type' | 'warrior_id' | 'id'> {
-  armory: Armory;
-}
-
-export interface ArmoryUser {
-  armory: Armory;
-}
-
-export type ItemParts = keyof Omit<
-  ArmoryWarrior['armory'],
-  'warrior_id' | 'username' | 'id' | 'ammunition_amount'
->;
