@@ -1,11 +1,13 @@
 <template>
   <UCard
+    tabindex="0"
     variant="soft"
-    class="ucard-effect cursor-pointer"
+    class="ucard-interactive cursor-pointer"
     :ui="{
       body: 'flex flex-col gap-6',
     }"
     @click="$emit('select', warrior.warrior_id)"
+    @keyup.enter="$emit('select', warrior.warrior_id)"
   >
     <div class="flex items-center gap-2">
       <img
