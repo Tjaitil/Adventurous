@@ -1,3 +1,139 @@
+# AGENTS.md
+
+This file contains guidelines and commands for agentic coding agents working in this repository.
+
+# General guidelines
+
+In all my interactions and plans be extremely concicse. Sacrifice grammar for the sake of concision.
+
+For multi-step plans, divide them into multiple phases with different headings. That way I can describe whicih phases to implement at a time so we don't have to implement everything at once.
+
+## Build/Lint/Test Commands
+
+### PHP/Laravel Commands
+
+- **Run all tests**: `php artisan test` or `./vendor/bin/phpunit`
+- **Run single test**: `php artisan test tests/feature/SpecificTest.php`
+- **Run tests with coverage**: `php artisan test --coverage`
+- **PHP static analysis**: `composer phpstan` or `./vendor/bin/phpstan analyse`
+- **PHP code formatting**: `vendor/bin/pint --dirty` (run before finalizing changes)
+- **Start development server**: `composer dev` (runs server, queue, logs, reverb, vite)
+- **Generate IDE helpers**: `php artisan ide-helper:generate && php artisan ide-helper:meta`
+
+### Frontend Commands
+
+- **Start Vite dev server**: `npm run dev`
+- **Build for production**: `npm run build`
+- **Lint and format frontend**: `npm run lint`
+- **Run frontend tests**: `npm run test`
+- **Frontend test coverage**: `npm run coverage`
+
+## Code Style Guidelines
+
+### PHP/Laravel Conventions
+
+- **PHP Version**: 8.3+ with explicit return type declarations
+- **Constructor Property Promotion**: Use PHP 8 constructor property promotion
+- **Type Declarations**: Always use explicit return types and parameter type hints
+- **Control Structures**: Always use curly braces, even for single-line blocks
+- **Naming**: Use descriptive names (e.g., `isRegisteredForDiscounts`, not `discount()`)
+- **Enums**: Use TitleCase for enum keys (e.g., `FavoritePerson`, `BestLake`)
+
+### Laravel-Specific Guidelines
+
+- **Eloquent**: Use relationships and eager loading to prevent N+1 queries. Use PascalCase for variable naming
+- **Validation**: Create Form Request classes for validation, not inline validation
+- **Database**: Use Eloquent models and migrations, avoid `DB::` facade
+- **Configuration**: Use `config()` helper, never `env()` outside config files
+- **Testing**: Use factories for test models, prefer feature tests over unit tests
+- **APIs**: Use Eloquent API Resources with versioning
+
+### Frontend (Vue/TypeScript) Conventions
+
+- **Framework**: Vue 3 with TypeScript. Use Inertia.js for routing unless routing is handled via advclient (game client). For building interactions within the game, components are loaded dynamically within the same page rather than using Inertia navigation. Use nuxt/ui for components. Vue 3 with destructured props syntax
+- **Styling**: Tailwind CSS v4 with `@import "tailwindcss"` syntax
+- **Code Formatting**: Prettier with single quotes, 2-space tabs, 80-char width
+- **Linting**: ESLint with Vue and TypeScript configs
+- **Components**: Check existing components before creating new ones
+- **Component Location**: All Vue components and UI-related scripts MUST be placed in `resources/js/ui/` directory
+- **Styling Approach**: Use Tailwind utility classes in template instead of custom CSS in `<style>` blocks. Avoid theme() functions and custom CSS - prefer utility classes directly in templates
+- **Dark Mode**: Support dark mode using `dark:` prefixes when existing pages do
+
+### File Structure Conventions
+
+- **Laravel 10 Structure**: This project uses Laravel 10 structure (not migrated to Laravel 11)
+- **Middleware**: `app/Http/Middleware/`
+- **Service Providers**: `app/Providers/`
+- **Exception Handling**: `app/Exceptions/Handler.php`
+- **Console Commands**: `app/Console/Kernel.php`
+
+### Import/Export Guidelines
+
+- **PHP**: Use PSR-4 autoloading, check existing files for import patterns
+- **Frontend**: Use ES6 imports, follow existing component import patterns
+- **Dependencies**: Do not change application dependencies without approval
+
+### Error Handling
+
+- **PHP**: Use proper exception handling, avoid suppressing errors
+- **Frontend**: Use proper error boundaries and validation states
+- **Logging**: Use Laravel's logging system, avoid direct error output
+
+### Testing Requirements
+
+- **Every change must be tested**: Write new tests or update existing ones
+- **Test Types**: Prefer feature tests, use unit tests for isolated logic
+- **Test Data**: Use factories with custom states when available
+- **Coverage**: Run minimum tests needed for code quality and speed
+
+### Code Quality Tools
+
+- **PHPStan**: Level 8 static analysis with memory limit 2G
+- **Laravel Pint**: Code formatting (run `--dirty` before committing)
+- **ESLint**: Frontend linting with Vue and TypeScript rules
+- **Prettier**: Frontend formatting with Tailwind plugin
+
+### Documentation Guidelines
+
+- **PHPDoc**: Use PHPDoc blocks over inline comments
+- **Array Shapes**: Add useful array shape type definitions
+- **Comments**: Only add comments for complex logic, prefer self-documenting code
+- **Documentation Files**: Only create if explicitly requested
+
+### Security Best Practices
+
+- **Authentication**: Use Laravel's built-in auth and authorization features
+- **Sanctum**: Use for API authentication
+- **Validation**: Always validate user input
+- **CSRF**: Use Laravel's CSRF protection
+- **Environment**: Never commit secrets or use `env()` in code
+
+### Performance Guidelines
+
+- **Database**: Use eager loading, avoid N+1 queries
+- **Frontend**: Use proper Vue reactivity patterns, avoid unnecessary re-renders
+- **Assets**: Use Vite for optimized bundling
+- **Caching**: Use Laravel's caching system appropriately
+
+### Development Workflow
+
+1. Make changes following existing conventions
+2. Run `vendor/bin/pint --dirty` for PHP formatting
+3. Run `npm run lint` for frontend formatting
+4. Run relevant tests to ensure functionality
+5. Run `composer phpstan` for static analysis if any PHP files is changes
+6. Run `npm run build` if any frontend changes are made
+7. Test in browser if frontend changes were made
+
+### Common Issues
+
+- **Vite Manifest Error**: Run `npm run build` or `npm run dev`
+- **Missing IDE Helpers**: Run `php artisan ide-helper:generate`
+- **Test Failures**: Check database migrations and factory states
+- **Style Issues**: Run Pint and Prettier to fix formatting
+
+===
+
 <laravel-boost-guidelines>
 === foundation rules ===
 
