@@ -589,7 +589,6 @@ CREATE TABLE `trader_assignments` (
 ,  `time` integer NOT NULL
 ,  `assignment_type` varchar(100) NOT NULL
 ,  `date_inserted` datetime NOT NULL DEFAULT current_timestamp
-,  UNIQUE (`id`)
 );
 CREATE TABLE `trader_data` (
   `level` integer NOT NULL
