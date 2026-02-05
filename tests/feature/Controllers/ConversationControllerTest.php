@@ -2,22 +2,14 @@
 
 namespace Tests\Feature\Controllers;
 
-use PHPUnit\Framework\Attributes\DataProvider;
-use Tests\TestCase;
+use Tests\ConversationTestCase;
 
-final class ConversationControllerTest extends TestCase
+final class ConversationControllerTest extends ConversationTestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->actingAs($this->getRandomUser());
-    }
-
-    #[DataProvider('isStartingProvider')]
-    public function test_index_method_returns_success(bool $isStarting)
+    public function test_starting_conversation_returns_success(): void
     {
         $response = $this->post('/conversation/next', [
-            'is_starting' => $isStarting,
+            'is_starting' => true,
             'person' => 'kapys',
             'selected_option' => 0,
         ]);
@@ -27,11 +19,31 @@ final class ConversationControllerTest extends TestCase
         ])->assertStatus(200);
     }
 
-    #[DataProvider('isStartingProvider')]
-    public function test_index_method_returns_error_when_person_doesnt_exists(bool $isStarting)
+    public function test_continuing_conversation_returns_success(): void
+    {
+        // First, start the conversation
+        $this->post('/conversation/next', [
+            'is_starting' => true,
+            'person' => 'kapys',
+            'selected_option' => 0,
+        ]);
+
+        // Then continue it
+        $response = $this->post('/conversation/next', [
+            'is_starting' => false,
+            'person' => 'kapys',
+            'selected_option' => 0,
+        ]);
+
+        $response->assertJsonStructure([
+            'conversation_segment',
+        ])->assertStatus(200);
+    }
+
+    public function test_starting_conversation_with_nonexistent_person_returns_error(): void
     {
         $response = $this->post('/conversation/next', [
-            'is_starting' => $isStarting,
+            'is_starting' => true,
             'person' => 'non-existing-person',
             'selected_option' => 0,
         ]);
@@ -39,11 +51,22 @@ final class ConversationControllerTest extends TestCase
         $response->assertStatus(422);
     }
 
-    public static function isStartingProvider(): array
+    public function test_continuing_conversation_with_nonexistent_person_returns_error(): void
     {
-        return [
-            'is_starting true' => [true],
-            'is_starting false' => [false],
-        ];
+        // First, start a valid conversation
+        $this->post('/conversation/next', [
+            'is_starting' => true,
+            'person' => 'kapys',
+            'selected_option' => 0,
+        ]);
+
+        // Then try to continue with a non-existent person
+        $response = $this->post('/conversation/next', [
+            'is_starting' => false,
+            'person' => 'non-existing-person',
+            'selected_option' => 0,
+        ]);
+
+        $response->assertStatus(422);
     }
 }
