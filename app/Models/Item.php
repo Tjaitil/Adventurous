@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * 
@@ -22,10 +23,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $hirtam_rate
  * @property int $fansal_plains_rate
  * @property int $tasnobil_rate
+ * @property int|null $trader_assignment_type_id
  * @property string $trader_assignment_type
  * @property int $adventure_requirement
  * @property string $adventure_requirement_difficulty
  * @property string $adventure_requirement_role
+ * @property-read \App\Models\TraderAssignmentType|null $traderAssignmentType
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Item newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Item newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Item query()
@@ -48,9 +51,18 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Item whereTerRate($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Item whereTowharRate($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Item whereTraderAssignmentType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Item whereTraderAssignmentTypeId($value)
  * @mixin \Eloquent
  */
 class Item extends Model
 {
     public $timestamps = false;
+
+    /**
+     * @return BelongsTo<TraderAssignmentType, Item>
+     */
+    public function traderAssignmentType(): BelongsTo
+    {
+        return $this->belongsTo(TraderAssignmentType::class, 'trader_assignment_type_id');
+    }
 }

@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(TraderAssignmentTypeSeeder::class);
         $this->call(ItemSeeder::class);
         $this->call(HealingItemSeeder::class);
         $this->call(LevelDataSeeder::class);
