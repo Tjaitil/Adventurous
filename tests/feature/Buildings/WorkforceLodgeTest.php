@@ -8,20 +8,16 @@ use App\Models\FarmerWorkforce;
 use App\Models\LevelData;
 use App\Models\MinerWorkforce;
 use App\Models\UserLevels;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class WorkforceLodgeTest extends TestCase
 {
-    use DatabaseTransactions;
-
-    protected $connectionsToTransact = ['testing'];
+    use RefreshDatabase;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->beginDatabaseTransaction();
-
         $this->actingAs($this->RandomUser);
     }
 

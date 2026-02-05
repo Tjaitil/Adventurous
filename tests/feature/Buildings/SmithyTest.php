@@ -3,23 +3,18 @@
 namespace Tests\Feature\Buildings;
 
 use App\Models\SmithyItem;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class SmithyTest extends TestCase
 {
-    use DatabaseTransactions;
-
-    protected $connectionsToTransact = ['testing'];
+    use RefreshDatabase;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->actingAs($this->RandomUser);
-
-        $this->beginDatabaseTransaction();
-    }
+        $this->actingAs($this->RandomUser);    }
 
     public function test_smithy_route(): void
     {

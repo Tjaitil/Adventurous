@@ -3,20 +3,16 @@
 namespace App\tests;
 
 use App\Models\Item;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ZinsStoreTest extends TestCase
 {
-    use DatabaseTransactions;
-
-    protected $connectionsToTransact = ['testing'];
+    use RefreshDatabase;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->beginDatabaseTransaction();
-
         $this->actingAs($this->RandomUser);
     }
 

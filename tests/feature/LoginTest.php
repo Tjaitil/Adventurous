@@ -2,13 +2,13 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
-use Tests\Support\UserTrait;
 use Tests\TestCase;
 
 class LoginTest extends TestCase
 {
-    use UserTrait;
+    use RefreshDatabase;
 
     protected function setUp(): void
     {

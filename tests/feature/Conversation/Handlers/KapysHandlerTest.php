@@ -6,7 +6,7 @@ use App\Conversation\Handlers\KapysHandler;
 use App\Enums\GameLocations;
 use App\Models\Miner;
 use App\Models\MinerPermitCost;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\ConversationTestCase;
 
@@ -14,14 +14,11 @@ final class KapysHandlerTest extends ConversationTestCase
 {
     public KapysHandler $kapysHandler;
 
-    use DatabaseTransactions;
-
-    protected $connectionsToTransact = ['testing'];
+    use RefreshDatabase;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->beginDatabaseTransaction();
         $this->kapysHandler = app()->make(KapysHandler::class);
     }
 
