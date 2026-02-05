@@ -3,20 +3,16 @@
 namespace App\tests;
 
 use App\Models\HealingItem;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class BakeryTest extends TestCase
 {
-    use DatabaseTransactions;
-
-    protected $connectionsToTransact = ['testing'];
+    use RefreshDatabase;
 
     protected function setUp(): void
     {
-        parent::setUp();
-        $this->beginDatabaseTransaction();
-    }
+        parent::setUp();    }
 
     public function test_can_get_bakery()
     {

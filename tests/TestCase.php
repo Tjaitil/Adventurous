@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Tests\Support\InventoryTrait;
 use Tests\Support\UserLevelsTrait;
@@ -11,7 +12,9 @@ use TiMacDonald\Log\LogFake;
 
 abstract class TestCase extends BaseTestCase
 {
-    use CreatesApplication, EventAssertions, InventoryTrait, UserLevelsTrait, UserTrait;
+    use CreatesApplication, EventAssertions, InventoryTrait, UserLevelsTrait, UserTrait, RefreshDatabase;
+
+    protected $seed = true;
 
     protected function setUp(): void
     {

@@ -5,7 +5,7 @@ namespace Tests\Feature\Conversations;
 use App\Conversation\Handlers\KapysHandler;
 use App\Enums\GameLocations;
 use App\Models\ConversationTracker;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Tests\ConversationTestCase;
@@ -13,17 +13,13 @@ use Tests\Utils\Contracts\ConversationContract;
 
 class KapysConversationTest extends ConversationTestCase implements ConversationContract
 {
-    use DatabaseTransactions;
-
-    protected $connectionsToTransact = ['testing'];
+    use RefreshDatabase;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->person = 'kapys';
-        $this->beginDatabaseTransaction();
-        $this->loadConversationFile();
+        $this->person = 'kapys';        $this->loadConversationFile();
 
         $this->actingAs($this->getRandomUser());
     }

@@ -4,20 +4,16 @@ namespace App\tests;
 
 use App\Models\HealingItem;
 use App\Models\Hunger;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class HungerTest extends TestCase
 {
-    use DatabaseTransactions;
-
-    protected $connectionsToTransact = ['testing'];
+    use RefreshDatabase;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->beginDatabaseTransaction();
-
         $this->actingAs($this->RandomUser);
     }
 

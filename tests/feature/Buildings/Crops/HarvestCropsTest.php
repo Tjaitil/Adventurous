@@ -9,21 +9,16 @@ use App\Models\Farmer;
 use App\Models\FarmerWorkforce;
 use App\Models\UserLevels;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\SkillTestCase;
 
 class HarvestCropsTest extends SkillTestCase
 {
-    use DatabaseTransactions;
-
-    protected $connectionsToTransact = ['testing'];
+    use RefreshDatabase;
 
     protected function setUp(): void
     {
-        parent::setUp();
-
-        $this->beginDatabaseTransaction();
-        $this->actingAs($this->RandomUser);
+        parent::setUp();        $this->actingAs($this->RandomUser);
     }
 
     /**

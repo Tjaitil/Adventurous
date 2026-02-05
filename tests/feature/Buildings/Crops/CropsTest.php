@@ -8,12 +8,12 @@ use App\Models\Crop;
 use App\Models\Farmer;
 use App\Models\FarmerWorkforce;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\SkillTestCase;
 
 class CropsTest extends SkillTestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     public $connectionsToTransact = ['testing'];
 
@@ -23,10 +23,7 @@ class CropsTest extends SkillTestCase
 
     protected function setUp(): void
     {
-        parent::setUp();
-
-        $this->beginDatabaseTransaction();
-        $this->actingAs($this->RandomUser);
+        parent::setUp();        $this->actingAs($this->RandomUser);
 
         $this->Farmer = Farmer::where('user_id', $this->RandomUser->id)->firstOrFail();
         $this->FarmerWorkforce = FarmerWorkforce::where('user_id', $this->RandomUser->id)->firstOrFail();

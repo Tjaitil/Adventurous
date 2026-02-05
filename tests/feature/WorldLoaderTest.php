@@ -5,20 +5,18 @@ namespace Tests\Feature;
 use App\Enums\WorldChangeType;
 use App\Models\User;
 use App\Models\UserData;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class WorldLoaderTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     public $connectionsToTransact = ['testing'];
 
     protected function setUp(): void
     {
-        parent::setUp();
-        $this->beginDatabaseTransaction();
-    }
+        parent::setUp();    }
 
     /**
      * @group route

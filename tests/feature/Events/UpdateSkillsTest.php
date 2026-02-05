@@ -3,21 +3,16 @@
 namespace Tests\Feature\Events;
 
 use App\Enums\SkillNames;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class UpdateSkillsTest extends TestCase
 {
-    use DatabaseTransactions;
-
-    protected $connectionsToTransact = ['testing'];
+    use RefreshDatabase;
 
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->beginDatabaseTransaction();
-
         $this->actingAs($this->TestUser);
     }
 

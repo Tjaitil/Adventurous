@@ -4,20 +4,16 @@ namespace App\tests;
 
 use App\Models\TravelBureauCart;
 use App\Models\UserLevels;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class TravelBureauTest extends TestCase
 {
-    use DatabaseTransactions;
-
-    protected $connectionsToTransact = ['testing'];
+    use RefreshDatabase;
 
     protected function setUp(): void
     {
-        parent::setUp();
-        $this->beginDatabaseTransaction();
-    }
+        parent::setUp();    }
 
     public function test_retrieve_building()
     {

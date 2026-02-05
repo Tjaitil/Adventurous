@@ -6,15 +6,13 @@ use App\Models\ArmoryItemsData;
 use App\Models\Inventory;
 use App\Models\Soldier;
 use App\Models\SoldierArmory;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class ArmoryTest extends TestCase
 {
-    use DatabaseTransactions;
-
-    protected $connectionsToTransact = ['testing'];
+    use RefreshDatabase;
 
     protected SoldierArmory $WarriorsMeleeArmory;
 
@@ -23,8 +21,6 @@ class ArmoryTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->beginDatabaseTransaction();
-
         $Warrior = Soldier::factory()
             ->create([
                 'username' => $this->RandomUser->username,

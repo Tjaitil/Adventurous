@@ -4,21 +4,16 @@ namespace Tests\Feature\Feature\Services;
 
 use App\Models\ConversationTracker;
 use App\Services\ConversationService;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ConversationServiceTest extends TestCase
 {
-    use DatabaseTransactions;
-
-    protected $connectionsToTransact = ['testing'];
+    use RefreshDatabase;
 
     protected function setUp(): void
     {
-        parent::setUp();
-
-        $this->beginDatabaseTransaction();
-        $this->actingAs($this->RandomUser);
+        parent::setUp();        $this->actingAs($this->RandomUser);
     }
 
     public function test_option_values_is_reset_on_conversation_start(): void

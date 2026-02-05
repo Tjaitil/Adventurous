@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\TestWith;
 use Tests\ConversationTestCase;
 use Tests\Support\UserTrait;
@@ -10,14 +10,11 @@ use Tests\Utils\Contracts\ConversationContract;
 
 class PesrConversationTest extends ConversationTestCase implements ConversationContract
 {
-    use DatabaseTransactions, UserTrait;
+    use RefreshDatabase, UserTrait;
 
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->beginDatabaseTransaction();
-
         $this->person = 'pesr';
         $this->loadConversationFile();
         $this->actingAs($this->getRandomUser());

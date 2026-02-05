@@ -1,6 +1,6 @@
 <?php
 
-namespace App\tests;
+namespace Tests\Feature\Buildings;
 
 use App\Enums\GameEvents;
 use App\Enums\GameLocations;
@@ -9,23 +9,19 @@ use App\Models\Mineral;
 use App\Models\MinerWorkforce;
 use App\Models\UserLevels;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\SkillTestCase;
 use Tests\Utils\Traits\ExperienceAssertions;
 
 class MineTest extends SkillTestCase
 {
-    use DatabaseTransactions, ExperienceAssertions;
-
-    public $connectionsToTransact = ['testing'];
+    use RefreshDatabase, ExperienceAssertions;
 
     public MinerWorkforce $MinerWorkforce;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->beginDatabaseTransaction();
-
         $this->actingAs($this->RandomUser);
 
         $this->MinerWorkforce = MinerWorkforce::where('user_id', $this->RandomUser->id)->firstOrFail();
