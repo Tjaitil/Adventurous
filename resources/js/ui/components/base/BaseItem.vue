@@ -31,7 +31,7 @@ interface Props {
 }
 
 const {
-  showAmountInput = false,
+  showAmountInput = true,
   item,
   amount = undefined,
 } = defineProps<Props>();
