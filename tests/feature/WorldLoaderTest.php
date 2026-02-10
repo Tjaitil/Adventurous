@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Enums\WorldChangeType;
-use App\Models\User;
 use App\Models\UserData;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -16,14 +15,15 @@ class WorldLoaderTest extends TestCase
 
     protected function setUp(): void
     {
-        parent::setUp();    }
+        parent::setUp();
+    }
 
     /**
      * @group route
      */
     public function test_route_returns_successfull_and_json(): void
     {
-        $User = User::find(1);
+        $User = $this->getRandomUser();
         $response = $this->actingAs($User)->get('/worldloader');
 
         $response->json();
@@ -52,7 +52,7 @@ class WorldLoaderTest extends TestCase
      */
     public function test_change_map_with_new_destination(string $destination): void
     {
-        $User = User::find(1);
+        $User = $this->getRandomUser();
         $response = $this->actingAs($User)->post('/worldloader/change', [
             'method' => WorldChangeType::TRAVEL->value,
             'new_destination' => $destination,
@@ -65,7 +65,7 @@ class WorldLoaderTest extends TestCase
 
     public function test_change_map_with_coordinates(): void
     {
-        $User = User::find(1);
+        $User = $this->getRandomUser();
         $response = $this->actingAs($User)->post('/worldloader/change', [
             'method' => WorldChangeType::NEXT_MAP->value,
             'new_map' => [
@@ -83,7 +83,7 @@ class WorldLoaderTest extends TestCase
      */
     public function test_respawn_after_death(string $map, string $result): void
     {
-        $User = User::find(1);
+        $User = $this->getRandomUser();
         $UserData = UserData::where('username', $User->username)->first();
         $UserData->update([
             'map_location' => $map,
