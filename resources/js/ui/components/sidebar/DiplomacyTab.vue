@@ -25,17 +25,17 @@
 
 <script setup lang="ts">
 import type { DiplomacyResource } from '@/types/Diplomacy';
-import { jsUcWords } from '@/utilities/uppercase';
 import { formatLocationName } from '@/utilities/formatters';
-import { computed, ref } from 'vue';
+import { computed, watch } from 'vue';
+import { useDiplomacyStore } from '@/ui/stores/DiplomacyStore';
 
 interface Props {
   initData: DiplomacyResource;
 }
 
-const { initData: data } = defineProps<Props>();
+const props = defineProps<Props>();
 
-const diplomacyData = ref<Props['initData']>(data);
+const diplomacyStore = useDiplomacyStore();
 
 const diplomacyClass = (diplomacy: number) => {
   if (typeof diplomacy !== 'number') return '';
@@ -44,13 +44,25 @@ const diplomacyClass = (diplomacy: number) => {
   return '';
 };
 
+watch(
+  () => props.initData,
+  value => {
+    diplomacyStore.setDiplomacyData(value);
+  },
+  { immediate: true }
+);
+
+const diplomacyData = computed(() => {
+  return diplomacyStore.diplomacyData ?? props.initData;
+});
+
 const computedDiplomacyClasses = computed(() => {
   return {
-    hirtam: diplomacyClass(data.hirtam),
-    pvitul: diplomacyClass(data.pvitul),
-    khanz: diplomacyClass(data.khanz),
-    ter: diplomacyClass(data.ter),
-    fansal_plains: diplomacyClass(data.fansal_plains),
+    hirtam: diplomacyClass(diplomacyData.value.hirtam),
+    pvitul: diplomacyClass(diplomacyData.value.pvitul),
+    khanz: diplomacyClass(diplomacyData.value.khanz),
+    ter: diplomacyClass(diplomacyData.value.ter),
+    fansal_plains: diplomacyClass(diplomacyData.value.fansal_plains),
   };
 });
 </script>
