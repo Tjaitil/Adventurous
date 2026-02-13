@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\DiplomacyResource;
+use App\Http\Resources\UserCartItemCollectionResource;
 use App\Models\Diplomacy;
 use App\Models\Hunger;
 use App\Models\Inventory;
+use App\Models\Trader;
+use App\Models\UserCartItem;
 use App\Models\UserData;
 use App\Models\UserLevels;
 use App\Services\ProfiencyService;
@@ -31,6 +34,10 @@ class AdvclientController extends Controller
         }
 
         return Inertia::render('AdvClient', [
+            'cartItems' => UserCartItemCollectionResource::collection(
+                UserCartItem::with('item')->where('user_id', Auth::user()->id)->get()
+            ),
+            'cart' => Trader::with(['cart'])->where('user_id', Auth::user()->id)->first(),
             'gameLog' => session()->get('log') ?? [],
             'username' => Auth::user()->username,
             'location' => $user_data->location,

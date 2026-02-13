@@ -7,7 +7,7 @@
       <div class="relative grow">
         <LogModal />
         <ConversationContainer />
-        <div id="game-screen-container" class="relative">
+        <div id="game-screen-container">
           <GameScreen />
           <ScreenHUD :hunger="hunger" :health="{ current: 100, max: 100 }" />
         </div>
@@ -16,9 +16,7 @@
         <ClientOverlayWrapper />
         <input id="draw_checkbox" type="checkbox" name="" />
       </div>
-      <div class="w-[29%]">
-        <InventoryContainer />
-      </div>
+      <CartInventoryPanel />
     </div>
     <template #aside>
       <SidebarSection
@@ -36,7 +34,6 @@
 
 <script setup lang="ts">
 import AppLayoutWithAside from '../components/layout/AppLayoutWithAside.vue';
-import InventoryContainer from '../components/Inventory/InventoryContainer.vue';
 import ConversationContainer from '../components/ConversationContainer.vue';
 import GameScreen from '../components/HUD/GameScreen.vue';
 import ScreenHUD from '../components/HUD/ScreenHUD.vue';
@@ -52,6 +49,12 @@ import type { GameLog } from '@/types/GameLog';
 import type { ProficiencyStatuses } from '@/types/ProficiencyStatuses';
 import ClientOverlayWrapper from '../components/ClientOverlayWrapper.vue';
 import { usePlayerStore } from '../stores/PlayerStore';
+import CartInventoryPanel from '../components/CartAndInventoryPanel.vue';
+import { useUserCartStore } from '../stores/UserCartStore';
+import type {
+  UserCartItemResource,
+  UserCartItemResourceCollection,
+} from '@/types/TraderAssignment';
 
 interface Props {
   hunger: {
@@ -67,12 +70,18 @@ interface Props {
   initLevels: UserLevels;
   diplomacyResource: DiplomacyResource;
   profiencyStatuses: ProficiencyStatuses;
+  cartItems: UserCartItemResourceCollection;
 }
-const { username, location } = defineProps<Props>();
+const { username, location, profiencyStatuses, cartItems } =
+  defineProps<Props>();
 
 const playerStore = usePlayerStore();
 playerStore.location = location;
 playerStore.username = username;
+
+const cartStore = useUserCartStore();
+cartStore.setCart(profiencyStatuses.trader.cart);
+cartStore.setCartItems(cartItems.data);
 
 onMounted(async () => {
   await Game.getWorld().then(() => {
