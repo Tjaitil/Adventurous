@@ -20,6 +20,8 @@ import Pusher from 'pusher-js';
 import { useInventoryStore } from './ui/stores/InventoryStore';
 import type { InventoryItem } from '@/types/InventoryItem';
 import { useSkillsStore } from './ui/stores/SkillsStore';
+import { useDiplomacyStore } from './ui/stores/DiplomacyStore';
+import type { DiplomacyResource } from '@/types/Diplomacy';
 
 window.Pusher = Pusher;
 
@@ -39,4 +41,7 @@ echo
   })
   .listen('SkillsUpdated', () => {
     useSkillsStore().setHandleXpGainedEvent(true);
+  })
+  .listen('DiplomacyUpdated', (e: { Diplomacy: DiplomacyResource }) => {
+    useDiplomacyStore().setDiplomacyData(e.Diplomacy);
   });
