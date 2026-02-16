@@ -194,7 +194,6 @@ section {
   box-sizing: content-box;
   /*width: 82.8%;
     min-height: 700px;*/
-  grid-column: 2 / 3;
   border: inset #4b341b 2px;
   /*float: right;*/
   text-align: center;

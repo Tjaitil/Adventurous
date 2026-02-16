@@ -11,9 +11,9 @@
       </div>
       <div class="top_bar">
         <div class="top_a">
-          <a href="/gameguide" aria-label="Gameguide"></a>
+          <a href="/guides" aria-label="Guides"></a>
         </div>
-        <div class="top_but"><a href="/gameguide">Gameguide</a></div>
+        <div class="top_but"><a href="/guides">Guides</a></div>
       </div>
       <div class="top_bar">
         <div class="top_a">
