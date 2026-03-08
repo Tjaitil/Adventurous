@@ -42,10 +42,6 @@ return new class extends Migration
 
             DB::statement('INSERT INTO items SELECT * FROM items_backup');
             DB::statement('DROP TABLE items_backup');
-        } else {
-            Schema::table('items', function (Blueprint $table) {
-                $table->primary('item_id');
-            });
         }
     }
 
@@ -85,11 +81,6 @@ return new class extends Migration
 
             DB::statement('INSERT INTO items SELECT * FROM items_backup');
             DB::statement('DROP TABLE items_backup');
-        } else {
-            // MySQL can directly drop the primary key
-            Schema::table('items', function (Blueprint $table) {
-                $table->dropPrimary();
-            });
         }
     }
 };
