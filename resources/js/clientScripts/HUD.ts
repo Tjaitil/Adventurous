@@ -5,10 +5,6 @@ import viewport from './viewport';
 export const HUD = {
   container: null,
   elements: {
-    // controlText: new HTMLElement(),
-    controlText: null,
-    control_text_building: null as HTMLElement,
-    control_text_conversation: null as HTMLElement,
     // hungerProgressBar: new HTMLElement(),
     hungerProgressBar: null as ProgressBar,
     // healthProgressBar: new HTMLElement(),
