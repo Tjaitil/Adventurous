@@ -1,6 +1,5 @@
 import { ModuleTester, addModuleTester } from './../devtools/ModuleTester';
 import type { Character } from './../gamepieces/Character';
-import { controls } from './controls';
 import { ClientOverlayInterface } from './clientOverlayInterface';
 import { tutorial } from './tutorial';
 import { itemTitle } from '../utilities/itemTitle';
@@ -9,7 +8,6 @@ import { GameLogger } from '../utilities/GameLogger';
 import { isVuePage, type VuePage } from '@/types/Building';
 import { GamePieces } from './gamePieces';
 import type { Building } from '../gamepieces/Building';
-import { HUD } from './HUD';
 import { setUpTabList } from '../utilities/tabs';
 import stockpileModule from '../buildingScripts/stockpile';
 import travelBureauModule from '../buildingScripts/travelbureau';
@@ -47,6 +45,12 @@ export interface InputHandlerEvents {
       }
     | { building: VuePage }
     | { loading: true };
+  HUD_BUILDING_PROMPT_UPDATE: {
+    buildingName: string | null;
+  };
+  HUD_CONVERSATION_PROMPT_UPDATE: {
+    characterName: string | null;
+  };
 }
 
 function shouldSkipImport(building: string) {
@@ -127,13 +131,11 @@ export const inputHandler: IInputHandler = {
       }
     }
     if (this.buildingMatch) {
-      HUD.elements.control_text_building.innerHTML =
-        controls.enterText +
-        ' ' +
-        this.mapBuildingName(this.buildingMatch.displayName);
+      const buildingName = this.mapBuildingName(this.buildingMatch.displayName);
+      gameEventBus.emit('HUD_BUILDING_PROMPT_UPDATE', { buildingName });
       this.buildingMatchUIChanged = true;
-    } else if (this.buildingMatchUIChanged && !this.buildingMatch) {
-      HUD.elements.control_text_building.innerHTML = controls.enterButton;
+    } else if (this.buildingMatchUIChanged) {
+      gameEventBus.emit('HUD_BUILDING_PROMPT_UPDATE', { buildingName: null });
       this.buildingMatchUIChanged = false;
     }
   },
@@ -325,11 +327,14 @@ export const inputHandler: IInputHandler = {
     }
 
     if (this.characterMatch) {
-      HUD.elements.control_text_conversation.innerHTML =
-        controls.personText + ' ' + this.characterMatch.displayName;
+      gameEventBus.emit('HUD_CONVERSATION_PROMPT_UPDATE', {
+        characterName: this.characterMatch.displayName,
+      });
       this.characterMatchUIChanged = true;
-    } else if (this.characterMatchUIChanged && !this.characterMatch) {
-      HUD.elements.control_text_conversation.innerHTML = controls.personButton;
+    } else if (this.characterMatchUIChanged) {
+      gameEventBus.emit('HUD_CONVERSATION_PROMPT_UPDATE', {
+        characterName: null,
+      });
       this.characterMatchUIChanged = false;
     }
   },

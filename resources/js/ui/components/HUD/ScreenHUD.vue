@@ -52,10 +52,18 @@
       <p class="extendedControls my-0 text-left">P - {{ $t('Pause') }}</p>
       <p class="my-0 text-left">A - {{ $t('Attack') }}</p>
       <p id="control_text_building" class="my-0 text-left">
-        E - {{ $t('Build') }}
+        E -
+        <template v-if="buildingName">
+          {{ $t('Enter') }}
+          {{ ` ${buildingName}` }}
+        </template>
       </p>
       <p id="control_text_conversation" class="my-0 text-left">
-        W - {{ $t('Talk') }}
+        W -
+        <template v-if="characterName">
+          {{ $t('Talk to') }}
+          {{ ` ${characterName}` }}
+        </template>
       </p>
     </div>
     <div id="game_text" class="absolute text-left text-white"></div>
@@ -89,6 +97,8 @@ const currentHunger = ref(hunger.current);
 const currentHealth = ref(health.current);
 
 const showHuntedIcon = ref(false);
+const buildingName = ref<string | null>(null);
+const characterName = ref<string | null>(null);
 
 gameEventBus.subscribe('PLAYER_HUNTED_UPDATE', ({ isHunted }) => {
   if (isHunted) {
@@ -96,5 +106,13 @@ gameEventBus.subscribe('PLAYER_HUNTED_UPDATE', ({ isHunted }) => {
   } else {
     showHuntedIcon.value = false;
   }
+});
+
+gameEventBus.subscribe('HUD_BUILDING_PROMPT_UPDATE', payload => {
+  buildingName.value = payload.buildingName;
+});
+
+gameEventBus.subscribe('HUD_CONVERSATION_PROMPT_UPDATE', payload => {
+  characterName.value = payload.characterName;
 });
 </script>

@@ -19,6 +19,8 @@ class GameEventBus {
     [K in GameEventType]: Array<GameEventListener<K>>;
   } = {
     RENDER_BUILDING: [],
+    HUD_BUILDING_PROMPT_UPDATE: [],
+    HUD_CONVERSATION_PROMPT_UPDATE: [],
     PLAYER_HEALTH_UPDATE: [],
     PLAYER_HUNTED_UPDATE: [],
     GAMELOGGER_MESSAGE_LOGGED: [],
