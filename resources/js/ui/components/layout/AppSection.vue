@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section id="app-section">
     <slot></slot>
   </section>
 </template>
@@ -7,7 +7,7 @@
 <script setup lang="ts"></script>
 
 <style scoped>
-section {
+#app-section {
   /*background: radial-gradient(#f2e6d9 50%, #986834);*/
   /*background: radial-gradient(#a9753d 75%, #4b341b);*/
   background: radial-gradient(

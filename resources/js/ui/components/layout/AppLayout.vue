@@ -4,7 +4,7 @@
       <AppHeader class="col-span-full" />
       <AppSection
         class="row-start-2 max-h-[800px] min-h-[600px] px-2 py-2"
-        :class="hasAsideContent ? 'col-span-5 col-start-2' : 'col-span-full'"
+        :class="hasAsideContent ? 'col-start-2' : 'col-span-full'"
       >
         <slot></slot>
       </AppSection>
@@ -16,7 +16,7 @@
       </aside>
       <AppFooter
         class="row-start-3"
-        :class="hasAsideContent ? 'col-span-6 col-start-2' : 'col-span-full'"
+        :class="hasAsideContent ? 'col-start-2' : 'col-span-full'"
       />
     </div>
   </UApp>
@@ -53,6 +53,6 @@ defineSlots<{
 }
 
 #app-layout.has-aside {
-  grid-template-columns: 12% 87%;
+  grid-template-columns: 165px 1fr;
 }
 </style>
