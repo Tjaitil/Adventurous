@@ -1,5 +1,5 @@
 <template>
-  <header>
+  <header id="app-header">
     <div id="nav">
       <div class="top_bar">
         <div class="top_a"><a href="/main" aria-label="Main"></a></div>
@@ -11,9 +11,9 @@
       </div>
       <div class="top_bar">
         <div class="top_a">
-          <a href="/gameguide" aria-label="Gameguide"></a>
+          <a href="/guides" aria-label="Guides"></a>
         </div>
-        <div class="top_but"><a href="/gameguide">Gameguide</a></div>
+        <div class="top_but"><a href="/guides">Guides</a></div>
       </div>
       <div class="top_bar">
         <div class="top_a">
@@ -42,7 +42,7 @@
 <script setup lang="ts"></script>
 
 <style>
-header {
+#app-header {
   /*grid-columns: 1 / 3;*/
   border-bottom: black thin;
   text-align: center;
