@@ -1,7 +1,7 @@
 <template>
   <div
     id="conversation-container"
-    class="border-primary-700 absolute right-0 left-0 z-20 flex h-[190px] flex-col items-center rounded-sm border-4 bg-orange-50 p-1 shadow-lg transition-[scale] duration-300 ease-in after:pointer-events-none after:absolute after:top-[-1px] after:left-[-1px] after:h-[calc(100%+2px)] after:w-[calc(100%+2px)] after:rounded-sm after:border-4 after:border-solid after:border-gray-950 after:content-['']"
+    class="border-primary-700 absolute inset-x-0 bottom-0 left-1.5 z-20 flex h-[190px] w-full flex-col items-center rounded-sm border-4 bg-orange-50 p-1 shadow-lg transition-[scale] duration-300 ease-in after:pointer-events-none after:absolute after:top-[-1px] after:left-[-1px] after:h-[calc(100%+2px)] after:w-[calc(100%+2px)] after:rounded-sm after:border-4 after:border-solid after:border-gray-950 after:content-['']"
     :class="{ invisible: !showConversationContainer }"
   >
     <ConversationHeader
