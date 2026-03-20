@@ -6,10 +6,10 @@
     >
       <div class="relative grow">
         <LogModal />
-        <ConversationContainer />
         <div id="game-screen-container" class="relative">
           <GameScreen />
           <ScreenHUD :hunger="hunger" :health="{ current: 100, max: 100 }" />
+          <ConversationContainer />
         </div>
         <ItemTooltip />
         <GameMap :map-location="mapLocation" />
