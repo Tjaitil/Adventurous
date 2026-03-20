@@ -39,9 +39,15 @@
           <DiplomacyTab :init-data="diplomacyResource" />
         </template>
         <template #skills><SkillInfoList /></template>
-        <template #help><HelpTab /></template>
         <template #settings><ClientSettingsTab /></template>
       </UTabs>
+      <button
+        :aria-label="$t('Guides')"
+        class="cursor-pointer"
+        @click="() => gameEventBus.emit('GUIDE_OPEN', { guide: 'overview' })"
+      >
+        <BaseIcon icon="help" class="h-12 w-12" />
+      </button>
     </div>
   </div>
 </template>
@@ -55,13 +61,14 @@ import { useI18n } from 'vue-i18n';
 import GameLogTab from '../sidebar/GameLogTab.vue';
 import ProfiencyStatusTab from '../sidebar/ProfiencyStatusTab.vue';
 import SkillInfoList from '../skills/SkillInfoList.vue';
-import HelpTab from '../sidebar/HelpTab.vue';
 import ClientSettingsTab from '../sidebar/ClientSettingsTab.vue';
 import type { UserLevels } from '@/types/UserLevels';
 import type { GameLog } from '@/types/GameLog';
 import type { DiplomacyResource } from '@/types/Diplomacy';
 import type { ProficiencyStatuses } from '@/types/ProficiencyStatuses';
 import { useSkillsStore } from '@/ui/stores/SkillsStore';
+import BaseIcon from '../base/BaseIcon.vue';
+import { gameEventBus } from '@/gameEventsBus';
 
 interface Props {
   username: string;
@@ -97,10 +104,6 @@ const items = [
   {
     label: t('Skills'),
     slot: 'skills' as const,
-  },
-  {
-    label: t('Help'),
-    slot: 'help' as const,
   },
   {
     label: t('Settings'),
