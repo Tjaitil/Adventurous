@@ -18,9 +18,6 @@ class GuideDataLoaderService
         $data = [];
 
         foreach ($dataKeys as $key => $value) {
-            if (! is_string($value)) {
-                continue;
-            }
             $data[$value] = $this->callLoader($value);
         }
 

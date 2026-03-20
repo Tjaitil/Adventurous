@@ -25,6 +25,9 @@ class GuideService
         $this->guidesPath = resource_path('views/guides');
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getGuide(string $category, string $slug): ?array
     {
         $filePath = $this->resolveGuideFile($category, $slug);
@@ -34,6 +37,9 @@ class GuideService
         }
 
         $source = file_get_contents($filePath);
+        if (! $source) {
+            return null;
+        }
         $parsed = $this->parseFrontMatter($source);
         $frontmatter = $parsed['frontmatter'];
 
@@ -66,6 +72,8 @@ class GuideService
 
     /**
      * List all guides in a category
+     *
+     * @return array<int, array<string, mixed>>
      */
     public function listByCategory(string $category): array
     {
@@ -77,6 +85,9 @@ class GuideService
 
         $guides = [];
         $files = glob($categoryPath.'/*.{blade.php,md,php}', GLOB_BRACE);
+        if (! $files) {
+            return [];
+        }
 
         foreach ($files as $file) {
             $filename = pathinfo($file, PATHINFO_FILENAME);
@@ -92,11 +103,16 @@ class GuideService
 
     /**
      * Get all available categories
+     *
+     * @return array<int, string>
      */
     public function getCategories(): array
     {
         $categories = [];
         $items = scandir($this->guidesPath);
+        if (! $items) {
+            return [];
+        }
 
         foreach ($items as $item) {
             $path = $this->guidesPath.'/'.$item;
@@ -110,6 +126,8 @@ class GuideService
 
     /**
      * Render guide source with Blade data applied
+     *
+     * @param  array<string, mixed>  $data
      */
     protected function renderGuideContent(string $filePath, array $data, string $source): string
     {
@@ -181,7 +199,7 @@ class GuideService
     }
 
     /**
-     * @return array{frontmatter: array, content: string}
+     * @return array{frontmatter: array<string, mixed>, content: string}
      */
     protected function parseFrontMatter(string $markdown): array
     {
