@@ -2,6 +2,7 @@ import { GamePieces } from './gamePieces';
 import { controls } from './controls';
 import { Game } from '../advclient';
 import viewport from './viewport';
+import { gameEventBus } from '@/gameEventsBus';
 
 export const pauseManager = {
   togglePause() {
@@ -67,3 +68,11 @@ export const pauseManager = {
     Game.properties.requestId = window.requestAnimationFrame(Game.update);
   },
 };
+
+gameEventBus.subscribe('GUIDE_OPEN', () => {
+  pauseManager.pauseGame();
+});
+
+gameEventBus.subscribe('GUIDE_CLOSED', () => {
+  pauseManager.resumeGame();
+});

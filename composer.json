@@ -23,6 +23,7 @@
     "laravel/sanctum": "^4.0",
     "laravel/telescope": "^5.2",
     "laravel/tinker": "^2.8",
+    "league/commonmark": "^2.7",
     "respect/validation": "^2.2"
   },
   "require-dev": {

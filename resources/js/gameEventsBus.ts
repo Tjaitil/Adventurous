@@ -1,9 +1,12 @@
 import type { GameLoggerEvents } from '@/utilities/GameLogger';
 import type { AdvClientEvents } from '@/advclient';
 import type { InputHandlerEvents } from './clientScripts/inputHandler';
+import type { GuideIdentifier } from '@/types/Guide';
 export type GameEventMap = {
   PLAYER_HEALTH_UPDATE: { health: number };
   PLAYER_HUNTED_UPDATE: { isHunted: boolean };
+  GUIDE_CLOSED: null;
+  GUIDE_OPEN: { guide: GuideIdentifier };
 } & InputHandlerEvents &
   GameLoggerEvents &
   AdvClientEvents;
@@ -23,12 +26,13 @@ class GameEventBus {
     HUD_CONVERSATION_PROMPT_UPDATE: [],
     PLAYER_HEALTH_UPDATE: [],
     PLAYER_HUNTED_UPDATE: [],
+    GUIDE_OPEN: [],
+    GUIDE_CLOSED: [],
     GAMELOGGER_MESSAGE_LOGGED: [],
     CHANGED_LOCATION: [],
   };
 
   subscribe<K extends GameEventType>(event: K, listener: GameEventListener<K>) {
-    // TypeScript can't guarantee at runtime, but we trust the typing at call site
     this.listeners[event].push(listener);
   }
 

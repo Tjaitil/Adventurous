@@ -6,6 +6,7 @@
     >
       <div class="relative grow">
         <LogModal />
+        <GuideModal v-model:open="isGuideOpen" />
         <ConversationContainer />
         <div id="game-screen-container" class="relative">
           <GameScreen />
@@ -43,8 +44,9 @@ import ScreenHUD from '../components/HUD/ScreenHUD.vue';
 import ItemTooltip from '../components/HUD/ItemTooltip.vue';
 import GameMap from '../components/HUD/GameMap.vue';
 import { Game } from '@/advclient';
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import LogModal from '../components/HUD/LogModal.vue';
+import GuideModal from '../components/HUD/GuideModal.vue';
 import SidebarSection from '../components/HUD/SidebarSection.vue';
 import type { DiplomacyResource } from '@/types/Diplomacy';
 import type { UserLevels } from '@/types/UserLevels';
@@ -73,6 +75,8 @@ const { username, location } = defineProps<Props>();
 const playerStore = usePlayerStore();
 playerStore.location = location;
 playerStore.username = username;
+
+const isGuideOpen = ref(false);
 
 onMounted(async () => {
   await Game.getWorld().then(() => {

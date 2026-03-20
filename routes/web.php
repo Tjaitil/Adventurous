@@ -9,6 +9,7 @@ use App\Http\Controllers\CityCentreController;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\CropsController;
 use App\Http\Controllers\GameLoggerController;
+use App\Http\Controllers\GuideController;
 use App\Http\Controllers\HungerController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\LandingController;
@@ -140,6 +141,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/armory/soldier/remove', [ArmoryController::class, 'remove']);
     Route::post('/armory/soldier/add', [ArmoryController::class, 'add']);
     Route::post('/log/error', [LogController::class, 'logFrontendError']);
+
+    Route::get('/guides', [GuideController::class, 'index'])->name('guides.index');
+    Route::get('/guides/{category}/{slug}', [GuideController::class, 'show'])->name('guides.show');
 });
 
 Route::fallback(function () {
