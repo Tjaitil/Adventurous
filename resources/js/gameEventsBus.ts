@@ -5,6 +5,7 @@ import type { GuideIdentifier } from '@/types/Guide';
 export type GameEventMap = {
   PLAYER_HEALTH_UPDATE: { health: number };
   PLAYER_HUNTED_UPDATE: { isHunted: boolean };
+  GUIDE_CLOSED: null;
   GUIDE_OPEN: { guide: GuideIdentifier };
 } & InputHandlerEvents &
   GameLoggerEvents &
@@ -26,6 +27,7 @@ class GameEventBus {
     PLAYER_HEALTH_UPDATE: [],
     PLAYER_HUNTED_UPDATE: [],
     GUIDE_OPEN: [],
+    GUIDE_CLOSED: [],
     GAMELOGGER_MESSAGE_LOGGED: [],
     CHANGED_LOCATION: [],
   };

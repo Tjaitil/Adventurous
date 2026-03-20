@@ -164,6 +164,7 @@ const openGuide = async (identifier: GuideIdentifier): Promise<void> => {
 const close = (): void => {
   isOpen.value = false;
   selectedGuide.value = null;
+  gameEventBus.emit('GUIDE_CLOSED', null);
 };
 
 defineExpose({
