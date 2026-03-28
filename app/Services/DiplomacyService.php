@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\GameLocations;
+use App\Events\DiplomacyUpdated;
 use App\Models\CityRelation;
 use App\Models\Diplomacy;
 use Exception;
@@ -50,6 +51,8 @@ class DiplomacyService
             }
         }
         $Diplomacy->save();
+
+        event(new DiplomacyUpdated($Diplomacy, $userId));
     }
 
     /**
