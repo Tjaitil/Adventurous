@@ -25,8 +25,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \Attribute $stamina_next_level_xp
  * @property-read \Attribute $strength_next_level_xp
  * @property-read \Attribute $technique_next_level_xp
- * @property-read Warrior|null $warrior
- *
+ * @property-read \App\Models\Warrior|null $warrior
  * @method static \Database\Factories\WarriorsLevelsFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|WarriorsLevels newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|WarriorsLevels newQuery()
@@ -42,7 +41,6 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|WarriorsLevels whereTechniqueXp($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|WarriorsLevels whereUsername($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|WarriorsLevels whereWarriorId($value)
- *
  * @mixin \Eloquent
  */
 class WarriorsLevels extends Model
