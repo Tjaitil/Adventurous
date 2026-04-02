@@ -2,14 +2,35 @@
 
 namespace Database\Factories;
 
+use App\Models\Soldier;
+use App\Models\SoldierArmory;
+use App\Models\Warriors;
+use App\Models\WarriorsLevels;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Warriors>
+ * @extends Factory<Soldier>
  */
 class SoldierFactory extends Factory
 {
     private static $warriorIdCounter = 1;
+
+    public function configure()
+    {
+        return $this->afterCreating(function (Soldier $Soldier) {
+            SoldierArmory::factory()->create([
+                'id' => $Soldier->id,
+                'username' => $Soldier->username,
+                'warrior_id' => $Soldier->warrior_id,
+            ]);
+
+            WarriorsLevels::factory()->create([
+                'id' => $Soldier->id,
+                'username' => $Soldier->username,
+                'warrior_id' => $Soldier->warrior_id,
+            ]);
+        });
+    }
 
     /**
      * Define the model's default state.
@@ -20,7 +41,12 @@ class SoldierFactory extends Factory
     {
         return [
             'username' => 'tjaitil',
-            'warrior_id' => self::$warriorIdCounter++,
+            'warrior_id' => function (array $attributes) {
+                $warriorId = self::$warriorIdCounter++;
+                $currentMaxWarriorId = Warriors::where('username', $attributes['username'])->max('warrior_id');
+
+                return max($warriorId, $currentMaxWarriorId) + 1;
+            },
             'type' => 'ranged',
             'training_countdown' => $this->faker->dateTime(),
             'is_training' => false,

@@ -3,10 +3,11 @@
 namespace Database\Factories;
 
 use App\Models\Soldier;
+use App\Models\WarriorsArmory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\WarriorsArmory>
+ * @extends Factory<WarriorsArmory>
  */
 class SoldierArmoryFactory extends Factory
 {
@@ -18,9 +19,11 @@ class SoldierArmoryFactory extends Factory
     public function definition(): array
     {
         return [
-            'id' => 1,
+            'id' => Soldier::factory(),
             'username' => 'tjaitil',
-            'warrior_id' => Soldier::factory(),
+            'warrior_id' => function (array $attributes) {
+                return Soldier::find($attributes['user_id'])->warrior_id;
+            },
             'helm' => null,
             'ammunition' => null,
             'ammunition_amount' => 0,

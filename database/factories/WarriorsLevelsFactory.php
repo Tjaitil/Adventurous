@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Soldier;
 use App\Models\WarriorsLevels;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -10,8 +11,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class WarriorsLevelsFactory extends Factory
 {
-    private static int $warriorCounter = 1;
-
     protected $model = WarriorsLevels::class;
 
     /**
@@ -21,12 +20,12 @@ class WarriorsLevelsFactory extends Factory
      */
     public function definition(): array
     {
-        $warriorId = self::$warriorCounter++;
-
         return [
-            'id' => $warriorId,
+            'id' => Soldier::factory(),
             'username' => 'tjaitil',
-            'warrior_id' => $warriorId,
+            'warrior_id' => function (array $attributes) {
+                return Soldier::find($attributes['user_id'])->warrior_id;
+            },
             'stamina_level' => 1,
             'stamina_xp' => 0,
             'technique_level' => 1,
