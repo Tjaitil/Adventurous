@@ -10,7 +10,7 @@
     <div id="map_container_header" class="m-0 flex bg-orange-50 px-1 py-2">
       <img
         id="toggle_icon_list_image"
-        class="cur-pointer"
+        class="cursor-pointer"
         src="/images/symbol icon.png"
         alt="Toggle icon"
         @click="mapStore.toggleIconListVisibility()"

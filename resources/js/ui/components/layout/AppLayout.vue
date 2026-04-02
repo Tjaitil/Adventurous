@@ -10,7 +10,7 @@
       </AppSection>
       <aside
         v-if="hasAsideContent"
-        class="relative z-20 col-span-1 col-start-1 row-start-2 max-h-[800px]"
+        class="relative z-20 col-span-1 col-start-1 row-start-2 max-h-[800px] text-white"
       >
         <slot name="aside"></slot>
       </aside>

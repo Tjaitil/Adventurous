@@ -1,18 +1,16 @@
 <template>
-  <div id="log_container" class="w-full">
-    <div id="log_container" class="w-full">
-      <div
-        id="log"
-        class="darkTextColor relative m-0 h-52 overflow-y-scroll bg-orange-50"
-      >
-        <ul id="game_messages" class="mt-0 w-full p-2">
-          <GameLogItem
-            v-for="(message, index) in messages"
-            :key="index"
-            :log="message"
-          />
-        </ul>
-      </div>
+  <div class="w-full">
+    <div
+      id="log"
+      class="relative m-0 h-52 overflow-y-scroll bg-orange-50 text-black"
+    >
+      <ul id="game_messages" class="mt-0 w-full p-2">
+        <GameLogItem
+          v-for="(message, index) in messages"
+          :key="index"
+          :log="message"
+        />
+      </ul>
     </div>
   </div>
 </template>
