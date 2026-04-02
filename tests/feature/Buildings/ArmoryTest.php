@@ -26,18 +26,9 @@ class ArmoryTest extends TestCase
                 'username' => $this->RandomUser->username,
                 'user_id' => $this->RandomUser->id,
                 'type' => 'melee',
-            ])->firstOrFail();
+            ]);
 
-        $this->WarriorsMeleeArmory = SoldierArmory::factory()->count(1)
-            ->state(
-                [
-                    'id' => $Warrior->id,
-                    'warrior_id' => $Warrior->warrior_id,
-                    'username' => $this->RandomUser->username,
-                ]
-            )
-            ->create()
-            ->firstOrFail();
+        $this->WarriorsMeleeArmory = $Warrior->armory;
 
         $Warrior = Soldier::factory()
             ->count(1)
@@ -47,15 +38,7 @@ class ArmoryTest extends TestCase
                 'type' => 'ranged',
             ])->firstOrFail();
 
-        $this->WarriorsRangedArmory = SoldierArmory::factory()->count(1)
-            ->state(
-                [
-                    'id' => $Warrior->id,
-                    'warrior_id' => $Warrior->warrior_id,
-                    'username' => $this->RandomUser->username,
-                ])
-            ->create()
-            ->firstOrFail();
+        $this->WarriorsRangedArmory = $Warrior->armory;
 
         $this->actingAs($this->RandomUser);
     }
