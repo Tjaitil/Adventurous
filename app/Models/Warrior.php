@@ -32,10 +32,5 @@ class Warrior extends Model
 
     public $timestamps = false;
 
-    /**
-     * @deprecated Will be removed in the future
-     */
-    public int $warrior_amount;
-
     protected $table = 'warrior';
 }
