@@ -11,11 +11,9 @@ use App\Models\Hunger;
 use App\Models\Miner;
 use App\Models\MinerWorkforce;
 use App\Models\Soldier;
-use App\Models\SoldierArmory;
 use App\Models\Trader;
 use App\Models\UserData;
 use App\Models\Warrior;
-use App\Models\WarriorsLevels;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 
@@ -83,8 +81,14 @@ class UserDataFactory extends Factory
             ]);
 
             Soldier::factory()
-                ->has(WarriorsLevels::factory(), 'levels')
-                ->has(SoldierArmory::factory(), 'armory')
+                ->count(2)
+                ->sequence(
+                    [
+                        'type' => 'melee',
+                    ],
+                    [
+                        'type' => 'ranged',
+                    ])
                 ->create([
                     'username' => $userData->username,
                     'user_id' => $userData->id,
