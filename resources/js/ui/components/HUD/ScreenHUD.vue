@@ -67,9 +67,6 @@
       </p>
     </div>
     <div id="game_text" class="absolute text-left text-white"></div>
-    <div id="inv_toggle_button_container">
-      <button id="inv_toggle_button">INV</button>
-    </div>
     <div id="control" class="invisble absolute">
       <button id="control_button" :aria-label="$t('Control button')"></button>
     </div>

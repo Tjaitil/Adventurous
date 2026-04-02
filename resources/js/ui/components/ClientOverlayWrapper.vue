@@ -152,4 +152,15 @@ const internalClose = () => {
   height: auto;
   box-sizing: border-box;
 }
+
+#news_content_main_content {
+  box-sizing: border-box;
+  position: relative;
+  top: -20px;
+  padding: 0px 2px 1rem 8px;
+  transition: height 0.5s ease-out;
+}
+#news_content_side_panel button:hover {
+  filter: brightness(var(--transitionDuration));
+}
 </style>

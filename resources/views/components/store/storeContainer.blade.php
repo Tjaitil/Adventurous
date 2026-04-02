@@ -49,7 +49,7 @@ $options = array_merge(
                     <div class="flex flex-col gap-2 bg-primary-900 p-2">
                         <span class="mb-2">Required</span>
                         <div id="store-container-item-requirements"
-                            class="d-flex justify-center"></div>
+                            class="flex justify-center"></div>
                         <div class="skill-requirements"></div>
                     </div>
                 @endif
