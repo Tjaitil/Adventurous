@@ -134,7 +134,7 @@ const stockpileModule = {
     const menu = document.getElementById('stck_menu');
     const list = document.getElementById('stck-menu-option-list');
     let item;
-    if (element.className == 'inventory_item') {
+    if (element?.classList.contains('inventory_item')) {
       item = element?.querySelectorAll('figcaption .tooltip_item')[0].innerHTML;
       document.getElementById('inventory').appendChild(menu);
     } else {

@@ -1,6 +1,9 @@
 <template>
   <div class="item">
-    <figure @mouseleave="itemTitle.hide()" @mouseover="itemTitle.show($event)">
+    <figure
+      @mouseleave="disableTooltip ? itemTitle.hide() : null"
+      @mouseover="disableTooltip ? null : itemTitle.show($event)"
+    >
       <img :src="'/images/' + item + '.png'" alt="inventory-item" />
       <figcaption class="tooltip">
         <span class="tooltip_item">{{ jsUcWords(item) }}</span>
@@ -11,7 +14,7 @@
         </span>
       </figcaption>
     </figure>
-    <span v-if="showAmountInput && amount !== undefined" class="item_amount">
+    <span v-if="showAmount && amount !== undefined" class="item_amount">
       {{ itemAmountWithDelimiter }}
     </span>
   </div>
@@ -25,13 +28,15 @@ import { formatItemAmount } from '@/utilities/formatters';
 import type { Item } from '@/types/Item';
 
 interface Props {
+  disableTooltip?: boolean;
   item: Item['item'];
   amount?: number;
-  showAmountInput?: boolean;
+  showAmount?: boolean;
 }
 
 const {
-  showAmountInput = true,
+  disableTooltip = false,
+  showAmount = true,
   item,
   amount = undefined,
 } = defineProps<Props>();
