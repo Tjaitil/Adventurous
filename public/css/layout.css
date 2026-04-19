@@ -172,7 +172,7 @@ section a:visited {
   text-decoration: none;
 }
 
-section img:not([class*='w-'], [width]) {
+section img:not([class*='w-'], [width], .gold) {
   width: 48px;
   height: 48px;
   box-sizing: border-box;
@@ -251,7 +251,12 @@ section img:not([class*='w-'], [width]) {
 }
 
 /* class with img of gold*/
-.gold,
+.gold {
+  width: 32px;
+  height: 32px;
+  box-sizing: border-box;
+  vertical-align: middle;
+}
 .warrior_skill {
   width: 30px;
   height: 30px;
@@ -282,9 +287,7 @@ section img:not([class*='w-'], [width]) {
   position: relative;
 }
 
-.stockpile_item img,
-.inventory_item img,
-.item img:not(.gold) {
+.stockpile_item img:not(.gold) {
   width: 48px;
   height: 48px;
   cursor: pointer;
