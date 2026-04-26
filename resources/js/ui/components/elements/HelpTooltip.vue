@@ -21,7 +21,7 @@
     <transition name="fade">
       <div
         v-if="isTooltipVisible"
-        class="border-primary-700 pixelated-corners-sm absolute z-50 -translate-x-[44%] rounded border-2 bg-(--light-color) p-2 text-sm whitespace-nowrap"
+        class="border-primary-700 pixelated-corners-sm absolute z-50 -translate-x-[44%] rounded border-2 bg-(--ui-bg-elevated) p-2 text-sm whitespace-nowrap"
       >
         <slot></slot>
       </div>
