@@ -34,14 +34,17 @@ const echo = new Echo({
   forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
   enabledTransports: ['ws', 'wss'],
 });
-echo
-  .private(`game-state.${window.user_id.toString()}`)
-  .listen('InventoryUpdated', (e: { Inventory: InventoryItem[] }) => {
-    useInventoryStore().setInventoryItems(e.Inventory);
-  })
-  .listen('SkillsUpdated', () => {
-    useSkillsStore().setHandleXpGainedEvent(true);
-  })
-  .listen('DiplomacyUpdated', (e: { Diplomacy: DiplomacyResource }) => {
-    useDiplomacyStore().setDiplomacyData(e.Diplomacy);
-  });
+
+export const setupEchoListeners = (userId: number) => {
+  echo
+    .private(`game-state.${userId.toString()}`)
+    .listen('InventoryUpdated', (e: { Inventory: InventoryItem[] }) => {
+      useInventoryStore().setInventoryItems(e.Inventory);
+    })
+    .listen('SkillsUpdated', () => {
+      useSkillsStore().setHandleXpGainedEvent(true);
+    })
+    .listen('DiplomacyUpdated', (e: { Diplomacy: DiplomacyResource }) => {
+      useDiplomacyStore().setDiplomacyData(e.Diplomacy);
+    });
+};
