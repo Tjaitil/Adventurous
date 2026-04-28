@@ -10,5 +10,10 @@
     <div class="isolate">
       @inertia
     </div>
+    @if(show_dev_tools())
+    <div class="isolate">
+      <div id="devtools-mount"></div>
+    </div>
+    @endif
   </body>
 </html>
