@@ -40,6 +40,7 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'player' => fn () => Auth::user() instanceof User ? Auth::user()->player : null,
+            'userId' => fn () => Auth::user()?->id,
         ];
     }
 }
