@@ -27,6 +27,7 @@ class UserSeeder extends Seeder
                     'username' => 'tjaitil',
                 ]), 'userLevels')
             ->create([
+                'is_admin' => true,
                 'username' => 'tjaitil',
                 'email' => 'test@example.com',
                 'password' => bcrypt('password'),
