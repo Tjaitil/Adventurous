@@ -8,10 +8,12 @@ import { createApp, h } from 'vue';
 import ui from '@nuxt/ui/vue-plugin';
 import { createPinia } from 'pinia';
 import { i18n } from './main';
+import { setupEchoListeners } from '../bootstrap';
+import type { SharedPageProps } from '@inertiajs/core';
 
 const pinia = createPinia();
 
-void createInertiaApp({
+void createInertiaApp<SharedPageProps>({
   resolve: async name => {
     const page = await resolvePageComponent(
       `./Pages/${name}.vue`,
@@ -21,6 +23,10 @@ void createInertiaApp({
     return page;
   },
   setup({ el, App, props, plugin }) {
+    const { userId } = props.initialPage.props;
+    if (userId) {
+      setupEchoListeners(userId);
+    }
     createApp({ render: () => h(App, props) })
       .use(plugin)
       .use(pinia)
