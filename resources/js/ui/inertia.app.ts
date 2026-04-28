@@ -33,6 +33,13 @@ void createInertiaApp<SharedPageProps>({
       .use(ui)
       .use(i18n)
       .mount(el);
+
+    const devtoolsEl = document.getElementById('devtools-mount');
+    if (devtoolsEl) {
+      void import('./components/sidebar/DevToolsTab.vue').then(({ default: DevToolsTab }) => {
+        createApp(DevToolsTab).use(pinia).use(ui).use(i18n).mount(devtoolsEl);
+      });
+    }
   },
   progress: {
     color: '#4B5563',
