@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdvclientController;
+use App\Http\Controllers\DevToolsController;
 use App\Http\Controllers\ArcheryShopController;
 use App\Http\Controllers\ArmoryController;
 use App\Http\Controllers\ArmyCampController;
@@ -140,6 +141,16 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/armory/soldier/remove', [ArmoryController::class, 'remove']);
     Route::post('/armory/soldier/add', [ArmoryController::class, 'add']);
     Route::post('/log/error', [LogController::class, 'logFrontendError']);
+
+    Route::middleware(['admin', 'dev'])->prefix('/dev/admin')->group(function () {
+        Route::get('/freeze',              [DevToolsController::class, 'getFreezeState']);
+        Route::post('/freeze',            [DevToolsController::class, 'toggleFreeze']);
+        Route::get('/locations',          [DevToolsController::class, 'getLocations']);
+        Route::get('/items',              [DevToolsController::class, 'getItems']);
+        Route::post('/item/give',         [DevToolsController::class, 'giveItem']);
+        Route::post('/teleport/location', [DevToolsController::class, 'teleportToLocation']);
+        Route::post('/userdata',          [DevToolsController::class, 'setUserData']);
+    });
 });
 
 Route::fallback(function () {
