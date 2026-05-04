@@ -143,10 +143,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/log/error', [LogController::class, 'logFrontendError']);
 
     Route::middleware(['admin', 'dev'])->prefix('/dev/admin')->group(function () {
+        Route::get('/freeze',              [DevToolsController::class, 'getFreezeState']);
+        Route::post('/freeze',            [DevToolsController::class, 'toggleFreeze']);
         Route::get('/locations',          [DevToolsController::class, 'getLocations']);
         Route::get('/items',              [DevToolsController::class, 'getItems']);
         Route::post('/item/give',         [DevToolsController::class, 'giveItem']);
         Route::post('/teleport/location', [DevToolsController::class, 'teleportToLocation']);
+        Route::post('/userdata',          [DevToolsController::class, 'setUserData']);
     });
 });
 

@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Enums\GameMaps;
 use App\Exceptions\InventoryFullException;
 use App\Http\Responses\AdvResponse;
+use App\Models\Hunger;
 use App\Models\Item;
 use App\Services\InventoryService;
 use App\Services\SessionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class DevToolsController extends Controller
 {
@@ -39,7 +41,7 @@ class DevToolsController extends Controller
 
     public function getItems(): JsonResponse
     {
-        $items = Item::where('in_game', true)->select('name', 'item_id')->get();
+        $items = Item::where('in_game', true)->select('name', 'item_id')->orderBy('name')->get();
 
         return response()->json(['data' => $items]);
     }
@@ -61,6 +63,43 @@ class DevToolsController extends Controller
         }
 
         return (new AdvResponse(['message' => 'Item given']))->toResponse($request);
+    }
+
+    public function getFreezeState(): JsonResponse
+    {
+        return response()->json([
+            'frozen' => (bool) Cache::get('devtools.frozen', false),
+        ]);
+    }
+
+    public function toggleFreeze(): JsonResponse
+    {
+        $frozen = ! Cache::get('devtools.frozen', false);
+        Cache::put('devtools.frozen', $frozen, now()->addMinutes(30));
+
+        return response()->json(['frozen' => $frozen]);
+    }
+
+    public function setUserData(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'hunger'               => ['sometimes', 'integer', 'min:0', 'max:100'],
+            'stockpile_max_amount' => ['sometimes', 'integer', 'min:1'],
+            'frajrite_items'       => ['sometimes', 'boolean'],
+            'wujkin_items'         => ['sometimes', 'boolean'],
+        ]);
+
+        $userData = $this->sessionService->getUserData();
+        Hunger::where('user_id', $userData->id)
+            ->update(['current' => $validated['hunger']]);
+
+        foreach ($validated as $field => $value) {
+            $userData->$field = $value;
+        }
+
+        $userData->save();
+
+        return (new AdvResponse(['message' => 'UserData updated']))->toResponse($request);
     }
 
     public function teleportToLocation(Request $request): JsonResponse
