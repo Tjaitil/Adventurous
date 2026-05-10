@@ -348,17 +348,6 @@ section img:not([class*='w-'], [width], .gold) {
   height: 100%;
 }
 
-.page_title {
-  padding: 1%;
-  background: radial-gradient(#f1e6da 33%, #d6b38f);
-  border-top-left-radius: 25px 50%;
-  border-bottom-left-radius: 25px 50%;
-  border-top-right-radius: 25px 50%;
-  border-bottom-right-radius: 25px 50%;
-  width: 55%;
-  margin: 20px auto 10px auto;
-  color: black;
-}
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   padding: 10px;

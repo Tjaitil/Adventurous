@@ -1,6 +1,6 @@
 <template>
-  <div class="flex flex-col gap-4">
-    <h1 class="page_title">{{ $t('Armory') }}</h1>
+  <OverlayPageLayout>
+    <template #title>{{ $t('Armory') }}</template>
     <template v-if="selectedWarrior === null">
       <p class="mb-4">
         {{ $t('Click on a soldier to change their equipment') }}
@@ -37,7 +37,7 @@
         @update-warrior-armory="updateWarriorArmory"
       />
     </template>
-  </div>
+  </OverlayPageLayout>
 </template>
 
 <script setup lang="ts">
@@ -48,6 +48,7 @@ import { buildingDataPreloader } from '@/ui/services/buildingDataPreloader';
 import { ArmoryDataLoader } from '@/buildingScripts/armory';
 import CurrentWarriorForm from '../components/armory/SelectedWarriorForm.vue';
 import BaseLoadingIcon from '../components/base/BaseLoadingIcon.vue';
+import OverlayPageLayout from '../components/OverlayPageLayout.vue';
 
 const isLoading = ref(false);
 const warriors = ref<MinimalWarriorWithArmory[]>([]);

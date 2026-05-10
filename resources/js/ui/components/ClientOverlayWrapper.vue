@@ -13,7 +13,7 @@
       />
       <div class="flex grow">
         <div id="news_content_side_panel" class="hidden w-1/4"></div>
-        <div id="news_content_main_content" class="mt-2 mb-2 grow">
+        <div id="news_content_main_content" class="mb-2 grow">
           <img
             id="loading_message"
             ref="loadingIcon"
@@ -156,8 +156,6 @@ const internalClose = () => {
 #news_content_main_content {
   box-sizing: border-box;
   position: relative;
-  top: -20px;
-  padding: 0px 2px 1rem 8px;
   transition: height 0.5s ease-out;
 }
 #news_content_side_panel button:hover {
