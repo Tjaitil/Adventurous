@@ -1,0 +1,6 @@
+ignoredBuiltDependencies:
+  - msw
+  - vue-demi
+
+onlyBuiltDependencies:
+  - esbuild
