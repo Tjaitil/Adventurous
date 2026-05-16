@@ -76,7 +76,7 @@
     "phpstan": "./vendor/bin/phpstan analyse --memory-limit=2G",
     "dev": [
       "Composer\\Config::disableProcessTimeout",
-      "npx concurrently -k -c \"#93c5fd,#c4b5fd,#d4d4d8,#86efac,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail\" \"php artisan reverb:start\" \"npm run dev\" --names=server,queue,logs,reverb,vite"
+      "npx concurrently -k -c \"#93c5fd,#c4b5fd,#d4d4d8,#86efac,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail\" \"php artisan reverb:start\" \"pnpm run dev\" --names=server,queue,logs,reverb,vite"
     ]
   },
   "extra": {
