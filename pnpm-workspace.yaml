@@ -1,0 +1,4 @@
+allowBuilds:
+  esbuild: true
+  msw: false
+  vue-demi: false
