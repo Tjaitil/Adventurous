@@ -6,7 +6,20 @@
 import { computed, useAttrs } from 'vue';
 
 interface Props {
-  icon: string;
+  icon:
+    | 'timer'
+    | 'route'
+    | 'help'
+    | 'miner'
+    | 'farmer'
+    | 'warrior'
+    | 'trader'
+    | 'adventurer'
+    | 'settings'
+    | 'ranged'
+    | 'melee'
+    | 'worker'
+    | 'hunted';
 }
 
 const { icon } = defineProps<Props>();
