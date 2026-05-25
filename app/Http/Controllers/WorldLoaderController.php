@@ -323,19 +323,23 @@ class WorldLoaderController extends Controller
                 break;
             case 'army camp.png':
                 $object['src'] = 'armycamp.png';
+                $object['displayName'] = 'armycamp';
                 break;
             case 'archery shop.png':
                 $object['displayName'] = 'archeryshop';
                 break;
-            case 'adventure base':
-            case 'adventures base desert':
+            case 'adventure base.png':
+            case 'adventures base desert.png':
                 $object['displayName'] = 'adventures';
                 break;
-            case 'stockpile desert':
+            case 'stockpile desert.png':
                 $object['displayName'] = 'stockpile';
                 break;
-            case 'merchant desert':
+            case 'merchant desert.png':
                 $object['displayName'] = 'merchant';
+                break;
+            case 'workforce lodge.png':
+                $object['displayName'] = 'workforcelodge';
                 break;
         }
         if (! isset($object['displayName']) || empty($object['displayName'])) {
