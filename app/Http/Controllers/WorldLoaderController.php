@@ -313,18 +313,32 @@ class WorldLoaderController extends Controller
      */
     private function setupBuilding(array $object): array
     {
+        /**
+         * TODO: rework of map inconsistencies
+         */
         switch ($object['src']) {
             case 'city centre.png':
                 $object['src'] = 'citycentre.png';
+                $object['displayName'] = 'citycentre';
                 break;
             case 'army camp.png':
                 $object['src'] = 'armycamp.png';
                 break;
-            default:
-
+            case 'archery shop.png':
+                $object['displayName'] = 'archeryshop';
+                break;
+            case 'adventure base':
+            case 'adventures base desert':
+                $object['displayName'] = 'adventures';
+                break;
+            case 'stockpile desert':
+                $object['displayName'] = 'stockpile';
+                break;
+            case 'merchant desert':
+                $object['displayName'] = 'merchant';
                 break;
         }
-        if (! isset($object['displayName'])) {
+        if (! isset($object['displayName']) || empty($object['displayName'])) {
             $object['displayName'] = trim(substr($object['src'], 0, -4));
         }
         if ($this->map === '9.9') {
@@ -340,42 +354,20 @@ class WorldLoaderController extends Controller
      */
     private function setupCharacter(array $object): array
     {
-        // Check conversation
-        if (in_array($object['src'], [
-            'Woman character.png', 'Character13.png',
-            'Citizen.png',
-        ])) {
-            $object['conversation'] = false;
-        } else {
-            $object['conversation'] = true;
-        }
-
         // Set display name
-        $display_name = '';
-        switch ($object['type']) {
-            case 'Woman character.png':
-                $display_name = 'citizen';
-                break;
-            case 'Character13.png':
-                $display_name = 'woman';
-                break;
-            case 'Citizen.png':
-                $display_name = 'citizen';
-                break;
-            case 'wujkin soldier.png':
-                $display_name = 'soldier';
-                break;
-            case 'Fansal male v2.png':
-                $display_name = 'Fansal male';
-                break;
-            case 'tutorial_sailor.png':
-                $display_name = 'tutorial_sailer';
-                break;
-            default:
-                $display_name = substr($object['src'], 0, -4);
-                break;
-        }
+        $display_name = match ($object['src']) {
+            'Woman character.png' => 'citizen',
+            'Character13.png' => 'woman',
+            'Citizen.png' => 'citizen',
+            'wujkin soldier.png' => 'soldier',
+            'Fansal male v2.png' => 'Fansal male',
+            'tutorial_sailor.png' => 'tutorial_sailer',
+            default => substr($object['src'], 0, -4),
+        };
         $object['displayName'] = $display_name;
+
+        // TODO: fix this in conversation maps
+        $object['hasConversation'] = Storage::disk('gamedata')->exists('conversations/'.$display_name.'.json');
 
         return $object;
     }

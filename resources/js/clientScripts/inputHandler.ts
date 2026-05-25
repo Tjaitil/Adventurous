@@ -82,7 +82,6 @@ interface IInputHandler {
   buildingMatchUIChanged: boolean;
   checkBuilding(mouseinputX?: number, mouseinputY?: number): void;
   interactBuilding(): void;
-  mapBuildingName(name: string): BuildingName;
   currentBuildingModule: any;
   isCurrentBuildingDefaultExport: boolean;
   fetchBuilding(building: string);
@@ -120,7 +119,9 @@ export const inputHandler: IInputHandler = {
     this.buildingMatch = undefined;
     for (let i = 0, n = GamePieces.nearBuildings.length; i < n; i++) {
       const object = GamePieces.buildings[i];
+
       if (
+        object.displayName === 'smithy' &&
         GamePieces.player.ypos > object.diameterUp &&
         GamePieces.player.ypos < object.diameterDown &&
         GamePieces.player.xpos > object.diameterLeft &&
@@ -132,7 +133,7 @@ export const inputHandler: IInputHandler = {
       }
     }
     if (this.buildingMatch) {
-      const buildingName = this.mapBuildingName(this.buildingMatch.displayName);
+      const buildingName = this.buildingMatch.displayName;
       gameEventBus.emit('HUD_BUILDING_PROMPT_UPDATE', { buildingName });
       this.buildingMatchUIChanged = true;
     } else if (this.buildingMatchUIChanged) {
@@ -148,30 +149,10 @@ export const inputHandler: IInputHandler = {
       );
     }
   },
-  mapBuildingName(name: string) {
-    let buildingName;
-    switch (name) {
-      case 'adventure base':
-      case 'adventures base desert':
-        buildingName = 'adventures';
-        break;
-      case 'stockpile desert':
-        buildingName = 'stockpile';
-        break;
-      case 'merchant desert':
-        buildingName = 'merchant';
-        break;
-      default:
-        buildingName = name;
-        break;
-    }
-    return buildingName;
-  },
   currentBuildingModule: undefined,
   isCurrentBuildingDefaultExport: false,
 
   async fetchBuilding(building: BuildingName) {
-    building = this.mapBuildingName(building.trim());
     Game.properties.inBuilding = true;
     Game.properties.building = building;
 
@@ -310,7 +291,7 @@ export const inputHandler: IInputHandler = {
     }
     return;
   },
-  characterMatch: <undefined | Character>null,
+  characterMatch: <undefined | Character>undefined,
   characterMatchUIChanged: false,
   checkCharacter() {
     this.characterMatch = undefined;
@@ -320,7 +301,7 @@ export const inputHandler: IInputHandler = {
           32 &&
         Math.abs(GamePieces.player.ypos - GamePieces.nearCharacters[i].y) <
           32 &&
-        GamePieces.characters[i].type === 'character'
+        GamePieces.nearCharacters[i].hasConversation
       ) {
         this.characterMatch = GamePieces.nearCharacters[i];
         break;
@@ -341,6 +322,7 @@ export const inputHandler: IInputHandler = {
   },
   interactCharacter() {
     if (this.characterMatch === undefined) return;
+    if (!this.characterMatch.hasConversation) return;
 
     if (this.characterMatch.src.split('.png')[0] === 'hassen') {
       tutorial.checkStep();

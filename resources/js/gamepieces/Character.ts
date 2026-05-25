@@ -1,21 +1,24 @@
 import { BaseStaticGameObject } from './BaseStaticGameObject';
-import type { StaticGameObject } from '../types/gamepieces/StaticGameObject';
+import type { ICharacterGameObject } from '../types/gamepieces/GameObject';
 import { formatCharacterName } from '@/utilities/formatters';
 
-export interface ICharacter extends StaticGameObject {
-  conversation: boolean;
-  displayName: string;
-}
-
-export class Character extends BaseStaticGameObject implements ICharacter {
+export class Character
+  extends BaseStaticGameObject
+  implements ICharacterGameObject
+{
+  type: 'character';
   width: number = 42;
   height: number = 42;
-  conversation: boolean;
+  hasConversation: boolean;
+  displayName: string;
 
-  constructor(initCharacterData: ICharacter) {
+  constructor(initCharacterData: ICharacterGameObject) {
     super(initCharacterData);
     this.y += 6;
+
+    this.type = 'character';
     this.diameterUp += 6;
-    this.displayName = formatCharacterName(this.displayName);
+    this.hasConversation = initCharacterData.hasConversation;
+    this.displayName = formatCharacterName(initCharacterData.displayName);
   }
 }
