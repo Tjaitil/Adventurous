@@ -19,9 +19,6 @@ class WorldLoaderController extends Controller
         private WorldLoaderService $worldLoaderService,
     ) {}
 
-    /**
-     * Change location
-     */
     public function changeMap(Request $request): JsonResponse
     {
         $UserData = $this->sessionService->getUserData();
