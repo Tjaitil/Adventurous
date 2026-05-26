@@ -118,10 +118,9 @@ export const inputHandler: IInputHandler = {
   checkBuilding(mouseinputX = 0, mouseinputY = 0) {
     this.buildingMatch = undefined;
     for (let i = 0, n = GamePieces.nearBuildings.length; i < n; i++) {
-      const object = GamePieces.buildings[i];
+      const object = GamePieces.nearBuildings[i];
 
       if (
-        object.displayName === 'smithy' &&
         GamePieces.player.ypos > object.diameterUp &&
         GamePieces.player.ypos < object.diameterDown &&
         GamePieces.player.xpos > object.diameterLeft &&
