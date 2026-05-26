@@ -7,7 +7,7 @@ use App\Models\UserData;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class WorldLoaderTest extends TestCase
+class WorldLoaderControllerTest extends TestCase
 {
     use RefreshDatabase;
 
