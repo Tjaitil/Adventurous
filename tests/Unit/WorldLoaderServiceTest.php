@@ -8,22 +8,21 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 
-#[Group(('map'))]
+#[Group(('mapx'))]
 class WorldLoaderServiceTest extends TestCase
 {
     private WorldLoaderService $service;
-
-    private \Illuminate\Contracts\Filesystem\Filesystem $disk;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->disk = Storage::fake('gamedata');
-        $this->disk->put('buildings.json', json_encode(['tiles' => []]));
-        $this->disk->put('landscape.json', json_encode(['tiles' => []]));
+        Storage::fake('gamedata');
 
-        $this->service = new WorldLoaderService($this->disk);
+        Storage::disk('gamedata')->put('buildings.json', json_encode(['tiles' => []]));
+        Storage::disk('gamedata')->put('landscape.json', json_encode(['tiles' => []]));
+
+        $this->service = new WorldLoaderService(Storage::disk('gamedata'));
     }
 
     public function test_set_and_get_map(): void
@@ -58,7 +57,7 @@ class WorldLoaderServiceTest extends TestCase
 
     public function test_character_has_conversation_true_when_file_exists(): void
     {
-        $this->disk->put('conversations/kapys.json', json_encode(['index' => 'k']));
+        Storage::disk('gamedata')->put('conversations/kapys.json', json_encode(['index' => 'k']));
 
         $this->putMapFile('2.1', [
             $this->makeCharacterObject(src: 'kapys.png'),
@@ -178,7 +177,7 @@ class WorldLoaderServiceTest extends TestCase
             $layers[] = ['name' => 'Buildings', 'objects' => $buildings];
         }
 
-        $this->disk->put($map.'.json', json_encode(['layers' => $layers]));
+        Storage::disk('gamedata')->put($map.'.json', json_encode(['layers' => $layers]));
     }
 
     private function makeCharacterObject(
