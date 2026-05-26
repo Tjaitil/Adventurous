@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\ValueObjects\GameLog;
+use App\Services\WorldLoaderService;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +15,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(WorldLoaderService::class, fn () => new WorldLoaderService(
+            Storage::disk('gamedata')
+        ));
     }
 
     /**

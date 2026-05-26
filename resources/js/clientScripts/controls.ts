@@ -49,7 +49,7 @@ export const controls = {
           Math.abs(GamePieces.player.ypos - object.diameterDown) < 32
         ) {
           if (!Game.properties.inBuilding) {
-            inputHandler.fetchBuilding(object.src.split('.png')[0]);
+            inputHandler.fetchBuilding(object.displayName);
           }
           break;
         }

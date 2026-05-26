@@ -1,10 +1,16 @@
-import type { StaticGameObject } from '../types/gamepieces/StaticGameObject';
 import viewport from '../clientScripts/viewport';
 import { AssetPaths } from '../clientScripts/ImagePath';
 import { GamePieces } from '@/clientScripts/gamePieces';
+import type { Character } from '@/types/gamepieces/Character';
+import type {
+  IBuildingGameObject,
+  GameObject,
+  GameObjectType,
+  StaticGameObject,
+} from '@/types/gamepieces/GameObject';
 
-export class BaseStaticGameObject implements StaticGameObject {
-  public type: string;
+export class BaseStaticGameObject implements GameObject {
+  public type: GameObjectType;
   public sprite: HTMLImageElement;
   public src: string;
   public drawX: number;
@@ -19,10 +25,11 @@ export class BaseStaticGameObject implements StaticGameObject {
   public width: number;
   public height: number;
   public noCollision: boolean;
-  public id: boolean;
-  public displayName: string;
+  public id: number;
 
-  constructor(initObjectData: StaticGameObject) {
+  constructor(
+    initObjectData: StaticGameObject | Character | IBuildingGameObject,
+  ) {
     this.visible = initObjectData.visible;
     this.type = initObjectData.type;
 
@@ -41,10 +48,6 @@ export class BaseStaticGameObject implements StaticGameObject {
 
     this.drawX = Math.round(initObjectData.x - viewport.offsetX);
     this.drawY = Math.round(initObjectData.y - viewport.offsetY);
-
-    if (this.src) {
-      this.displayName = this.src.split('.png')[0];
-    }
 
     this.noCollision = initObjectData.noCollision;
     this.sprite = new Image(this.width, this.height);
