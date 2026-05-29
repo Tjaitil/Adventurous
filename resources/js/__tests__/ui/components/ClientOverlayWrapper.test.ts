@@ -1,12 +1,6 @@
 import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
-import type {
-  RenderResult} from '@testing-library/vue';
-import {
-  render,
-  screen,
-  waitFor,
-  fireEvent
-} from '@testing-library/vue';
+import type { RenderResult } from '@testing-library/vue';
+import { render, screen, waitFor, fireEvent } from '@testing-library/vue';
 import { createPinia } from 'pinia';
 import '@testing-library/jest-dom';
 import ClientOverlayWrapper from '@/ui/components/ClientOverlayWrapper.vue';
@@ -107,20 +101,41 @@ describe('ClientOverlayWrapper.vue', () => {
       });
     });
 
-    test('displays stockpile component for stockpile Vue page', async () => {
+    test.each([
+      ['smithy', 'SmithyPage', 'Smithy Page'],
+      ['bakery', 'BakeryPage', 'Bakery Page'],
+      ['archeryshop', 'ArcheryShopPage', 'Archery Shop Page'],
+      ['travelbureau', 'TravelBureauPage', 'Travel Bureau Page'],
+      ['zinsstore', 'ZinsStorePage', 'Zins Store Page'],
+    ])('renders %s via vuePageMap', async (building, stubName, label) => {
       renderClientOverlay({
         stubs: {
-          StockpilePage: { template: '<div>Stockpile Page</div>' },
+          [stubName]: { template: `<div>${label}</div>` },
         },
       });
 
-      gameEventBus.emit('RENDER_BUILDING', {
-        building: 'stockpile',
-      });
+      gameEventBus.emit('RENDER_BUILDING', { building });
 
       await waitFor(() => {
-        expect(screen.getByText('Stockpile Page')).toBeInTheDocument();
+        expect(screen.getByText(label)).toBeInTheDocument();
       });
+    });
+
+    test('does not use external rendering path for new Vue pages', async () => {
+      const { container } = renderClientOverlay({
+        stubs: { SmithyPage: { template: '<div>Smithy Page</div>' } },
+      });
+
+      gameEventBus.emit('RENDER_BUILDING', { building: 'smithy' });
+
+      await waitFor(() => {
+        expect(screen.getByText('Smithy Page')).toBeInTheDocument();
+      });
+
+      // Should NOT render external HTML wrapper
+      expect(
+        container.querySelector('#news_content_main_content_inner'),
+      ).not.toBeInTheDocument();
     });
   });
 
