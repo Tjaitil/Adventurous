@@ -1,24 +1,20 @@
-import type archeryShopModule from '@/buildingScripts/archeryshop';
-import type bakeryModule from '@/buildingScripts/bakery';
 import type CropsModule from '@/buildingScripts/crops';
 import type merchantModule from '@/buildingScripts/merchant';
 import type MineModule from '@/buildingScripts/mine';
-import type smithyModule from '@/buildingScripts/smithy';
-import type travelBureauModule from '@/buildingScripts/travelbureau';
+import type stockpileModule from '@/buildingScripts/stockpile';
 import type workforceLodgeModule from '@/buildingScripts/workforcelodge';
-import type zinsStoreModule from '@/buildingScripts/zinsstore';
 
 type BuildingModuleMapping = {
-  bakery: typeof bakeryModule;
-  travelbureau: typeof travelBureauModule;
-  stockpile: null;
+  bakery: null;
+  travelbureau: null;
+  stockpile: typeof stockpileModule;
   mine: MineModule;
   crops: CropsModule;
-  zinsstore: typeof zinsStoreModule;
+  zinsstore: null;
   merchant: typeof merchantModule;
   workforcelodge: typeof workforceLodgeModule;
-  smithy: typeof smithyModule;
-  archeryshop: typeof archeryShopModule;
+  smithy: null;
+  archeryshop: null;
   armory: null;
 };
 
@@ -38,8 +34,23 @@ export enum Buildings {
 
 export type BuildingName = keyof BuildingModuleMapping;
 
-export type VuePage = 'armory' | 'stockpile';
+export type VuePage =
+  | 'armory'
+  | 'stockpile'
+  | 'smithy'
+  | 'bakery'
+  | 'archeryshop'
+  | 'travelbureau'
+  | 'zinsstore';
 
 export function isVuePage(page: BuildingName): page is VuePage {
-  return page === 'armory' || page === 'stockpile';
+  return [
+    'armory',
+    'smithy',
+    'bakery',
+    'archeryshop',
+    'travelbureau',
+    'zinsstore',
+    'stockpile',
+  ].includes(page);
 }
