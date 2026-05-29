@@ -11,15 +11,10 @@ import { GamePieces } from './gamePieces';
 import type { Building } from '../gamepieces/Building';
 import { setUpTabList } from '../utilities/tabs';
 import stockpileModule from '../buildingScripts/stockpile';
-import travelBureauModule from '../buildingScripts/travelbureau';
-import bakeryModule from '../buildingScripts/bakery';
 import MineModule from '../buildingScripts/mine';
 import CropsModule from '../buildingScripts/crops';
-import zinsStoreModule from '../buildingScripts/zinsstore';
 import merchantModule from '../buildingScripts/merchant';
 import workforceLodgeModule from '../buildingScripts/workforcelodge';
-import smithyModule from '../buildingScripts/smithy';
-import archeryShopModule from '../buildingScripts/archeryshop';
 import { useConversationStore } from '@/ui/stores/ConversationStore';
 import { gameEventBus } from '@/gameEventsBus';
 import { buildingDataPreloader } from '@/ui/services/buildingDataPreloader';
@@ -55,19 +50,9 @@ export interface InputHandlerEvents {
 }
 
 function shouldSkipImport(building: string) {
-  return [
-    'stockpile',
-    'travelbureau',
-    'bakery',
-    'mine',
-    'crops',
-    'zinsstore',
-    'merchant',
-    'workforcelodge',
-    'smithy',
-    'archeryshop',
-    'armory',
-  ].includes(building);
+  return ['stockpile', 'mine', 'crops', 'merchant', 'workforcelodge'].includes(
+    building,
+  );
 }
 
 interface BuildingAssetsTypes {
@@ -103,9 +88,7 @@ export const inputHandler: IInputHandler = {
     [Buildings.CROPS]: {
       script: 'crops',
     },
-    [Buildings.ZINSSTORE]: {
-      script: 'zinsstore',
-    },
+    [Buildings.ZINSSTORE]: {},
     [Buildings.MERCHANT]: {
       script: 'merchant',
     },
@@ -147,6 +130,25 @@ export const inputHandler: IInputHandler = {
         true,
       );
     }
+  },
+  mapBuildingName(name: string) {
+    let buildingName;
+    switch (name) {
+      case 'adventure base':
+      case 'adventures base desert':
+        buildingName = 'adventures';
+        break;
+      case 'stockpile desert':
+        buildingName = 'stockpile';
+        break;
+      case 'merchant desert':
+        buildingName = 'merchant';
+        break;
+      default:
+        buildingName = name;
+        break;
+    }
+    return buildingName;
   },
   currentBuildingModule: undefined,
   isCurrentBuildingDefaultExport: false,
@@ -246,20 +248,8 @@ export const inputHandler: IInputHandler = {
       // Make sure DOM is loaded before initializing building module
       await new Promise(resolve => setTimeout(resolve, 300));
       switch (building) {
-        case 'archeryshop':
-          this.currentBuildingModule = archeryShopModule;
-          this.currentBuildingModule.init();
-          break;
         case 'stockpile':
           this.currentBuildingModule = stockpileModule;
-          this.currentBuildingModule.init();
-          break;
-        case 'travelbureau':
-          this.currentBuildingModule = travelBureauModule;
-          this.currentBuildingModule.init();
-          break;
-        case 'bakery':
-          this.currentBuildingModule = bakeryModule;
           this.currentBuildingModule.init();
           break;
         case 'mine':
@@ -267,15 +257,6 @@ export const inputHandler: IInputHandler = {
           break;
         case 'crops':
           this.currentBuildingModule = new CropsModule();
-          break;
-        case 'zinsstore':
-          this.currentBuildingModule = zinsStoreModule;
-          this.currentBuildingModule.init();
-          break;
-
-        case 'smithy':
-          this.currentBuildingModule = smithyModule;
-          this.currentBuildingModule.init();
           break;
         case 'workforcelodge':
           this.currentBuildingModule = workforceLodgeModule;

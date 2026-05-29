@@ -50,15 +50,38 @@ import {
   nextTick,
 } from 'vue';
 import ArmoryPage from '../buildings/ArmoryPage.vue';
+import SmithyPage from '../buildings/SmithyPage.vue';
+import BakeryPage from '../buildings/BakeryPage.vue';
+import ArcheryShopPage from '../buildings/ArcheryShopPage.vue';
+import TravelBureauPage from '../buildings/TravelBureauPage.vue';
+import ZinsStorePage from '../buildings/ZinsStorePage.vue';
 import { ClientOverlayInterface } from '@/clientScripts/clientOverlayInterface';
 import { buildingDataPreloader } from '@/ui/services/buildingDataPreloader';
+import type { VuePage } from '@/types/Building';
+
+type VuePageComponent =
+  | typeof ArmoryPage
+  | typeof SmithyPage
+  | typeof BakeryPage
+  | typeof ArcheryShopPage
+  | typeof TravelBureauPage
+  | typeof ZinsStorePage;
+
+const vuePageMap: Record<VuePage, { component: VuePageComponent; preload: () => Promise<void> }> = {
+  armory: { component: ArmoryPage, preload: () => buildingDataPreloader.preloadArmory() },
+  smithy: { component: SmithyPage, preload: () => buildingDataPreloader.preloadSmithy() },
+  bakery: { component: BakeryPage, preload: () => buildingDataPreloader.preloadBakery() },
+  archeryshop: { component: ArcheryShopPage, preload: () => buildingDataPreloader.preloadArcheryShop() },
+  travelbureau: { component: TravelBureauPage, preload: () => buildingDataPreloader.preloadTravelBureau() },
+  zinsstore: { component: ZinsStorePage, preload: () => buildingDataPreloader.preloadZinsStore() },
+};
 
 const isOpen = ref(false);
 const loadingElement = useTemplateRef('loadingIcon');
 const externalContent = ref<HTMLElement | null>(null);
 
 // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-const internalComponent = shallowRef<typeof ArmoryPage | null>(null);
+const internalComponent = shallowRef<VuePageComponent | null>(null);
 
 const currentComponent = computed({
   get() {
@@ -84,9 +107,11 @@ gameEventBus.subscribe('RENDER_BUILDING', obj => {
   isOpen.value = true;
 
   if (!('content' in obj) && !('loading' in obj)) {
-    // Add logic once we have more buildings as VuePages
-    currentComponent.value = ArmoryPage;
-    void buildingDataPreloader.preloadArmory();
+    const entry = vuePageMap[obj.building as VuePage];
+    if (entry) {
+      currentComponent.value = entry.component;
+      void entry.preload();
+    }
 
     externalRendering.value = false;
     return;

@@ -42,7 +42,6 @@ type CachedData = {
   } & TravelbureauDataLoaderResponse;
   smithy: {
     cached_at: number;
-    view: string;
   } & SmithyDataLoaderResponse;
   mine: {
     cached_at: number;
@@ -54,7 +53,6 @@ type CachedData = {
   } & CropsDataLoaderResponse;
   zinsstore: {
     cached_at: number;
-    script: 'zinsstore';
   } & ZinsStoreDataLoaderResponse;
   archeryshop: {
     cached_at: number;
@@ -128,14 +126,10 @@ class BuildingDataPreloader {
     }
 
     try {
-      const [viewResponse, storeResponse] = await Promise.all([
-        AdvApi.get<string>('/smithy'),
-        smithyDataLoader.store_items(),
-      ]);
+      const storeResponse = await smithyDataLoader.store_items();
 
       this.cache.smithy = {
         cached_at: Date.now(),
-        view: viewResponse,
         ...storeResponse['data'],
       };
     } catch {
@@ -204,7 +198,6 @@ class BuildingDataPreloader {
 
       this.cache.zinsstore = {
         cached_at: Date.now(),
-        script: 'zinsstore',
         ...storeResponse['data'],
       };
     } catch {

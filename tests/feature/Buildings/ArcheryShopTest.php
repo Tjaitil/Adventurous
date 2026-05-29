@@ -16,16 +16,16 @@ class ArcheryShopTest extends TestCase
 
         $this->actingAs($this->RandomUser);    }
 
-    public function test_smithy_route(): void
+    public function test_archeryshop_route(): void
     {
-        $response = $this->get('/smithy');
+        $response = $this->get('/archeryshop');
 
         $response->assertStatus(200);
     }
 
     public function test_can_get_store(): void
     {
-        $response = $this->get('/smithy/store');
+        $response = $this->get('/archeryshop/get');
 
         $response->assertStatus(200);
 
