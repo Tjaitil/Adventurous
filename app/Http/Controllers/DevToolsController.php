@@ -9,6 +9,7 @@ use App\Models\Hunger;
 use App\Models\Item;
 use App\Services\InventoryService;
 use App\Services\SessionService;
+use App\Services\WorldLoaderService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,7 +20,6 @@ class DevToolsController extends Controller
     public function __construct(
         private InventoryService $inventoryService,
         private SessionService $sessionService,
-        private WorldLoaderController $worldLoaderController,
     ) {}
 
     public function getLocations(): JsonResponse
@@ -49,11 +49,11 @@ class DevToolsController extends Controller
     public function giveItem(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'item'   => ['required', 'string'],
+            'item' => ['required', 'string'],
             'amount' => ['required', 'integer', 'min:1'],
         ]);
 
-        $user      = Auth::user();
+        $user = Auth::user();
         $inventory = $user->inventory;
 
         try {
@@ -83,10 +83,10 @@ class DevToolsController extends Controller
     public function setUserData(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'hunger'               => ['sometimes', 'integer', 'min:0', 'max:100'],
+            'hunger' => ['sometimes', 'integer', 'min:0', 'max:100'],
             'stockpile_max_amount' => ['sometimes', 'integer', 'min:1'],
-            'frajrite_items'       => ['sometimes', 'boolean'],
-            'wujkin_items'         => ['sometimes', 'boolean'],
+            'frajrite_items' => ['sometimes', 'boolean'],
+            'wujkin_items' => ['sometimes', 'boolean'],
         ]);
 
         $userData = $this->sessionService->getUserData();
@@ -102,24 +102,24 @@ class DevToolsController extends Controller
         return (new AdvResponse(['message' => 'UserData updated']))->toResponse($request);
     }
 
-    public function teleportToLocation(Request $request): JsonResponse
+    public function teleportToLocation(WorldLoaderService $worldLoaderService, Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'map' => ['required', 'string', 'in:' . implode(',', GameMaps::getMaps())],
+            'map' => ['required', 'string', 'in:'.implode(',', GameMaps::getMaps())],
         ]);
 
-        $targetMap    = $validated['map'];
+        $targetMap = $validated['map'];
         $locationName = GameMaps::locationMapping()[$targetMap] ?? null;
 
-        $userData               = $this->sessionService->getUserData();
+        $userData = $this->sessionService->getUserData();
         $userData->map_location = $targetMap;
         if ($locationName) {
             $userData->location = $locationName;
         }
         $userData->save();
 
-        $this->worldLoaderController->setMap($targetMap);
-        $result = $this->worldLoaderController->getWorldData();
+        $worldLoaderService->setMap($targetMap);
+        $result = $worldLoaderService->getWorldData();
 
         if ($result === false) {
             return response()->json(['message' => 'Could not load map data'], 422);
