@@ -30,4 +30,10 @@ export default defineConfigWithVueTs(
       '@typescript-eslint/consistent-type-imports': 'error',
     },
   },
+  {
+    files: ['**/*.vue'],
+    rules: {
+      '@typescript-eslint/no-useless-default-assignment': 'off',
+    },
+  },
 );
