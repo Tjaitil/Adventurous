@@ -37,6 +37,7 @@ export class Game {
     inBuilding: false,
     checkingPerson: 'none',
     delta: 0,
+    rawDelta: 0,
   };
 
   public static worldData: GetWorldResponse['data'];
@@ -272,10 +273,12 @@ export class Game {
   }
 
   public static update = (timestamp: number) => {
-    Game.properties.delta =
-      (timestamp - Game.properties.timestamp) / 1000 / viewport.zoom;
+    Game.properties.rawDelta =
+      (timestamp - Game.properties.timestamp) / 1000;
+    Game.properties.delta = Game.properties.rawDelta / viewport.zoom;
     if (Game.properties.delta > 0.08) {
       Game.properties.delta = Math.round(0.16 / viewport.zoom) * 2;
+      Game.properties.rawDelta = Game.properties.delta * viewport.zoom;
     }
     Game.properties.timestamp = timestamp;
     if (Game.properties.gameState !== 'playing') {

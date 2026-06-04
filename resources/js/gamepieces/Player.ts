@@ -7,12 +7,13 @@ import { controls } from '../clientScripts/controls';
 import { Game } from '../advclient';
 import viewport from '../clientScripts/viewport';
 import { GamePieces } from '../clientScripts/gamePieces';
-import { HUD } from '../clientScripts/HUD';
 import { AssetPaths } from '../clientScripts/ImagePath';
 import { addModuleTester } from '@/devtools/ModuleTester';
 import { gameEventBus } from '@/gameEventsBus';
 
 export class Player implements MovingGameObject {
+  ANIM_WALK_DURATION = 0.167; // ~6 frames/sec  — standard walk/idle cycle
+  ANIM_ATTACK_DURATION = 0.033; // ~30 frames/sec — snappy attack steps
   width = 36;
   height = 36;
   speedX = 0;
@@ -55,6 +56,7 @@ export class Player implements MovingGameObject {
   attackedBy = -1;
   hunted = false;
   loopIndex = 0;
+  animTimer = 0;
   counter = 0;
   direction = 'none';
   loopArray = [0, 1, 0, 2];
@@ -289,6 +291,7 @@ export class Player implements MovingGameObject {
       this.diameterDown = this.ypos + this.height;
       this.diameterLeft = this.xpos + 4;
     }
+    this.animTimer += Game.properties.rawDelta;
     if (this.combat) {
       let newDirection = 'none';
       if (controls.playerDown) {
@@ -317,9 +320,10 @@ export class Player implements MovingGameObject {
       }
       if (
         this.attack &&
-        Game.properties.duration % 2 === 0 &&
+        this.animTimer >= this.ANIM_ATTACK_DURATION &&
         this.cooldown <= 0
       ) {
+        this.animTimer = 0;
         this.indexY += 1;
         if (this.attackLoop === 0) {
           this.loopIndex = 0;
@@ -353,7 +357,8 @@ export class Player implements MovingGameObject {
         } else {
           this.attackLoop++;
         }
-      } else if (Game.properties.duration % 10 === 0 && !this.attack) {
+      } else if (this.animTimer >= this.ANIM_WALK_DURATION && !this.attack) {
+        this.animTimer = 0;
         if (this.loopIndex > 3) {
           this.loopIndex = 0;
         }
@@ -397,7 +402,11 @@ export class Player implements MovingGameObject {
         newdirection != 'none' &&
         (this.oldYbase != this.ypos || this.oldXbase != this.xpos)
       ) {
-        if (newdirection != 'none' && Game.properties.duration % 10 === 0) {
+        if (
+          newdirection != 'none' &&
+          this.animTimer >= this.ANIM_WALK_DURATION
+        ) {
+          this.animTimer = 0;
           this.draw();
           this.loopIndex++;
         } else if (newdirection != this.direction) {
