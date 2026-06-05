@@ -17,7 +17,6 @@ export interface GameProperties {
   inBuilding: boolean;
   checkingPerson: string;
   delta: number;
-  rawDelta: number;
 }
 
 export type loadWorldParameters =

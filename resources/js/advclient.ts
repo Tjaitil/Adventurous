@@ -22,7 +22,6 @@ export type AdvClientEvents = {
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class Game {
   public static properties: GameProperties = {
-    duration: 0,
     requestId: 0,
     pauseID: null,
     timestamp: 0,
@@ -37,7 +36,6 @@ export class Game {
     inBuilding: false,
     checkingPerson: 'none',
     delta: 0,
-    rawDelta: 0,
   };
 
   public static worldData: GetWorldResponse['data'];
@@ -273,12 +271,10 @@ export class Game {
   }
 
   public static update = (timestamp: number) => {
-    Game.properties.rawDelta =
-      (timestamp - Game.properties.timestamp) / 1000;
-    Game.properties.delta = Game.properties.rawDelta / viewport.zoom;
+    Game.properties.delta =
+      (timestamp - Game.properties.timestamp) / 1000 / viewport.zoom;
     if (Game.properties.delta > 0.08) {
       Game.properties.delta = Math.round(0.16 / viewport.zoom) * 2;
-      Game.properties.rawDelta = Game.properties.delta * viewport.zoom;
     }
     Game.properties.timestamp = timestamp;
     if (Game.properties.gameState !== 'playing') {
@@ -331,7 +327,6 @@ export class Game {
     if (GamePieces.player.checkPosition()) {
       Game.getNextWorld();
     }
-    Game.properties.duration++;
     Game.properties.requestId = window.requestAnimationFrame(Game.update);
   };
 }
