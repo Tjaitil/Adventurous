@@ -159,8 +159,8 @@ export class Player implements MovingGameObject {
         });
       }, 2000);
     }
-    gameEventBus.emit('PLAYER_HEALTH_CHANGE', {
-      playerHealthChange: this.health,
+    gameEventBus.emit('PLAYER_HEALTH_UPDATE', {
+      health: this.health,
     });
   }
 
