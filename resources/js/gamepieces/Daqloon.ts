@@ -56,7 +56,7 @@ export class Daqloon implements MovingGameObject {
   spawn = true;
   nearbyPlayer = true;
   moveX = 0;
-  hitMessage = -1;
+  hitMessageTimer = -1;
   animTimer = 0;
   wanderTimer = 0;
   // TODO: Fix object
@@ -109,7 +109,7 @@ export class Daqloon implements MovingGameObject {
 
     const damage = getRandomInteger(0, GamePieces.player.attackDamage);
     this.health -= damage;
-    this.hitMessage = Game.properties.duration;
+    this.hitMessageTimer = 0;
     viewport.drawText(
       '18px Times New Roman',
       '#FFFFFF',
@@ -185,12 +185,12 @@ export class Daqloon implements MovingGameObject {
         this.drawY - GamePieces.player.yMovement * viewport.scale,
       );
     }
-    if (
-      this.hitMessage !== -1 &&
-      Game.properties.duration - this.hitMessage > 10
-    ) {
-      this.hitMessage = -1;
-      viewport.resetTextLayer();
+    if (this.hitMessageTimer !== -1) {
+      this.hitMessageTimer += Game.properties.rawDelta;
+      if (this.hitMessageTimer > 0.167) {
+        this.hitMessageTimer = -1;
+        viewport.resetTextLayer();
+      }
     }
     this.setDiameter();
     this.resetDirections();
