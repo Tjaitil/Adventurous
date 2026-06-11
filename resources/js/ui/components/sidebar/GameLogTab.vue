@@ -19,7 +19,7 @@
 import { gameEventBus } from '@/gameEventsBus';
 import type { GameLog, ParsedGameLog } from '@/types/GameLog';
 import { parseGameLog } from '@/utilities/parseGameLog';
-import { ref } from 'vue';
+import { onUnmounted, ref } from 'vue';
 import GameLogItem from '../GameLogItem.vue';
 
 interface Props {
@@ -29,13 +29,20 @@ const { initMessages } = defineProps<Props>();
 
 const messages = ref<ParsedGameLog[]>(initMessages);
 
-gameEventBus.subscribe('GAMELOGGER_MESSAGE_LOGGED', ({ message }) => {
-  const parsedGameLog = {
-    ...message,
-    message: parseGameLog(message.message),
-    timestamp: message.timestamp ?? new Date().toLocaleTimeString(),
-  };
+const unsubGameLogger = gameEventBus.subscribe(
+  'GAMELOGGER_MESSAGE_LOGGED',
+  ({ message }) => {
+    const parsedGameLog = {
+      ...message,
+      message: parseGameLog(message.message),
+      timestamp: message.timestamp ?? new Date().toLocaleTimeString(),
+    };
 
-  messages.value = [...messages.value, parsedGameLog];
+    messages.value = [...messages.value, parsedGameLog];
+  },
+);
+
+onUnmounted(() => {
+  unsubGameLogger();
 });
 </script>

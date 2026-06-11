@@ -14,9 +14,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onUnmounted } from 'vue';
 import { gameEventBus } from '@/gameEventsBus';
-import type { GameLog} from '@/types/GameLog';
+import type { GameLog } from '@/types/GameLog';
 import { GameLogTypes } from '@/types/GameLog';
 import { parseGameLog } from '@/utilities/parseGameLog';
 import GameLogItem from '../GameLogItem.vue';
@@ -67,10 +67,17 @@ const showNextMessage = () => {
   }, 4000);
 };
 
-gameEventBus.subscribe('GAMELOGGER_MESSAGE_LOGGED', eventData => {
-  messages.value.push(eventData.message);
-  if (!isShowing.value) {
-    showNextMessage();
-  }
+const unsubGameLogger = gameEventBus.subscribe(
+  'GAMELOGGER_MESSAGE_LOGGED',
+  eventData => {
+    messages.value.push(eventData.message);
+    if (!isShowing.value) {
+      showNextMessage();
+    }
+  },
+);
+
+onUnmounted(() => {
+  unsubGameLogger();
 });
 </script>
