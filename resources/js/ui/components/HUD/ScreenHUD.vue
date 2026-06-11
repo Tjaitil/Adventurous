@@ -76,7 +76,7 @@
 <script setup lang="ts" vapor>
 import { gameEventBus } from '@/gameEventsBus';
 import { useMapStore } from '@/ui/stores/MapStore';
-import { ref } from 'vue';
+import { ref, onUnmounted } from 'vue';
 
 interface Props {
   hunger: {
@@ -97,19 +97,25 @@ const showHuntedIcon = ref(false);
 const buildingName = ref<string | null>(null);
 const characterName = ref<string | null>(null);
 
-gameEventBus.subscribe('PLAYER_HUNTED_UPDATE', ({ isHunted }) => {
-  if (isHunted) {
-    showHuntedIcon.value = true;
-  } else {
-    showHuntedIcon.value = false;
-  }
-});
+const unsubscribers = [
+  gameEventBus.subscribe('PLAYER_HUNTED_UPDATE', ({ isHunted }) => {
+    if (isHunted) {
+      showHuntedIcon.value = true;
+    } else {
+      showHuntedIcon.value = false;
+    }
+  }),
+  gameEventBus.subscribe('HUD_BUILDING_PROMPT_UPDATE', payload => {
+    buildingName.value = payload.buildingName;
+  }),
+  gameEventBus.subscribe('HUD_CONVERSATION_PROMPT_UPDATE', payload => {
+    characterName.value = payload.characterName;
+  }),
+];
 
-gameEventBus.subscribe('HUD_BUILDING_PROMPT_UPDATE', payload => {
-  buildingName.value = payload.buildingName;
-});
-
-gameEventBus.subscribe('HUD_CONVERSATION_PROMPT_UPDATE', payload => {
-  characterName.value = payload.characterName;
+onUnmounted(() => {
+  unsubscribers.forEach(unsub => {
+    unsub();
+  });
 });
 </script>

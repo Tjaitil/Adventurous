@@ -28,8 +28,19 @@ class GameEventBus {
   };
 
   subscribe<K extends GameEventType>(event: K, listener: GameEventListener<K>) {
-    // TypeScript can't guarantee at runtime, but we trust the typing at call site
     this.listeners[event].push(listener);
+    return () => {
+      this.unsubscribe(event, listener);
+    };
+  }
+
+  unsubscribe<K extends GameEventType>(
+    event: K,
+    listener: GameEventListener<K>,
+  ) {
+    const listeners = this.listeners[event];
+    const index = listeners.indexOf(listener);
+    if (index !== -1) listeners.splice(index, 1);
   }
 
   emit<K extends GameEventType>(event: K, payload: GameEventMap[K]) {

@@ -43,6 +43,7 @@
 import { gameEventBus } from '@/gameEventsBus';
 import {
   computed,
+  onUnmounted,
   ref,
   shallowRef,
   useTemplateRef,
@@ -80,7 +81,7 @@ watch(externalContent, () => {
   }
 });
 
-gameEventBus.subscribe('RENDER_BUILDING', obj => {
+const unsubRenderBuilding = gameEventBus.subscribe('RENDER_BUILDING', obj => {
   isOpen.value = true;
 
   if (!('content' in obj) && !('loading' in obj)) {
@@ -101,6 +102,10 @@ gameEventBus.subscribe('RENDER_BUILDING', obj => {
     const content = new DOMParser().parseFromString(obj.content, 'text/html');
     externalContent.value = content.body;
   }
+});
+
+onUnmounted(() => {
+  unsubRenderBuilding();
 });
 
 const internalClose = () => {
