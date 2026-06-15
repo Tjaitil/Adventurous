@@ -114,6 +114,7 @@ export class Player implements MovingGameObject {
     this.diameterDown = this.y + this.height;
     this.diameterLeft = this.x;
     this.setup();
+    gameEventBus.emit('PLAYER_HEALTH_UPDATE', { health: this.health });
   }
 
   setIsInCombatAction(status) {
@@ -159,8 +160,8 @@ export class Player implements MovingGameObject {
         });
       }, 2000);
     }
-    gameEventBus.emit('PLAYER_HEALTH_CHANGE', {
-      playerHealthChange: this.health,
+    gameEventBus.emit('PLAYER_HEALTH_UPDATE', {
+      health: this.health,
     });
   }
 
@@ -252,9 +253,14 @@ export class Player implements MovingGameObject {
 
   regenerateHealth() {
     if (this.health <= 0) return;
-    this.health + 10 > 100 ? (this.health = 100) : (this.health += 10);
-    gameEventBus.emit('PLAYER_HEALTH_CHANGE', {
-      playerHealthChange: this.health,
+    const newHealth = this.health + 10;
+    if (newHealth > 100) {
+      this.health = 100;
+    } else {
+      this.health = newHealth;
+    }
+    gameEventBus.emit('PLAYER_HEALTH_UPDATE', {
+      health: this.health,
     });
 
     this.regenerateCoundown = false;
