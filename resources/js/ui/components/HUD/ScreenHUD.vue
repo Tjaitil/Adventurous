@@ -111,6 +111,9 @@ const unsubscribers = [
   gameEventBus.subscribe('HUD_CONVERSATION_PROMPT_UPDATE', payload => {
     characterName.value = payload.characterName;
   }),
+  gameEventBus.subscribe('PLAYER_HEALTH_UPDATE', payload => {
+    currentHealth.value = payload.health;
+  }),
 ];
 
 onUnmounted(() => {
