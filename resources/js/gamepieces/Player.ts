@@ -291,7 +291,7 @@ export class Player implements MovingGameObject {
       this.diameterDown = this.ypos + this.height;
       this.diameterLeft = this.xpos + 4;
     }
-    this.animTimer += Game.properties.rawDelta;
+    this.animTimer += Game.properties.delta;
     if (this.combat) {
       let newDirection = 'none';
       if (controls.playerDown) {

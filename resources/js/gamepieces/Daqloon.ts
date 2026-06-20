@@ -186,7 +186,7 @@ export class Daqloon implements MovingGameObject {
       );
     }
     if (this.hitMessageTimer !== -1) {
-      this.hitMessageTimer += Game.properties.rawDelta;
+      this.hitMessageTimer += Game.properties.delta;
       if (this.hitMessageTimer > 0.167) {
         this.hitMessageTimer = -1;
         viewport.resetTextLayer();
@@ -227,7 +227,7 @@ export class Daqloon implements MovingGameObject {
     if (this.health > 0) {
       this.calculateMovement();
     }
-    this.animTimer += Game.properties.rawDelta;
+    this.animTimer += Game.properties.delta;
     if (this.currentAnimation === 'damage') {
       this.setStartAnimationPoint('idle');
     } else if (this.spawn && !this.dead) {
@@ -345,7 +345,7 @@ export class Daqloon implements MovingGameObject {
         this.spriteYIndex = 1;
       }
     } else {
-      this.wanderTimer += Game.properties.rawDelta;
+      this.wanderTimer += Game.properties.delta;
       if (this.wanderTimer >= this.ANIM_WANDER_DURATION) {
         this.wanderTimer = 0;
         this.spriteYIndex = getRandomInteger(0, 1);
