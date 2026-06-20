@@ -10,6 +10,9 @@ import { collisionCheck } from '../clientScripts/collision';
 import { AssetPaths } from '../clientScripts/ImagePath';
 
 export class Daqloon implements MovingGameObject {
+  ANIM_IDLE_DURATION = 0.167; // ~6 frames/sec  — spawn / death / idle cycle
+  ANIM_ATTACK_DURATION = 0.1; // 10 frames/sec  — attack animation
+  ANIM_WANDER_DURATION = 0.5; // 2 frames/sec   — idle direction repick
   id: number;
   index = 1;
   attackDamage = 15;
@@ -53,7 +56,9 @@ export class Daqloon implements MovingGameObject {
   spawn = true;
   nearbyPlayer = true;
   moveX = 0;
-  hitMessage = -1;
+  hitMessageTimer = -1;
+  animTimer = 0;
+  wanderTimer = 0;
   // TODO: Fix object
   fighting_area = null;
 
@@ -104,7 +109,7 @@ export class Daqloon implements MovingGameObject {
 
     const damage = getRandomInteger(0, GamePieces.player.attackDamage);
     this.health -= damage;
-    this.hitMessage = Game.properties.duration;
+    this.hitMessageTimer = 0;
     viewport.drawText(
       '18px Times New Roman',
       '#FFFFFF',
@@ -180,12 +185,12 @@ export class Daqloon implements MovingGameObject {
         this.drawY - GamePieces.player.yMovement * viewport.scale,
       );
     }
-    if (
-      this.hitMessage !== -1 &&
-      Game.properties.duration - this.hitMessage > 10
-    ) {
-      this.hitMessage = -1;
-      viewport.resetTextLayer();
+    if (this.hitMessageTimer !== -1) {
+      this.hitMessageTimer += Game.properties.delta;
+      if (this.hitMessageTimer > 0.167) {
+        this.hitMessageTimer = -1;
+        viewport.resetTextLayer();
+      }
     }
     this.setDiameter();
     this.resetDirections();
@@ -222,10 +227,12 @@ export class Daqloon implements MovingGameObject {
     if (this.health > 0) {
       this.calculateMovement();
     }
+    this.animTimer += Game.properties.delta;
     if (this.currentAnimation === 'damage') {
       this.setStartAnimationPoint('idle');
     } else if (this.spawn && !this.dead) {
-      if (Game.properties.duration % 10 === 0) {
+      if (this.animTimer >= this.ANIM_IDLE_DURATION) {
+        this.animTimer = 0;
         if (this.spriteXIndex >= 2) {
           this.spriteYIndex = 2;
           this.spawn = false;
@@ -236,7 +243,8 @@ export class Daqloon implements MovingGameObject {
           this.spriteXIndex++;
         }
       }
-    } else if (this.dead && Game.properties.duration % 10 === 0) {
+    } else if (this.dead && this.animTimer >= this.ANIM_IDLE_DURATION) {
+      this.animTimer = 0;
       // If spriteXIndex is 5, the death animation is complete
       this.setStartAnimationPoint('death');
       if (this.spriteXIndex == 5) {
@@ -249,11 +257,12 @@ export class Daqloon implements MovingGameObject {
       }
       this.spriteXIndex++;
     } else if (
-      Game.properties.duration % 6 === 0 &&
+      this.animTimer >= this.ANIM_ATTACK_DURATION &&
       this.attack &&
       !this.dead &&
       !this.spawn
     ) {
+      this.animTimer = 0;
       // Set start xIndex for attack animation
       if (this.spriteXIndex < 5) {
         this.spriteXIndex = 5;
@@ -270,11 +279,12 @@ export class Daqloon implements MovingGameObject {
         }
       }
     } else if (
-      Game.properties.duration % 10 === 0 &&
+      this.animTimer >= this.ANIM_IDLE_DURATION &&
       !this.dead &&
       !this.spawn &&
       !this.attack
     ) {
+      this.animTimer = 0;
       this.spriteXIndex++;
       if (this.spriteXIndex > 4) {
         this.spriteXIndex = 1;
@@ -335,7 +345,9 @@ export class Daqloon implements MovingGameObject {
         this.spriteYIndex = 1;
       }
     } else {
-      if (Game.properties.duration % 30 === 0) {
+      this.wanderTimer += Game.properties.delta;
+      if (this.wanderTimer >= this.ANIM_WANDER_DURATION) {
+        this.wanderTimer = 0;
         this.spriteYIndex = getRandomInteger(0, 1);
         this.moveX = getRandomInteger(0, 2);
       }

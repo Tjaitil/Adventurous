@@ -22,7 +22,6 @@ export type AdvClientEvents = {
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class Game {
   public static properties: GameProperties = {
-    duration: 0,
     requestId: 0,
     pauseID: null,
     timestamp: 0,
@@ -43,18 +42,6 @@ export class Game {
 
   public static getProperty(val: keyof GameProperties) {
     return this.properties[val];
-  }
-
-  /**
-   * Threshold 60 will be around 1 second
-   * @returns boolean
-   */
-  public static isGameDuration(threshold: number) {
-    if (this.properties.duration % threshold === 0) {
-      return true;
-    } else {
-      return false;
-    }
   }
 
   public static setGameState(state: string) {
@@ -328,7 +315,6 @@ export class Game {
     if (GamePieces.player.checkPosition()) {
       Game.getNextWorld();
     }
-    Game.properties.duration++;
     Game.properties.requestId = window.requestAnimationFrame(Game.update);
   };
 }
