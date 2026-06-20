@@ -269,18 +269,24 @@ export class Game {
       return false;
     }
 
-    if (controls.playerLeft) {
-      GamePieces.player.speedX = -GamePieces.player.speed;
-    } else if (controls.playerRight) {
-      GamePieces.player.speedX = GamePieces.player.speed;
+    if (!Game.properties.inBuilding && !useConversationStore().isActive) {
+      if (controls.playerLeft) {
+        GamePieces.player.speedX = -GamePieces.player.speed;
+      } else if (controls.playerRight) {
+        GamePieces.player.speedX = GamePieces.player.speed;
+      } else {
+        GamePieces.player.speedX = 0;
+      }
+      if (controls.playerUp) {
+        GamePieces.player.speedY = -GamePieces.player.speed;
+      } else if (controls.playerDown) {
+        GamePieces.player.speedY = GamePieces.player.speed;
+      } else {
+        GamePieces.player.speedY = 0;
+      }
     } else {
+      // Clear any stale velocity so the player doesn't drift while blocked
       GamePieces.player.speedX = 0;
-    }
-    if (controls.playerUp) {
-      GamePieces.player.speedY = -GamePieces.player.speed;
-    } else if (controls.playerDown) {
-      GamePieces.player.speedY = GamePieces.player.speed;
-    } else {
       GamePieces.player.speedY = 0;
     }
     viewport.resetSpriteLayer();
