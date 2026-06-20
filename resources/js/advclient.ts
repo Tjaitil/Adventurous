@@ -44,18 +44,6 @@ export class Game {
     return this.properties[val];
   }
 
-  /**
-   * Threshold 60 will be around 1 second
-   * @returns boolean
-   */
-  public static isGameDuration(threshold: number) {
-    if (this.properties.duration % threshold === 0) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   public static setGameState(state: string) {
     // TODO: Fix enum here
     if (
