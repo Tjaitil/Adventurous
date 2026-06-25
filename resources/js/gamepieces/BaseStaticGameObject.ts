@@ -52,11 +52,11 @@ export class BaseStaticGameObject implements GameObject {
     this.noCollision = initObjectData.noCollision;
     this.sprite = new Image(this.width, this.height);
 
-    this.sprite.src = AssetPaths.getImagePath(this.src);
     if (!this.src && !GamePieces.nonDrawingTypes.includes(this.type)) {
-      console.error('No image source found for ' + this.src);
+      console.error('No image source found for type: ' + this.type);
+    } else if (this.src) {
+      this.sprite.src = AssetPaths.getImagePath(this.src);
+      if (!this.sprite.src.includes('.png')) this.sprite.src += '.png';
     }
-    // check source for missing format
-    if (!this.sprite.src.includes('.png')) this.sprite.src += '.png';
   }
 }

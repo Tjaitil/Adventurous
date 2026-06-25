@@ -28,13 +28,14 @@ export class Item {
     this.drawY = drawY;
     this.x = drawX + viewport.offsetX;
     this.y = drawY + viewport.offsetY;
+    this.src = src;
     this.id = GamePieces.items.length + 1;
 
     this.spriteObject = makeSprite(
-      this.name,
+      src,
       this.width,
       this.height,
-      this.src,
+      src,
     );
     this.shadow = new ItemShadowAnimation(this.x, this.y);
   }

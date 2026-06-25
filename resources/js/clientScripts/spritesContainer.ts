@@ -6,16 +6,12 @@ export function makeSprite(
   width: number,
   height: number,
   src: string,
-) {
-  let spriteObject: ItemSprite;
+): ItemSprite {
   const image = new Image(width, height);
-  image.src = AssetPaths.getImagePath(src + '.png');
-  image.onload = () => {
-    spriteObject.name = name;
-    spriteObject.image = image;
-    spriteObject.width = width;
-    spriteObject.height = height;
-  };
+  const spriteObject: ItemSprite = { name, image, src: src || '', width, height };
+  if (src) {
+    image.src = AssetPaths.getImagePath(src + '.png');
+  }
   image.onerror = () => {
     console.log(image.src + ' Sprite loading failed');
   };

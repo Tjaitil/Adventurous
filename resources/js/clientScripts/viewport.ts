@@ -65,6 +65,10 @@ interface viewportDrawObject {
   height: number;
 }
 
+function isImageReady(img: HTMLImageElement): boolean {
+  return img instanceof HTMLImageElement && img.complete && img.naturalWidth > 0;
+}
+
 // TODO: Convert to class
 export const viewport = {
   counter: 0,
@@ -211,30 +215,34 @@ export const viewport = {
   },
   drawBackground(xMovement: number, yMovement: number) {
     this.layer.background.fillRect(0, 0, this.width, this.height);
-    this.layer.background.drawImage(
-      this.worldImage,
-      this.offsetX + xMovement,
-      this.offsetY + yMovement,
-      this.width,
-      this.height,
-      0,
-      0,
-      this.width,
-      this.height,
-    );
+    if (isImageReady(this.worldImage)) {
+      this.layer.background.drawImage(
+        this.worldImage,
+        this.offsetX + xMovement,
+        this.offsetY + yMovement,
+        this.width,
+        this.height,
+        0,
+        0,
+        this.width,
+        this.height,
+      );
+    }
   },
   drawPlayer(canvasSprite: CanvasSprite) {
-    this.layer.player.drawImage(
-      canvasSprite.img,
-      canvasSprite.spriteX,
-      canvasSprite.spriteY,
-      canvasSprite.sWidth,
-      canvasSprite.sHeight,
-      this.playerCanvasX,
-      this.playerCanvasY,
-      canvasSprite.width,
-      canvasSprite.height,
-    );
+    if (isImageReady(canvasSprite.img)) {
+      this.layer.player.drawImage(
+        canvasSprite.img,
+        canvasSprite.spriteX,
+        canvasSprite.spriteY,
+        canvasSprite.sWidth,
+        canvasSprite.sHeight,
+        this.playerCanvasX,
+        this.playerCanvasY,
+        canvasSprite.width,
+        canvasSprite.height,
+      );
+    }
   },
   resetPlayerLayer() {
     this.layer.player.clearRect(0, 0, this.width, this.height);
@@ -244,29 +252,30 @@ export const viewport = {
   },
   drawObject(layer, img, spriteX, spriteY, width, height) {
     if (!['background', 'frontObjects'].includes(layer)) return false;
+    if (!isImageReady(img)) return false;
     if (layer === 'background') {
       this.layer.background.drawImage(img, spriteX, spriteY, width, height);
     } else if (layer === 'frontObjects') {
-      if (!img.src.includes('/.png')) {
-        this.layer.frontObjects.drawImage(img, spriteX, spriteY, width, height);
-      }
+      this.layer.frontObjects.drawImage(img, spriteX, spriteY, width, height);
     }
   },
   resetSpriteLayer() {
     this.layer.sprite.clearRect(0, 0, this.width, this.height);
   },
   drawSprite(img, spriteX, spriteY, sWidth, sHeight, x, y, width, height) {
-    this.layer.sprite.drawImage(
-      img,
-      spriteX,
-      spriteY,
-      sWidth,
-      sHeight,
-      x,
-      y,
-      width,
-      height,
-    );
+    if (isImageReady(img)) {
+      this.layer.sprite.drawImage(
+        img,
+        spriteX,
+        spriteY,
+        sWidth,
+        sHeight,
+        x,
+        y,
+        width,
+        height,
+      );
+    }
   },
   drawText(font, fillStyle, text, x, y, textAlign = false) {
     if (textAlign) {
