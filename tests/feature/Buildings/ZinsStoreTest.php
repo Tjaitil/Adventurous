@@ -4,6 +4,8 @@ namespace App\tests;
 
 use App\Models\Item;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 
 class ZinsStoreTest extends TestCase
@@ -31,11 +33,8 @@ class ZinsStoreTest extends TestCase
         $response->json();
     }
 
-    /**
-     * @group store-purchase
-     *
-     * @dataProvider itemProvider
-     */
+    #[Group('store-purchase')]
+    #[DataProvider('itemProvider')]
     public function test_sell_bakery_item(string $itemName)
     {
         $Item = Item::where('name', $itemName)->first();

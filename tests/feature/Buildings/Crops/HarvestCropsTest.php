@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Buildings\Crops;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use App\Enums\GameEvents;
 use App\Enums\GameLocations;
 use App\Models\Crop;
@@ -22,8 +23,8 @@ class HarvestCropsTest extends SkillTestCase
     }
 
     /**
-     * @dataProvider locationProvider
      */
+    #[DataProvider('locationProvider')]
     public function test_cant_harvest_with_no_active_crops(string $location, string $cropType)
     {
         $Crop = Crop::where('crop_type', $cropType)->first();
@@ -60,8 +61,8 @@ class HarvestCropsTest extends SkillTestCase
     }
 
     /**
-     * @dataProvider locationProvider
      */
+    #[DataProvider('locationProvider')]
     public function test_cant_harvest_with_not_finished_crops(string $location, string $cropType)
     {
         $Crop = Crop::where('crop_type', $cropType)->first();
@@ -101,8 +102,8 @@ class HarvestCropsTest extends SkillTestCase
     }
 
     /**
-     * @dataProvider locationProvider
      */
+    #[DataProvider('locationProvider')]
     public function test_cant_cancel_finished_crops(string $location, string $cropType)
     {
         $Crop = Crop::where('crop_type', $cropType)->first();
@@ -142,8 +143,8 @@ class HarvestCropsTest extends SkillTestCase
     }
 
     /**
-     * @dataProvider locationProvider
      */
+    #[DataProvider('locationProvider')]
     public function test_cancel_harvest_doesnt_give_xp_or_crops(string $location, string $cropType)
     {
         $Crop = Crop::where('crop_type', $cropType)->first();

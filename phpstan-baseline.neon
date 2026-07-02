@@ -55,18 +55,6 @@ parameters:
 			path: app/Enums/SkillNames.php
 
 		-
-			message: '#^Method App\\Exceptions\\JsonException\:\:__construct\(\) has parameter \$code with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Exceptions/JsonException.php
-
-		-
-			message: '#^Method App\\Exceptions\\JsonException\:\:__construct\(\) has parameter \$message with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Exceptions/JsonException.php
-
-		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\SkillActionResource\:\:\$finished\.$#'
 			identifier: property.notFound
 			count: 1
@@ -1369,12 +1357,6 @@ parameters:
 			path: app/Http/Controllers/ProfiencyStatusController.php
 
 		-
-			message: '#^Offset ''warriors'' does not exist on array\{training\: 0, finished\: 0, army_mission\: 0, idle\: 0\}\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: app/Http/Controllers/ProfiencyStatusController.php
-
-		-
 			message: '#^Parameter \#1 \$object of function date_timestamp_get expects DateTimeInterface, App\\Http\\Controllers\\DateTime given\.$#'
 			identifier: argument.type
 			count: 2
@@ -1835,12 +1817,6 @@ parameters:
 			identifier: property.nonObject
 			count: 4
 			path: app/Http/Controllers/WorkforceLodgeController.php
-
-		-
-			message: '#^Method App\\Http\\Controllers\\WorldLoaderController\:\:getWorldData\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: app/Http/Controllers/WorldLoaderController.php
 
 		-
 			message: '#^Method adventures\:\:calculateContribution\(\) has no return type specified\.$#'
@@ -2641,12 +2617,6 @@ parameters:
 			path: app/Models/Adventures_model.php
 
 		-
-			message: '#^Variable \$new_adventure_leader might not be defined\.$#'
-			identifier: variable.undefined
-			count: 3
-			path: app/Models/Adventures_model.php
-
-		-
 			message: '#^Method ArmorItems\:\:__construct\(\) has parameter \$session with no type specified\.$#'
 			identifier: missingType.parameter
 			count: 1
@@ -2815,30 +2785,6 @@ parameters:
 			path: app/Models/ArmyMissionsRessource_model.php
 
 		-
-			message: '#^Offset ''reward'' does not exist on array\{difficulty\: ''hard''\}\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: app/Models/ArmyMissionsRessource_model.php
-
-		-
-			message: '#^Offset ''reward'' does not exist on array\{difficulty\: ''medium''\}\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: app/Models/ArmyMissionsRessource_model.php
-
-		-
-			message: '#^Offset ''time'' does not exist on array\{difficulty\: ''hard'', reward\: float\}\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: app/Models/ArmyMissionsRessource_model.php
-
-		-
-			message: '#^Offset ''time'' does not exist on array\{difficulty\: ''medium'', reward\: float\}\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: app/Models/ArmyMissionsRessource_model.php
-
-		-
 			message: '#^PHPDoc tag @param references unknown parameter\: \$js$#'
 			identifier: parameter.notFound
 			count: 1
@@ -2953,30 +2899,6 @@ parameters:
 			path: app/Models/ArmyMissions_model.php
 
 		-
-			message: '#^Offset ''reward'' does not exist on array\{difficulty\: ''hard''\}\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: app/Models/ArmyMissions_model.php
-
-		-
-			message: '#^Offset ''reward'' does not exist on array\{difficulty\: ''medium''\}\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: app/Models/ArmyMissions_model.php
-
-		-
-			message: '#^Offset ''time'' does not exist on array\{difficulty\: ''hard'', reward\: float\}\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: app/Models/ArmyMissions_model.php
-
-		-
-			message: '#^Offset ''time'' does not exist on array\{difficulty\: ''medium'', reward\: float\}\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: app/Models/ArmyMissions_model.php
-
-		-
 			message: '#^PHPDoc tag @param references unknown parameter\: \$js$#'
 			identifier: parameter.notFound
 			count: 1
@@ -3058,12 +2980,6 @@ parameters:
 			message: '#^Method Artefact_model\:\:updateArtefact\(\) has no return type specified\.$#'
 			identifier: missingType.return
 			count: 1
-			path: app/Models/Artefact_model.php
-
-		-
-			message: '#^Offset 1 might not exist on array\{0\?\: string, 1\?\: string\}\.$#'
-			identifier: offsetAccess.notFound
-			count: 3
 			path: app/Models/Artefact_model.php
 
 		-
@@ -4447,19 +4363,7 @@ parameters:
 			path: app/Models/SetAdventure_model.php
 
 		-
-			message: '#^Offset ''amount'' might not exist on ''melee''\|''ranged''\|array\{required\: mixed, amount\: float\|int\<3, 15\>\}\|array\{requirement\: non\-falsy\-string, amount\: int\<1, max\>\}\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: app/Models/SetAdventure_model.php
-
-		-
 			message: '#^Offset ''medium'' might not exist on array\{easy\: int\<11, 15\>, medium\: int\<6, 9\>, hard\: int\<3, 4\>\}\|array\{easy\: int\<4, 5\>\}\|array\{easy\: int\<6, 10\>, medium\: 3\}\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: app/Models/SetAdventure_model.php
-
-		-
-			message: '#^Offset ''required'' might not exist on ''melee''\|''ranged''\|array\{required\: mixed, amount\: float\|int\<3, 15\>\}\|array\{requirement\: non\-falsy\-string, amount\: int\<1, max\>\}\.$#'
 			identifier: offsetAccess.notFound
 			count: 1
 			path: app/Models/SetAdventure_model.php
@@ -4504,24 +4408,6 @@ parameters:
 			message: '#^Strict comparison using \=\=\= between ''warrior'' and ''warrior'' will always evaluate to true\.$#'
 			identifier: identical.alwaysTrue
 			count: 2
-			path: app/Models/SetAdventure_model.php
-
-		-
-			message: '#^Variable \$in might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
-			path: app/Models/SetAdventure_model.php
-
-		-
-			message: '#^Variable \$queryArray might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
-			path: app/Models/SetAdventure_model.php
-
-		-
-			message: '#^Variable \$row3 might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
 			path: app/Models/SetAdventure_model.php
 
 		-
@@ -4781,12 +4667,6 @@ parameters:
 			identifier: variable.undefined
 			count: 1
 			path: app/Models/UpdateAdventure_model.php
-
-		-
-			message: '#^Comparison operation "\>" between \(array\|float\|int\) and 0 results in an error\.$#'
-			identifier: greater.invalid
-			count: 1
-			path: app/Models/UpdateGamedata_model.php
 
 		-
 			message: '#^Function get_item not found\.$#'

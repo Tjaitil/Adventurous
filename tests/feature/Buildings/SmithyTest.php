@@ -4,6 +4,7 @@ namespace Tests\Feature\Buildings;
 
 use App\Models\SmithyItem;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 
 class SmithyTest extends TestCase
@@ -14,7 +15,8 @@ class SmithyTest extends TestCase
     {
         parent::setUp();
 
-        $this->actingAs($this->RandomUser);    }
+        $this->actingAs($this->RandomUser);
+    }
 
     public function test_smithy_route(): void
     {
@@ -35,9 +37,7 @@ class SmithyTest extends TestCase
         ]));
     }
 
-    /**
-     * @group store-purchase
-     */
+    #[Group('store-purchase')]
     public function test_can_smith_item(): void
     {
         $SmithyItem = SmithyItem::inRandomOrder()->limit(1)->first();

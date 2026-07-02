@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
+use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 
 class LoginTest extends TestCase
@@ -17,9 +18,7 @@ class LoginTest extends TestCase
         $this->withoutVite();
     }
 
-    /**
-     * @group authentication
-     */
+    #[Group('authentication')]
     public function test_user_can_view_login_form(): void
     {
         $response = $this->get('/login');
@@ -28,9 +27,7 @@ class LoginTest extends TestCase
         $response->assertSee('Login');
     }
 
-    /**
-     * @group authentication
-     */
+    #[Group('authentication')]
     public function test_user_can_login(): void
     {
         $response = $this->post('/authenticate', [
@@ -43,9 +40,7 @@ class LoginTest extends TestCase
         $response->assertRedirect('/main');
     }
 
-    /**
-     * @group authentication
-     */
+    #[Group('authentication')]
     public function test_user_can_logout(): void
     {
         $response = $this->actingAs($this->getRandomUser())->post('/logout');
@@ -57,9 +52,7 @@ class LoginTest extends TestCase
         $response->assertRedirect('/login');
     }
 
-    /**
-     * @group authentication
-     */
+    #[Group('authentication')]
     public function test_user_without_session_is_redirected_to_login(): void
     {
         $response = $this->get('/advclient');

@@ -4,6 +4,7 @@ namespace Tests\Feature\Buildings;
 
 use App\Models\ArcheryShopItem;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 
 class ArcheryShopTest extends TestCase
@@ -14,7 +15,8 @@ class ArcheryShopTest extends TestCase
     {
         parent::setUp();
 
-        $this->actingAs($this->RandomUser);    }
+        $this->actingAs($this->RandomUser);
+    }
 
     public function test_smithy_route(): void
     {
@@ -32,9 +34,7 @@ class ArcheryShopTest extends TestCase
         $response->json();
     }
 
-    /**
-     * @group store-purchase
-     */
+    #[Group('store-purchase')]
     public function test_can_fletch_item(): void
     {
         $ArcheryShopItem = ArcheryShopItem::inRandomOrder()->limit(1)->first();
