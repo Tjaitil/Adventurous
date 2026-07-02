@@ -9,11 +9,11 @@ importers:
   .:
     dependencies:
       '@inertiajs/vue3':
-        specifier: ^2.3.24
-        version: 2.3.24(vue@3.5.34(typescript@5.9.3))
+        specifier: ^3.0
+        version: 3.4.0(axios@1.16.1)(vue@3.5.34(typescript@5.9.3))
       '@nuxt/ui':
         specifier: ^4.8.0
-        version: 4.8.0(@inertiajs/vue3@2.3.24(vue@3.5.34(typescript@5.9.3)))(@internationalized/date@3.12.1)(@internationalized/number@3.6.6)(@tiptap/extensions@3.23.5(@tiptap/core@3.23.5(@tiptap/pm@3.23.5))(@tiptap/pm@3.23.5))(@tiptap/y-tiptap@3.0.3(prosemirror-model@1.25.7)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30))(axios@1.16.1)(embla-carousel@8.6.0)(magicast@0.3.5)(tailwindcss@4.3.0)(typescript@5.9.3)(vite@7.3.3(@types/node@20.19.41)(jiti@2.7.0)(lightningcss@1.32.0))(vue@3.5.34(typescript@5.9.3))(yjs@13.6.30)
+        version: 4.8.0(@inertiajs/vue3@3.4.0(axios@1.16.1)(vue@3.5.34(typescript@5.9.3)))(@internationalized/date@3.12.1)(@internationalized/number@3.6.6)(@tiptap/extensions@3.23.5(@tiptap/core@3.23.5(@tiptap/pm@3.23.5))(@tiptap/pm@3.23.5))(@tiptap/y-tiptap@3.0.3(prosemirror-model@1.25.7)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30))(axios@1.16.1)(embla-carousel@8.6.0)(magicast@0.3.5)(tailwindcss@4.3.0)(typescript@5.9.3)(vite@7.3.3(@types/node@20.19.41)(jiti@2.7.0)(lightningcss@1.32.0))(vue@3.5.34(typescript@5.9.3))(yjs@13.6.30)
       '@tailwindcss/vite':
         specifier: ^4.3.0
         version: 4.3.0(vite@7.3.3(@types/node@20.19.41)(jiti@2.7.0)(lightningcss@1.32.0))
@@ -432,11 +432,16 @@ packages:
     peerDependencies:
       vue: '>=3.0.0'
 
-  '@inertiajs/core@2.3.24':
-    resolution: {integrity: sha512-xAlUl5+RKtdbutEgsmdWa6HmnvjIGcWTrvfLj/3Icy3/7bSH3aiI+kuYPs17LBq/SMaXnqBZXXo094rEXUv2aA==}
+  '@inertiajs/core@3.4.0':
+    resolution: {integrity: sha512-3O+My9yhY1NliwyaEFS2OhLpnNb73mWIgAJEeh6KnBL5lJKy5P5TlvmjR4ROWJhMjVmvtbkiJ/sQ2n4qazsH8g==}
+    peerDependencies:
+      axios: ^1.15.2
+    peerDependenciesMeta:
+      axios:
+        optional: true
 
-  '@inertiajs/vue3@2.3.24':
-    resolution: {integrity: sha512-TokM+JU88YTHClh/LcKk31qiIAZFq3RQ4BBf1dxvk6MV45KWYemJMpLS6WFJ5NaSv6rZFlZrRc92N0ZdyOC/HA==}
+  '@inertiajs/vue3@3.4.0':
+    resolution: {integrity: sha512-lUPjNRPn5mctftwKAUOgmRPaqubCa7OHY/RNBvZaAmvClXO4CpK1Y6sdXkdhC76GlNx9Y44M5DPQ4RcH/Cgp5A==}
     peerDependencies:
       vue: ^3.0.0
 
@@ -1155,12 +1160,6 @@ packages:
 
   '@types/json5@0.0.29':
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
-
-  '@types/lodash-es@4.17.12':
-    resolution: {integrity: sha512-0NgftHUcV4v34VhXm8QBSftKVXtbkBG3ViCjs6+eJ5a6y6Mi/jiFGPc1sC7QK+9BFhWrURE3EOggmWaSxL9OzQ==}
-
-  '@types/lodash@4.17.24':
-    resolution: {integrity: sha512-gIW7lQLZbue7lRSWEFql49QJJWThrTFFeIMJdp3eH4tKoxm1OvEPg02rm4wCCSHS0cL3/Fizimb35b7k8atwsQ==}
 
   '@types/node@20.19.41':
     resolution: {integrity: sha512-ECymXOukMnOoVkC2bb1Vc/w/836DXncOg5m8Xj1RH7xSHZJWNYY6Zh7EH477vcnD5egKNNfy2RpNOmuChhFPgQ==}
@@ -1912,6 +1911,9 @@ packages:
     resolution: {integrity: sha512-w+5mJ3GuFL+NjVtJlvydShqE1eN3h3PbI7/5LAsYJP/2qtuMXjfL2LpHSRqo4b4eSF5K/DH1JXKUAHSB2UW50g==}
     engines: {node: '>= 0.4'}
 
+  es-toolkit@1.47.1:
+    resolution: {integrity: sha512-5RAqEwf4P4E17p+W75KLOWw/nOvKZzSQpxM32IpI2KZLaVonjTrZ0Ai5ghMaVI9eKC2p8eoQgcBdkEDgzFk6+Q==}
+
   esbuild@0.27.7:
     resolution: {integrity: sha512-IxpibTjyVnmrIQo5aqNpCgoACA/dTKLTlhMHihVHhdkxKyPO1uBBthumT0rdHmcsk9uMonIWS0m4FljWzILh3w==}
     engines: {node: '>=18'}
@@ -2574,8 +2576,13 @@ packages:
       pusher-js: '*'
       socket.io-client: '*'
 
-  laravel-precognition@1.0.2:
-    resolution: {integrity: sha512-0H08JDdMWONrL/N314fvsO3FATJwGGlFKGkMF3nNmizVFJaWs17816iM+sX7Rp8d5hUjYCx6WLfsehSKfaTxjg==}
+  laravel-precognition@2.0.0:
+    resolution: {integrity: sha512-dmA4HGc9m+TsVNsJs9/XQBI8u6j7coilN+qKkBuhuXQzH3HypwS/c5dFQ4UqUGjBbcxIM7zdk91kM/SRZwIvWQ==}
+    peerDependencies:
+      axios: ^1.4.0
+    peerDependenciesMeta:
+      axios:
+        optional: true
 
   laravel-vite-plugin@2.1.0:
     resolution: {integrity: sha512-z+ck2BSV6KWtYcoIzk9Y5+p4NEjqM+Y4i8/H+VZRLq0OgNjW2DqyADquwYu5j8qRvaXwzNmfCWl1KrMlV1zpsg==}
@@ -2677,9 +2684,6 @@ packages:
   locate-path@6.0.0:
     resolution: {integrity: sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==}
     engines: {node: '>=10'}
-
-  lodash-es@4.18.1:
-    resolution: {integrity: sha512-J8xewKD/Gk22OZbhpOVSwcs60zhd95ESDwezOFuA3/099925PdHJ7OFHNTGtajL3AlZkykD32HykiMo+BIBI8A==}
 
   lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
@@ -3134,10 +3138,6 @@ packages:
 
   pusher-js@8.5.0:
     resolution: {integrity: sha512-V7uzGi9bqOOOyM/6IkJdpFyjGZj7llz1v0oWnYkZKcYLvbz6VcHVLmzKqkvegjuMumpfIEKGLmWHwFb39XFCpw==}
-
-  qs@6.15.2:
-    resolution: {integrity: sha512-Rzq0KEyX/w/tEybncDgdkZrJgVUsUMk3xjh3t5bv3S1HTAtg+uOYt72+ZfwiQwKdysThkTBdL/rTi6HDmX9Ddw==}
-    engines: {node: '>=0.6'}
 
   quansync@0.2.11:
     resolution: {integrity: sha512-AifT7QEbW9Nri4tAwR5M/uzpBuqfZf+zwaEM/QkzEjj7NBuFD2rBuy0K3dE+8wltbezDV7JMA0WfnCPYRSYbXA==}
@@ -4175,27 +4175,22 @@ snapshots:
       '@iconify/types': 2.0.0
       vue: 3.5.34(typescript@5.9.3)
 
-  '@inertiajs/core@2.3.24':
+  '@inertiajs/core@3.4.0(axios@1.16.1)':
     dependencies:
-      '@types/lodash-es': 4.17.12
+      '@jridgewell/trace-mapping': 0.3.31
+      es-toolkit: 1.47.1
+      laravel-precognition: 2.0.0(axios@1.16.1)
+    optionalDependencies:
       axios: 1.16.1
-      laravel-precognition: 1.0.2
-      lodash-es: 4.18.1
-      qs: 6.15.2
-    transitivePeerDependencies:
-      - debug
-      - supports-color
 
-  '@inertiajs/vue3@2.3.24(vue@3.5.34(typescript@5.9.3))':
+  '@inertiajs/vue3@3.4.0(axios@1.16.1)(vue@3.5.34(typescript@5.9.3))':
     dependencies:
-      '@inertiajs/core': 2.3.24
-      '@types/lodash-es': 4.17.12
-      laravel-precognition: 1.0.2
-      lodash-es: 4.18.1
+      '@inertiajs/core': 3.4.0(axios@1.16.1)
+      es-toolkit: 1.47.1
+      laravel-precognition: 2.0.0(axios@1.16.1)
       vue: 3.5.34(typescript@5.9.3)
     transitivePeerDependencies:
-      - debug
-      - supports-color
+      - axios
 
   '@inquirer/ansi@2.0.5': {}
 
@@ -4423,7 +4418,7 @@ snapshots:
       pkg-types: 2.3.1
       std-env: 4.1.0
 
-  '@nuxt/ui@4.8.0(@inertiajs/vue3@2.3.24(vue@3.5.34(typescript@5.9.3)))(@internationalized/date@3.12.1)(@internationalized/number@3.6.6)(@tiptap/extensions@3.23.5(@tiptap/core@3.23.5(@tiptap/pm@3.23.5))(@tiptap/pm@3.23.5))(@tiptap/y-tiptap@3.0.3(prosemirror-model@1.25.7)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30))(axios@1.16.1)(embla-carousel@8.6.0)(magicast@0.3.5)(tailwindcss@4.3.0)(typescript@5.9.3)(vite@7.3.3(@types/node@20.19.41)(jiti@2.7.0)(lightningcss@1.32.0))(vue@3.5.34(typescript@5.9.3))(yjs@13.6.30)':
+  '@nuxt/ui@4.8.0(@inertiajs/vue3@3.4.0(axios@1.16.1)(vue@3.5.34(typescript@5.9.3)))(@internationalized/date@3.12.1)(@internationalized/number@3.6.6)(@tiptap/extensions@3.23.5(@tiptap/core@3.23.5(@tiptap/pm@3.23.5))(@tiptap/pm@3.23.5))(@tiptap/y-tiptap@3.0.3(prosemirror-model@1.25.7)(prosemirror-state@1.4.4)(prosemirror-view@1.41.8)(y-protocols@1.0.7(yjs@13.6.30))(yjs@13.6.30))(axios@1.16.1)(embla-carousel@8.6.0)(magicast@0.3.5)(tailwindcss@4.3.0)(typescript@5.9.3)(vite@7.3.3(@types/node@20.19.41)(jiti@2.7.0)(lightningcss@1.32.0))(vue@3.5.34(typescript@5.9.3))(yjs@13.6.30)':
     dependencies:
       '@floating-ui/dom': 1.7.6
       '@iconify/vue': 5.0.1(vue@3.5.34(typescript@5.9.3))
@@ -4490,7 +4485,7 @@ snapshots:
       vaul-vue: 0.4.1(reka-ui@2.9.7(vue@3.5.34(typescript@5.9.3)))(vue@3.5.34(typescript@5.9.3))
       vue-component-type-helpers: 3.3.1
     optionalDependencies:
-      '@inertiajs/vue3': 2.3.24(vue@3.5.34(typescript@5.9.3))
+      '@inertiajs/vue3': 3.4.0(axios@1.16.1)(vue@3.5.34(typescript@5.9.3))
       '@internationalized/date': 3.12.1
       '@internationalized/number': 3.6.6
     transitivePeerDependencies:
@@ -5019,12 +5014,6 @@ snapshots:
   '@types/json-schema@7.0.15': {}
 
   '@types/json5@0.0.29': {}
-
-  '@types/lodash-es@4.17.12':
-    dependencies:
-      '@types/lodash': 4.17.24
-
-  '@types/lodash@4.17.24': {}
 
   '@types/node@20.19.41':
     dependencies:
@@ -5926,6 +5915,8 @@ snapshots:
       is-date-object: 1.1.0
       is-symbol: 1.1.1
 
+  es-toolkit@1.47.1: {}
+
   esbuild@0.27.7:
     optionalDependencies:
       '@esbuild/aix-ppc64': 0.27.7
@@ -6695,13 +6686,11 @@ snapshots:
       pusher-js: 8.5.0
       socket.io-client: 4.8.1
 
-  laravel-precognition@1.0.2:
+  laravel-precognition@2.0.0(axios@1.16.1):
     dependencies:
+      es-toolkit: 1.47.1
+    optionalDependencies:
       axios: 1.16.1
-      lodash-es: 4.18.1
-    transitivePeerDependencies:
-      - debug
-      - supports-color
 
   laravel-vite-plugin@2.1.0(vite@7.3.3(@types/node@20.19.41)(jiti@2.7.0)(lightningcss@1.32.0)):
     dependencies:
@@ -6778,8 +6767,6 @@ snapshots:
   locate-path@6.0.0:
     dependencies:
       p-locate: 5.0.0
-
-  lodash-es@4.18.1: {}
 
   lodash.merge@4.6.2: {}
 
@@ -7207,10 +7194,6 @@ snapshots:
   pusher-js@8.5.0:
     dependencies:
       tweetnacl: 1.0.3
-
-  qs@6.15.2:
-    dependencies:
-      side-channel: 1.1.0
 
   quansync@0.2.11: {}
 
