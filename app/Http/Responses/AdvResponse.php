@@ -40,9 +40,9 @@ class AdvResponse implements Responsable
     }
 
     /**
-     * @param  array<string, mixed>  $data
+     * @param  array<string, mixed>|string|int|bool  $data
      */
-    public function addData(string $index, array $data): self
+    public function addData(string $index, array|string|int|bool $data): self
     {
         $this->data['data'][$index] = $data;
 
