@@ -31,7 +31,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: "8.2"
+          php-version: "8.4"
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
           coverage: none
 
@@ -44,4 +44,4 @@ jobs:
           php artisan key:generate
 
       - name: Run tests
-        run: php artisan migrate --seed && php artisan test
+        run: php artisan migrate --seed && php artisan test --compact
