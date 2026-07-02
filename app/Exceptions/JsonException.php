@@ -12,6 +12,10 @@ use Log;
 
 class JsonException extends Exception
 {
+    /**
+     * @param  string  $message
+     * @param  int  $code
+     */
     public function __construct(
         protected $message,
         protected $code = 500,

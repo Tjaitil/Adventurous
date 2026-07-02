@@ -19,6 +19,8 @@ use App\Services\SkillsService;
 use App\Updaters\UserLevelsUpdater;
 use Carbon\Carbon;
 use Illuminate\Container\Attributes\CurrentUser;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -36,7 +38,7 @@ class CropsController extends Controller
     ) {}
 
     /**
-     * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
+     * @return View|Factory
      */
     public function index()
     {
@@ -223,13 +225,13 @@ class CropsController extends Controller
             ->first();
 
         if (! $Farmer instanceof Farmer) {
-            throw new JsonException(Farmer::class, ' model could not be retrieved');
+            throw new JsonException('Farmer model could not be retrieved');
         }
         if (is_null($Farmer->crop_type)) {
             return advResponse([], 422)
                 ->addMessage(GameLogService::addErrorLog('You are in the wrong location to grow crops'));
         }
-        if($Farmer->crop_finishes_at === null) {
+        if ($Farmer->crop_finishes_at === null) {
             return advResponse([], 422)
                 ->addMessage(GameLogService::addErrorLog('You have no crops growing'));
         }
