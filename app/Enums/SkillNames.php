@@ -4,16 +4,14 @@ namespace App\Enums;
 
 enum SkillNames: string
 {
-    case ADVENTURER = "adventurer";
-    case MINER = "miner";
-    case FARMER = "farmer";
-    case TRADER = "trader";
-    case WARRIOR = "warrior";
-
+    case ADVENTURER = 'adventurer';
+    case MINER = 'miner';
+    case FARMER = 'farmer';
+    case TRADER = 'trader';
+    case WARRIOR = 'warrior';
 
     /**
-     * 
-     * @return array 
+     * @return array<string>
      */
     public static function getSkillNames()
     {

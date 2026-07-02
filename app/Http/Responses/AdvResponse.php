@@ -2,9 +2,11 @@
 
 namespace App\Http\Responses;
 
+use App\Enums\SkillNames;
 use App\ValueObjects\GameLog;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class AdvResponse implements Responsable
@@ -16,6 +18,7 @@ class AdvResponse implements Responsable
 
     /**
      * @param  array<string, mixed>  $data  Data key in the response
+     * @param  array<string, mixed>  $headers
      *
      * @see https://wendelladriel.com/blog/standard-api-responses-with-laravel-responsables All credit
      */
@@ -36,13 +39,19 @@ class AdvResponse implements Responsable
         return $this;
     }
 
-    public function addData(string $index, $data): self
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    public function addData(string $index, array $data): self
     {
         $this->data['data'][$index] = $data;
 
         return $this;
     }
 
+    /**
+     * @param  array<string, mixed>  $data
+     */
     public function setData(array $data): self
     {
         $this->data['data'] = array_merge($this->data['data'], $data);
@@ -69,7 +78,7 @@ class AdvResponse implements Responsable
 
     /**
      * @param array<int, array{
-     *  'skill': value-of<\App\Enums\SkillNames>,
+     *  'skill': value-of<SkillNames>,
      *  'new_level': int
      * }> $levelUPs
      */
@@ -91,7 +100,7 @@ class AdvResponse implements Responsable
      * NOTE: we cannot type the argument as Request
      * becasue it conflicts with the interface
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      */
     public function toResponse($request): JsonResponse
     {
