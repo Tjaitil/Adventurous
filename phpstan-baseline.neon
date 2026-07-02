@@ -37,24 +37,6 @@ parameters:
 			path: app/Actions/MergeIntoSubArrayAction.php
 
 		-
-			message: '#^Method App\\Enums\\GameMaps\:\:getMaps\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Enums/GameMaps.php
-
-		-
-			message: '#^Method App\\Enums\\GameMaps\:\:locationMapping\(\) should return array\<App\\Enums\\GameLocations\> but returns array\<string, string\>\.$#'
-			identifier: return.type
-			count: 1
-			path: app/Enums/GameMaps.php
-
-		-
-			message: '#^Method App\\Enums\\SkillNames\:\:getSkillNames\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Enums/SkillNames.php
-
-		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\SkillActionResource\:\:\$finished\.$#'
 			identifier: property.notFound
 			count: 1
@@ -1915,24 +1897,6 @@ parameters:
 			path: app/Http/Controllers/gameguide.php
 
 		-
-			message: '#^Method logout\:\:__construct\(\) has parameter \$session with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Http/Controllers/logout.php
-
-		-
-			message: '#^Method logout\:\:logout\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: app/Http/Controllers/logout.php
-
-		-
-			message: '#^Property logout\:\:\$session has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Http/Controllers/logout.php
-
-		-
 			message: '#^Method market\:\:index\(\) has no return type specified\.$#'
 			identifier: missingType.return
 			count: 1
@@ -2405,24 +2369,6 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: app/Http/Resources/WorkforceResource.php
-
-		-
-			message: '#^Method App\\Http\\Responses\\AdvResponse\:\:__construct\(\) has parameter \$headers with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Http/Responses/AdvResponse.php
-
-		-
-			message: '#^Method App\\Http\\Responses\\AdvResponse\:\:addData\(\) has parameter \$data with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Http/Responses/AdvResponse.php
-
-		-
-			message: '#^Method App\\Http\\Responses\\AdvResponse\:\:setData\(\) has parameter \$data with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Http/Responses/AdvResponse.php
 
 		-
 			message: '#^Method AdventureRequest_model\:\:__construct\(\) has parameter \$session with no type specified\.$#'
@@ -5111,12 +5057,6 @@ parameters:
 			identifier: return.type
 			count: 1
 			path: app/Services/LevelDataService.php
-
-		-
-			message: '#^Method App\\Services\\SessionService\:\:getCurrentLocation\(\) should return string but returns App\\Enums\\GameLocations\|string\.$#'
-			identifier: return.type
-			count: 1
-			path: app/Services/SessionService.php
 
 		-
 			message: '#^Method App\\Services\\SessionService\:\:getUserData\(\) should return App\\Models\\UserData but returns App\\Models\\UserData\|null\.$#'

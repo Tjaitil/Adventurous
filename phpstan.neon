@@ -20,6 +20,11 @@ parameters:
         # We can do this since Authenticate Middleware will redirect to login if not authenticated  
         - '#Cannot access property \$[a-zA-Z0-9\\_]+ on App\\Models\\User\|null#'
 
+        # We can do this since Authenticate Middleware will redirect to login if not authenticated
+        -
+            message: '#Cannot access property \$[a-zA-Z0-9\\_]+ on Illuminate\\Contracts\\Auth\\Authenticatable\|null#'
+            path: app/Http/Middleware/HandleInertiaRequests.php
+
     excludePaths:
         - ./vendor/*
         - ./libs/*
