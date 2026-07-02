@@ -5,6 +5,7 @@ namespace App\tests;
 use App\Models\TravelBureauCart;
 use App\Models\UserLevels;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 
 class TravelBureauTest extends TestCase
@@ -13,7 +14,8 @@ class TravelBureauTest extends TestCase
 
     protected function setUp(): void
     {
-        parent::setUp();    }
+        parent::setUp();
+    }
 
     public function test_retrieve_building()
     {
@@ -32,9 +34,7 @@ class TravelBureauTest extends TestCase
         $response->assertStatus(200);
     }
 
-    /**
-     * @group store-purchase
-     */
+    #[Group('store-purchase')]
     public function test_buy_item()
     {
         $cart = TravelBureauCart::where('name', 'steel cart')->with('requiredItems')->first();

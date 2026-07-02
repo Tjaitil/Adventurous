@@ -5,6 +5,8 @@ namespace Tests\Feature;
 use App\Enums\WorldChangeType;
 use App\Models\UserData;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 
 class WorldLoaderControllerTest extends TestCase
@@ -18,9 +20,7 @@ class WorldLoaderControllerTest extends TestCase
         parent::setUp();
     }
 
-    /**
-     * @group route
-     */
+    #[Group('route')]
     public function test_route_returns_successfull_and_json(): void
     {
         $User = $this->getRandomUser();
@@ -47,9 +47,7 @@ class WorldLoaderControllerTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider getDestination
-     */
+    #[DataProvider('getDestination')]
     public function test_change_map_with_new_destination(string $destination): void
     {
         $User = $this->getRandomUser();
@@ -78,9 +76,7 @@ class WorldLoaderControllerTest extends TestCase
         $response->json();
     }
 
-    /**
-     * @dataProvider combatMapProvider
-     */
+    #[DataProvider('combatMapProvider')]
     public function test_respawn_after_death(string $map, string $result): void
     {
         $User = $this->getRandomUser();

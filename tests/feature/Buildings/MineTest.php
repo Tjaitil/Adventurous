@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Buildings;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use App\Enums\GameEvents;
 use App\Enums\GameLocations;
 use App\Models\Miner;
@@ -59,8 +60,8 @@ class MineTest extends SkillTestCase
     }
 
     /**
-     * @dataProvider locationProvider
      */
+    #[DataProvider('locationProvider')]
     public function test_start_mining(string $location, string $mineralType)
     {
         $this->setUserCurrentLocation($location, $this->RandomUser);
@@ -88,8 +89,8 @@ class MineTest extends SkillTestCase
     }
 
     /**
-     * @dataProvider locationProvider
      */
+    #[DataProvider('locationProvider')]
     public function test_user_cannot_start_mining_in_wrong_location(string $location, string $mineralOre)
     {
         if ($location === GameLocations::GOLBAK_LOCATION->value) {
@@ -108,8 +109,8 @@ class MineTest extends SkillTestCase
     }
 
     /**
-     * @dataProvider locationProvider
      */
+    #[DataProvider('locationProvider')]
     public function test_user_cannot_start_mining_with_too_few_permits(string $location, string $mineralOre)
     {
         $this->setUserCurrentLocation($location, $this->RandomUser);
@@ -127,8 +128,8 @@ class MineTest extends SkillTestCase
     }
 
     /**
-     * @dataProvider locationProvider
      */
+    #[DataProvider('locationProvider')]
     public function test_user_cannot_start_mining_if_no_workforce(string $location, string $mineralOre)
     {
         $this->setUserCurrentLocation($location, $this->RandomUser);
@@ -150,8 +151,8 @@ class MineTest extends SkillTestCase
     }
 
     /**
-     * @dataProvider locationProvider
      */
+    #[DataProvider('locationProvider')]
     public function test_user_cannot_start_mining_if_already_mining(string $location, string $mineralOre)
     {
         $this->setUserCurrentLocation($location, $this->RandomUser);
@@ -176,8 +177,8 @@ class MineTest extends SkillTestCase
     }
 
     /**
-     * @dataProvider locationProvider
      */
+    #[DataProvider('locationProvider')]
     public function test_user_cannot_mine_mineral_if_miner_is_too_level(string $location, string $mineralOre)
     {
         $this->setUserCurrentLocation($location, $this->RandomUser);
@@ -200,8 +201,8 @@ class MineTest extends SkillTestCase
     }
 
     /**
-     * @dataProvider locationProvider
      */
+    #[DataProvider('locationProvider')]
     public function test_end_mining(string $location, string $mineralOre)
     {
         $this->setUserCurrentLocation($location, $this->RandomUser);
@@ -229,8 +230,8 @@ class MineTest extends SkillTestCase
     }
 
     /**
-     * @dataProvider locationProvider
      */
+    #[DataProvider('locationProvider')]
     public function test_cant_end_mining_with_no_active_mining(string $location, string $mineralOre)
     {
         $Mineral = Mineral::where('mineral_ore', $mineralOre)->firstOrFail();
@@ -259,8 +260,8 @@ class MineTest extends SkillTestCase
     }
 
     /**
-     * @dataProvider locationProvider
      */
+    #[DataProvider('locationProvider')]
     public function test_cant_end_mining_with_not_finished_mining(string $location, string $mineralOre)
     {
         $Mineral = Mineral::where('mineral_ore', $mineralOre)->first();
@@ -292,8 +293,8 @@ class MineTest extends SkillTestCase
     }
 
     /**
-     * @dataProvider locationProvider
      */
+    #[DataProvider('locationProvider')]
     public function test_cant_cancel_finished_mining(string $location, string $mineralOre)
     {
         $Mineral = Mineral::where('mineral_ore', $mineralOre)->first();
@@ -325,8 +326,8 @@ class MineTest extends SkillTestCase
     }
 
     /**
-     * @dataProvider locationProvider
      */
+    #[DataProvider('locationProvider')]
     public function test_cancel_mining_doesnt_give_xp_or_ores(string $location, string $mineralOre)
     {
         $Mineral = Mineral::where('mineral_ore', $mineralOre)->first();

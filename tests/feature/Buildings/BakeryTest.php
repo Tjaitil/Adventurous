@@ -4,6 +4,7 @@ namespace App\tests;
 
 use App\Models\HealingItem;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 
 class BakeryTest extends TestCase
@@ -12,7 +13,8 @@ class BakeryTest extends TestCase
 
     protected function setUp(): void
     {
-        parent::setUp();    }
+        parent::setUp();
+    }
 
     public function test_can_get_bakery()
     {
@@ -30,9 +32,7 @@ class BakeryTest extends TestCase
         $response->json();
     }
 
-    /**
-     * @group store-purchase
-     */
+    #[Group('store-purchase')]
     public function test_buy_bakery_item()
     {
         $HealingItem = HealingItem::where('bakery_item', 1)->inRandomOrder()->limit(1)->first();

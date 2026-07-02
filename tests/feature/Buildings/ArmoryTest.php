@@ -62,8 +62,8 @@ class ArmoryTest extends TestCase
     /**
      * The
      *
-     * @dataProvider armoryProvider
      */
+    #[DataProvider('armoryProvider')]
     public function test_can_add_armor(string $item): void
     {
         $this->insertItemToInventory($this->RandomUser, $item, 1);

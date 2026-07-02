@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Crops;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use App\Enums\GameEvents;
 use App\Enums\GameLocations;
 use App\Models\Crop;
@@ -38,8 +39,8 @@ class CropsTest extends SkillTestCase
     }
 
     /**
-     * @dataProvider locationProvider
      */
+    #[DataProvider('locationProvider')]
     public function test_get_countdown(string $location, string $cropType)
     {
         $this->setUserCurrentLocation($location, $this->RandomUser);
@@ -55,8 +56,8 @@ class CropsTest extends SkillTestCase
     }
 
     /**
-     * @dataProvider locationProvider
      */
+    #[DataProvider('locationProvider')]
     public function test_get_view_data(string $location, string $cropType)
     {
         $this->setUserCurrentLocation($location, $this->RandomUser);
@@ -74,8 +75,8 @@ class CropsTest extends SkillTestCase
     }
 
     /**
-     * @dataProvider locationProvider
      */
+    #[DataProvider('locationProvider')]
     public function test_start_growing(string $location, string $cropType)
     {
         $this->setUserCurrentLocation($location, $this->RandomUser);
@@ -110,8 +111,8 @@ class CropsTest extends SkillTestCase
     }
 
     /**
-     * @dataProvider locationProvider
      */
+    #[DataProvider('locationProvider')]
     public function test_user_cannot_start_growing_if_no_seed(string $location, string $cropType)
     {
         $this->setUserCurrentLocation($location, $this->RandomUser);
@@ -133,8 +134,8 @@ class CropsTest extends SkillTestCase
     }
 
     /**
-     * @dataProvider locationProvider
      */
+    #[DataProvider('locationProvider')]
     public function test_user_cannot_start_growing_if_no_workforce(string $location, string $cropType)
     {
         $Crop = Crop::where('crop_type', $cropType)->first();
@@ -158,8 +159,8 @@ class CropsTest extends SkillTestCase
     }
 
     /**
-     * @dataProvider locationProvider
      */
+    #[DataProvider('locationProvider')]
     public function test_cannot_start_when_crops_are_already_growing(string $location, string $cropType)
     {
         $this->setUserCurrentLocation($location, $this->RandomUser);
@@ -184,8 +185,8 @@ class CropsTest extends SkillTestCase
     }
 
     /**
-     * @dataProvider locationProvider
      */
+    #[DataProvider('locationProvider')]
     public function test_user_cannot_grow_seed_if_farmer_is_too_level(string $location, string $cropType)
     {
         $this->setUserCurrentLocation($location, $this->RandomUser);
@@ -216,10 +217,10 @@ class CropsTest extends SkillTestCase
     }
 
     /**
-     * @dataProvider locationProvider
      *
      * @param  value-of<GameLocations::TOWHAR_LOCATION|GameLocations::KRASNUR_LOCATION>  $location
      */
+    #[DataProvider('locationProvider')]
     public function test_harvest(string $location, string $cropType)
     {
         $this->setUserCurrentLocation($location, $this->RandomUser);

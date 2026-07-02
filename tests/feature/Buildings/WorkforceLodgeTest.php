@@ -2,6 +2,7 @@
 
 namespace App\tests;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use App\Enums\SkillNames;
 use App\Models\EfficiencyUpgrade;
 use App\Models\FarmerWorkforce;
@@ -30,8 +31,8 @@ class WorkforceLodgeTest extends TestCase
     }
 
     /**
-     * @dataProvider profiencyProvider
      */
+    #[DataProvider('profiencyProvider')]
     public function test_upgrade_efficiency(string $profiency, int $efficiency_level): void
     {
         $this->insertCurrencyToInventory($this->RandomUser, 100000);
@@ -80,8 +81,8 @@ class WorkforceLodgeTest extends TestCase
     }
 
     /**
-     * @dataProvider profiencyProvider
      */
+    #[DataProvider('profiencyProvider')]
     public function test_cannot_upgrade_efficiency_when_reached_max_efficiency_level(string $profiency, int $efficiency_level): void
     {
         $this->insertCurrencyToInventory($this->RandomUser, 100000);
