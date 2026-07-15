@@ -162,6 +162,22 @@
   );
 }
 
+.u-focus-ring {
+  &:focus-visible {
+    outline: 1px solid var(--color-orange-50);
+  }
+}
+.u-focus-ring-within {
+  &:focus-within {
+    outline: 1px solid var(--color-orange-50);
+  }
+}
+
+@layer base {
+  :focus-visible {
+    outline: 1px solid var(--color-orange-50);
+  }
+}
 .card::before {
   border-style: ridge;
 }
