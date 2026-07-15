@@ -33,6 +33,11 @@ export const useInventoryStore = defineStore('inventory', {
         this.selectedItems.push(item);
       }
     },
+    removeSelectedItem(item: string) {
+      this.selectedItems = this.selectedItems.filter(
+        selectedItem => selectedItem !== item,
+      );
+    },
     registerCustomHandler(handler: ItemHandler | null) {
       clickHandler = handler;
     },
