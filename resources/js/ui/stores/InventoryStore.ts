@@ -51,9 +51,8 @@ export const useInventoryStore = defineStore('inventory', {
     handleItemClick(e: Event, itemName: string) {
       if (clickHandler !== null) {
         clickHandler(e, itemName);
-      } else {
-        this.addSelectedItem(itemName);
       }
+      return;
     },
     setShouldUpdateInventory(val: boolean) {
       this.shouldUpdateInventory = val;
