@@ -44,7 +44,6 @@ interface Props {
   item: Item['item'];
   amount?: number;
   showAmount?: boolean;
-  showFocusRing?: boolean;
 }
 
 const { t } = useI18n();
