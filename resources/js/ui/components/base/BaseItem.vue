@@ -33,7 +33,7 @@
 
 <script setup lang="ts">
 import { jsUcWords } from '@/utilities/uppercase';
-import { computed, useId, useTemplateRef } from 'vue';
+import { computed, watch, useId, useTemplateRef } from 'vue';
 import { formatItemAmount } from '@/utilities/formatters';
 import type { Item } from '@/types/Item';
 import { itemPrices } from '@/clientScripts/inventory';
@@ -54,6 +54,15 @@ const {
   item,
   amount = undefined,
 } = defineProps<Props>();
+
+watch(
+  () => disableTooltip,
+  () => {
+    if (disableTooltip) {
+      tooltip.value?.hidePopover();
+    }
+  },
+);
 
 const itemAmountWithDelimiter = computed((): string | number => {
   if (amount === undefined) {
