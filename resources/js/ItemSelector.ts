@@ -85,7 +85,7 @@ export class ItemSelector {
 
   public static addSelectEventToInventory() {
     this.eventStatus = true;
-    useInventoryStore().registerItemHandler(null);
+    useInventoryStore().registerSelectItemHandler();
   }
 
   public static removeSelectEventFromInventory() {
@@ -97,6 +97,7 @@ export class ItemSelector {
       .getElementById('client-container')
       .replaceChild(newInventory, inventory);
     itemTitle.addTitleEvent();
+    useInventoryStore().reset();
   }
 
   public static selectItem(event) {
