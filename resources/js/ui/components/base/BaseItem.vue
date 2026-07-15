@@ -1,5 +1,5 @@
 <template>
-  <div class="item">
+  <button :class="['item group', { 'u-focus-ring': showFocusRing }]">
     <figure @mouseenter="onMouseEnter" @mouseleave="onMouseLeave">
       <img
         :src="'/images/' + item + '.png'"
@@ -28,12 +28,12 @@
         <img class="gold" src="/images/gold.png" :alt="$t('gold icon')" />
       </li>
     </ul>
-  </div>
+  </button>
 </template>
 
 <script setup lang="ts">
 import { jsUcWords } from '@/utilities/uppercase';
-import { computed, useId, useTemplateRef } from 'vue';
+import { computed, watch, useId, useTemplateRef } from 'vue';
 import { formatItemAmount } from '@/utilities/formatters';
 import type { Item } from '@/types/Item';
 import { itemPrices } from '@/clientScripts/inventory';
@@ -44,6 +44,7 @@ interface Props {
   item: Item['item'];
   amount?: number;
   showAmount?: boolean;
+  showFocusRing?: boolean;
 }
 
 const { t } = useI18n();
@@ -53,7 +54,17 @@ const {
   showAmount = true,
   item,
   amount = undefined,
+  showFocusRing = true,
 } = defineProps<Props>();
+
+watch(
+  () => disableTooltip,
+  () => {
+    if (disableTooltip) {
+      tooltip.value?.hidePopover();
+    }
+  },
+);
 
 const itemAmountWithDelimiter = computed((): string | number => {
   if (amount === undefined) {
