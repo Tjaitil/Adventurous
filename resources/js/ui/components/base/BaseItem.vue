@@ -1,5 +1,5 @@
 <template>
-  <div class="item">
+  <button :class="['item', { 'u-focus-ring': showFocusRing }]">
     <figure @mouseenter="onMouseEnter" @mouseleave="onMouseLeave">
       <img
         :src="'/images/' + item + '.png'"
@@ -28,7 +28,7 @@
         <img class="gold" src="/images/gold.png" :alt="$t('gold icon')" />
       </li>
     </ul>
-  </div>
+  </button>
 </template>
 
 <script setup lang="ts">
@@ -44,6 +44,7 @@ interface Props {
   item: Item['item'];
   amount?: number;
   showAmount?: boolean;
+  showFocusRing?: boolean;
 }
 
 const { t } = useI18n();
@@ -53,6 +54,7 @@ const {
   showAmount = true,
   item,
   amount = undefined,
+  showFocusRing = true,
 } = defineProps<Props>();
 
 watch(
