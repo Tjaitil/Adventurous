@@ -1,5 +1,5 @@
 <template>
-  <button :class="['item group', { 'u-focus-ring': showFocusRing }]">
+  <div class="item">
     <figure @mouseenter="onMouseEnter" @mouseleave="onMouseLeave">
       <img
         :src="'/images/' + item + '.png'"
@@ -28,7 +28,7 @@
         <img class="gold" src="/images/gold.png" :alt="$t('gold icon')" />
       </li>
     </ul>
-  </button>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -54,7 +54,6 @@ const {
   showAmount = true,
   item,
   amount = undefined,
-  showFocusRing = true,
 } = defineProps<Props>();
 
 watch(
