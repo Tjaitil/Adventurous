@@ -7,12 +7,10 @@ const stockpileModule = {
   toggled: false,
   addEvent() {
     this.toggled = true;
-    useInventoryStore().setInventoryItemEvent('stockpileMenu');
   },
   removeEvent() {
     this.toggled = false;
-
-    useInventoryStore().setInventoryItemEvent(null);
+    useInventoryStore().reset();
   },
   menuListItemInputIndex: 2,
   init() {

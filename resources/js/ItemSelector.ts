@@ -20,7 +20,7 @@ function select(event) {
     .innerHTML.toLowerCase()
     .trim();
 
-  useInventoryStore().setSelectedItem(item);
+  useInventoryStore().addSelectedItem(item);
   const parent = document.getElementById('selected');
   if (parent === null) {
     return;
@@ -85,7 +85,7 @@ export class ItemSelector {
 
   public static addSelectEventToInventory() {
     this.eventStatus = true;
-    useInventoryStore().setInventoryItemEvent('selectItem');
+    useInventoryStore().registerItemHandler(null);
   }
 
   public static removeSelectEventFromInventory() {

@@ -1,33 +1,59 @@
 import type { InventoryItem } from '@/types/InventoryItem';
-import type { InventoryItemEvent } from '@/types/InventoryItemEvent';
 import { defineStore } from 'pinia';
+
+type ItemHandler = (e: Event, itemName: string) => void;
+
+let clickHandler: ItemHandler | null = null;
 
 interface State {
   inventoryItems: InventoryItem[];
-  selectedItem: string | null;
+  selectedItems: string[];
   shouldUpdateInventory: boolean;
-  inventoryItemEvent: InventoryItemEvent;
+  showTooltips: boolean;
 }
 
 export const useInventoryStore = defineStore('inventory', {
   state: (): State => ({
     inventoryItems: [],
-    selectedItem: null,
+    selectedItems: [],
     shouldUpdateInventory: false,
-    inventoryItemEvent: null,
+    showTooltips: true,
   }),
   getters: {
     isInventoryFull: state => state.inventoryItems.length >= 18,
+    currentSelectedItem: (state): string | null =>
+      state.selectedItems.slice(-1)[0] ?? null,
   },
   actions: {
-    resetSelectedItem() {
-      this.selectedItem = null;
+    resetSelectedItems() {
+      this.selectedItems = [];
     },
-    setSelectedItem(item: string) {
-      this.selectedItem = item;
+    addSelectedItem(item: string) {
+      if (!this.selectedItems.includes(item)) {
+        this.selectedItems.push(item);
+      }
     },
-    setInventoryItemEvent(event: InventoryItemEvent) {
-      this.inventoryItemEvent = event;
+    registerCustomHandler(handler: ItemHandler | null) {
+      clickHandler = handler;
+    },
+    registerSelectItemHandler() {
+      clickHandler = (e: Event, itemName: string) => {
+        this.addSelectedItem(itemName);
+      };
+    },
+    resetClickHandler() {
+      clickHandler = null;
+    },
+    reset() {
+      this.resetSelectedItems();
+      this.resetClickHandler();
+    },
+    handleItemClick(e: Event, itemName: string) {
+      if (clickHandler !== null) {
+        clickHandler(e, itemName);
+      } else {
+        this.addSelectedItem(itemName);
+      }
     },
     setShouldUpdateInventory(val: boolean) {
       this.shouldUpdateInventory = val;

@@ -52,7 +52,7 @@
           }}</label>
           <BaseSelectedItem
             v-model:amount="ammunitionAmount"
-            v-model:item="inventoryStore.selectedItem"
+            v-model:item="inventoryStore.currentSelectedItem"
           />
         </div>
 
@@ -102,7 +102,7 @@
         <div class="flex gap-2">
           <UButton
             color="primary"
-            :disabled="inventoryStore.selectedItem === null"
+            :disabled="inventoryStore.currentSelectedItem === null"
             :loading="isLoading"
             type="submit"
           >
@@ -143,7 +143,7 @@ const emit = defineEmits<{
 watch(
   () => selectedWarrior,
   () => {
-    inventoryStore.resetSelectedItem();
+    inventoryStore.resetSelectedItems();
     hasSelectedItemError.value = false;
   },
 );
@@ -156,21 +156,23 @@ const warriorHand = ref<string>('right_hand');
 const ammunitionAmount = ref<number>(1);
 
 const inventoryStore = useInventoryStore();
-inventoryStore.setInventoryItemEvent('selectItem');
-inventoryStore.$onAction(({ name, after }) => {
-  if (name === 'setSelectedItem') {
-    after(() => {
-      toggleItemOptions();
-    });
-  }
-});
+inventoryStore.registerSelectItemHandler();
+
 onUnmounted(() => {
-  inventoryStore.setInventoryItemEvent(null);
+  inventoryStore.reset();
 });
+
+watch(
+  () => inventoryStore.currentSelectedItem,
+  () => {
+    hasSelectedItemError.value = false;
+    toggleItemOptions();
+  },
+);
 
 const wearArmor = async () => {
   hasSelectedItemError.value = false;
-  if (inventoryStore.selectedItem === null) {
+  if (inventoryStore.currentSelectedItem === null) {
     hasSelectedItemError.value = true;
     return;
   }
@@ -187,7 +189,7 @@ const wearArmor = async () => {
       MinimalWarriorWithArmory,
       WearArmorRequest
     >('/armory/soldier/add', {
-      item: inventoryStore.selectedItem,
+      item: inventoryStore.currentSelectedItem,
       warrior_id: selectedWarrior.warrior_id,
       hand,
       amount: ammunitionAmount.value,
@@ -195,8 +197,8 @@ const wearArmor = async () => {
 
     emit('updateWarriorArmory', response.data);
 
-    inventoryStore.resetSelectedItem();
-    void inventoryStore.setShouldUpdateInventory(true);
+    inventoryStore.resetSelectedItems();
+    inventoryStore.setShouldUpdateInventory(true);
     isLoading.value = false;
   } catch {
     isLoading.value = false;
@@ -205,20 +207,21 @@ const wearArmor = async () => {
 
 const showWarriorHandOption = ref(false);
 const toggleItemOptions = () => {
-  if (inventoryStore.selectedItem === null) {
+  const currentSelectedItem = inventoryStore.currentSelectedItem;
+  if (currentSelectedItem === null) {
     showWarriorHandOption.value = false;
     return;
   }
 
   if (
-    inventoryStore.selectedItem.includes('sword') ||
-    inventoryStore.selectedItem.includes('dagger')
+    currentSelectedItem.includes('sword') ||
+    currentSelectedItem.includes('dagger')
   ) {
     showWarriorHandOption.value = true;
     showAmountOption.value = false;
   } else if (
-    inventoryStore.selectedItem.includes('arrow') ||
-    inventoryStore.selectedItem.includes('knives')
+    currentSelectedItem.includes('arrow') ||
+    currentSelectedItem.includes('knives')
   ) {
     showWarriorHandOption.value = false;
     showAmountOption.value = true;
@@ -243,7 +246,7 @@ const handleRemoveArmor = async (part: ItemParts) => {
 
     emit('updateWarriorArmory', response.data);
 
-    void inventoryStore.setShouldUpdateInventory(true);
+    inventoryStore.setShouldUpdateInventory(true);
     isLoading.value = false;
   } catch {
     isLoading.value = false;
