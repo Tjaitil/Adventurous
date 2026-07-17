@@ -9,9 +9,7 @@
       {{ time }} {{ $t('s') }}
     </p>
     <p>
-      <span class="font-semibold"
-        >{{ $t('Efficiency level reduction') }}:</span
-      >
+      <span class="font-semibold">{{ $t('Efficiency level reduction') }}:</span>
       - {{ baseReduction }}{{ $t('s') }} & - {{ perWorkforce }}{{ $t('s') }}
       {{ $t('each worker') }}
     </p>
