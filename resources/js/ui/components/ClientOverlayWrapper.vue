@@ -52,21 +52,27 @@ import {
 } from 'vue';
 import ArmoryPage from '../buildings/ArmoryPage.vue';
 import CropsPage from '../buildings/CropsPage.vue';
+import MinerPage from '../buildings/MinerPage.vue';
 import type { VuePage } from '@/types/Building';
 import { ClientOverlayInterface } from '@/clientScripts/clientOverlayInterface';
 import { buildingDataPreloader } from '@/ui/services/buildingDataPreloader';
 
 // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-type VueBuildingComponent = typeof ArmoryPage | typeof CropsPage;
+type VueBuildingComponent =
+  | typeof ArmoryPage
+  | typeof CropsPage
+  | typeof MinerPage;
 
 const vueBuildingComponents: Record<VuePage, VueBuildingComponent> = {
   armory: ArmoryPage,
   crops: CropsPage,
+  mine: MinerPage,
 };
 
 const preloadVueBuilding: Record<VuePage, () => Promise<void>> = {
   armory: () => buildingDataPreloader.preloadArmory(),
   crops: () => buildingDataPreloader.preloadCrops(),
+  mine: () => buildingDataPreloader.preloadMine(),
 };
 
 const isOpen = ref(false);

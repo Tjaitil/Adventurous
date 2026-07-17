@@ -115,6 +115,22 @@ describe('ClientOverlayWrapper.vue', () => {
         expect(screen.getByText('Crops Page')).toBeInTheDocument();
       });
     });
+
+    test('displays the matching component for other Vue pages, e.g. mine', async () => {
+      renderClientOverlay({
+        stubs: {
+          MinerPage: { template: '<div>Miner Page</div>' },
+        },
+      });
+
+      gameEventBus.emit('RENDER_BUILDING', {
+        building: 'mine',
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText('Miner Page')).toBeInTheDocument();
+      });
+    });
   });
 
   describe('External Content Rendering', () => {
