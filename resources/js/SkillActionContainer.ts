@@ -253,6 +253,7 @@ export interface SkillActionCountdownData {
 export interface GetSkillActionDataRequest {
   workforce: {
     avail_workforce: number;
+    efficiency_level: number;
   };
   crops: CropResource[];
   minerals: [];

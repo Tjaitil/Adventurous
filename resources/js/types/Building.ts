@@ -39,8 +39,10 @@ export enum Buildings {
 
 export type BuildingName = keyof BuildingModuleMapping;
 
-export type VuePage = 'armory';
+export type VuePage = 'armory' | 'crops';
+
+const vuePages: VuePage[] = ['armory', 'crops'];
 
 export function isVuePage(page: BuildingName): page is VuePage {
-  return page === 'armory';
+  return vuePages.includes(page as VuePage);
 }

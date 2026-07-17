@@ -51,15 +51,30 @@ import {
   nextTick,
 } from 'vue';
 import ArmoryPage from '../buildings/ArmoryPage.vue';
+import CropsPage from '../buildings/CropsPage.vue';
+import type { VuePage } from '@/types/Building';
 import { ClientOverlayInterface } from '@/clientScripts/clientOverlayInterface';
 import { buildingDataPreloader } from '@/ui/services/buildingDataPreloader';
+
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+type VueBuildingComponent = typeof ArmoryPage | typeof CropsPage;
+
+const vueBuildingComponents: Record<VuePage, VueBuildingComponent> = {
+  armory: ArmoryPage,
+  crops: CropsPage,
+};
+
+const preloadVueBuilding: Record<VuePage, () => Promise<void>> = {
+  armory: () => buildingDataPreloader.preloadArmory(),
+  crops: () => buildingDataPreloader.preloadCrops(),
+};
 
 const isOpen = ref(false);
 const loadingElement = useTemplateRef('loadingIcon');
 const externalContent = ref<HTMLElement | null>(null);
 
 // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-const internalComponent = shallowRef<typeof ArmoryPage | null>(null);
+const internalComponent = shallowRef<VueBuildingComponent | null>(null);
 
 const currentComponent = computed({
   get() {
@@ -85,9 +100,8 @@ const unsubRenderBuilding = gameEventBus.subscribe('RENDER_BUILDING', obj => {
   isOpen.value = true;
 
   if (!('content' in obj) && !('loading' in obj)) {
-    // Add logic once we have more buildings as VuePages
-    currentComponent.value = ArmoryPage;
-    void buildingDataPreloader.preloadArmory();
+    currentComponent.value = vueBuildingComponents[obj.building];
+    void preloadVueBuilding[obj.building]();
 
     externalRendering.value = false;
     return;

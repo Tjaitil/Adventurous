@@ -1,12 +1,6 @@
 import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
-import type {
-  RenderResult} from '@testing-library/vue';
-import {
-  render,
-  screen,
-  waitFor,
-  fireEvent
-} from '@testing-library/vue';
+import type { RenderResult } from '@testing-library/vue';
+import { render, screen, waitFor, fireEvent } from '@testing-library/vue';
 import { createPinia } from 'pinia';
 import '@testing-library/jest-dom';
 import ClientOverlayWrapper from '@/ui/components/ClientOverlayWrapper.vue';
@@ -103,6 +97,22 @@ describe('ClientOverlayWrapper.vue', () => {
 
       await waitFor(() => {
         expect(screen.getByText('Armory Page')).toBeInTheDocument();
+      });
+    });
+
+    test('displays the matching component for other Vue pages, e.g. crops', async () => {
+      renderClientOverlay({
+        stubs: {
+          CropsPage: { template: '<div>Crops Page</div>' },
+        },
+      });
+
+      gameEventBus.emit('RENDER_BUILDING', {
+        building: 'crops',
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText('Crops Page')).toBeInTheDocument();
       });
     });
   });
