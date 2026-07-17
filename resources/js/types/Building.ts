@@ -1,8 +1,6 @@
 import type archeryShopModule from '@/buildingScripts/archeryshop';
 import type bakeryModule from '@/buildingScripts/bakery';
-import type CropsModule from '@/buildingScripts/crops';
 import type merchantModule from '@/buildingScripts/merchant';
-import type MineModule from '@/buildingScripts/mine';
 import type smithyModule from '@/buildingScripts/smithy';
 import type travelBureauModule from '@/buildingScripts/travelbureau';
 import type zinsStoreModule from '@/buildingScripts/zinsstore';
@@ -11,8 +9,8 @@ type BuildingModuleMapping = {
   bakery: typeof bakeryModule;
   travelbureau: typeof travelBureauModule;
   stockpile: null;
-  mine: MineModule;
-  crops: CropsModule;
+  mine: null;
+  crops: null;
   zinsstore: typeof zinsStoreModule;
   merchant: typeof merchantModule;
   workforcelodge: null;
