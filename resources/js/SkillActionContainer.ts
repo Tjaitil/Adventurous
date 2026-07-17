@@ -256,7 +256,8 @@ export interface GetSkillActionDataRequest {
     efficiency_level: number;
   };
   crops: CropResource[];
-  minerals: [];
+  minerals: MineralResource[];
+  permits?: number;
 }
 
 export interface MineralResource {
