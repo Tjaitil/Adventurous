@@ -53,10 +53,11 @@ import {
 } from 'vue';
 import ArmoryPage from '../buildings/ArmoryPage.vue';
 import CropsPage from '../buildings/CropsPage.vue';
+import MinerPage from '../buildings/MinerPage.vue';
+import WorkforceLodgePage from '../buildings/WorkforceLodgePage.vue';
 import { ClientOverlayInterface } from '@/clientScripts/clientOverlayInterface';
 import { buildingDataPreloader } from '@/ui/services/buildingDataPreloader';
 import StockpilePage from '../buildings/StockpilePage.vue';
-import WorkforceLodgePage from '../buildings/WorkforceLodgePage.vue';
 
 const isOpen = ref(false);
 const loadingElement = useTemplateRef('loadingIcon');
@@ -109,6 +110,11 @@ const unsubRenderBuilding = gameEventBus.subscribe('RENDER_BUILDING', obj => {
       case 'crops': {
         currentComponent.value = CropsPage;
         void buildingDataPreloader.preloadCrops();
+        break;
+      }
+      case 'mine': {
+        currentComponent.value = MinerPage;
+        void buildingDataPreloader.preloadMine();
         break;
       }
       default: {
