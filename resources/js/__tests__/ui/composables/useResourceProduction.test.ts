@@ -21,12 +21,10 @@ describe('useResourceProduction', () => {
   });
 
   test('startCountdown with a future end time activates the action', () => {
-    const { infoText, isActionActive, startCountdown } = useResourceProduction(
-      {
-        actionText: 'Growing',
-        noActionText: 'No crops growing',
-      },
-    );
+    const { infoText, isActionActive, startCountdown } = useResourceProduction({
+      actionText: 'Growing',
+      noActionText: 'No crops growing',
+    });
 
     startCountdown(Date.now() + 60_000, 'wheat');
     vi.advanceTimersByTime(1_000);
@@ -36,12 +34,10 @@ describe('useResourceProduction', () => {
   });
 
   test('startCountdown with a null end time does not activate the action', () => {
-    const { infoText, isActionActive, startCountdown } = useResourceProduction(
-      {
-        actionText: 'Growing',
-        noActionText: 'No crops growing',
-      },
-    );
+    const { infoText, isActionActive, startCountdown } = useResourceProduction({
+      actionText: 'Growing',
+      noActionText: 'No crops growing',
+    });
 
     startCountdown(null, null);
 
@@ -63,11 +59,16 @@ describe('useResourceProduction', () => {
   });
 
   test('clearCountdown resets state back to no-action', () => {
-    const { infoText, isActionActive, selectedType, startCountdown, clearCountdown } =
-      useResourceProduction({
-        actionText: 'Growing',
-        noActionText: 'No crops growing',
-      });
+    const {
+      infoText,
+      isActionActive,
+      selectedType,
+      startCountdown,
+      clearCountdown,
+    } = useResourceProduction({
+      actionText: 'Growing',
+      noActionText: 'No crops growing',
+    });
 
     startCountdown(Date.now() + 60_000, 'wheat');
     clearCountdown();
