@@ -13,8 +13,6 @@ import { setUpTabList } from '../utilities/tabs';
 import stockpileModule from '../buildingScripts/stockpile';
 import travelBureauModule from '../buildingScripts/travelbureau';
 import bakeryModule from '../buildingScripts/bakery';
-import MineModule from '../buildingScripts/mine';
-import CropsModule from '../buildingScripts/crops';
 import zinsStoreModule from '../buildingScripts/zinsstore';
 import merchantModule from '../buildingScripts/merchant';
 import workforceLodgeModule from '../buildingScripts/workforcelodge';
@@ -59,8 +57,6 @@ function shouldSkipImport(building: string) {
     'stockpile',
     'travelbureau',
     'bakery',
-    'mine',
-    'crops',
     'zinsstore',
     'merchant',
     'workforcelodge',
@@ -261,12 +257,6 @@ export const inputHandler: IInputHandler = {
         case 'bakery':
           this.currentBuildingModule = bakeryModule;
           this.currentBuildingModule.init();
-          break;
-        case 'mine':
-          this.currentBuildingModule = new MineModule();
-          break;
-        case 'crops':
-          this.currentBuildingModule = new CropsModule();
           break;
         case 'zinsstore':
           this.currentBuildingModule = zinsStoreModule;
