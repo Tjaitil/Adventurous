@@ -61,7 +61,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
-import type { MineralResource } from '@/SkillActionContainer';
+import type { MineralResource } from '@/types/MineralResource';
 import { mineDataLoader } from '@/buildingScripts/buildingLoaders';
 import { buildingDataPreloader } from '@/ui/services/buildingDataPreloader';
 import { useResourceProduction } from '@/ui/composables/useResourceProduction';
