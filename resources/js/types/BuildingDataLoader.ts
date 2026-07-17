@@ -1,8 +1,9 @@
-import type { GetSkillActionDataRequest } from '@/SkillActionContainer';
 import type { StoreItemResponse } from './Responses/StoreItemResponse';
 import type { ArmoryWarrior } from './Warrior';
 import type { MineCountdownResponse } from './Mine';
 import type { CropCountdownResponse } from './crops';
+import type { CropResource } from './CropResource';
+import type { MineralResource } from './MineralResource';
 import type { StockpileDataResponse } from './Stockpile';
 import type { WorkforceLodgeDataResponse } from './WorkforceLodge';
 
@@ -48,6 +49,16 @@ export type ZinsStoreDataLoader = {
 };
 export type ZinsStoreDataLoaderResponse =
   UnwrapDataLoader<ZinsStoreDataLoader>['data'];
+
+export interface GetSkillActionDataRequest {
+  workforce: {
+    avail_workforce: number;
+    efficiency_level: number;
+  };
+  crops: CropResource[];
+  minerals: MineralResource[];
+  permits?: number;
+}
 
 export type MineDataLoader = {
   action_items: () => Promise<GetSkillActionDataRequest>;
