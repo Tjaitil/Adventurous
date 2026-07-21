@@ -1,0 +1,68 @@
+name: Static analysis PHP
+
+on:
+  push:
+    branches: ["master"]
+    paths:
+      - "app/**"
+      - "bootstrap/**"
+      - "config/**"
+      - "database/**"
+      - "helpers/**"
+      - "lang/**"
+      - "resources/views/**"
+      - "routes/**"
+      - "tests/**"
+      - "composer.json"
+      - "composer.lock"
+      - "phpstan.neon"
+      - "phpstan-baseline.neon"
+      - "phpunit.xml"
+  pull_request:
+    branches: ["master"]
+    paths:
+      - "app/**"
+      - "bootstrap/**"
+      - "config/**"
+      - "database/**"
+      - "helpers/**"
+      - "lang/**"
+      - "resources/views/**"
+      - "routes/**"
+      - "tests/**"
+      - "composer.json"
+      - "composer.lock"
+      - "phpstan.neon"
+      - "phpstan-baseline.neon"
+      - "phpunit.xml"
+
+jobs:
+  phpstan:
+    name: Run phpstan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
+          coverage: none
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Run composer install
+        run: composer install -n --prefer-dist
+
+      - name: Run phpstan
+        run: composer phpstan
