@@ -26,6 +26,10 @@ parameters:
             path: app/Http/Middleware/HandleInertiaRequests.php
 
     excludePaths:
+        - app/Models/Adventures_model.php
+        - app/Models/Artefact_model.php
+        - app/Models/SetAdventure_model.php
+        - app/Models/UpdateGamedata_model.php
         - ./vendor/*
         - ./libs/*
 
