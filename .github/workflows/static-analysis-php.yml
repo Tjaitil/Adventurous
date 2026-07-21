@@ -21,21 +21,6 @@ on:
       - "phpunit.xml"
   pull_request:
     branches: ["master"]
-    paths:
-      - "app/**"
-      - "bootstrap/**"
-      - "config/**"
-      - "database/**"
-      - "helpers/**"
-      - "lang/**"
-      - "resources/views/**"
-      - "routes/**"
-      - "tests/**"
-      - "composer.json"
-      - "composer.lock"
-      - "phpstan.neon"
-      - "phpstan-baseline.neon"
-      - "phpunit.xml"
 
 jobs:
   phpstan:
