@@ -89,9 +89,6 @@ class WorldLoaderController extends Controller
         }
 
         $UserData->map_location = $this->worldLoaderService->getMap();
-        if ($new_destination) {
-            $UserData->location = $new_destination;
-        }
         $UserData->save();
 
         $result = $this->worldLoaderService->getWorldData();

@@ -58,7 +58,7 @@ class CropsController extends Controller
         $Crop = Crop::all();
         $Workforce = FarmerWorkforce::where('user_id', Auth::user()->id)->first();
         $Farmer = Farmer::where('user_id', Auth::user()->id)
-            ->where('location', $this->sessionService->getCurrentLocation())
+            ->where('location', $this->sessionService->getLocation())
             ->first();
 
         return response()->json([
@@ -74,7 +74,7 @@ class CropsController extends Controller
     public function getCountdown(): JsonResponse
     {
         $Farmer = Farmer::where('user_id', Auth::user()->id)
-            ->where('location', $this->sessionService->getCurrentLocation())
+            ->where('location', $this->sessionService->getLocation())
             ->first();
 
         if (! $Farmer instanceof Farmer) {
@@ -214,7 +214,7 @@ class CropsController extends Controller
                 ->addMessage(GameLogService::addErrorLog('Invalid input provided'));
         }
 
-        $location = $this->sessionService->getCurrentLocation();
+        $location = $this->sessionService->getLocation();
         if (! $this->locationService->isCropsLocation($location)) {
             return advResponse([], 422)
                 ->addMessage(GameLogService::addErrorLog('You are in the wrong location to grow crops'));
