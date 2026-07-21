@@ -48,8 +48,6 @@ class ProfiencyService
             $training_countdown_passed = $this->countdownService->hasTimestampPassed($value->training_countdown);
             if ($value->is_training && $training_countdown_passed) {
                 $status['statuses']['training']++;
-            } elseif ($value->is_training && $training_countdown_passed) {
-                $status['statuses']['training']++;
             } elseif ($value->army_mission > 0) {
                 $status['statuses']['on_mission']++;
             } elseif ($value->is_resting) {
