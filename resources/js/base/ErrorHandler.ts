@@ -1,20 +1,24 @@
 import { ErrorHandler } from '@/lib/ErrorHandler';
 
+export type ErrorPayload = {
+  text: string;
+  stack?: string;
+};
+
 export const initErrorHandler = () => {
-  const handler = new ErrorHandler<{
-    text: string;
-  }>('/log/error');
+  const handler = new ErrorHandler<ErrorPayload>('/log/error');
 
   handler.registerErrorListener((e: ErrorEvent | PromiseRejectionEvent) => {
     let text = '';
+    let stack: string | undefined;
     if (e instanceof ErrorEvent) {
-      text = text = `Frontend error: ${e.message} ${e.error}`;
+      text = `Frontend error: ${e.message}`;
+      stack = e.error?.stack;
     } else if (e instanceof PromiseRejectionEvent) {
-      text = `Unhandled promise rejection: ${e.reason.message} ${e.reason.stack}`;
+      text = `Unhandled promise rejection: ${e.reason?.message}`;
+      stack = e.reason?.stack;
     }
-    handler.logError({
-      text,
-    });
+    handler.logError({ text, stack });
   });
 
   return handler;
@@ -22,12 +26,9 @@ export const initErrorHandler = () => {
 
 export const reportCatchError = (e: unknown) => {
   const handler = initErrorHandler();
-  let text = '';
   if (e instanceof Error) {
-    text = `Frontend error: ${e.message} ${e.stack}`;
-    handler.logError({ text });
+    handler.logError({ text: `Frontend error: ${e.message}`, stack: e.stack });
   } else {
-    text = `Frontend error: ${e}`;
+    handler.logError({ text: `Frontend error: ${e}` });
   }
-  handler.logError({ text });
 };

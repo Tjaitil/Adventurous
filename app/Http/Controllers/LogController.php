@@ -10,8 +10,14 @@ class LogController extends Controller
 {
     public function logFrontendError(Request $request): JsonResponse
     {
-        $text = $request->input('text');
-        Log::error($text);
+        $validated = $request->validate([
+            'text' => 'required|string',
+            'stack' => 'nullable|string',
+        ]);
+
+        Log::error($validated['text'], array_filter([
+            'stack' => $validated['stack'] ?? null,
+        ]));
 
         return response()->json([], 200);
     }
