@@ -25,7 +25,6 @@ export const reportCatchError = (e: unknown) => {
   let text = '';
   if (e instanceof Error) {
     text = `Frontend error: ${e.message} ${e.stack}`;
-    handler.logError({ text });
   } else {
     text = `Frontend error: ${e}`;
   }
