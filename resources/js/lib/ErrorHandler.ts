@@ -3,6 +3,7 @@ import axios from 'axios';
 type ErrorCallback = (error: ErrorEvent | PromiseRejectionEvent) => void;
 export class ErrorHandler<T> {
   private static isListening = false;
+  private static seenErrors = new Set<string>();
 
   endpoint: string;
 
@@ -22,6 +23,9 @@ export class ErrorHandler<T> {
   }
 
   public logError(format: T) {
+    const key = JSON.stringify(format);
+    if (ErrorHandler.seenErrors.has(key)) return;
+    ErrorHandler.seenErrors.add(key);
     axios.post(this.endpoint, format);
   }
 }
