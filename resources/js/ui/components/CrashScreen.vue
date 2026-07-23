@@ -20,12 +20,12 @@
           }}</pre>
         </section>
 
-        <section class="mb-4">
+        <section v-if="crashInfo?.gameState" class="mb-4">
           <h2 class="mb-1 text-sm font-semibold uppercase text-yellow-400">
             Game State
           </h2>
           <pre class="whitespace-pre-wrap text-xs text-gray-300">{{
-            JSON.stringify(crashInfo?.gameState, null, 2)
+            JSON.stringify(crashInfo.gameState, null, 2)
           }}</pre>
         </section>
 
@@ -71,7 +71,7 @@ interface GameState {
 
 interface CrashDetail {
   error: Error;
-  gameState: GameState;
+  gameState: GameState | null;
 }
 
 const isDev = import.meta.env.DEV;

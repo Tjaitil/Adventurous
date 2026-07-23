@@ -32,10 +32,10 @@ const ErrorHandler = initErrorHandler();
 document.querySelectorAll('.vue-app').forEach(element => {
   const app = createApp({ AppVue, components });
 
-  app.config.errorHandler = async (err, vm, info) => {
-    const errorToLog = err + ' ' + JSON.stringify(vm) + ' ' + info;
-
-    ErrorHandler.logError({ text: errorToLog });
+  app.config.errorHandler = (err, _vm, _info) => {
+    const error = err instanceof Error ? err : new Error(String(err));
+    ErrorHandler.logError({ text: error.message });
+    window.dispatchEvent(new CustomEvent('game-crash', { detail: { error, gameState: null } }));
   };
 
   app.use(pinia).use(ui).use(i18n).mount(element);
