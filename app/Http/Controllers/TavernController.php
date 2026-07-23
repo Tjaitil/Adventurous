@@ -238,7 +238,7 @@ class TavernController extends controller
     {
         $date = date("Y-m-d");
 
-        $city = $this->sessionService->getCurrentLocation();
+        $city = $this->sessionService->getLocation();
 
         if ($date < $this->data['workers']['new_workers']) {
             return false;

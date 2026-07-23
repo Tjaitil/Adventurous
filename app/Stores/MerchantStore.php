@@ -21,7 +21,7 @@ class MerchantStore extends AbstractStore
     public function makeStore(User $User, array $items = []): StoreResource
     {
 
-        $items = MerchantOffer::where('location', $this->sessionService->getCurrentLocation())
+        $items = MerchantOffer::where('location', $this->sessionService->getLocation())
             ->when(count($items) > 0, fn (Builder $query) => $query->whereIn('item', $items))
             ->get();
 
@@ -39,7 +39,7 @@ class MerchantStore extends AbstractStore
             foreach ($store_items as $key => $value) {
                 $adjusted_price = $this->diplomacyService->calculateNewMerchantPrice(
                     $value->store_value,
-                    $this->sessionService->getCurrentLocation(),
+                    $this->sessionService->getLocation(),
                     $User->id
                 );
                 $adjusted_store_value = ($adjusted_price < $value->store_buy_price) ? $value->store_buy_price : $adjusted_price;

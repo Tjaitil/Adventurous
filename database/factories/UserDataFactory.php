@@ -105,7 +105,6 @@ class UserDataFactory extends Factory
     {
         $data = [
             'username' => $this->faker->userName,
-            'location' => GameLocations::TOWHAR_LOCATION->value,
             'map_location' => '5.7',
             'game_id' => '',
             'session_id' => 0,

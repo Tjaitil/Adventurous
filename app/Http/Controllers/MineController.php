@@ -76,7 +76,7 @@ class MineController extends Controller
     public function getCountdown(): JsonResponse
     {
         $Miner = Miner::where('user_id', Auth::user()->id)
-            ->where('location', $this->sessionService->getCurrentLocation())
+            ->where('location', $this->sessionService->getLocation())
             ->first();
 
         if (! $Miner instanceof Miner) {
@@ -104,7 +104,7 @@ class MineController extends Controller
                 ->addMessage(GameLogService::addErrorLog('Information provided is not valid'));
 
         }
-        $location = $this->sessionService->getCurrentLocation();
+        $location = $this->sessionService->getLocation();
 
         // Check if user is in right location
         if (! $this->locationService->isMineLocation($location)) {
@@ -196,7 +196,7 @@ class MineController extends Controller
                 $loggertService->addErrorLog('Information provided is not valid'));
         }
 
-        $location = $this->sessionService->getCurrentLocation();
+        $location = $this->sessionService->getLocation();
         $MinerWorkforce = MinerWorkforce::where('user_id', Auth::user()->id)
             ->first();
 
