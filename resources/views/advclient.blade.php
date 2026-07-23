@@ -8,6 +8,7 @@
                 <x-client.logModal />
                 <div class="vue-app">
                     <conversation-container />
+                    <crash-screen />
                 </div>
                 @include('partials.gameScreen')
                 <div id="game_hud" class="z-10 absolute">

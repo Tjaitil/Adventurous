@@ -13,6 +13,7 @@ use App\Http\Controllers\GameLoggerController;
 use App\Http\Controllers\HungerController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\LandingController;
+use App\Http\Controllers\CrashReportController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MerchantController;
@@ -141,6 +142,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/armory/soldier/remove', [ArmoryController::class, 'remove']);
     Route::post('/armory/soldier/add', [ArmoryController::class, 'add']);
     Route::post('/log/error', [LogController::class, 'logFrontendError']);
+    Route::post('/crash-report', [CrashReportController::class, 'store']);
 
     Route::middleware(['admin', 'dev'])->prefix('/dev/admin')->group(function () {
         Route::get('/freeze',              [DevToolsController::class, 'getFreezeState']);

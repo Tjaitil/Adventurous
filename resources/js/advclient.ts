@@ -13,7 +13,9 @@ import { setUpTabList } from './utilities/tabs';
 import type { GetWorldResponse } from './types/Responses/WorldLoaderResponse';
 import { initErrorHandler, reportCatchError } from './base/ErrorHandler';
 import { useConversationStore } from './ui/stores/ConversationStore';
+import { useInventoryStore } from './ui/stores/InventoryStore';
 import { gameEventBus } from './gameEventsBus';
+import { addModuleTester } from './devtools/ModuleTester';
 
 export type AdvClientEvents = {
   CHANGED_LOCATION: { locationName: string };
@@ -211,44 +213,66 @@ export class Game {
     }
   }
 
-  public static setup() {
-    initErrorHandler();
-    setUpTabList();
-
-    ClientOverlayInterface.setup();
-
-    viewport.setup({
-      background: document.getElementById('game_canvas') as HTMLCanvasElement,
-      player: document.getElementById('game_canvas2') as HTMLCanvasElement,
-      frontObjects: document.getElementById(
-        'game_canvas4',
-      ) as HTMLCanvasElement,
-      sprite: document.getElementById('game_canvas3') as HTMLCanvasElement,
-      text: document.getElementById('text_canvas') as HTMLCanvasElement,
-      hud: document.getElementById('hud_canvas') as HTMLCanvasElement,
-    });
-    viewport.adjustViewport(Game.properties.xbase, Game.properties.ybase);
-
-    controls.setup();
-
-    GamePieces.loadAssets(
-      Game.properties.xbase,
-      Game.properties.ybase,
-      this.worldData.map_data,
+  public static dispatchCrash(error: unknown) {
+    window.cancelAnimationFrame(Game.properties.requestId);
+    window.dispatchEvent(
+      new CustomEvent('game-crash', {
+        detail: {
+          error: error instanceof Error ? error : new Error(String(error)),
+          gameState: {
+            map: Game.properties.currentMap,
+            coordinates: { x: Game.properties.xbase, y: Game.properties.ybase },
+            inBuilding: Game.properties.inBuilding,
+            building: Game.properties.building,
+            inventory: useInventoryStore().inventoryItems,
+          },
+        },
+      }),
     );
+  }
 
-    loadingCanvas.loadingScreen();
-    setTimeout(() => {
-      void loadingCanvas.loadingAnimationTracker.start('open');
-      Game.startGame();
-    }, 3000);
+  public static setup() {
+    try {
+      initErrorHandler();
+      setUpTabList();
 
-    setTimeout(() => {
-      const clientContainer = document.getElementById('client-container');
-      if (clientContainer) {
-        clientContainer.style.opacity = '1';
-      }
-    }, 500);
+      ClientOverlayInterface.setup();
+
+      viewport.setup({
+        background: document.getElementById('game_canvas') as HTMLCanvasElement,
+        player: document.getElementById('game_canvas2') as HTMLCanvasElement,
+        frontObjects: document.getElementById(
+          'game_canvas4',
+        ) as HTMLCanvasElement,
+        sprite: document.getElementById('game_canvas3') as HTMLCanvasElement,
+        text: document.getElementById('text_canvas') as HTMLCanvasElement,
+        hud: document.getElementById('hud_canvas') as HTMLCanvasElement,
+      });
+      viewport.adjustViewport(Game.properties.xbase, Game.properties.ybase);
+
+      controls.setup();
+
+      GamePieces.loadAssets(
+        Game.properties.xbase,
+        Game.properties.ybase,
+        this.worldData.map_data,
+      );
+
+      loadingCanvas.loadingScreen();
+      setTimeout(() => {
+        void loadingCanvas.loadingAnimationTracker.start('open');
+        Game.startGame();
+      }, 3000);
+
+      setTimeout(() => {
+        const clientContainer = document.getElementById('client-container');
+        if (clientContainer) {
+          clientContainer.style.opacity = '1';
+        }
+      }, 500);
+    } catch (error) {
+      Game.dispatchCrash(error);
+    }
   }
 
   private static startGame() {
@@ -259,68 +283,74 @@ export class Game {
   }
 
   public static update = (timestamp: number) => {
-    Game.properties.delta =
-      (timestamp - Game.properties.timestamp) / 1000 / viewport.zoom;
-    if (Game.properties.delta > 0.08) {
-      Game.properties.delta = Math.round(0.16 / viewport.zoom) * 2;
-    }
-    Game.properties.timestamp = timestamp;
-    if (Game.properties.gameState !== 'playing') {
-      return false;
-    }
-
-    if (!Game.properties.inBuilding && !useConversationStore().isActive) {
-      if (controls.playerLeft) {
-        GamePieces.player.speedX = -GamePieces.player.speed;
-      } else if (controls.playerRight) {
-        GamePieces.player.speedX = GamePieces.player.speed;
-      } else {
-        GamePieces.player.speedX = 0;
+    try {
+      Game.properties.delta =
+        (timestamp - Game.properties.timestamp) / 1000 / viewport.zoom;
+      if (Game.properties.delta > 0.08) {
+        Game.properties.delta = Math.round(0.16 / viewport.zoom) * 2;
       }
-      if (controls.playerUp) {
-        GamePieces.player.speedY = -GamePieces.player.speed;
-      } else if (controls.playerDown) {
-        GamePieces.player.speedY = GamePieces.player.speed;
+      Game.properties.timestamp = timestamp;
+      if (Game.properties.gameState !== 'playing') {
+        return false;
+      }
+
+      if (!Game.properties.inBuilding && !useConversationStore().isActive) {
+        if (controls.playerLeft) {
+          GamePieces.player.speedX = -GamePieces.player.speed;
+        } else if (controls.playerRight) {
+          GamePieces.player.speedX = GamePieces.player.speed;
+        } else {
+          GamePieces.player.speedX = 0;
+        }
+        if (controls.playerUp) {
+          GamePieces.player.speedY = -GamePieces.player.speed;
+        } else if (controls.playerDown) {
+          GamePieces.player.speedY = GamePieces.player.speed;
+        } else {
+          GamePieces.player.speedY = 0;
+        }
       } else {
+        // Clear any stale velocity so the player doesn't drift while blocked
+        GamePieces.player.speedX = 0;
         GamePieces.player.speedY = 0;
       }
-    } else {
-      // Clear any stale velocity so the player doesn't drift while blocked
-      GamePieces.player.speedX = 0;
-      GamePieces.player.speedY = 0;
+      viewport.resetSpriteLayer();
+      if (
+        // (GamePieces.player.speedX != 0 || GamePieces.player.speedY != 0) &&
+        !Game.properties.inBuilding &&
+        !useConversationStore().isActive
+      ) {
+        eventHandler.checkEvent();
+        GamePieces.checkViewportGamePieces();
+        collisionCheck(GamePieces.player, false);
+        GamePieces.player.newPos();
+      } else if (!GamePieces.player.animationEnd) {
+        GamePieces.player.newPos(false);
+      }
+
+      GamePieces.player.xTracker = GamePieces.player.xMovement +=
+        Math.round(GamePieces.player.movementSpeed * Game.properties.delta) *
+        GamePieces.player.speedX;
+      GamePieces.player.yTracker = GamePieces.player.yMovement +=
+        Math.round(GamePieces.player.movementSpeed * Game.properties.delta) *
+        GamePieces.player.speedY;
+
+      viewport.drawBackground(
+        GamePieces.player.xMovement,
+        GamePieces.player.yMovement,
+      );
+
+      GamePieces.drawStaticPieces();
+      GamePieces.drawDaqloons();
+
+      if (GamePieces.player.checkPosition()) {
+        Game.getNextWorld();
+      }
+      Game.properties.requestId = window.requestAnimationFrame(Game.update);
+    } catch (error) {
+      Game.dispatchCrash(error);
     }
-    viewport.resetSpriteLayer();
-    if (
-      // (GamePieces.player.speedX != 0 || GamePieces.player.speedY != 0) &&
-      !Game.properties.inBuilding &&
-      !useConversationStore().isActive
-    ) {
-      eventHandler.checkEvent();
-      GamePieces.checkViewportGamePieces();
-      collisionCheck(GamePieces.player, false);
-      GamePieces.player.newPos();
-    } else if (!GamePieces.player.animationEnd) {
-      GamePieces.player.newPos(false);
-    }
-
-    GamePieces.player.xTracker = GamePieces.player.xMovement +=
-      Math.round(GamePieces.player.movementSpeed * Game.properties.delta) *
-      GamePieces.player.speedX;
-    GamePieces.player.yTracker = GamePieces.player.yMovement +=
-      Math.round(GamePieces.player.movementSpeed * Game.properties.delta) *
-      GamePieces.player.speedY;
-
-    viewport.drawBackground(
-      GamePieces.player.xMovement,
-      GamePieces.player.yMovement,
-    );
-
-    GamePieces.drawStaticPieces();
-    GamePieces.drawDaqloons();
-
-    if (GamePieces.player.checkPosition()) {
-      Game.getNextWorld();
-    }
-    Game.properties.requestId = window.requestAnimationFrame(Game.update);
   };
 }
+
+addModuleTester(Game, 'Game');
