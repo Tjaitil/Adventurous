@@ -14,6 +14,7 @@
         <ItemTooltip />
         <GameMap :map-location="mapLocation" />
         <ClientOverlayWrapper />
+        <CrashScreen />
         <input id="draw_checkbox" type="checkbox" name="" />
       </div>
       <div class="w-[29%]">
@@ -51,6 +52,7 @@ import type { UserLevels } from '@/types/UserLevels';
 import type { GameLog } from '@/types/GameLog';
 import type { ProficiencyStatuses } from '@/types/ProficiencyStatuses';
 import ClientOverlayWrapper from '../components/ClientOverlayWrapper.vue';
+import CrashScreen from '../components/CrashScreen.vue';
 import { usePlayerStore } from '../stores/PlayerStore';
 
 interface Props {

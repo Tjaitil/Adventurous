@@ -27,12 +27,18 @@ void createInertiaApp<SharedPageProps>({
     if (userId) {
       setupEchoListeners(userId);
     }
-    createApp({ render: () => h(App, props) })
+    const app = createApp({ render: () => h(App, props) })
       .use(plugin)
       .use(pinia)
       .use(ui)
-      .use(i18n)
-      .mount(el);
+      .use(i18n);
+
+    app.config.errorHandler = (err) => {
+      const error = err instanceof Error ? err : new Error(String(err));
+      window.dispatchEvent(new CustomEvent('game-crash', { detail: { error, gameState: null } }));
+    };
+
+    app.mount(el);
 
     const devtoolsEl = document.getElementById('devtools-mount');
     if (devtoolsEl) {
