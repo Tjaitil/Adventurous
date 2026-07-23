@@ -8,6 +8,7 @@ import InventoryContainer from './components/Inventory/InventoryContainer.vue';
 import { initErrorHandler } from '@/base/ErrorHandler';
 import ui from '@nuxt/ui/vue-plugin';
 import ConversationContainer from './components/ConversationContainer.vue';
+import CrashScreen from './components/CrashScreen.vue';
 
 export const i18n = createI18n({
   locale: 'en',
@@ -24,6 +25,7 @@ const components = {
   SkillInfoList,
   ConversationContainer,
   InventoryContainer,
+  CrashScreen,
 };
 const ErrorHandler = initErrorHandler();
 
