@@ -8,11 +8,11 @@
     </span>
     <input
       :id
+      v-model="checkedValue"
       type="radio"
       :name
       :value
       class="peer absolute h-0 w-0 cursor-pointer opacity-0"
-      :checked="isChecked === value"
     />
     <span
       class="relative inline-block h-5 w-5 rounded-full border-2 border-transparent bg-neutral-100 peer-checked:bg-orange-600 peer-checked:drop-shadow-xl after:absolute after:top-0.5 after:left-0.5 after:hidden after:h-3 after:w-3 after:rounded-full after:bg-white after:content-[''] peer-checked:after:block hover:bg-gray-200"
@@ -28,7 +28,7 @@ interface Props {
   value: string | number;
 }
 
-const isChecked = defineModel<string | number>();
+const checkedValue = defineModel<string | number>();
 
 defineProps<Props>();
 </script>
