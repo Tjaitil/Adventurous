@@ -109,13 +109,9 @@ class DevToolsController extends Controller
         ]);
 
         $targetMap = $validated['map'];
-        $locationName = GameMaps::locationMapping()[$targetMap] ?? null;
 
         $userData = $this->sessionService->getUserData();
         $userData->map_location = $targetMap;
-        if ($locationName) {
-            $userData->location = $locationName;
-        }
         $userData->save();
 
         $worldLoaderService->setMap($targetMap);

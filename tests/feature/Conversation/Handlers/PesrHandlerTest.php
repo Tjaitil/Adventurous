@@ -3,6 +3,7 @@
 namespace Tests\Feature\Conversation\Handlers;
 
 use App\Conversation\Handlers\PesrHandler;
+use App\Enums\GameMaps;
 use Tests\ConversationTestCase;
 
 class PesrHandlerTest extends ConversationTestCase
@@ -18,7 +19,7 @@ class PesrHandlerTest extends ConversationTestCase
     public function test_location_conditional_returns_true_when_user_is_not_in_location(): void
     {
         $User = $this->getRandomUser();
-        $User->player->location = 'snerpiir';
+        $User->player->map_location = \array_flip(GameMaps::locationMapping())['snerpiir'];
         $result = $this->pesrHandler->currentLocationConditional('snerpiir', $User);
         $this->assertTrue($result);
     }
@@ -26,7 +27,7 @@ class PesrHandlerTest extends ConversationTestCase
     public function test_location_conditional_returns_false_when_user_is_in_location(): void
     {
         $User = $this->getRandomUser();
-        $User->player->location = 'snerpiir';
+        $User->player->map_location = \array_flip(GameMaps::locationMapping())['snerpiir'];
         $result = $this->pesrHandler->currentLocationConditional('golbak', $User);
         $this->assertFalse($result);
     }

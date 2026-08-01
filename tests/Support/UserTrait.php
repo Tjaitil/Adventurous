@@ -49,7 +49,6 @@ trait UserTrait
             throw new \Exception('Location not found');
         }
 
-        $UserData->location = $location;
         $UserData->map_location = $map_location;
         $UserData->save();
     }

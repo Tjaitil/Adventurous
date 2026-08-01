@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\GameMaps;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,7 +12,6 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property string $username
- * @property string $location
  * @property string $map_location
  * @property string $game_id
  * @property int $session_id
@@ -24,6 +25,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool $frajrite_items
  * @property bool $wujkin_items
  * @property int|null $stockpile_max_amount
+ * @property-read string $location
  *
  * @method static \Database\Factories\UserDataFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|UserData newModelQuery()
@@ -38,7 +40,6 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereHunger($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereHungerDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserData whereLocation($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereMapLocation($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereProfiency($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereSessionId($value)
@@ -79,5 +80,15 @@ class UserData extends Model
     public function isFrajriteItemUnlocked(): bool
     {
         return $this->frajrite_items;
+    }
+
+    /**
+     * @return Attribute<string, never>
+     */
+    protected function location(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => GameMaps::locationMapping()[$this->map_location] ?? '',
+        );
     }
 }

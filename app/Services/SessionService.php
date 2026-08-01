@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Enums\GameMaps;
 use App\Models\User;
 use App\Models\UserData;
 use Illuminate\Support\Facades\Auth;
@@ -68,18 +67,6 @@ class SessionService
         }
 
         return $this->UserData->location;
-    }
-
-    /**
-     * Get current location user is in
-     */
-    public function getCurrentLocation(): string
-    {
-        if (! isset($this->UserData)) {
-            $this->getUserData();
-        }
-
-        return GameMaps::locationMapping()[$this->UserData->map_location] ?? '';
     }
 
     /**

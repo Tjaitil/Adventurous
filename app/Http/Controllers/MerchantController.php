@@ -52,7 +52,7 @@ class MerchantController extends controller
         $other_assignments = [];
 
         $TraderAssignments->each(function (TraderAssignment $assignment) use (&$current_location_assignments, &$other_assignments) {
-            if ($assignment->base == $this->sessionService->getCurrentLocation()) {
+            if ($assignment->base == $this->sessionService->getLocation()) {
                 $current_location_assignments[] = $assignment;
             } else {
                 $other_assignments[] = $assignment;
@@ -73,13 +73,13 @@ class MerchantController extends controller
             'Merchant',
             [
                 'CurrentAssignment' => $CurrentAssignment ?? null,
-                'current_location' => $this->sessionService->getCurrentLocation(),
+                'current_location' => $this->sessionService->getLocation(),
                 'CurrentLocationAssignments' => $current_location_assignments,
                 'OtherAssignments' => $other_assignments,
                 'merchant' => $this->data,
                 'Trader' => $Trader,
                 'store_resource' => $this->merchantStore->getStore(),
-                'location' => $this->sessionService->getCurrentLocation(),
+                'location' => $this->sessionService->getLocation(),
                 'trader_level' => $this->skillsService->userLevels->trader_level
             ],
             true,
@@ -167,7 +167,7 @@ class MerchantController extends controller
         $amount = $request->getInput('amount');
         ValidateStoreTrade::validate($request);
 
-        if ($this->sessionService->getCurrentLocation() === 'fagna') {
+        if ($this->sessionService->getLocation() === 'fagna') {
             $Item = Item::where('name', $item)->first();
             $isSellingOtherItem = true;
             if (!$Item instanceof Item) {
@@ -206,7 +206,7 @@ class MerchantController extends controller
         $this->storeService->storeBuilder->setResource($initial_store);
 
         $MerchantOffer = MerchantOffer::where('item', $item)
-            ->where('location', $this->sessionService->getCurrentLocation())
+            ->where('location', $this->sessionService->getLocation())
             ->first();
 
         if (!$MerchantOffer instanceof MerchantOffer) {

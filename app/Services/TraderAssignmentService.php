@@ -131,7 +131,7 @@ class TraderAssignmentService
      */
     public function isPlayerInBaseLocation()
     {
-        if ($this->sessionService->getCurrentLocation() === $this->traderAssignmentBuilder->build()->base) {
+        if ($this->sessionService->getLocation() === $this->traderAssignmentBuilder->build()->base) {
             return true;
         } else {
             return false;

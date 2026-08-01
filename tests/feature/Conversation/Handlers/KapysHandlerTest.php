@@ -4,6 +4,7 @@ namespace Tests\Feature\Conversation\Handlers;
 
 use App\Conversation\Handlers\KapysHandler;
 use App\Enums\GameLocations;
+use App\Enums\GameMaps;
 use App\Models\Miner;
 use App\Models\MinerPermitCost;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -36,7 +37,7 @@ final class KapysHandlerTest extends ConversationTestCase
     public function test_location_conditional_returns_true(): void
     {
         $User = $this->getRandomUser();
-        $User->player->location = GameLocations::GOLBAK_LOCATION->value;
+        $User->player->map_location = \array_flip(GameMaps::locationMapping())[GameLocations::GOLBAK_LOCATION->value];
         $result = $this->kapysHandler->currentLocationConditional(GameLocations::GOLBAK_LOCATION->value, $User);
         $this->assertTrue($result);
     }
@@ -44,7 +45,7 @@ final class KapysHandlerTest extends ConversationTestCase
     public function test_location_conditional_returns_false(): void
     {
         $User = $this->getRandomUser();
-        $User->player->location = GameLocations::GOLBAK_LOCATION->value;
+        $User->player->map_location = \array_flip(GameMaps::locationMapping())[GameLocations::GOLBAK_LOCATION->value];
         $result = $this->kapysHandler->currentLocationConditional(GameLocations::KHANZ_LOCATION->value, $User);
         $this->assertFalse($result);
     }
@@ -84,7 +85,7 @@ final class KapysHandlerTest extends ConversationTestCase
     public function test_buy_permits_when_user_does_not_have_enough_gold(): void
     {
         $User = $this->getRandomUser();
-        $User->player->location = GameLocations::GOLBAK_LOCATION->value;
+        $User->player->map_location = \array_flip(GameMaps::locationMapping())[GameLocations::GOLBAK_LOCATION->value];
 
         $this->insertItemToInventory($User, 'gold', 0);
         $result = $this->kapysHandler->buyPermits(GameLocations::GOLBAK_LOCATION->value, $User);
