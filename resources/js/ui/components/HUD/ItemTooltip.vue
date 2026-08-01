@@ -14,4 +14,6 @@
   </teleport>
 </template>
 
-<script setup lang="ts" vapor></script>
+<script setup lang="ts" vapor>
+defineOptions({});
+</script>
