@@ -42,11 +42,11 @@ describe('Smithy Building Script - Cache Integration', () => {
 
     await buildingDataPreloader.preloadSmithy();
 
-    const spy = vi.spyOn(mockedAdvApi, 'get');
+    mockedAdvApi.get.mockClear();
 
     await smithyModule.init();
 
-    expect(spy).not.toHaveBeenCalled();
+    expect(mockedAdvApi.get).not.toHaveBeenCalled();
   });
 
   test('should call API and cache result when smithy cache is empty', async () => {

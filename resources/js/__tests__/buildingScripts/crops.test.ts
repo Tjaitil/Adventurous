@@ -58,11 +58,11 @@ describe('Crops Building Script - Cache Integration', () => {
 
     await buildingDataPreloader.preloadCrops();
 
-    const spy = vi.spyOn(mockedCropsDataLoader, 'action_items');
+    mockedCropsDataLoader.action_items.mockClear();
 
     new CropsModule().init();
 
-    expect(spy).not.toHaveBeenCalled();
+    expect(mockedCropsDataLoader.action_items).not.toHaveBeenCalled();
   });
 
   test('should call API and cache result when crops cache is empty', () => {

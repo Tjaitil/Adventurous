@@ -52,11 +52,11 @@ describe('Travel Bureau Building Script - Cache Integration', () => {
 
       await buildingDataPreloader.preloadTravelBureau();
 
-      const spy = vi.spyOn(travelbureauDataLoader, 'store_items');
+      travelbureauDataLoaderMock.store_items.mockClear();
 
       await travelBureauModule.init();
 
-      expect(spy).not.toHaveBeenCalled();
+      expect(travelbureauDataLoaderMock.store_items).not.toHaveBeenCalled();
     });
 
     test('should call API when travelbureau cache is empty', async () => {
