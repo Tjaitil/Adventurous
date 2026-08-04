@@ -32,8 +32,9 @@ document.querySelectorAll('.vue-app').forEach(element => {
 
   app.config.errorHandler = async (err, vm, info) => {
     const errorToLog = err + ' ' + JSON.stringify(vm) + ' ' + info;
+    const stack = err instanceof Error ? err.stack : undefined;
 
-    ErrorHandler.logError({ text: errorToLog });
+    ErrorHandler.logError({ text: errorToLog, stack });
   };
 
   app.use(pinia).use(ui).use(i18n).mount(element);
