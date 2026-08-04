@@ -20,7 +20,6 @@
     "laravel/framework": "^13.0",
     "laravel/pail": "^1.2",
     "laravel/reverb": "^1.0",
-    "laravel/sanctum": "^4.3",
     "laravel/telescope": "^5.2",
     "laravel/tinker": "^3.0",
     "respect/validation": "^2.2"

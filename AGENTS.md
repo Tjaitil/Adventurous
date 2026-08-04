@@ -103,7 +103,6 @@ For multi-step plans, divide them into multiple phases with different headings. 
 ### Security Best Practices
 
 - **Authentication**: Use Laravel's built-in auth and authorization features
-- **Sanctum**: Use for API authentication
 - **Validation**: Always validate user input
 - **CSRF**: Use Laravel's CSRF protection
 - **Environment**: Never commit secrets or use `env()` in code
@@ -150,7 +149,6 @@ This application is a Laravel application and its main Laravel ecosystems packag
 - laravel/framework (LARAVEL) - v11
 - laravel/prompts (PROMPTS) - v0
 - laravel/reverb (REVERB) - v1
-- laravel/sanctum (SANCTUM) - v4
 - laravel/telescope (TELESCOPE) - v5
 - larastan/larastan (LARASTAN) - v3
 - laravel/mcp (MCP) - v0
@@ -328,7 +326,7 @@ protected function isAccessible(User $user, ?string $path = null): bool
 
 ## Authentication & Authorization
 
-- Use Laravel's built-in authentication and authorization features (gates, policies, Sanctum, etc.).
+- Use Laravel's built-in authentication and authorization features (gates, policies, etc.).
 
 ## URL Generation
 
