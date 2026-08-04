@@ -1,7 +1,7 @@
 <template>
   <component
     :is="isIneractive ? 'button' : 'div'"
-    :class="['item group', { 'u-focus-ring': useFocusStyle && isIneractive }]"
+    :class="['item group', { 'u-focus-ring': showFocusStyle && isIneractive }]"
   >
     <figure @mouseenter="onMouseEnter" @mouseleave="onMouseLeave">
       <img
@@ -47,7 +47,7 @@ interface Props {
   item: Item['item'];
   amount?: number;
   showAmount?: boolean;
-  useFocusStyle?: boolean;
+  showFocusStyle?: boolean;
   isIneractive?: boolean;
 }
 
@@ -58,7 +58,7 @@ const {
   showAmount = true,
   item,
   amount = undefined,
-  useFocusStyle = true,
+  showFocusStyle = true,
   isIneractive = true,
 } = defineProps<Props>();
 
