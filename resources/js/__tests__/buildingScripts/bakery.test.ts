@@ -50,11 +50,11 @@ describe('Bakery Building Script - Cache Integration', () => {
 
     await buildingDataPreloader.preloadBakery();
 
-    const spy = vi.spyOn(mockedBakeryDataLoader, 'store_items');
+    mockedBakeryDataLoader.store_items.mockClear();
 
     await bakeryModule.init();
 
-    expect(spy).not.toHaveBeenCalled();
+    expect(mockedBakeryDataLoader.store_items).not.toHaveBeenCalled();
   });
 
   test('should call API and cache result when bakery cache is empty', async () => {

@@ -50,11 +50,11 @@ describe('ArcheryShop Building Script - Cache Integration', () => {
 
     await buildingDataPreloader.preloadArcheryShop();
 
-    const spy = vi.spyOn(mockedArcheryShopDataLoader, 'store_items');
+    mockedArcheryShopDataLoader.store_items.mockClear();
 
     await archeryShopModule.init();
 
-    expect(spy).not.toHaveBeenCalled();
+    expect(mockedArcheryShopDataLoader.store_items).not.toHaveBeenCalled();
   });
 
   test('should call API and cache result when archeryshop cache is empty', async () => {

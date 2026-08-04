@@ -1,6 +1,5 @@
-/// <reference types="vitest" />
 /// <reference types="vite/client" />
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vitest/config';
 import laravel from 'laravel-vite-plugin';
 import vue from '@vitejs/plugin-vue';
 import tailwindcss from '@tailwindcss/vite';
@@ -21,7 +20,7 @@ export default defineConfig({
   resolve: {
     alias: {
       vue: 'vue/dist/vue.esm-bundler.js',
-      '@': path.resolve(__dirname, './resources/js'),
+      '@': path.resolve(import.meta.dirname, './resources/js'),
     },
   },
   plugins: [
@@ -121,5 +120,6 @@ export default defineConfig({
   ],
   build: {
     target: 'ES2022',
+    cssMinify: 'esbuild',
   },
 });

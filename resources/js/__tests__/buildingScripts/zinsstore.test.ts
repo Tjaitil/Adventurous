@@ -50,11 +50,11 @@ describe('ZinsStore Building Script - Cache Integration', () => {
 
     await buildingDataPreloader.preloadZinsStore();
 
-    const spy = vi.spyOn(mockedZinsStoreDataLoader, 'store_items');
+    mockedZinsStoreDataLoader.store_items.mockClear();
 
     await zinsStoreModule.init();
 
-    expect(spy).not.toHaveBeenCalled();
+    expect(mockedZinsStoreDataLoader.store_items).not.toHaveBeenCalled();
   });
 
   test('should call API and cache result when zinsstore cache is empty', async () => {

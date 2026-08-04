@@ -58,11 +58,11 @@ describe('Mine Building Script - Cache Integration', () => {
 
     await buildingDataPreloader.preloadMine();
 
-    const spy = vi.spyOn(mockedMineDataLoader, 'action_items');
+    mockedMineDataLoader.action_items.mockClear();
 
     new MineModule().init();
 
-    expect(spy).not.toHaveBeenCalled();
+    expect(mockedMineDataLoader.action_items).not.toHaveBeenCalled();
   });
 
   test('should call API and cache result when mine cache is empty', () => {
