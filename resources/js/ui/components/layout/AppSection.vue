@@ -4,8 +4,6 @@
   </section>
 </template>
 
-<script setup lang="ts"></script>
-
 <style scoped>
 #app-section {
   /*background: radial-gradient(#f2e6d9 50%, #986834);*/

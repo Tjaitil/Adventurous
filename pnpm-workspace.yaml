@@ -1,4 +1,7 @@
+overrides:
+  typescript: npm:typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2
 allowBuilds:
   esbuild: true
   msw: false
   vue-demi: false
+  typescript-native-bridge: true

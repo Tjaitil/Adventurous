@@ -2,7 +2,6 @@
   <footer id="app-footer">Developed by Kjetil Baksaas</footer>
 </template>
 
-<script setup lang="ts"></script>
 <style>
 #app-footer {
   color: white;
