@@ -20,6 +20,9 @@ importers:
       '@tailwindcss/vite':
         specifier: ^4.3.3
         version: 4.3.3(vite@8.2.0(@types/node@20.19.43)(esbuild@0.27.7)(jiti@2.7.0))
+      '@vitest/eslint-plugin':
+        specifier: ^1.6.26
+        version: 1.6.26(@typescript-eslint/eslint-plugin@8.66.0(@typescript-eslint/parser@8.66.0(eslint@9.39.5(jiti@2.7.0))(typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2))(eslint@9.39.5(jiti@2.7.0))(typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2))(eslint@9.39.5(jiti@2.7.0))(typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2)(vitest@4.1.10)
       axios:
         specifier: ^1.19.0
         version: 1.19.0
@@ -1263,6 +1266,22 @@ packages:
       vitest: 4.1.10
     peerDependenciesMeta:
       '@vitest/browser':
+        optional: true
+
+  '@vitest/eslint-plugin@1.6.26':
+    resolution: {integrity: sha512-2eawZk4MZvkEtMZFdScmCE0R1Rti85uRZpmbe9eAv5Q3blDZ5OxlrC9IHlSnxhDCqOO2xKNaD3oufl9BUlI0yA==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@typescript-eslint/eslint-plugin': '*'
+      eslint: '>=8.57.0'
+      typescript: '>=5.0.0'
+      vitest: '*'
+    peerDependenciesMeta:
+      '@typescript-eslint/eslint-plugin':
+        optional: true
+      typescript:
+        optional: true
+      vitest:
         optional: true
 
   '@vitest/expect@4.1.10':
@@ -5246,6 +5265,18 @@ snapshots:
       std-env: 4.2.0
       tinyrainbow: 3.1.1
       vitest: 4.1.10(@types/node@20.19.43)(@vitest/coverage-v8@4.1.10)(jsdom@25.0.1)(msw@2.15.0(@types/node@20.19.43)(typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2))(vite@8.2.0(@types/node@20.19.43)(esbuild@0.27.7)(jiti@2.7.0))
+
+  '@vitest/eslint-plugin@1.6.26(@typescript-eslint/eslint-plugin@8.66.0(@typescript-eslint/parser@8.66.0(eslint@9.39.5(jiti@2.7.0))(typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2))(eslint@9.39.5(jiti@2.7.0))(typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2))(eslint@9.39.5(jiti@2.7.0))(typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2)(vitest@4.1.10)':
+    dependencies:
+      '@typescript-eslint/scope-manager': 8.66.0
+      '@typescript-eslint/utils': 8.66.0(eslint@9.39.5(jiti@2.7.0))(typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2)
+      eslint: 9.39.5(jiti@2.7.0)
+    optionalDependencies:
+      '@typescript-eslint/eslint-plugin': 8.66.0(@typescript-eslint/parser@8.66.0(eslint@9.39.5(jiti@2.7.0))(typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2))(eslint@9.39.5(jiti@2.7.0))(typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2)
+      typescript: typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2
+      vitest: 4.1.10(@types/node@20.19.43)(@vitest/coverage-v8@4.1.10)(jsdom@25.0.1)(msw@2.15.0(@types/node@20.19.43)(typescript-native-bridge@6.0.3-bridge.7.tsgo.7.0.2))(vite@8.2.0(@types/node@20.19.43)(esbuild@0.27.7)(jiti@2.7.0))
+    transitivePeerDependencies:
+      - supports-color
 
   '@vitest/expect@4.1.10':
     dependencies:
