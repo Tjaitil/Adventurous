@@ -12,6 +12,7 @@
     "@inertiajs/vue3": "^3.6.1",
     "@nuxt/ui": "^4.9.0",
     "@tailwindcss/vite": "^4.3.2",
+    "@vueuse/core": "^14.4.0",
     "axios": "^1.18.1",
     "pinia": "^3.0.4",
     "vite": "^8.2.0",

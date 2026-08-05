@@ -4,7 +4,6 @@ import type CropsModule from '@/buildingScripts/crops';
 import type merchantModule from '@/buildingScripts/merchant';
 import type MineModule from '@/buildingScripts/mine';
 import type smithyModule from '@/buildingScripts/smithy';
-import type stockpileModule from '@/buildingScripts/stockpile';
 import type travelBureauModule from '@/buildingScripts/travelbureau';
 import type workforceLodgeModule from '@/buildingScripts/workforcelodge';
 import type zinsStoreModule from '@/buildingScripts/zinsstore';
@@ -12,7 +11,7 @@ import type zinsStoreModule from '@/buildingScripts/zinsstore';
 type BuildingModuleMapping = {
   bakery: typeof bakeryModule;
   travelbureau: typeof travelBureauModule;
-  stockpile: typeof stockpileModule;
+  stockpile: null;
   mine: MineModule;
   crops: CropsModule;
   zinsstore: typeof zinsStoreModule;
@@ -39,8 +38,8 @@ export enum Buildings {
 
 export type BuildingName = keyof BuildingModuleMapping;
 
-export type VuePage = 'armory';
+export type VuePage = 'armory' | 'stockpile';
 
 export function isVuePage(page: BuildingName): page is VuePage {
-  return page === 'armory';
+  return page === 'armory' || page === 'stockpile';
 }

@@ -3,6 +3,7 @@ import type { StoreItemResponse } from './Responses/StoreItemResponse';
 import type { ArmoryWarrior } from './Warrior';
 import type { MineCountdownResponse } from './Mine';
 import type { CropCountdownResponse } from './crops';
+import type { StockpileDataResponse } from './Stockpile';
 
 type UnwrapDataLoader<T> = T[keyof T] extends () => Promise<infer R>
   ? R
@@ -60,3 +61,9 @@ export type CropsDataLoader = {
 };
 
 export type CropsDataLoaderResponse = MappedDataLoader<CropsDataLoader>;
+
+export type StockpileDataLoader = {
+  res: () => Promise<StockpileDataResponse>;
+};
+
+export type StockpileDataLoaderResponse = StockpileDataResponse;

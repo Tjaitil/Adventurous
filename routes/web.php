@@ -70,8 +70,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/mine/end', [MineController::class, 'endMining']);
     Route::get('/mine/data', [MineController::class, 'getViewData']);
 
-    Route::get('/stockpile', [StockpileController::class, 'index']);
-    Route::get('/stockpile/{item}', [StockpileController::class, 'show']);
+    Route::get('/stockpile/data', [StockpileController::class, 'getData']);
     Route::post('/stockpile/update', [StockpileController::class, 'update']);
 
     Route::get('/zinsstore', [ZinsstoreController::class, 'index']);
