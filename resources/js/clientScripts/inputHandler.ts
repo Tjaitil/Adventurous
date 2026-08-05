@@ -10,7 +10,6 @@ import { isVuePage, type VuePage } from '@/types/Building';
 import { GamePieces } from './gamePieces';
 import { Building } from '../gamepieces/Building';
 import { setUpTabList } from '../utilities/tabs';
-import stockpileModule from '../buildingScripts/stockpile';
 import travelBureauModule from '../buildingScripts/travelbureau';
 import bakeryModule from '../buildingScripts/bakery';
 import MineModule from '../buildingScripts/mine';
@@ -273,10 +272,6 @@ export const inputHandler: IInputHandler = {
       switch (building) {
         case 'archeryshop':
           this.currentBuildingModule = archeryShopModule;
-          this.currentBuildingModule.init();
-          break;
-        case 'stockpile':
-          this.currentBuildingModule = stockpileModule;
           this.currentBuildingModule.init();
           break;
         case 'travelbureau':

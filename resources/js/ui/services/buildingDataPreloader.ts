@@ -8,6 +8,7 @@ import {
   cropsDataLoader,
   mineDataLoader,
   smithyDataLoader,
+  stockpileDataLoader,
   travelbureauDataLoader,
   zinsStoreDataLoader,
 } from '@/buildingScripts/buildingLoaders';
@@ -18,9 +19,11 @@ import type {
   CropsDataLoaderResponse,
   MineDataLoaderResponse,
   SmithyDataLoaderResponse,
+  StockpileDataLoaderResponse,
   TravelbureauDataLoaderResponse,
   ZinsStoreDataLoaderResponse,
 } from '@/types/BuildingDataLoader';
+import type { StockpileDataResponse } from '@/types/Stockpile';
 
 type CachedData = {
   armory: {
@@ -35,8 +38,7 @@ type CachedData = {
   } & BakeryDataLoaderResponse;
   stockpile: {
     cached_at: number;
-    view: string;
-  };
+  } & StockpileDataLoaderResponse;
   travelbureau: {
     cached_at: number;
   } & TravelbureauDataLoaderResponse;
@@ -257,16 +259,16 @@ class BuildingDataPreloader {
   }
 
   async preloadStockpile(): Promise<void> {
-    if (this.getBuildingCache('stockpile')) {
+    if (this.isDataValid('stockpile')) {
       return;
     }
 
     try {
-      const viewResponse = await AdvApi.get<string>('/stockpile');
+      const stockpileResponse = await stockpileDataLoader.res();
 
       this.cache.stockpile = {
         cached_at: Date.now(),
-        view: viewResponse,
+        ...stockpileResponse,
       };
     } catch {
       return;
@@ -288,6 +290,15 @@ class BuildingDataPreloader {
       return null;
     }
     return this.cache.armory;
+  }
+
+  getStockpileData(): StockpileDataResponse | null {
+    const cache = this.getBuildingCache('stockpile');
+    if (!cache) {
+      return null;
+    }
+
+    return cache;
   }
 
   async preloadAll(): Promise<void> {

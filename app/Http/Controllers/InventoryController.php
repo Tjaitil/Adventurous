@@ -40,8 +40,9 @@ class InventoryController extends Controller
             ->where('inventory.user_id', Auth::user()->id)
             ->get();
 
-        $Stockpile_prices = Item::select('name', 'store_value')->join('stockpile', 'items.name', '=', 'stockpile.item')
-            ->where('stockpile.username', Auth::user()->username)
+        $Stockpile_prices = Item::select('name', 'store_value')
+            ->join('stockpile', 'items.item_id', '=', 'stockpile.item_id')
+            ->where('stockpile.user_id', Auth::user()->id)
             ->get();
 
         $prices = array_merge($Inventory_prices->toArray(), $Stockpile_prices->toArray());
