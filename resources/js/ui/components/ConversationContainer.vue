@@ -36,6 +36,7 @@ import { GameLogger } from '@/utilities/GameLogger';
 import { ref, watch } from 'vue';
 import { useConversationStore } from '../stores/ConversationStore';
 import { Game } from '@/advclient';
+import { reportError } from '@/ui/errorReporting';
 import { loadBuildingCallback } from '@/conversationCallbacks/loadBuilding';
 import ConversationHeader from './conversation/ConversationHeader.vue';
 import type {
@@ -162,8 +163,8 @@ const getNextSegment = async (data: ConversationRequest): Promise<void> => {
       selectedConversationOption.value = null;
       handleNextLine();
     })
-    .catch(() => {
-      GameLogger.addMessage('An error occured', true);
+    .catch((e: unknown) => {
+      reportError(e);
     });
 };
 

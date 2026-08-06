@@ -23,6 +23,7 @@ import archeryShopModule from '../buildingScripts/archeryshop';
 import { useConversationStore } from '@/ui/stores/ConversationStore';
 import { gameEventBus } from '@/gameEventsBus';
 import { buildingDataPreloader } from '@/ui/services/buildingDataPreloader';
+import { reportError } from '@/ui/errorReporting';
 
 export enum Buildings {
   BAKERY = 'bakery',
@@ -173,12 +174,28 @@ export const inputHandler: IInputHandler = {
     if (cache !== undefined && 'view' in cache) {
       response = cache.view;
     } else {
-      const buildingResponse = await fetch('/' + building).then(response => {
-        if (!response.ok) {
-          throw new Error('Something unexpected happened. Please try again');
-        }
-        return response.text();
-      });
+      const buildingResponse = await fetch('/' + building)
+        .then(response => {
+          if (!response.ok) {
+            return Promise.reject(
+              `Building ${building} could not be retrieved: ` +
+                response.statusText,
+            );
+          }
+          return response.text();
+        })
+        .catch((error: unknown) => {
+          let message = 'Unknown error';
+          if (error instanceof Error) {
+            message = error.message;
+          }
+          reportError(
+            new Error(
+              `Building ${building} could not be retrieved: ` + message,
+            ),
+          );
+          return '';
+        });
       response = buildingResponse;
     }
 

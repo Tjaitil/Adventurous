@@ -1,6 +1,7 @@
 import type { GameLoggerEvents } from '@/utilities/GameLogger';
 import type { AdvClientEvents } from '@/advclient';
 import type { InputHandlerEvents } from './clientScripts/inputHandler';
+import { reportError } from '@/ui/errorReporting';
 export type GameEventMap = {
   PLAYER_HEALTH_UPDATE: { health: number };
   PLAYER_HUNTED_UPDATE: { isHunted: boolean };
@@ -45,7 +46,11 @@ class GameEventBus {
 
   emit<K extends GameEventType>(event: K, payload: GameEventMap[K]) {
     this.listeners[event].forEach(listener => {
-      listener(payload);
+      try {
+        listener(payload);
+      } catch (error) {
+        reportError(error);
+      }
     });
   }
 }
