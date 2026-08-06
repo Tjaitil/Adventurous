@@ -12,7 +12,10 @@
       <h3 class="text-lg font-bold">{{ $t('Current assignment') }}</h3>
       <div class="mt-2 grid grid-cols-2 gap-2 gap-x-3 px-2">
         <div>
-          <BaseItem :item="status.trader_assignment.cargo" />
+          <BaseItem
+            :item="status.trader_assignment.cargo"
+            :is-ineractive="false"
+          />
         </div>
         <div>
           <BaseIcon icon="route" :title="$t('Route icon')" />

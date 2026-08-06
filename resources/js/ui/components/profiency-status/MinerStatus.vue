@@ -5,7 +5,7 @@
     </h3>
     <template v-if="status.mineral_ore != null">
       <div v-show="!isFinished" class="flex flex-row items-center">
-        <BaseItem :item="status.mineral_ore" />
+        <BaseItem :item="status.mineral_ore" :is-ineractive="false" />
         <p class="flex flex-row items-center gap-2">
           <BaseIcon icon="timer" />
           {{ remainder.minutes }}

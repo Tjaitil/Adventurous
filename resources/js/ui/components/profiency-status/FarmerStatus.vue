@@ -5,7 +5,7 @@
     </h3>
     <template v-if="status.crop_type !== null">
       <div v-show="!isFinished" class="flex flex-row items-center">
-        <BaseItem :item="status.crop_type" />
+        <BaseItem :item="status.crop_type" :is-ineractive="false" />
         <p class="flex flex-row items-center gap-2">
           <BaseIcon icon="timer" />
           {{ remainder.minutes }}

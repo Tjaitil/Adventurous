@@ -1,5 +1,8 @@
 <template>
-  <div class="item">
+  <component
+    :is="isIneractive ? 'button' : 'div'"
+    :class="['item group', { 'u-focus-ring': showFocusStyle && isIneractive }]"
+  >
     <figure @mouseenter="onMouseEnter" @mouseleave="onMouseLeave">
       <img
         :src="'/images/' + item + '.png'"
@@ -28,7 +31,7 @@
         <img class="gold" src="/images/gold.png" :alt="$t('gold icon')" />
       </li>
     </ul>
-  </div>
+  </component>
 </template>
 
 <script setup lang="ts">
@@ -44,6 +47,8 @@ interface Props {
   item: Item['item'];
   amount?: number;
   showAmount?: boolean;
+  showFocusStyle?: boolean;
+  isIneractive?: boolean;
 }
 
 const { t } = useI18n();
@@ -53,6 +58,8 @@ const {
   showAmount = true,
   item,
   amount = undefined,
+  showFocusStyle = true,
+  isIneractive = true,
 } = defineProps<Props>();
 
 watch(
