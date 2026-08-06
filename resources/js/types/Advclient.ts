@@ -49,3 +49,7 @@ export interface WorldMapData {
   daqloon_fighting_areas: DaqloonFightingArea[];
   objects: StaticGameObject[];
 }
+
+export interface CrashDetail {
+  gameState: GameProperties | null;
+}

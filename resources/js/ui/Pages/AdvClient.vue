@@ -1,5 +1,6 @@
 <template>
   <AppLayoutWithAside>
+    <CrashScreen />
     <div
       id="client-container"
       class="relative flex flex-row gap-x-4 transition-opacity duration-500 ease-in"
@@ -42,8 +43,9 @@ import GameScreen from '../components/HUD/GameScreen.vue';
 import ScreenHUD from '../components/HUD/ScreenHUD.vue';
 import ItemTooltip from '../components/HUD/ItemTooltip.vue';
 import GameMap from '../components/HUD/GameMap.vue';
-import { Game } from '@/advclient';
-import { onMounted } from 'vue';
+import { Game, initGame } from '@/advclient';
+import { registerErrorHandler } from '@/ui/errorReporting';
+import { onErrorCaptured, onMounted } from 'vue';
 import LogModal from '../components/HUD/LogModal.vue';
 import SidebarSection from '../components/HUD/SidebarSection.vue';
 import type { DiplomacyResource } from '@/types/Diplomacy';
@@ -52,6 +54,8 @@ import type { GameLog } from '@/types/GameLog';
 import type { ProficiencyStatuses } from '@/types/ProficiencyStatuses';
 import ClientOverlayWrapper from '../components/ClientOverlayWrapper.vue';
 import { usePlayerStore } from '../stores/PlayerStore';
+import { useCrashStore } from '../stores/CrashStore';
+import CrashScreen from '../components/CrashScreen.vue';
 
 interface Props {
   hunger: {
@@ -74,10 +78,28 @@ const playerStore = usePlayerStore();
 playerStore.location = location;
 playerStore.username = username;
 
-onMounted(async () => {
-  await Game.getWorld().then(() => {
-    Game.setup();
+const crashStore = useCrashStore();
+const onError = (error: unknown) => {
+  crashStore.reportCrash({
+    error: error instanceof Error ? error : new Error(String(error)),
+    gameState: {
+      map: Game.properties.currentMap,
+      coordinates: { x: Game.properties.xbase, y: Game.properties.ybase },
+      inBuilding: Game.properties.inBuilding,
+      building: Game.properties.building,
+    },
   });
+};
+
+onErrorCaptured(error => {
+  onError(error);
+  return false;
+});
+
+registerErrorHandler(onError);
+
+onMounted(async () => {
+  await initGame(onError);
 });
 </script>
 <style scoped>

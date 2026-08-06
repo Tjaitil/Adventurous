@@ -10,8 +10,10 @@ import { createPinia } from 'pinia';
 import { i18n } from './main';
 import { setupEchoListeners } from '../bootstrap';
 import type { SharedPageProps } from '@inertiajs/core';
+import { initErrorHandler } from '@/base/ErrorHandler';
 
 const pinia = createPinia();
+const ErrorHandler = initErrorHandler();
 
 void createInertiaApp<SharedPageProps>({
   resolve: async name => {
@@ -27,18 +29,27 @@ void createInertiaApp<SharedPageProps>({
     if (userId) {
       setupEchoListeners(userId);
     }
-    createApp({ render: () => h(App, props) })
+    const app = createApp({ render: () => h(App, props) })
       .use(plugin)
       .use(pinia)
       .use(ui)
-      .use(i18n)
-      .mount(el);
+      .use(i18n);
+
+    app.config.errorHandler = (err, _vm, _info) => {
+      console.error('Vue error handler:', err);
+      const error = err instanceof Error ? err : new Error(String(err));
+      ErrorHandler.logError({ text: error.message });
+    };
+
+    app.mount(el);
 
     const devtoolsEl = document.getElementById('devtools-mount');
     if (devtoolsEl) {
-      void import('./components/sidebar/DevToolsTab.vue').then(({ default: DevToolsTab }) => {
-        createApp(DevToolsTab).use(pinia).use(ui).use(i18n).mount(devtoolsEl);
-      });
+      void import('./components/sidebar/DevToolsTab.vue').then(
+        ({ default: DevToolsTab }) => {
+          createApp(DevToolsTab).use(pinia).use(ui).use(i18n).mount(devtoolsEl);
+        },
+      );
     }
   },
   progress: {

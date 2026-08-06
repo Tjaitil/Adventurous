@@ -1,98 +1,75 @@
 <template>
-  <Teleport to="body">
+  <div
+    v-if="crashStore.isCrashed"
+    class="fixed inset-0 z-9999 flex items-center justify-center bg-black/80"
+  >
     <div
-      v-if="isCrashed"
-      class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80"
+      class="bg-inverted w-md max-w-full space-y-6 rounded border border-gray-700 p-8 text-center text-white"
     >
-      <div
-        v-if="isDev"
-        class="mx-4 max-h-screen w-full max-w-3xl overflow-auto rounded border border-red-600 bg-gray-900 p-6 text-white"
-      >
-        <h1 class="mb-4 text-2xl font-bold text-red-500">Game Crashed</h1>
+      <div v-if="isDev" class="w-full max-w-3xl overflow-auto">
+        <h1 class="mb-4 text-2xl font-bold text-red-500">
+          {{ t('Game Crashed') }}
+        </h1>
 
-        <section class="mb-4">
-          <h2 class="mb-1 text-sm font-semibold uppercase text-red-400">Error</h2>
-          <pre class="whitespace-pre-wrap break-words text-xs text-red-300">{{
-            crashInfo?.error.message
-          }}</pre>
-          <pre class="mt-2 whitespace-pre-wrap break-words text-xs text-gray-400">{{
-            crashInfo?.error.stack
-          }}</pre>
-        </section>
-
-        <section v-if="crashInfo?.gameState" class="mb-4">
-          <h2 class="mb-1 text-sm font-semibold uppercase text-yellow-400">
-            Game State
+        <section class="mb-4 text-left">
+          <h2 class="mb-1 text-sm font-semibold text-red-400 uppercase">
+            {{ t('Error') }}
           </h2>
-          <pre class="whitespace-pre-wrap text-xs text-gray-300">{{
-            JSON.stringify(crashInfo.gameState, null, 2)
-          }}</pre>
+          <pre
+            class="wrap-break-words text-xs whitespace-pre-wrap text-red-300"
+            >{{ crashStore.crashInfo?.error.message }}</pre
+          >
+          <pre
+            class="wrap-break-words mt-2 max-h-40 truncate overflow-auto text-left text-xs whitespace-pre-wrap"
+            >{{ crashStore.crashInfo?.error.stack }}</pre
+          >
         </section>
 
-        <button
-          class="mt-2 rounded bg-red-700 px-4 py-2 text-sm text-white hover:bg-red-600"
-          @click="reload"
-        >
-          Reload
-        </button>
+        <section v-if="crashStore.crashInfo?.gameState" class="mb-4 text-left">
+          <h2 class="mb-1 text-sm font-semibold text-yellow-400 uppercase">
+            {{ t('Game State') }}
+          </h2>
+          <pre class="text-xs whitespace-pre-wrap text-gray-300">{{
+            JSON.stringify(crashStore.crashInfo?.gameState, null, 2)
+          }}</pre>
+        </section>
       </div>
 
-      <div
-        v-else
-        class="mx-4 w-full max-w-md rounded border border-gray-700 bg-gray-900 p-8 text-center text-white"
-      >
-        <h1 class="mb-3 text-2xl font-bold">Game Crashed</h1>
-        <p class="mb-6 text-gray-400">
-          A report has been forwarded to the support team.
+      <template v-else>
+        <h1 class="mb-3 text-2xl font-bold">{{ t('Game Crashed') }}</h1>
+        <p>
+          {{
+            t(
+              'Oh no! Something went wrong. The game has crashed. Please reload the page to try again.',
+            )
+          }}
         </p>
-        <button
-          class="rounded bg-primary-700 px-6 py-2 text-white hover:bg-primary-600"
-          @click="reload"
-        >
-          Reload
-        </button>
-      </div>
+        <p>
+          {{ t('A report has been forwarded to the support team.') }}
+        </p>
+      </template>
+      <UButton
+        color="primary"
+        class="bg-primary-700 hover:bg-primary-600 mb-2 w-full"
+        @click="reload"
+      >
+        {{ t('Reload') }}
+      </UButton>
     </div>
-  </Teleport>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
-import type { InventoryItem } from '@/types/InventoryItem';
-import axios from 'axios';
-
-interface GameState {
-  map: string;
-  coordinates: { x: number; y: number };
-  inBuilding: boolean;
-  building: string;
-  inventory: InventoryItem[];
-}
-
-interface CrashDetail {
-  error: Error;
-  gameState: GameState | null;
-}
+import { useI18n } from 'vue-i18n';
+import { useCrashStore } from '@/ui/stores/CrashStore';
 
 const isDev = import.meta.env.DEV;
 
-const isCrashed = ref(false);
-const crashInfo = ref<CrashDetail | null>(null);
+const { t } = useI18n();
 
-const onCrash = (e: Event) => {
-  const detail = (e as CustomEvent<CrashDetail>).detail;
-  crashInfo.value = detail;
-  isCrashed.value = true;
-  void axios.post('/crash-report', {
-    error_message: detail.error.message,
-    stack_trace: detail.error.stack,
-    game_state: detail.gameState,
-    environment: isDev ? 'dev' : 'prod',
-  });
+const crashStore = useCrashStore();
+
+const reload = () => {
+  window.location.reload();
 };
-
-const reload = () => window.location.reload();
-
-onMounted(() => window.addEventListener('game-crash', onCrash));
-onUnmounted(() => window.removeEventListener('game-crash', onCrash));
 </script>

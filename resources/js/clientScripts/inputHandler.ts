@@ -175,7 +175,12 @@ export const inputHandler: IInputHandler = {
     } else {
       const buildingResponse = await fetch('/' + building).then(response => {
         if (!response.ok) {
-          throw new Error('Something unexpected happened. Please try again');
+          reportError(
+            new Error(
+              `Building ${building} could not be retrieved: ` +
+                response.statusText,
+            ),
+          );
         }
         return response.text();
       });

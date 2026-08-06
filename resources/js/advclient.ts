@@ -13,7 +13,6 @@ import { setUpTabList } from './utilities/tabs';
 import type { GetWorldResponse } from './types/Responses/WorldLoaderResponse';
 import { initErrorHandler, reportCatchError } from './base/ErrorHandler';
 import { useConversationStore } from './ui/stores/ConversationStore';
-import { useInventoryStore } from './ui/stores/InventoryStore';
 import { gameEventBus } from './gameEventsBus';
 import { addModuleTester } from './devtools/ModuleTester';
 
@@ -21,7 +20,6 @@ export type AdvClientEvents = {
   CHANGED_LOCATION: { locationName: string };
 };
 
-// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class Game {
   public static properties: GameProperties = {
     requestId: 0,
@@ -39,6 +37,18 @@ export class Game {
     checkingPerson: 'none',
     delta: 0,
   };
+
+  private static errorHandler: ((error: unknown) => void) | null = null;
+
+  public static reportError(error: unknown) {
+    if (this.errorHandler) {
+      this.errorHandler(error);
+    }
+  }
+
+  public static registerErrorHandler(callback: (error: unknown) => void) {
+    this.errorHandler = callback;
+  }
 
   public static worldData: GetWorldResponse['data'];
 
@@ -213,24 +223,6 @@ export class Game {
     }
   }
 
-  public static dispatchCrash(error: unknown) {
-    window.cancelAnimationFrame(Game.properties.requestId);
-    window.dispatchEvent(
-      new CustomEvent('game-crash', {
-        detail: {
-          error: error instanceof Error ? error : new Error(String(error)),
-          gameState: {
-            map: Game.properties.currentMap,
-            coordinates: { x: Game.properties.xbase, y: Game.properties.ybase },
-            inBuilding: Game.properties.inBuilding,
-            building: Game.properties.building,
-            inventory: useInventoryStore().inventoryItems,
-          },
-        },
-      }),
-    );
-  }
-
   public static setup() {
     try {
       initErrorHandler();
@@ -271,15 +263,19 @@ export class Game {
         }
       }, 500);
     } catch (error) {
-      Game.dispatchCrash(error);
+      Game.reportError(error);
     }
   }
 
   private static startGame() {
-    Game.properties.requestId = 0;
-    GamePieces.player.draw();
-    GamePieces.init();
-    pauseManager.resumeGame(true);
+    try {
+      Game.properties.requestId = 0;
+      GamePieces.player.draw();
+      GamePieces.init();
+      pauseManager.resumeGame(true);
+    } catch (error) {
+      Game.reportError(error);
+    }
   }
 
   public static update = (timestamp: number) => {
@@ -348,9 +344,17 @@ export class Game {
       }
       Game.properties.requestId = window.requestAnimationFrame(Game.update);
     } catch (error) {
-      Game.dispatchCrash(error);
+      Game.reportError(error);
     }
   };
 }
 
 addModuleTester(Game, 'Game');
+
+export const initGame = async (onError: (error: unknown) => void) => {
+  Game.registerErrorHandler(onError);
+
+  await Game.getWorld().then(() => {
+    Game.setup();
+  });
+};
