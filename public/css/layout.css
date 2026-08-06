@@ -301,7 +301,6 @@ section img:not([class*='w-'], [width], .gold) {
   vertical-align: middle;
 }
 
-.inventory_item figure,
 .item figure {
   position: relative;
 }
