@@ -224,17 +224,23 @@ export const viewport = {
     );
   },
   drawPlayer(canvasSprite: CanvasSprite) {
-    this.layer.player.drawImage(
-      canvasSprite.img,
-      canvasSprite.spriteX,
-      canvasSprite.spriteY,
-      canvasSprite.sWidth,
-      canvasSprite.sHeight,
-      this.playerCanvasX,
-      this.playerCanvasY,
-      canvasSprite.width,
-      canvasSprite.height,
-    );
+    try {
+      this.layer.player.drawImage(
+        canvasSprite.img,
+        canvasSprite.spriteX,
+        canvasSprite.spriteY,
+        canvasSprite.sWidth,
+        canvasSprite.sHeight,
+        this.playerCanvasX,
+        this.playerCanvasY,
+        canvasSprite.width,
+        canvasSprite.height,
+      );
+    } catch (error: unknown) {
+      throw new Error(
+        `Error drawing player sprite ${canvasSprite.img.src}: ${error instanceof Error ? error.message : String(error)}`,
+      );
+    }
   },
   resetPlayerLayer() {
     this.layer.player.clearRect(0, 0, this.width, this.height);
@@ -249,28 +255,42 @@ export const viewport = {
         this.layer.background.drawImage(img, spriteX, spriteY, width, height);
       } else if (layer === 'frontObjects') {
         if (!img.src.includes('/.png')) {
-          this.layer.frontObjects.drawImage(img, spriteX, spriteY, width, height);
+          this.layer.frontObjects.drawImage(
+            img,
+            spriteX,
+            spriteY,
+            width,
+            height,
+          );
         }
       }
     } catch (error: unknown) {
-      throw new Error(`Error drawing object ${img.src} on layer ${layer}: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Error drawing object ${img.src} on layer ${layer}: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   },
   resetSpriteLayer() {
     this.layer.sprite.clearRect(0, 0, this.width, this.height);
   },
   drawSprite(img, spriteX, spriteY, sWidth, sHeight, x, y, width, height) {
-    this.layer.sprite.drawImage(
-      img,
-      spriteX,
-      spriteY,
-      sWidth,
-      sHeight,
-      x,
-      y,
-      width,
-      height,
-    );
+    try {
+      this.layer.sprite.drawImage(
+        img,
+        spriteX,
+        spriteY,
+        sWidth,
+        sHeight,
+        x,
+        y,
+        width,
+        height,
+      );
+    } catch (error: unknown) {
+      throw new Error(
+        `Error drawing sprite ${img.src} on layer sprite: ${error instanceof Error ? error.message : String(error)}`,
+      );
+    }
   },
   drawText(font, fillStyle, text, x, y, textAlign = false) {
     if (textAlign) {
