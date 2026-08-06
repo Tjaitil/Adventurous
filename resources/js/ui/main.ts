@@ -1,7 +1,3 @@
-import { createApp } from 'vue';
-import { createPinia } from 'pinia';
-import AppVue from './components/App.vue';
-import SkillInfoList from './components/skills/SkillInfoList.vue';
 import { createI18n } from 'vue-i18n';
 import { getLanguageBundle } from './localeSetup';
 import InventoryContainer from './components/Inventory/InventoryContainer.vue';
