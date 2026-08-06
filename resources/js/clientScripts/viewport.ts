@@ -243,13 +243,17 @@ export const viewport = {
     this.layer.frontObjects.clearRect(0, 0, this.width, this.height);
   },
   drawObject(layer, img, spriteX, spriteY, width, height) {
-    if (!['background', 'frontObjects'].includes(layer)) return false;
-    if (layer === 'background') {
-      this.layer.background.drawImage(img, spriteX, spriteY, width, height);
-    } else if (layer === 'frontObjects') {
-      if (!img.src.includes('/.png')) {
-        this.layer.frontObjects.drawImage(img, spriteX, spriteY, width, height);
+    try {
+      if (!['background', 'frontObjects'].includes(layer)) return false;
+      if (layer === 'background') {
+        this.layer.background.drawImage(img, spriteX, spriteY, width, height);
+      } else if (layer === 'frontObjects') {
+        if (!img.src.includes('/.png')) {
+          this.layer.frontObjects.drawImage(img, spriteX, spriteY, width, height);
+        }
       }
+    } catch (error: unknown) {
+      throw new Error(`Error drawing object ${img.src} on layer ${layer}: ${error instanceof Error ? error.message : String(error)}`);
     }
   },
   resetSpriteLayer() {
