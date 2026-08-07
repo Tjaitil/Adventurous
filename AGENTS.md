@@ -17,7 +17,7 @@ For multi-step plans, divide them into multiple phases with different headings. 
 - **Run tests with coverage**: `php artisan test --coverage`
 - **PHP static analysis**: `composer phpstan` or `./vendor/bin/phpstan analyse`
 - **PHP code formatting**: `vendor/bin/pint --dirty` (run before finalizing changes)
-- **Start development server**: `composer dev` (runs server, queue, logs, reverb, vite)
+- **Start development server**: `php artisan dev` (runs server, queue, logs, reverb, vite)
 - **Generate IDE helpers**: `php artisan ide-helper:generate && php artisan ide-helper:meta`
 
 ### Frontend Commands
@@ -186,7 +186,7 @@ This project has domain-specific skills available. You MUST activate the relevan
 
 ## Frontend Bundling
 
-- If the user doesn't see a frontend change reflected in the UI, it could mean they need to run `npm run build`, `npm run dev`, or `composer run dev`. Ask them.
+- If the user doesn't see a frontend change reflected in the UI, it could mean they need to run `npm run build`, `npm run dev`, or `php artisan dev`. Ask them.
 
 ## Documentation Files
 
@@ -348,7 +348,7 @@ protected function isAccessible(User $user, ?string $path = null): bool
 
 ## Vite Error
 
-- If you receive an "Illuminate\Foundation\ViteException: Unable to locate file in Vite manifest" error, you can run `npm run build` or ask the user to run `npm run dev` or `composer run dev`.
+- If you receive an "Illuminate\Foundation\ViteException: Unable to locate file in Vite manifest" error, you can run `npm run build` or ask the user to run `npm run dev` or `php artisan dev`.
 
 === laravel/v11 rules ===
 
