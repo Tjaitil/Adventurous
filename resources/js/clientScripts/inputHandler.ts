@@ -1,5 +1,5 @@
 import { ModuleTester, addModuleTester } from './../devtools/ModuleTester';
-import { Character } from './../gamepieces/Character';
+import type { Character } from './../gamepieces/Character';
 import { ClientOverlayInterface } from './clientOverlayInterface';
 import { tutorial } from './tutorial';
 import { itemTitle } from '../utilities/itemTitle';
@@ -8,7 +8,7 @@ import { GameLogger } from '../utilities/GameLogger';
 import type { BuildingName } from '@/types/Building';
 import { isVuePage, type VuePage } from '@/types/Building';
 import { GamePieces } from './gamePieces';
-import { Building } from '../gamepieces/Building';
+import type { Building } from '../gamepieces/Building';
 import { setUpTabList } from '../utilities/tabs';
 import stockpileModule from '../buildingScripts/stockpile';
 import travelBureauModule from '../buildingScripts/travelbureau';
@@ -118,23 +118,15 @@ export const inputHandler: IInputHandler = {
   buildingMatchUIChanged: false,
   checkBuilding(mouseinputX = 0, mouseinputY = 0) {
     this.buildingMatch = undefined;
-    const px = GamePieces.player.xpos;
-    const py = GamePieces.player.ypos;
-    const candidates = GamePieces.spatialGrid.query(
-      px - 200,
-      py - 200,
-      px + 200,
-      py + 200,
-    );
-    for (let i = 0, n = candidates.length; i < n; i++) {
-      const object = candidates[i];
-      if (!(object instanceof Building) || object.type !== 'building') continue;
+    for (let i = 0, n = GamePieces.nearBuildings.length; i < n; i++) {
+      const object = GamePieces.nearBuildings[i];
+
       if (
-        py > object.diameterUp &&
-        py < object.diameterDown &&
-        px > object.diameterLeft &&
-        px < object.diameterRight &&
-        Math.abs(py - object.diameterDown) < 32
+        GamePieces.player.ypos > object.diameterUp &&
+        GamePieces.player.ypos < object.diameterDown &&
+        GamePieces.player.xpos > object.diameterLeft &&
+        GamePieces.player.xpos < object.diameterRight &&
+        Math.abs(GamePieces.player.ypos - object.diameterDown) < 32
       ) {
         this.buildingMatch = object;
         break;
@@ -319,19 +311,15 @@ export const inputHandler: IInputHandler = {
   characterMatchUIChanged: false,
   checkCharacter() {
     this.characterMatch = undefined;
-    const px = GamePieces.player.xpos;
-    const py = GamePieces.player.ypos;
-    const candidates = GamePieces.spatialGrid.query(
-      px - 32,
-      py - 32,
-      px + 32,
-      py + 32,
-    );
-    for (let i = 0, n = candidates.length; i < n; i++) {
-      const obj = candidates[i];
-      if (!(obj instanceof Character)) continue;
-      if (Math.abs(px - obj.x) < 32 && Math.abs(py - obj.y) < 32) {
-        this.characterMatch = obj;
+    for (let i = 0, n = GamePieces.nearCharacters.length; i < n; i++) {
+      if (
+        Math.abs(GamePieces.player.xpos - GamePieces.nearCharacters[i].x) <
+          32 &&
+        Math.abs(GamePieces.player.ypos - GamePieces.nearCharacters[i].y) <
+          32 &&
+        GamePieces.nearCharacters[i].hasConversation
+      ) {
+        this.characterMatch = GamePieces.nearCharacters[i];
         break;
       }
     }

@@ -1,121 +1,110 @@
-import type { DirectionBlockedCheck } from '../types/gamepieces/MovingGameObject';
+import { Player } from './../gamepieces/Player';
+import type { MovingGameObjectTypes } from '../types/gamepieces/MovingGameObject';
 import { controls } from './controls';
 import { GamePieces } from './gamePieces';
 
-export abstract class CollidableGamePiece {
-  abstract type: string;
-  abstract diameterUp: number;
-  abstract diameterRight: number;
-  abstract diameterDown: number;
-  abstract diameterLeft: number;
-  abstract up: DirectionBlockedCheck;
-  abstract right: DirectionBlockedCheck;
-  abstract down: DirectionBlockedCheck;
-  abstract left: DirectionBlockedCheck;
-  abstract speedX: number;
-  abstract speedY: number;
+export function collisionCheck(
+  gamePiece: MovingGameObjectTypes,
+  debug = false,
+) {
+  // Collision detection, if user is less than 1px from object prevent movement
 
-  collisionCheck(debug = false) {
-    // Collision detection, if user is less than 1px from object prevent movement
+  gamePiece.down = '';
+  gamePiece.right = '';
+  gamePiece.down = '';
+  gamePiece.left = '';
 
-    this.down = '';
-    this.right = '';
-    this.up = '';
-    this.left = '';
-
-    const candidates = GamePieces.spatialGrid.query(
-      this.diameterLeft - 10,
-      this.diameterUp - 10,
-      this.diameterRight + 10,
-      this.diameterDown + 10,
-    );
-
-    for (let i = 0, n = candidates.length; i < n; i++) {
-      if (candidates[i].noCollision) {
-        continue;
-      }
-
-      // If all directions is blocked break loop
-      if (
-        this.up === 'blocked' &&
-        this.right === 'blocked' &&
-        this.down === 'blocked' &&
-        this.left === 'blocked'
-      ) {
-        break;
-      }
-      if (
-        Math.abs(this.diameterDown - candidates[i].diameterUp) <= 2 &&
-        this.diameterRight >= candidates[i].diameterLeft &&
-        this.diameterLeft <= candidates[i].diameterRight
-      ) {
-        this.down = 'blocked';
-        if (debug) {
-          console.log(candidates[i]);
-          console.log('player_down');
-        }
-      }
-      if (
-        Math.abs(this.diameterRight - candidates[i].diameterLeft) <= 2 &&
-        this.diameterUp <= candidates[i].diameterDown &&
-        this.diameterDown >= candidates[i].diameterUp
-      ) {
-        this.right = 'blocked';
-        if (debug) {
-          console.log(candidates[i]);
-          console.log('player right');
-        }
-      }
-      if (
-        Math.abs(this.diameterUp - candidates[i].diameterDown) <= 2 &&
-        this.diameterRight >= candidates[i].diameterLeft &&
-        this.diameterLeft <= candidates[i].diameterRight
-      ) {
-        this.up = 'blocked';
-        if (debug) {
-          console.log(candidates[i]);
-          console.log('player up');
-        }
-      }
-      if (
-        Math.abs(this.diameterLeft - candidates[i].diameterRight) <= 2 &&
-        this.diameterUp <= candidates[i].diameterDown &&
-        this.diameterDown >= candidates[i].diameterUp
-      ) {
-        this.left = 'blocked';
-        if (debug) {
-          console.log(candidates[i]);
-          console.log('player left');
-        }
-      }
+  for (let i = 0, n = GamePieces.nearObjects.length; i < n; i++) {
+    if (GamePieces.nearObjects[i].noCollision) {
+      continue;
     }
 
-    if (this.type === 'Player') {
-      if (controls.playerLeft && this.left == 'blocked') {
-        this.speedX = 0;
+    // If all directions is blocked break loop
+    if (
+      gamePiece.up === 'blocked' &&
+      gamePiece.right === 'blocked' &&
+      gamePiece.down === 'blocked' &&
+      gamePiece.left === 'blocked'
+    ) {
+      break;
+    }
+    if (
+      Math.abs(gamePiece.diameterDown - GamePieces.nearObjects[i].diameterUp) <=
+        2 &&
+      gamePiece.diameterRight >= GamePieces.nearObjects[i].diameterLeft &&
+      gamePiece.diameterLeft <= GamePieces.nearObjects[i].diameterRight
+    ) {
+      gamePiece.down = 'blocked';
+      if (debug) {
+        console.log(GamePieces.nearObjects[i]);
+        console.log('player_down');
       }
-      if (controls.playerRight && this.right == 'blocked') {
-        this.speedX = 0;
+    }
+    if (
+      Math.abs(
+        gamePiece.diameterRight - GamePieces.nearObjects[i].diameterLeft,
+      ) <= 2 &&
+      gamePiece.diameterUp <= GamePieces.nearObjects[i].diameterDown &&
+      gamePiece.diameterDown >= GamePieces.nearObjects[i].diameterUp
+    ) {
+      gamePiece.right = 'blocked';
+      if (debug) {
+        console.log(GamePieces.nearObjects[i]);
+        console.log('player right');
       }
-      if (controls.playerDown && this.down == 'blocked') {
-        this.speedY = 0;
+    }
+    if (
+      Math.abs(gamePiece.diameterUp - GamePieces.nearObjects[i].diameterDown) <=
+        2 &&
+      gamePiece.diameterRight >= GamePieces.nearObjects[i].diameterLeft &&
+      gamePiece.diameterLeft <= GamePieces.nearObjects[i].diameterRight
+    ) {
+      gamePiece.up = 'blocked';
+      if (debug) {
+        console.log(GamePieces.nearObjects[i]);
+        console.log('player up');
       }
-      if (controls.playerUp && this.up == 'blocked') {
-        this.speedY = 0;
+    }
+    if (
+      Math.abs(
+        gamePiece.diameterLeft - GamePieces.nearObjects[i].diameterRight,
+      ) <= 2 &&
+      gamePiece.diameterUp <= GamePieces.nearObjects[i].diameterDown &&
+      gamePiece.diameterDown >= GamePieces.nearObjects[i].diameterUp
+    ) {
+      gamePiece.left = 'blocked';
+      if (debug) {
+        console.log(GamePieces.nearObjects[i]);
+        console.log('player left');
       }
-    } else {
-      if (this.speedX < 0 && this.left == 'blocked') {
-        this.speedX = 0;
-      }
-      if (this.speedX > 0 && this.right == 'blocked') {
-        this.speedX = 0;
-      }
-      if (this.speedY > 0 && this.down == 'blocked') {
-        this.speedY = 0;
-      }
-      if (this.speedY < 0 && this.up == 'blocked') {
-        this.speedY = 0;
-      }
+    }
+  }
+
+  if (gamePiece.type === 'Player') {
+    if (controls.playerLeft && gamePiece.left == 'blocked') {
+      gamePiece.speedX = 0;
+    }
+    if (controls.playerRight && gamePiece.right == 'blocked') {
+      gamePiece.speedX = 0;
+    }
+    if (controls.playerDown && gamePiece.down == 'blocked') {
+      gamePiece.speedY = 0;
+    }
+    if (controls.playerUp && gamePiece.up == 'blocked') {
+      gamePiece.speedY = 0;
+    }
+  } else {
+    if (gamePiece.speedX < 0 && gamePiece.left == 'blocked') {
+      gamePiece.speedX = 0;
+    }
+    if (gamePiece.speedX > 0 && gamePiece.right == 'blocked') {
+      gamePiece.speedX = 0;
+    }
+    if (gamePiece.speedY > 0 && gamePiece.down == 'blocked') {
+      gamePiece.speedY = 0;
+    }
+    if (gamePiece.speedY < 0 && gamePiece.up == 'blocked') {
+      gamePiece.speedY = 0;
     }
   }
 }

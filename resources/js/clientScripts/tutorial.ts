@@ -50,7 +50,9 @@ export const tutorial = {
         element.diameterRight += xAdd;
       }
     });
+    viewport.resetObjectLayer();
     GamePieces.drawStaticPieces();
+    viewport.checkViewportGamePieces(true);
   },
   locateHassen() {
     GamePieces.objects.forEach(element => {

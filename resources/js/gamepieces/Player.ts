@@ -8,11 +8,10 @@ import { Game } from '../advclient';
 import viewport from '../clientScripts/viewport';
 import { GamePieces } from '../clientScripts/gamePieces';
 import { AssetPaths } from '../clientScripts/ImagePath';
-import { CollidableGamePiece } from '../clientScripts/collision';
 import { addModuleTester } from '@/devtools/ModuleTester';
 import { gameEventBus } from '@/gameEventsBus';
 
-export class Player extends CollidableGamePiece implements MovingGameObject {
+export class Player implements MovingGameObject {
   ANIM_WALK_DURATION = 0.167; // ~6 frames/sec  — standard walk/idle cycle
   ANIM_ATTACK_DURATION = 0.033; // ~30 frames/sec — snappy attack steps
   width = 36;

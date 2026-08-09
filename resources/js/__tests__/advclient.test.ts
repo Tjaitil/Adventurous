@@ -10,6 +10,7 @@ vi.mock('@/clientScripts/canvasText', () => ({
 vi.mock('@/clientScripts/clientOverlayInterface', () => ({
   ClientOverlayInterface: { setup: vi.fn() },
 }));
+vi.mock('@/clientScripts/collision', () => ({ collisionCheck: vi.fn() }));
 vi.mock('@/clientScripts/controls', () => ({ controls: { setup: vi.fn() } }));
 vi.mock('@/clientScripts/gameEventHandler', () => ({
   eventHandler: { checkEvent: vi.fn() },
@@ -27,7 +28,6 @@ vi.mock('@/clientScripts/gamePieces', () => ({
       animationEnd: true,
       checkPosition: vi.fn(() => false),
       newPos: vi.fn(),
-      collisionCheck: vi.fn(),
     },
     init: vi.fn(),
     drawStaticPieces: vi.fn(),
