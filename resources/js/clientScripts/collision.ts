@@ -1,6 +1,6 @@
 import type { DirectionBlockedCheck } from '../types/gamepieces/MovingGameObject';
 import { controls } from './controls';
-import { GamePieces } from './gamePieces';
+import type { SpatialGrid, SpatialObject } from './SpatialGrid';
 
 export abstract class CollidableGamePiece {
   abstract type: string;
@@ -15,7 +15,7 @@ export abstract class CollidableGamePiece {
   abstract speedX: number;
   abstract speedY: number;
 
-  collisionCheck(debug = false) {
+  collisionCheck(spatialGrid: SpatialGrid<SpatialObject>, debug = false) {
     // Collision detection, if user is less than 1px from object prevent movement
 
     this.down = '';
@@ -23,7 +23,7 @@ export abstract class CollidableGamePiece {
     this.up = '';
     this.left = '';
 
-    const candidates = GamePieces.spatialGrid.query(
+    const candidates = spatialGrid.query(
       this.diameterLeft - 10,
       this.diameterUp - 10,
       this.diameterRight + 10,

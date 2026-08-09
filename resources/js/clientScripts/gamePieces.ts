@@ -88,7 +88,7 @@ export const GamePieces = {
       return a.diameterDown - b.diameterDown;
     });
 
-    this.spatialGrid = new SpatialGrid<gridObjectTypes>();
+    this.spatialGrid.reset();
     for (const obj of this.objects) this.spatialGrid.insert(obj);
     for (const daqloon of this.daqloon) this.spatialGrid.insert(daqloon);
   },

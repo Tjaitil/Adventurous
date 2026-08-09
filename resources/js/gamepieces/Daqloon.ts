@@ -220,7 +220,7 @@ export class Daqloon extends CollidableGamePiece implements MovingGameObject {
           viewport.height / 2,
         );
       } else {
-        GamePieces.player.takeDamage(this.attackDamage);
+        GamePieces.player.takeDamage(0);
       }
     }
     // If health is over 10 calculateMovement
@@ -295,7 +295,7 @@ export class Daqloon extends CollidableGamePiece implements MovingGameObject {
   }
 
   private calculateNewPosition() {
-    this.collisionCheck();
+    this.collisionCheck(GamePieces.spatialGrid);
     GamePieces.spatialGrid.remove(this);
     this.x += this.speedX;
     this.drawX += this.speedX;

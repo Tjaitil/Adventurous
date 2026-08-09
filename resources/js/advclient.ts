@@ -316,7 +316,7 @@ export class Game {
         !useConversationStore().isActive
       ) {
         eventHandler.checkEvent();
-        GamePieces.player.collisionCheck();
+        GamePieces.player.collisionCheck(GamePieces.spatialGrid);
         GamePieces.player.newPos();
       } else if (!GamePieces.player.animationEnd) {
         GamePieces.player.newPos(false);
