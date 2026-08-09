@@ -6,16 +6,16 @@ import { Game } from '../advclient';
 import viewport from '../clientScripts/viewport';
 import { getRandomInteger } from '../utilities/getRandomInteger';
 import { GamePieces } from '../clientScripts/gamePieces';
-import { collisionCheck } from '../clientScripts/collision';
+import { CollidableGamePiece } from '../clientScripts/collision';
 import { AssetPaths } from '../clientScripts/ImagePath';
 
-export class Daqloon implements MovingGameObject {
+export class Daqloon extends CollidableGamePiece implements MovingGameObject {
   ANIM_IDLE_DURATION = 0.167; // ~6 frames/sec  — spawn / death / idle cycle
   ANIM_ATTACK_DURATION = 0.1; // 10 frames/sec  — attack animation
   ANIM_WANDER_DURATION = 0.5; // 2 frames/sec   — idle direction repick
   id: number;
   index = 1;
-  attackDamage = 15;
+  attackDamage = 0;
   defence = 10;
   x: number;
   y: number;
@@ -63,6 +63,7 @@ export class Daqloon implements MovingGameObject {
   fighting_area = null;
 
   constructor(id: number, x: number, y: number, fighting_area: object) {
+    super();
     this.id = id;
     this.x = x;
     this.y = y;
@@ -192,7 +193,6 @@ export class Daqloon implements MovingGameObject {
         viewport.resetTextLayer();
       }
     }
-    this.setDiameter();
     this.resetDirections();
   }
 
@@ -295,11 +295,14 @@ export class Daqloon implements MovingGameObject {
   }
 
   private calculateNewPosition() {
-    collisionCheck(this);
+    this.collisionCheck();
+    GamePieces.spatialGrid.remove(this);
     this.x += this.speedX;
     this.drawX += this.speedX;
     this.y += this.speedY;
     this.drawY += this.speedY;
+    this.setDiameter();
+    GamePieces.spatialGrid.insert(this);
   }
 
   private calculateMovement() {
