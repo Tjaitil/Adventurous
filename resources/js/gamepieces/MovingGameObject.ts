@@ -44,8 +44,6 @@ export abstract class MovingGameObject implements Omit<GameObject, 'type'> {
   abstract animTimer: number;
 
   collisionCheck(spatialGrid: SpatialGrid<SpatialObject>, debug = false) {
-    // Collision detection, if user is less than 1px from object prevent movement
-
     this.down = '';
     this.right = '';
     this.up = '';
