@@ -1,9 +1,34 @@
-import type { DirectionBlockedCheck } from '../types/gamepieces/MovingGameObject';
-import { controls } from './controls';
-import type { SpatialGrid, SpatialObject } from './SpatialGrid';
+import { controls } from '../clientScripts/controls';
+import type { SpatialGrid, SpatialObject } from '../clientScripts/SpatialGrid';
+import type { GameObject } from '../types/gamepieces/GameObject';
 
-export abstract class CollidableGamePiece {
+export type DirectionBlockedCheck = 'blocked' | '';
+
+// `type` is re-declared as a plain string below rather than inherited from
+// GameObject: Player/Daqloon use values ('player', 'daqloon') outside
+// GameObjectType's union, so it can't be narrowed to that type here.
+export abstract class MovingGameObject implements Omit<GameObject, 'type'> {
+  // How close two edges must be to count as touching. Movement happens in
+  // discrete per-frame steps rather than continuous swept collision, so
+  // this needs to be >= a frame's worth of movement or a piece can jump
+  // straight from "not touching" to "overlapping" without ever blocking.
+  static readonly TOUCH_TOLERANCE = 2;
+  // Must stay >= TOUCH_TOLERANCE, or a nearly-touching object would be
+  // excluded from the query before the touch check ever runs against it.
+  static readonly QUERY_MARGIN = 3;
+
+  abstract id: number;
   abstract type: string;
+  abstract src: string;
+  abstract sprite: HTMLImageElement;
+  abstract x: number;
+  abstract y: number;
+  abstract width: number;
+  abstract height: number;
+  abstract drawX: number;
+  abstract drawY: number;
+  abstract visible: boolean;
+  abstract noCollision: boolean;
   abstract diameterUp: number;
   abstract diameterRight: number;
   abstract diameterDown: number;
@@ -14,6 +39,9 @@ export abstract class CollidableGamePiece {
   abstract left: DirectionBlockedCheck;
   abstract speedX: number;
   abstract speedY: number;
+  abstract movementSpeed: number;
+  abstract currentAnimation: string;
+  abstract animTimer: number;
 
   collisionCheck(spatialGrid: SpatialGrid<SpatialObject>, debug = false) {
     // Collision detection, if user is less than 1px from object prevent movement
@@ -24,10 +52,10 @@ export abstract class CollidableGamePiece {
     this.left = '';
 
     const candidates = spatialGrid.query(
-      this.diameterLeft - 10,
-      this.diameterUp - 10,
-      this.diameterRight + 10,
-      this.diameterDown + 10,
+      this.diameterLeft - MovingGameObject.QUERY_MARGIN,
+      this.diameterUp - MovingGameObject.QUERY_MARGIN,
+      this.diameterRight + MovingGameObject.QUERY_MARGIN,
+      this.diameterDown + MovingGameObject.QUERY_MARGIN,
     );
 
     for (let i = 0, n = candidates.length; i < n; i++) {
@@ -45,47 +73,47 @@ export abstract class CollidableGamePiece {
         break;
       }
       if (
-        Math.abs(this.diameterDown - candidates[i].diameterUp) <= 2 &&
+        Math.abs(this.diameterDown - candidates[i].diameterUp) <=
+          MovingGameObject.TOUCH_TOLERANCE &&
         this.diameterRight >= candidates[i].diameterLeft &&
         this.diameterLeft <= candidates[i].diameterRight
       ) {
         this.down = 'blocked';
         if (debug) {
-          console.log(candidates[i]);
-          console.log('player_down');
+          console.log(candidates[i], 'down');
         }
       }
       if (
-        Math.abs(this.diameterRight - candidates[i].diameterLeft) <= 2 &&
+        Math.abs(this.diameterRight - candidates[i].diameterLeft) <=
+          MovingGameObject.TOUCH_TOLERANCE &&
         this.diameterUp <= candidates[i].diameterDown &&
         this.diameterDown >= candidates[i].diameterUp
       ) {
         this.right = 'blocked';
         if (debug) {
-          console.log(candidates[i]);
-          console.log('player right');
+          console.log(candidates[i], 'right');
         }
       }
       if (
-        Math.abs(this.diameterUp - candidates[i].diameterDown) <= 2 &&
+        Math.abs(this.diameterUp - candidates[i].diameterDown) <=
+          MovingGameObject.TOUCH_TOLERANCE &&
         this.diameterRight >= candidates[i].diameterLeft &&
         this.diameterLeft <= candidates[i].diameterRight
       ) {
         this.up = 'blocked';
         if (debug) {
-          console.log(candidates[i]);
-          console.log('player up');
+          console.log(candidates[i], 'up');
         }
       }
       if (
-        Math.abs(this.diameterLeft - candidates[i].diameterRight) <= 2 &&
+        Math.abs(this.diameterLeft - candidates[i].diameterRight) <=
+          MovingGameObject.TOUCH_TOLERANCE &&
         this.diameterUp <= candidates[i].diameterDown &&
         this.diameterDown >= candidates[i].diameterUp
       ) {
         this.left = 'blocked';
         if (debug) {
-          console.log(candidates[i]);
-          console.log('player left');
+          console.log(candidates[i], 'left');
         }
       }
     }

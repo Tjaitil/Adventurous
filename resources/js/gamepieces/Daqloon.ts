@@ -1,15 +1,14 @@
-import type {
-  MovingGameObject,
-  DirectionBlockedCheck,
-} from '../types/gamepieces/MovingGameObject';
 import { Game } from '../advclient';
 import viewport from '../clientScripts/viewport';
 import { getRandomInteger } from '../utilities/getRandomInteger';
 import { GamePieces } from '../clientScripts/gamePieces';
-import { CollidableGamePiece } from '../clientScripts/collision';
+import {
+  MovingGameObject,
+  type DirectionBlockedCheck,
+} from './MovingGameObject';
 import { AssetPaths } from '../clientScripts/ImagePath';
 
-export class Daqloon extends CollidableGamePiece implements MovingGameObject {
+export class Daqloon extends MovingGameObject {
   ANIM_IDLE_DURATION = 0.167; // ~6 frames/sec  — spawn / death / idle cycle
   ANIM_ATTACK_DURATION = 0.1; // 10 frames/sec  — attack animation
   ANIM_WANDER_DURATION = 0.5; // 2 frames/sec   — idle direction repick
