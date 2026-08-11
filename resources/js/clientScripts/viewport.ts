@@ -1,6 +1,7 @@
-import { Game } from '../advclient';
 import type { CanvasSprite } from '../types/CanvasSprite';
 import { AssetPaths } from './ImagePath';
+
+type device = 'mobile' | 'pc';
 
 interface IViewport {
   counter: number;
@@ -29,8 +30,8 @@ interface IViewport {
     frontObjects: CanvasRenderingContext2D;
     text: CanvasRenderingContext2D;
   };
-  setInitalDimensions();
-  setup(layers: HTMLCanvasElement[]);
+  setInitalDimensions(device: device);
+  setup(layers: layers, device: device);
   adjustViewport(xbase: number, ybase: number, src: string);
   init: () => void;
   drawBackground();
@@ -95,7 +96,7 @@ export const viewport = {
     text: null as CanvasRenderingContext2D,
     hud: null as CanvasRenderingContext2D,
   },
-  setInitalDimensions() {
+  setInitalDimensions(device: device) {
     const screen = window.screen;
     let newWidth;
     if (screen.width < 800) {
@@ -115,7 +116,7 @@ export const viewport = {
     newWidth = gameCanvas.parentElement?.offsetWidth - 12;
     let newHeight;
     // If the device is mobile check for the shortest dimension of height and width to compensate for already rotated devices
-    if (Game.properties.device == 'mobile') {
+    if (device == 'mobile') {
       newHeight =
         screen.width < screen.height ? screen.width - 20 : screen.height - 20;
     } else {
@@ -127,9 +128,9 @@ export const viewport = {
     this.width = newWidth;
     this.height = newHeight;
   },
-  setup(layers: layers) {
+  setup(layers: layers, device: device) {
     // Set layers and elements
-    this.setInitalDimensions();
+    this.setInitalDimensions(device);
 
     this.layer.background = layers.background.getContext('2d');
     this.layer.background.fillStyle = 'black';
@@ -194,10 +195,8 @@ export const viewport = {
     this.layer.frontObjects.scale(this.zoom, this.zoom);
     this.layer.hud.scale(this.zoom, this.zoom);
   },
-  setImageWorldSrc() {
-    this.worldImage.src = AssetPaths.getImagePath(
-      Game.properties.currentMap + '.png',
-    );
+  setImageWorldSrc(currentMap: string) {
+    this.worldImage.src = AssetPaths.getImagePath(currentMap + '.png');
   },
   adjustViewport(xbase, ybase) {
     this.playerCanvasX = Math.floor(this.width / 2 - 45);
