@@ -37,6 +37,28 @@ vi.mock('@/clientScripts/clientOverlayInterface', () => {
   };
 });
 
+vi.mock('@/clientScripts/gameTravel', () => {
+  return {
+    gameTravel: {
+      travel: vi.fn(),
+    },
+  };
+});
+
+vi.mock('@/clientScripts/pause', () => {
+  return {
+    pauseManager: {
+      resumeGame: vi.fn(),
+    },
+  };
+});
+
+vi.mock('@/conversationCallbacks/loadBuilding', () => {
+  return {
+    loadBuildingCallback: vi.fn(),
+  };
+});
+
 describe('ConversationContainer.vue', () => {
   beforeEach(() => {
     GamePieces.characters = [
@@ -254,22 +276,6 @@ describe('Pesr Conversation test', () => {
     'Ter',
     'Towhar',
   ])('GameTravelCallback with Pesr is invoked when pressing %s', async text => {
-    vi.mock('@/clientScripts/gameTravel', () => {
-      return {
-        gameTravel: {
-          travel: vi.fn(),
-        },
-      };
-    });
-
-    vi.mock('@/clientScripts/pause', () => {
-      return {
-        pauseManager: {
-          resumeGame: vi.fn(),
-        },
-      };
-    });
-
     const { container } = render(ConversationContainer, {
       global: {
         plugins: [createTestingPinia({ stubActions: false })],
@@ -323,11 +329,6 @@ describe('Zins Conversation test', () => {
     ];
   });
   test('LoadZinsStoreCallback with Zins is invoked', async () => {
-    vi.mock('@/conversationCallbacks/loadBuilding', () => {
-      return {
-        loadBuildingCallback: vi.fn(),
-      };
-    });
     const { container } = render(ConversationContainer, {
       global: {
         plugins: [createTestingPinia({ stubActions: false })],
