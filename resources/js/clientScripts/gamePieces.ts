@@ -4,14 +4,12 @@ import { BaseStaticGameObject } from '../gamepieces/BaseStaticGameObject';
 import { Building } from '../gamepieces/Building';
 import type { ICharacter } from '../gamepieces/Character';
 import { Character } from '../gamepieces/Character';
-import type {
-  IDaqloonFightingArea} from '../gamepieces/DaqloonFightingArea';
-import {
-  DaqloonFightingArea,
-} from '../gamepieces/DaqloonFightingArea';
+import type { IDaqloonFightingArea } from '../gamepieces/DaqloonFightingArea';
+import { DaqloonFightingArea } from '../gamepieces/DaqloonFightingArea';
 import type { Daqloon } from '../gamepieces/Daqloon';
 import { Player } from '../gamepieces/Player';
 import viewport from './viewport';
+import { SpatialGrid } from './SpatialGrid';
 import type { Item } from '../gamepieces/Item';
 import type { StaticGameObject } from '../types/gamepieces/StaticGameObject';
 import type { WorldMapData } from '../types/Advclient';
@@ -19,12 +17,13 @@ import { HUD } from './HUD';
 import { addModuleTester } from '@/devtools/ModuleTester';
 
 export type gameObjectTypes = Character | Building | BaseStaticGameObject;
+export type gridObjectTypes = gameObjectTypes | Daqloon;
 
 let draw = false;
 
 // TODO: Create class
 export const GamePieces = {
-  nonDrawingTypes: ['figure', 'nc_object', 'start_point'],
+  nonDrawingTypes: ['figure', 'nc_object', 'start_point', 'daqloon'],
   assets: [],
   events: [],
   items: [] as Item[],
@@ -33,17 +32,13 @@ export const GamePieces = {
   buildings: [] as Building[],
   characters: [] as Character[],
   daqloon_fighting_area: undefined as undefined | DaqloonFightingArea,
-  visibleObjects: [] as gameObjectTypes[],
-  nearObjects: [] as gameObjectTypes[],
-  nearCharacters: <Character[]>[],
-  nearBuildings: <Building[]>[],
+  spatialGrid: new SpatialGrid<gridObjectTypes>(),
   player: new Player(),
   reset() {
     this.objects = [];
     this.daqloon = [];
     this.characters = [];
-    this.visibleObjects = [];
-    this.nearObjects = [];
+    this.spatialGrid.reset();
     this.daqloon_fighting_area = undefined;
   },
   loadAssets(xbase, ybase, mapData: WorldMapData) {
@@ -66,10 +61,6 @@ export const GamePieces = {
   },
   loadStaticPieces(initObjects: GameObject[]) {
     GamePieces.objects = [];
-    GamePieces.visibleObjects = [];
-    GamePieces.nearObjects = [];
-    GamePieces.nearCharacters = [];
-    GamePieces.nearBuildings = [];
     GamePieces.buildings = [];
     GamePieces.characters = [];
     initObjects.forEach(object => {
@@ -81,7 +72,7 @@ export const GamePieces = {
           this.characters.push(instantiatedObject);
           break;
         case 'building':
-          instantiatedObject = new Building(<Building>object);
+          instantiatedObject = new Building(object);
           this.buildings.push(instantiatedObject);
           break;
         default:
@@ -97,55 +88,46 @@ export const GamePieces = {
       return a.diameterDown - b.diameterDown;
     });
 
-    this.checkViewportGamePieces(true);
+    this.spatialGrid.reset();
+    for (const obj of this.objects) this.spatialGrid.insert(obj);
+    for (const daqloon of this.daqloon) this.spatialGrid.insert(daqloon);
   },
   init() {
     GamePieces.drawStaticPieces();
     GamePieces.player.draw();
   },
   drawStaticPieces() {
-    // buildingMatch variable is to check if there is at building that the player can enter
     viewport.resetObjectLayer();
 
-    for (const GamePiece of GamePieces.visibleObjects) {
-      let drawContext;
+    const margin = 50;
+    const drawable = this.spatialGrid
+      .query(
+        this.player.xpos - viewport.width - margin,
+        this.player.ypos - viewport.height - margin,
+        this.player.xpos + viewport.width + margin,
+        this.player.ypos + viewport.height + margin,
+      )
+      .filter(obj => !this.nonDrawingTypes.includes(obj.type) && obj.visible)
+      .sort((a, b) => a.diameterDown - b.diameterDown);
 
-      // if(GamePiece.type === "building") GamePiece;
-      // If building is behind player, then draw on the first canvas instead of the third
-      if (GamePiece.diameterDown < GamePieces.player.diameterDown) {
-        drawContext = 'background';
-      } else {
-        drawContext = 'frontObjects';
-      }
-      if (GamePiece.type === 'character') {
-        // drawContext.imageSmoothingEnabled = false;
-        viewport.drawObject(
-          drawContext,
-          GamePiece.sprite,
-          GamePiece.drawX - GamePieces.player.xMovement,
-          GamePiece.drawY - GamePieces.player.yMovement,
-          GamePiece.width,
-          GamePiece.height,
-        );
-        // TODO: Fix a better solution for this
-        // viewport.layer.text.font = "30px Comic Sans MS";
-        // viewport.layer.frontObjects.fillText(
-        //     GamePiece.displayName,
-        //     (GamePiece.drawX - GamePieces.player.xMovement) +
-        //     (GamePiece.width / 2) -
-        //     ((GamePiece.displayName.length / 2) * 5),
-        //     GamePiece.drawY - GamePieces.player.yMovement,
-        // );
-      } else {
-        viewport.drawObject(
-          drawContext,
-          GamePiece.sprite,
-          Math.round(GamePiece.drawX - GamePieces.player.xMovement),
-          Math.round(GamePiece.drawY - GamePieces.player.yMovement),
-          GamePiece.width,
-          GamePiece.height,
-        );
-      }
+    for (const gamePiece of drawable) {
+      const drawContext =
+        gamePiece.diameterDown < this.player.diameterDown
+          ? 'background'
+          : 'frontObjects';
+
+      viewport.drawObject(
+        drawContext,
+        gamePiece.sprite,
+        gamePiece.type === 'character'
+          ? gamePiece.drawX - this.player.xMovement
+          : Math.round(gamePiece.drawX - this.player.xMovement),
+        gamePiece.type === 'character'
+          ? gamePiece.drawY - this.player.yMovement
+          : Math.round(gamePiece.drawY - this.player.yMovement),
+        gamePiece.width,
+        gamePiece.height,
+      );
     }
 
     inputHandler.checkCharacter();
@@ -153,7 +135,7 @@ export const GamePieces = {
 
     if (draw) {
       addModuleTester(GamePieces.objects, 'GamePieces');
-      addModuleTester(GamePieces.visibleObjects, 'visibleObjects');
+      addModuleTester(drawable, 'visibleObjects');
       for (let i = 0, n = GamePieces.objects.length; i < n; i++) {
         viewport.layer.frontObjects.fillStyle = 'red';
         viewport.layer.frontObjects.fillRect(
@@ -176,47 +158,6 @@ export const GamePieces = {
             GamePieces.player.yMovement / viewport.scale,
         );
       }
-    }
-  },
-  checkViewportGamePieces(first = false) {
-    // If player has moved a certain amount of pixels update object that will be drawn
-
-    if (
-      Math.abs(GamePieces.player.xTracker) > 100 ||
-      Math.abs(GamePieces.player.yTracker) > 100 ||
-      first
-    ) {
-      this.nearObjects = this.objects.filter(object => {
-        return (
-          (Math.abs(object.diameterRight - this.player.xpos) <=
-            viewport.width + 50 ||
-            Math.abs(object.diameterLeft - this.player.xpos) <=
-              viewport.width + 50) &&
-          (Math.abs(object.diameterUp - this.player.ypos) <=
-            viewport.height + 50 ||
-            Math.abs(object.diameterDown - this.player.ypos) <=
-              viewport.height + 50)
-        );
-      });
-
-      this.nearBuildings = [];
-      this.nearCharacters = [];
-      this.visibleObjects = [];
-
-      this.nearObjects.forEach(object => {
-        if (object instanceof Character && object.type === 'character') {
-          this.nearCharacters.push(object);
-        } else if (object instanceof Building && object.type === 'building') {
-          this.nearBuildings.push(object);
-        }
-
-        if (!this.nonDrawingTypes.includes(object.type) && object.visible) {
-          this.visibleObjects.push(object);
-        }
-      });
-
-      this.player.xTracker = 0;
-      this.player.yTracker = 0;
     }
   },
 

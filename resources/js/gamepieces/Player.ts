@@ -1,17 +1,18 @@
-import type {
-  MovingGameObject,
-  DirectionBlockedCheck,
-} from '../types/gamepieces/MovingGameObject';
 import { canvasTextHeader } from '../clientScripts/canvasText';
 import { controls } from '../clientScripts/controls';
 import { Game } from '../advclient';
 import viewport from '../clientScripts/viewport';
 import { GamePieces } from '../clientScripts/gamePieces';
 import { AssetPaths } from '../clientScripts/ImagePath';
+import {
+  MovingGameObject,
+  type DirectionBlockedCheck,
+} from './MovingGameObject';
 import { addModuleTester } from '@/devtools/ModuleTester';
 import { gameEventBus } from '@/gameEventsBus';
 
-export class Player implements MovingGameObject {
+export class Player extends MovingGameObject {
+  id = 0;
   ANIM_WALK_DURATION = 0.167; // ~6 frames/sec  — standard walk/idle cycle
   ANIM_ATTACK_DURATION = 0.033; // ~30 frames/sec — snappy attack steps
   width = 36;

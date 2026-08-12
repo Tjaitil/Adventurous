@@ -1,6 +1,5 @@
 import { loadingCanvas } from './clientScripts/canvasText';
 import { ClientOverlayInterface } from './clientScripts/clientOverlayInterface';
-import { collisionCheck } from './clientScripts/collision';
 import { controls } from './clientScripts/controls';
 import { eventHandler } from './clientScripts/gameEventHandler';
 import { GamePieces } from './clientScripts/gamePieces';
@@ -317,8 +316,7 @@ export class Game {
         !useConversationStore().isActive
       ) {
         eventHandler.checkEvent();
-        GamePieces.checkViewportGamePieces();
-        collisionCheck(GamePieces.player, false);
+        GamePieces.player.collisionCheck(GamePieces.spatialGrid);
         GamePieces.player.newPos();
       } else if (!GamePieces.player.animationEnd) {
         GamePieces.player.newPos(false);
