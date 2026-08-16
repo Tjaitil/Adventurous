@@ -1,17 +1,18 @@
 {
   "eslint.useFlatConfig": true,
   "editor.formatOnSave": true,
-  "[typescript, vue, json]": {
+  "[typescript][vue][json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
+    "source.fixAll.oxc": "explicit"
   },
   "laravel-pint.enable": true,
-  "php.version": "8.3",
   "json.schemas": [
     {
-      "fileMatch": ["storage/app/gamedata/conversations/*.json"],
+      "fileMatch": [
+        "storage/app/gamedata/conversations/*.json"
+      ],
       "url": "./.vscode/conversation.schema.json"
     }
   ],
@@ -21,8 +22,14 @@
   "editor.quickSuggestions": {
     "strings": "on"
   },
-  "tailwindCSS.classAttributes": ["class", "ui"],
+  "tailwindCSS.classAttributes": [
+    "class",
+    "ui"
+  ],
   "tailwindCSS.experimental.classRegex": [
-    ["ui:\\s*{([^)]*)\\s*}", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+    [
+      "ui:\\s*{([^)]*)\\s*}",
+      "(?:'|\"|`)([^']*)(?:'|\"|`)"
+    ]
   ]
 }
