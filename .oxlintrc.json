@@ -1,0 +1,49 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": [
+    "eslint",
+    "typescript",
+    "unicorn",
+    "oxc",
+    "vue"
+  ],
+  "env": {
+    "browser": true
+  },
+  "jsPlugins": [
+    "eslint-plugin-perfectionist"
+  ],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "error",
+    "perf": "error",
+    "style": "warn"
+  },
+  "rules": {
+    // bit noisy for now, but we can enable them later
+    "unicorn/filename-case": "off",
+    "eslint/one-var": "off",
+    // oxc's own sort-imports fixer is incomplete (see oxc-project/oxc#19984);
+    // perfectionist/sort-imports ships a real fixer instead
+    "eslint/sort-imports": "off",
+    // `t` is vue-i18n's translation function
+    "eslint/id-length": [
+      "warn",
+      {
+        "exceptions": [
+          "t"
+        ]
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/*.test.ts"
+      ],
+      "plugins": [
+        "vitest"
+      ]
+    }
+  ]
+}
