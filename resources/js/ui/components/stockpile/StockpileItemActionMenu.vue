@@ -78,8 +78,14 @@ const menuItemEls = useTemplateRef<HTMLButtonElement[]>('menuItemRefs');
 const showCustomAmountInput = ref<boolean>(false);
 
 onClickOutside(actionMenuEl, () => {
+  resetMenu();
   stockpileStore.closeMenu();
 });
+
+const resetMenu = () => {
+  showCustomAmountInput.value = false;
+  customAmount.value = null;
+};
 
 const menuStyle = computed(() => {
   const target = stockpileStore.anchorTarget;
@@ -170,6 +176,7 @@ const menuCustomLabel = computed(() =>
 );
 
 onUnmounted(() => {
+  resetMenu();
   stockpileStore.closeMenu();
 });
 </script>
