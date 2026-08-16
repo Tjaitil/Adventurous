@@ -53,6 +53,7 @@ import {
 import ArmoryPage from '../buildings/ArmoryPage.vue';
 import { ClientOverlayInterface } from '@/clientScripts/clientOverlayInterface';
 import { buildingDataPreloader } from '@/ui/services/buildingDataPreloader';
+import StockpilePage from '../buildings/StockpilePage.vue';
 
 const isOpen = ref(false);
 const loadingElement = useTemplateRef('loadingIcon');
@@ -86,9 +87,19 @@ const unsubRenderBuilding = gameEventBus.subscribe('RENDER_BUILDING', obj => {
 
   if (!('content' in obj) && !('loading' in obj)) {
     // Add logic once we have more buildings as VuePages
-    currentComponent.value = ArmoryPage;
-    void buildingDataPreloader.preloadArmory();
 
+    switch (obj.building) {
+      case 'armory':
+        currentComponent.value = ArmoryPage;
+        void buildingDataPreloader.preloadArmory();
+        break;
+      case 'stockpile':
+        currentComponent.value = StockpilePage;
+        void buildingDataPreloader.preloadStockpile();
+        break;
+      default:
+        break;
+    }
     externalRendering.value = false;
     return;
   } else {

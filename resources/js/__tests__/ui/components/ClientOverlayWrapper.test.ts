@@ -30,6 +30,7 @@ const renderClientOverlay = (options: RenderOptions = {}): RenderResult => {
       plugins: [createPinia(), i18n],
       stubs: {
         ArmoryPage: true,
+        StockpilePage: true,
         ...options.stubs,
       },
     },
@@ -103,6 +104,22 @@ describe('ClientOverlayWrapper.vue', () => {
 
       await waitFor(() => {
         expect(screen.getByText('Armory Page')).toBeInTheDocument();
+      });
+    });
+
+    test('displays stockpile component for stockpile Vue page', async () => {
+      renderClientOverlay({
+        stubs: {
+          StockpilePage: { template: '<div>Stockpile Page</div>' },
+        },
+      });
+
+      gameEventBus.emit('RENDER_BUILDING', {
+        building: 'stockpile',
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText('Stockpile Page')).toBeInTheDocument();
       });
     });
   });
