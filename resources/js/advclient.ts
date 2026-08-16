@@ -166,7 +166,7 @@ export class Game {
       Game.properties.ybase = startPoints[0].y;
     }
 
-    viewport.setImageWorldSrc();
+    viewport.setImageWorldSrc(this.properties.currentMap);
     this.setWorldData(response.data);
   }
 
