@@ -51,8 +51,8 @@ class ZinsStoreTest extends TestCase
         $response->json();
 
         $this->assertDatabaseMissing('inventory', [
-            'username' => $this->RandomUser->username,
-            'item' => $itemName,
+            'user_id' => $this->RandomUser->id,
+            'item_id' => Item::where('name', $itemName)->value('item_id'),
         ]);
     }
 

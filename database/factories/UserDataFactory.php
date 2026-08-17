@@ -14,6 +14,7 @@ use App\Models\Soldier;
 use App\Models\Trader;
 use App\Models\UserData;
 use App\Models\Warrior;
+use App\Services\InventoryService;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 
@@ -118,6 +119,7 @@ class UserDataFactory extends Factory
             'frajrite_items' => false,
             'wujkin_items' => false,
             'stockpile_max_amount' => 300,
+            'inventory_max_slots' => InventoryService::DEFAULT_MAX_SLOTS,
         ];
 
         return $data;

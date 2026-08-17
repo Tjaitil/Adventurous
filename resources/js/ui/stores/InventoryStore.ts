@@ -7,6 +7,7 @@ let clickHandler: ItemHandler | null = null;
 
 interface State {
   inventoryItems: InventoryItem[];
+  maxSlots: number;
   selectedItems: string[];
   shouldUpdateInventory: boolean;
   showTooltips: boolean;
@@ -15,12 +16,13 @@ interface State {
 export const useInventoryStore = defineStore('inventory', {
   state: (): State => ({
     inventoryItems: [],
+    maxSlots: 0,
     selectedItems: [],
     shouldUpdateInventory: false,
     showTooltips: true,
   }),
   getters: {
-    isInventoryFull: state => state.inventoryItems.length >= 18,
+    isInventoryFull: state => state.inventoryItems.length >= state.maxSlots,
     currentSelectedItem: (state): string | null =>
       state.selectedItems.slice(-1)[0] ?? null,
   },
@@ -64,6 +66,9 @@ export const useInventoryStore = defineStore('inventory', {
     },
     setInventoryItems(items: InventoryItem[]) {
       this.inventoryItems = items;
+    },
+    setMaxSlots(maxSlots: number) {
+      this.maxSlots = maxSlots;
     },
   },
 });

@@ -4,6 +4,7 @@ namespace App\tests;
 
 use App\Models\HealingItem;
 use App\Models\Hunger;
+use App\Models\Item;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -76,7 +77,7 @@ class HungerTest extends TestCase
 
         $this->assertDatabaseHas('inventory', [
             'user_id' => $this->RandomUser->id,
-            'item' => $HealingItem->item,
+            'item_id' => Item::where('name', $HealingItem->item)->value('item_id'),
             'amount' => 2,
         ]);
     }

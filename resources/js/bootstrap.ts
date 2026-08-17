@@ -18,7 +18,7 @@ import Echo from 'laravel-echo';
 
 import Pusher from 'pusher-js';
 import { useInventoryStore } from './ui/stores/InventoryStore';
-import type { InventoryItem } from '@/types/InventoryItem';
+import type { InventoryBroadcastPayload } from '@/types/InventoryItem';
 import { useSkillsStore } from './ui/stores/SkillsStore';
 import { useDiplomacyStore } from './ui/stores/DiplomacyStore';
 import type { DiplomacyResource } from '@/types/Diplomacy';
@@ -38,8 +38,9 @@ const echo = new Echo({
 export const setupEchoListeners = (userId: number) => {
   echo
     .private(`game-state.${userId.toString()}`)
-    .listen('InventoryUpdated', (e: { Inventory: InventoryItem[] }) => {
-      useInventoryStore().setInventoryItems(e.Inventory);
+    .listen('InventoryUpdated', (e: { Inventory: InventoryBroadcastPayload }) => {
+      useInventoryStore().setInventoryItems(e.Inventory.items);
+      useInventoryStore().setMaxSlots(e.Inventory.meta.max_slots);
     })
     .listen('SkillsUpdated', () => {
       useSkillsStore().setHandleXpGainedEvent(true);

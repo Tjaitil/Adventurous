@@ -6,6 +6,8 @@ use App\Events\InventoryUpdated;
 use App\Exceptions\InventoryFullException;
 use App\Http\Responses\AdvResponse;
 use App\Models\Inventory;
+use App\Models\Item;
+use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
@@ -14,22 +16,38 @@ use Log;
 
 class InventoryService
 {
+    public const DEFAULT_MAX_SLOTS = 18;
+
     public function __construct(
     ) {}
+
+    /**
+     * Get the number of inventory slots available to a user, falling back
+     * to the default when they don't have a custom limit set.
+     */
+    public function getMaxSlots(User $user): int
+    {
+        return $user->userData->inventory_max_slots ?? self::DEFAULT_MAX_SLOTS;
+    }
 
     /**
      * Find item in inventory
      *
      * @param  Collection<int, Inventory>  $Inventory
+     * @param  string  $item  Item name
      * @return null|Inventory
      *
      * @throws Exception If user does not have item
      */
     public function findItem(Collection $Inventory, string $item)
     {
-        $item = $Inventory->firstWhere('item', $item);
+        $itemId = Item::where('name', $item)->value('item_id');
 
-        return $item;
+        if ($itemId === null) {
+            return null;
+        }
+
+        return $Inventory->firstWhere('item_id', $itemId);
     }
 
     /**
@@ -55,14 +73,15 @@ class InventoryService
     /**
      * @param  null|int  $plusAmont  Can be used to check if inventory is full included a plus amount
      */
-    public function isInventoryIsFull(int $inventoryCount, ?int $plusAmont = null): bool
+    public function isInventoryIsFull(User $user, ?int $plusAmont = null): bool
     {
-        if (isset($plusAmont)) {
-            $newAmount = $inventoryCount += $plusAmont;
+        $inventoryCount = $user->inventory->count();
+        $maxSlots = $this->getMaxSlots($user);
 
-            return $newAmount > 18;
+        if (isset($plusAmont)) {
+            return $inventoryCount + $plusAmont > $maxSlots;
         } else {
-            return $inventoryCount >= 18;
+            return $inventoryCount >= $maxSlots;
         }
     }
 
@@ -102,12 +121,17 @@ class InventoryService
 
         $new_amount = (is_null($InventoryItem)) ? $amount : $InventoryItem->amount + $amount;
 
-        if ($Inventory->count() >= 18 && ! $InventoryItem && $new_amount > 0) {
+        $user = User::findOrFail($userId);
+        $maxSlots = $this->getMaxSlots($user);
+
+        if ($Inventory->count() >= $maxSlots && ! $InventoryItem && $new_amount > 0) {
 
             throw new InventoryFullException;
         } elseif ($InventoryItem === null) {
+            $itemId = Item::where('name', $item)->value('item_id');
+
             Inventory::create([
-                'item' => $item,
+                'item_id' => $itemId,
                 'amount' => $amount,
                 'user_id' => $userId,
             ]);
@@ -122,7 +146,7 @@ class InventoryService
                 $InventoryItem->save();
             }
         }
-        event(new InventoryUpdated($Inventory));
+        event(new InventoryUpdated($Inventory, $user));
 
         return $this;
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\InventoryResourceCollection;
 use App\Http\Responses\AdvResponse;
 use App\Models\Inventory;
 use App\Models\Item;
@@ -17,7 +18,7 @@ class InventoryController extends Controller
 
     public function get(Request $request): JsonResponse
     {
-        $Inventory = Inventory::where('user_id', Auth::user()->id)->get();
+        $Inventory = Inventory::with('item')->where('user_id', Auth::user()->id)->get();
 
         $template = view('inventory')
             ->with('Inventory', $Inventory)
@@ -26,17 +27,17 @@ class InventoryController extends Controller
         return (new AdvResponse)->addTemplate('inventory', $template)->toResponse($request);
     }
 
-    public function getItems(): JsonResponse
+    public function getItems(): InventoryResourceCollection
     {
-        $Inventory = Inventory::where('user_id', Auth::user()->id)
+        $Inventory = Inventory::with('item')->where('user_id', Auth::user()->id)
             ->get();
 
-        return response()->json($Inventory);
+        return new InventoryResourceCollection($Inventory);
     }
 
     public function getPrices(): JsonResponse
     {
-        $Inventory_prices = Item::select('name', 'store_value')->join('inventory', 'items.name', '=', 'inventory.item')
+        $Inventory_prices = Item::select('name', 'store_value')->join('inventory', 'items.item_id', '=', 'inventory.item_id')
             ->where('inventory.user_id', Auth::user()->id)
             ->get();
 
