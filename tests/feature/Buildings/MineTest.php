@@ -5,6 +5,7 @@ namespace Tests\Feature\Buildings;
 use PHPUnit\Framework\Attributes\DataProvider;
 use App\Enums\GameEvents;
 use App\Enums\GameLocations;
+use App\Models\Item;
 use App\Models\Miner;
 use App\Models\Mineral;
 use App\Models\MinerWorkforce;
@@ -354,8 +355,8 @@ class MineTest extends SkillTestCase
         $response->json();
 
         $this->assertDatabaseMissing('inventory', [
-            'username' => $this->RandomUser->username,
-            'item' => $Mineral->mineral_ore,
+            'user_id' => $this->RandomUser->id,
+            'item_id' => Item::where('name', $Mineral->mineral_ore)->value('item_id'),
         ]);
 
         $this->assertResponseNotHasEvent($response, GameEvents::XpGainedEvent->value);

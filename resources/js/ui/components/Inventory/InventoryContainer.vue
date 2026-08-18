@@ -14,7 +14,8 @@
             'not-able-color': inventoryStore.isInventoryFull,
           }"
         >
-          {{ inventoryStore.inventoryItems.length }} / {{ 18 }}
+          {{ inventoryStore.inventoryItems.length }} /
+          {{ inventoryStore.maxSlots }}
         </span>
       </p>
       <div
@@ -38,7 +39,7 @@
 
 <script lang="ts" setup>
 import { CustomFetchApi } from '@/CustomFetchApi';
-import type { InventoryItem } from '@/types/InventoryItem';
+import type { InventoryDataResponse } from '@/types/InventoryItem';
 import { ref } from 'vue';
 import BaseLoading from '@/ui/components/base/BaseLoading.vue';
 import { useInventoryStore } from '@/ui/stores/InventoryStore';
@@ -53,8 +54,11 @@ const getInventory = async () => {
   try {
     isLoading.value = true;
     const response =
-      await CustomFetchApi.get<InventoryItem[]>('/inventory/items');
-    inventoryStore.inventoryItems = response.data;
+      await CustomFetchApi.get<InventoryDataResponse>('/inventory/items');
+    inventoryStore.inventoryItems = response.data.data.items;
+    inventoryStore.setMaxSlots(response.data.meta.max_slots);
+
+    isLoading.value = false;
     inventoryStore.setShouldUpdateInventory(false);
     itemPrices.get();
   } catch (e) {

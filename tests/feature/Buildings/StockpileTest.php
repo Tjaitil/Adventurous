@@ -150,7 +150,7 @@ class StockpileTest extends TestCase
         ]);
         $this->assertDatabaseHas('inventory', [
             'user_id' => $this->RandomUser->id,
-            'item' => $Item->name,
+            'item_id' => $Item->item_id,
             'amount' => 1,
         ]);
     }

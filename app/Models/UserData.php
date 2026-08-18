@@ -25,6 +25,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool $frajrite_items
  * @property bool $wujkin_items
  * @property int|null $stockpile_max_amount
+ * @property int|null $inventory_max_slots
  * @property-read string $location
  *
  * @method static \Database\Factories\UserDataFactory factory($count = null, $state = [])
@@ -40,6 +41,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereHunger($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereHungerDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData whereInventoryMaxSlots($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereMapLocation($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereProfiency($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereSessionId($value)

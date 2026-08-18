@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\DiplomacyResource;
+use App\Http\Resources\InventoryResourceCollection;
 use App\Models\Diplomacy;
 use App\Models\Hunger;
 use App\Models\Inventory;
@@ -39,7 +40,7 @@ class AdvclientController extends Controller
                 ?->toArray(),
             'profiency' => $user_data->profiency,
             'hunger' => Hunger::where('user_id', Auth::user()->id)->first(),
-            'inventory' => Inventory::where('user_id', Auth::user()->id)->get(),
+            'inventory' => (new InventoryResourceCollection(Inventory::with('item')->where('user_id', Auth::user()->id)->get()))->resolve(),
             'profiencyStatuses' => $this->profiencyService->calculateProfienciesStatuses(Auth::user()->id),
             'diplomacy' => Diplomacy::where('username', Auth::user()->username)->get()->toArray(),
             'initLevels' => UserLevels::where('username', Auth::user()->username)->first()

@@ -75,7 +75,7 @@ class StockpileService
 
     public function withdraw(User $user, string $item, int $amount): AdvResponse|StockpileCollection
     {
-        if ($this->inventoryService->isInventoryIsFull($user->inventory->count())) {
+        if ($this->inventoryService->isInventoryIsFull($user, $user->inventory->count())) {
             return $this->inventoryService->handleInventoryFull();
         }
 

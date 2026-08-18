@@ -6,6 +6,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use App\Enums\SkillNames;
 use App\Models\EfficiencyUpgrade;
 use App\Models\FarmerWorkforce;
+use App\Models\Item;
 use App\Models\LevelData;
 use App\Models\MinerWorkforce;
 use App\Models\UserLevels;
@@ -75,7 +76,7 @@ class WorkforceLodgeTest extends TestCase
 
         $this->assertDatabaseHas('inventory', [
             'user_id' => $this->RandomUser->id,
-            'item' => config('adventurous.currency'),
+            'item_id' => Item::where('name', config('adventurous.currency'))->value('item_id'),
             'amount' => 100000 - $cost,
         ]);
     }

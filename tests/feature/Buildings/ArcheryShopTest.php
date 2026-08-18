@@ -3,6 +3,7 @@
 namespace Tests\Feature\Buildings;
 
 use App\Models\ArcheryShopItem;
+use App\Models\Item;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
@@ -68,14 +69,14 @@ class ArcheryShopTest extends TestCase
 
         $this->assertDatabaseHas('inventory', [
             'user_id' => $this->RandomUser->id,
-            'item' => $ArcheryShopItem->item,
+            'item_id' => Item::where('name', $ArcheryShopItem->item)->value('item_id'),
             'amount' => $amount * $ArcheryShopItem->item_multiplier,
         ]);
 
         foreach ($RequiredItems as $key => $RequiredItem) {
             $this->assertDatabaseHas('inventory', [
                 'user_id' => $this->RandomUser->id,
-                'item' => $RequiredItem->required_item,
+                'item_id' => Item::where('name', $RequiredItem->required_item)->value('item_id'),
                 'amount' => 2,
             ]);
         }

@@ -3,6 +3,7 @@
 namespace App\tests;
 
 use App\Models\HealingItem;
+use App\Models\Item;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
@@ -57,14 +58,14 @@ class BakeryTest extends TestCase
 
         $this->assertDatabaseHas('inventory', [
             'user_id' => $this->RandomUser->id,
-            'item' => $HealingItem->item,
+            'item_id' => Item::where('name', $HealingItem->item)->value('item_id'),
             'amount' => $amount,
         ]);
 
         foreach ($RequiredItems as $key => $RequiredItem) {
             $this->assertDatabaseHas('inventory', [
                 'user_id' => $this->RandomUser->id,
-                'item' => $RequiredItem->required_item,
+                'item_id' => Item::where('name', $RequiredItem->required_item)->value('item_id'),
                 'amount' => 2,
             ]);
         }

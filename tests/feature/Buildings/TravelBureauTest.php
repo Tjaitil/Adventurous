@@ -2,6 +2,7 @@
 
 namespace App\tests;
 
+use App\Models\Item;
 use App\Models\TravelBureauCart;
 use App\Models\UserLevels;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -53,8 +54,8 @@ class TravelBureauTest extends TestCase
         $response->assertStatus(200);
 
         $this->assertDatabaseMissing('inventory', [
-            'username' => $this->RandomUser->username,
-            'item' => 'steel cart',
+            'user_id' => $this->RandomUser->id,
+            'item_id' => Item::where('name', 'steel cart')->value('item_id'),
             'amount' => 1,
         ]);
 

@@ -4,6 +4,7 @@ namespace Tests\Feature\Buildings;
 
 use App\Models\ArmoryItemsData;
 use App\Models\Inventory;
+use App\Models\Item;
 use App\Models\Soldier;
 use App\Models\SoldierArmory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -159,8 +160,8 @@ class ArmoryTest extends TestCase
         $this->WarriorsRangedArmory->right_hand = 'oak bow';
         $this->WarriorsRangedArmory->save();
 
-        $Inventory = Inventory::where('username', $this->RandomUser->username)
-            ->where('item', 'oak bow')
+        $Inventory = Inventory::where('user_id', $this->RandomUser->id)
+            ->where('item_id', Item::where('name', 'oak bow')->value('item_id'))
             ->get();
 
         $response = $this->post('/armory/soldier/add', [
@@ -186,7 +187,7 @@ class ArmoryTest extends TestCase
         $this->assertDatabaseHas('inventory',
             [
                 'user_id' => $this->RandomUser->id,
-                'item' => 'oak bow',
+                'item_id' => Item::where('name', 'oak bow')->value('item_id'),
                 'amount' => $Inventory->first()?->amount + 1 ?? 1,
             ]);
     }

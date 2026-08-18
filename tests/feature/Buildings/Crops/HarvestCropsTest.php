@@ -8,6 +8,7 @@ use App\Enums\GameLocations;
 use App\Models\Crop;
 use App\Models\Farmer;
 use App\Models\FarmerWorkforce;
+use App\Models\Item;
 use App\Models\UserLevels;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -183,8 +184,8 @@ class HarvestCropsTest extends SkillTestCase
         $response->json();
 
         $this->assertDatabaseMissing('inventory', [
-            'username' => $this->RandomUser->username,
-            'item' => $Crop->crop_type,
+            'user_id' => $this->RandomUser->id,
+            'item_id' => Item::where('name', $Crop->crop_type)->value('item_id'),
         ]);
 
         $UserLevels = UserLevels::where('user_id', $this->RandomUser->id)->first();

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Buildings;
 
+use App\Models\Item;
 use App\Models\SmithyItem;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Group;
@@ -71,14 +72,14 @@ class SmithyTest extends TestCase
 
         $this->assertDatabaseHas('inventory', [
             'user_id' => $this->RandomUser->id,
-            'item' => $SmithyItem->item,
+            'item_id' => Item::where('name', $SmithyItem->item)->value('item_id'),
             'amount' => $amount * $SmithyItem->item_multiplier,
         ]);
 
         foreach ($RequiredItems as $key => $RequiredItem) {
             $this->assertDatabaseHas('inventory', [
                 'user_id' => $this->RandomUser->id,
-                'item' => $RequiredItem->required_item,
+                'item_id' => Item::where('name', $RequiredItem->required_item)->value('item_id'),
                 'amount' => 2,
             ]);
         }
