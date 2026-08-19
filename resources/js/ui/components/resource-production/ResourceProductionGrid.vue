@@ -1,22 +1,24 @@
 <template>
-  <div class="grid grid-cols-4 gap-2 p-2">
-    <BaseRadio
+  <ListboxRoot v-model="selected" class="grid grid-cols-4 gap-2 p-2">
+    <ListboxItem
       v-for="resourceItem in items"
-      :id="`resource-production-${resourceItem.type}`"
       :key="resourceItem.type"
-      v-model="selected"
-      name="resource-production-type"
       :value="resourceItem.type"
-      class="flex-col items-center"
+      class="data-[state=checked]:ring-2 data-[state=checked]:ring-orange-400"
     >
-      <BaseItem :item="resourceItem.type" :show-amount="false" />
-    </BaseRadio>
-  </div>
+      <BaseItem
+        :item="resourceItem.type"
+        :show-amount="false"
+        :is-ineractive="false"
+      />
+    </ListboxItem>
+  </ListboxRoot>
 </template>
 
 <script setup lang="ts">
-import BaseRadio from '../base/BaseRadio.vue';
 import BaseItem from '../base/BaseItem.vue';
+import ListboxItem from '../listbox/ListboxItem.vue';
+import ListboxRoot from '../listbox/ListboxRoot.vue';
 
 export interface ResourceProductionGridItem {
   type: string;
