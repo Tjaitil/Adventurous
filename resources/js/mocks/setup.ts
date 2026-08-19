@@ -12,6 +12,10 @@ export const restHandlers = [
 
 const server = setupServer(...restHandlers);
 
+// jsdom doesn't implement scrollIntoView; reka-ui's Listbox calls it when
+// moving keyboard/selection focus between options.
+Element.prototype.scrollIntoView = Element.prototype.scrollIntoView ?? (() => {});
+
 beforeAll(() => { server.listen({ onUnhandledRequest: 'error' }); });
 
 afterAll(() => { server.close(); });
