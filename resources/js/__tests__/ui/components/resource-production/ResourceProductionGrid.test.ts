@@ -4,7 +4,7 @@ import { i18n } from '@/ui/main';
 import ResourceProductionGrid from '@/ui/components/resource-production/ResourceProductionGrid.vue';
 
 describe('ResourceProductionGrid component', () => {
-  test('renders a radio option per item', () => {
+  test('renders a listbox option per item', () => {
     const wrapper = mount(ResourceProductionGrid, {
       global: { plugins: [i18n] },
       props: {
@@ -13,7 +13,7 @@ describe('ResourceProductionGrid component', () => {
       },
     });
 
-    expect(wrapper.findAll('input[type="radio"]').length).toBe(2);
+    expect(wrapper.findAll('[role="option"]').length).toBe(2);
   });
 
   test('emits update:modelValue with the selected type', async () => {
@@ -25,8 +25,8 @@ describe('ResourceProductionGrid component', () => {
       },
     });
 
-    const radios = wrapper.findAll('input[type="radio"]');
-    await radios[1].setValue();
+    const options = wrapper.findAll('[role="option"]');
+    await options[1].trigger('click');
 
     expect(wrapper.emitted('update:modelValue')?.[0]).toEqual(['corn']);
   });

@@ -65,7 +65,7 @@ describe('MinerPage', () => {
     await flushPromises();
 
     expect(mockedMineDataLoader.action_items).toHaveBeenCalled();
-    expect(wrapper.findAll('input[type="radio"]').length).toBe(1);
+    expect(wrapper.findAll('[role="option"]').length).toBe(1);
     expect(wrapper.text()).toContain('No miners at work');
     expect(wrapper.text()).toContain('4');
   });
@@ -79,7 +79,7 @@ describe('MinerPage', () => {
     const wrapper = mountMinerPage();
     await flushPromises();
 
-    await wrapper.find('input[type="radio"]').setValue();
+    await wrapper.find('[role="option"]').trigger('click');
     await wrapper.find('input[type="number"]').setValue(2);
 
     const mineButton = wrapper
