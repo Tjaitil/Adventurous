@@ -65,7 +65,7 @@ describe('CropsPage', () => {
     await flushPromises();
 
     expect(mockedCropsDataLoader.action_items).toHaveBeenCalled();
-    expect(wrapper.findAll('input[type="radio"]').length).toBe(1);
+    expect(wrapper.findAll('[role="option"]').length).toBe(1);
     expect(wrapper.text()).toContain('No crops growing');
   });
 
@@ -78,7 +78,7 @@ describe('CropsPage', () => {
     const wrapper = mountCropsPage();
     await flushPromises();
 
-    await wrapper.find('input[type="radio"]').setValue();
+    await wrapper.find('[role="option"]').trigger('click');
     await wrapper.find('input[type="number"]').setValue(2);
 
     const growButton = wrapper
