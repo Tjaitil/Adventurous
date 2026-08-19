@@ -93,10 +93,17 @@ describe('ListboxRoot layout="grid"', () => {
 
   function mountGridListbox(columns: number, modelValue: string | null = null) {
     return mount(ListboxRoot, {
-      props: { modelValue, 'onUpdate:modelValue': () => {}, layout: 'grid', columns },
+      props: {
+        modelValue,
+        'onUpdate:modelValue': () => {},
+        layout: 'grid',
+        columns,
+      },
       slots: {
         default: () =>
-          gridItems.map(item => h(ListboxItem, { key: item, value: item }, () => item)),
+          gridItems.map(item =>
+            h(ListboxItem, { key: item, value: item }, () => item),
+          ),
       },
     });
   }
