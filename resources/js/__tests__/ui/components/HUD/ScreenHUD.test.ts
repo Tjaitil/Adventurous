@@ -1,10 +1,18 @@
 import { render, screen, waitFor } from '@testing-library/vue';
-import { describe, test, expect, afterEach } from 'vitest';
+import { describe, test, expect, afterEach, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 import ScreenHUD from '@/ui/components/HUD/ScreenHUD.vue';
 import { gameEventBus } from '@/gameEventsBus';
-import { createPinia } from 'pinia';
+import { createPinia, setActivePinia } from 'pinia';
+import { useHungerStore } from '@/ui/stores/HungerStore';
 import { i18n } from '@/ui/main';
+
+let pinia: ReturnType<typeof createPinia>;
+
+beforeEach(() => {
+  pinia = createPinia();
+  setActivePinia(pinia);
+});
 
 const renderScreenHUD = (healthCurrent = 100): ReturnType<typeof render> =>
   render(ScreenHUD, {
@@ -13,7 +21,7 @@ const renderScreenHUD = (healthCurrent = 100): ReturnType<typeof render> =>
       health: { current: healthCurrent, max: 100 },
     },
     global: {
-      plugins: [createPinia(), i18n],
+      plugins: [pinia, i18n],
     },
   });
 
@@ -40,6 +48,22 @@ describe('ScreenHUD.vue', () => {
 
     await waitFor(() => {
       expect(screen.getByText('75 / 100')).toBeInTheDocument();
+    });
+  });
+
+  test('renders initial hunger value from props', () => {
+    renderScreenHUD();
+
+    expect(screen.getByText('80 / 100')).toBeInTheDocument();
+  });
+
+  test('updates hunger progress bar when hungerStore.currentHunger changes', async () => {
+    renderScreenHUD();
+
+    useHungerStore().setCurrentHunger(55);
+
+    await waitFor(() => {
+      expect(screen.getByText('55 / 100')).toBeInTheDocument();
     });
   });
 
@@ -96,10 +120,14 @@ describe('ScreenHUD.vue', () => {
   test('displays character name when HUD_CONVERSATION_PROMPT_UPDATE is emitted', async () => {
     renderScreenHUD();
 
-    gameEventBus.emit('HUD_CONVERSATION_PROMPT_UPDATE', { characterName: 'Sailor Bob' });
+    gameEventBus.emit('HUD_CONVERSATION_PROMPT_UPDATE', {
+      characterName: 'Sailor Bob',
+    });
 
     await waitFor(() => {
-      expect(screen.getByText('Sailor Bob', { exact: false })).toBeInTheDocument();
+      expect(
+        screen.getByText('Sailor Bob', { exact: false }),
+      ).toBeInTheDocument();
     });
   });
 });
