@@ -230,14 +230,9 @@ export class Game {
       ClientOverlayInterface.setup();
 
       viewport.setup({
-        background: document.getElementById('game_canvas') as HTMLCanvasElement,
-        player: document.getElementById('game_canvas2') as HTMLCanvasElement,
-        frontObjects: document.getElementById(
-          'game_canvas4',
-        ) as HTMLCanvasElement,
-        sprite: document.getElementById('game_canvas3') as HTMLCanvasElement,
-        text: document.getElementById('text_canvas') as HTMLCanvasElement,
         hud: document.getElementById('hud_canvas') as HTMLCanvasElement,
+        text: document.getElementById('text_canvas') as HTMLCanvasElement,
+        world: document.getElementById('game_canvas') as HTMLCanvasElement,
       });
       viewport.adjustViewport(Game.properties.xbase, Game.properties.ybase);
 
@@ -269,7 +264,6 @@ export class Game {
   private static startGame() {
     try {
       Game.properties.requestId = 0;
-      GamePieces.player.draw();
       GamePieces.init();
       pauseManager.resumeGame(true);
     } catch (error) {
@@ -309,7 +303,7 @@ export class Game {
         GamePieces.player.speedX = 0;
         GamePieces.player.speedY = 0;
       }
-      viewport.resetSpriteLayer();
+      viewport.resetHudLayer();
       if (
         // (GamePieces.player.speedX != 0 || GamePieces.player.speedY != 0) &&
         !Game.properties.inBuilding &&
@@ -334,8 +328,7 @@ export class Game {
         GamePieces.player.yMovement,
       );
 
-      GamePieces.drawStaticPieces();
-      GamePieces.drawDaqloons();
+      GamePieces.drawWorld();
 
       if (GamePieces.player.checkPosition()) {
         Game.getNextWorld();
