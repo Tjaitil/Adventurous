@@ -54,6 +54,7 @@ import type { GameLog } from '@/types/GameLog';
 import type { ProficiencyStatuses } from '@/types/ProficiencyStatuses';
 import ClientOverlayWrapper from '../components/ClientOverlayWrapper.vue';
 import { usePlayerStore } from '../stores/PlayerStore';
+import { useHungerStore } from '../stores/HungerStore';
 import { useCrashStore } from '../stores/CrashStore';
 import CrashScreen from '../components/CrashScreen.vue';
 
@@ -72,7 +73,7 @@ interface Props {
   diplomacyResource: DiplomacyResource;
   profiencyStatuses: ProficiencyStatuses;
 }
-const { username, location } = defineProps<Props>();
+const { username, location, hunger } = defineProps<Props>();
 
 const playerStore = usePlayerStore();
 playerStore.location = location;
@@ -97,6 +98,7 @@ onErrorCaptured(error => {
 });
 
 registerErrorHandler(onError);
+useHungerStore().setCurrentHunger(hunger.current);
 
 onMounted(async () => {
   await initGame(onError);

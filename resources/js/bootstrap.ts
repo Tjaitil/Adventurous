@@ -22,6 +22,7 @@ import type { InventoryBroadcastPayload } from '@/types/InventoryItem';
 import { useSkillsStore } from './ui/stores/SkillsStore';
 import { useDiplomacyStore } from './ui/stores/DiplomacyStore';
 import type { DiplomacyResource } from '@/types/Diplomacy';
+import { useHungerStore } from './ui/stores/HungerStore';
 
 window.Pusher = Pusher;
 
@@ -38,14 +39,20 @@ const echo = new Echo({
 export const setupEchoListeners = (userId: number) => {
   echo
     .private(`game-state.${userId.toString()}`)
-    .listen('InventoryUpdated', (e: { Inventory: InventoryBroadcastPayload }) => {
-      useInventoryStore().setInventoryItems(e.Inventory.items);
-      useInventoryStore().setMaxSlots(e.Inventory.meta.max_slots);
-    })
+    .listen(
+      'InventoryUpdated',
+      (e: { Inventory: InventoryBroadcastPayload }) => {
+        useInventoryStore().setInventoryItems(e.Inventory.items);
+        useInventoryStore().setMaxSlots(e.Inventory.meta.max_slots);
+      },
+    )
     .listen('SkillsUpdated', () => {
       useSkillsStore().setHandleXpGainedEvent(true);
     })
     .listen('DiplomacyUpdated', (e: { Diplomacy: DiplomacyResource }) => {
       useDiplomacyStore().setDiplomacyData(e.Diplomacy);
+    })
+    .listen('HungerUpdated', (e: { Hunger: number }) => {
+      useHungerStore().setCurrentHunger(e.Hunger);
     });
 };

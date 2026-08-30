@@ -76,7 +76,8 @@
 <script setup lang="ts" vapor>
 import { gameEventBus } from '@/gameEventsBus';
 import { useMapStore } from '@/ui/stores/MapStore';
-import { ref, onUnmounted } from 'vue';
+import { useHungerStore } from '@/ui/stores/HungerStore';
+import { onUnmounted, ref, watch } from 'vue';
 
 interface Props {
   hunger: {
@@ -90,6 +91,7 @@ interface Props {
 }
 
 const { hunger, health } = defineProps<Props>();
+const hungerStore = useHungerStore();
 const currentHunger = ref(hunger.current);
 const currentHealth = ref(health.current);
 
@@ -121,4 +123,14 @@ onUnmounted(() => {
     unsub();
   });
 });
+
+watch(
+  () => hungerStore.currentHunger,
+  value => {
+    if (typeof value === 'number') {
+      currentHunger.value = value;
+    }
+  },
+  { immediate: true },
+);
 </script>
