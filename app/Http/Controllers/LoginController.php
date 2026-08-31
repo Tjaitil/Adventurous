@@ -3,25 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Services\GameLogService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
     /**
-     * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse
+     * @return View|Factory|RedirectResponse
      */
     public function index()
     {
         if (Auth::check()) {
-            return redirect()->intended('main');
+            return redirect()->route('client');
         }
 
         return view('login')->with('title', 'Login');
     }
 
     /**
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function authenticate(Request $request)
     {
@@ -34,7 +38,7 @@ class LoginController extends Controller
             $request->session()->regenerate();
             GameLogService::addInfoLog('Welcome! Enjoy your stay!');
 
-            return redirect()->intended('main');
+            return redirect()->intended('client');
         }
 
         return back()
@@ -46,7 +50,7 @@ class LoginController extends Controller
     }
 
     /**
-     * @return \Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse
+     * @return Redirector|RedirectResponse
      */
     public function logOut(Request $request)
     {
