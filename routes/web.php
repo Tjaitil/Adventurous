@@ -1,19 +1,19 @@
 <?php
 
 use App\Http\Controllers\AdvclientController;
-use App\Http\Controllers\DevToolsController;
 use App\Http\Controllers\ArcheryShopController;
 use App\Http\Controllers\ArmoryController;
 use App\Http\Controllers\ArmyCampController;
 use App\Http\Controllers\BakeryController;
 use App\Http\Controllers\CityCentreController;
 use App\Http\Controllers\ConversationController;
+use App\Http\Controllers\CrashReportController;
 use App\Http\Controllers\CropsController;
+use App\Http\Controllers\DevToolsController;
 use App\Http\Controllers\GameLoggerController;
 use App\Http\Controllers\HungerController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\LandingController;
-use App\Http\Controllers\CrashReportController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MerchantController;
@@ -46,9 +46,8 @@ Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/authenticate', [LoginController::class, 'authenticate']);
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/main', [AdvclientController::class, 'index'])->name('main');
 
-    Route::get('/advclient', [AdvclientController::class, 'index'])->name('clent');
+    Route::get('/advclient', [AdvclientController::class, 'index'])->name('client');
     Route::get('/world', [WorldLoaderController::class, 'loadWorld']);
     Route::post('/world/change', [WorldLoaderController::class, 'changeMap']);
 
@@ -144,13 +143,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/crash-report', [CrashReportController::class, 'store']);
 
     Route::middleware(['admin', 'dev'])->prefix('/dev/admin')->group(function () {
-        Route::get('/freeze',              [DevToolsController::class, 'getFreezeState']);
-        Route::post('/freeze',            [DevToolsController::class, 'toggleFreeze']);
-        Route::get('/locations',          [DevToolsController::class, 'getLocations']);
-        Route::get('/items',              [DevToolsController::class, 'getItems']);
-        Route::post('/item/give',         [DevToolsController::class, 'giveItem']);
+        Route::get('/freeze', [DevToolsController::class, 'getFreezeState']);
+        Route::post('/freeze', [DevToolsController::class, 'toggleFreeze']);
+        Route::get('/locations', [DevToolsController::class, 'getLocations']);
+        Route::get('/items', [DevToolsController::class, 'getItems']);
+        Route::post('/item/give', [DevToolsController::class, 'giveItem']);
         Route::post('/teleport/location', [DevToolsController::class, 'teleportToLocation']);
-        Route::post('/userdata',          [DevToolsController::class, 'setUserData']);
+        Route::post('/userdata', [DevToolsController::class, 'setUserData']);
     });
 });
 
