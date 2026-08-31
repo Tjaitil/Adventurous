@@ -19,6 +19,11 @@ import { addModuleTester } from '@/devtools/ModuleTester';
 export type gameObjectTypes = Character | Building | BaseStaticGameObject;
 export type gridObjectTypes = gameObjectTypes | Daqloon;
 
+interface Drawable {
+  diameterDown: number;
+  draw(): void;
+}
+
 let draw = false;
 
 // TODO: Create class
@@ -93,52 +98,66 @@ export const GamePieces = {
     for (const daqloon of this.daqloon) this.spatialGrid.insert(daqloon);
   },
   init() {
-    GamePieces.drawStaticPieces();
-    GamePieces.player.draw();
+    GamePieces.drawWorld();
   },
-  drawStaticPieces() {
-    viewport.resetObjectLayer();
-
+  drawWorld() {
     const margin = 50;
-    const drawable = this.spatialGrid
+    const staticCandidates = this.spatialGrid
       .query(
         this.player.xpos - viewport.width - margin,
         this.player.ypos - viewport.height - margin,
         this.player.xpos + viewport.width + margin,
         this.player.ypos + viewport.height + margin,
       )
-      .filter(obj => !this.nonDrawingTypes.includes(obj.type) && obj.visible)
-      .sort((a, b) => a.diameterDown - b.diameterDown);
+      .filter(obj => !this.nonDrawingTypes.includes(obj.type) && obj.visible);
 
-    for (const gamePiece of drawable) {
-      const drawContext =
-        gamePiece.diameterDown < this.player.diameterDown
-          ? 'background'
-          : 'frontObjects';
-
-      viewport.drawObject(
-        drawContext,
-        gamePiece.sprite,
-        gamePiece.type === 'character'
-          ? gamePiece.drawX - this.player.xMovement
-          : Math.round(gamePiece.drawX - this.player.xMovement),
-        gamePiece.type === 'character'
-          ? gamePiece.drawY - this.player.yMovement
-          : Math.round(gamePiece.drawY - this.player.yMovement),
-        gamePiece.width,
-        gamePiece.height,
-      );
-    }
+    const drawable: Drawable[] = [
+      ...staticCandidates.map(obj => ({
+        diameterDown: obj.diameterDown,
+        draw: () =>
+          viewport.drawWorldImage(
+            obj.sprite,
+            obj.type === 'character'
+              ? obj.drawX - this.player.xMovement
+              : Math.round(obj.drawX - this.player.xMovement),
+            obj.type === 'character'
+              ? obj.drawY - this.player.yMovement
+              : Math.round(obj.drawY - this.player.yMovement),
+            obj.width,
+            obj.height,
+          ),
+      })),
+      {
+        diameterDown: this.player.diameterDown,
+        draw: () => {
+          this.player.draw();
+        },
+      },
+      ...this.daqloon.map(d => ({
+        diameterDown: d.diameterDown,
+        draw: () => {
+          d.draw();
+        },
+      })),
+      ...this.items.map(i => ({
+        diameterDown: i.diameterDown,
+        draw: () => {
+          i.draw();
+        },
+      })),
+    ];
+    drawable.sort((a, b) => a.diameterDown - b.diameterDown);
+    for (const entry of drawable) entry.draw();
 
     inputHandler.checkCharacter();
     inputHandler.checkBuilding();
 
     if (draw) {
       addModuleTester(GamePieces.objects, 'GamePieces');
-      addModuleTester(drawable, 'visibleObjects');
+      addModuleTester(staticCandidates, 'visibleObjects');
       for (let i = 0, n = GamePieces.objects.length; i < n; i++) {
-        viewport.layer.frontObjects.fillStyle = 'red';
-        viewport.layer.frontObjects.fillRect(
+        viewport.layer.world.fillStyle = 'red';
+        viewport.layer.world.fillRect(
           GamePieces.objects[i].drawX -
             GamePieces.player.xMovement / viewport.scale,
           GamePieces.objects[i].drawY -
@@ -146,9 +165,9 @@ export const GamePieces = {
           GamePieces.objects[i].width,
           GamePieces.objects[i].height,
         );
-        viewport.layer.frontObjects.font = '10px Comic Sans MS';
-        viewport.layer.frontObjects.fillStyle = 'white';
-        viewport.layer.frontObjects.fillText(
+        viewport.layer.world.font = '10px Comic Sans MS';
+        viewport.layer.world.fillStyle = 'white';
+        viewport.layer.world.fillText(
           i + ' | ' + GamePieces.objects[i].id,
           GamePieces.objects[i].drawX -
             GamePieces.player.xMovement / viewport.scale +
@@ -157,14 +176,6 @@ export const GamePieces = {
             GamePieces.objects[i].height / 2 -
             GamePieces.player.yMovement / viewport.scale,
         );
-      }
-    }
-  },
-
-  drawDaqloons() {
-    if (this.daqloon.length > 0) {
-      for (const daqloon of this.daqloon) {
-        daqloon.draw();
       }
     }
   },

@@ -5,7 +5,6 @@ import { Player } from '@/gamepieces/Player';
 vi.mock('@/clientScripts/viewport', () => ({
   default: {
     drawPlayer: vi.fn(),
-    resetPlayerLayer: vi.fn(),
     drawAttackCoolDown: vi.fn(),
   },
 }));

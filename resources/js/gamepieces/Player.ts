@@ -15,6 +15,7 @@ export class Player extends MovingGameObject {
   id = 0;
   ANIM_WALK_DURATION = 0.167; // ~6 frames/sec  — standard walk/idle cycle
   ANIM_ATTACK_DURATION = 0.033; // ~30 frames/sec — snappy attack steps
+  ANIM_HURT_DURATION = 0.15; // 150ms — how long the damage sprite stays up
   width = 36;
   height = 36;
   speedX = 0;
@@ -91,6 +92,8 @@ export class Player extends MovingGameObject {
   imageFix = 0;
   noCollision = true;
   ranged = false;
+  // Seconds since the last hit (-1 = not hurt). draw() shows the hurt sprite while it runs, then clears it after ANIM_HURT_DURATION.
+  hurtTimer = -1;
 
   setup() {
     // this.setHuntedStatus(false);
@@ -139,16 +142,8 @@ export class Player extends MovingGameObject {
 
   takeDamage(damage) {
     if (isNaN(damage) || damage === 0) return false;
-    // Draw sprite that takes damage
-    viewport.drawPlayer({
-      img: this.spriteAttack,
-      spriteX: 41 * 2,
-      spriteY: 38 * 1,
-      sWidth: 32,
-      sHeight: 32,
-      width: this.playerSize,
-      height: this.playerSize,
-    });
+    // Start the hurt-flash window; draw() renders it (a paint here would be wiped by this frame's drawBackground()).
+    this.hurtTimer = 0;
     this.health -= damage;
     if (this.health < 0) this.health = 0;
 
@@ -205,17 +200,31 @@ export class Player extends MovingGameObject {
   }
 
   draw() {
-    viewport.resetPlayerLayer();
     // this.drawLegs();
     // this.drawBody();
     // this.drawHead();
+
+    // Advanced here, not in newPos(): draw() runs every tick, newPos() does not.
+    if (this.hurtTimer !== -1) {
+      this.hurtTimer += Game.properties.delta;
+      if (this.hurtTimer >= this.ANIM_HURT_DURATION) {
+        this.hurtTimer = -1;
+      }
+    }
 
     let drawImage = this.sprite;
     let spriteX;
     let spriteY;
 
     // Determine which image and calculate spriteX and spriteY there after
-    if (this.combat) {
+    if (this.hurtTimer !== -1) {
+      drawImage = this.spriteAttack;
+      // +10 is the same horizontal inset (imageFix) the down-facing attack
+      // frames use — row 1 here is the down-facing art. Without it the sprite
+      // is grabbed ~10px off-centre and the player appears to jump sideways.
+      spriteX = 41 * 2 + 10;
+      spriteY = 38 * 1;
+    } else if (this.combat) {
       drawImage = this.spriteAttack;
       spriteX = 41 * this.loopIndex + this.imageFix;
       spriteY = 38 * this.indexY;
@@ -224,7 +233,6 @@ export class Player extends MovingGameObject {
       spriteX = this.indexX * this.loopIndex;
       spriteY = this.indexY;
     }
-    document.getElementById('demo')?.appendChild(drawImage);
 
     viewport.drawPlayer({
       img: drawImage,
@@ -347,24 +355,22 @@ export class Player extends MovingGameObject {
               GamePieces.daqloon[i].hit(direction);
             }
           }
-        }
-        this.draw();
-        this.loopIndex++;
-        // Attack is finished on attackLoop 2
-        if (this.attackLoop === 1) {
+          this.attackLoop++;
+        } else {
+          // Second and final attack frame. draw() now runs after newPos()
+          // (from GamePieces.drawWorld()), so loopIndex must already hold the
+          // frame index to render this tick, not the next one.
+          this.loopIndex = 1;
           this.attack = false;
           this.cooldown = 100;
           this.attackLoop = 0;
-        } else {
-          this.attackLoop++;
         }
       } else if (this.animTimer >= this.ANIM_WALK_DURATION && !this.attack) {
         this.animTimer = 0;
+        this.loopIndex++;
         if (this.loopIndex > 3) {
           this.loopIndex = 0;
         }
-        this.draw();
-        this.loopIndex++;
       }
     } else {
       let newdirection = 'none';
@@ -408,12 +414,10 @@ export class Player extends MovingGameObject {
           this.animTimer >= this.ANIM_WALK_DURATION
         ) {
           this.animTimer = 0;
-          this.draw();
           this.loopIndex++;
         } else if (newdirection != this.direction) {
           this.loopIndex = 1;
           this.direction = newdirection;
-          this.draw();
           this.loopIndex++;
         }
         if (this.loopIndex == 5 && newdirection != 'none') {
@@ -423,7 +427,6 @@ export class Player extends MovingGameObject {
         this.animationEnd = false;
       } else {
         this.loopIndex = 0;
-        this.draw();
         this.animationEnd = true;
       }
     }
@@ -433,159 +436,6 @@ export class Player extends MovingGameObject {
     this.oldYbase = this.ypos;
     this.oldXbase = this.xpos;
   }
-  // newPos(newPos = true) {
-  //     // if (this.health < 100 && this.regenerateCoundown === false) {
-  //     //     this.regenerateCoundown = true;
-  //     //     setTimeout(() => this.regenerateHealth(), 7000);
-  //     // }
-  //     this.up = '';
-  //     this.left = '';
-  //     this.down = '';
-  //     this.right = '';
-  //     // //drawing starts at x (diameterLeft) and y (diameterUp) line
-  //     if (newPos !== false) {
-  //         this.xpos = Game.properties.xbase + this.xMovement;
-  //         this.ypos = Game.properties.ybase + this.yMovement;
-  //         // game.properties.xMapMin = this.xpos - 320;
-  //         // game.properties.xMapMax = this.xpos + 320;
-  //         // game.properties.yMapMin = this.ypos - 320;
-  //         // game.properties.yMapMax = this.ypos + 320;
-  //         this.diameterUp = this.ypos + 20;
-  //         this.diameterRight = this.xpos + this.width - 4;
-  //         this.diameterDown = this.ypos + this.height;
-  //         this.diameterLeft = this.xpos + 4;
-  //     }
-  //     this.determineDirection();
-  //     if (this.combat === true && !this.ranged) {
-  //         let newDirection = 'none';
-  //         if (controls.playerDown === true) {
-  //             newDirection = 'down';
-  //             this.direction = 'down';
-  //             this.indexY = 0;
-  //             this.imageFix = 10;
-  //         } else if (controls.playerUp === true) {
-  //             newDirection = 'up';
-  //             this.direction = 'up';
-  //             this.indexY = 2;
-  //             this.imageFix = 5;
-  //         }
-  //         // If direction direction is left or right then draw sprite heading down
-  //         if (
-  //             (newDirection === 'undefined' || newDirection == 'none') &&
-  //             (controls.playerRight === true || controls.playerLeft === true)
-  //         ) {
-  //             if (this.direction === 'up') {
-  //                 this.indexY = 2;
-  //                 this.imageFix = 5;
-  //             } else {
-  //                 this.indexY = 0;
-  //                 this.imageFix = 10;
-  //             }
-  //         }
-  //         if (
-  //             this.attack === true &&
-  //             Game.properties.duration % 2 === 0 &&
-  //             this.cooldown <= 0
-  //         ) {
-  //             this.indexY += 1;
-  //             if (this.attackLoop === 0) {
-  //                 this.loopIndex = 0;
-  //                 let direction;
-  //                 for (let i = 0; i < GamePieces.daqloon.length; i++) {
-  //                     if (
-  //                         (this.direction === 'up' &&
-  //                             GamePieces.daqloon[i].y < this.ypos &&
-  //                             Math.abs(GamePieces.daqloon[i].x - this.xpos) <
-  //                                 30 &&
-  //                             Math.abs(
-  //                                 GamePieces.daqloon[i].diameterDown -
-  //                                     this.ypos,
-  //                             ) < 16) ||
-  //                         (this.direction === 'down' &&
-  //                             Math.abs(GamePieces.daqloon[i].x - this.xpos) <
-  //                                 64 &&
-  //                             Math.abs(
-  //                                 GamePieces.daqloon[i].y - this.ypos + 32,
-  //                             ) < 60)
-  //                     ) {
-  //                         if (this.direction === 'down') {
-  //                             direction = 'down';
-  //                         } else {
-  //                             direction = 'up';
-  //                         }
-  //                         GamePieces.daqloon[i].hit(direction);
-  //                     }
-  //                 }
-  //             }
-  //             // this.draw();
-  //             this.loopIndex++;
-  //             // Attack is finished on attackLoop 2
-  //             if (this.attackLoop === 1) {
-  //                 this.attack = false;
-  //                 this.cooldown = 100;
-  //                 this.attackLoop = 0;
-  //             } else {
-  //                 this.attackLoop++;
-  //             }
-  //         } else if (
-  //             Game.properties.duration % 10 === 0 &&
-  //             this.attack === false
-  //         ) {
-  //             console.log('else');
-  //             if (this.loopIndex > 3) {
-  //                 this.loopIndex = 0;
-  //             }
-  //         }
-  //         console.log(this.loopIndex);
-  //         this.draw();
-  //         this.loopIndex++;
-  //     } else if (this.combatActions.block) {
-  //         if (this.combatActionsAnimationStarted.block === false) {
-  //             this.combatActionsAnimationStarted.block = true;
-  //             this.cooldowns.block = 100;
-  //         } else if (this.cooldowns.block <= 0) {
-  //             this.combatActionsAnimationStarted.block = false;
-  //         } else if (Game.isGameDuration(60)) {
-  //             console.log('block down');
-  //             this.combatActions.block = false;
-  //         }
-  //         this.draw();
-  //     } else {
-  //         if (
-  //             this.newDirection != 'none' &&
-  //             (this.oldYbase != this.ypos || this.oldXbase != this.xpos)
-  //         ) {
-  //             if (this.newDirection != 'none' && Game.isGameDuration(10)) {
-  //                 this.draw();
-  //                 this.loopIndex++;
-  //             } else if (this.newDirection != this.direction) {
-  //                 this.loopIndex = 1;
-  //                 this.direction = this.newDirection;
-  //                 this.draw();
-  //                 this.loopIndex++;
-  //             }
-  //             if (this.loopIndex == 5 && this.newDirection != 'none') {
-  //                 this.loopIndex = 1;
-  //             }
-  //             this.counter++;
-  //             this.animationEnd = false;
-  //         } else {
-  //             this.loopIndex = 0;
-  //             this.draw();
-
-  //             this.animationEnd = true;
-  //         }
-  //     }
-
-  //     if (this.cooldown > 0) {
-  //         this.drawCooldown();
-  //     }
-  //     if (this.cooldowns.block > 0) {
-  //         this.drawBlock();
-  //     }
-  //     this.oldYbase = this.ypos;
-  //     this.oldXbase = this.xpos;
-  // }
 
   determineDirection() {
     this.newDirection = 'none';

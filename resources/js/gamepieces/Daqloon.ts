@@ -58,6 +58,7 @@ export class Daqloon extends MovingGameObject {
   hitMessageTimer = -1;
   animTimer = 0;
   wanderTimer = 0;
+  recentlyHit = false;
   // TODO: Fix object
   fighting_area = null;
 
@@ -105,28 +106,40 @@ export class Daqloon extends MovingGameObject {
     this.setDiameter();
     this.calculateNewPosition();
     this.setStartAnimationPoint('damage');
-    this.drawOnCanvas();
+    // Defer the paint to this entity's next draw() call (part of the unified
+    // GamePieces.drawWorld() pass) instead of painting immediately — an
+    // immediate paint here would be wiped by that frame's drawBackground().
+    this.recentlyHit = true;
 
     const damage = getRandomInteger(0, GamePieces.player.attackDamage);
     this.health -= damage;
     this.hitMessageTimer = 0;
+    // Scale by viewport.zoom (text layer isn't zoom-scaled like the world layer). Land the number beside the body, randomly to its left or right.
+
+    const { x, y } = this.calculateHitTextCoordinates();
     viewport.drawText(
       '18px Times New Roman',
       '#FFFFFF',
       damage,
-      this.drawX - GamePieces.player.xMovement * viewport.scale + 40,
-      this.drawY - GamePieces.player.yMovement * viewport.scale + 20,
-    );
-    this.drawHealthBar(
-      this.drawX - GamePieces.player.xMovement * viewport.scale,
-      this.drawY - GamePieces.player.yMovement * viewport.scale,
+      x * viewport.zoom,
+      y * viewport.zoom,
+      true,
     );
     if (this.health <= 0) {
       this.spriteXIndex = 0;
       this.dead = true;
     }
   }
+  calculateHitTextCoordinates() {
+    let leftOrRightOf = getRandomInteger(0, 1) === 0 ? -1 : 1;
+    let middleX = this.drawX - GamePieces.player.xMovement + this.width / 2;
+    let x =
+      middleX +
+      leftOrRightOf * getRandomInteger(this.width / 3, this.width / 2);
+    let y = this.drawY - GamePieces.player.yMovement + this.height / 3;
 
+    return { x, y };
+  }
   locater() {
     let direction = 'Located ';
     // Find locater;
@@ -167,7 +180,7 @@ export class Daqloon extends MovingGameObject {
   }
 
   public drawOnCanvas() {
-    viewport.drawSprite(
+    viewport.drawWorldSprite(
       this.sprite,
       this.spriteXIndex * 32,
       this.spriteYIndex * 32,
@@ -178,12 +191,13 @@ export class Daqloon extends MovingGameObject {
       this.width,
       this.height,
     );
-    if (GamePieces.player.attackedBy === this.id) {
+    if (GamePieces.player.attackedBy === this.id || this.recentlyHit) {
       this.locater();
       this.drawHealthBar(
         this.drawX - GamePieces.player.xMovement * viewport.scale,
         this.drawY - GamePieces.player.yMovement * viewport.scale,
       );
+      this.recentlyHit = false;
     }
     if (this.hitMessageTimer !== -1) {
       this.hitMessageTimer += Game.properties.delta;
@@ -219,7 +233,7 @@ export class Daqloon extends MovingGameObject {
           viewport.height / 2,
         );
       } else {
-        GamePieces.player.takeDamage(0);
+        GamePieces.player.takeDamage(5);
       }
     }
     // If health is over 10 calculateMovement
@@ -262,8 +276,10 @@ export class Daqloon extends MovingGameObject {
       !this.spawn
     ) {
       this.animTimer = 0;
-      // Set start xIndex for attack animation
-      if (this.spriteXIndex < 5) {
+      // Set start xIndex for attack animation. The > 6 guard catches a stray
+      // index (e.g. 7, left by the damage frame) so it restarts the attack
+      // cleanly instead of incrementing past the sheet forever.
+      if (this.spriteXIndex < 5 || this.spriteXIndex > 6) {
         this.spriteXIndex = 5;
         setTimeout(() => {
           this.cooldown = false;
@@ -307,7 +323,6 @@ export class Daqloon extends MovingGameObject {
   private calculateMovement() {
     const distanceX = GamePieces.player.xpos - this.x;
     const distanceY = GamePieces.player.ypos - this.y;
-    const debug = true;
 
     // Variables to determine how much a daqloon should move if it is able to
     const move = this.movementSpeed * Game.properties.delta;

@@ -22,6 +22,10 @@ export class Item {
   loopArray = [1, 4, 6, 4];
   checking: boolean;
   src: string;
+  diameterDown: number;
+  diameterUp: number;
+  diameterLeft: number;
+  diameterRight: number;
 
   constructor(drawX: number, drawY: number, src: string) {
     this.drawX = drawX;
@@ -29,6 +33,10 @@ export class Item {
     this.x = drawX + viewport.offsetX;
     this.y = drawY + viewport.offsetY;
     this.id = GamePieces.items.length + 1;
+    this.diameterDown = this.drawY + this.height;
+    this.diameterUp = this.drawY;
+    this.diameterLeft = this.drawX;
+    this.diameterRight = this.drawX + this.width;
 
     this.spriteObject = makeSprite(
       this.name,
@@ -42,7 +50,7 @@ export class Item {
   draw() {
     if (this.loopIndex > 3) this.loopIndex = 0;
 
-    viewport.drawSprite(
+    viewport.drawWorldSprite(
       this.spriteObject.image,
       0,
       0,
@@ -129,7 +137,7 @@ export class ItemShadowAnimation {
 
   draw() {
     if (this.indexX > 3) this.indexX = 0;
-    viewport.drawSprite(
+    viewport.drawWorldSprite(
       this.spriteObject.image,
       this.loopArray[this.indexX] * 32,
       0,

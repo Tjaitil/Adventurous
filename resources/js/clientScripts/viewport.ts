@@ -17,41 +17,29 @@ interface IViewport {
   playerCanvasX: number;
   playerCanvasY: number;
   elements: {
-    background: HTMLCanvasElement;
-    player: HTMLCanvasElement;
-    sprite: HTMLCanvasElement;
-    frontObjects: HTMLCanvasElement;
+    world: HTMLCanvasElement;
     text: HTMLCanvasElement;
   };
   layer: {
-    background: CanvasRenderingContext2D;
-    player: CanvasRenderingContext2D;
-    sprite: CanvasRenderingContext2D;
-    frontObjects: CanvasRenderingContext2D;
+    world: CanvasRenderingContext2D;
     text: CanvasRenderingContext2D;
   };
   setInitalDimensions(device: device);
   setup(layers: layers, device: device);
   adjustViewport(xbase: number, ybase: number, src: string);
-  init: () => void;
   drawBackground();
   drawPlayer();
   adjustViewport(xbase, ybase, src);
-  resetObjectLayer();
-  drawObject();
-  resetSpriteLayer();
-  drawSprite();
+  drawWorldImage();
+  drawWorldSprite();
   drawText();
   resetTextLayer();
+  resetHudLayer();
   drawDaqloonHealthbar();
-  checkViewportGamePieces();
 }
 
 interface layers {
-  background: HTMLCanvasElement;
-  player: HTMLCanvasElement;
-  sprite: HTMLCanvasElement;
-  frontObjects: HTMLCanvasElement;
+  world: HTMLCanvasElement;
   text: HTMLCanvasElement;
   hud: HTMLCanvasElement;
 }
@@ -81,18 +69,12 @@ export const viewport = {
   playerCanvasX: 0,
   playerCanvasY: 0,
   elements: {
-    background: null as HTMLCanvasElement,
-    player: null as HTMLCanvasElement,
-    sprite: null as HTMLCanvasElement,
-    frontObjects: null as HTMLCanvasElement,
+    world: null as HTMLCanvasElement,
     text: null as HTMLCanvasElement,
     hud: null as HTMLCanvasElement,
   },
   layer: {
-    background: null as CanvasRenderingContext2D,
-    player: null as CanvasRenderingContext2D,
-    sprite: null as CanvasRenderingContext2D,
-    frontObjects: null as CanvasRenderingContext2D,
+    world: null as CanvasRenderingContext2D,
     text: null as CanvasRenderingContext2D,
     hud: null as CanvasRenderingContext2D,
   },
@@ -132,16 +114,10 @@ export const viewport = {
     // Set layers and elements
     this.setInitalDimensions(device);
 
-    this.layer.background = layers.background.getContext('2d');
-    this.layer.background.fillStyle = 'black';
-    this.elements.background = layers.background;
+    this.layer.world = layers.world.getContext('2d');
+    this.layer.world.fillStyle = 'black';
+    this.elements.world = layers.world;
 
-    this.layer.player = layers.player.getContext('2d');
-    this.elements.player = layers.player;
-    this.layer.sprite = layers.sprite.getContext('2d');
-    this.elements.sprite = layers.sprite;
-    this.layer.frontObjects = layers.frontObjects.getContext('2d');
-    this.elements.frontObjects = layers.frontObjects;
     this.layer.text = layers.text.getContext('2d');
     this.elements.text = layers.text;
     this.layer.hud = layers.hud.getContext('2d');
@@ -155,24 +131,9 @@ export const viewport = {
       gameScreenContainer.style.height = this.height + 'px';
     }
 
-    this.elements.background.width = this.width;
-    this.elements.background.height = this.height;
-    this.elements.background.style.left = this.left + 'px';
-
-    this.elements.player.width = this.width;
-    this.elements.player.height = this.height;
-    this.elements.player.style.left = this.left + 'px';
-    this.elements.player.style.zIndex = '2';
-
-    this.elements.sprite.width = this.width;
-    this.elements.sprite.height = this.height;
-    this.elements.sprite.style.left = this.left + 'px';
-    this.elements.sprite.style.zIndex = '3';
-
-    this.elements.frontObjects.width = this.width;
-    this.elements.frontObjects.height = this.height;
-    this.elements.frontObjects.style.left = this.left + 'px';
-    this.elements.frontObjects.style.zIndex = '4';
+    this.elements.world.width = this.width;
+    this.elements.world.height = this.height;
+    this.elements.world.style.left = this.left + 'px';
 
     this.elements.text.width = this.width;
     this.elements.text.height = this.height;
@@ -189,10 +150,7 @@ export const viewport = {
     document.getElementById('canvas-border').style.height =
       this.height + 16 + 'px';
 
-    this.layer.background.scale(this.zoom, this.zoom);
-    this.layer.player.scale(this.zoom, this.zoom);
-    this.layer.sprite.scale(this.zoom, this.zoom);
-    this.layer.frontObjects.scale(this.zoom, this.zoom);
+    this.layer.world.scale(this.zoom, this.zoom);
     this.layer.hud.scale(this.zoom, this.zoom);
   },
   setImageWorldSrc(currentMap: string) {
@@ -204,13 +162,15 @@ export const viewport = {
     this.offsetX = xbase - this.playerCanvasX;
     this.offsetY = ybase - this.playerCanvasY;
   },
-  init() {
-    this.drawBackground(0, 0);
-    this.checkViewportGamePieces(true);
-  },
+  // Must remain the first draw call of every frame — it is the sole
+  // full-canvas clear for the merged world canvas.
   drawBackground(xMovement: number, yMovement: number) {
-    this.layer.background.fillRect(0, 0, this.width, this.height);
-    this.layer.background.drawImage(
+    // fillStyle must be re-set every frame: the merged world context is shared
+    // with drawDaqloonHealthbar(), which leaves fillStyle as 'red'. Without this
+    // the full-canvas fillRect below paints the map edges red instead of black.
+    this.layer.world.fillStyle = 'black';
+    this.layer.world.fillRect(0, 0, this.width, this.height);
+    this.layer.world.drawImage(
       this.worldImage,
       this.offsetX + xMovement,
       this.offsetY + yMovement,
@@ -222,59 +182,38 @@ export const viewport = {
       this.height,
     );
   },
+  // canvasSprite.spriteX/spriteY are source-rect coordinates (matches
+  // drawWorldSprite's meaning, not drawWorldImage's destination coordinates).
   drawPlayer(canvasSprite: CanvasSprite) {
+    this.drawWorldSprite(
+      canvasSprite.img,
+      canvasSprite.spriteX,
+      canvasSprite.spriteY,
+      canvasSprite.sWidth,
+      canvasSprite.sHeight,
+      this.playerCanvasX,
+      this.playerCanvasY,
+      canvasSprite.width,
+      canvasSprite.height,
+    );
+  },
+  // spriteX/spriteY here are destination coordinates (5-arg drawImage form) —
+  // NOT source-rect coordinates like drawWorldSprite's spriteX/spriteY.
+  drawWorldImage(img, spriteX, spriteY, width, height) {
     try {
-      this.layer.player.drawImage(
-        canvasSprite.img,
-        canvasSprite.spriteX,
-        canvasSprite.spriteY,
-        canvasSprite.sWidth,
-        canvasSprite.sHeight,
-        this.playerCanvasX,
-        this.playerCanvasY,
-        canvasSprite.width,
-        canvasSprite.height,
-      );
-    } catch (error: unknown) {
-      throw new Error(
-        `Error drawing player sprite ${canvasSprite.img.src}: ${error instanceof Error ? error.message : String(error)}`,
-      );
-    }
-  },
-  resetPlayerLayer() {
-    this.layer.player.clearRect(0, 0, this.width, this.height);
-  },
-  resetObjectLayer() {
-    this.layer.frontObjects.clearRect(0, 0, this.width, this.height);
-  },
-  drawObject(layer, img, spriteX, spriteY, width, height) {
-    try {
-      if (!['background', 'frontObjects'].includes(layer)) return false;
-      if (layer === 'background') {
-        this.layer.background.drawImage(img, spriteX, spriteY, width, height);
-      } else if (layer === 'frontObjects') {
-        if (!img.src.includes('/.png')) {
-          this.layer.frontObjects.drawImage(
-            img,
-            spriteX,
-            spriteY,
-            width,
-            height,
-          );
-        }
+      if (!img.src.includes('/.png')) {
+        this.layer.world.drawImage(img, spriteX, spriteY, width, height);
       }
     } catch (error: unknown) {
       throw new Error(
-        `Error drawing object ${img.src} on layer ${layer}: ${error instanceof Error ? error.message : String(error)}`,
+        `Error drawing object ${img.src} on the world layer: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
   },
-  resetSpriteLayer() {
-    this.layer.sprite.clearRect(0, 0, this.width, this.height);
-  },
-  drawSprite(img, spriteX, spriteY, sWidth, sHeight, x, y, width, height) {
+  // spriteX/spriteY here are source-rect coordinates (9-arg drawImage form).
+  drawWorldSprite(img, spriteX, spriteY, sWidth, sHeight, x, y, width, height) {
     try {
-      this.layer.sprite.drawImage(
+      this.layer.world.drawImage(
         img,
         spriteX,
         spriteY,
@@ -287,7 +226,7 @@ export const viewport = {
       );
     } catch (error: unknown) {
       throw new Error(
-        `Error drawing sprite ${img.src} on layer sprite: ${error instanceof Error ? error.message : String(error)}`,
+        `Error drawing sprite ${img.src} on the world layer: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
   },
@@ -304,17 +243,20 @@ export const viewport = {
   resetTextLayer() {
     this.layer.text.clearRect(0, 0, this.width, this.height);
   },
+  resetHudLayer() {
+    this.layer.hud.clearRect(0, 0, this.width, this.height);
+  },
   drawAttackCoolDown(cooldown) {
-    this.layer.player.fillStyle = 'orange';
-    this.layer.player.fillRect(10, 60, 100 - (100 - cooldown), 10);
+    this.layer.hud.fillStyle = 'orange';
+    this.layer.hud.fillRect(10, 60, 100 - (100 - cooldown), 10);
   },
   drawBlockCoolDown(cooldown) {
-    this.layer.player.fillStyle = 'red';
-    this.layer.player.fillRect(10, 90, 100 - (100 - cooldown), 10);
+    this.layer.hud.fillStyle = 'red';
+    this.layer.hud.fillRect(10, 90, 100 - (100 - cooldown), 10);
   },
   drawDaqloonHealthbar(fillstyle, x, y, width, height) {
-    this.layer.sprite.fillStyle = fillstyle;
-    this.layer.sprite.fillRect(x, y, width, height);
+    this.layer.world.fillStyle = fillstyle;
+    this.layer.world.fillRect(x, y, width, height);
   },
 };
 

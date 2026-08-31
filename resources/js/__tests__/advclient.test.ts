@@ -30,9 +30,7 @@ vi.mock('@/clientScripts/gamePieces', () => ({
       collisionCheck: vi.fn(),
     },
     init: vi.fn(),
-    drawStaticPieces: vi.fn(),
-    drawDaqloons: vi.fn(),
-    checkViewportGamePieces: vi.fn(),
+    drawWorld: vi.fn(),
     reset: vi.fn(),
     loadAssets: vi.fn(),
   },
@@ -43,7 +41,7 @@ vi.mock('@/clientScripts/pause', () => ({
 vi.mock('@/clientScripts/viewport', () => ({
   default: {
     zoom: 1.2,
-    resetSpriteLayer: vi.fn(),
+    resetHudLayer: vi.fn(),
     drawBackground: vi.fn(),
     adjustViewport: vi.fn(),
     setup: vi.fn(),

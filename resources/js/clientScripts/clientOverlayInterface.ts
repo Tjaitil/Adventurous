@@ -46,8 +46,7 @@ export class ClientOverlayInterface {
    * @deprecated Use gameEventbus.emit('RENDER_BUILDING') instead
    */
   public static show(content: string | HTMLElement, sidebar = true) {
-    this.outerContainer.style.top =
-      viewport.elements.background.offsetTop + 'px';
+    this.outerContainer.style.top = viewport.elements.world.offsetTop + 'px';
     this.shadowContainer.style.visibility = 'visible';
     this.outerContainer.style.visibility = 'visible';
 
