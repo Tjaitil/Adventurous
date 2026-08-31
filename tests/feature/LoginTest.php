@@ -37,7 +37,7 @@ class LoginTest extends TestCase
 
         $response->assertSessionHas('_token');
         $response->assertStatus(302);
-        $response->assertRedirect('/main');
+        $response->assertRedirect('/client');
     }
 
     #[Group('authentication')]
