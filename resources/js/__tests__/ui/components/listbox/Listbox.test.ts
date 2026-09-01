@@ -68,4 +68,82 @@ describe('ListboxRoot + ListboxItem', () => {
     expect(options[0].attributes('tabindex')).toBe('0');
     expect(options[1].attributes('tabindex')).toBe('-1');
   });
+
+  test('left/right do nothing in the default "list" layout', async () => {
+    const wrapper = mountListbox();
+
+    const listbox = wrapper.find('[role="listbox"]');
+    // reka-ui auto-highlights the first item shortly after mount, independent
+    // of any keypress, so establish a known, keypress-driven position first.
+    await listbox.trigger('keydown', { key: 'ArrowDown' });
+    await listbox.trigger('keydown', { key: 'ArrowDown' });
+
+    const options = wrapper.findAll('[role="option"]');
+    expect(options[1].attributes('tabindex')).toBe('0');
+
+    await listbox.trigger('keydown', { key: 'ArrowRight' });
+
+    expect(options[1].attributes('tabindex')).toBe('0');
+    expect(options[2].attributes('tabindex')).toBe('-1');
+  });
+});
+
+describe('ListboxRoot layout="grid"', () => {
+  const gridItems = ['a', 'b', 'c', 'd', 'e', 'f'];
+
+  function mountGridListbox(columns: number, modelValue: string | null = null) {
+    return mount(ListboxRoot, {
+      props: { modelValue, 'onUpdate:modelValue': () => {}, layout: 'grid', columns },
+      slots: {
+        default: () =>
+          gridItems.map(item => h(ListboxItem, { key: item, value: item }, () => item)),
+      },
+    });
+  }
+
+  test('ArrowRight/ArrowLeft still move by one item, same as a list', async () => {
+    const wrapper = mountGridListbox(3);
+
+    const listbox = wrapper.find('[role="listbox"]');
+    await listbox.trigger('keydown', { key: 'ArrowRight' });
+    await listbox.trigger('keydown', { key: 'ArrowRight' });
+
+    const options = wrapper.findAll('[role="option"]');
+    expect(options[1].attributes('tabindex')).toBe('0');
+  });
+
+  test('ArrowDown moves the highlight to the same column, one row down', async () => {
+    const wrapper = mountGridListbox(3);
+
+    const listbox = wrapper.find('[role="listbox"]');
+    await listbox.trigger('keydown', { key: 'ArrowDown' }); // highlights index 0 ("a")
+    await listbox.trigger('keydown', { key: 'ArrowDown' }); // moves to index 3 ("d")
+
+    const options = wrapper.findAll('[role="option"]');
+    expect(options[3].attributes('tabindex')).toBe('0');
+  });
+
+  test('ArrowUp moves the highlight to the same column, one row up', async () => {
+    const wrapper = mountGridListbox(3);
+
+    const listbox = wrapper.find('[role="listbox"]');
+    await listbox.trigger('keydown', { key: 'ArrowDown' }); // index 0 ("a")
+    await listbox.trigger('keydown', { key: 'ArrowDown' }); // index 3 ("d")
+    await listbox.trigger('keydown', { key: 'ArrowUp' }); // back to index 0 ("a")
+
+    const options = wrapper.findAll('[role="option"]');
+    expect(options[0].attributes('tabindex')).toBe('0');
+  });
+
+  test('ArrowDown does nothing past the last row', async () => {
+    const wrapper = mountGridListbox(3);
+
+    const listbox = wrapper.find('[role="listbox"]');
+    await listbox.trigger('keydown', { key: 'ArrowDown' }); // index 0
+    await listbox.trigger('keydown', { key: 'ArrowDown' }); // index 3
+    await listbox.trigger('keydown', { key: 'ArrowDown' }); // index 6 doesn't exist, no-op
+
+    const options = wrapper.findAll('[role="option"]');
+    expect(options[3].attributes('tabindex')).toBe('0');
+  });
 });
