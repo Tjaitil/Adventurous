@@ -42,7 +42,6 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'player' => fn () => $User->player,
             'userId' => fn () => $User->id,
-            'csrf_token' => fn () => csrf_token(),
         ];
     }
 }

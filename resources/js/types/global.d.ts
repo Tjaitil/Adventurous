@@ -5,7 +5,6 @@ declare module '@inertiajs/core' {
     sharedPageProps: {
       player: Player | null;
       userId: number | null;
-      csrf_token: string | null;
     };
   }
 }
