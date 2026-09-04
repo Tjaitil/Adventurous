@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -42,6 +42,7 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'player' => fn () => $User->player,
             'userId' => fn () => $User->id,
+            'csrf_token' => fn () => csrf_token(),
         ];
     }
 }

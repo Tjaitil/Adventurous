@@ -31,14 +31,28 @@
       </div>
       <div class="top_bar">
         <div class="top_bar">
-          <div class="top_a"><a href="/logout" aria-label="Logout"></a></div>
-          <div class="top_but"><a href="/logout">Logout</a></div>
+          <form @submit.prevent="handleLogout">
+            <div class="top_a">
+              <button type="submit" aria-label="Logout"></button>
+            </div>
+            <div class="top_but">
+              <button type="submit" class="cursor-pointer text-white">
+                Logout
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
   </header>
 </template>
+<script setup lang="ts">
+import { router } from '@inertiajs/vue3';
 
+const handleLogout = () => {
+  router.post('/logout');
+};
+</script>
 
 <style>
 #app-header {
