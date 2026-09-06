@@ -12,8 +12,8 @@ class InertiaErrorPageTest extends TestCase
     {
         parent::setUp();
         $this->withoutVite();
-        // Match production so the framework renders errors instead of re-throwing them.
-        config(['app.debug' => false]);
+        // The handler only swaps in the Inertia error page outside local/testing.
+        $this->app->detectEnvironment(fn () => 'production');
     }
 
     public function test_unknown_route_renders_inertia_error_page(): void
@@ -56,5 +56,15 @@ class InertiaErrorPageTest extends TestCase
 
         $response->assertRedirect('/login');
         $response->assertSessionHas('message', 'The page expired, please try again.');
+    }
+
+    public function test_local_environment_keeps_the_default_error_response(): void
+    {
+        $this->app->detectEnvironment(fn () => 'local');
+
+        $response = $this->get('/this-route-does-not-exist');
+
+        $response->assertStatus(404);
+        $response->assertDontSee('data-page', false);
     }
 }
