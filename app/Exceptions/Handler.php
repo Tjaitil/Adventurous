@@ -4,6 +4,8 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 class Handler extends ExceptionHandler
 {
@@ -30,5 +32,26 @@ class Handler extends ExceptionHandler
         $this->renderable(function (JsonException $e, Request $request) {
             $e->render($request);
         });
+    }
+
+    /**
+     * Render an exception into an HTTP response.
+     */
+    public function render($request, Throwable $e): Response
+    {
+        $response = parent::render($request, $e);
+        $status = $response->getStatusCode();
+
+        if (in_array($status, [403, 404, 500, 503], true)) {
+            return inertia('ErrorPage', ['status' => $status])
+                ->toResponse($request)
+                ->setStatusCode($status);
+        }
+
+        if ($status === 419) {
+            return back()->with('message', 'The page expired, please try again.');
+        }
+
+        return $response;
     }
 }

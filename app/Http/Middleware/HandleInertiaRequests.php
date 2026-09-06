@@ -40,8 +40,8 @@ class HandleInertiaRequests extends Middleware
 
         return [
             ...parent::share($request),
-            'player' => fn () => $User->player,
-            'userId' => fn () => $User->id,
+            'player' => fn () => $User?->player,
+            'userId' => fn () => $User?->id,
         ];
     }
 }
