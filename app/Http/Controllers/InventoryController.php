@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\InventoryResourceCollection;
-use App\Http\Responses\AdvResponse;
 use App\Models\Inventory;
 use App\Models\Item;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class InventoryController extends Controller
@@ -15,17 +13,6 @@ class InventoryController extends Controller
     public function __construct(
         private Inventory $inventory,
     ) {}
-
-    public function get(Request $request): JsonResponse
-    {
-        $Inventory = Inventory::with('item')->where('user_id', Auth::user()->id)->get();
-
-        $template = view('inventory')
-            ->with('Inventory', $Inventory)
-            ->render();
-
-        return (new AdvResponse)->addTemplate('inventory', $template)->toResponse($request);
-    }
 
     public function getItems(): InventoryResourceCollection
     {
