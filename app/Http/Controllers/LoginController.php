@@ -3,19 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Services\GameLogService;
-use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
+use Symfony\Component\HttpFoundation\Response;
 
 class LoginController extends Controller
 {
-    /**
-     * @return View|Factory|RedirectResponse
-     */
-    public function index()
+    public function index(): RedirectResponse|View
     {
         if (Auth::check()) {
             return redirect()->route('client');
@@ -24,10 +21,7 @@ class LoginController extends Controller
         return view('login')->with('title', 'Login');
     }
 
-    /**
-     * @return RedirectResponse
-     */
-    public function authenticate(Request $request)
+    public function authenticate(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
             'email' => ['required', 'email'],
@@ -49,10 +43,7 @@ class LoginController extends Controller
 
     }
 
-    /**
-     * @return Redirector|RedirectResponse
-     */
-    public function logOut(Request $request)
+    public function logOut(Request $request): Response
     {
         Auth::logout();
 
@@ -60,6 +51,6 @@ class LoginController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/login');
+        return Inertia::location('/login');
     }
 }

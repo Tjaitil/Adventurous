@@ -1,13 +1,13 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Controllers;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
 use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 
-class LoginTest extends TestCase
+class LoginControllerTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -56,6 +56,15 @@ class LoginTest extends TestCase
     public function test_user_without_session_is_redirected_to_login(): void
     {
         $response = $this->get('/advclient');
+
+        $response->assertStatus(302);
+        $response->assertRedirect('/login');
+    }
+
+    #[Group('authentication')]
+    public function test_logout_redirects_to_login(): void
+    {
+        $response = $this->actingAs($this->getRandomUser())->post('/logout');
 
         $response->assertStatus(302);
         $response->assertRedirect('/login');
