@@ -37,7 +37,21 @@ class LoginControllerTest extends TestCase
 
         $response->assertSessionHas('_token');
         $response->assertStatus(302);
-        $response->assertRedirect('/client');
+        $response->assertRedirect(route('client'));
+    }
+
+    #[Group('authentication')]
+    public function test_login_redirect_target_resolves(): void
+    {
+        $response = $this->post('/authenticate', [
+            'email' => $this->getRandomUser()->email,
+            'password' => 'password',
+        ]);
+
+        $response->assertRedirect('/advclient');
+
+        $this->followRedirects($response)
+            ->assertStatus(200);
     }
 
     #[Group('authentication')]

@@ -32,7 +32,7 @@ class LoginController extends Controller
             $request->session()->regenerate();
             GameLogService::addInfoLog('Welcome! Enjoy your stay!');
 
-            return redirect()->intended('client');
+            return redirect()->intended(route('client'));
         }
 
         return back()
