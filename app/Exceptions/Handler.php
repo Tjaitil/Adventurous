@@ -42,7 +42,7 @@ class Handler extends ExceptionHandler
         $response = parent::render($request, $e);
         $status = $response->getStatusCode();
 
-        if (in_array($status, [403, 404, 500, 503], true)) {
+        if (in_array($status, [403, 404, 500, 503], true) && config('app.debug') === false) {
             return inertia('ErrorPage', ['status' => $status])
                 ->toResponse($request)
                 ->setStatusCode($status);

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Support\Facades\Route;
 use Inertia\Testing\AssertableInertia;
 use Tests\TestCase;
 
@@ -11,6 +12,7 @@ class InertiaErrorPageTest extends TestCase
     {
         parent::setUp();
         $this->withoutVite();
+        // Match production so the framework renders errors instead of re-throwing them.
         config(['app.debug' => false]);
     }
 
@@ -33,13 +35,26 @@ class InertiaErrorPageTest extends TestCase
         $response->assertInertia(fn (AssertableInertia $page) => $page->component('ErrorPage'));
     }
 
-    public function test_debug_mode_keeps_default_error_response(): void
+    public function test_aborted_status_is_forwarded_to_the_error_page(): void
     {
-        config(['app.debug' => true]);
+        Route::middleware('web')->get('/__test/forbidden', fn () => abort(403));
 
-        $response = $this->get('/this-route-does-not-exist');
+        $response = $this->get('/__test/forbidden');
 
-        $response->assertStatus(404);
-        $this->assertStringNotContainsString('"component":"ErrorPage"', (string) $response->getContent());
+        $response->assertStatus(403);
+        $response->assertInertia(fn (AssertableInertia $page) => $page
+            ->component('ErrorPage')
+            ->where('status', 403)
+        );
+    }
+
+    public function test_expired_page_redirects_back_with_a_message(): void
+    {
+        Route::middleware('web')->get('/__test/expired', fn () => abort(419));
+
+        $response = $this->from('/login')->get('/__test/expired');
+
+        $response->assertRedirect('/login');
+        $response->assertSessionHas('message', 'The page expired, please try again.');
     }
 }
