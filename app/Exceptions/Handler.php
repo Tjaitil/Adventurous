@@ -42,7 +42,10 @@ class Handler extends ExceptionHandler
         $response = parent::render($request, $e);
         $status = $response->getStatusCode();
 
-        if (! app()->environment(['local', 'testing']) && in_array($status, [403, 404, 500, 503], true)) {
+        $is404PagesWithoutInertia = in_array($status, [403, 404], true) && ! $request->inertia();
+        $isProductionErrorState = app()->isProduction() && in_array($status, [500, 503], true);
+
+        if ($is404PagesWithoutInertia || $isProductionErrorState) {
             return inertia('ErrorPage', ['status' => $status])
                 ->toResponse($request)
                 ->setStatusCode($status);
