@@ -36,6 +36,6 @@ if (! function_exists('auth_user')) {
 if (! function_exists('show_dev_tools')) {
     function show_dev_tools(): bool
     {
-        return Auth::user()->is_admin && app()->environment('local');
+        return (bool) Auth::user()?->is_admin && app()->environment('local');
     }
 }

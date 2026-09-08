@@ -1,9 +1,13 @@
 <template>
   <UApp>
-    <div id="app-layout" :class="{ 'has-aside': hasAsideContent }">
+    <div
+      id="app-layout"
+      :class="{ 'has-aside': hasAsideContent }"
+      class="min-h-screen"
+    >
       <AppHeader class="col-span-full" />
       <AppSection
-        class="row-start-2 max-h-[800px] min-h-[600px] px-2 py-2"
+        class="row-start-2 max-h-[800px] px-2 py-2"
         :class="hasAsideContent ? 'col-start-2' : 'col-span-full'"
       >
         <slot></slot>
