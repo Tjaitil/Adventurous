@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Exceptions;
 
-use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Support\Facades\Route;
 use Inertia\Testing\AssertableInertia;
 use RuntimeException;
@@ -16,10 +15,9 @@ class ExceptionHandlerTest extends TestCase
         $this->withoutVite();
     }
 
-    public function test_not_found_always_renders_the_inertia_error_page(): void
+    public function test_not_found_renders_the_inertia_error_page_in_production(): void
     {
-        // 404/403 use the Inertia page even during local development.
-        $this->app->detectEnvironment(fn () => 'local');
+        $this->app->detectEnvironment(fn () => 'production');
 
         $response = $this->get('/this-route-does-not-exist');
 
@@ -30,8 +28,19 @@ class ExceptionHandlerTest extends TestCase
         );
     }
 
-    public function test_forbidden_renders_the_inertia_error_page(): void
+    public function test_not_found_keeps_the_default_page_outside_production(): void
     {
+        $this->app->detectEnvironment(fn () => 'local');
+
+        $response = $this->get('/this-route-does-not-exist');
+
+        $response->assertStatus(404);
+        $response->assertDontSee('data-page="', false);
+    }
+
+    public function test_forbidden_renders_the_inertia_error_page_in_production(): void
+    {
+        $this->app->detectEnvironment(fn () => 'production');
         Route::middleware('web')->get('/__test/forbidden', fn () => abort(403));
 
         $response = $this->get('/__test/forbidden');
@@ -43,34 +52,17 @@ class ExceptionHandlerTest extends TestCase
         );
     }
 
-    public function test_inertia_requests_do_not_receive_the_inertia_error_page(): void
+    public function test_error_page_renders_for_guests_in_production(): void
     {
-        // An Inertia XHR that 404s/403s is left for the Inertia client to handle
-        // (a full-page visit); it must never get the ErrorPage component served
-        // back inside the Inertia payload.
-        Route::middleware('web')->get('/__test/forbidden', fn () => abort(403));
+        $this->app->detectEnvironment(fn () => 'production');
 
-        $version = (string) app(HandleInertiaRequests::class)->version(request());
-        $headers = ['X-Inertia' => 'true', 'X-Inertia-Version' => $version];
-
-        $notFound = $this->get('/this-route-does-not-exist', $headers);
-        $notFound->assertStatus(404);
-        $notFound->assertDontSee('data-page="', false);
-
-        $forbidden = $this->get('/__test/forbidden', $headers);
-        $forbidden->assertStatus(403);
-        $forbidden->assertDontSee('data-page="', false);
-    }
-
-    public function test_error_page_renders_for_guests(): void
-    {
         $response = $this->get('/advclient/does-not-exist');
 
         $response->assertStatus(404);
         $response->assertInertia(fn (AssertableInertia $page) => $page->component('ErrorPage'));
     }
 
-    public function test_server_errors_render_the_inertia_error_page_outside_local(): void
+    public function test_server_errors_render_the_inertia_error_page_in_production(): void
     {
         $this->app->detectEnvironment(fn () => 'production');
         Route::middleware('web')->get('/__test/boom', fn () => throw new RuntimeException('boom'));
@@ -84,7 +76,7 @@ class ExceptionHandlerTest extends TestCase
         );
     }
 
-    public function test_server_errors_keep_the_default_page_during_local_development(): void
+    public function test_server_errors_keep_the_default_page_outside_production(): void
     {
         $this->app->detectEnvironment(fn () => 'local');
         Route::middleware('web')->get('/__test/boom', fn () => throw new RuntimeException('boom'));
