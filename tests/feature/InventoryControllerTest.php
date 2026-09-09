@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 
-class InventoryRoutesTest extends TestCase
+class InventoryControllerTest extends TestCase
 {
     public function test_get_prices_endpoint(): void
     {

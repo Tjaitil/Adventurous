@@ -1,6 +1,6 @@
 <?php
 
-namespace App\tests;
+namespace Tests\Feature\Controllers;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use App\Enums\SkillNames;
@@ -13,7 +13,7 @@ use App\Models\UserLevels;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class WorkforceLodgeTest extends TestCase
+class WorkforceLodgeControllerTest extends TestCase
 {
     use RefreshDatabase;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\tests;
+namespace Tests\Feature\Controllers;
 
 use App\Models\Item;
 use App\Models\TravelBureauCart;
@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 
-class TravelBureauTest extends TestCase
+class TravelBureauControllerTest extends TestCase
 {
     use RefreshDatabase;
 

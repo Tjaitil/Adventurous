@@ -1,6 +1,6 @@
 <?php
 
-namespace App\tests;
+namespace Tests\Feature;
 
 use App\Models\HealingItem;
 use App\Models\Hunger;
@@ -8,7 +8,7 @@ use App\Models\Item;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class HungerTest extends TestCase
+class HungerControllerTest extends TestCase
 {
     use RefreshDatabase;
 

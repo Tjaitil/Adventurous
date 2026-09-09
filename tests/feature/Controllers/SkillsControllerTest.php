@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Feature\Events;
+namespace Tests\Feature\Controllers;
 
 use App\Enums\SkillNames;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class UpdateSkillsTest extends TestCase
+class SkillsControllerTest extends TestCase
 {
     use RefreshDatabase;
 

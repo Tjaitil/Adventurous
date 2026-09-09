@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use Inertia\Testing\AssertableInertia;
 use Tests\TestCase;
 
-class AdvClientRouteTest extends TestCase
+class AdvclientControllerTest extends TestCase
 {
     protected function setUp(): void
     {

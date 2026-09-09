@@ -1,6 +1,6 @@
 <?php
 
-namespace App\tests;
+namespace Tests\Feature\Controllers;
 
 use App\Models\Item;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 
-class ZinsStoreTest extends TestCase
+class ZinsstoreControllerTest extends TestCase
 {
     use RefreshDatabase;
 

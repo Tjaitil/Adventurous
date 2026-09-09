@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Buildings;
+namespace Tests\Feature\Controllers;
 
 use App\Models\ArmoryItemsData;
 use App\Models\Inventory;
@@ -11,7 +11,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
-class ArmoryTest extends TestCase
+class ArmoryControllerTest extends TestCase
 {
     use RefreshDatabase;
 

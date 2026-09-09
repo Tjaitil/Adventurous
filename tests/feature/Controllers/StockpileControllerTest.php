@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Buildings;
+namespace Tests\Feature\Controllers;
 
 use App\Models\Item;
 use App\Models\Stockpile;
@@ -8,7 +8,7 @@ use App\Models\UserData;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class StockpileTest extends TestCase
+class StockpileControllerTest extends TestCase
 {
     use RefreshDatabase;
 
