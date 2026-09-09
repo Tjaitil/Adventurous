@@ -1,14 +1,14 @@
 <?php
 
-namespace Tests\Feature\Buildings;
+namespace Tests\Feature\Controllers;
 
+use App\Models\ArcheryShopItem;
 use App\Models\Item;
-use App\Models\SmithyItem;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 
-class SmithyTest extends TestCase
+class ArcheryShopControllerTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -19,36 +19,33 @@ class SmithyTest extends TestCase
         $this->actingAs($this->RandomUser);
     }
 
-    public function test_smithy_route(): void
+    public function test_archeryshop_route(): void
     {
-        $response = $this->get('/smithy');
+        $response = $this->get('/archeryshop');
 
         $response->assertStatus(200);
     }
 
     public function test_can_get_store(): void
     {
-        $response = $this->get('/smithy/store');
+        $response = $this->get('/archeryshop/get');
 
         $response->assertStatus(200);
-        $response->assertJsonStructure(([
-            'data' => [
-                'store_items',
-            ],
-        ]));
+
+        $response->json();
     }
 
     #[Group('store-purchase')]
-    public function test_can_smith_item(): void
+    public function test_can_fletch_item(): void
     {
-        $SmithyItem = SmithyItem::inRandomOrder()->limit(1)->first();
-        if (! $SmithyItem instanceof SmithyItem) {
-            $this->fail('No SmithyItem found');
+        $ArcheryShopItem = ArcheryShopItem::inRandomOrder()->limit(1)->first();
+        if (! $ArcheryShopItem instanceof ArcheryShopItem) {
+            $this->fail('No ArcheryShopItem found');
         }
 
-        $RequiredItems = $SmithyItem->requiredItems;
+        $RequiredItems = $ArcheryShopItem->requiredItems;
 
-        foreach ($SmithyItem->skillRequirements as $key => $skillRequirement) {
+        foreach ($ArcheryShopItem->skillRequirements as $key => $skillRequirement) {
             if ($skillRequirement->skill === 'miner') {
                 $this->setMinerLevel($skillRequirement->level);
             }
@@ -60,10 +57,10 @@ class SmithyTest extends TestCase
             $this->insertItemToInventory($this->RandomUser, $RequiredItem->required_item, ($RequiredItem->amount * $amount) + 2);
         }
 
-        $this->insertCurrencyToInventory($this->RandomUser, $SmithyItem->store_value * $amount);
+        $this->insertCurrencyToInventory($this->RandomUser, $ArcheryShopItem->store_value * $amount);
 
-        $response = $this->post('/smithy/smith', [
-            'item' => $SmithyItem->item,
+        $response = $this->post('/archeryshop/fletch', [
+            'item' => $ArcheryShopItem->item,
             'amount' => $amount,
         ]);
 
@@ -72,8 +69,8 @@ class SmithyTest extends TestCase
 
         $this->assertDatabaseHas('inventory', [
             'user_id' => $this->RandomUser->id,
-            'item_id' => Item::where('name', $SmithyItem->item)->value('item_id'),
-            'amount' => $amount * $SmithyItem->item_multiplier,
+            'item_id' => Item::where('name', $ArcheryShopItem->item)->value('item_id'),
+            'amount' => $amount * $ArcheryShopItem->item_multiplier,
         ]);
 
         foreach ($RequiredItems as $key => $RequiredItem) {

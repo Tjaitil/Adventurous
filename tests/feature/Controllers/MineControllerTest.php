@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Buildings;
+namespace Tests\Feature\Controllers;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use App\Enums\GameEvents;
@@ -15,7 +15,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\SkillTestCase;
 use Tests\Utils\Traits\ExperienceAssertions;
 
-class MineTest extends SkillTestCase
+class MineControllerTest extends SkillTestCase
 {
     use RefreshDatabase, ExperienceAssertions;
 

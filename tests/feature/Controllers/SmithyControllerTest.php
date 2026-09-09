@@ -1,14 +1,14 @@
 <?php
 
-namespace Tests\Feature\Buildings;
+namespace Tests\Feature\Controllers;
 
-use App\Models\ArcheryShopItem;
 use App\Models\Item;
+use App\Models\SmithyItem;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 
-class ArcheryShopTest extends TestCase
+class SmithyControllerTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -31,21 +31,24 @@ class ArcheryShopTest extends TestCase
         $response = $this->get('/smithy/store');
 
         $response->assertStatus(200);
-
-        $response->json();
+        $response->assertJsonStructure(([
+            'data' => [
+                'store_items',
+            ],
+        ]));
     }
 
     #[Group('store-purchase')]
-    public function test_can_fletch_item(): void
+    public function test_can_smith_item(): void
     {
-        $ArcheryShopItem = ArcheryShopItem::inRandomOrder()->limit(1)->first();
-        if (! $ArcheryShopItem instanceof ArcheryShopItem) {
-            $this->fail('No ArcheryShopItem found');
+        $SmithyItem = SmithyItem::inRandomOrder()->limit(1)->first();
+        if (! $SmithyItem instanceof SmithyItem) {
+            $this->fail('No SmithyItem found');
         }
 
-        $RequiredItems = $ArcheryShopItem->requiredItems;
+        $RequiredItems = $SmithyItem->requiredItems;
 
-        foreach ($ArcheryShopItem->skillRequirements as $key => $skillRequirement) {
+        foreach ($SmithyItem->skillRequirements as $key => $skillRequirement) {
             if ($skillRequirement->skill === 'miner') {
                 $this->setMinerLevel($skillRequirement->level);
             }
@@ -57,10 +60,10 @@ class ArcheryShopTest extends TestCase
             $this->insertItemToInventory($this->RandomUser, $RequiredItem->required_item, ($RequiredItem->amount * $amount) + 2);
         }
 
-        $this->insertCurrencyToInventory($this->RandomUser, $ArcheryShopItem->store_value * $amount);
+        $this->insertCurrencyToInventory($this->RandomUser, $SmithyItem->store_value * $amount);
 
-        $response = $this->post('/archeryshop/fletch', [
-            'item' => $ArcheryShopItem->item,
+        $response = $this->post('/smithy/smith', [
+            'item' => $SmithyItem->item,
             'amount' => $amount,
         ]);
 
@@ -69,8 +72,8 @@ class ArcheryShopTest extends TestCase
 
         $this->assertDatabaseHas('inventory', [
             'user_id' => $this->RandomUser->id,
-            'item_id' => Item::where('name', $ArcheryShopItem->item)->value('item_id'),
-            'amount' => $amount * $ArcheryShopItem->item_multiplier,
+            'item_id' => Item::where('name', $SmithyItem->item)->value('item_id'),
+            'amount' => $amount * $SmithyItem->item_multiplier,
         ]);
 
         foreach ($RequiredItems as $key => $RequiredItem) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\tests;
+namespace Tests\Feature\Controllers;
 
 use App\Models\HealingItem;
 use App\Models\Item;
@@ -8,7 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 
-class BakeryTest extends TestCase
+class BakeryControllerTest extends TestCase
 {
     use RefreshDatabase;
 

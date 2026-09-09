@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests\Feature\Stores;
+
 use App\Http\Resources\StoreItemResource;
 use App\Http\Resources\StoreResource;
 use App\Stores\SmithyStore;

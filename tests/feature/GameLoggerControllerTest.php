@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use Tests\Support\UserTrait;
 use Tests\TestCase;
 
-class GameLoggerRoutesTest extends TestCase
+class GameLoggerControllerTest extends TestCase
 {
     use UserTrait;
 
