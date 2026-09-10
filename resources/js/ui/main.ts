@@ -3,6 +3,8 @@ import { getLanguageBundle } from './localeSetup';
 
 export const i18n = createI18n({
   locale: 'en',
+  fallbackLocale: 'en',
+  fallbackFormat: true,
   messages: { en: await getLanguageBundle() },
   legacy: false,
   missingWarn: false,
