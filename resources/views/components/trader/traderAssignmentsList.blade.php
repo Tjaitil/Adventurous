@@ -26,7 +26,7 @@
                     {{ ' X ' . $value->assignment_amount }}
                 </span>
             </div>
-            <p @class(['not-able-color' => $not_current_location])>
+            <p @class(['text-not-able' => $not_current_location])>
                 {{ ucfirst($value->base) . ' ' . '->' . ' ' . ucfirst($value->destination) }}
             </p>
             <x-skillIcon :skill="\App\Enums\SkillNames::TRADER->value" :show-able-color="true" :level="$value->type->required_level"

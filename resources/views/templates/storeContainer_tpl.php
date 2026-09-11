@@ -32,12 +32,12 @@ function createStoreContainer($data, $options = [])
                                 echo $key['store_value']; ?>
                             </span>
                             <?php if ($key['adjusted_store_value'] > 0) { ?>
-                                <span class="able-color">
+                                <span class="text-able">
                                     <?php echo $key['adjusted_store_value']; ?>
                                 </span>
                             <?php } ?>
                             <span class="
-                                    <?php /*echo ($key['adjusted_store_value'] >  0) ? "able-color" : "not-able-color" ?>
+                                    <?php /*echo ($key['adjusted_store_value'] >  0) ? "text-able" : "text-not-able" ?>
                                 ">
                                 <?php echo (isset($key['adjusted_store_value']) && $key['adjusted_store_value'] >  0) ?
                                     "- " . $key['adjusted_store_value']

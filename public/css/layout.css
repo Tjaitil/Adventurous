@@ -8,8 +8,6 @@
   --darkTextColor: black;
   --borderColor: #4c341a;
   --borderColorDark: #1f180f;
-  --errorTextColor: #db1f1f;
-  --greenColor: #008000;
   --transitionDuration: 1.12;
   --filterAnimation: filter 0.3s ease-out;
   --newsZIndex: 12;
@@ -18,14 +16,6 @@ h1 {
   font-size: 36px;
 }
 
-.green-color,
-.able-color {
-  color: var(--greenColor);
-}
-
-.not-able-color {
-  color: var(--errorTextColor);
-}
 h4,
 h5,
 h6 {

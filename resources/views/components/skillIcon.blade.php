@@ -9,8 +9,8 @@
      */
 @endphp
 <p @class([
-    'not-able-color' => !$hasRequiredLevel && $showAbleColor,
-    'able-color' => $hasRequiredLevel && $showAbleColor,
+    'text-not-able' => !$hasRequiredLevel && $showAbleColor,
+    'text-able' => $hasRequiredLevel && $showAbleColor,
     'text-center',
 ])>
     <img {{ $attributes->class(['mx-auto', $size === 'medium' ? 'w-12 h-12' : 'w-8 h-8']) }}

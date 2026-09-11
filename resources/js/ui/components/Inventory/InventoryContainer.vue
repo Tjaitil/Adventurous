@@ -11,7 +11,7 @@
         <span
           id="inventory-status"
           :class="{
-            'not-able-color': inventoryStore.isInventoryFull,
+            'text-error': inventoryStore.isInventoryFull,
           }"
         >
           {{ inventoryStore.inventoryItems.length }} /

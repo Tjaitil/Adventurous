@@ -31,9 +31,9 @@ export const LevelManager = {
         break;
     }
     if (!hasRequiredLevel) {
-      uiElement.classList.add('not-able-color');
+      uiElement.classList.add('text-not-able');
     } else {
-      uiElement.classList.remove('not-able-color');
+      uiElement.classList.remove('text-not-able');
     }
   },
 };

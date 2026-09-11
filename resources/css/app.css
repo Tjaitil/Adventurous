@@ -5,6 +5,10 @@
 :root {
   --ui-radius: 0rem;
   --ui-text: black;
+  --text-error-color: var(--color-red-600);
+  --text-error-lighter: var(--color-red-500);
+  --text-success-color: var(--color-green-600);
+  --text-success-lighter: var(--color-green-500);
 }
 
 @theme static {
@@ -58,11 +62,32 @@
 }
 
 @utility text-success {
-  color: var(--color-green-600);
+  color: var(--text-success-color);
+}
+
+@utility text-success-lighter {
+  color: var(--text-success-lighter);
 }
 
 @utility text-error {
-  color: var(--color-red-600);
+  color: var(--text-error-color);
+}
+@utility text-error-lighter {
+  color: var(--text-error-lighter);
+}
+.green-color,
+.text-able {
+  color: var(--text-success-color);
+}
+.text-able-lighter {
+  color: var(--text-success-lighter);
+}
+
+.text-not-able {
+  color: var(--text-error-color);
+}
+.text-not-able-lighter {
+  color: var(--text-error-lighter);
 }
 .ucard-interactive:hover,
 .ucard-interactive:focus-visible {

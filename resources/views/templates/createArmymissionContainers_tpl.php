@@ -53,7 +53,7 @@ function checkLocation($location)
     if ($location === $_SESSION['gamedata']['location']) {
         return 'green-color';
     } else {
-        return 'not-able-color';
+        return 'text-not-able';
     }
 }
 
@@ -68,7 +68,7 @@ function checkWarriorLevel($difficulty)
 {
     $level = array("easy" => 5, "medium" => 20, "hard" => 34);
     if ($level[$difficulty] > $_SESSION['gamedata']['warrior']['level']) {
-        return 'not-able-color';
+        return 'text-not-able';
     } else {
         return 'green-color';
     }
