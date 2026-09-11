@@ -17,11 +17,11 @@
                 {{ $item->store_value }}
             </span>
             @if ($item->adjusted_difference > 0)
-                <span class="able-color">
+                <span class="text-able">
                     {{ $item->adjusted_store_value }}
                 </span>
             @elseif ($item->adjusted_difference < 0)
-                <span class="not-able-color">
+                <span class="text-not-able">
                     {{ $item->adjusted_store_value }}
                 </span>
             @endif

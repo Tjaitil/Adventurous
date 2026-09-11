@@ -81,9 +81,9 @@ export function checkInventoryStatus() {
   const inventoryStatusElement = document.getElementById('inventory-status');
   // Adjust color according to inventory status
   if (status) {
-    inventoryStatusElement.classList.add('not-able-color');
+    inventoryStatusElement.classList.add('text-not-able');
   } else {
-    inventoryStatusElement.classList.remove('not-able-color');
+    inventoryStatusElement.classList.remove('text-not-able');
   }
   return status;
 }
@@ -116,9 +116,9 @@ export class Inventory {
     const inventoryStatusElement = document.getElementById('inventory-status');
     // Adjust color according to inventory status
     if (status === 'full') {
-      inventoryStatusElement.classList.add('not-able-color');
+      inventoryStatusElement.classList.add('text-not-able');
     } else {
-      inventoryStatusElement.classList.remove('not-able-color');
+      inventoryStatusElement.classList.remove('text-not-able');
     }
   }
 
