@@ -24,6 +24,69 @@
                     The cost of changing profiency is charged 500
                     <img class="gold" src="<?php echo constant('ROUTE_IMG').'gold.png'; ?>">
                 </p>
+                <style type="text/css">
+                    .label-container {
+                        display: block;
+                        position: relative;
+                        cursor: pointer;
+                        -webkit-user-select: none;
+                        -moz-user-select: none;
+                        -ms-user-select: none;
+                        user-select: none;
+                    }
+
+                    .label-container input {
+                        position: absolute;
+                        opacity: 0;
+                        cursor: pointer;
+                        height: 0;
+                        width: 0;
+                    }
+
+                    .checkmark {
+                        position: relative;
+                        top: 0;
+                        left: 0;
+                        height: 20px;
+                        width: 20px;
+                        background-color: #eee;
+                        margin-left: 1rem;
+                        line-height: 100%;
+                        vertical-align: middle;
+                        display: inline-block;
+                    }
+
+                    .label-container:hover input ~ .checkmark {
+                        background-color: #ccc;
+                    }
+
+                    .label-container input:checked ~ .checkmark {
+                        background-color: #2196f3;
+                    }
+
+                    .checkmark:after {
+                        content: '';
+                        position: absolute;
+                        display: none;
+                    }
+
+                    .label-container input:checked ~ .checkmark:after {
+                        display: block;
+                        background-color: #2196f3;
+                    }
+
+                    .label-container .checkmark:after {
+                        left: 32%;
+                        top: 10%;
+                        width: 5px;
+                        height: 10px;
+                        border: solid white;
+                        border-width: 0 3px 3px 0;
+                        -webkit-transform: rotate(45deg);
+                        -ms-transform: rotate(45deg);
+                        transform: rotate(45deg);
+                    }
+                                    </style>
                 <label class="label-container mb-1">
                     Beware that you will lose profiency advantages when switching profiencies. <br>
                     Checkbox below must me checked in order to change profiency
