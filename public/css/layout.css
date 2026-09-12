@@ -38,6 +38,7 @@ section input:not([type='radio']):not([type='checkbox']):not(.custom-input) {
     box-shadow: 0 0 7px var(--borderColorDark);
   }
 }
+
 label {
   margin-inline: 0.5rem;
 }
