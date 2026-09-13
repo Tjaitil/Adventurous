@@ -39,21 +39,6 @@ section input:not([type='radio']):not([type='checkbox']):not(.custom-input) {
   }
 }
 
-.linkButton {
-  background-color: #f2e6d9;
-  border-radius: 5px;
-  border: 1px outset;
-  box-shadow: 1px 1px 1px 1px #372715;
-  padding: 10px 12px 10px 12px;
-  color: black;
-  font-weight: bold;
-  font-size: 13px;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-block;
-  height: 19px;
-}
-
 /** Tailwind doesn't support ridge border stylre */
 .border-ridge {
   border-style: ridge;
