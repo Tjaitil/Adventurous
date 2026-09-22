@@ -18162,28 +18162,6 @@
           "y": 0
         },
         {
-          "height": 0,
-          "id": 1420,
-          "name": "",
-          "rotation": 0,
-          "type": "figure",
-          "visible": false,
-          "width": 1216,
-          "x": 1984,
-          "y": 0
-        },
-        {
-          "height": 2496,
-          "id": 1421,
-          "name": "",
-          "rotation": 0,
-          "type": "figure",
-          "visible": false,
-          "width": 0,
-          "x": 3200,
-          "y": 0
-        },
-        {
           "gid": 39,
           "height": 32,
           "id": 1540,
@@ -26270,6 +26248,7 @@
           "x": 118,
           "y": 48
         },
+
         {
           "gid": 208,
           "height": 32,
@@ -26849,6 +26828,11 @@
               "name": "displayName",
               "type": "string",
               "value": ""
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "value": "stockpile"
             },
             {
               "name": "noCollision",
