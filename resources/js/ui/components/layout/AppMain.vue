@@ -1,11 +1,11 @@
 <template>
-  <section id="app-section">
+  <main id="app-main">
     <slot></slot>
-  </section>
+  </main>
 </template>
 
 <style scoped>
-#app-section {
+#app-main {
   /*background: radial-gradient(#f2e6d9 50%, #986834);*/
   /*background: radial-gradient(#a9753d 75%, #4b341b);*/
   background: radial-gradient(
