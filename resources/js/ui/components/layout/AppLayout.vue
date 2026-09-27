@@ -6,12 +6,12 @@
       class="min-h-screen"
     >
       <AppHeader class="col-span-full" />
-      <AppSection
+      <AppMain
         class="row-start-2 max-h-[800px] px-2 py-2"
         :class="hasAsideContent ? 'col-start-2' : 'col-span-full'"
       >
         <slot></slot>
-      </AppSection>
+      </AppMain>
       <aside
         v-if="hasAsideContent"
         class="relative z-20 col-span-1 col-start-1 row-start-2 max-h-[800px] text-white"
@@ -29,11 +29,11 @@
 <script setup lang="ts">
 import { computed, useSlots } from 'vue';
 import AppHeader from './AppHeader.vue';
-import AppSection from './AppSection.vue';
 import AppFooter from './AppFooter.vue';
+import AppMain from './AppMain.vue';
 
 const slots = useSlots();
-const hasAsideContent = computed(() => !!slots.aside);
+const hasAsideContent = computed(() => Boolean(slots.aside));
 
 defineSlots<{
   default(): unknown;
