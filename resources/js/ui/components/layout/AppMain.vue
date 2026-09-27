@@ -1,5 +1,5 @@
 <template>
-  <main id="app-main">
+  <main id="app-main" class="page-region">
     <slot></slot>
   </main>
 </template>

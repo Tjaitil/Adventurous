@@ -1,5 +1,5 @@
 <template>
-  <header id="app-header">
+  <header id="app-header" class="page-region">
     <div id="nav">
       <div class="top_bar">
         <div class="top_a"><a href="/main" aria-label="Main"></a></div>
@@ -59,12 +59,6 @@ const handleLogout = () => {
   /*grid-columns: 1 / 3;*/
   border-bottom: black thin;
   text-align: center;
-  display: block;
-  background: radial-gradient(
-    var(--layoutBgColor),
-    var(--layoutBgColorShadowPerc),
-    var(--layoutBgColorShadow)
-  );
   display: flex;
   justify-content: center;
   align-items: center;
