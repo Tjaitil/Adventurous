@@ -1,6 +1,7 @@
 <template>
   <div
-    class="bg-primary-800 h-full overflow-x-hidden px-2 pt-2 pr-6 text-white transition-all duration-200"
+    id="sidebar-section"
+    class="bg-h-full overflow-x-hidden px-2 pt-2 pr-6 transition-all duration-200"
     :class="expanded ? 'w-md' : 'w-full'"
   >
     <button
@@ -131,3 +132,9 @@ const expanded = ref(false);
 const store = useSkillsStore();
 store.setUserLevelsResource(initLevels);
 </script>
+<style scoped>
+#sidebar-section {
+  background: inherit;
+  color: inherit;
+}
+</style>
