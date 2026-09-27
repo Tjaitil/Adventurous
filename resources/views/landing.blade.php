@@ -16,7 +16,7 @@
     <section id="slot2" class="block h-screen snap-start">
         <div
             class="relative top-[50px] mx-auto h-52 w-1/2 rounded-lg bg-primary-400 p-1 text-center text-white shadow-lg shadow-black">
-            <img src="{{ asset('images/adventurous_logo.png') }}" />
+            <img class="size-16" src="{{ asset('images/adventurous_logo.png') }}" />
             <a href="/login" class="inline-block hover:bg-primary-200 border-outset mb-4 cursor-pointer rounded-md border-2 bg-primary-50 px-[12px] py-[10px] text-sm font-bold text-black shadow-xs shadow-amber-950">
                 Login
             </a>
