@@ -104,12 +104,3 @@ onMounted(async () => {
   await initGame(onError);
 });
 </script>
-<style scoped>
-section {
-  background: radial-gradient(
-    var(--layoutBgColor),
-    var(--layoutBgColorShadowPerc),
-    var(--layoutBgColorShadow)
-  );
-}
-</style>
