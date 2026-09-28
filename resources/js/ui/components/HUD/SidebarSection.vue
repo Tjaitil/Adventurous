@@ -1,7 +1,7 @@
 <template>
   <div
     id="sidebar-section"
-    class="bg-h-full overflow-x-hidden px-2 pt-2 pr-6 transition-all duration-200"
+    class="h-full overflow-x-hidden px-2 pt-2 pr-6 transition-all duration-200"
     :class="expanded ? 'w-md' : 'w-full'"
   >
     <button
