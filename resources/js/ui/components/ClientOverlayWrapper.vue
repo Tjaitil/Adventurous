@@ -2,7 +2,7 @@
 <template>
   <div>
     <div v-show="isOpen" id="news"></div>
-    <div v-show="isOpen" id="news_content" class="gap-x-2">
+    <div v-show="isOpen" id="news_content" class="app-surface gap-x-2">
       <img
         class="cont_exit absolute top-4 right-4"
         src="/images/exit.png"
@@ -149,11 +149,6 @@ const internalClose = () => {
   right: 0;
   position: absolute;
   margin: 0 auto;
-  background: radial-gradient(
-    var(--layoutBgColor),
-    var(--layoutBgColorShadowPerc),
-    var(--layoutBgColorShadow)
-  );
   z-index: var(--newsZIndex);
   width: 98%;
   padding: 16px;
