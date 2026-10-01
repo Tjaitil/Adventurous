@@ -76,14 +76,14 @@ export const itemTitle = {
     const menu = document.getElementById('item_tooltip');
     if (
       menu.children[0].children[0].innerHTML === item &&
-      !menu.classList.contains('invisible')
+      !menu.classList.contains('hidden')
     ) {
       return false;
     }
     // Insert item name at the first li
     menu.children[0].children[0].innerHTML = item;
     const clientRect = element?.getBoundingClientRect();
-    menu.classList.remove('invisible');
+    menu.classList.remove('hidden');
     // Declare menu top by measuring the positon from top of parent and also if inventory/stockpile is scrolled
     const menuFirstChild = <HTMLElement>menu.children[0];
     const textChild = <HTMLElement>menuFirstChild.children[0];
@@ -121,7 +121,7 @@ export const itemTitle = {
   },
   hideItemTooltip() {
     const menu = document.getElementById('item_tooltip');
-    menu.classList.add('invisible');
+    menu.classList.add('hidden');
   },
   hide() {
     this.hideItemTooltip();
