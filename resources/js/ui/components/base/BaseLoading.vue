@@ -4,7 +4,7 @@
       <img
         src="/images/loading.png"
         alt="loading icon"
-        class="loading-icon mx-auto h-12"
+        class="loading-icon mx-auto size-12"
       />
     </slot>
   </div>

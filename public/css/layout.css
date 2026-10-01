@@ -12,33 +12,6 @@
   --filterAnimation: filter 0.3s ease-out;
   --newsZIndex: 12;
 }
-h1 {
-  font-size: 36px;
-}
-
-h4,
-h5,
-h6 {
-  margin-bottom: 1rem;
-}
-
-body img {
-  image-rendering: -moz-crisp-edges;
-  image-rendering: -webkit-crisp-edges;
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
-}
-section input:not([type='radio']):not([type='checkbox']):not(.custom-input) {
-  background-color: #e5cdb3;
-  padding: 2px 2px 2px 8px;
-  margin: 3px;
-
-  &:focus-visible {
-    outline: 2px solid var(--borderColor);
-    box-shadow: 0 0 7px var(--borderColorDark);
-  }
-}
-
 /** Tailwind doesn't support ridge border stylre */
 .border-ridge {
   border-style: ridge;
@@ -74,17 +47,6 @@ section input:not([type='radio']):not([type='checkbox']):not(.custom-input) {
 .div_content_dark {
   background-color: var(--layoutBgColorDark);
   color: var(--textColor);
-}
-
-section a:visited {
-  text-decoration: none;
-}
-
-section img:not([class*='w-'], [width], .gold) {
-  width: 48px;
-  height: 48px;
-  box-sizing: border-box;
-  vertical-align: middle;
 }
 
 .button_disabled {
@@ -266,151 +228,9 @@ section img:not([class*='w-'], [width], .gold) {
   margin: 20px auto 10px auto;
   color: black;
 }
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  padding: 10px;
-  width: 10px;
-}
-
-@media all and (max-width: 1040px) {
-  section {
-    width: 97.4%;
-  }
-}
 
 @media all and (max-width: 830px) {
-  body {
-    margin: 10px 0% 0px 0%;
-    padding: 10px 3%;
-  }
-
   .item .item_amount {
     top: -54%;
   }
-
-  section {
-    min-height: unset;
-    width: 97.4%;
-    font-size: 11px;
-    grid-column: 1 / 3;
-  }
-
-  footer {
-    grid-column: 1 / 3;
-  }
-  #inventory {
-    /* Style added in general.js*/
-    right: 5px;
-    position: absolute;
-    height: 250px;
-    overflow-y: scroll;
-  }
 }
-
-@media only screen and (orientation: portrait) and (hover: none) {
-  html {
-    -webkit-transform: translateY(-100%) rotate(90deg);
-    transform: translateY(-100%) rotate(90deg);
-    -webkit-transform-origin: left bottom;
-    transform-origin: left bottom;
-  }
-}
-@keyframes rotate {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.loading-icon {
-  height: 32px;
-  width: 32px;
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
-  will-change: filter;
-  transition: filter 300ms;
-  animation: rotate 1.3s linear infinite;
-}
-
-/**
-* Legacy table styling kept for references
-
-section tbody tr:not(.sectionTableNoPseudo, .custom-tr):after {
-  content: '';
-  position: absolute;
-  left: 10%;
-  width: 80%;
-  height: 2px;
-  background-color: #5f4121;
-} 
-  
-section table:not(#game_messages, .noDisplayBlock, .custom-table),
-aside table {
-  margin: 10px 0px 0px 0px;
-  position: relative;
-  border-collapse: collapse;
-  display: inline-block;
-}
-
-section table td:not(.custom-td),
-th,
-section caption,
-aside caption,
-aside td {
-  padding: 8px;
-  background-color: #f2e6d9;
-}
-
-aside caption,
-aside td {
-  background-color: initial;
-}
-
-.table_required_multiple {
-  display: grid;
-  grid-template-columns: repeat(4, max-content);
-}
-
-section tbody tr:not(.sectionTableNoPseudo, .custom-tr):after {
-  content: '';
-  position: absolute;
-  left: 10%;
-  width: 80%;
-  height: 2px;
-  background-color: #5f4121;
-}
-
-section table:not(#game_messages, .custom-table) {
-  border: 8px ridge #5f4121;
-  border-radius: 5px;
-  position: relative;
-}
-
-section table:not(#game_messages, .custom-table)::after {
-  content: '';
-  border: 3px solid rgba(0, 0, 0, 0.6);
-  width: calc(100% + 4px);
-  height: calc(100% + 4px);
-  position: absolute;
-  display: block;
-  left: -5px;
-  top: -5px;
-  border-radius: 4px;
-}
-
-
-section table:not(#game_messages, .custom-table) > *,
-.div_content > * {
-  position: relative;
-  z-index: 1;
-}
-
-section table:not(.custom-table),
-section button {
-  margin-bottom: 5px;
-  box-sizing: border-box;
-}
-*/

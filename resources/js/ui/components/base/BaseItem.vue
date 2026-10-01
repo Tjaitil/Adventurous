@@ -105,10 +105,6 @@ const onMouseLeave = () => {
   position-try: flip-inline;
 }
 
-.item img {
-  image-rendering: pixelated;
-  image-rendering: -moz-crisp-edges;
-}
 .item-price-label {
   text-box-trim: trim-end;
 }

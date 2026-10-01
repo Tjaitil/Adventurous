@@ -8,7 +8,7 @@
     <div class="w-screen h-screen flex flex-row items-center justify-center">
         <div id="login"
             class="relative mx-auto w-1/2 rounded-lg bg-primary-400 p-1 text-center text-white shadow-lg shadow-black">
-            <img src="{{ asset('images/adventurous_logo.png') }}" />
+            <img class="size-16" src="{{ asset('images/adventurous_logo.png') }}" />
             <form method="post" action="/authenticate" class="flex flex-col items-center justify-center gap-3">
                 @csrf
                 <div class="max-w-md">

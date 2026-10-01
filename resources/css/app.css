@@ -131,6 +131,76 @@
   image-rendering: auto;
 }
 
+@layer base {
+  h1 {
+    font-size: 36px;
+  }
+
+  h4,
+  h5,
+  h6 {
+    margin-bottom: 1rem;
+  }
+
+  img {
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    padding: 10px;
+    width: 10px;
+  }
+
+  input:not([type='radio'], [type='checkbox'], .custom-input) {
+    background-color: #e5cdb3;
+    padding: 2px 2px 2px 8px;
+    margin: 3px;
+
+    &:focus-visible {
+      outline: 2px solid var(--borderColor);
+      box-shadow: 0 0 7px var(--borderColorDark);
+    }
+  }
+
+  img:not(
+      [class^='w-'],
+      [class*=' w-'],
+      [class^='size-'],
+      [class*=' size-'],
+      [width],
+      .gold
+    ) {
+    width: 48px;
+    height: 48px;
+    box-sizing: border-box;
+    vertical-align: middle;
+  }
+}
+
+@layer components {
+  .loading-icon {
+    height: 32px;
+    width: 32px;
+    will-change: filter;
+    transition: filter 300ms;
+    animation: rotate 1.3s linear infinite;
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 #log-modal {
   transition:
     opacity 0.5s ease-out,
