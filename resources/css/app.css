@@ -257,7 +257,7 @@
   );
 }
 
-.page-region {
+.app-surface {
   color: white;
   background: radial-gradient(
     var(--layoutBgColor),
