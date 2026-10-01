@@ -1,6 +1,6 @@
 <template>
   <teleport to="body">
-    <div id="item_tooltip" class="invisible">
+    <div id="item_tooltip" class="absolute top-0 left-0 hidden">
       <ul
         class="bg-primary-800 absolute z-50 max-w-[125px] border-2 border-black py-2 text-center text-xs text-white"
       >
@@ -15,5 +15,9 @@
 </template>
 
 <script setup lang="ts" vapor>
+/**
+ * @deprecated Avoid using. Legacy tooltip driven by imperative DOM
+ * manipulation in `utilities/itemTitle.ts`. Prefer using popover instead
+ */
 defineOptions({});
 </script>
