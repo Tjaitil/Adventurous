@@ -14,7 +14,7 @@
       </AppMain>
       <aside
         v-if="hasAsideContent"
-        class="page-region relative z-20 col-span-1 col-start-1 row-start-2 max-h-[800px] text-white"
+        class="app-surface relative z-20 col-span-1 col-start-1 row-start-2 max-h-[800px] text-white"
       >
         <slot name="aside"></slot>
       </aside>

@@ -1,5 +1,5 @@
 <template>
-  <footer id="app-footer" class="page-region">
+  <footer id="app-footer" class="app-surface">
     Developed by Kjetil Baksaas
   </footer>
 </template>

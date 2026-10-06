@@ -1,5 +1,5 @@
 <template>
-  <header id="app-header" class="page-region">
+  <header id="app-header" class="app-surface">
     <div id="nav">
       <div class="top_bar">
         <div class="top_a"><a href="/main" aria-label="Main"></a></div>

@@ -9,6 +9,13 @@
   --text-error-lighter: var(--color-red-500);
   --text-success-color: var(--color-green-600);
   --text-success-lighter: var(--color-green-500);
+  --surface-color: var(--color-white);
+  --surface-bg-color: var(--layoutBgColor);
+  --surface-bg-color-gradient: radial-gradient(
+    var(--surface-bg-color),
+    var(--layoutBgColorShadowPerc),
+    var(--layoutBgColorShadow)
+  );
 }
 
 @theme static {
@@ -257,13 +264,9 @@
   );
 }
 
-.page-region {
-  color: white;
-  background: radial-gradient(
-    var(--layoutBgColor),
-    var(--layoutBgColorShadowPerc),
-    var(--layoutBgColorShadow)
-  );
+.app-surface {
+  color: var(--surface-color);
+  background: var(--surface-bg-color-gradient);
 }
 
 .u-focus-ring {
