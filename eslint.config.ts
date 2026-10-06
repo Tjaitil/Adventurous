@@ -37,6 +37,7 @@ export default defineConfigWithVueTs(
         },
       ],
       'prettier/prettier': ['off'],
+      '@typescript-eslint/no-confusing-void-expression': 'off',
     },
   },
 
