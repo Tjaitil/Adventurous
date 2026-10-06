@@ -75,7 +75,7 @@ const externalRendering = ref(false);
 
 watch(externalContent, () => {
   if (externalContent.value && externalRendering.value) {
-    void nextTick(() => {
+    void nextTick().then(() => {
       ClientOverlayInterface.createSidePanelTabs();
       ClientOverlayInterface.adjustWrapperHeight();
     });
@@ -89,16 +89,19 @@ const unsubRenderBuilding = gameEventBus.subscribe('RENDER_BUILDING', obj => {
     // Add logic once we have more buildings as VuePages
 
     switch (obj.building) {
-      case 'armory':
+      case 'armory': {
         currentComponent.value = ArmoryPage;
         void buildingDataPreloader.preloadArmory();
         break;
-      case 'stockpile':
+      }
+      case 'stockpile': {
         currentComponent.value = StockpilePage;
         void buildingDataPreloader.preloadStockpile();
         break;
-      default:
+      }
+      default: {
         break;
+      }
     }
     externalRendering.value = false;
     return;
@@ -155,7 +158,7 @@ const internalClose = () => {
   width: 98%;
   padding: 16px;
   transition: top 0.5s ease-out;
-  box-shadow: 0px 0px 30px 15px;
+  box-shadow: 0px 0px 30px 15px #392714;
   box-sizing: border-box;
 }
 
