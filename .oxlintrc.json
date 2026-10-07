@@ -26,17 +26,12 @@
     // oxc's own sort-imports fixer is incomplete (see oxc-project/oxc#19984);
     // perfectionist/sort-imports ships a real fixer instead
     "eslint/sort-imports": "off",
+    // auto-sorting keys breaks logical grouping
+    "eslint/sort-keys": "off",
+    "eslint/capitalized-comments": "off",
     // allow braceless single-line guards like `if (x) return;`
     "eslint/curly": ["warn", "multi-line"],
-    // `t` is vue-i18n's translation function
-    "eslint/id-length": [
-      "warn",
-      {
-        "exceptions": [
-          "t"
-        ]
-      }
-    ]
+    "eslint/id-length": "off"
   },
   "overrides": [
     {
