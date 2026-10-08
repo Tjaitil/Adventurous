@@ -172,7 +172,7 @@ describe('Player movement is blocked when inBuilding or conversation is active',
   const player = GamePieces.player;
 
   beforeEach(() => {
-    setActivePinia(createTestingPinia({ stubActions: false }));
+    setActivePinia(createTestingPinia({ stubActions: false, createSpy: vi.fn }));
 
     // Put the game in a running state
     Game.properties.gameState = 'playing';

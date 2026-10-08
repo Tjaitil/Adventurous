@@ -1,6 +1,7 @@
 import { afterAll, beforeAll, afterEach } from 'vitest';
 import { setupServer } from 'msw/node';
 import { HttpResponse, http } from 'msw';
+import { cleanup } from '@testing-library/vue';
 import type { UpdateSkillsResponse } from '@/types/Responses/UpdateSkillsResponse';
 import { MockedUpdateSkillsResponse } from './responses/UpdateSkillsResponse';
 
@@ -16,4 +17,7 @@ beforeAll(() => { server.listen({ onUnhandledRequest: 'error' }); });
 
 afterAll(() => { server.close(); });
 
-afterEach(() => { server.resetHandlers(); });
+afterEach(() => {
+  cleanup();
+  server.resetHandlers();
+});
