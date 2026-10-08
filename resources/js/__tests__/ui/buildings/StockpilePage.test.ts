@@ -1,7 +1,7 @@
 import { describe, test, expect, beforeEach, vi, type Mock } from 'vitest';
 import { render, screen, waitFor, fireEvent } from '@testing-library/vue';
 import { createPinia } from 'pinia';
-import '@testing-library/jest-dom';
+import '@testing-library/jest-dom/vitest';
 import StockpilePage from '@/ui/buildings/StockpilePage.vue';
 import { i18n } from '@/ui/main';
 import { useInventoryStore } from '@/ui/stores/InventoryStore';

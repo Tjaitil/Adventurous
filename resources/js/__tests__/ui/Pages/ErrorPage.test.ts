@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/vue';
 import { describe, expect, test, vi } from 'vitest';
-import '@testing-library/jest-dom';
+import '@testing-library/jest-dom/vitest';
 import ErrorPage from '@/ui/Pages/ErrorPage.vue';
 import { i18n } from '@/ui/main';
 
