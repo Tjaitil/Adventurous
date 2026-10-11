@@ -1,6 +1,7 @@
 <template>
   <div
     id="map_container"
+    ref="mapContainer"
     class="border-ridge border-primary-800 absolute top-0 z-50 flex h-[75vh] w-full max-w-7xl flex-col overflow-hidden rounded-lg border-8 transition-all duration-200"
     :class="{
       'left-0': mapStore.isMapVisible,
@@ -91,7 +92,8 @@
 import { Game } from '@/advclient';
 import { GamePieces } from '@/clientScripts/gamePieces';
 import { useMapStore } from '@/ui/stores/MapStore';
-import { computed, defineProps, ref } from 'vue';
+import { computed, defineProps, ref, useTemplateRef } from 'vue';
+import { onClickOutside } from '@vueuse/core';
 
 defineProps<{ mapLocation: string }>();
 
@@ -174,6 +176,16 @@ const MapListIcon = {
 };
 
 const mapStore = useMapStore();
+
+const mapContainer = useTemplateRef<HTMLElement>('mapContainer');
+
+const closeMap = () => {
+  if (mapStore.isMapVisible) {
+    mapStore.toggleMapVisibility(false);
+  }
+};
+
+onClickOutside(mapContainer, closeMap);
 
 const playerX = ref(0);
 const playerY = ref(0);
