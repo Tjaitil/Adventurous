@@ -14,6 +14,7 @@
   --ui-card-bg: var(--color-orange-100);
   --ui-card-inner-border-color: var(--color-primary-700);
   --ui-card-outer-border-color: var(--color-stone-400);
+  --ui-card-color: var(--color-black);
   --surface-bg-color-gradient: radial-gradient(
     var(--surface-bg-color),
     var(--layoutBgColorShadowPerc),
