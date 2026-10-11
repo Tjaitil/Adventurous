@@ -11,6 +11,7 @@
   --text-success-lighter: var(--color-green-500);
   --surface-color: var(--color-white);
   --surface-bg-color: var(--layoutBgColor);
+  --ui-card-bg: var(--color-orange-100);
   --surface-bg-color-gradient: radial-gradient(
     var(--surface-bg-color),
     var(--layoutBgColorShadowPerc),
