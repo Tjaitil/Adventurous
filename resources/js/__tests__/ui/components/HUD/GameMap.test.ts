@@ -1,6 +1,6 @@
 import { fireEvent, render } from '@testing-library/vue';
 import { describe, expect, it, vi } from 'vitest';
-import '@testing-library/jest-dom';
+import '@testing-library/jest-dom/vitest';
 import { nextTick } from 'vue';
 import { createPinia, setActivePinia } from 'pinia';
 import GameMap from '@/ui/components/HUD/GameMap.vue';
