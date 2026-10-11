@@ -2,11 +2,13 @@
   <div
     id="map_container"
     ref="mapContainer"
+    tabindex="-1"
     class="border-ridge border-primary-800 absolute top-0 z-50 flex h-[75vh] w-full max-w-7xl flex-col overflow-hidden rounded-lg border-8 transition-all duration-200"
     :class="{
       'left-0': mapStore.isMapVisible,
       'invisible left-full': !mapStore.isMapVisible,
     }"
+    @focusout="onFocusOut"
   >
     <div id="map_container_header" class="m-0 flex bg-orange-50 px-1 py-2">
       <img
@@ -92,7 +94,14 @@
 import { Game } from '@/advclient';
 import { GamePieces } from '@/clientScripts/gamePieces';
 import { useMapStore } from '@/ui/stores/MapStore';
-import { computed, defineProps, ref, useTemplateRef } from 'vue';
+import {
+  computed,
+  defineProps,
+  nextTick,
+  ref,
+  useTemplateRef,
+  watch,
+} from 'vue';
 import { onClickOutside } from '@vueuse/core';
 
 defineProps<{ mapLocation: string }>();
@@ -186,6 +195,24 @@ const closeMap = () => {
 };
 
 onClickOutside(mapContainer, closeMap);
+
+const onFocusOut = (event: FocusEvent) => {
+  const next = event.relatedTarget;
+  if (next instanceof Node && mapContainer.value?.contains(next)) {
+    return;
+  }
+  closeMap();
+};
+
+watch(
+  () => mapStore.isMapVisible,
+  async isVisible => {
+    if (isVisible) {
+      await nextTick();
+      mapContainer.value?.focus();
+    }
+  },
+);
 
 const playerX = ref(0);
 const playerY = ref(0);

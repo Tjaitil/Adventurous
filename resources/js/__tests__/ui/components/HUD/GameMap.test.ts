@@ -56,4 +56,46 @@ describe('gameMap.vue', () => {
 
     expect(mapContainer()).not.toHaveClass('invisible');
   });
+
+  it('focuses container when opened', async () => {
+    expect.hasAssertions();
+
+    const { container } = renderGameMap();
+    const mapStore = useMapStore();
+
+    mapStore.toggleMapVisibility(true);
+    await nextTick();
+    await nextTick();
+
+    expect(container.querySelector('#map_container')).toHaveFocus();
+  });
+
+  it('closes on focusout to outside element', async () => {
+    expect.hasAssertions();
+
+    const { container } = renderGameMap();
+    const mapStore = useMapStore();
+    mapStore.toggleMapVisibility(true);
+    await nextTick();
+
+    const map = container.querySelector('#map_container') as HTMLElement;
+    await fireEvent.focusOut(map, { relatedTarget: document.body });
+
+    expect(mapContainer()).toHaveClass('invisible');
+  });
+
+  it('stays open on focusout to element inside', async () => {
+    expect.hasAssertions();
+
+    const { container } = renderGameMap();
+    const mapStore = useMapStore();
+    mapStore.toggleMapVisibility(true);
+    await nextTick();
+
+    const map = container.querySelector('#map_container') as HTMLElement;
+    const inner = map.querySelector('#toggle_icon_list_image') as HTMLElement;
+    await fireEvent.focusOut(map, { relatedTarget: inner });
+
+    expect(mapContainer()).not.toHaveClass('invisible');
+  });
 });
