@@ -8,7 +8,7 @@ import {
   fireEvent
 } from '@testing-library/vue';
 import { createPinia } from 'pinia';
-import '@testing-library/jest-dom';
+import '@testing-library/jest-dom/vitest';
 import ClientOverlayWrapper from '@/ui/components/ClientOverlayWrapper.vue';
 import { gameEventBus } from '@/gameEventsBus';
 import { i18n } from '@/ui/main';

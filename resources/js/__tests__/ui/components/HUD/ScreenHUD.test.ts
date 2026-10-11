@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/vue';
 import { describe, test, expect, afterEach, beforeEach } from 'vitest';
-import '@testing-library/jest-dom';
+import '@testing-library/jest-dom/vitest';
 import ScreenHUD from '@/ui/components/HUD/ScreenHUD.vue';
 import { gameEventBus } from '@/gameEventsBus';
 import { createPinia, setActivePinia } from 'pinia';

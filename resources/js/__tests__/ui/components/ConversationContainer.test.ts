@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/vue';
 import { describe, test, expect, vi, beforeEach, type Mock } from 'vitest';
-import '@testing-library/jest-dom';
+import '@testing-library/jest-dom/vitest';
 import ConversationContainer from '@/ui/components/ConversationContainer.vue';
 import { createTestingPinia } from '@pinia/testing';
 import { CustomFetchApi } from '@/CustomFetchApi';
@@ -127,7 +127,7 @@ describe('ConversationContainer.vue', () => {
   test('renders the component correctly in loading state', () => {
     const { container } = render(ConversationContainer, {
       global: {
-        plugins: [createTestingPinia()],
+        plugins: [createTestingPinia({ createSpy: vi.fn })],
       },
     });
 
@@ -142,7 +142,7 @@ describe('ConversationContainer.vue', () => {
   test('calls loadConversation when store.isActive is true', async () => {
     const { container } = render(ConversationContainer, {
       global: {
-        plugins: [createTestingPinia({ stubActions: false })],
+        plugins: [createTestingPinia({ stubActions: false, createSpy: vi.fn })],
       },
     });
 
@@ -179,7 +179,7 @@ describe('ConversationContainer.vue', () => {
   test('calls conversation with multiple options hides button', async () => {
     const { container } = render(ConversationContainer, {
       global: {
-        plugins: [createTestingPinia({ stubActions: false })],
+        plugins: [createTestingPinia({ stubActions: false, createSpy: vi.fn })],
       },
     });
 
@@ -224,7 +224,7 @@ describe('ConversationContainer.vue', () => {
   test('ends conversation correctly', async () => {
     const { container } = render(ConversationContainer, {
       global: {
-        plugins: [createTestingPinia({ stubActions: false })],
+        plugins: [createTestingPinia({ stubActions: false, createSpy: vi.fn })],
       },
     });
 
@@ -278,7 +278,7 @@ describe('Pesr Conversation test', () => {
   ])('GameTravelCallback with Pesr is invoked when pressing %s', async text => {
     const { container } = render(ConversationContainer, {
       global: {
-        plugins: [createTestingPinia({ stubActions: false })],
+        plugins: [createTestingPinia({ stubActions: false, createSpy: vi.fn })],
       },
     });
 
@@ -331,7 +331,7 @@ describe('Zins Conversation test', () => {
   test('LoadZinsStoreCallback with Zins is invoked', async () => {
     const { container } = render(ConversationContainer, {
       global: {
-        plugins: [createTestingPinia({ stubActions: false })],
+        plugins: [createTestingPinia({ stubActions: false, createSpy: vi.fn })],
       },
     });
     const conversationStore = useConversationStore();
