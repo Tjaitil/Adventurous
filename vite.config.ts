@@ -68,7 +68,7 @@ export default defineConfig(({ mode }) => {
             variants: {
               variant: {
                 outline: {
-                  root: 'bg-orange-100 before:border-stone-400',
+                  root: 'bg-(--ui-card-bg) before:border-stone-400',
                   body: 'p-4 sm:p-4',
                 },
                 soft: {
