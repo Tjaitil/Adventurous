@@ -19,7 +19,6 @@ export default defineConfig(({ mode }) => {
       environment: 'jsdom',
       setupFiles: ['./resources/js/mocks/setup.ts'],
       include: ['./resources/js/**/*.test.ts'],
-      globals: true,
       coverage: {
         exclude: ['vendor/**'],
         reporter: ['text', 'json', 'html'],
