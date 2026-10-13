@@ -1,40 +1,53 @@
-export class ModuleTester {
+/**
+ * Any object, class or function (classes and functions are objects)
+ */
+export type TestableModule = object;
+
+interface WindowWithModules extends Window {
+  modules?: Record<string, TestableModule>;
+}
+
+export class ModuleTester<T extends TestableModule = TestableModule> {
   public defaultExport: boolean;
-  private module = null;
+  private module: T;
   private moduleName: string;
 
-  constructor(module: any, moduleName: string, options: ModuleTesterOptions) {
+  constructor(
+    module: T | { default: T },
+    moduleName: string,
+    options: ModuleTesterOptions,
+  ) {
     this.defaultExport = options.defaultExport ?? false;
     this.moduleName = moduleName;
 
     if (this.defaultExport) {
-      this.module = module.default;
+      this.module = (module as { default: T }).default;
     } else {
-      this.module = module;
+      this.module = module as T;
     }
     this.toWindow();
     this.listMethods();
     this.checkHTMLElements();
   }
 
-  public toWindow() {
-    if (!(<any>window)['modules']) {
-      (<any>window)['modules'] = {};
-    }
-    (<any>window)['modules'][this.moduleName] = this.module;
+  public toWindow(): void {
+    const moduleWindow: WindowWithModules = window;
+    moduleWindow.modules ??= {};
+    moduleWindow.modules[this.moduleName] = this.module;
     console.info('ModuleTester: ' + this.moduleName + ' added to window');
   }
 
-  public listMethods() {
+  public listMethods(): void {
     console.info('ModuleTester: ' + this.moduleName + ' methods:');
     console.info(Object.getOwnPropertyNames(this.module));
   }
 
-  public checkHTMLElements() {
+  public checkHTMLElements(): void {
     // Check if objects that is typed as htmlelement is actually an htmlelement
-    for (const key in this.module) {
+    const properties = this.module as Record<string, unknown>;
+    for (const key in properties) {
       // Skip if function
-      if (typeof this.module[key] === 'function') {
+      if (typeof properties[key] === 'function') {
         continue;
       }
 
@@ -48,7 +61,7 @@ export class ModuleTester {
         continue;
       }
 
-      if (!(this.module[key] instanceof HTMLElement)) {
+      if (!(properties[key] instanceof HTMLElement)) {
         console.warn('Potentially missing htmlelement: ', key);
       }
     }
@@ -63,11 +76,11 @@ export interface ModuleTesterOptions {
 /**
  * Add module to window object in dev mode for easier testing
  */
-export function addModuleTester(
-  module: any,
+export function addModuleTester<T extends TestableModule>(
+  module: T | { default: T },
   name: string,
   options: ModuleTesterOptions = {},
-) {
+): void {
   if (import.meta.env.DEV && import.meta.env.MODE !== 'test') {
     new ModuleTester(module, name, options);
   }
