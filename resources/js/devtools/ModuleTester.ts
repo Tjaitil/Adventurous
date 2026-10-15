@@ -64,11 +64,11 @@ export interface ModuleTesterOptions {
  * Add module to window object in dev mode for easier testing
  */
 export function addModuleTester(
-  classInstance: any,
+  module: any,
   name: string,
   options: ModuleTesterOptions = {},
 ) {
   if (import.meta.env.DEV && import.meta.env.MODE !== 'test') {
-    new ModuleTester(classInstance, name, options);
+    new ModuleTester(module, name, options);
   }
 }
