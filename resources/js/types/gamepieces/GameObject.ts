@@ -13,6 +13,12 @@ export interface GameObject {
   noCollision: boolean;
   type: GameObjectType;
   visible: boolean;
+  /** Raw Tiled gid, includes flip bits */
+  gid?: number;
+  rotation?: number;
+  /** Net mirror from Tiled gid flip bits and 180 rotation */
+  flipX?: boolean;
+  flipY?: boolean;
 }
 
 export type GameObjectType =

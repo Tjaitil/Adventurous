@@ -6,6 +6,10 @@ use Illuminate\Contracts\Filesystem\Filesystem;
 
 final class WorldLoaderService
 {
+    private const FLIP_HORIZONTAL = 0x80000000;
+
+    private const FLIP_VERTICAL = 0x40000000;
+
     /**
      * @var array<mixed>
      */
@@ -78,7 +82,7 @@ final class WorldLoaderService
             if (in_array($string['layers'][$i]['name'], ['Objects', 'Buildings', 'Characters', 'Figures']) === true) {
                 $object_array = $string['layers'][$i]['objects'];
                 for ($x = 0; $x < count($string['layers'][$i]['objects']); $x++) {
-                    unset($object_array[$x]['gid']);
+                    $object_array[$x] = $this->applyFlips($object_array[$x]);
                     unset($object_array[$x]['name']);
                     // If the object has any properties, move the data up in the array
                     if (isset($object_array[$x]['properties'])) {
@@ -266,6 +270,24 @@ final class WorldLoaderService
                     break;
             }
         }
+
+        return $object;
+    }
+
+    /**
+     * Tiled stores flips in the top bits of the gid and rotation separately.
+     * A 180 degree rotation equals flipping both axes, so fold it into the net flips.
+     *
+     * @param  array<mixed>  $object
+     * @return array<mixed>
+     */
+    private function applyFlips(array $object): array
+    {
+        $gid = (int) ($object['gid'] ?? 0);
+        $rotatedHalfTurn = ($object['rotation'] ?? 0) === 180;
+
+        $object['flipX'] = (($gid & self::FLIP_HORIZONTAL) !== 0) !== $rotatedHalfTurn;
+        $object['flipY'] = (($gid & self::FLIP_VERTICAL) !== 0) !== $rotatedHalfTurn;
 
         return $object;
     }

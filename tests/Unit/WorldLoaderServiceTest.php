@@ -165,6 +165,38 @@ class WorldLoaderServiceTest extends TestCase
         $this->assertSame(140.0, $character['x']);
     }
 
+    #[DataProvider('flipProvider')]
+    public function test_flip_flags_are_decoded_from_gid_and_rotation(int $gid, int $rotation, bool $expectedFlipX, bool $expectedFlipY): void
+    {
+        $object = $this->makeCharacterObject(src: 'pole.png', rotation: $rotation);
+        $object['gid'] = $gid;
+        $this->putMapFile('4.2', [$object]);
+
+        $this->service->setMap('4.2');
+        $result = $this->service->getWorldData();
+
+        $loaded = $this->findObjectBySrc($result, 'pole.png');
+        $this->assertSame($expectedFlipX, $loaded['flipX']);
+        $this->assertSame($expectedFlipY, $loaded['flipY']);
+        $this->assertSame($gid, $loaded['gid']);
+        $this->assertSame($rotation, $loaded['rotation']);
+    }
+
+    /**
+     * @return array<string, array{int, int, bool, bool}>
+     */
+    public static function flipProvider(): array
+    {
+        return [
+            'no flip' => [263, 0, false, false],
+            'horizontal bit' => [0x80000000 | 263, 0, true, false],
+            'vertical bit' => [0x40000000 | 263, 0, false, true],
+            'plain 180 rotation flips both' => [263, 180, true, true],
+            'vertical bit with 180 is mirror x' => [0x40000000 | 263, 180, true, false],
+            'both bits with 180 cancel' => [0xC0000000 | 263, 180, false, false],
+        ];
+    }
+
     private function putMapFile(string $map, array $characterObjects, array $buildings = []): void
     {
         $layers = [];
