@@ -1,5 +1,6 @@
 import viewport from '../clientScripts/viewport';
 import { AssetPaths } from '../clientScripts/ImagePath';
+import { getFlippedImageUrl } from '@/clientScripts/flipSprite';
 import { GamePieces } from '@/clientScripts/gamePieces';
 import type { Character } from '@/types/gamepieces/Character';
 import type {
@@ -55,5 +56,27 @@ export class BaseStaticGameObject implements GameObject {
     this.sprite.src = AssetPaths.getImagePath(this.src);
     // check source for missing format
     if (!this.sprite.src.includes('.png')) this.sprite.src += '.png';
+
+    if (initObjectData.flipX || initObjectData.flipY) {
+      this.flipSpriteOnLoad(!!initObjectData.flipX, !!initObjectData.flipY);
+    }
+  }
+
+  private flipSpriteOnLoad(flipX: boolean, flipY: boolean): void {
+    this.sprite.addEventListener(
+      'load',
+      () => {
+        const flippedUrl = getFlippedImageUrl(
+          this.src,
+          this.sprite,
+          flipX,
+          flipY,
+        );
+        if (flippedUrl) {
+          this.sprite.src = flippedUrl;
+        }
+      },
+      { once: true },
+    );
   }
 }
