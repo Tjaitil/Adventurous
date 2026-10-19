@@ -15,6 +15,13 @@
   --ui-card-inner-border-color: var(--color-primary-700);
   --ui-card-outer-border-color: var(--color-stone-400);
   --ui-card-color: var(--color-black);
+  --ui-card-soft-bg: #a89a8a;
+  --ui-card-soft-inner-border-color: var(--color-primary-700);
+  --ui-card-soft-outer-border-color: var(--color-stone-400);
+  --ui-card-solid-bg: var(--color-stone-700);
+  --ui-card-solid-color: var(--ui-text-inverted);
+  --ui-card-solid-inner-border-color: var(--color-primary-800);
+  --ui-card-solid-outer-border-color: var(--color-stone-800);
   --surface-bg-color-gradient: radial-gradient(
     var(--surface-bg-color),
     var(--layoutBgColorShadowPerc),
