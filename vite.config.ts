@@ -79,7 +79,7 @@ export default defineConfig(({ mode }) => {
                  * This uses a opacity background. Adjust when needed a variant
                  */
                 subtle: {
-                  root: 'before:border-stone-400',
+                  root: 'before:border-(--ui-card-subtle-outer-border-color)',
                   body: 'p-4 sm:p-4',
                 },
                 solid: {
