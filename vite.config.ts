@@ -68,22 +68,22 @@ export default defineConfig(({ mode }) => {
             variants: {
               variant: {
                 outline: {
-                  root: 'bg-orange-100 before:border-stone-400',
+                  root: 'bg-(--ui-card-bg) text-(--ui-card-color) before:border-(--ui-card-outer-border-color) after:border-(--ui-card-inner-border-color)',
                   body: 'p-4 sm:p-4',
                 },
                 soft: {
-                  root: 'before:border-stone-400 bg-[#a89a8a]',
+                  root: 'bg-(--ui-card-soft-bg) before:border-(--ui-card-soft-outer-border-color) after:border-(--ui-card-soft-inner-border-color)',
                   body: 'p-4 sm:p-4',
                 },
                 /**
                  * This uses a opacity background. Adjust when needed a variant
                  */
                 subtle: {
-                  root: 'before:border-stone-400',
+                  root: 'before:border-(--ui-card-subtle-outer-border-color)',
                   body: 'p-4 sm:p-4',
                 },
                 solid: {
-                  root: 'before:border-stone-800 after:border-primary-800 bg-stone-700',
+                  root: 'bg-(--ui-card-solid-bg) text-(color:--ui-card-solid-color) before:border-(--ui-card-solid-outer-border-color) after:border-(--ui-card-solid-inner-border-color)',
                   body: 'p-4 sm:p-4',
                 },
               },
