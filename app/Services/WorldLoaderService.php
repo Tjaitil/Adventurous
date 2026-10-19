@@ -284,10 +284,13 @@ final class WorldLoaderService
     private function applyFlips(array $object): array
     {
         $gid = (int) ($object['gid'] ?? 0);
-        $rotatedHalfTurn = ($object['rotation'] ?? 0) === 180;
 
-        $object['flipX'] = (($gid & self::FLIP_HORIZONTAL) !== 0) !== $rotatedHalfTurn;
-        $object['flipY'] = (($gid & self::FLIP_VERTICAL) !== 0) !== $rotatedHalfTurn;
+        $isFlippedHorizontally = ($gid & self::FLIP_HORIZONTAL) !== 0;
+        $isFlippedVertically = ($gid & self::FLIP_VERTICAL) !== 0;
+        $isRotatedHalfTurn = ($object['rotation'] ?? 0) === 180;
+
+        $object['flipX'] = $isFlippedHorizontally !== $isRotatedHalfTurn;
+        $object['flipY'] = $isFlippedVertically !== $isRotatedHalfTurn;
 
         return $object;
     }
