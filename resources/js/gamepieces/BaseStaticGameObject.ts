@@ -1,7 +1,8 @@
 import viewport from '../clientScripts/viewport';
 import { AssetPaths } from '../clientScripts/ImagePath';
-import { getFlippedImageUrl } from '@/clientScripts/flipSprite';
+import { getTransformedImageUrl } from '@/clientScripts/spriteTransform';
 import { GamePieces } from '@/clientScripts/gamePieces';
+import type { SpriteTransform } from '@/clientScripts/spriteTransform';
 import type { Character } from '@/types/gamepieces/Character';
 import type {
   IBuildingGameObject,
@@ -25,6 +26,10 @@ export class BaseStaticGameObject implements GameObject {
   public y: number;
   public width: number;
   public height: number;
+  public xRotated: number | null;
+  public yRotated: number | null;
+  public widthRotated: number | null;
+  public heightRotated: number | null;
   public noCollision: boolean;
   public id: number;
 
@@ -41,39 +46,60 @@ export class BaseStaticGameObject implements GameObject {
 
     this.width = initObjectData.width;
     this.height = initObjectData.height;
+    this.xRotated = initObjectData.xRotated ?? null;
+    this.yRotated = initObjectData.yRotated ?? null;
+    this.widthRotated = initObjectData.widthRotated ?? null;
+    this.heightRotated = initObjectData.heightRotated ?? null;
     this.x = initObjectData.x;
     this.y = initObjectData.y;
     this.src = initObjectData.src;
 
     this.id = initObjectData.id;
 
-    this.drawX = Math.round(initObjectData.x - viewport.offsetX);
-    this.drawY = Math.round(initObjectData.y - viewport.offsetY);
+    this.drawX = Math.round((this.xRotated ?? this.x) - viewport.offsetX);
+    this.drawY = Math.round((this.yRotated ?? this.y) - viewport.offsetY);
 
     this.noCollision = initObjectData.noCollision;
-    this.sprite = new Image(this.width, this.height);
+    this.sprite = new Image(
+      this.widthRotated ?? this.width,
+      this.heightRotated ?? this.height,
+    );
 
     this.sprite.src = AssetPaths.getImagePath(this.src);
     // check source for missing format
     if (!this.sprite.src.includes('.png')) this.sprite.src += '.png';
 
-    if (initObjectData.flipX || initObjectData.flipY) {
-      this.flipSpriteOnLoad(!!initObjectData.flipX, !!initObjectData.flipY);
+    const rotation = initObjectData.rotation ?? 0;
+    const isTransformed =
+      initObjectData.flipX || initObjectData.flipY || rotation % 360 !== 0;
+    if (initObjectData.gid !== undefined && isTransformed) {
+      this.transformSpriteOnLoad({
+        flipX: !!initObjectData.flipX,
+        flipY: !!initObjectData.flipY,
+        rotation,
+        box: {
+          width: this.widthRotated ?? this.width,
+          height: this.heightRotated ?? this.height,
+          offsetX: (this.xRotated ?? this.x) - this.x,
+          offsetY: (this.yRotated ?? this.y) - (this.y + this.height),
+        },
+      });
     }
   }
 
-  private flipSpriteOnLoad(flipX: boolean, flipY: boolean): void {
+  private transformSpriteOnLoad(transform: SpriteTransform): void {
     this.sprite.addEventListener(
       'load',
       () => {
-        const flippedUrl = getFlippedImageUrl(
+        const transformedUrl = getTransformedImageUrl(
           this.src,
           this.sprite,
-          flipX,
-          flipY,
+          this.width,
+          this.height,
+          transform,
         );
-        if (flippedUrl) {
-          this.sprite.src = flippedUrl;
+        if (transformedUrl) {
+          this.sprite.src = transformedUrl;
         }
       },
       { once: true },
