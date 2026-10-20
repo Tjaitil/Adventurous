@@ -2,7 +2,7 @@
   <UCard
     id="inventory"
     variant="soft"
-    class="relative z-20 float-right mt-0 h-[600px] w-full text-white"
+    class="relative z-20 float-right mt-0 h-[600px] w-full"
   >
     <BaseLoading v-if="isLoading" :is-loading> </BaseLoading>
     <template v-else>
