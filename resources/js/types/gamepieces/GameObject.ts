@@ -13,10 +13,15 @@ export interface GameObject {
   noCollision: boolean;
   type: GameObjectType;
   visible: boolean;
-  /** Raw Tiled gid, includes flip bits */
   gid?: number;
+  /** Clockwise degrees around the Tiled origin */
   rotation?: number;
-  /** Net mirror from Tiled gid flip bits and 180 rotation */
+  /** Box of the rotated object, null when the object is not rotated */
+  xRotated?: number | null;
+  yRotated?: number | null;
+  widthRotated?: number | null;
+  heightRotated?: number | null;
+  /** Mirror applied before the rotation */
   flipX?: boolean;
   flipY?: boolean;
 }
