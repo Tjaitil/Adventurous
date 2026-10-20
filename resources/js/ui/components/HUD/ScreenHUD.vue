@@ -45,7 +45,10 @@
       :alt="$t('Map icon')"
       @click="useMapStore().toggleMapVisibility(true)"
     />
-    <div id="control_text" class="absolute bottom-4 left-4 text-white">
+    <div
+      id="control_text"
+      class="absolute bottom-4 left-4 font-[bolder] text-white text-shadow-[1px_1px_1px_black]"
+    >
       <p class="extendedControls my-0 text-left">
         C - {{ $t('Toggle Attack Mode') }}
       </p>
