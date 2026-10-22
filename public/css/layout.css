@@ -191,7 +191,7 @@
   position: relative;
   top: -64%;
   left: 24%;
-  color: white;
+  color: inherit;
   text-align: right;
   float: none;
 }

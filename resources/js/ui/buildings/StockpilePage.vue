@@ -5,7 +5,7 @@
       {{ $t('Click items in inventory or stockpile to insert/withdraw') }}
     </p>
     <UCard variant="soft">
-      <p class="mb-3 text-sm text-white">
+      <p class="mb-3 text-sm">
         {{ $t('Item slots') }}: {{ stockpileItems.length }} /
         {{ maxSlots ?? 0 }}
       </p>
