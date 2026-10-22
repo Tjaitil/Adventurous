@@ -72,14 +72,14 @@ export default defineConfig(({ mode }) => {
                   body: 'p-4 sm:p-4',
                 },
                 soft: {
-                  root: 'bg-(--ui-card-soft-bg) before:border-(--ui-card-soft-outer-border-color) after:border-(--ui-card-soft-inner-border-color)',
+                  root: 'bg-(--ui-card-soft-bg) text-(--ui-card-soft-color) before:border-(--ui-card-soft-outer-border-color) after:border-(--ui-card-soft-inner-border-color)',
                   body: 'p-4 sm:p-4',
                 },
                 /**
                  * This uses a opacity background. Adjust when needed a variant
                  */
                 subtle: {
-                  root: 'before:border-(--ui-card-subtle-outer-border-color)',
+                  root: 'before:border-(--ui-card-subtle-outer-border-color) text-(--ui-card-color)',
                   body: 'p-4 sm:p-4',
                 },
                 solid: {
