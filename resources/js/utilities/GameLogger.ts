@@ -7,10 +7,6 @@ import axios from 'axios';
 export enum commonMessages {
   'inventoryFull' = 'Remove some items from inventory before doing this action',
 }
-export interface GameLoggerEvents {
-  GAMELOGGER_MESSAGE_LOGGED: { message: GameLog };
-}
-
 export class GameLogger {
   private static messages: GameLog[] = [];
   private static currentlyLogging = false;

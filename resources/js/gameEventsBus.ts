@@ -1,6 +1,8 @@
-import type { GameLoggerEvents } from '@/utilities/GameLogger';
-import type { AdvClientEvents } from '@/advclient';
-import type { InputHandlerEvents } from './clientScripts/inputHandler';
+import type {
+  AdvClientEvents,
+  GameLoggerEvents,
+  InputHandlerEvents,
+} from '@/types/GameEvents';
 import { reportError } from '@/ui/errorReporting';
 export type GameEventMap = {
   PLAYER_HEALTH_UPDATE: { health: number };
