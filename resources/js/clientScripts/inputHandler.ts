@@ -19,7 +19,6 @@ import merchantModule from '../buildingScripts/merchant';
 import workforceLodgeModule from '../buildingScripts/workforcelodge';
 import smithyModule from '../buildingScripts/smithy';
 import archeryShopModule from '../buildingScripts/archeryshop';
-import { useConversationStore } from '@/ui/stores/ConversationStore';
 import { gameEventBus } from '@/gameEventsBus';
 import { buildingDataPreloader } from '@/ui/services/buildingDataPreloader';
 import { reportError } from '@/ui/errorReporting';
@@ -147,7 +146,7 @@ export const inputHandler: IInputHandler = {
     Game.properties.inBuilding = true;
     Game.properties.building = building;
 
-    useConversationStore().triggerEndConversation();
+    gameEventBus.emit('CONVERSATION_END_REQUESTED', undefined);
 
     if (isVuePage(building)) {
       gameEventBus.emit('RENDER_BUILDING', {
@@ -342,9 +341,9 @@ export const inputHandler: IInputHandler = {
         true,
       );
     } else {
-      useConversationStore().triggerLoadConversation(
-        this.characterMatch.displayName,
-      );
+      gameEventBus.emit('CONVERSATION_STARTED', {
+        displayName: this.characterMatch.displayName,
+      });
     }
   },
 };
