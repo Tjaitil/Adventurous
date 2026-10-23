@@ -14,6 +14,7 @@ import { initErrorHandler, reportCatchError } from './base/ErrorHandler';
 import { gameEventBus } from './gameEventsBus';
 import { addModuleTester } from './devtools/ModuleTester';
 import { registerConversationHandlers } from './clientScripts/conversationHandler';
+import { registerGameQueryProviders } from './clientScripts/gameQueryProviders';
 
 export class Game {
   public static properties: GameProperties = {
@@ -226,6 +227,7 @@ export class Game {
 
       ClientOverlayInterface.setup();
       registerConversationHandlers();
+      registerGameQueryProviders();
 
       viewport.setup({
         hud: document.getElementById('hud_canvas') as HTMLCanvasElement,
