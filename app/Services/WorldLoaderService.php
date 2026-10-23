@@ -6,6 +6,10 @@ use Illuminate\Contracts\Filesystem\Filesystem;
 
 final class WorldLoaderService
 {
+    private const FLIP_HORIZONTAL = 0x80000000;
+
+    private const FLIP_VERTICAL = 0x40000000;
+
     /**
      * @var array<mixed>
      */
@@ -78,7 +82,7 @@ final class WorldLoaderService
             if (in_array($string['layers'][$i]['name'], ['Objects', 'Buildings', 'Characters', 'Figures']) === true) {
                 $object_array = $string['layers'][$i]['objects'];
                 for ($x = 0; $x < count($string['layers'][$i]['objects']); $x++) {
-                    unset($object_array[$x]['gid']);
+                    $object_array[$x] = $this->applyFlips($object_array[$x]);
                     unset($object_array[$x]['name']);
                     // If the object has any properties, move the data up in the array
                     if (isset($object_array[$x]['properties'])) {
@@ -92,16 +96,17 @@ final class WorldLoaderService
                         $object_array[$x] = $this->setupBuilding($object_array[$x]);
                     }
                     // Y value in images in json files are the value at the bottom, not the top
-                    $object_array[$x] = $this->checkRotation($object_array[$x]);
                     if (in_array($object_array[$x]['type'], ['figure', 'object'])) {
                         $object_array[$x]['y'] = round($object_array[$x]['y'], 2);
                     } elseif ($object_array[$x]['type'] === 'daqloon_fighting_area') {
+                        $object_array[$x] = $this->applyRotatedBox($object_array[$x], $this->makeTransform($object_array[$x]));
+                        $box = $this->getRotatedBox($object_array[$x]);
                         $object_array[$x]['y'] = round($object_array[$x]['y']);
                         $object_array[$x]['x'] = round($object_array[$x]['x']);
-                        $object_array[$x]['diameterUp'] = $object_array[$x]['y'];
-                        $object_array[$x]['diameterDown'] = $object_array[$x]['y'] + $object_array[$x]['height'];
-                        $object_array[$x]['diameterLeft'] = $object_array[$x]['x'];
-                        $object_array[$x]['diameterRight'] = $object_array[$x]['x'] + $object_array[$x]['width'];
+                        $object_array[$x]['diameterUp'] = round($box['y']);
+                        $object_array[$x]['diameterDown'] = round($box['y']) + $box['height'];
+                        $object_array[$x]['diameterLeft'] = round($box['x']);
+                        $object_array[$x]['diameterRight'] = round($box['x']) + $box['width'];
                         $objects['daqloon_fighting_areas'][] = $object_array[$x];
                         unset($object_array[$x]);
 
@@ -109,6 +114,8 @@ final class WorldLoaderService
                     } else {
                         $object_array[$x]['y'] = round($object_array[$x]['y'], 2) - $object_array[$x]['height'];
                     }
+                    $transform = $this->makeTransform($object_array[$x]);
+                    $object_array[$x] = $this->applyRotatedBox($object_array[$x], $transform);
                     if (isset($object_array[$x]['src'])) {
                         $objectSrc = $object_array[$x]['src'];
                         $objectCollData = array_values(array_filter($this->objectCollisionData, function ($object) use ($objectSrc) {
@@ -122,42 +129,47 @@ final class WorldLoaderService
                         $object_array[$x]['diameterLeft'] = 0;
                     }
                     $object_array[$x]['x'] = round($object_array[$x]['x'], 2);
+                    $box = $this->getRotatedBox($object_array[$x]);
                     // Check whether there is a diameter preset for this object
                     if (isset($objectCollData[0]['objectgroup']['objects'])) {
                         $objectCollData = $objectCollData[0]['objectgroup']['objects'][0];
-                        $object_array[$x]['diameterUp'] = $object_array[$x]['y'] + $objectCollData['y'];
-                        $object_array[$x]['diameterDown'] = $object_array[$x]['diameterUp']
-                            + $objectCollData['height'];
-                        $object_array[$x]['diameterLeft'] = $object_array[$x]['x'] + $objectCollData['x'];
-                        $object_array[$x]['diameterRight'] = $object_array[$x]['diameterLeft']
-                            + $objectCollData['width'];
+                        $collision = $transform->transformRect(
+                            $objectCollData['x'],
+                            $objectCollData['y'],
+                            $objectCollData['width'],
+                            $objectCollData['height'],
+                        );
+                        $object_array[$x]['diameterUp'] = $collision['y'];
+                        $object_array[$x]['diameterDown'] = $collision['y'] + $collision['height'];
+                        $object_array[$x]['diameterLeft'] = $collision['x'];
+                        $object_array[$x]['diameterRight'] = $collision['x'] + $collision['width'];
                     } elseif ($string['layers'][$i]['name'] === 'Buildings') {
-                        $object_array[$x]['diameterUp'] = $object_array[$x]['y'] + 40;
-                        $object_array[$x]['diameterDown'] = $object_array[$x]['y'] + $object_array[$x]['height'];
-                        $object_array[$x]['diameterLeft'] = $object_array[$x]['x'];
-                        $object_array[$x]['diameterRight'] = $object_array[$x]['x'] + $object_array[$x]['width'];
+                        $object_array[$x]['diameterUp'] = $box['y'] + 40;
+                        $object_array[$x]['diameterDown'] = $box['y'] + $box['height'];
+                        $object_array[$x]['diameterLeft'] = $box['x'];
+                        $object_array[$x]['diameterRight'] = $box['x'] + $box['width'];
                     } else {
                         if (! in_array($object_array[$x]['type'], [
                             'figure', 'start_point', 'daqloon_fighting_area',
                             'desert_dune', 'nc_object', '',
                         ])) {
-                            switch ($object_array[$x]['height']) {
+                            switch ($box['height']) {
                                 case 32:
-                                    $object_array[$x]['diameterUp'] = $object_array[$x]['y'] + 10;
+                                    $object_array[$x]['diameterUp'] = $box['y'] + 10;
                                     break;
                                 default:
-                                    $object_array[$x]['diameterUp'] = $object_array[$x]['y'];
+                                    $object_array[$x]['diameterUp'] = $box['y'];
                                     break;
                             }
                             if (in_array($object_array[$x]['src'], ['crate_3.png', 'crate_5.png'])) {
-                                $object_array[$x]['diameterUp'] = $object_array[$x]['y'] + 10;
+                                $object_array[$x]['diameterUp'] = $box['y'] + 10;
                             }
                         } else {
-                            $object_array[$x]['diameterUp'] = $object_array[$x]['y'];
+                            $object_array[$x]['diameterUp'] = $box['y'];
                         }
-                        $object_array[$x]['diameterDown'] = $object_array[$x]['y'] + $object_array[$x]['height'];
-                        $object_array[$x]['diameterLeft'] = $object_array[$x]['x'];
-                        $object_array[$x]['diameterRight'] = $object_array[$x]['x'] + $object_array[$x]['width'];
+                        $object_array[$x]['diameterDown'] = $box['y'] + $box['height'];
+                        $object_array[$x]['diameterLeft'] = $box['x'];
+                        $object_array[$x]['diameterRight'] = $box['x'] + $box['width'];
                     }
                     if ($object_array[$x]['type'] == 'character') {
                         $object_array[$x] = $this->setupCharacter($object_array[$x]);
@@ -245,27 +257,81 @@ final class WorldLoaderService
     }
 
     /**
+     * Placement of the unrotated object. Expects y to be the top edge.
+     *
+     * @param  array<mixed>  $object
+     */
+    private function makeTransform(array $object): TiledObjectTransform
+    {
+        return new TiledObjectTransform(
+            round((float) $object['x'], 2),
+            (float) $object['y'],
+            (float) $object['width'],
+            (float) $object['height'],
+            isset($object['gid']),
+            (float) ($object['rotation'] ?? 0),
+            $object['flipX'] ?? false,
+            $object['flipY'] ?? false,
+        );
+    }
+
+    /**
+     * x, y, width and height keep the unrotated Tiled values. The box of a
+     * rotated object is added as xRotated, yRotated, widthRotated and
+     * heightRotated, all null when the object is not rotated.
+     *
      * @param  array<mixed>  $object
      * @return array<mixed>
      */
-    private function checkRotation(array $object): array
+    private function applyRotatedBox(array $object, TiledObjectTransform $transform): array
     {
-        if ($object['rotation'] !== 0) {
-            switch ($object['rotation']) {
-                case 90:
-                    $width = $object['width'];
-                    $object['x'] = $object['x'] - $object['height'];
-                    $object['width'] = $object['height'];
-                    $object['height'] = $width;
-                    break;
-                case 180:
-                    $object['x'] = $object['x'] - $object['width'];
-                    $object['y'] = $object['y'] + $object['height'];
-                    break;
-                default:
-                    break;
-            }
+        $object['xRotated'] = null;
+        $object['yRotated'] = null;
+        $object['widthRotated'] = null;
+        $object['heightRotated'] = null;
+
+        if (($object['rotation'] ?? 0) == 0) {
+            return $object;
         }
+
+        $box = $transform->boundingBox();
+        $object['xRotated'] = round($box['x'], 2);
+        $object['yRotated'] = $box['y'];
+        $object['widthRotated'] = $box['width'];
+        $object['heightRotated'] = $box['height'];
+
+        return $object;
+    }
+
+    /**
+     * The rotated box when set, otherwise the plain x, y, width and height.
+     *
+     * @param  array<mixed>  $object
+     * @return array{x: float|int, y: float|int, width: float|int, height: float|int}
+     */
+    private function getRotatedBox(array $object): array
+    {
+        return [
+            'x' => $object['xRotated'] ?? $object['x'],
+            'y' => $object['yRotated'] ?? $object['y'],
+            'width' => $object['widthRotated'] ?? $object['width'],
+            'height' => $object['heightRotated'] ?? $object['height'],
+        ];
+    }
+
+    /**
+     * Tiled stores flips in the top bits of the gid, separately from rotation.
+     * Flips are applied before the rotation.
+     *
+     * @param  array<mixed>  $object
+     * @return array<mixed>
+     */
+    private function applyFlips(array $object): array
+    {
+        $gid = (int) ($object['gid'] ?? 0);
+
+        $object['flipX'] = ($gid & self::FLIP_HORIZONTAL) !== 0;
+        $object['flipY'] = ($gid & self::FLIP_VERTICAL) !== 0;
 
         return $object;
     }

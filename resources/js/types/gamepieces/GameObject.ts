@@ -13,6 +13,17 @@ export interface GameObject {
   noCollision: boolean;
   type: GameObjectType;
   visible: boolean;
+  gid?: number;
+  /** Clockwise degrees around the Tiled origin */
+  rotation?: number;
+  /** Box of the rotated object, null when the object is not rotated */
+  xRotated?: number | null;
+  yRotated?: number | null;
+  widthRotated?: number | null;
+  heightRotated?: number | null;
+  /** Mirror applied before the rotation */
+  flipX?: boolean;
+  flipY?: boolean;
 }
 
 export type GameObjectType =

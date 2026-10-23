@@ -150,22 +150,141 @@ class WorldLoaderServiceTest extends TestCase
         $this->assertSame('citycentre', $building['displayName']);
     }
 
-    public function test_rotation_90_swaps_width_and_height_and_adjusts_x(): void
+    /**
+     * @param  array{float, float, float, float}|null  $expectedBox  xRotated, yRotated, widthRotated, heightRotated
+     */
+    #[DataProvider('tileRotationProvider')]
+    public function test_tile_rotates_around_bottom_left(int $rotation, ?array $expectedBox): void
     {
         $this->putMapFile('4.1', [
-            $this->makeCharacterObject(src: 'kapys.png', x: 200, y: 100, width: 40, height: 60, rotation: 90),
+            $this->makeCharacterObject(src: 'kapys.png', x: 200, y: 100, width: 40, height: 60, rotation: $rotation),
         ]);
 
         $this->service->setMap('4.1');
-        $result = $this->service->getWorldData();
+        $character = $this->findObjectBySrc($this->service->getWorldData(), 'kapys.png');
 
-        $character = $this->findObjectBySrc($result, 'kapys.png');
-        $this->assertSame(60, $character['width']);
-        $this->assertSame(40, $character['height']);
-        $this->assertSame(140.0, $character['x']);
+        $this->assertSame([200.0, 40.0, 40, 60], [(float) $character['x'], (float) $character['y'], $character['width'], $character['height']]);
+        $this->assertRotatedBox($expectedBox, $character);
+        $this->assertSame($rotation, $character['rotation']);
     }
 
-    private function putMapFile(string $map, array $characterObjects, array $buildings = []): void
+    /**
+     * @param  array{float, float, float, float}|null  $expectedBox  xRotated, yRotated, widthRotated, heightRotated
+     * @param  array<mixed>  $object
+     */
+    private function assertRotatedBox(?array $expectedBox, array $object): void
+    {
+        $actual = [$object['xRotated'], $object['yRotated'], $object['widthRotated'], $object['heightRotated']];
+
+        if ($expectedBox === null) {
+            $this->assertSame([null, null, null, null], $actual);
+
+            return;
+        }
+
+        $this->assertEqualsWithDelta($expectedBox, $actual, 0.001);
+    }
+
+    /**
+     * @return array<string, array{int, array{float, float, float, float}|null}>
+     */
+    public static function tileRotationProvider(): array
+    {
+        return [
+            'no rotation' => [0, null],
+            '90' => [90, [200, 100, 60, 40]],
+            '180' => [180, [160, 100, 40, 60]],
+            '-90' => [-90, [140, 60, 60, 40]],
+        ];
+    }
+
+    /**
+     * @param  array{float, float, float, float}|null  $expectedBox  xRotated, yRotated, widthRotated, heightRotated
+     */
+    #[DataProvider('rectangleRotationProvider')]
+    public function test_rectangle_rotates_around_top_left(int $rotation, ?array $expectedBox): void
+    {
+        $this->putMapFile('4.1', [], [], [
+            $this->makeFigureObject(x: 200, y: 100, width: 40, height: 60, rotation: $rotation),
+        ]);
+
+        $this->service->setMap('4.1');
+        $figure = $this->findObjectById($this->service->getWorldData(), 3);
+
+        $this->assertSame([200.0, 100.0, 40, 60], [(float) $figure['x'], (float) $figure['y'], $figure['width'], $figure['height']]);
+        $this->assertRotatedBox($expectedBox, $figure);
+    }
+
+    /**
+     * @return array<string, array{int, array{float, float, float, float}|null}>
+     */
+    public static function rectangleRotationProvider(): array
+    {
+        return [
+            'no rotation' => [0, null],
+            '90' => [90, [140, 100, 60, 40]],
+            '180' => [180, [160, 40, 40, 60]],
+            '-90' => [-90, [200, 60, 60, 40]],
+        ];
+    }
+
+    public function test_preset_collision_is_mirrored_with_flipped_and_rotated_tile(): void
+    {
+        Storage::disk('gamedata')->put('landscape.json', json_encode(['tiles' => [[
+            'id' => 0,
+            'image' => 'pole.png',
+            'properties' => [['name' => 'type', 'type' => 'string', 'value' => '']],
+            'objectgroup' => ['objects' => [['x' => 0, 'y' => 0, 'width' => 8, 'height' => 32]]],
+        ]]]));
+        $service = new WorldLoaderService(Storage::disk('gamedata'));
+        $pole = $this->makeTileObject(src: 'pole.png', x: 100, y: 82, width: 32, height: 32, rotation: 180);
+        $pole['gid'] = 0x40000000 | 263;
+        $this->putMapFile('4.1', [], [], [], [$pole]);
+
+        $service->setMap('4.1');
+        $loaded = $this->findObjectBySrc($service->getWorldData(), 'pole.png');
+
+        $this->assertRotatedBox([68, 82, 32, 32], $loaded);
+        $this->assertEqualsWithDelta(
+            [92, 100, 82, 114],
+            [$loaded['diameterLeft'], $loaded['diameterRight'], $loaded['diameterUp'], $loaded['diameterDown']],
+            0.001,
+        );
+    }
+
+    #[DataProvider('flipProvider')]
+    public function test_flip_flags_are_decoded_from_gid(int $gid, int $rotation, bool $expectedFlipX, bool $expectedFlipY): void
+    {
+        $object = $this->makeCharacterObject(src: 'pole.png', rotation: $rotation);
+        $object['gid'] = $gid;
+        $this->putMapFile('4.2', [$object]);
+
+        $this->service->setMap('4.2');
+        $result = $this->service->getWorldData();
+
+        $loaded = $this->findObjectBySrc($result, 'pole.png');
+        $this->assertSame($expectedFlipX, $loaded['flipX']);
+        $this->assertSame($expectedFlipY, $loaded['flipY']);
+        $this->assertSame($gid, $loaded['gid']);
+        $this->assertSame($rotation, $loaded['rotation']);
+    }
+
+    /**
+     * @return array<string, array{int, int, bool, bool}>
+     */
+    public static function flipProvider(): array
+    {
+        return [
+            'no flip' => [263, 0, false, false],
+            'horizontal bit' => [0x80000000 | 263, 0, true, false],
+            'vertical bit' => [0x40000000 | 263, 0, false, true],
+            'both bits' => [0xC0000000 | 263, 0, true, true],
+            'rotation does not change flips' => [0x40000000 | 263, 180, false, true],
+            'plain rotation has no flips' => [263, 180, false, false],
+        ];
+    }
+
+    private function putMapFile(string $map, array $characterObjects, array $buildings = [], array $figures = [], array $objects = []): void
     {
         $layers = [];
 
@@ -177,7 +296,50 @@ class WorldLoaderServiceTest extends TestCase
             $layers[] = ['name' => 'Buildings', 'objects' => $buildings];
         }
 
+        if (! empty($figures)) {
+            $layers[] = ['name' => 'Figures', 'objects' => $figures];
+        }
+
+        if (! empty($objects)) {
+            $layers[] = ['name' => 'Objects', 'objects' => $objects];
+        }
+
         Storage::disk('gamedata')->put($map.'.json', json_encode(['layers' => $layers]));
+    }
+
+    private function makeTileObject(string $src, int $x, int $y, int $width, int $height, int $rotation = 0): array
+    {
+        return [
+            'gid' => 1,
+            'id' => 4,
+            'name' => '',
+            'x' => $x,
+            'y' => $y,
+            'width' => $width,
+            'height' => $height,
+            'rotation' => $rotation,
+            'type' => '',
+            'visible' => true,
+            'properties' => [
+                ['name' => 'src', 'type' => 'string', 'value' => $src],
+                ['name' => 'type', 'type' => 'string', 'value' => ''],
+            ],
+        ];
+    }
+
+    private function makeFigureObject(int $x, int $y, int $width, int $height, int $rotation = 0): array
+    {
+        return [
+            'id' => 3,
+            'name' => '',
+            'x' => $x,
+            'y' => $y,
+            'width' => $width,
+            'height' => $height,
+            'rotation' => $rotation,
+            'type' => 'figure',
+            'visible' => true,
+        ];
     }
 
     private function makeCharacterObject(
@@ -238,6 +400,19 @@ class WorldLoaderServiceTest extends TestCase
 
         foreach ($result['data']['map_data']['objects'] as $object) {
             if (($object['src'] ?? null) === $src) {
+                return $object;
+            }
+        }
+
+        return null;
+    }
+
+    private function findObjectById(array|false $result, int $id): ?array
+    {
+        $this->assertIsArray($result, 'getWorldData() returned false — check map file was written correctly');
+
+        foreach ($result['data']['map_data']['objects'] as $object) {
+            if (($object['id'] ?? null) === $id) {
                 return $object;
             }
         }
