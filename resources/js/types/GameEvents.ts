@@ -30,6 +30,11 @@ export interface InputHandlerEvents {
   };
 }
 
+export interface ConversationEvents {
+  CONVERSATION_STARTED: { displayName: string };
+  CONVERSATION_END_REQUESTED: undefined;
+}
+
 export type GameQueryMap = {
   PLAYER_POSITION: {
     params: undefined;
