@@ -15,6 +15,7 @@ export interface GameProperties {
   device: string;
   building: string;
   inBuilding: boolean;
+  inConversation: boolean;
   checkingPerson: string;
   delta: number;
 }

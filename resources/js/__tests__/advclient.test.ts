@@ -5,7 +5,11 @@ import { describe, expect, beforeEach, vi, test, afterEach } from 'vitest';
 // viewport.zoom needs a real value for the delta tests.
 const mocks = vi.hoisted(() => ({
   hideOverlay: vi.fn<() => void>(),
+  resumeGame: vi.fn<() => void>(),
   subscribe: vi.fn(),
+  travel: vi.fn<(destination: string, person: string) => boolean>(),
+  loadBuilding: vi.fn<(building: string) => void>(),
+  addMessage: vi.fn<(message: string, log: boolean) => void>(),
 }));
 
 vi.mock('@/clientScripts/canvasText', () => ({
@@ -41,7 +45,7 @@ vi.mock('@/clientScripts/gamePieces', () => ({
   },
 }));
 vi.mock('@/clientScripts/pause', () => ({
-  pauseManager: { resumeGame: vi.fn() },
+  pauseManager: { resumeGame: mocks.resumeGame },
 }));
 vi.mock('@/clientScripts/viewport', () => ({
   default: {
@@ -51,6 +55,15 @@ vi.mock('@/clientScripts/viewport', () => ({
     adjustViewport: vi.fn(),
     setup: vi.fn(),
   },
+}));
+vi.mock('@/clientScripts/gameTravel', () => ({
+  gameTravel: { travel: mocks.travel },
+}));
+vi.mock('@/conversationCallbacks/loadBuilding', () => ({
+  loadBuildingCallback: mocks.loadBuilding,
+}));
+vi.mock('@/utilities/GameLogger', () => ({
+  GameLogger: { addMessage: mocks.addMessage },
 }));
 vi.mock('@/CustomFetchApi', () => ({
   CustomFetchApi: { get: vi.fn(), post: vi.fn() },
@@ -71,7 +84,6 @@ import { createTestingPinia } from '@pinia/testing';
 import { Game, initGame } from '@/advclient';
 import { GamePieces } from '@/clientScripts/gamePieces';
 import { controls } from '@/clientScripts/controls';
-import { useConversationStore } from '@/ui/stores/ConversationStore';
 
 const ZOOM = 1.2;
 
@@ -199,6 +211,7 @@ describe('Player movement is blocked when inBuilding or conversation is active',
     controls.playerRight = false;
     controls.playerLeft = false;
     Game.properties.inBuilding = false;
+    Game.properties.inConversation = false;
   });
 
   test('xMovement stays 0 when inBuilding is true, even with movement key held', () => {
@@ -223,8 +236,7 @@ describe('Player movement is blocked when inBuilding or conversation is active',
     expect(player.xMovement).toBeGreaterThan(0); // confirm movement happened
 
     // Conversation opens mid-movement
-    const conversationStore = useConversationStore();
-    conversationStore.isActive = true;
+    Game.properties.inConversation = true;
     player.xMovement = 0;
     Game.update(33.34); // frame 2 — conversation active
 
@@ -234,8 +246,7 @@ describe('Player movement is blocked when inBuilding or conversation is active',
   test('xMovement updates when not in building and no active conversation', () => {
     // Confirm neither blocking condition is set
     Game.properties.inBuilding = false;
-    const conversationStore = useConversationStore();
-    conversationStore.isActive = false;
+    Game.properties.inConversation = false;
 
     controls.playerRight = true;
     Game.update(16.67);
@@ -244,25 +255,111 @@ describe('Player movement is blocked when inBuilding or conversation is active',
   });
 });
 
-describe('initGame', () => {
-  beforeEach(() => {
+describe('initGame conversation handlers', () => {
+  const emit = (event: string, payload: unknown) => {
+    const calls = mocks.subscribe.mock.calls as Array<
+      [string, (payload: unknown) => void]
+    >;
+    calls
+      .filter(([name]) => name === event)
+      .forEach(([, listener]) => {
+        listener(payload);
+      });
+  };
+
+  beforeEach(async () => {
     vi.clearAllMocks();
+    Game.properties.inConversation = false;
     vi.spyOn(Game, 'getWorld').mockResolvedValue(undefined);
     vi.spyOn(Game, 'setup').mockImplementation(() => undefined);
+    await initGame(vi.fn());
   });
 
-  test('CONVERSATION_STARTED sets conversation state and hides overlay', async () => {
-    const setGameState = vi.spyOn(Game, 'setGameState');
-    await initGame(vi.fn());
+  describe('CONVERSATION_STARTED', () => {
+    test('sets conversation state and hides overlay', () => {
+      const setGameState = vi.spyOn(Game, 'setGameState');
 
-    const [event, listener] = mocks.subscribe.mock.calls[0] as [
-      string,
-      () => void,
-    ];
-    expect(event).toBe('CONVERSATION_STARTED');
-    listener();
+      emit('CONVERSATION_STARTED', { displayName: 'Pesr' });
 
-    expect(setGameState).toHaveBeenCalledExactlyOnceWith('conversation');
-    expect(mocks.hideOverlay).toHaveBeenCalledOnce();
+      expect(Game.properties.inConversation).toBe(true);
+      expect(setGameState).toHaveBeenCalledExactlyOnceWith('conversation');
+      expect(mocks.hideOverlay).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('UI_CONVERSATION_ENDED', () => {
+    test('resumes the game once even when emitted repeatedly', () => {
+      emit('CONVERSATION_STARTED', { displayName: 'Pesr' });
+
+      emit('UI_CONVERSATION_ENDED', null);
+      emit('UI_CONVERSATION_ENDED', null);
+
+      expect(Game.properties.inConversation).toBe(false);
+      expect(mocks.resumeGame).toHaveBeenCalledOnce();
+    });
+
+    test('does nothing when no conversation is active', () => {
+      emit('UI_CONVERSATION_ENDED', null);
+
+      expect(mocks.resumeGame).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('UI_CONVERSATION_CALLBACK', () => {
+    test('GameTravelCallback travels to the location', () => {
+      emit('UI_CONVERSATION_CALLBACK', {
+        callback: 'GameTravelCallback',
+        values: { location: 'Golbak' },
+        person: 'Pesr',
+      });
+
+      expect(mocks.travel).toHaveBeenCalledExactlyOnceWith('Golbak', 'Pesr');
+    });
+
+    test.for([null, {}, { location: 1 }])(
+      'GameTravelCallback with invalid values %j logs an error',
+      values => {
+        emit('UI_CONVERSATION_CALLBACK', {
+          callback: 'GameTravelCallback',
+          values,
+          person: 'Pesr',
+        });
+
+        expect(mocks.travel).not.toHaveBeenCalled();
+        expect(mocks.addMessage).toHaveBeenCalledExactlyOnceWith(
+          'An error occured',
+          true,
+        );
+      },
+    );
+
+    test('LoadZinsStoreCallback loads the zins store', () => {
+      emit('UI_CONVERSATION_CALLBACK', {
+        callback: 'LoadZinsStoreCallback',
+        values: null,
+        person: 'Zins',
+      });
+
+      expect(mocks.loadBuilding).toHaveBeenCalledExactlyOnceWith('zinsstore');
+    });
+
+    test.for(['Unknown', 'toString', '__proto__'])(
+      'unknown callback %s is reported',
+      callback => {
+        const reportError = vi
+          .spyOn(Game, 'reportError')
+          .mockImplementation(() => undefined);
+
+        emit('UI_CONVERSATION_CALLBACK', {
+          callback,
+          values: null,
+          person: 'Pesr',
+        });
+
+        expect(reportError).toHaveBeenCalledOnce();
+        expect(mocks.travel).not.toHaveBeenCalled();
+        expect(mocks.loadBuilding).not.toHaveBeenCalled();
+      },
+    );
   });
 });

@@ -11,9 +11,11 @@ import { formatLocationName } from './utilities/formatters';
 import { setUpTabList } from './utilities/tabs';
 import type { GetWorldResponse } from './types/Responses/WorldLoaderResponse';
 import { initErrorHandler, reportCatchError } from './base/ErrorHandler';
-import { useConversationStore } from './ui/stores/ConversationStore';
 import { gameEventBus } from './gameEventsBus';
 import { addModuleTester } from './devtools/ModuleTester';
+import { gameTravel } from './clientScripts/gameTravel';
+import { loadBuildingCallback } from './conversationCallbacks/loadBuilding';
+import { GameLogger } from './utilities/GameLogger';
 
 export class Game {
   public static properties: GameProperties = {
@@ -29,6 +31,7 @@ export class Game {
     device: 'pc',
     building: 'none',
     inBuilding: false,
+    inConversation: false,
     checkingPerson: 'none',
     delta: 0,
   };
@@ -279,7 +282,7 @@ export class Game {
         return false;
       }
 
-      if (!Game.properties.inBuilding && !useConversationStore().isActive) {
+      if (!Game.properties.inBuilding && !Game.properties.inConversation) {
         if (controls.playerLeft) {
           GamePieces.player.speedX = -GamePieces.player.speed;
         } else if (controls.playerRight) {
@@ -303,7 +306,7 @@ export class Game {
       if (
         // (GamePieces.player.speedX != 0 || GamePieces.player.speedY != 0) &&
         !Game.properties.inBuilding &&
-        !useConversationStore().isActive
+        !Game.properties.inConversation
       ) {
         eventHandler.checkEvent();
         GamePieces.player.collisionCheck(GamePieces.spatialGrid);
@@ -338,13 +341,60 @@ export class Game {
 
 addModuleTester(Game, 'Game');
 
+type ConversationCallbackHandler = (
+  values: Record<string, unknown> | null,
+  person: string,
+) => void;
+
+const conversationCallbackHandlers: Record<
+  string,
+  ConversationCallbackHandler
+> = {
+  GameTravelCallback: (values, person) => {
+    const location = values?.['location'];
+    if (typeof location !== 'string') {
+      GameLogger.addMessage('An error occured', true);
+      return;
+    }
+    gameTravel.travel(location, person);
+  },
+  LoadZinsStoreCallback: () => {
+    loadBuildingCallback('zinsstore');
+  },
+};
+
 export const initGame = async (onError: (error: unknown) => void) => {
   Game.registerErrorHandler(onError);
 
   gameEventBus.subscribe('CONVERSATION_STARTED', () => {
+    Game.properties.inConversation = true;
     Game.setGameState('conversation');
     ClientOverlayInterface.hide();
   });
+
+  gameEventBus.subscribe('UI_CONVERSATION_ENDED', () => {
+    if (!Game.properties.inConversation) {
+      return;
+    }
+    Game.properties.inConversation = false;
+    pauseManager.resumeGame();
+  });
+
+  gameEventBus.subscribe(
+    'UI_CONVERSATION_CALLBACK',
+    ({ callback, values, person }) => {
+      const handler = Object.hasOwn(conversationCallbackHandlers, callback)
+        ? conversationCallbackHandlers[callback]
+        : undefined;
+      if (handler === undefined) {
+        Game.reportError(
+          new Error(`Unknown conversation callback: ${callback}`),
+        );
+        return;
+      }
+      handler(values, person);
+    },
+  );
 
   await Game.getWorld().then(() => {
     Game.setup();
