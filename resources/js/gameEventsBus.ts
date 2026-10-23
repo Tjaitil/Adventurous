@@ -1,5 +1,6 @@
 import type {
   AdvClientEvents,
+  ConversationEvents,
   GameLoggerEvents,
   InputHandlerEvents,
 } from '@/types/GameEvents';
@@ -9,7 +10,8 @@ export type GameEventMap = {
   PLAYER_HUNTED_UPDATE: { isHunted: boolean };
 } & InputHandlerEvents &
   GameLoggerEvents &
-  AdvClientEvents;
+  AdvClientEvents &
+  ConversationEvents;
 
 type GameEventType = keyof GameEventMap;
 
@@ -28,6 +30,8 @@ class GameEventBus {
     PLAYER_HUNTED_UPDATE: [],
     GAMELOGGER_MESSAGE_LOGGED: [],
     CHANGED_LOCATION: [],
+    CONVERSATION_STARTED: [],
+    CONVERSATION_END_REQUESTED: [],
   };
 
   subscribe<K extends GameEventType>(event: K, listener: GameEventListener<K>) {
