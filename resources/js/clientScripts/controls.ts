@@ -4,7 +4,6 @@ import { inputHandler } from './inputHandler';
 import { Game } from '../advclient';
 import { GameLogger } from '../utilities/GameLogger';
 import { GamePieces } from './gamePieces';
-import { useConversationStore } from '@/ui/stores/ConversationStore';
 
 export const controls = {
   playerLeft: false,
@@ -329,7 +328,7 @@ export const controls = {
             // W
             if (
               Game.properties.gameState === 'playing' &&
-              !useConversationStore().isActive
+              !Game.properties.inConversation
             ) {
               controls.w();
             }
@@ -338,14 +337,14 @@ export const controls = {
             // E
             if (
               Game.properties.gameState === 'playing' &&
-              !useConversationStore().isActive
+              !Game.properties.inConversation
             ) {
               controls.e();
             }
             break;
           case 80:
             // P
-            if (!useConversationStore().isActive) {
+            if (!Game.properties.inConversation) {
               controls.p();
             }
             break;
