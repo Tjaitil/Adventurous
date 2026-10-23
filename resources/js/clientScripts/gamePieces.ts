@@ -123,8 +123,8 @@ export const GamePieces = {
             obj.type === 'character'
               ? obj.drawY - this.player.yMovement
               : Math.round(obj.drawY - this.player.yMovement),
-            obj.width,
-            obj.height,
+            obj.widthRotated ?? obj.width,
+            obj.heightRotated ?? obj.height,
           ),
       })),
       {
