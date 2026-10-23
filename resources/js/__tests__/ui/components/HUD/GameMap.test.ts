@@ -1,18 +1,40 @@
 import { fireEvent, render } from '@testing-library/vue';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import '@testing-library/jest-dom/vitest';
 import { nextTick } from 'vue';
 import { createPinia, setActivePinia } from 'pinia';
 import GameMap from '@/ui/components/HUD/GameMap.vue';
 import { useMapStore } from '@/ui/stores/MapStore';
 import { i18n } from '@/ui/main';
+import { gameQuery } from '@/gameQuery';
+import { reportError } from '@/ui/errorReporting';
 
-vi.mock(import('@/advclient'), () => ({
-  Game: { properties: { currentMap: '1.1' } },
+vi.mock(import('@/ui/errorReporting'), () => ({
+  reportError: vi.fn<(error: unknown) => void>(),
+  registerErrorHandler: vi.fn<(callback: (error: unknown) => void) => void>(),
 }));
-vi.mock(import('@/clientScripts/gamePieces'), () => ({
-  GamePieces: { player: { xpos: 0, ypos: 0 } },
-}));
+
+const unregisters: Array<() => void> = [];
+
+const providePlayerPosition = (position: {
+  x: number;
+  y: number;
+  currentMap: string;
+}) => {
+  unregisters.push(gameQuery.provide('PLAYER_POSITION', () => position));
+};
+
+beforeEach(() => {
+  vi.clearAllMocks();
+  providePlayerPosition({ x: 0, y: 0, currentMap: '1.1' });
+});
+
+afterEach(() => {
+  unregisters.forEach(unregister => {
+    unregister();
+  });
+  unregisters.length = 0;
+});
 
 const renderGameMap = () => {
   const pinia = createPinia();
@@ -97,5 +119,51 @@ describe('gameMap.vue', () => {
     await fireEvent.focusOut(map, { relatedTarget: inner });
 
     expect(mapContainer()).not.toHaveClass('invisible');
+  });
+
+  it('places the local marker from the queried player position', async () => {
+    expect.hasAssertions();
+
+    unregisters.pop()?.();
+    providePlayerPosition({ x: 400, y: 200, currentMap: '3.2' });
+    renderGameMap();
+
+    useMapStore().toggleMapVisibility(true);
+    await vi.waitFor(() => {
+      expect(document.getElementById('map_player_marker')).toHaveStyle({
+        left: '200px',
+        top: '100px',
+      });
+    });
+  });
+
+  it('places the world marker from the queried position and map', async () => {
+    expect.hasAssertions();
+
+    unregisters.pop()?.();
+    providePlayerPosition({ x: 1600, y: 800, currentMap: '3.2' });
+    renderGameMap();
+    const mapStore = useMapStore();
+    mapStore.toggleMapType();
+
+    mapStore.toggleMapVisibility(true);
+    await vi.waitFor(() => {
+      expect(document.getElementById('map_player_marker')).toHaveStyle({
+        left: String(1600 / 16 + 2 * 200 - 12.5) + 'px',
+        top: String(800 / 16 + 1 * 200 - 12.5) + 'px',
+      });
+    });
+  });
+
+  it('reports an error when no position provider is registered', async () => {
+    expect.hasAssertions();
+
+    unregisters.pop()?.();
+    renderGameMap();
+
+    useMapStore().toggleMapVisibility(true);
+    await vi.waitFor(() => {
+      expect(reportError).toHaveBeenCalledOnce();
+    });
   });
 });

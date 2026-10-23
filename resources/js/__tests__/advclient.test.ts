@@ -7,6 +7,7 @@ const mocks = vi.hoisted(() => ({
   hideOverlay: vi.fn<() => void>(),
   resumeGame: vi.fn<() => void>(),
   subscribe: vi.fn(),
+  provide: vi.fn(),
 }));
 
 vi.mock('@/clientScripts/canvasText', () => ({
@@ -52,6 +53,9 @@ vi.mock('@/clientScripts/viewport', () => ({
     adjustViewport: vi.fn(),
     setup: vi.fn(),
   },
+}));
+vi.mock('@/gameQuery', () => ({
+  gameQuery: { provide: mocks.provide },
 }));
 vi.mock('@/CustomFetchApi', () => ({
   CustomFetchApi: { get: vi.fn(), post: vi.fn() },
@@ -235,6 +239,29 @@ describe('Player movement is blocked when inBuilding or conversation is active',
     Game.update(16.67);
 
     expect(player.xMovement).toBeGreaterThan(0);
+  });
+});
+
+describe('initGame PLAYER_POSITION query', () => {
+  beforeEach(() => {
+    vi.spyOn(Game, 'getWorld').mockResolvedValue(undefined);
+    vi.spyOn(Game, 'setup').mockImplementation(() => undefined);
+  });
+
+  test('provides the player position and current map', async () => {
+    mocks.provide.mockClear();
+    await initGame(vi.fn());
+
+    expect(mocks.provide).toHaveBeenCalledWith(
+      'PLAYER_POSITION',
+      expect.any(Function),
+    );
+    const handler = mocks.provide.mock.calls[0][1] as () => unknown;
+    GamePieces.player.xpos = 120;
+    GamePieces.player.ypos = 340;
+    Game.properties.currentMap = '4.5';
+
+    expect(handler()).toEqual({ x: 120, y: 340, currentMap: '4.5' });
   });
 });
 
