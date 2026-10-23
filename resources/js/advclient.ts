@@ -15,10 +15,6 @@ import { useConversationStore } from './ui/stores/ConversationStore';
 import { gameEventBus } from './gameEventsBus';
 import { addModuleTester } from './devtools/ModuleTester';
 
-export type AdvClientEvents = {
-  CHANGED_LOCATION: { locationName: string };
-};
-
 export class Game {
   public static properties: GameProperties = {
     requestId: 0,
