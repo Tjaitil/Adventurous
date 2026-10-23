@@ -11,7 +11,6 @@ import { formatLocationName } from './utilities/formatters';
 import { setUpTabList } from './utilities/tabs';
 import type { GetWorldResponse } from './types/Responses/WorldLoaderResponse';
 import { initErrorHandler, reportCatchError } from './base/ErrorHandler';
-import { useConversationStore } from './ui/stores/ConversationStore';
 import { gameEventBus } from './gameEventsBus';
 import { addModuleTester } from './devtools/ModuleTester';
 import { registerConversationHandlers } from './clientScripts/conversationHandler';
@@ -30,6 +29,7 @@ export class Game {
     device: 'pc',
     building: 'none',
     inBuilding: false,
+    inConversation: false,
     checkingPerson: 'none',
     delta: 0,
   };
@@ -281,7 +281,7 @@ export class Game {
         return false;
       }
 
-      if (!Game.properties.inBuilding && !useConversationStore().isActive) {
+      if (!Game.properties.inBuilding && !Game.properties.inConversation) {
         if (controls.playerLeft) {
           GamePieces.player.speedX = -GamePieces.player.speed;
         } else if (controls.playerRight) {
@@ -305,7 +305,7 @@ export class Game {
       if (
         // (GamePieces.player.speedX != 0 || GamePieces.player.speedY != 0) &&
         !Game.properties.inBuilding &&
-        !useConversationStore().isActive
+        !Game.properties.inConversation
       ) {
         eventHandler.checkEvent();
         GamePieces.player.collisionCheck(GamePieces.spatialGrid);

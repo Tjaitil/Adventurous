@@ -1,15 +1,21 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/vue';
-import { describe, test, expect, vi, type Mock } from 'vitest';
+import {
+  describe,
+  test,
+  expect,
+  vi,
+  afterEach,
+  beforeEach,
+  type Mock,
+} from 'vitest';
 import '@testing-library/jest-dom/vitest';
 import ConversationContainer from '@/ui/components/ConversationContainer.vue';
 import { createTestingPinia } from '@pinia/testing';
 import { CustomFetchApi } from '@/CustomFetchApi';
 import { useConversationStore } from '@/ui/stores/ConversationStore';
 import { gameEventBus } from '@/gameEventsBus';
-import { gameTravel } from '@/clientScripts/gameTravel';
 import { PesrSelectLocationResponse } from '@/mocks/responses/conversations/Pesr';
 import { openZinsStoreResponse } from '@/mocks/responses/conversations/Zins';
-import { loadBuildingCallback } from '@/conversationCallbacks/loadBuilding';
 
 vi.mock('@/CustomFetchApi', () => {
   return {
@@ -19,26 +25,24 @@ vi.mock('@/CustomFetchApi', () => {
   };
 });
 
-vi.mock('@/clientScripts/gameTravel', () => {
-  return {
-    gameTravel: {
-      travel: vi.fn(),
-    },
-  };
+const callbackListener = vi.fn();
+const endedListener = vi.fn();
+const unsubscribers: Array<() => void> = [];
+
+beforeEach(() => {
+  callbackListener.mockClear();
+  endedListener.mockClear();
+  unsubscribers.push(
+    gameEventBus.subscribe('UI_CONVERSATION_CALLBACK', callbackListener),
+    gameEventBus.subscribe('UI_CONVERSATION_ENDED', endedListener),
+  );
 });
 
-vi.mock('@/clientScripts/pause', () => {
-  return {
-    pauseManager: {
-      resumeGame: vi.fn(),
-    },
-  };
-});
-
-vi.mock('@/conversationCallbacks/loadBuilding', () => {
-  return {
-    loadBuildingCallback: vi.fn(),
-  };
+afterEach(() => {
+  unsubscribers.forEach(unsubscribe => {
+    unsubscribe();
+  });
+  unsubscribers.length = 0;
 });
 
 describe('ConversationContainer.vue', () => {
@@ -174,6 +178,39 @@ describe('ConversationContainer.vue', () => {
     });
   });
 
+  test('exit button emits UI_CONVERSATION_ENDED for an active conversation', async () => {
+    render(ConversationContainer, {
+      global: {
+        plugins: [createTestingPinia({ stubActions: false, createSpy: vi.fn })],
+      },
+    });
+    (CustomFetchApi.post as Mock).mockResolvedValue({
+      data: {
+        conversation_segment: {
+          index: 'kps',
+          options: [
+            {
+              id: 1,
+              text: 'Option 1',
+              person: 'Test Character',
+              container: 'A',
+            },
+          ],
+        },
+      },
+    });
+    gameEventBus.emit('CONVERSATION_STARTED', { displayName: 'Pesr' });
+    await waitFor(() => {
+      expect(screen.getByText('Option 1')).toBeInTheDocument();
+    });
+
+    await fireEvent.click(screen.getByAltText('exit symbol'));
+
+    await waitFor(() => {
+      expect(endedListener).toHaveBeenCalledOnce();
+    });
+  });
+
   test('calls conversation with multiple options hides button', async () => {
     const { container } = render(ConversationContainer, {
       global: {
@@ -270,8 +307,11 @@ describe('Pesr Conversation test', () => {
       ).toBe(false);
 
       await fireEvent.click(screen.getByText(text));
-      expect(gameTravel.travel).toHaveBeenCalledWith(text, 'Pesr');
-      expect(gameTravel.travel).toHaveBeenCalledTimes(1);
+      expect(callbackListener).toHaveBeenCalledExactlyOnceWith({
+        callback: 'GameTravelCallback',
+        values: { location: text },
+        person: 'Pesr',
+      });
       vi.resetAllMocks();
     });
   });
@@ -301,8 +341,11 @@ describe('Zins Conversation test', () => {
       ).toBe(false);
 
       await fireEvent.click(screen.getByText('Click here to continue'));
-      expect(loadBuildingCallback).toHaveBeenCalledTimes(1);
-      expect(loadBuildingCallback).toHaveBeenCalledWith('zinsstore');
+      expect(callbackListener).toHaveBeenCalledExactlyOnceWith({
+        callback: 'LoadZinsStoreCallback',
+        values: null,
+        person: 'Zins',
+      });
     });
   });
 });

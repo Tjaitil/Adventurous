@@ -28,14 +28,12 @@
 </template>
 
 <script setup lang="ts">
-import { gameTravel } from '@/clientScripts/gameTravel';
 import { CustomFetchApi } from '@/CustomFetchApi';
 import { GameLogger } from '@/utilities/GameLogger';
 import { onMounted, onUnmounted, ref, watch } from 'vue';
 import { useConversationStore } from '../stores/ConversationStore';
 import { gameEventBus } from '@/gameEventsBus';
 import { reportError } from '@/ui/errorReporting';
-import { loadBuildingCallback } from '@/conversationCallbacks/loadBuilding';
 import ConversationHeader from './conversation/ConversationHeader.vue';
 import type {
   ConversationOption,
@@ -44,7 +42,6 @@ import type {
   conversationSegmentResponse,
 } from '@/types/Conversation';
 import ConversationBody from './conversation/ConversationBody.vue';
-import { pauseManager } from '@/clientScripts/pause';
 
 const showButton = ref(false);
 
@@ -109,33 +106,16 @@ const handleCallbacks = () => {
     return;
   }
 
-  if (selectedConversationOption.value == null) {
+  const option = selectedConversationOption.value;
+  if (option?.client_callback === undefined) {
     return;
   }
 
-  switch (selectedConversationOption.value.client_callback) {
-    case 'GameTravelCallback':
-      if (selectedConversationOption.value.option_values == null) {
-        return;
-      }
-
-      if (
-        !('location' in selectedConversationOption.value.option_values) &&
-        typeof selectedConversationOption.value.option_values['location'] !==
-          'string'
-      ) {
-        GameLogger.addMessage('An error occured', true);
-        return;
-      }
-      gameTravel.travel(
-        selectedConversationOption.value.option_values['location'],
-        store.currentPerson,
-      );
-      break;
-    case 'LoadZinsStoreCallback':
-      loadBuildingCallback('zinsstore');
-      break;
-  }
+  gameEventBus.emit('UI_CONVERSATION_CALLBACK', {
+    callback: option.client_callback,
+    values: option.option_values ?? null,
+    person: store.currentPerson,
+  });
 };
 
 const getNextSegment = async (data: ConversationRequest): Promise<void> => {
@@ -177,7 +157,7 @@ const endConversation = () => {
   store.isActive = false;
   showConversationContainer.value = false;
 
-  pauseManager.resumeGame();
+  gameEventBus.emit('UI_CONVERSATION_ENDED', undefined);
 
   setButtonVisibility(false);
 };

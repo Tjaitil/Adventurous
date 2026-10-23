@@ -66,7 +66,6 @@ import { createTestingPinia } from '@pinia/testing';
 import { Game } from '@/advclient';
 import { GamePieces } from '@/clientScripts/gamePieces';
 import { controls } from '@/clientScripts/controls';
-import { useConversationStore } from '@/ui/stores/ConversationStore';
 
 const ZOOM = 1.2;
 
@@ -172,7 +171,9 @@ describe('Player movement is blocked when inBuilding or conversation is active',
   const player = GamePieces.player;
 
   beforeEach(() => {
-    setActivePinia(createTestingPinia({ stubActions: false, createSpy: vi.fn }));
+    setActivePinia(
+      createTestingPinia({ stubActions: false, createSpy: vi.fn }),
+    );
 
     // Put the game in a running state
     Game.properties.gameState = 'playing';
@@ -192,6 +193,7 @@ describe('Player movement is blocked when inBuilding or conversation is active',
     controls.playerRight = false;
     controls.playerLeft = false;
     Game.properties.inBuilding = false;
+    Game.properties.inConversation = false;
   });
 
   test('xMovement stays 0 when inBuilding is true, even with movement key held', () => {
@@ -216,8 +218,7 @@ describe('Player movement is blocked when inBuilding or conversation is active',
     expect(player.xMovement).toBeGreaterThan(0); // confirm movement happened
 
     // Conversation opens mid-movement
-    const conversationStore = useConversationStore();
-    conversationStore.isActive = true;
+    Game.properties.inConversation = true;
     player.xMovement = 0;
     Game.update(33.34); // frame 2 — conversation active
 
@@ -227,8 +228,7 @@ describe('Player movement is blocked when inBuilding or conversation is active',
   test('xMovement updates when not in building and no active conversation', () => {
     // Confirm neither blocking condition is set
     Game.properties.inBuilding = false;
-    const conversationStore = useConversationStore();
-    conversationStore.isActive = false;
+    Game.properties.inConversation = false;
 
     controls.playerRight = true;
     Game.update(16.67);
