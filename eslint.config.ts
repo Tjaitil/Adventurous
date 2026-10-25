@@ -18,6 +18,7 @@ export default defineConfigWithVueTs(
     '**/vendor/**',
     '**/app/**',
     '**/dist/**',
+    '**/.claude/**',
   ]),
 
   pluginVue.configs['flat/recommended'],
