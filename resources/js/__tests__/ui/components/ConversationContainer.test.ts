@@ -31,21 +31,21 @@ vi.mock('@/clientScripts/conversationHandler', () => ({
 }));
 
 const endedListener = vi.fn();
-const unsubscribers: Array<() => void> = [];
+const subscribers: Array<() => void> = [];
 
 beforeEach(() => {
   vi.mocked(handleConversationCallback).mockClear();
   endedListener.mockClear();
-  unsubscribers.push(
+  subscribers.push(
     gameEventBus.subscribe('UI_CONVERSATION_ENDED', endedListener),
   );
 });
 
 afterEach(() => {
-  unsubscribers.forEach(unsubscribe => {
+  subscribers.forEach(unsubscribe => {
     unsubscribe();
   });
-  unsubscribers.length = 0;
+  subscribers.length = 0;
 });
 
 describe('ConversationContainer.vue', () => {
