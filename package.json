@@ -19,7 +19,7 @@
     "@vueuse/core": "^14.4.0",
     "axios": "^1.20.0",
     "pinia": "^3.0.4",
-    "vite": "^8.3.2",
+    "vite": "^8.3.5",
     "vue": "^3.5.43",
     "vue-i18n": "^11.4.13"
   },
@@ -40,7 +40,7 @@
     "eslint-plugin-oxlint": "^1.86.0",
     "eslint-plugin-perfectionist": "^5.12.1",
     "eslint-plugin-prettier": "^5.5.6",
-    "eslint-plugin-vue": "~10.0.1",
+    "eslint-plugin-vue": "^10.11.1",
     "jsdom": "^25.0.1",
     "laravel-echo": "^2.5.0",
     "laravel-vite-plugin": "^3.2.0",
