@@ -7,9 +7,6 @@ const mocks = vi.hoisted(() => ({
   hideOverlay: vi.fn<() => void>(),
   resumeGame: vi.fn<() => void>(),
   subscribe: vi.fn(),
-  travel: vi.fn<(destination: string, person: string) => boolean>(),
-  loadBuilding: vi.fn<(building: string) => void>(),
-  addMessage: vi.fn<(message: string, log: boolean) => void>(),
 }));
 
 vi.mock('@/clientScripts/canvasText', () => ({
@@ -55,15 +52,6 @@ vi.mock('@/clientScripts/viewport', () => ({
     adjustViewport: vi.fn(),
     setup: vi.fn(),
   },
-}));
-vi.mock('@/clientScripts/gameTravel', () => ({
-  gameTravel: { travel: mocks.travel },
-}));
-vi.mock('@/conversationCallbacks/loadBuilding', () => ({
-  loadBuildingCallback: mocks.loadBuilding,
-}));
-vi.mock('@/utilities/GameLogger', () => ({
-  GameLogger: { addMessage: mocks.addMessage },
 }));
 vi.mock('@/CustomFetchApi', () => ({
   CustomFetchApi: { get: vi.fn(), post: vi.fn() },
@@ -303,63 +291,5 @@ describe('initGame conversation handlers', () => {
 
       expect(mocks.resumeGame).not.toHaveBeenCalled();
     });
-  });
-
-  describe('UI_CONVERSATION_CALLBACK', () => {
-    test('GameTravelCallback travels to the location', () => {
-      emit('UI_CONVERSATION_CALLBACK', {
-        callback: 'GameTravelCallback',
-        values: { location: 'Golbak' },
-        person: 'Pesr',
-      });
-
-      expect(mocks.travel).toHaveBeenCalledExactlyOnceWith('Golbak', 'Pesr');
-    });
-
-    test.for([null, {}, { location: 1 }])(
-      'GameTravelCallback with invalid values %j logs an error',
-      values => {
-        emit('UI_CONVERSATION_CALLBACK', {
-          callback: 'GameTravelCallback',
-          values,
-          person: 'Pesr',
-        });
-
-        expect(mocks.travel).not.toHaveBeenCalled();
-        expect(mocks.addMessage).toHaveBeenCalledExactlyOnceWith(
-          'An error occured',
-          true,
-        );
-      },
-    );
-
-    test('LoadZinsStoreCallback loads the zins store', () => {
-      emit('UI_CONVERSATION_CALLBACK', {
-        callback: 'LoadZinsStoreCallback',
-        values: null,
-        person: 'Zins',
-      });
-
-      expect(mocks.loadBuilding).toHaveBeenCalledExactlyOnceWith('zinsstore');
-    });
-
-    test.for(['Unknown', 'toString', '__proto__'])(
-      'unknown callback %s is reported',
-      callback => {
-        const reportError = vi
-          .spyOn(Game, 'reportError')
-          .mockImplementation(() => undefined);
-
-        emit('UI_CONVERSATION_CALLBACK', {
-          callback,
-          values: null,
-          person: 'Pesr',
-        });
-
-        expect(reportError).toHaveBeenCalledOnce();
-        expect(mocks.travel).not.toHaveBeenCalled();
-        expect(mocks.loadBuilding).not.toHaveBeenCalled();
-      },
-    );
   });
 });

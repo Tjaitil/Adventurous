@@ -34,11 +34,6 @@ export interface ConversationEvents {
   CONVERSATION_STARTED: { displayName: string };
   CONVERSATION_END_REQUESTED: null;
   UI_CONVERSATION_ENDED: null;
-  UI_CONVERSATION_CALLBACK: {
-    callback: string;
-    values: Record<string, unknown> | null;
-    person: string;
-  };
 }
 
 export type GameQueryMap = {

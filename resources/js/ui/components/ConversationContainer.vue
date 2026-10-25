@@ -32,6 +32,7 @@ import { CustomFetchApi } from '@/CustomFetchApi';
 import { GameLogger } from '@/utilities/GameLogger';
 import { onMounted, onUnmounted, ref, watch } from 'vue';
 import { useConversationStore } from '../stores/ConversationStore';
+import { handleConversationCallback } from '@/clientScripts/conversationHandler';
 import { gameEventBus } from '@/gameEventsBus';
 import { reportError } from '@/ui/errorReporting';
 import ConversationHeader from './conversation/ConversationHeader.vue';
@@ -111,11 +112,11 @@ const handleCallbacks = () => {
     return;
   }
 
-  gameEventBus.emit('UI_CONVERSATION_CALLBACK', {
-    callback: option.client_callback,
-    values: option.option_values ?? null,
-    person: store.currentPerson,
-  });
+  handleConversationCallback(
+    option.client_callback,
+    option.option_values ?? null,
+    store.currentPerson,
+  );
 };
 
 const getNextSegment = async (data: ConversationRequest): Promise<void> => {

@@ -33,7 +33,6 @@ class GameEventBus {
     CONVERSATION_STARTED: [],
     CONVERSATION_END_REQUESTED: [],
     UI_CONVERSATION_ENDED: [],
-    UI_CONVERSATION_CALLBACK: [],
   };
 
   subscribe<K extends GameEventType>(event: K, listener: GameEventListener<K>) {

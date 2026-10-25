@@ -13,6 +13,7 @@ import ConversationContainer from '@/ui/components/ConversationContainer.vue';
 import { createTestingPinia } from '@pinia/testing';
 import { CustomFetchApi } from '@/CustomFetchApi';
 import { useConversationStore } from '@/ui/stores/ConversationStore';
+import { handleConversationCallback } from '@/clientScripts/conversationHandler';
 import { gameEventBus } from '@/gameEventsBus';
 import { PesrSelectLocationResponse } from '@/mocks/responses/conversations/Pesr';
 import { openZinsStoreResponse } from '@/mocks/responses/conversations/Zins';
@@ -25,15 +26,17 @@ vi.mock('@/CustomFetchApi', () => {
   };
 });
 
-const callbackListener = vi.fn();
+vi.mock('@/clientScripts/conversationHandler', () => ({
+  handleConversationCallback: vi.fn(),
+}));
+
 const endedListener = vi.fn();
 const unsubscribers: Array<() => void> = [];
 
 beforeEach(() => {
-  callbackListener.mockClear();
+  vi.mocked(handleConversationCallback).mockClear();
   endedListener.mockClear();
   unsubscribers.push(
-    gameEventBus.subscribe('UI_CONVERSATION_CALLBACK', callbackListener),
     gameEventBus.subscribe('UI_CONVERSATION_ENDED', endedListener),
   );
 });
@@ -307,11 +310,11 @@ describe('Pesr Conversation test', () => {
       ).toBe(false);
 
       await fireEvent.click(screen.getByText(text));
-      expect(callbackListener).toHaveBeenCalledExactlyOnceWith({
-        callback: 'GameTravelCallback',
-        values: { location: text },
-        person: 'Pesr',
-      });
+      expect(handleConversationCallback).toHaveBeenCalledExactlyOnceWith(
+        'GameTravelCallback',
+        { location: text },
+        'Pesr',
+      );
       vi.resetAllMocks();
     });
   });
@@ -341,11 +344,11 @@ describe('Zins Conversation test', () => {
       ).toBe(false);
 
       await fireEvent.click(screen.getByText('Click here to continue'));
-      expect(callbackListener).toHaveBeenCalledExactlyOnceWith({
-        callback: 'LoadZinsStoreCallback',
-        values: null,
-        person: 'Zins',
-      });
+      expect(handleConversationCallback).toHaveBeenCalledExactlyOnceWith(
+        'LoadZinsStoreCallback',
+        null,
+        'Zins',
+      );
     });
   });
 });
