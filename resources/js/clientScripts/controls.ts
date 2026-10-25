@@ -326,25 +326,19 @@ export const controls = {
             break;
           case 87:
             // W
-            if (
-              Game.properties.gameState === 'playing' &&
-              !Game.properties.inConversation
-            ) {
+            if (Game.properties.gameState === 'playing') {
               controls.w();
             }
             break;
           case 69:
             // E
-            if (
-              Game.properties.gameState === 'playing' &&
-              !Game.properties.inConversation
-            ) {
+            if (Game.properties.gameState === 'playing') {
               controls.e();
             }
             break;
           case 80:
             // P
-            if (!Game.properties.inConversation) {
+            if (Game.properties.gameState !== 'conversation') {
               controls.p();
             }
             break;

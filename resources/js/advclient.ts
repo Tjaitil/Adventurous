@@ -28,7 +28,6 @@ export class Game {
     device: 'pc',
     building: 'none',
     inBuilding: false,
-    inConversation: false,
     checkingPerson: 'none',
     delta: 0,
   };
@@ -279,7 +278,7 @@ export class Game {
         return false;
       }
 
-      if (!Game.properties.inBuilding && !Game.properties.inConversation) {
+      if (!Game.properties.inBuilding) {
         if (controls.playerLeft) {
           GamePieces.player.speedX = -GamePieces.player.speed;
         } else if (controls.playerRight) {
@@ -302,8 +301,7 @@ export class Game {
       viewport.resetHudLayer();
       if (
         // (GamePieces.player.speedX != 0 || GamePieces.player.speedY != 0) &&
-        !Game.properties.inBuilding &&
-        !Game.properties.inConversation
+        !Game.properties.inBuilding
       ) {
         eventHandler.checkEvent();
         GamePieces.player.collisionCheck(GamePieces.spatialGrid);
@@ -342,16 +340,14 @@ export const initGame = async (onError: (error: unknown) => void) => {
   Game.registerErrorHandler(onError);
 
   gameEventBus.subscribe('CONVERSATION_STARTED', () => {
-    Game.properties.inConversation = true;
     Game.setGameState('conversation');
     ClientOverlayInterface.hide();
   });
 
   gameEventBus.subscribe('UI_CONVERSATION_ENDED', () => {
-    if (!Game.properties.inConversation) {
+    if (Game.properties.gameState !== 'conversation') {
       return;
     }
-    Game.properties.inConversation = false;
     pauseManager.resumeGame();
   });
 

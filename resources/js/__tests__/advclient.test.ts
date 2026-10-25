@@ -199,7 +199,6 @@ describe('Player movement is blocked when inBuilding or conversation is active',
     controls.playerRight = false;
     controls.playerLeft = false;
     Game.properties.inBuilding = false;
-    Game.properties.inConversation = false;
   });
 
   test('xMovement stays 0 when inBuilding is true, even with movement key held', () => {
@@ -218,23 +217,19 @@ describe('Player movement is blocked when inBuilding or conversation is active',
   });
 
   test('xMovement stays 0 when conversation is active, even with movement key held', () => {
-    // Frame 1 — no conversation, player moves right
     controls.playerRight = true;
     Game.update(16.67);
     expect(player.xMovement).toBeGreaterThan(0); // confirm movement happened
 
-    // Conversation opens mid-movement
-    Game.properties.inConversation = true;
+    Game.setGameState('conversation');
     player.xMovement = 0;
-    Game.update(33.34); // frame 2 — conversation active
+    Game.update(33.34);
 
     expect(player.xMovement).toBe(0);
   });
 
-  test('xMovement updates when not in building and no active conversation', () => {
-    // Confirm neither blocking condition is set
+  test('xMovement updates when not in building', () => {
     Game.properties.inBuilding = false;
-    Game.properties.inConversation = false;
 
     controls.playerRight = true;
     Game.update(16.67);
@@ -257,7 +252,10 @@ describe('initGame conversation handlers', () => {
 
   beforeEach(async () => {
     vi.clearAllMocks();
-    Game.properties.inConversation = false;
+    Game.properties.gameState = 'playing';
+    mocks.resumeGame.mockImplementation(() => {
+      Game.setGameState('playing');
+    });
     vi.spyOn(Game, 'getWorld').mockResolvedValue(undefined);
     vi.spyOn(Game, 'setup').mockImplementation(() => undefined);
     await initGame(vi.fn());
@@ -269,7 +267,6 @@ describe('initGame conversation handlers', () => {
 
       emit('CONVERSATION_STARTED', { displayName: 'Pesr' });
 
-      expect(Game.properties.inConversation).toBe(true);
       expect(setGameState).toHaveBeenCalledExactlyOnceWith('conversation');
       expect(mocks.hideOverlay).toHaveBeenCalledOnce();
     });
@@ -282,7 +279,7 @@ describe('initGame conversation handlers', () => {
       emit('UI_CONVERSATION_ENDED', null);
       emit('UI_CONVERSATION_ENDED', null);
 
-      expect(Game.properties.inConversation).toBe(false);
+      expect(Game.properties.gameState).toBe('playing');
       expect(mocks.resumeGame).toHaveBeenCalledOnce();
     });
 
