@@ -32,7 +32,6 @@ export interface InputHandlerEvents {
 
 export type GameQueryMap = {
   PLAYER_POSITION: {
-    params: undefined;
     result: { x: number; y: number; currentMap: string };
   };
 };
