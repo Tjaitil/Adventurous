@@ -1,11 +1,15 @@
 import type { GameQueryMap } from '@/types/GameEvents';
 
-type GameQueryName = keyof GameQueryMap;
+type GameQueryName = Extract<keyof GameQueryMap, string>;
 
 type GameQueryHandler<K extends GameQueryName> = (
   params: GameQueryMap[K]['params'],
-) => GameQueryMap[K]['result'] | Promise<GameQueryMap[K]['result']>;
+) => GameQueryMap[K]['result'];
 
+/**
+ * Module for UI to query game state and register handlers for game-side queries.
+ * NOTE: Most likely you can use `gameEventBus` for most game-related events instead of directly querying the game state.
+ */
 class GameQuery {
   private providers: {
     [K in GameQueryName]?: GameQueryHandler<K>;
@@ -33,14 +37,14 @@ class GameQuery {
   }
 
   /**
-   * Rejects if no provider is registered for the query.
+   * Throws if no provider is registered for the query.
    */
-  async query<K extends GameQueryName>(
+  query<K extends GameQueryName>(
     name: K,
     ...[params]: GameQueryMap[K]['params'] extends undefined
       ? []
       : [params: GameQueryMap[K]['params']]
-  ): Promise<GameQueryMap[K]['result']> {
+  ): GameQueryMap[K]['result'] {
     const handler = this.providers[name];
     if (handler === undefined) {
       throw new Error(`No provider registered for query: ${name}`);

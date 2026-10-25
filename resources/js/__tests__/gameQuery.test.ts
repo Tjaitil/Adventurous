@@ -13,33 +13,25 @@ describe('gameQuery tests', () => {
 
   const position = { x: 10, y: 20, currentMap: '1.1' };
 
-  test('query resolves with the provider result', async () => {
+  test('query returns the provider result', () => {
     const handler = vi.fn(() => position);
     unregisters.push(gameQuery.provide('PLAYER_POSITION', handler));
 
-    await expect(gameQuery.query('PLAYER_POSITION')).resolves.toEqual(position);
+    expect(gameQuery.query('PLAYER_POSITION')).toEqual(position);
     expect(handler).toHaveBeenCalledOnce();
   });
 
-  test('query resolves with an async provider result', async () => {
-    unregisters.push(
-      gameQuery.provide('PLAYER_POSITION', () => Promise.resolve(position)),
-    );
-
-    await expect(gameQuery.query('PLAYER_POSITION')).resolves.toEqual(position);
-  });
-
-  test('query rejects when no provider is registered', async () => {
-    await expect(gameQuery.query('PLAYER_POSITION')).rejects.toThrow(
+  test('query throws when no provider is registered', () => {
+    expect(() => gameQuery.query('PLAYER_POSITION')).toThrow(
       'No provider registered for query: PLAYER_POSITION',
     );
   });
 
-  test('query rejects after the provider is unregistered', async () => {
+  test('query throws after the provider is unregistered', () => {
     const unregister = gameQuery.provide('PLAYER_POSITION', () => position);
     unregister();
 
-    await expect(gameQuery.query('PLAYER_POSITION')).rejects.toThrow();
+    expect(() => gameQuery.query('PLAYER_POSITION')).toThrow();
   });
 
   test('providing the same query twice throws', () => {
@@ -50,13 +42,13 @@ describe('gameQuery tests', () => {
     );
   });
 
-  test('stale unregister does not remove a newer provider', async () => {
+  test('stale unregister does not remove a newer provider', () => {
     const unregister = gameQuery.provide('PLAYER_POSITION', () => position);
     unregister();
     const newer = { x: 1, y: 2, currentMap: '2.2' };
     unregisters.push(gameQuery.provide('PLAYER_POSITION', () => newer));
     unregister();
 
-    await expect(gameQuery.query('PLAYER_POSITION')).resolves.toEqual(newer);
+    expect(gameQuery.query('PLAYER_POSITION')).toEqual(newer);
   });
 });
