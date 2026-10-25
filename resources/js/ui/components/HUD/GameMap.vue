@@ -208,7 +208,7 @@ watch(
   () => mapStore.isMapVisible,
   async isVisible => {
     if (isVisible) {
-      void updatePlayerPosition();
+      updatePlayerPosition();
       await nextTick();
       mapContainer.value?.focus();
     }
@@ -236,9 +236,9 @@ const playerMarkerStyle = computed(() => {
   };
 });
 
-const updatePlayerPosition = async () => {
+const updatePlayerPosition = () => {
   try {
-    const position = await gameQuery.query('PLAYER_POSITION');
+    const position = gameQuery.query('PLAYER_POSITION');
     playerX.value = position.x;
     playerY.value = position.y;
     currentMap.value = position.currentMap;
