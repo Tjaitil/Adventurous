@@ -2,8 +2,8 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 import {
   clearTransformedImageCache,
   getTransformedImageUrl,
-} from '@/clientScripts/spriteTransform';
-import type { SpriteTransform } from '@/clientScripts/spriteTransform';
+} from '@/engine/spriteTransform';
+import type { SpriteTransform } from '@/engine/spriteTransform';
 
 function mockCanvas() {
   const context = {

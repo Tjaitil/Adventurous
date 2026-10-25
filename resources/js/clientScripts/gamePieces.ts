@@ -9,7 +9,7 @@ import { DaqloonFightingArea } from '../gamepieces/DaqloonFightingArea';
 import type { Daqloon } from '../gamepieces/Daqloon';
 import { Player } from '../gamepieces/Player';
 import viewport from './viewport';
-import { SpatialGrid } from './SpatialGrid';
+import { SpatialGrid } from '@/engine/SpatialGrid';
 import type { Item } from '../gamepieces/Item';
 import type { StaticGameObject } from '../types/gamepieces/StaticGameObject';
 import type { WorldMapData } from '../types/Advclient';

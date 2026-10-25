@@ -1,8 +1,8 @@
 import viewport from '../clientScripts/viewport';
 import { AssetPaths } from '../clientScripts/ImagePath';
-import { getTransformedImageUrl } from '@/clientScripts/spriteTransform';
+import { getTransformedImageUrl } from '@/engine/spriteTransform';
 import { GamePieces } from '@/clientScripts/gamePieces';
-import type { SpriteTransform } from '@/clientScripts/spriteTransform';
+import type { SpriteTransform } from '@/engine/spriteTransform';
 import type { Character } from '@/types/gamepieces/Character';
 import type {
   IBuildingGameObject,

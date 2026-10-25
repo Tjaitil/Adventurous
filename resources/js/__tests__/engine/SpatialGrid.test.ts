@@ -1,5 +1,5 @@
 import { describe, expect, test, beforeEach } from 'vitest';
-import { SpatialGrid, CELL_SIZE, type SpatialObject } from '@/clientScripts/SpatialGrid';
+import { SpatialGrid, CELL_SIZE, type SpatialObject } from '@/engine/SpatialGrid';
 
 function makeObject(
   diameterLeft: number,

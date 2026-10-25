@@ -5,12 +5,12 @@ vi.mock('@/clientScripts/viewport', () => ({
   default: { offsetX: 0, offsetY: 0 },
 }));
 vi.mock('@/clientScripts/gamePieces', () => ({ GamePieces: {} }));
-vi.mock('@/clientScripts/spriteTransform', () => ({
+vi.mock('@/engine/spriteTransform', () => ({
   getTransformedImageUrl: vi.fn(() => 'data:image/png;base64,transformed'),
 }));
 
 import { BaseStaticGameObject } from '@/gamepieces/BaseStaticGameObject';
-import { getTransformedImageUrl } from '@/clientScripts/spriteTransform';
+import { getTransformedImageUrl } from '@/engine/spriteTransform';
 
 function makeObject(overrides: Partial<StaticGameObject> = {}) {
   return {

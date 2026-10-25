@@ -1,6 +1,6 @@
 import { describe, expect, test, beforeEach, vi } from 'vitest';
 import { MovingGameObject } from '@/gamepieces/MovingGameObject';
-import type { SpatialGrid, SpatialObject } from '@/clientScripts/SpatialGrid';
+import type { SpatialGrid, SpatialObject } from '@/engine/SpatialGrid';
 
 vi.mock('@/clientScripts/controls', () => ({
   controls: {
