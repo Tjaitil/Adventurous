@@ -273,20 +273,13 @@ describe('initGame conversation handlers', () => {
   });
 
   describe('UI_CONVERSATION_ENDED', () => {
-    test('resumes the game once even when emitted repeatedly', () => {
+    test('resumes the game', () => {
       emit('CONVERSATION_STARTED', { displayName: 'Pesr' });
 
-      emit('UI_CONVERSATION_ENDED', null);
       emit('UI_CONVERSATION_ENDED', null);
 
       expect(Game.properties.gameState).toBe('playing');
       expect(mocks.resumeGame).toHaveBeenCalledOnce();
-    });
-
-    test('does nothing when no conversation is active', () => {
-      emit('UI_CONVERSATION_ENDED', null);
-
-      expect(mocks.resumeGame).not.toHaveBeenCalled();
     });
   });
 });

@@ -345,9 +345,6 @@ export const initGame = async (onError: (error: unknown) => void) => {
   });
 
   gameEventBus.subscribe('UI_CONVERSATION_ENDED', () => {
-    if (Game.properties.gameState !== 'conversation') {
-      return;
-    }
     pauseManager.resumeGame();
   });
 
