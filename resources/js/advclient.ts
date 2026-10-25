@@ -14,7 +14,6 @@ import { initErrorHandler, reportCatchError } from './base/ErrorHandler';
 import { useConversationStore } from './ui/stores/ConversationStore';
 import { gameEventBus } from './gameEventsBus';
 import { addModuleTester } from './devtools/ModuleTester';
-import { registerConversationHandlers } from './clientScripts/conversationHandler';
 
 export class Game {
   public static properties: GameProperties = {
@@ -225,7 +224,6 @@ export class Game {
       setUpTabList();
 
       ClientOverlayInterface.setup();
-      registerConversationHandlers();
 
       viewport.setup({
         hud: document.getElementById('hud_canvas') as HTMLCanvasElement,
@@ -342,6 +340,11 @@ addModuleTester(Game, 'Game');
 
 export const initGame = async (onError: (error: unknown) => void) => {
   Game.registerErrorHandler(onError);
+
+  gameEventBus.subscribe('CONVERSATION_STARTED', () => {
+    Game.setGameState('conversation');
+    ClientOverlayInterface.hide();
+  });
 
   await Game.getWorld().then(() => {
     Game.setup();
