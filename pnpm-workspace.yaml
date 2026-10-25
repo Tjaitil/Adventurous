@@ -6,3 +6,8 @@ allowBuilds:
   msw: false
   vue-demi: false
   typescript-native-bridge: true
+minimumReleaseAgeExclude:
+  - postcss-selector-parser@7.1.6
+  - vite@8.3.3
+  - '@vitest/mocker@4.1.12'
+  - undici@8.12.2
