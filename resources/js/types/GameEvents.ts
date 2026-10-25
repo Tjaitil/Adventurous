@@ -32,7 +32,7 @@ export interface InputHandlerEvents {
 
 export interface ConversationEvents {
   CONVERSATION_STARTED: { displayName: string };
-  CONVERSATION_END_REQUESTED: undefined;
+  CONVERSATION_END_REQUESTED: null;
 }
 
 export type GameQueryMap = {

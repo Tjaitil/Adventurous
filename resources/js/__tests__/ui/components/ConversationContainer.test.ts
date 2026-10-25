@@ -162,7 +162,7 @@ describe('ConversationContainer.vue', () => {
       expect(screen.getByText('Option 1')).toBeInTheDocument();
     });
 
-    gameEventBus.emit('CONVERSATION_END_REQUESTED', undefined);
+    gameEventBus.emit('CONVERSATION_END_REQUESTED', null);
 
     await waitFor(() => {
       expect(conversationStore.isActive).toBe(false);

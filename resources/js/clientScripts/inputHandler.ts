@@ -146,7 +146,7 @@ export const inputHandler: IInputHandler = {
     Game.properties.inBuilding = true;
     Game.properties.building = building;
 
-    gameEventBus.emit('CONVERSATION_END_REQUESTED', undefined);
+    gameEventBus.emit('CONVERSATION_END_REQUESTED', null);
 
     if (isVuePage(building)) {
       gameEventBus.emit('RENDER_BUILDING', {
