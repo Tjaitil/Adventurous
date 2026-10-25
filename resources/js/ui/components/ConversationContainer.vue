@@ -182,10 +182,10 @@ const endConversation = () => {
   setButtonVisibility(false);
 };
 
-let unsubscribers: Array<() => void> = [];
+let subscribers: Array<() => void> = [];
 
 onMounted(() => {
-  unsubscribers = [
+  subscribers = [
     gameEventBus.subscribe('CONVERSATION_STARTED', ({ displayName }) => {
       store.triggerLoadConversation(displayName);
     }),
@@ -196,10 +196,10 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  unsubscribers.forEach(unsubscribe => {
+  subscribers.forEach(unsubscribe => {
     unsubscribe();
   });
-  unsubscribers = [];
+  subscribers = [];
 });
 
 watch(
