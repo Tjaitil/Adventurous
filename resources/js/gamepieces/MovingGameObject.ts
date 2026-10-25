@@ -1,5 +1,5 @@
 import { controls } from '../clientScripts/controls';
-import type { SpatialGrid, SpatialObject } from '../clientScripts/SpatialGrid';
+import type { SpatialGrid, SpatialObject } from '@/engine/SpatialGrid';
 import type { GameObject } from '../types/gamepieces/GameObject';
 
 export type DirectionBlockedCheck = 'blocked' | '';
