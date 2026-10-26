@@ -5,6 +5,7 @@ import { describe, expect, beforeEach, vi, test, afterEach } from 'vitest';
 // viewport.zoom needs a real value for the delta tests.
 const mocks = vi.hoisted(() => ({
   hideOverlay: vi.fn<() => void>(),
+  resumeGame: vi.fn<() => void>(),
   subscribe: vi.fn(),
 }));
 
@@ -41,7 +42,7 @@ vi.mock('@/clientScripts/gamePieces', () => ({
   },
 }));
 vi.mock('@/clientScripts/pause', () => ({
-  pauseManager: { resumeGame: vi.fn() },
+  pauseManager: { resumeGame: mocks.resumeGame },
 }));
 vi.mock('@/clientScripts/viewport', () => ({
   default: {
@@ -71,7 +72,6 @@ import { createTestingPinia } from '@pinia/testing';
 import { Game, initGame } from '@/advclient';
 import { GamePieces } from '@/clientScripts/gamePieces';
 import { controls } from '@/clientScripts/controls';
-import { useConversationStore } from '@/ui/stores/ConversationStore';
 
 const ZOOM = 1.2;
 
@@ -217,25 +217,19 @@ describe('Player movement is blocked when inBuilding or conversation is active',
   });
 
   test('xMovement stays 0 when conversation is active, even with movement key held', () => {
-    // Frame 1 — no conversation, player moves right
     controls.playerRight = true;
     Game.update(16.67);
     expect(player.xMovement).toBeGreaterThan(0); // confirm movement happened
 
-    // Conversation opens mid-movement
-    const conversationStore = useConversationStore();
-    conversationStore.isActive = true;
+    Game.setGameState('conversation');
     player.xMovement = 0;
-    Game.update(33.34); // frame 2 — conversation active
+    Game.update(33.34);
 
     expect(player.xMovement).toBe(0);
   });
 
-  test('xMovement updates when not in building and no active conversation', () => {
-    // Confirm neither blocking condition is set
+  test('xMovement updates when not in building', () => {
     Game.properties.inBuilding = false;
-    const conversationStore = useConversationStore();
-    conversationStore.isActive = false;
 
     controls.playerRight = true;
     Game.update(16.67);
@@ -244,25 +238,48 @@ describe('Player movement is blocked when inBuilding or conversation is active',
   });
 });
 
-describe('initGame', () => {
-  beforeEach(() => {
+describe('initGame conversation handlers', () => {
+  const emit = (event: string, payload: unknown) => {
+    const calls = mocks.subscribe.mock.calls as Array<
+      [string, (payload: unknown) => void]
+    >;
+    calls
+      .filter(([name]) => name === event)
+      .forEach(([, listener]) => {
+        listener(payload);
+      });
+  };
+
+  beforeEach(async () => {
     vi.clearAllMocks();
+    Game.properties.gameState = 'playing';
+    mocks.resumeGame.mockImplementation(() => {
+      Game.setGameState('playing');
+    });
     vi.spyOn(Game, 'getWorld').mockResolvedValue(undefined);
     vi.spyOn(Game, 'setup').mockImplementation(() => undefined);
+    await initGame(vi.fn());
   });
 
-  test('CONVERSATION_STARTED sets conversation state and hides overlay', async () => {
-    const setGameState = vi.spyOn(Game, 'setGameState');
-    await initGame(vi.fn());
+  describe('CONVERSATION_STARTED', () => {
+    test('sets conversation state and hides overlay', () => {
+      const setGameState = vi.spyOn(Game, 'setGameState');
 
-    const [event, listener] = mocks.subscribe.mock.calls[0] as [
-      string,
-      () => void,
-    ];
-    expect(event).toBe('CONVERSATION_STARTED');
-    listener();
+      emit('CONVERSATION_STARTED', { displayName: 'Pesr' });
 
-    expect(setGameState).toHaveBeenCalledExactlyOnceWith('conversation');
-    expect(mocks.hideOverlay).toHaveBeenCalledOnce();
+      expect(setGameState).toHaveBeenCalledExactlyOnceWith('conversation');
+      expect(mocks.hideOverlay).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('UI_CONVERSATION_ENDED', () => {
+    test('resumes the game', () => {
+      emit('CONVERSATION_STARTED', { displayName: 'Pesr' });
+
+      emit('UI_CONVERSATION_ENDED', null);
+
+      expect(Game.properties.gameState).toBe('playing');
+      expect(mocks.resumeGame).toHaveBeenCalledOnce();
+    });
   });
 });

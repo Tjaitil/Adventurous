@@ -12,8 +12,8 @@ export interface ConversationOption {
   text: string;
   next_key: 'Q' | 'q' | 'r' | 'S' | 'end';
   container: 'A' | 'B';
-  client_callback?: ConversationCallback;
-  option_values?: object;
+  client_callback: ConversationCallback | null;
+  option_values?: Record<string, unknown> | null;
   id: number;
 }
 export interface ConversationRequest {
