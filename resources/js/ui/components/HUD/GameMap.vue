@@ -66,7 +66,7 @@
       >
         <img
           id="local_img"
-          :src="`/images/${mapLocation}m.png`"
+          :src="`/images/${currentMap}m.png`"
           class="h-[1600px] w-[1600px] max-w-none"
           alt="Local map"
         />
@@ -91,8 +91,8 @@
 </template>
 
 <script setup lang="ts">
-import { Game } from '@/advclient';
-import { GamePieces } from '@/clientScripts/gamePieces';
+import { gameQuery } from '@/gameQuery';
+import { reportError } from '@/ui/errorReporting';
 import { useMapStore } from '@/ui/stores/MapStore';
 import {
   computed,
@@ -104,7 +104,7 @@ import {
 } from 'vue';
 import { onClickOutside } from '@vueuse/core';
 
-defineProps<{ mapLocation: string }>();
+const { mapLocation } = defineProps<{ mapLocation: string }>();
 
 // Exception array from Blade
 const imagesWithoutM = [
@@ -208,6 +208,7 @@ watch(
   () => mapStore.isMapVisible,
   async isVisible => {
     if (isVisible) {
+      updatePlayerPosition();
       await nextTick();
       mapContainer.value?.focus();
     }
@@ -216,6 +217,7 @@ watch(
 
 const playerX = ref(0);
 const playerY = ref(0);
+const currentMap = ref(mapLocation);
 
 const playerMarkerStyle = computed(() => {
   let x = playerX.value;
@@ -224,7 +226,7 @@ const playerMarkerStyle = computed(() => {
     x = x / 2;
     y = y / 2;
   } else {
-    const map = Game.properties.currentMap.split('.');
+    const map = currentMap.value.split('.');
     x = x / 16 + (parseInt(map[0]) - 1) * 200 - 12.5;
     y = y / 16 + (parseInt(map[1]) - 1) * 200 - 12.5;
   }
@@ -234,10 +236,14 @@ const playerMarkerStyle = computed(() => {
   };
 });
 
-mapStore.$onAction(({ name }) => {
-  if (name === 'toggleMapVisibility') {
-    playerX.value = GamePieces.player.xpos;
-    playerY.value = GamePieces.player.ypos;
+const updatePlayerPosition = () => {
+  try {
+    const position = gameQuery.query('PLAYER_POSITION');
+    playerX.value = position.x;
+    playerY.value = position.y;
+    currentMap.value = position.currentMap;
+  } catch (error) {
+    reportError(error);
   }
-});
+};
 </script>

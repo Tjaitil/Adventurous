@@ -13,6 +13,7 @@ import type { GetWorldResponse } from './types/Responses/WorldLoaderResponse';
 import { initErrorHandler, reportCatchError } from './base/ErrorHandler';
 import { gameEventBus } from './gameEventsBus';
 import { addModuleTester } from './devtools/ModuleTester';
+import { gameQuery } from './gameQuery';
 
 export class Game {
   public static properties: GameProperties = {
@@ -338,6 +339,12 @@ addModuleTester(Game, 'Game');
 
 export const initGame = async (onError: (error: unknown) => void) => {
   Game.registerErrorHandler(onError);
+
+  gameQuery.provide('PLAYER_POSITION', () => ({
+    x: GamePieces.player.xpos,
+    y: GamePieces.player.ypos,
+    currentMap: Game.properties.currentMap,
+  }));
 
   gameEventBus.subscribe('CONVERSATION_STARTED', () => {
     Game.setGameState('conversation');
