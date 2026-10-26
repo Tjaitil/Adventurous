@@ -6,7 +6,7 @@ import { itemTitle } from '../utilities/itemTitle';
 import { Game } from '../advclient';
 import { GameLogger } from '../utilities/GameLogger';
 import type { BuildingName } from '@/types/Building';
-import { isVuePage, type VuePage } from '@/types/Building';
+import { isVuePage } from '@/types/Building';
 import { GamePieces } from './gamePieces';
 import { Building } from '../gamepieces/Building';
 import { setUpTabList } from '../utilities/tabs';
@@ -36,22 +36,6 @@ export enum Buildings {
   SMITHY = 'smithy',
   ARCHERYSHOP = 'archeryshop',
   ARMORY = 'armory',
-}
-
-export interface InputHandlerEvents {
-  RENDER_BUILDING:
-    | {
-        content: string;
-        building: Exclude<BuildingName, VuePage>;
-      }
-    | { building: VuePage }
-    | { loading: true };
-  HUD_BUILDING_PROMPT_UPDATE: {
-    buildingName: string | null;
-  };
-  HUD_CONVERSATION_PROMPT_UPDATE: {
-    characterName: string | null;
-  };
 }
 
 function shouldSkipImport(building: string) {
