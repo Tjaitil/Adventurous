@@ -66,7 +66,7 @@
       >
         <img
           id="local_img"
-          :src="`/images/${mapLocation}m.png`"
+          :src="`/images/${currentMap}m.png`"
           class="h-[1600px] w-[1600px] max-w-none"
           alt="Local map"
         />
@@ -104,7 +104,7 @@ import {
 } from 'vue';
 import { onClickOutside } from '@vueuse/core';
 
-defineProps<{ mapLocation: string }>();
+const { mapLocation } = defineProps<{ mapLocation: string }>();
 
 // Exception array from Blade
 const imagesWithoutM = [
@@ -217,7 +217,7 @@ watch(
 
 const playerX = ref(0);
 const playerY = ref(0);
-const currentMap = ref('0.0');
+const currentMap = ref(mapLocation);
 
 const playerMarkerStyle = computed(() => {
   let x = playerX.value;
