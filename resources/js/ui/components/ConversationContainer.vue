@@ -108,7 +108,7 @@ const handleCallbacks = () => {
   }
 
   const option = selectedConversationOption.value;
-  if (option?.client_callback === undefined) {
+  if (option?.client_callback == undefined) {
     return;
   }
 

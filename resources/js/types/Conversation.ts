@@ -12,7 +12,7 @@ export interface ConversationOption {
   text: string;
   next_key: 'Q' | 'q' | 'r' | 'S' | 'end';
   container: 'A' | 'B';
-  client_callback?: ConversationCallback;
+  client_callback: ConversationCallback | null;
   option_values?: Record<string, unknown> | null;
   id: number;
 }
