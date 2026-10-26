@@ -1,11 +1,11 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/vue';
-import { describe, test, expect, vi, beforeEach, type Mock } from 'vitest';
+import { describe, test, expect, vi, type Mock } from 'vitest';
 import '@testing-library/jest-dom/vitest';
 import ConversationContainer from '@/ui/components/ConversationContainer.vue';
 import { createTestingPinia } from '@pinia/testing';
 import { CustomFetchApi } from '@/CustomFetchApi';
 import { useConversationStore } from '@/ui/stores/ConversationStore';
-import { GamePieces } from '@/clientScripts/gamePieces';
+import { gameEventBus } from '@/gameEventsBus';
 import { gameTravel } from '@/clientScripts/gameTravel';
 import { PesrSelectLocationResponse } from '@/mocks/responses/conversations/Pesr';
 import { openZinsStoreResponse } from '@/mocks/responses/conversations/Zins';
@@ -15,24 +15,6 @@ vi.mock('@/CustomFetchApi', () => {
   return {
     CustomFetchApi: {
       post: vi.fn(),
-    },
-  };
-});
-
-vi.mock('@/advclient', () => ({
-  Game: {
-    setGameState: vi.fn(),
-    properties: {
-      gameState: 'playing',
-    },
-  },
-}));
-
-vi.mock('@/clientScripts/clientOverlayInterface', () => {
-  return {
-    ClientOverlayInterface: {
-      show: vi.fn(),
-      hide: vi.fn(),
     },
   };
 });
@@ -60,70 +42,6 @@ vi.mock('@/conversationCallbacks/loadBuilding', () => {
 });
 
 describe('ConversationContainer.vue', () => {
-  beforeEach(() => {
-    GamePieces.characters = [
-      {
-        height: 32,
-        id: false,
-        type: 'character',
-        visible: true,
-        width: 32,
-        x: 1728.5,
-        y: 2145,
-        sprite: new Image(),
-        drawX: 0,
-        drawY: 0,
-        diameterDown: 2177,
-        diameterLeft: 1728.5,
-        diameterRight: 1760.5,
-        diameterUp: 0,
-        displayName: 'Pesr',
-        noCollision: false,
-        src: 'pesr.png',
-        conversation: true,
-      },
-      {
-        height: 32,
-        id: false,
-        type: 'character',
-        visible: true,
-        width: 32,
-        x: 1728.5,
-        y: 2145,
-        sprite: new Image(),
-        drawX: 0,
-        drawY: 0,
-        diameterDown: 2177,
-        diameterLeft: 1728.5,
-        diameterRight: 1760.5,
-        diameterUp: 0,
-        displayName: 'Zins',
-        noCollision: false,
-        src: 'zins.png',
-        conversation: true,
-      },
-      {
-        height: 32,
-        id: false,
-        type: 'character',
-        visible: true,
-        width: 32,
-        x: 1728.5,
-        y: 2145,
-        sprite: new Image(),
-        drawX: 0,
-        drawY: 0,
-        diameterDown: 2177,
-        diameterLeft: 1728.5,
-        diameterRight: 1760.5,
-        diameterUp: 0,
-        displayName: 'Kapys',
-        noCollision: false,
-        src: 'kapys.png',
-        conversation: true,
-      },
-    ];
-  });
   test('renders the component correctly in loading state', () => {
     const { container } = render(ConversationContainer, {
       global: {
@@ -173,6 +91,86 @@ describe('ConversationContainer.vue', () => {
       ).toBe(false);
 
       expect(screen.getByText('Option 1')).toBeInTheDocument();
+    });
+  });
+
+  test('CONVERSATION_STARTED event loads the conversation', async () => {
+    const { container } = render(ConversationContainer, {
+      global: {
+        plugins: [createTestingPinia({ stubActions: false, createSpy: vi.fn })],
+      },
+    });
+
+    (CustomFetchApi.post as Mock).mockResolvedValue({
+      data: {
+        conversation_segment: {
+          index: 'kps',
+          options: [
+            {
+              id: 1,
+              text: 'Option 1',
+              person: 'Test Character',
+              container: 'A',
+            },
+          ],
+        },
+      },
+    });
+
+    gameEventBus.emit('CONVERSATION_STARTED', { displayName: 'Pesr' });
+
+    await waitFor(() => {
+      expect(useConversationStore().currentPerson).toBe('Pesr');
+      expect(
+        container
+          .querySelector('#conversation-container')
+          ?.classList.contains('invisible'),
+      ).toBe(false);
+      expect(screen.getByText('Option 1')).toBeInTheDocument();
+    });
+    expect((CustomFetchApi.post as Mock).mock.calls[0]).toEqual([
+      'conversation/next',
+      { person: 'Pesr', is_starting: true },
+    ]);
+  });
+
+  test('CONVERSATION_END_REQUESTED event ends the conversation', async () => {
+    const { container } = render(ConversationContainer, {
+      global: {
+        plugins: [createTestingPinia({ stubActions: false, createSpy: vi.fn })],
+      },
+    });
+    const conversationStore = useConversationStore();
+    conversationStore.triggerLoadConversation('Pesr');
+
+    (CustomFetchApi.post as Mock).mockResolvedValue({
+      data: {
+        conversation_segment: {
+          index: 'kps',
+          options: [
+            {
+              id: 1,
+              text: 'Option 1',
+              person: 'Test Character',
+              container: 'A',
+            },
+          ],
+        },
+      },
+    });
+    await waitFor(() => {
+      expect(screen.getByText('Option 1')).toBeInTheDocument();
+    });
+
+    gameEventBus.emit('CONVERSATION_END_REQUESTED', null);
+
+    await waitFor(() => {
+      expect(conversationStore.isActive).toBe(false);
+      expect(
+        container
+          .querySelector('#conversation-container')
+          ?.classList.contains('invisible'),
+      ).toBe(true);
     });
   });
 
@@ -241,30 +239,6 @@ describe('ConversationContainer.vue', () => {
 });
 
 describe('Pesr Conversation test', () => {
-  beforeEach(() => {
-    GamePieces.characters = [
-      {
-        height: 32,
-        id: false,
-        type: 'character',
-        visible: true,
-        width: 32,
-        x: 1728.5,
-        y: 2145,
-        sprite: new Image(),
-        drawX: 0,
-        drawY: 0,
-        diameterDown: 2177,
-        diameterLeft: 1728.5,
-        diameterRight: 1760.5,
-        diameterUp: 0,
-        displayName: 'Pesr',
-        noCollision: false,
-        src: 'pesr.png',
-        conversation: true,
-      },
-    ];
-  });
   test.for([
     'Golbak',
     'Khanz',
@@ -304,30 +278,6 @@ describe('Pesr Conversation test', () => {
 });
 
 describe('Zins Conversation test', () => {
-  beforeEach(() => {
-    GamePieces.characters = [
-      {
-        height: 32,
-        id: false,
-        type: 'character',
-        visible: true,
-        width: 32,
-        x: 1728.5,
-        y: 2145,
-        sprite: new Image(),
-        drawX: 0,
-        drawY: 0,
-        diameterDown: 2177,
-        diameterLeft: 1728.5,
-        diameterRight: 1760.5,
-        diameterUp: 0,
-        displayName: 'Zins',
-        noCollision: false,
-        src: 'zins.png',
-        conversation: true,
-      },
-    ];
-  });
   test('LoadZinsStoreCallback with Zins is invoked', async () => {
     const { container } = render(ConversationContainer, {
       global: {

@@ -28,14 +28,12 @@
 </template>
 
 <script setup lang="ts">
-import { ClientOverlayInterface } from '@/clientScripts/clientOverlayInterface';
-import { GamePieces } from '@/clientScripts/gamePieces';
 import { gameTravel } from '@/clientScripts/gameTravel';
 import { CustomFetchApi } from '@/CustomFetchApi';
 import { GameLogger } from '@/utilities/GameLogger';
-import { ref, watch } from 'vue';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
 import { useConversationStore } from '../stores/ConversationStore';
-import { Game } from '@/advclient';
+import { gameEventBus } from '@/gameEventsBus';
 import { reportError } from '@/ui/errorReporting';
 import { loadBuildingCallback } from '@/conversationCallbacks/loadBuilding';
 import ConversationHeader from './conversation/ConversationHeader.vue';
@@ -56,33 +54,20 @@ const currentConversationSegment = ref<ConversationSegment | null>(null);
 const showConversationContainer = ref(false);
 const conversationContainerScale = ref(0.8);
 
-const persons = ref<string[]>([]);
-
 const isLoading = ref(true);
 
 const store = useConversationStore();
 
 const loadConversation = async () => {
-  Game.setGameState('conversation');
-
-  const characterObject = GamePieces.characters.find(object => {
-    return object.displayName === store.currentPerson;
-  });
-
-  if (characterObject == undefined) {
-    GameLogger.addMessage('An error occured', true);
+  if (store.currentPerson == null) {
     return;
   }
-  const person = (persons.value[0] = characterObject.displayName);
-
-  persons.value = [];
-  ClientOverlayInterface.hide();
 
   conversationContainerScale.value = 1;
   showConversationContainer.value = true;
 
   const data = {
-    person: person,
+    person: store.currentPerson,
     is_starting: true,
   };
   await getNextSegment(data).then(() => {
@@ -196,6 +181,26 @@ const endConversation = () => {
 
   setButtonVisibility(false);
 };
+
+let subscribers: Array<() => void> = [];
+
+onMounted(() => {
+  subscribers = [
+    gameEventBus.subscribe('CONVERSATION_STARTED', ({ displayName }) => {
+      store.triggerLoadConversation(displayName);
+    }),
+    gameEventBus.subscribe('CONVERSATION_END_REQUESTED', () => {
+      store.triggerEndConversation();
+    }),
+  ];
+});
+
+onUnmounted(() => {
+  subscribers.forEach(unsubscribe => {
+    unsubscribe();
+  });
+  subscribers = [];
+});
 
 watch(
   () => store.isActive,

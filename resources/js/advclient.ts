@@ -341,6 +341,11 @@ addModuleTester(Game, 'Game');
 export const initGame = async (onError: (error: unknown) => void) => {
   Game.registerErrorHandler(onError);
 
+  gameEventBus.subscribe('CONVERSATION_STARTED', () => {
+    Game.setGameState('conversation');
+    ClientOverlayInterface.hide();
+  });
+
   await Game.getWorld().then(() => {
     Game.setup();
   });

@@ -3,12 +3,17 @@ import { describe, expect, beforeEach, vi, test, afterEach } from 'vitest';
 // Mock all canvas/game-loop dependencies so the module loads in jsdom.
 // Game.update returns early when gameState !== 'playing', so only
 // viewport.zoom needs a real value for the delta tests.
+const mocks = vi.hoisted(() => ({
+  hideOverlay: vi.fn<() => void>(),
+  subscribe: vi.fn(),
+}));
+
 vi.mock('@/clientScripts/canvasText', () => ({
   loadingCanvas: { opacity: 0, loadingAnimationTracker: { start: vi.fn() } },
   canvasTextHeader: { setDraw: vi.fn() },
 }));
 vi.mock('@/clientScripts/clientOverlayInterface', () => ({
-  ClientOverlayInterface: { setup: vi.fn() },
+  ClientOverlayInterface: { setup: vi.fn(), hide: mocks.hideOverlay },
 }));
 vi.mock('@/clientScripts/controls', () => ({ controls: { setup: vi.fn() } }));
 vi.mock('@/clientScripts/gameEventHandler', () => ({
@@ -52,7 +57,7 @@ vi.mock('@/CustomFetchApi', () => ({
 }));
 // ConversationStore is a real Pinia store — activated per-test via setActivePinia
 vi.mock('@/gameEventsBus', () => ({
-  gameEventBus: { emit: vi.fn(), subscribe: vi.fn() },
+  gameEventBus: { emit: vi.fn(), subscribe: mocks.subscribe },
 }));
 vi.mock('@/utilities/formatters', () => ({ formatLocationName: vi.fn() }));
 vi.mock('@/utilities/tabs', () => ({ setUpTabList: vi.fn() }));
@@ -63,7 +68,7 @@ vi.mock('@/base/ErrorHandler', () => ({
 
 import { setActivePinia } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
-import { Game } from '@/advclient';
+import { Game, initGame } from '@/advclient';
 import { GamePieces } from '@/clientScripts/gamePieces';
 import { controls } from '@/clientScripts/controls';
 import { useConversationStore } from '@/ui/stores/ConversationStore';
@@ -172,7 +177,9 @@ describe('Player movement is blocked when inBuilding or conversation is active',
   const player = GamePieces.player;
 
   beforeEach(() => {
-    setActivePinia(createTestingPinia({ stubActions: false, createSpy: vi.fn }));
+    setActivePinia(
+      createTestingPinia({ stubActions: false, createSpy: vi.fn }),
+    );
 
     // Put the game in a running state
     Game.properties.gameState = 'playing';
@@ -234,5 +241,28 @@ describe('Player movement is blocked when inBuilding or conversation is active',
     Game.update(16.67);
 
     expect(player.xMovement).toBeGreaterThan(0);
+  });
+});
+
+describe('initGame', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.spyOn(Game, 'getWorld').mockResolvedValue(undefined);
+    vi.spyOn(Game, 'setup').mockImplementation(() => undefined);
+  });
+
+  test('CONVERSATION_STARTED sets conversation state and hides overlay', async () => {
+    const setGameState = vi.spyOn(Game, 'setGameState');
+    await initGame(vi.fn());
+
+    const [event, listener] = mocks.subscribe.mock.calls[0] as [
+      string,
+      () => void,
+    ];
+    expect(event).toBe('CONVERSATION_STARTED');
+    listener();
+
+    expect(setGameState).toHaveBeenCalledExactlyOnceWith('conversation');
+    expect(mocks.hideOverlay).toHaveBeenCalledOnce();
   });
 });
