@@ -22,7 +22,6 @@ export class Item {
   FRAME_SIZE = 32;
   width = 24;
   height = 24;
-  scale = 0.8;
   checking = false;
   diameterDown: number;
   diameterUp: number;
