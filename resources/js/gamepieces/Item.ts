@@ -13,15 +13,17 @@ export class Item {
   drawY: number;
   id: number;
   spriteObject: ItemSprite;
-  shadow: ItemShadowAnimation;
+  animTime = 0;
+  BOB_PERIOD = 0.9;
+  BOB_MIN = 1;
+  BOB_HEIGHT = 5;
   name: string;
-  width = 32;
-  height = 32;
-  scale = 0.6;
-  loopIndex = 0;
-  loopArray = [1, 4, 6, 4];
-  checking: boolean;
   src: string;
+  FRAME_SIZE = 32;
+  width = 24;
+  height = 24;
+  scale = 0.8;
+  checking = false;
   diameterDown: number;
   diameterUp: number;
   diameterLeft: number;
@@ -37,35 +39,55 @@ export class Item {
     this.diameterUp = this.drawY;
     this.diameterLeft = this.drawX;
     this.diameterRight = this.drawX + this.width;
-
+    this.src = src;
+    this.name = src;
     this.spriteObject = makeSprite(
       this.name,
       this.width,
       this.height,
       this.src,
     );
-    this.shadow = new ItemShadowAnimation(this.x, this.y);
+  }
+
+  /**
+   * Position in the bob cycle, 0 → 1 → 0. Eases smoothly, slowing near each
+   * end and moving fastest in the middle. Shared by the item and its shadow so
+   * they stay in sync.
+   *
+   * 1. cycles = animTime / BOB_PERIOD: how many full bobs have elapsed.
+   * 2. angle = cycles * 2π: one full bob is one lap around a circle.
+   * 3. cos(angle) goes 1 → -1 → 1 over one lap.
+   * 4. (1 - cos) / 2 rescales that to 0 → 1 → 0, starting at 0.
+   */
+  getBobProgress(): number {
+    const angle = (this.animTime / this.BOB_PERIOD) * Math.PI * 2;
+    return (1 - Math.cos(angle)) / 2;
+  }
+
+  getBobOffset(): number {
+    return this.BOB_MIN + this.BOB_HEIGHT * this.getBobProgress();
   }
 
   draw() {
-    if (this.loopIndex > 3) this.loopIndex = 0;
-
     viewport.drawWorldSprite(
       this.spriteObject.image,
       0,
       0,
-      32 * viewport.scale,
-      32 * viewport.scale,
-      this.drawX - GamePieces.player.xMovement * viewport.scale + 5,
+      this.FRAME_SIZE,
+      this.FRAME_SIZE,
+      this.drawX -
+        GamePieces.player.xMovement +
+        (this.FRAME_SIZE - this.width) / 2,
       this.drawY -
-        GamePieces.player.yMovement * viewport.scale +
-        this.loopArray[this.loopIndex],
-      this.width * this.scale,
-      this.height * this.scale,
+        GamePieces.player.yMovement +
+        (this.FRAME_SIZE - this.height) / 2 +
+        this.getBobOffset(),
+      this.width,
+      this.height,
     );
-    this.shadow.draw();
     if (!this.checking) this.pickUpItem();
-    if (Game.properties.duration % 20 === 0) this.loopIndex++;
+    // this.shadow.draw();
+    this.animTime += Game.properties.delta;
   }
 
   pickUpItem() {
@@ -117,39 +139,46 @@ export class Item {
   }
 }
 
+/**
+ * TODO: Figure out if we should keep this
+ */
 export class ItemShadowAnimation {
   x: number;
   y: number;
   drawX: number;
   drawY: number;
-  indexX = 0;
   spriteObject: ItemSprite;
-  height: number;
-  width: number;
-  loopArray = [0, 1, 2, 1];
+  FRAME_COUNT = 3;
+  SIZE = 56;
+  OFFSET_Y = 0;
 
-  constructor(x: number, y: number) {
+  /**
+   * @param itemSize Drawn width of the item. The shadow is centred on it.
+   */
+  constructor(x: number, y: number, itemSize: number) {
     this.x = x;
     this.y = y;
-    this.drawX = this.x;
-    this.drawY = this.y;
+    this.drawX = this.x + (itemSize - this.SIZE) / 2;
+    this.drawY = this.y + this.OFFSET_Y;
+    this.spriteObject = makeSprite('shadow', 96, 32, 'shadow sprite');
   }
 
-  draw() {
-    if (this.indexX > 3) this.indexX = 0;
+  /**
+   * @param bobProgress 0 → 1 from Item.getBobProgress(). Picks the shadow
+   * frame: smallest at 0, largest at 1.
+   */
+  draw(bobProgress: number) {
+    const frame = Math.round(bobProgress * (this.FRAME_COUNT - 1));
     viewport.drawWorldSprite(
       this.spriteObject.image,
-      this.loopArray[this.indexX] * 32,
+      frame * 32,
       0,
-      32 * viewport.scale,
-      32 * viewport.scale,
-      this.drawX - GamePieces.player.xMovement * viewport.scale - 8,
-      this.drawY - GamePieces.player.yMovement * viewport.scale - 8,
-      48,
-      48,
+      32,
+      32,
+      this.drawX - GamePieces.player.xMovement,
+      this.drawY - GamePieces.player.yMovement,
+      this.SIZE,
+      this.SIZE,
     );
-    if (Game.properties.duration % 20 === 0) {
-      this.indexX++;
-    }
   }
 }
