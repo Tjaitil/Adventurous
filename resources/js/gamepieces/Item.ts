@@ -6,6 +6,32 @@ import { updateInventory } from '../clientScripts/inventory';
 import type { ItemSprite } from '../types/ItemSprite';
 import { makeSprite } from '../clientScripts/spritesContainer';
 
+type ItemConstructor = {
+  x: number;
+  y: number;
+  drawX: number;
+  drawY: number;
+  src: string;
+  /**
+   * The width of the item when drawn on the canvas.
+   */
+  width: number;
+  /**
+   * The height of the item when drawn on the canvas.
+   */
+  height: number;
+  /**
+   * The width of the item in the game world.
+   * @defaultValue {@link width}
+   */
+  frameWidth?: number;
+  /**
+   * The height of the item in the game world.
+   * @defaultValue {@link height}
+   */
+  frameHeight?: number;
+};
+
 export class Item {
   x: number;
   y: number;
@@ -19,7 +45,8 @@ export class Item {
   BOB_HEIGHT = 5;
   name: string;
   src: string;
-  FRAME_SIZE = 32;
+  frameWidth: number;
+  frameHeight: number;
   width = 24;
   height = 24;
   checking = false;
@@ -28,16 +55,23 @@ export class Item {
   diameterLeft: number;
   diameterRight: number;
 
-  constructor(drawX: number, drawY: number, src: string) {
+  constructor(options: ItemConstructor) {
+    const { drawX, drawY, src, width, height, frameWidth, frameHeight, x, y } =
+      options;
     this.drawX = drawX;
     this.drawY = drawY;
-    this.x = drawX + viewport.offsetX;
-    this.y = drawY + viewport.offsetY;
+    this.x = x;
+    this.y = y;
     this.id = GamePieces.items.length + 1;
     this.diameterDown = this.drawY + this.height;
     this.diameterUp = this.drawY;
     this.diameterLeft = this.drawX;
     this.diameterRight = this.drawX + this.width;
+    this.width = width;
+    this.height = height;
+    this.frameWidth = frameWidth ?? width;
+    this.frameHeight = frameHeight ?? height;
+
     this.src = src;
     this.name = src;
     this.spriteObject = makeSprite(
@@ -72,14 +106,14 @@ export class Item {
       this.spriteObject.image,
       0,
       0,
-      this.FRAME_SIZE,
-      this.FRAME_SIZE,
+      this.frameWidth,
+      this.frameHeight,
       this.drawX -
         GamePieces.player.xMovement +
-        (this.FRAME_SIZE - this.width) / 2,
+        (this.frameWidth - this.width) / 2,
       this.drawY -
         GamePieces.player.yMovement +
-        (this.FRAME_SIZE - this.height) / 2 +
+        (this.frameHeight - this.height) / 2 +
         this.getBobOffset(),
       this.width,
       this.height,
