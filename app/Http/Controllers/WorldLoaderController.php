@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\GameMaps;
 use App\Enums\WorldChangeType;
+use App\Services\DaqloonFightingAreaService;
 use App\Services\SessionService;
 use App\Services\WorldLoaderService;
 use Illuminate\Http\JsonResponse;
@@ -17,6 +18,7 @@ class WorldLoaderController extends Controller
     public function __construct(
         private SessionService $sessionService,
         private WorldLoaderService $worldLoaderService,
+        private DaqloonFightingAreaService $daqloonFightingAreaService,
     ) {}
 
     public function changeMap(Request $request): JsonResponse
@@ -98,6 +100,8 @@ class WorldLoaderController extends Controller
             return response()->json([], 422);
         }
 
+        $this->trackFightingArea();
+
         return response()->json($result, 200);
     }
 
@@ -112,6 +116,16 @@ class WorldLoaderController extends Controller
             return response()->json($result, 422);
         }
 
+        $this->trackFightingArea();
+
         return response()->json($result, 200);
+    }
+
+    private function trackFightingArea(): void
+    {
+        $this->daqloonFightingAreaService->track(
+            Auth::user()->id,
+            $this->worldLoaderService->hasDaqloonFightingArea(),
+        );
     }
 }

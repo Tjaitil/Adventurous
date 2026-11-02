@@ -1,8 +1,7 @@
 import { Game } from '../advclient';
 import { GamePieces } from '../clientScripts/gamePieces';
 import viewport from '../clientScripts/viewport';
-import { ajaxP } from '../ajax';
-import { updateInventory } from '../clientScripts/inventory';
+import { BaseAxios } from '../ajax';
 import type { ItemSprite } from '../types/ItemSprite';
 import { makeSprite } from '../clientScripts/spritesContainer';
 
@@ -157,17 +156,10 @@ export class Item {
       // }
       // else if(inInventory === true) {
 
-      const data =
-        'model=Loot' + '&method=addLoot' + '&item=' + this.spriteObject.name;
       GamePieces.items = GamePieces.items.filter((item: Item) => {
         return item.id != this.id;
       });
-      ajaxP(data, function (response) {
-        if (response[0] !== false) {
-          updateInventory();
-        }
-      });
-      // }
+      void BaseAxios.post('/fighting/sync', {});
     }
   }
 }

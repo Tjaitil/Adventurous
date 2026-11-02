@@ -65,6 +65,14 @@ final class WorldLoaderService
         ];
     }
 
+    /**
+     * Only valid after {@see self::loadObjects()} has run for the current map.
+     */
+    public function hasDaqloonFightingArea(): bool
+    {
+        return ! empty($this->object_array['daqloon_fighting_areas']);
+    }
+
     public function loadObjects(): bool
     {
         $file = $this->disk->get($this->map.'.json');
