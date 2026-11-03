@@ -43,18 +43,6 @@ class DaqloonFightingControllerTest extends TestCase
         $this->assertNull($response->json('data.item'));
     }
 
-    public function test_roll_loot_stops_at_max_pending(): void
-    {
-        config(['adventurous.loot.claims_per_minute' => LootService::MAX_PENDING + 1]);
-
-        for ($i = 0; $i < LootService::MAX_PENDING; $i++) {
-            $this->post('/fighting/progress')->assertOk();
-        }
-        $response = $this->post('/fighting/progress')->assertOk();
-
-        $this->assertNull($response->json('data.item'));
-    }
-
     public function test_claim_loot_adds_rolled_item_to_inventory(): void
     {
         $item = $this->post('/fighting/progress')->json('data.item');

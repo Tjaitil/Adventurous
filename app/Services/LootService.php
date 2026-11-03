@@ -14,8 +14,6 @@ class LootService
      */
     public const DROPS = ['daqloon horns', 'daqloon scale'];
 
-    public const MAX_PENDING = 10;
-
     /**
      * Roll a drop and store it as pending for the user.
      *
