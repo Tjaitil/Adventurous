@@ -9,6 +9,7 @@ import type {
   ZinsStoreDataLoader,
   CropsDataLoader,
   StockpileDataLoader,
+  WorkforceLodgeDataLoader,
 } from '@/types/BuildingDataLoader';
 
 export const smithyDataLoader: SmithyDataLoader = {
@@ -47,4 +48,8 @@ export const cropsDataLoader: CropsDataLoader = {
 
 export const stockpileDataLoader: StockpileDataLoader = {
   res: () => AdvApi.get('/stockpile/data'),
+};
+
+export const workforceLodgeDataLoader: WorkforceLodgeDataLoader = {
+  res: () => AdvApi.get('/workforcelodge/data'),
 };

@@ -9,6 +9,7 @@ import {
   mineDataLoader,
   smithyDataLoader,
   stockpileDataLoader,
+  workforceLodgeDataLoader,
   travelbureauDataLoader,
   zinsStoreDataLoader,
 } from '@/buildingScripts/buildingLoaders';
@@ -20,10 +21,12 @@ import type {
   MineDataLoaderResponse,
   SmithyDataLoaderResponse,
   StockpileDataLoaderResponse,
+  WorkforceLodgeDataLoaderResponse,
   TravelbureauDataLoaderResponse,
   ZinsStoreDataLoaderResponse,
 } from '@/types/BuildingDataLoader';
 import type { StockpileDataResponse } from '@/types/Stockpile';
+import type { WorkforceLodgeDataResponse } from '@/types/WorkforceLodge';
 
 type CachedData = {
   armory: {
@@ -31,8 +34,7 @@ type CachedData = {
   } & ArmoryDataLoaderResponse;
   workforcelodge: {
     cached_at: number;
-    view: string;
-  };
+  } & WorkforceLodgeDataLoaderResponse;
   bakery: {
     cached_at: number;
   } & BakeryDataLoaderResponse;
@@ -108,16 +110,16 @@ class BuildingDataPreloader {
   }
 
   async preloadWorkforceLodge(): Promise<void> {
-    if (this.getBuildingCache('workforcelodge')) {
+    if (this.isDataValid('workforcelodge')) {
       return;
     }
 
     try {
-      const viewResponse = await AdvApi.get<string>('/workforcelodge');
+      const workforceLodgeResponse = await workforceLodgeDataLoader.res();
 
       this.cache.workforcelodge = {
         cached_at: Date.now(),
-        view: viewResponse,
+        ...workforceLodgeResponse,
       };
     } catch {
       return;
@@ -290,6 +292,10 @@ class BuildingDataPreloader {
       return null;
     }
     return this.cache.armory;
+  }
+
+  getWorkforceLodgeData(): WorkforceLodgeDataResponse | null {
+    return this.getBuildingCache('workforcelodge') ?? null;
   }
 
   getStockpileData(): StockpileDataResponse | null {
