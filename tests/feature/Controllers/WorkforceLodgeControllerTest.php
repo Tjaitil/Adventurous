@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Controllers;
 
-use PHPUnit\Framework\Attributes\DataProvider;
 use App\Enums\SkillNames;
 use App\Models\EfficiencyUpgrade;
 use App\Models\FarmerWorkforce;
@@ -11,6 +10,7 @@ use App\Models\LevelData;
 use App\Models\MinerWorkforce;
 use App\Models\UserLevels;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class WorkforceLodgeControllerTest extends TestCase
@@ -31,8 +31,60 @@ class WorkforceLodgeControllerTest extends TestCase
         $response->assertStatus(200);
     }
 
+    public function test_data_route_returns_expected_shape(): void
+    {
+        $response = $this->get('/workforcelodge/data');
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data' => [
+                    'farmer' => $this->workforceStructure(),
+                    'miner' => $this->workforceStructure(),
+                ],
+            ])
+            ->assertJsonPath('data.farmer.skill', 'farmer')
+            ->assertJsonPath('data.miner.skill', 'miner');
+    }
+
+    public function test_can_recruit_is_never_negative(): void
+    {
+        FarmerWorkforce::where('user_id', $this->RandomUser->id)
+            ->update(['workforce_total' => 1000]);
+
+        $this->get('/workforcelodge/data')
+            ->assertStatus(200)
+            ->assertJsonPath('data.farmer.can_recruit', 0);
+    }
+
+    public function test_cannot_upgrade_efficiency_with_unknown_skill(): void
+    {
+        $this->post('/workforcelodge/efficiency/upgrade', ['skill' => 'trader'])
+            ->assertStatus(422);
+    }
+
+    public function test_cannot_upgrade_efficiency_without_enough_currency(): void
+    {
+        $this->post('/workforcelodge/efficiency/upgrade', ['skill' => 'farmer'])
+            ->assertStatus(422);
+    }
+
     /**
+     * @return list<string>
      */
+    private function workforceStructure(): array
+    {
+        return [
+            'skill',
+            'efficiency_level',
+            'efficiency_upgrade_price',
+            'workforce_total',
+            'avail_workforce',
+            'locations',
+            'max_workers',
+            'can_recruit',
+        ];
+    }
+
     #[DataProvider('profiencyProvider')]
     public function test_upgrade_efficiency(string $profiency, int $efficiency_level): void
     {
@@ -81,8 +133,6 @@ class WorkforceLodgeControllerTest extends TestCase
         ]);
     }
 
-    /**
-     */
     #[DataProvider('profiencyProvider')]
     public function test_cannot_upgrade_efficiency_when_reached_max_efficiency_level(string $profiency, int $efficiency_level): void
     {
