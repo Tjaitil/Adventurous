@@ -50,7 +50,7 @@ export const tutorial = {
         element.diameterRight += xAdd;
       }
     });
-    GamePieces.drawWorld();
+    GamePieces.drawWorld(0);
   },
   locateHassen() {
     GamePieces.objects.forEach(element => {
@@ -69,7 +69,7 @@ export const tutorial = {
         element.visible = false;
       }
     });
-    GamePieces.drawWorld();
+    GamePieces.drawWorld(0);
   },
   setTutorialTopic(topic) {
     document

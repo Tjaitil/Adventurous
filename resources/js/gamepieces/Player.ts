@@ -1,3 +1,4 @@
+import type { Delta, Drawable } from '../types/gamepieces/Drawable';
 import { canvasTextHeader } from '../clientScripts/canvasText';
 import { controls } from '../clientScripts/controls';
 import { Game } from '../advclient';
@@ -11,7 +12,7 @@ import {
 import { addModuleTester } from '@/devtools/ModuleTester';
 import { gameEventBus } from '@/gameEventsBus';
 
-export class Player extends MovingGameObject {
+export class Player extends MovingGameObject implements Drawable {
   id = 0;
   ANIM_WALK_DURATION = 0.167; // ~6 frames/sec  — standard walk/idle cycle
   ANIM_ATTACK_DURATION = 0.033; // ~30 frames/sec — snappy attack steps
@@ -97,7 +98,7 @@ export class Player extends MovingGameObject {
 
   setup() {
     // this.setHuntedStatus(false);
-    this.draw();
+    this.draw(0);
     this.sprite.src = AssetPaths.getImagePath('character1.png');
     this.spriteAttack.src = AssetPaths.getImagePath('character attack2.png');
     this.headSprite.src = AssetPaths.getImagePath('character head.png');
@@ -199,14 +200,14 @@ export class Player extends MovingGameObject {
     });
   }
 
-  draw() {
+  draw(delta: Delta) {
     // this.drawLegs();
     // this.drawBody();
     // this.drawHead();
 
     // Advanced here, not in newPos(): draw() runs every tick, newPos() does not.
     if (this.hurtTimer !== -1) {
-      this.hurtTimer += Game.properties.delta;
+      this.hurtTimer += delta;
       if (this.hurtTimer >= this.ANIM_HURT_DURATION) {
         this.hurtTimer = -1;
       }
@@ -276,7 +277,7 @@ export class Player extends MovingGameObject {
 
     this.regenerateCoundown = false;
   }
-  newPos(newPos = true) {
+  newPos(delta: Delta, newPos = true) {
     if (this.health < 100 && !this.regenerateCoundown) {
       this.regenerateCoundown = true;
       setTimeout(() => {
@@ -300,7 +301,7 @@ export class Player extends MovingGameObject {
       this.diameterDown = this.ypos + this.height;
       this.diameterLeft = this.xpos + 4;
     }
-    this.animTimer += Game.properties.delta;
+    this.animTimer += delta;
     if (this.combat) {
       let newDirection = 'none';
       if (controls.playerDown) {

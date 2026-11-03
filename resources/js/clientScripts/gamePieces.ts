@@ -15,14 +15,10 @@ import type { StaticGameObject } from '../types/gamepieces/StaticGameObject';
 import type { WorldMapData } from '../types/Advclient';
 import { HUD } from './HUD';
 import { addModuleTester } from '@/devtools/ModuleTester';
+import type { Delta, Drawable } from '../types/gamepieces/Drawable';
 
 export type gameObjectTypes = Character | Building | BaseStaticGameObject;
 export type gridObjectTypes = gameObjectTypes | Daqloon;
-
-interface Drawable {
-  diameterDown: number;
-  draw(): void;
-}
 
 let draw = false;
 
@@ -98,9 +94,9 @@ export const GamePieces = {
     for (const daqloon of this.daqloon) this.spatialGrid.insert(daqloon);
   },
   init() {
-    GamePieces.drawWorld();
+    GamePieces.drawWorld(0);
   },
-  drawWorld() {
+  drawWorld(delta: Delta) {
     const margin = 50;
     const staticCandidates = this.spatialGrid
       .query(
@@ -129,25 +125,25 @@ export const GamePieces = {
       })),
       {
         diameterDown: this.player.diameterDown,
-        draw: () => {
-          this.player.draw();
+        draw: (delta: Delta) => {
+          this.player.draw(delta);
         },
       },
       ...this.daqloon.map(d => ({
         diameterDown: d.diameterDown,
-        draw: () => {
-          d.draw();
+        draw: (delta: Delta) => {
+          d.draw(delta);
         },
       })),
       ...this.items.map(i => ({
         diameterDown: i.diameterDown,
-        draw: () => {
-          i.draw();
+        draw: (delta: Delta) => {
+          i.draw(delta);
         },
       })),
     ];
     drawable.sort((a, b) => a.diameterDown - b.diameterDown);
-    for (const entry of drawable) entry.draw();
+    for (const entry of drawable) entry.draw(delta);
 
     inputHandler.checkCharacter();
     inputHandler.checkBuilding();
