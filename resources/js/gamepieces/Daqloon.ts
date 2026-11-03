@@ -1,4 +1,6 @@
 import { Game } from '../advclient';
+import { BaseAxios } from '../ajax';
+import { Item } from './Item';
 import viewport from '../clientScripts/viewport';
 import { getRandomInteger } from '../utilities/getRandomInteger';
 import { GamePieces } from '../clientScripts/gamePieces';
@@ -130,6 +132,33 @@ export class Daqloon extends MovingGameObject {
       this.dead = true;
     }
   }
+  /**
+   * Ask the server to roll a drop and spawn it where the daqloon died.
+   * The server answers with no item when nothing dropped.
+   */
+  async dropLoot() {
+    const { x, y, drawX, drawY } = this;
+    const response = await BaseAxios.post<{ data: { item?: string } }>(
+      '/fighting/progress',
+      {},
+    );
+    const src = response.data.item;
+    if (src === undefined) return;
+
+    GamePieces.items.push(
+      new Item({
+        x,
+        y,
+        drawX,
+        drawY,
+        src,
+        width: 24,
+        height: 24,
+        frameWidth: 32,
+        frameHeight: 32,
+      }),
+    );
+  }
   calculateHitTextCoordinates() {
     let leftOrRightOf = getRandomInteger(0, 1) === 0 ? -1 : 1;
     let middleX = this.drawX - GamePieces.player.xMovement + this.width / 2;
@@ -233,7 +262,7 @@ export class Daqloon extends MovingGameObject {
           viewport.height / 2,
         );
       } else {
-        GamePieces.player.takeDamage(5);
+        GamePieces.player.takeDamage(0);
       }
     }
     // If health is over 10 calculateMovement
@@ -262,8 +291,9 @@ export class Daqloon extends MovingGameObject {
       this.setStartAnimationPoint('death');
       if (this.spriteXIndex == 5) {
         this.spriteXIndex = 3;
-        // let lootItem = getRandomInteger(0, 30) === 30 ? "daqloon horns" : "daqloon scale";
-        // GamePieces.items.push(new item(this.drawX, this.drawY, lootItem));
+        this.dropLoot().catch((error: unknown) => {
+          console.error('Failed to roll loot', error);
+        });
         this.dead = false;
         this.spawn = true;
         this.setStartAnimationPoint('spawn');

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Http\Responses\AdvResponse;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
@@ -26,6 +27,15 @@ class RouteServiceProvider extends ServiceProvider
     {
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+        });
+
+        /**
+         * The protection here is very weak. Single player game so it is fine as a first iteration
+         */
+        RateLimiter::for('loot', function (Request $request) {
+            return Limit::perMinute((int) config('adventurous.loot.claims_per_minute'))
+                ->by($request->path().'|'.($request->user()?->id ?: $request->ip()))
+                ->response(fn (Request $request) => (new AdvResponse)->toResponse($request));
         });
 
         $this->routes(function () {

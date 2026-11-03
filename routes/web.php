@@ -9,6 +9,7 @@ use App\Http\Controllers\CityCentreController;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\CrashReportController;
 use App\Http\Controllers\CropsController;
+use App\Http\Controllers\DaqloonFightingController;
 use App\Http\Controllers\DevToolsController;
 use App\Http\Controllers\GameLoggerController;
 use App\Http\Controllers\HungerController;
@@ -53,6 +54,12 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/inventory/items', [InventoryController::class, 'getItems']);
     Route::get('/inventory/prices', [InventoryController::class, 'getPrices']);
+
+    /**
+     * Easter egg for fighting loot system. Obscure for fun - of course this isn't considered a serious security measure.
+     */
+    Route::post('/fighting/progress', [DaqloonFightingController::class, 'rollLoot'])->middleware('throttle:loot');
+    Route::post('/fighting/sync', [DaqloonFightingController::class, 'claimLoot']);
 
     Route::post(('conversation/next'), [ConversationController::class, 'index']);
 
