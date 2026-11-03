@@ -19,7 +19,4 @@ export interface InventoryDataResponse {
  */
 export interface InventoryBroadcastPayload {
   items: InventoryItem[];
-  meta: {
-    max_slots: number;
-  };
 }

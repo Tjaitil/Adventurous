@@ -39,13 +39,9 @@ const echo = new Echo({
 export const setupEchoListeners = (userId: number) => {
   echo
     .private(`game-state.${userId.toString()}`)
-    .listen(
-      'InventoryUpdated',
-      (e: { Inventory: InventoryBroadcastPayload }) => {
-        useInventoryStore().setInventoryItems(e.Inventory.items);
-        useInventoryStore().setMaxSlots(e.Inventory.meta.max_slots);
-      },
-    )
+    .listen('InventoryUpdated', (e: InventoryBroadcastPayload) => {
+      useInventoryStore().setInventoryItems(e.items);
+    })
     .listen('SkillsUpdated', () => {
       useSkillsStore().setHandleXpGainedEvent(true);
     })
