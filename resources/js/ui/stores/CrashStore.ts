@@ -11,7 +11,7 @@ interface CrashGameState {
 
 interface CrashDetail {
   error: Error;
-  gameState: CrashGameState;
+  gameState: CrashGameState | null;
 }
 
 const isDev = import.meta.env.DEV;

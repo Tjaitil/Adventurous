@@ -263,6 +263,28 @@ describe('initGame PLAYER_POSITION query', () => {
 
     expect(handler()).toEqual({ x: 120, y: 340, currentMap: '4.5' });
   });
+
+  test('provides the crash game state', async () => {
+    mocks.provide.mockClear();
+    await initGame(vi.fn());
+
+    const call = mocks.provide.mock.calls.find(
+      ([name]) => name === 'CRASH_GAME_STATE',
+    );
+    const handler = call?.[1] as () => unknown;
+    Game.properties.currentMap = '4.5';
+    Game.properties.xbase = 10;
+    Game.properties.ybase = 20;
+    Game.properties.inBuilding = true;
+    Game.properties.building = 'bakery';
+
+    expect(handler()).toEqual({
+      map: '4.5',
+      coordinates: { x: 10, y: 20 },
+      inBuilding: true,
+      building: 'bakery',
+    });
+  });
 });
 
 describe('initGame conversation handlers', () => {

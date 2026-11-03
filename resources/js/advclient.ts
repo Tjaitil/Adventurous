@@ -346,6 +346,13 @@ export const initGame = async (onError: (error: unknown) => void) => {
     currentMap: Game.properties.currentMap,
   }));
 
+  gameQuery.provide('CRASH_GAME_STATE', () => ({
+    map: Game.properties.currentMap,
+    coordinates: { x: Game.properties.xbase, y: Game.properties.ybase },
+    inBuilding: Game.properties.inBuilding,
+    building: Game.properties.building,
+  }));
+
   gameEventBus.subscribe('CONVERSATION_STARTED', () => {
     Game.setGameState('conversation');
     ClientOverlayInterface.hide();
