@@ -3589,36 +3589,6 @@ parameters:
 			path: app/Models/Login_model.php
 
 		-
-			message: '#^Method Loot_model\:\:__construct\(\) has parameter \$session with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Models/Loot_model.php
-
-		-
-			message: '#^Method Loot_model\:\:addLoot\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: app/Models/Loot_model.php
-
-		-
-			message: '#^Method Loot_model\:\:addLoot\(\) has parameter \$POST with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Models/Loot_model.php
-
-		-
-			message: '#^Property Loot_model\:\:\$session has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/Loot_model.php
-
-		-
-			message: '#^Property Loot_model\:\:\$username has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/Loot_model.php
-
-		-
 			message: '#^Function get_item not found\.$#'
 			identifier: function.notFound
 			count: 1
