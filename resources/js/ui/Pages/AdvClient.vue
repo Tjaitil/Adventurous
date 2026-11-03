@@ -43,7 +43,7 @@ import GameScreen from '../components/HUD/GameScreen.vue';
 import ScreenHUD from '../components/HUD/ScreenHUD.vue';
 import ItemTooltip from '../components/HUD/ItemTooltip.vue';
 import GameMap from '../components/HUD/GameMap.vue';
-import { Game, initGame } from '@/advclient';
+import { initGame } from '@/advclient';
 import { registerErrorHandler } from '@/ui/errorReporting';
 import { onErrorCaptured, onMounted } from 'vue';
 import LogModal from '../components/HUD/LogModal.vue';
@@ -57,6 +57,7 @@ import { usePlayerStore } from '../stores/PlayerStore';
 import { useHungerStore } from '../stores/HungerStore';
 import { useCrashStore } from '../stores/CrashStore';
 import CrashScreen from '../components/CrashScreen.vue';
+import { gameQuery } from '@/gameQuery.ts';
 
 interface Props {
   hunger: {
@@ -83,12 +84,7 @@ const crashStore = useCrashStore();
 const onError = (error: unknown) => {
   crashStore.reportCrash({
     error: error instanceof Error ? error : new Error(String(error)),
-    gameState: {
-      map: Game.properties.currentMap,
-      coordinates: { x: Game.properties.xbase, y: Game.properties.ybase },
-      inBuilding: Game.properties.inBuilding,
-      building: Game.properties.building,
-    },
+    gameState: gameQuery.query('CRASH_GAME_STATE'),
   });
 };
 

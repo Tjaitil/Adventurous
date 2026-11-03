@@ -40,4 +40,12 @@ export type GameQueryMap = {
   PLAYER_POSITION: {
     result: { x: number; y: number; currentMap: string };
   };
+  CRASH_GAME_STATE: {
+    result: {
+      map: string;
+      coordinates: { x: number; y: number };
+      inBuilding: boolean;
+      building: string;
+    };
+  };
 };
