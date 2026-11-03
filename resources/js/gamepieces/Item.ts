@@ -1,4 +1,4 @@
-import { Game } from '../advclient';
+import type { Delta, Drawable } from '../types/gamepieces/Drawable';
 import { GamePieces } from '../clientScripts/gamePieces';
 import viewport from '../clientScripts/viewport';
 import { BaseAxios } from '../ajax';
@@ -31,7 +31,7 @@ type ItemConstructor = {
   frameHeight?: number;
 };
 
-export class Item {
+export class Item implements Drawable {
   x: number;
   y: number;
   drawX: number;
@@ -100,7 +100,7 @@ export class Item {
     return this.BOB_MIN + this.BOB_HEIGHT * this.getBobProgress();
   }
 
-  draw() {
+  draw(delta: Delta) {
     viewport.drawWorldSprite(
       this.spriteObject.image,
       0,
@@ -119,7 +119,7 @@ export class Item {
     );
     if (!this.checking) this.pickUpItem();
     // this.shadow.draw();
-    this.animTime += Game.properties.delta;
+    this.animTime += delta;
   }
 
   pickUpItem() {

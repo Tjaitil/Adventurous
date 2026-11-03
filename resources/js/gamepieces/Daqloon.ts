@@ -1,4 +1,4 @@
-import { Game } from '../advclient';
+import type { Delta, Drawable } from '../types/gamepieces/Drawable';
 import { BaseAxios } from '../ajax';
 import { Item } from './Item';
 import viewport from '../clientScripts/viewport';
@@ -10,7 +10,7 @@ import {
 } from './MovingGameObject';
 import { AssetPaths } from '../clientScripts/ImagePath';
 
-export class Daqloon extends MovingGameObject {
+export class Daqloon extends MovingGameObject implements Drawable {
   ANIM_IDLE_DURATION = 0.167; // ~6 frames/sec  — spawn / death / idle cycle
   ANIM_ATTACK_DURATION = 0.1; // 10 frames/sec  — attack animation
   ANIM_WANDER_DURATION = 0.5; // 2 frames/sec   — idle direction repick
@@ -208,7 +208,7 @@ export class Daqloon extends MovingGameObject {
     viewport.drawDaqloonHealthbar('red', x + 5, y - 20, 0.35 * this.health, 10);
   }
 
-  public drawOnCanvas() {
+  public drawOnCanvas(delta: Delta) {
     viewport.drawWorldSprite(
       this.sprite,
       this.spriteXIndex * 32,
@@ -229,7 +229,7 @@ export class Daqloon extends MovingGameObject {
       this.recentlyHit = false;
     }
     if (this.hitMessageTimer !== -1) {
-      this.hitMessageTimer += Game.properties.delta;
+      this.hitMessageTimer += delta;
       if (this.hitMessageTimer > 0.167) {
         this.hitMessageTimer = -1;
         viewport.resetTextLayer();
@@ -238,7 +238,7 @@ export class Daqloon extends MovingGameObject {
     this.resetDirections();
   }
 
-  draw() {
+  draw(delta: Delta) {
     // TODO: This detection is way too low
     if (
       (Math.abs(this.diameterLeft - GamePieces.player.xpos) < 20 ||
@@ -267,9 +267,9 @@ export class Daqloon extends MovingGameObject {
     }
     // If health is over 10 calculateMovement
     if (this.health > 0) {
-      this.calculateMovement();
+      this.calculateMovement(delta);
     }
-    this.animTimer += Game.properties.delta;
+    this.animTimer += delta;
     if (this.currentAnimation === 'damage') {
       this.setStartAnimationPoint('idle');
     } else if (this.spawn && !this.dead) {
@@ -336,7 +336,7 @@ export class Daqloon extends MovingGameObject {
       }
     }
 
-    this.drawOnCanvas();
+    this.drawOnCanvas(delta);
   }
 
   private calculateNewPosition() {
@@ -350,12 +350,12 @@ export class Daqloon extends MovingGameObject {
     GamePieces.spatialGrid.insert(this);
   }
 
-  private calculateMovement() {
+  private calculateMovement(delta: Delta) {
     const distanceX = GamePieces.player.xpos - this.x;
     const distanceY = GamePieces.player.ypos - this.y;
 
     // Variables to determine how much a daqloon should move if it is able to
-    const move = this.movementSpeed * Game.properties.delta;
+    const move = this.movementSpeed * delta;
     if (
       Math.abs(distanceX) < 250 ||
       Math.abs(distanceY) < 250 ||
@@ -392,7 +392,7 @@ export class Daqloon extends MovingGameObject {
         this.spriteYIndex = 1;
       }
     } else {
-      this.wanderTimer += Game.properties.delta;
+      this.wanderTimer += delta;
       if (this.wanderTimer >= this.ANIM_WANDER_DURATION) {
         this.wanderTimer = 0;
         this.spriteYIndex = getRandomInteger(0, 1);

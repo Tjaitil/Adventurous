@@ -306,9 +306,9 @@ export class Game {
       ) {
         eventHandler.checkEvent();
         GamePieces.player.collisionCheck(GamePieces.spatialGrid);
-        GamePieces.player.newPos();
+        GamePieces.player.newPos(Game.properties.delta);
       } else if (!GamePieces.player.animationEnd) {
-        GamePieces.player.newPos(false);
+        GamePieces.player.newPos(Game.properties.delta, false);
       }
 
       GamePieces.player.xTracker = GamePieces.player.xMovement +=
@@ -323,7 +323,7 @@ export class Game {
         GamePieces.player.yMovement,
       );
 
-      GamePieces.drawWorld();
+      GamePieces.drawWorld(Game.properties.delta);
 
       if (GamePieces.player.checkPosition()) {
         Game.getNextWorld();
