@@ -6,13 +6,8 @@
 
     <template v-else-if="workforces !== null">
       <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
-        <UCard
-          v-for="skill in skills"
-          :id="`${skill}_workers`"
-          :key="skill"
-          variant="soft"
-        >
-          <h2 class="mb-1 text-lg">
+        <UCard v-for="skill in skills" :id="`${skill}_workers`" :key="skill">
+          <h2 class="mb-1 text-xl">
             {{ $t(`${capitalize(skill)} workforce`) }}
           </h2>
           <p class="mb-3 text-sm">
@@ -25,7 +20,10 @@
             <tbody>
               <tr v-for="row in getRows(workforces[skill])" :key="row.label">
                 <th class="py-1 font-normal">{{ row.label }}</th>
-                <td class="py-1" :class="{ 'text-green-700': row.highlight }">
+                <td
+                  class="py-1 text-right"
+                  :class="{ 'text-green-700': row.highlight }"
+                >
                   {{ row.value }}
                 </td>
               </tr>
@@ -34,9 +32,9 @@
         </UCard>
       </div>
 
-      <UCard variant="soft">
+      <UCard>
         <form class="flex flex-col gap-3" @submit.prevent="upgradeEfficiency">
-          <h2 class="text-lg">{{ $t('Upgrade workers efficiency') }}</h2>
+          <h2 class="text-xl">{{ $t('Upgrade workers efficiency') }}</h2>
           <p class="text-sm">
             {{
               $t('Higher efficiency means lower time when mining or growing')
@@ -114,18 +112,16 @@ function capitalize(value: string): string {
 }
 
 const getRows = (workforce: WorkforceData) => [
-  { label: t('Total workforce'), value: workforce.workforce_total },
+  {
+    label: t('Total workforce / Max workforce'),
+    value: `${workforce.workforce_total} / ${workforce.max_workers}`,
+    highlight: workforce.can_recruit > 0,
+  },
   ...workforce.locations.map(location => ({
     label: t(`${location.name} workforce`),
     value: location.amount,
   })),
   { label: t('Available workforce'), value: workforce.avail_workforce },
-  { label: t(`Max ${workforce.skill} workers`), value: workforce.max_workers },
-  {
-    label: t('Can recruit'),
-    value: workforce.can_recruit,
-    highlight: workforce.can_recruit > 0,
-  },
 ];
 
 const fetchData = async (): Promise<void> => {

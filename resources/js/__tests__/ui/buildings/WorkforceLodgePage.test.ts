@@ -79,6 +79,8 @@ describe('workforceLodgePage.vue', () => {
     expect(screen.getByText('Miner workforce')).toBeInTheDocument();
     expect(screen.getByText('Towhar workforce')).toBeInTheDocument();
     expect(screen.getByText('Golbak workforce')).toBeInTheDocument();
+    expect(screen.getByText('3 / 5')).toBeInTheDocument();
+    expect(screen.getByText('4 / 4')).toBeInTheDocument();
   });
 
   it('shows upgrade cost of the selected skill', async () => {
