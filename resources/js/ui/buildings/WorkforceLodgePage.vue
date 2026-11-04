@@ -10,8 +10,8 @@
           <h2 class="mb-1 text-xl">
             {{ $t(`${capitalize(skill)} workforce`) }}
           </h2>
-          <p class="mb-3 text-sm">
-            {{ $t('Current efficiency level') }}:
+          <p class="mb-3">
+            {{ $t('Efficiency level') }}
             <span :id="`${skill}-efficiency-level-el`">
               {{ workforces[skill].efficiency_level }}
             </span>
@@ -38,7 +38,7 @@
           @submit.prevent="upgradeEfficiency"
         >
           <div class="flex items-center gap-2">
-            <h2 class="text-xl">{{ $t('Upgrade efficiency') }}</h2>
+            <h2 class="text-xl">{{ $t('Upgrade efficiency level') }}</h2>
             <HelpTooltip>
               <span class="block w-64 whitespace-normal">
                 {{
@@ -54,7 +54,18 @@
             :items="skillItems"
             orientation="horizontal"
             :legend="$t('Profiency')"
-          />
+          >
+            <template #label="{ item }">
+              <span class="flex items-center gap-1">
+                <BaseIcon
+                  :icon="item.value"
+                  class="h-5 w-5"
+                  aria-hidden="true"
+                />
+                {{ item.label }}
+              </span>
+            </template>
+          </URadioGroup>
           <div id="efficiency-upgrade-info">
             <p class="flex items-center gap-1">
               {{ $t('Cost') }}:
@@ -63,10 +74,15 @@
               </span>
               <img class="gold" src="/images/gold.png" :alt="$t('gold icon')" />
             </p>
+            <p class="text-left">
+              {{ $t('Current level') }}:
+              <span id="upgrade-info-current-efficiency-el">
+                {{ selectedWorkforce.efficiency_level }}
+              </span>
+            </p>
           </div>
           <UButton type="submit" :loading="isUpgrading" class="self-start">
-            {{ $t('Upgrade efficiency to level') }}
-            {{ selectedWorkforce.efficiency_level + 1 }}
+            {{ $t('Upgrade') }}
           </UButton>
         </form>
       </UCard>
@@ -87,6 +103,7 @@ import type {
 } from '@/types/WorkforceLodge';
 import { buildingDataPreloader } from '@/ui/services/buildingDataPreloader';
 import { useInventoryStore } from '../stores/InventoryStore';
+import BaseIcon from '../components/base/BaseIcon.vue';
 import BaseLoadingIcon from '../components/base/BaseLoadingIcon.vue';
 import HelpTooltip from '../components/elements/HelpTooltip.vue';
 import { useI18n } from 'vue-i18n';

@@ -110,9 +110,7 @@ describe('workforceLodgePage.vue', () => {
       expect(screen.getByText('100')).toBeInTheDocument();
     });
 
-    await fireEvent.click(
-      screen.getByRole('button', { name: 'Upgrade efficiency to level 2' }),
-    );
+    await fireEvent.click(screen.getByRole('button', { name: 'Upgrade' }));
 
     await waitFor(() => {
       expect(screen.getByText('300')).toBeInTheDocument();
