@@ -53,7 +53,11 @@
             v-model="selectedSkill"
             :items="skillItems"
             orientation="horizontal"
-            :ui="{ fieldset: 'gap-x-8' }"
+            :ui="{
+              fieldset: 'gap-x-8',
+              legend: 'text-[length:inherit]',
+              item: 'text-[length:inherit]',
+            }"
             :legend="$t('Profiency')"
           >
             <template #label="{ item }">
