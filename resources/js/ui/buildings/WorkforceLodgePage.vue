@@ -111,7 +111,13 @@ function capitalize(value: string): string {
   return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
-const getRows = (workforce: WorkforceData) => [
+interface WorkforceRow {
+  label: string;
+  value: string | number;
+  highlight?: boolean;
+}
+
+const getRows = (workforce: WorkforceData): WorkforceRow[] => [
   {
     label: t('Total workforce / Max workforce'),
     value: `${workforce.workforce_total} / ${workforce.max_workers}`,
