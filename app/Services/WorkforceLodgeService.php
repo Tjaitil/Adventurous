@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Enums\SkillNames;
 use App\Exceptions\JsonException;
 use App\Http\Resources\WorkforceLodgeResource;
-use App\Http\Resources\WorkforceResource;
+use App\Http\Resources\WorkforceLodgeSkillResource;
 use App\Http\Responses\AdvResponse;
 use App\Models\EfficiencyUpgrade;
 use App\Models\FarmerWorkforce;
@@ -35,12 +35,12 @@ class WorkforceLodgeService
         }
 
         return new WorkforceLodgeResource([
-            'farmer' => new WorkforceResource(
+            'farmer' => new WorkforceLodgeSkillResource(
                 $farmerWorkforce,
                 $this->levelDataService->getMaxFarmers($userLevels->farmer_level),
                 $this->getEfficiencyPrice($farmerWorkforce->efficiency_level),
             ),
-            'miner' => new WorkforceResource(
+            'miner' => new WorkforceLodgeSkillResource(
                 $minerWorkforce,
                 $this->levelDataService->getMaxMiners($userLevels->miner_level),
                 $this->getEfficiencyPrice($minerWorkforce->efficiency_level),

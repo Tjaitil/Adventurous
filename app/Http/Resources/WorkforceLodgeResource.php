@@ -6,12 +6,12 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @property array{farmer: WorkforceResource, miner: WorkforceResource} $resource
+ * @property array{farmer: WorkforceLodgeSkillResource, miner: WorkforceLodgeSkillResource} $resource
  */
 class WorkforceLodgeResource extends JsonResource
 {
     /**
-     * @return array{farmer: WorkforceResource, miner: WorkforceResource}
+     * @return array{farmer: WorkforceLodgeSkillResource, miner: WorkforceLodgeSkillResource}
      */
     public function toArray(Request $request): array
     {
