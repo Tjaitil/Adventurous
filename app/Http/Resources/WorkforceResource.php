@@ -13,16 +13,17 @@ namespace App\Http\Resources;
  */
 class WorkforceResource extends Resource
 {
+
     public function __construct($resource = null)
     {
         parent::__construct([
-            'location' => '',
-            'location_amount' => 0,
-            'avail_amount' => 0,
-            'total_amount' => 0,
-            'efficiency_level' => 0,
-            'skill' => '',
-            'type' => '',
+            "location" => "",
+            "location_amount" => 0,
+            "avail_amount" => 0,
+            "total_amount" => 0,
+            "efficiency_level" => 0,
+            "skill" => "",
+            "type" => ""
         ], $resource);
     }
 
@@ -35,31 +36,30 @@ class WorkforceResource extends Resource
 
         if (isset($data['golbak_workforce'])) {
             $data['location_amount'] = $data['golbak_workforce'];
-            $data['location'] = 'golbak';
-        } elseif (isset($data['snerpiir_workforce'])) {
+            $data['location'] = "golbak";
+        } else if (isset($data['snerpiir_workforce'])) {
             $data['location_amount'] = $data['snerpiir_workforce'];
-            $data['location'] = 'snerpiir';
-        } elseif (isset($data['towhar_workforce'])) {
+            $data['location'] = "snerpiir";
+        } else if (isset($data['towhar_workforce'])) {
             $data['location_amount'] = $data['towhar_workforce'];
-            $data['location'] = 'towhar';
-        } elseif (isset($data['krasnur_workforce'])) {
+            $data['location'] = "towhar";
+        } else if (isset($data['krasnur_workforce'])) {
             $data['location_amount'] = $data['krasnur_workforce'];
-            $data['location'] = 'krasnur';
+            $data['location'] = "krasnur";
         }
-
         return $data;
     }
 
     public function toArray(): array
     {
         return [
-            'location' => $this->location,
-            'location_amount' => $this->location_amount,
-            'avail_amount' => $this->avail_amount,
-            'total_amount' => $this->total_amount,
-            'efficiency_level' => $this->efficiency_level,
-            'skill' => $this->skill,
-            'type' => $this->type,
+            "location" => $this->location,
+            "location_amount" => $this->location_amount,
+            "avail_amount" => $this->avail_amount,
+            "total_amount" => $this->total_amount,
+            "efficiency_level" => $this->efficiency_level,
+            "skill" => $this->skill,
+            "type" => $this->type
         ];
     }
 }
