@@ -72,21 +72,33 @@
             </template>
           </URadioGroup>
           <div id="efficiency-upgrade-info">
-            <p class="flex items-center gap-1">
-              {{ $t('Cost') }}:
-              <span id="upgrade-info-cost-el">
-                {{ selectedWorkforce.efficiency_upgrade_price }}
-              </span>
-              <img class="gold" src="/images/gold.png" :alt="$t('gold icon')" />
-            </p>
-            <p class="text-left">
-              {{ $t('Current level') }}:
-              <span id="upgrade-info-current-efficiency-el">
-                {{ selectedWorkforce.efficiency_level }}
-              </span>
+            <template v-if="canUpgrade">
+              <p id="upgrade-info-next-level-el" class="text-left">
+                {{ $t('Can upgrade to level') }}
+                {{ selectedWorkforce.efficiency_level + 1 }}
+              </p>
+              <p class="flex items-center gap-1">
+                {{ $t('Cost') }}:
+                <span id="upgrade-info-cost-el">
+                  {{ selectedWorkforce.efficiency_upgrade_price }}
+                </span>
+                <img
+                  class="gold"
+                  src="/images/gold.png"
+                  :alt="$t('gold icon')"
+                />
+              </p>
+            </template>
+            <p v-else id="upgrade-info-requirement-el" class="text-left">
+              {{ $t(`Need higher ${selectedSkill} level to upgrade`) }}
             </p>
           </div>
-          <UButton type="submit" :loading="isUpgrading" class="self-start">
+          <UButton
+            type="submit"
+            :loading="isUpgrading"
+            :disabled="!canUpgrade"
+            class="self-start"
+          >
             {{ $t('Upgrade') }}
           </UButton>
         </form>
@@ -133,6 +145,12 @@ const selectedWorkforce = computed(() => {
   }
   return workforces.value[selectedSkill.value];
 });
+
+const canUpgrade = computed(
+  () =>
+    selectedWorkforce.value.efficiency_level <
+    selectedWorkforce.value.max_efficiency_level,
+);
 
 function capitalize(value: string): string {
   return value.charAt(0).toUpperCase() + value.slice(1);

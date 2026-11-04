@@ -16,6 +16,7 @@ class WorkforceLodgeSkillResource extends JsonResource
         FarmerWorkforce|MinerWorkforce $resource,
         private readonly int $maxWorkers,
         private readonly int $efficiencyPrice,
+        private readonly int $maxEfficiencyLevel,
     ) {
         parent::__construct($resource);
     }
@@ -29,6 +30,7 @@ class WorkforceLodgeSkillResource extends JsonResource
             'skill' => $this->resource instanceof FarmerWorkforce ? 'farmer' : 'miner',
             'efficiency_level' => $this->resource->efficiency_level ?? 1,
             'efficiency_upgrade_price' => $this->efficiencyPrice,
+            'max_efficiency_level' => $this->maxEfficiencyLevel,
             'workforce_total' => $this->resource->workforce_total,
             'avail_workforce' => $this->resource->avail_workforce,
             'max_workers' => $this->maxWorkers,

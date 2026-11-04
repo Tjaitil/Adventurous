@@ -77,6 +77,7 @@ class WorkforceLodgeControllerTest extends TestCase
             'skill',
             'efficiency_level',
             'efficiency_upgrade_price',
+            'max_efficiency_level',
             'workforce_total',
             'avail_workforce',
             'locations',

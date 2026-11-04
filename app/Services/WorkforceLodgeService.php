@@ -39,11 +39,13 @@ class WorkforceLodgeService
                 $farmerWorkforce,
                 $this->levelDataService->getMaxFarmers($userLevels->farmer_level),
                 $this->getEfficiencyPrice($farmerWorkforce->efficiency_level),
+                $this->levelDataService->getMaxEfficiencyLevel($userLevels->farmer_level),
             ),
             'miner' => new WorkforceLodgeSkillResource(
                 $minerWorkforce,
                 $this->levelDataService->getMaxMiners($userLevels->miner_level),
                 $this->getEfficiencyPrice($minerWorkforce->efficiency_level),
+                $this->levelDataService->getMaxEfficiencyLevel($userLevels->miner_level),
             ),
         ]);
     }

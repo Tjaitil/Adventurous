@@ -37,6 +37,7 @@ const lodgeResponse: WorkforceLodgeDataResponse = {
       skill: 'farmer',
       efficiency_level: 1,
       efficiency_upgrade_price: 100,
+      max_efficiency_level: 3,
       workforce_total: 3,
       avail_workforce: 2,
       max_workers: 5,
@@ -50,6 +51,7 @@ const lodgeResponse: WorkforceLodgeDataResponse = {
       skill: 'miner',
       efficiency_level: 2,
       efficiency_upgrade_price: 250,
+      max_efficiency_level: 2,
       workforce_total: 4,
       avail_workforce: 4,
       max_workers: 4,
@@ -93,7 +95,7 @@ describe('workforceLodgePage.vue', () => {
 
     await fireEvent.click(screen.getByRole('radio', { name: 'Miner' }));
 
-    expect(screen.getByText('250')).toBeInTheDocument();
+    expect(screen.queryByText('250')).not.toBeInTheDocument();
   });
 
   it('upgrades efficiency for selected skill and updates state', async () => {

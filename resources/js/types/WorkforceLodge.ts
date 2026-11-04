@@ -12,6 +12,7 @@ export interface WorkforceData {
   skill: WorkforceSkill;
   efficiency_level: number;
   efficiency_upgrade_price: number;
+  max_efficiency_level: number;
   workforce_total: number;
   avail_workforce: number;
   max_workers: number;
