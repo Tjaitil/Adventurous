@@ -56,4 +56,20 @@ describe('HelpTooltip component', () => {
     await wrapper.find('button').trigger('focusout');
     expect(hidePopover).toHaveBeenCalledTimes(1);
   });
+
+  test('defaults to md size', () => {
+    const wrapper = mountComponent();
+
+    expect(wrapper.classes()).toContain('help-tooltip-md');
+  });
+
+  test('sm size applies the sm class', () => {
+    const wrapper = mount(HelpTooltip, {
+      props: { size: 'sm' },
+      global: { mocks },
+    });
+
+    expect(wrapper.classes()).toContain('help-tooltip-sm');
+    expect(wrapper.classes()).not.toContain('help-tooltip-md');
+  });
 });
