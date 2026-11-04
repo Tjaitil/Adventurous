@@ -33,13 +33,22 @@
       </div>
 
       <UCard>
-        <form class="flex flex-col gap-3" @submit.prevent="upgradeEfficiency">
-          <h2 class="text-xl">{{ $t('Upgrade workers efficiency') }}</h2>
-          <p class="text-sm">
-            {{
-              $t('Higher efficiency means lower time when mining or growing')
-            }}
-          </p>
+        <form
+          class="mx-auto flex w-1/2 max-w-80 flex-col gap-3"
+          @submit.prevent="upgradeEfficiency"
+        >
+          <div class="flex items-center gap-2">
+            <h2 class="text-xl">{{ $t('Upgrade efficiency') }}</h2>
+            <HelpTooltip>
+              <span class="block w-64 whitespace-normal">
+                {{
+                  $t(
+                    'Higher efficiency level lowers time workers spend mining or growing crops',
+                  )
+                }}
+              </span>
+            </HelpTooltip>
+          </div>
           <URadioGroup
             v-model="selectedSkill"
             :items="skillItems"
@@ -47,14 +56,8 @@
             :legend="$t('Profiency')"
           />
           <div id="efficiency-upgrade-info" class="text-sm">
-            <p>
-              {{ $t('Next efficiency level') }}:
-              <span id="upgrade-info-efficiency-level-el">
-                {{ selectedWorkforce.efficiency_level + 1 }}
-              </span>
-            </p>
             <p class="flex items-center gap-1">
-              {{ $t('Upgrade cost') }}:
+              {{ $t('Cost') }}:
               <span id="upgrade-info-cost-el">
                 {{ selectedWorkforce.efficiency_upgrade_price }}
               </span>
@@ -62,7 +65,8 @@
             </p>
           </div>
           <UButton type="submit" :loading="isUpgrading" class="self-start">
-            {{ $t('Upgrade efficiency') }}
+            {{ $t('Upgrade efficiency to level') }}
+            {{ selectedWorkforce.efficiency_level + 1 }}
           </UButton>
         </form>
       </UCard>
@@ -84,6 +88,7 @@ import type {
 import { buildingDataPreloader } from '@/ui/services/buildingDataPreloader';
 import { useInventoryStore } from '../stores/InventoryStore';
 import BaseLoadingIcon from '../components/base/BaseLoadingIcon.vue';
+import HelpTooltip from '../components/elements/HelpTooltip.vue';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();

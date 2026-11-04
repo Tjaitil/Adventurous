@@ -111,7 +111,7 @@ describe('workforceLodgePage.vue', () => {
     });
 
     await fireEvent.click(
-      screen.getByRole('button', { name: 'Upgrade efficiency' }),
+      screen.getByRole('button', { name: 'Upgrade efficiency to level 2' }),
     );
 
     await waitFor(() => {
