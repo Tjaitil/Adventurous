@@ -2,64 +2,53 @@
 
 namespace App\Http\Resources;
 
+use App\Models\FarmerWorkforce;
+use App\Models\MinerWorkforce;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
 /**
- * @property int $location_amount
- * @property int $avail_amount
- * @property int $total_amount
- * @property int $efficiency_level
- * @property string $location
- * @property string $skill
- * @property string $type
+ * @property FarmerWorkforce|MinerWorkforce $resource
  */
-class WorkforceResource extends Resource
+class WorkforceResource extends JsonResource
 {
-
-    public function __construct($resource = null)
-    {
-        parent::__construct([
-            "location" => "",
-            "location_amount" => 0,
-            "avail_amount" => 0,
-            "total_amount" => 0,
-            "efficiency_level" => 0,
-            "skill" => "",
-            "type" => ""
-        ], $resource);
+    public function __construct(
+        FarmerWorkforce|MinerWorkforce $resource,
+        private readonly int $maxWorkers,
+        private readonly int $efficiencyPrice,
+    ) {
+        parent::__construct($resource);
     }
 
-    public static function mapping(array $data): array
-    {
-        $data['avail_amount'] = $data['avail_workforce'];
-        $data['total_amount'] = $data['workforce_total'];
-
-        $data['total_amount'] = $data['workforce_total'];
-
-        if (isset($data['golbak_workforce'])) {
-            $data['location_amount'] = $data['golbak_workforce'];
-            $data['location'] = "golbak";
-        } else if (isset($data['snerpiir_workforce'])) {
-            $data['location_amount'] = $data['snerpiir_workforce'];
-            $data['location'] = "snerpiir";
-        } else if (isset($data['towhar_workforce'])) {
-            $data['location_amount'] = $data['towhar_workforce'];
-            $data['location'] = "towhar";
-        } else if (isset($data['krasnur_workforce'])) {
-            $data['location_amount'] = $data['krasnur_workforce'];
-            $data['location'] = "krasnur";
-        }
-        return $data;
-    }
-
-    public function toArray(): array
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(Request $request): array
     {
         return [
-            "location" => $this->location,
-            "location_amount" => $this->location_amount,
-            "avail_amount" => $this->avail_amount,
-            "total_amount" => $this->total_amount,
-            "efficiency_level" => $this->efficiency_level,
-            "skill" => $this->skill,
-            "type" => $this->type
+            'skill' => $this->resource instanceof FarmerWorkforce ? 'farmer' : 'miner',
+            'efficiency_level' => $this->resource->efficiency_level ?? 1,
+            'efficiency_upgrade_price' => $this->efficiencyPrice,
+            'workforce_total' => $this->resource->workforce_total,
+            'avail_workforce' => $this->resource->avail_workforce,
+            'max_workers' => $this->maxWorkers,
+            'can_recruit' => max(0, $this->maxWorkers - $this->resource->workforce_total),
+            'locations' => $this->locations(),
         ];
+    }
+
+    /**
+     * @return list<array{name: string, amount: int}>
+     */
+    private function locations(): array
+    {
+        $amounts = $this->resource instanceof FarmerWorkforce
+            ? ['Towhar' => $this->resource->towhar, 'Krasnur' => $this->resource->krasnur]
+            : ['Golbak' => $this->resource->golbak, 'Snerpiir' => $this->resource->snerpiir];
+
+        return collect($amounts)
+            ->map(fn (int $amount, string $name) => ['name' => $name, 'amount' => $amount])
+            ->values()
+            ->all();
     }
 }
