@@ -16,7 +16,7 @@
               {{ workforces[skill].efficiency_level }}
             </span>
           </p>
-          <table class="w-full text-left text-sm">
+          <table class="w-full text-left">
             <tbody>
               <tr v-for="row in getRows(workforces[skill])" :key="row.label">
                 <th class="py-1 font-normal">{{ row.label }}</th>
@@ -55,7 +55,7 @@
             orientation="horizontal"
             :legend="$t('Profiency')"
           />
-          <div id="efficiency-upgrade-info" class="text-sm">
+          <div id="efficiency-upgrade-info">
             <p class="flex items-center gap-1">
               {{ $t('Cost') }}:
               <span id="upgrade-info-cost-el">
