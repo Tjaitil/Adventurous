@@ -53,6 +53,7 @@
             v-model="selectedSkill"
             :items="skillItems"
             orientation="horizontal"
+            :ui="{ fieldset: 'gap-x-8' }"
             :legend="$t('Profiency')"
           >
             <template #label="{ item }">
