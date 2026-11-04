@@ -7,6 +7,7 @@
     @mouseleave="hideTooltip"
   >
     <button
+      type="button"
       class="custom-button"
       :style="{ 'anchor-name': anchorName }"
       :aria-label="$t('Help tooltip')"
@@ -24,8 +25,7 @@
       ref="tooltipEl"
       popover="manual"
       role="tooltip"
-      :style="{ 'position-anchor': anchorName }"
-      class="border-primary-700 pixelated-corners-sm m-0 rounded border-2 bg-(--ui-bg-elevated) p-2 text-sm whitespace-nowrap text-inherit [position-area:bottom] [position-try:flip-block]"
+      class="border-primary-700 pixelated-corners-sm m-0 border-2 bg-(--ui-bg-elevated) p-2 text-sm whitespace-nowrap text-inherit [position-area:bottom] [position-try:flip-block]"
     >
       <slot></slot>
     </div>
@@ -48,3 +48,8 @@ const hideTooltip = () => {
   tooltip.value?.hidePopover();
 };
 </script>
+<style scoped>
+[role='tooltip'] {
+  position-anchor: v-bind(anchorName);
+}
+</style>

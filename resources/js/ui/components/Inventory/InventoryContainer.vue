@@ -8,6 +8,7 @@
     <template v-else>
       <p class="mb-4">
         {{ $t('Inventory') }}
+        <HelpTooltip> sup sup </HelpTooltip>
         <span
           id="inventory-status"
           :class="{
@@ -46,6 +47,7 @@ import { useInventoryStore } from '@/ui/stores/InventoryStore';
 import { itemPrices } from '@/clientScripts/inventory';
 import { reportCatchError } from '@/base/ErrorHandler';
 import BaseItem from '../base/BaseItem.vue';
+import HelpTooltip from '../elements/HelpTooltip.vue';
 
 const inventoryStore = useInventoryStore();
 const isLoading = ref(true);
