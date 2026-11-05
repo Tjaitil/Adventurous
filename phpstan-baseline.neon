@@ -1741,24 +1741,6 @@ parameters:
 			path: app/Http/Controllers/TraderAssignmentController.php
 
 		-
-			message: '#^Cannot access property \$efficiency_level on App\\Models\\FarmerWorkforce\|null\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: app/Http/Controllers/WorkforceLodgeController.php
-
-		-
-			message: '#^Cannot access property \$efficiency_level on App\\Models\\MinerWorkforce\|null\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: app/Http/Controllers/WorkforceLodgeController.php
-
-		-
-			message: '#^Cannot access property \$price on App\\Models\\EfficiencyUpgrade\|null\.$#'
-			identifier: property.nonObject
-			count: 2
-			path: app/Http/Controllers/WorkforceLodgeController.php
-
-		-
 			message: '#^Method adventures\:\:calculateContribution\(\) has no return type specified\.$#'
 			identifier: missingType.return
 			count: 1

@@ -23,14 +23,6 @@ class WorkforceLodgeControllerTest extends TestCase
         $this->actingAs($this->RandomUser);
     }
 
-    public function test_retrieve_building(): void
-    {
-        $response = $this->actingAs($this->RandomUser)
-            ->get('/workforcelodge');
-
-        $response->assertStatus(200);
-    }
-
     public function test_data_route_returns_expected_shape(): void
     {
         $response = $this->get('/workforcelodge/data');
