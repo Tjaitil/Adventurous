@@ -1755,7 +1755,7 @@ parameters:
 		-
 			message: '#^Cannot access property \$price on App\\Models\\EfficiencyUpgrade\|null\.$#'
 			identifier: property.nonObject
-			count: 4
+			count: 2
 			path: app/Http/Controllers/WorkforceLodgeController.php
 
 		-

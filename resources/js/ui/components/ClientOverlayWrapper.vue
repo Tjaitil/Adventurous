@@ -54,6 +54,7 @@ import ArmoryPage from '../buildings/ArmoryPage.vue';
 import { ClientOverlayInterface } from '@/clientScripts/clientOverlayInterface';
 import { buildingDataPreloader } from '@/ui/services/buildingDataPreloader';
 import StockpilePage from '../buildings/StockpilePage.vue';
+import WorkforceLodgePage from '../buildings/WorkforceLodgePage.vue';
 
 const isOpen = ref(false);
 const loadingElement = useTemplateRef('loadingIcon');
@@ -97,6 +98,11 @@ const unsubRenderBuilding = gameEventBus.subscribe('RENDER_BUILDING', obj => {
       case 'stockpile': {
         currentComponent.value = StockpilePage;
         void buildingDataPreloader.preloadStockpile();
+        break;
+      }
+      case 'workforcelodge': {
+        currentComponent.value = WorkforceLodgePage;
+        void buildingDataPreloader.preloadWorkforceLodge();
         break;
       }
       default: {

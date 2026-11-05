@@ -31,6 +31,7 @@ const renderClientOverlay = (options: RenderOptions = {}): RenderResult => {
       stubs: {
         ArmoryPage: true,
         StockpilePage: true,
+        WorkforceLodgePage: true,
         ...options.stubs,
       },
     },
@@ -120,6 +121,22 @@ describe('ClientOverlayWrapper.vue', () => {
 
       await waitFor(() => {
         expect(screen.getByText('Stockpile Page')).toBeInTheDocument();
+      });
+    });
+
+    test('displays workforcelodge component for workforcelodge Vue page', async () => {
+      renderClientOverlay({
+        stubs: {
+          WorkforceLodgePage: { template: '<div>Workforce Lodge Page</div>' },
+        },
+      });
+
+      gameEventBus.emit('RENDER_BUILDING', {
+        building: 'workforcelodge',
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText('Workforce Lodge Page')).toBeInTheDocument();
       });
     });
   });

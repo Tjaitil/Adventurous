@@ -4,6 +4,7 @@ import type { ArmoryWarrior } from './Warrior';
 import type { MineCountdownResponse } from './Mine';
 import type { CropCountdownResponse } from './crops';
 import type { StockpileDataResponse } from './Stockpile';
+import type { WorkforceLodgeDataResponse } from './WorkforceLodge';
 
 type UnwrapDataLoader<T> = T[keyof T] extends () => Promise<infer R>
   ? R
@@ -67,3 +68,9 @@ export type StockpileDataLoader = {
 };
 
 export type StockpileDataLoaderResponse = StockpileDataResponse;
+
+export type WorkforceLodgeDataLoader = {
+  res: () => Promise<WorkforceLodgeDataResponse>;
+};
+
+export type WorkforceLodgeDataLoaderResponse = WorkforceLodgeDataResponse;
