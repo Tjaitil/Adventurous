@@ -1,6 +1,7 @@
 <template>
   <div
-    class="relative inline-block h-6 w-6"
+    class="relative inline-block"
+    :class="`help-tooltip-${size}`"
     @mouseenter="showTooltip"
     @focusin="showTooltip"
     @focusout="hideTooltip"
@@ -13,12 +14,7 @@
       :aria-label="$t('Help tooltip')"
       :aria-describedby="tooltipId"
     >
-      <img
-        src="/images/help icon.png"
-        :alt="$t('Help icon')"
-        width="24px"
-        height="24px"
-      />
+      <img src="/images/help icon.png" :alt="$t('Help icon')" />
     </button>
     <div
       :id="tooltipId"
@@ -35,6 +31,11 @@
 <script setup lang="ts">
 import { useId, useTemplateRef } from 'vue';
 
+interface Props {
+  size?: 'sm' | 'md';
+}
+const { size = 'md' } = defineProps<Props>();
+
 const tooltip = useTemplateRef<HTMLElement | null>('tooltipEl');
 const id = useId();
 const anchorName = `--help-tooltip-${id}`;
@@ -49,6 +50,23 @@ const hideTooltip = () => {
 };
 </script>
 <style scoped>
+.help-tooltip-sm {
+  --width: calc(var(--spacing) * 4);
+  --height: calc(var(--spacing) * 4);
+  width: var(--width);
+  height: var(--height);
+}
+.help-tooltip-md {
+  --width: calc(var(--spacing) * 6);
+  --height: calc(var(--spacing) * 6);
+  width: var(--width);
+  height: var(--height);
+}
+img {
+  width: var(--width);
+  height: var(--height);
+}
+
 [role='tooltip'] {
   position-anchor: v-bind(anchorName);
 }
