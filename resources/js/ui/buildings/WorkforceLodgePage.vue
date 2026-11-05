@@ -39,7 +39,7 @@
         >
           <div class="flex items-center gap-2">
             <h2 class="text-xl">{{ $t('Upgrade efficiency level') }}</h2>
-            <HelpTooltip>
+            <HelpTooltip size="sm">
               <span class="block w-64 whitespace-normal">
                 {{
                   $t(
@@ -58,7 +58,6 @@
               legend: 'text-[length:inherit]',
               item: 'text-[length:inherit]',
             }"
-            :legend="$t('Profiency')"
           >
             <template #label="{ item }">
               <span class="flex items-center gap-1">
