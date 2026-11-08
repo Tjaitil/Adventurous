@@ -28,6 +28,7 @@
     var(--layoutBgColorShadowPerc),
     var(--layoutBgColorShadow)
   );
+  --checked-border-color: var(--color-orange-400);
 }
 
 @theme static {
