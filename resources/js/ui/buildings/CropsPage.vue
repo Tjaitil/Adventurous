@@ -16,15 +16,9 @@
       />
 
       <div class="flex flex-col gap-4 md:flex-row">
-        <ResourceProductionGrid
-          v-model="pickedType"
-          :items="cropItems"
-          class="md:w-1/2"
-        />
+        <ResourceProductionGrid v-model="pickedType" :items="cropItems" />
 
-        <div
-          class="flex flex-col gap-4 border-black px-1 md:w-1/2 md:border-l-2"
-        >
+        <div class="flex flex-col gap-4 border-black px-1 md:border-l-2">
           <ResourceProductionDetailsPanel
             :action-type-label="$t('Crops')"
             skill="farmer"
