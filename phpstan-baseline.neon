@@ -2503,36 +2503,6 @@ parameters:
 			path: app/Models/Adventures_model.php
 
 		-
-			message: '#^Method ArmorItems\:\:__construct\(\) has parameter \$session with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Models/ArmorItems_model.php
-
-		-
-			message: '#^Method ArmorItems\:\:unlockArmorItems\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: app/Models/ArmorItems_model.php
-
-		-
-			message: '#^Method ArmorItems\:\:unlockArmorItems\(\) has parameter \$POST with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Models/ArmorItems_model.php
-
-		-
-			message: '#^Property ArmorItems\:\:\$session has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/ArmorItems_model.php
-
-		-
-			message: '#^Property ArmorItems\:\:\$username has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/ArmorItems_model.php
-
-		-
 			message: '#^Access to an undefined property ArmyMissionsRessource_model\:\:\$Warriors_model\.$#'
 			identifier: property.notFound
 			count: 7
@@ -2891,66 +2861,6 @@ parameters:
 			identifier: deadCode.unreachable
 			count: 7
 			path: app/Models/Artefact_model.php
-
-		-
-			message: '#^Binary operation "\-" between string and 5 results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: app/Models/CanvasGameID_model.php
-
-		-
-			message: '#^Method CanvasGameID_model\:\:__construct\(\) has parameter \$session with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Models/CanvasGameID_model.php
-
-		-
-			message: '#^Method CanvasGameID_model\:\:checkGameID\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: app/Models/CanvasGameID_model.php
-
-		-
-			message: '#^Method CanvasGameID_model\:\:checkGameID\(\) has parameter \$POST with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Models/CanvasGameID_model.php
-
-		-
-			message: '#^Method CanvasGameID_model\:\:checkSessionID\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: app/Models/CanvasGameID_model.php
-
-		-
-			message: '#^Method CanvasGameID_model\:\:updateGameID\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: app/Models/CanvasGameID_model.php
-
-		-
-			message: '#^Method CanvasGameID_model\:\:updateGameID\(\) has parameter \$live_id with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Models/CanvasGameID_model.php
-
-		-
-			message: '#^Method CanvasGameID_model\:\:updateSessionID\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: app/Models/CanvasGameID_model.php
-
-		-
-			message: '#^Property CanvasGameID_model\:\:\$session has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/CanvasGameID_model.php
-
-		-
-			message: '#^Property CanvasGameID_model\:\:\$username has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/CanvasGameID_model.php
 
 		-
 			message: '#^Method CityCentre_model\:\:__construct\(\) has parameter \$session with no type specified\.$#'
@@ -3355,48 +3265,6 @@ parameters:
 			path: app/Models/Combat_model.php
 
 		-
-			message: '#^Method App\\Models\\FarmerWorkforce_model\:\:all\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: app/Models/FarmerWorkforce_model.php
-
-		-
-			message: '#^Method App\\Models\\FarmerWorkforce_model\:\:find\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Models/FarmerWorkforce_model.php
-
-		-
-			message: '#^Method App\\Models\\FarmerWorkforce_model\:\:increaseWorkforce\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: app/Models/FarmerWorkforce_model.php
-
-		-
-			message: '#^Method App\\Models\\FarmerWorkforce_model\:\:update\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: app/Models/FarmerWorkforce_model.php
-
-		-
-			message: '#^Method App\\Models\\FarmerWorkforce_model\:\:updateWorkforce\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: app/Models/FarmerWorkforce_model.php
-
-		-
-			message: '#^Method App\\Models\\FarmerWorkforce_model\:\:upgradeEfficiency\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: app/Models/FarmerWorkforce_model.php
-
-		-
-			message: '#^PHPDoc tag @param for parameter \$location with type string\|null is not subtype of native type string\.$#'
-			identifier: parameter.phpDocType
-			count: 1
-			path: app/Models/FarmerWorkforce_model.php
-
-		-
 			message: '#^Method Highscores_model\:\:__construct\(\) has parameter \$session with no type specified\.$#'
 			identifier: missingType.parameter
 			count: 1
@@ -3533,42 +3401,6 @@ parameters:
 			identifier: variable.undefined
 			count: 2
 			path: app/Models/LevelUp_model.php
-
-		-
-			message: '#^Method App\\Models\\Login_model\:\:checkUser\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: app/Models/Login_model.php
-
-		-
-			message: '#^Method App\\Models\\Login_model\:\:checkUser\(\) has parameter \$password with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Models/Login_model.php
-
-		-
-			message: '#^Method App\\Models\\Login_model\:\:checkUser\(\) has parameter \$username with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Models/Login_model.php
-
-		-
-			message: '#^Property App\\Models\\Login_model\:\:\$profiency has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/Login_model.php
-
-		-
-			message: '#^Property App\\Models\\Login_model\:\:\$row has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/Login_model.php
-
-		-
-			message: '#^Property App\\Models\\Login_model\:\:\$status has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/Login_model.php
 
 		-
 			message: '#^Function get_item not found\.$#'
@@ -3995,48 +3827,6 @@ parameters:
 			identifier: missingType.parameter
 			count: 1
 			path: app/Models/Registration_model.php
-
-		-
-			message: '#^Method Repair_model\:\:__construct\(\) has parameter \$session with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Models/Repair_model.php
-
-		-
-			message: '#^Method Repair_model\:\:checkItemRepairability\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: app/Models/Repair_model.php
-
-		-
-			message: '#^Method Repair_model\:\:checkItemRepairability\(\) has parameter \$POST with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Models/Repair_model.php
-
-		-
-			message: '#^Method Repair_model\:\:repairItem\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: app/Models/Repair_model.php
-
-		-
-			message: '#^Method Repair_model\:\:repairItem\(\) has parameter \$POST with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Models/Repair_model.php
-
-		-
-			message: '#^Property Repair_model\:\:\$session has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/Repair_model.php
-
-		-
-			message: '#^Property Repair_model\:\:\$username has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/Repair_model.php
 
 		-
 			message: '#^Function get_item not found\.$#'
