@@ -1039,24 +1039,6 @@ parameters:
 			path: app/Http/Controllers/CityCentreController.php
 
 		-
-			message: '#^Cannot call method toArray\(\) on App\\Models\\UserLevels\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: app/Http/Controllers/HighscoresController.php
-
-		-
-			message: '#^Method App\\Http\\Controllers\\HighscoresController\:\:index\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: app/Http/Controllers/HighscoresController.php
-
-		-
-			message: '#^Property App\\Http\\Controllers\\HighscoresController\:\:\$data has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Http/Controllers/HighscoresController.php
-
-		-
 			message: '#^Method App\\Http\\Controllers\\IndexController\:\:index\(\) has no return type specified\.$#'
 			identifier: missingType.return
 			count: 1
@@ -3395,42 +3377,6 @@ parameters:
 			identifier: parameter.phpDocType
 			count: 1
 			path: app/Models/FarmerWorkforce_model.php
-
-		-
-			message: '#^Method Highscores_model\:\:__construct\(\) has parameter \$session with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Models/Highscores_model.php
-
-		-
-			message: '#^Method Highscores_model\:\:getData\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: app/Models/Highscores_model.php
-
-		-
-			message: '#^Method Highscores_model\:\:getNextPage\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: app/Models/Highscores_model.php
-
-		-
-			message: '#^Method Highscores_model\:\:getNextPage\(\) has parameter \$GET with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: app/Models/Highscores_model.php
-
-		-
-			message: '#^Property Highscores_model\:\:\$session has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/Highscores_model.php
-
-		-
-			message: '#^Property Highscores_model\:\:\$username has no type specified\.$#'
-			identifier: missingType.property
-			count: 1
-			path: app/Models/Highscores_model.php
 
 		-
 			message: '#^Access to constant FETCH_ASSOC on an unknown class App\\Models\\PDO\.$#'

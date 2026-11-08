@@ -12,10 +12,6 @@
                 <div class="top_but"><a href="/gameguide">Gameguide</a></div>
             </div>
             <div class="top_bar">
-                <div class="top_a"><a href="/highscores"></a></div>
-                <div class="top_but"><a href="/highscores">Highscores</a></div>
-            </div>
-            <div class="top_bar">
                 <div class="top_a"><a href="/news"></a></div>
                 <div class="top_but"><a href="/news">News</a></div>
             </div>
