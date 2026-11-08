@@ -16,7 +16,6 @@ import MineModule from '../buildingScripts/mine';
 import CropsModule from '../buildingScripts/crops';
 import zinsStoreModule from '../buildingScripts/zinsstore';
 import merchantModule from '../buildingScripts/merchant';
-import workforceLodgeModule from '../buildingScripts/workforcelodge';
 import smithyModule from '../buildingScripts/smithy';
 import archeryShopModule from '../buildingScripts/archeryshop';
 import { gameEventBus } from '@/gameEventsBus';
@@ -278,10 +277,6 @@ export const inputHandler: IInputHandler = {
 
         case 'smithy':
           this.currentBuildingModule = smithyModule;
-          this.currentBuildingModule.init();
-          break;
-        case 'workforcelodge':
-          this.currentBuildingModule = workforceLodgeModule;
           this.currentBuildingModule.init();
           break;
       }
