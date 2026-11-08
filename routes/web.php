@@ -137,7 +137,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/skills/update', [SkillsController::class, 'handleUpdate']);
 
-    Route::get('/workforcelodge', [WorkforceLodgeController::class, 'index']);
     Route::get('/workforcelodge/data', [WorkforceLodgeController::class, 'getData']);
     Route::post('/workforcelodge/efficiency/upgrade', [WorkforceLodgeController::class, 'upgradeEfficiency']);
 
