@@ -1,12 +1,6 @@
 import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
-import type {
-  RenderResult} from '@testing-library/vue';
-import {
-  render,
-  screen,
-  waitFor,
-  fireEvent
-} from '@testing-library/vue';
+import type { RenderResult } from '@testing-library/vue';
+import { render, screen, waitFor, fireEvent } from '@testing-library/vue';
 import { createPinia } from 'pinia';
 import '@testing-library/jest-dom/vitest';
 import ClientOverlayWrapper from '@/ui/components/ClientOverlayWrapper.vue';
@@ -124,19 +118,19 @@ describe('ClientOverlayWrapper.vue', () => {
       });
     });
 
-    test('displays workforcelodge component for workforcelodge Vue page', async () => {
+    test('displays the matching component for other Vue pages, e.g. mine', async () => {
       renderClientOverlay({
         stubs: {
-          WorkforceLodgePage: { template: '<div>Workforce Lodge Page</div>' },
+          MinerPage: { template: '<div>Miner Page</div>' },
         },
       });
 
       gameEventBus.emit('RENDER_BUILDING', {
-        building: 'workforcelodge',
+        building: 'mine',
       });
 
       await waitFor(() => {
-        expect(screen.getByText('Workforce Lodge Page')).toBeInTheDocument();
+        expect(screen.getByText('Miner Page')).toBeInTheDocument();
       });
     });
   });
