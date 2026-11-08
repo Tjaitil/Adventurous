@@ -15,12 +15,7 @@
         </div>
         <div class="top_but"><a href="/guides">Guides</a></div>
       </div>
-      <div class="top_bar">
-        <div class="top_a">
-          <a href="/highscores" aria-label="Highscores"></a>
-        </div>
-        <div class="top_but"><a href="/highscores">Highscores</a></div>
-      </div>
+
       <div class="top_bar">
         <div class="top_a"><a href="/news" aria-label="News"></a></div>
         <div class="top_but"><a href="/news">News</a></div>
