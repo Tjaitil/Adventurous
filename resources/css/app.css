@@ -29,7 +29,8 @@
     var(--layoutBgColorShadow)
   );
 
-  --item-wrapper-size: 64px;
+  --item-wrapper-size: 4rem;
+  --item-img-size: 3rem;
 }
 
 @theme static {

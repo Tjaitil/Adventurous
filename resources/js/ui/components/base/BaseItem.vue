@@ -13,7 +13,7 @@
       <img
         :src="'/images/' + item + '.png'"
         :alt="t('game item')"
-        class="item-image mx-auto h-12 w-12 align-middle"
+        class="item-image mx-auto h-(--item-img-size) w-(--item-img-size) align-middle"
       />
     </figure>
     <span
