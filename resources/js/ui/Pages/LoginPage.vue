@@ -29,7 +29,7 @@
                 v-model="form.email"
                 type="email"
                 name="email"
-                class="bg-primary-300 m-auto block w-full rounded-lg border-2 border-stone-500 px-2 py-1 text-center outline-hidden"
+                class="bg-primary-300 m-auto block w-full rounded-lg border-2 border-stone-500 px-2 py-1 outline-hidden"
               />
             </div>
             <div>
