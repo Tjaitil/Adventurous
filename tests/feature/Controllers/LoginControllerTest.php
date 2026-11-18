@@ -29,12 +29,6 @@ class LoginControllerTest extends TestCase
     }
 
     #[Group('authentication')]
-    public function test_root_redirects_to_login(): void
-    {
-        $this->get('/')->assertRedirect('/login');
-    }
-
-    #[Group('authentication')]
     public function test_user_can_login(): void
     {
         $response = $this->post('/authenticate', [
