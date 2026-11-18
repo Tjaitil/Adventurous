@@ -3,22 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Services\GameLogService;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Inertia\Response as InertiaResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class LoginController extends Controller
 {
-    public function index(): RedirectResponse|View
+    public function index(): RedirectResponse|InertiaResponse
     {
         if (Auth::check()) {
             return redirect()->route('client');
         }
 
-        return view('login')->with('title', 'Login');
+        return Inertia::render('LoginPage');
     }
 
     public function authenticate(Request $request): RedirectResponse
