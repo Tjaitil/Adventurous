@@ -18,9 +18,7 @@
           {{ inventoryStore.maxSlots }}
         </span>
       </p>
-      <div
-        class="grid-tem grid grid-cols-[repeat(auto-fill,minmax(88px,1fr))] grid-rows-[minmax(90px,1fr)] gap-y-4"
-      >
+      <div class="item-container">
         <BaseItem
           v-for="item in inventoryStore.inventoryItems"
           ref="inventoryItemRefs"
@@ -81,7 +79,7 @@ const handleEvent = (e: Event, itemName: string): void => {
 </script>
 
 <style>
-.inventory_item {
+/* .inventory_item {
   display: inline-block;
   max-width: 104px;
   min-width: 60px;
@@ -94,9 +92,9 @@ const handleEvent = (e: Event, itemName: string): void => {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-}
+} */
 
-.inventory_item figure {
+/* .inventory_item figure {
   position: relative;
-}
+} */
 </style>

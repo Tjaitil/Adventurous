@@ -28,6 +28,9 @@
     var(--layoutBgColorShadowPerc),
     var(--layoutBgColorShadow)
   );
+
+  --item-wrapper-size: 4rem;
+  --item-img-size: 3rem;
 }
 
 @theme static {
@@ -114,6 +117,15 @@
   &:before {
     filter: brightness(1.2);
   }
+}
+
+.item-container {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(var(--item-wrapper-size), 1fr)
+  );
+  gap: 1rem;
 }
 
 .pixelated-outline-sm {

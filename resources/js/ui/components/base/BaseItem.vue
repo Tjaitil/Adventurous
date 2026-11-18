@@ -2,21 +2,30 @@
   <component
     :is="isIneractive ? 'button' : 'div'"
     :class="['item group', { 'u-focus-ring': showFocusStyle && isIneractive }]"
+    class="relative h-(--item-wrapper-size) w-(--item-wrapper-size)"
+    data-scoped-styled="true"
   >
-    <figure @mouseenter="onMouseEnter" @mouseleave="onMouseLeave">
+    <figure
+      class="relative"
+      @mouseenter="onMouseEnter"
+      @mouseleave="onMouseLeave"
+    >
       <img
         :src="'/images/' + item + '.png'"
         :alt="t('game item')"
-        class="item-image h-12 w-12 align-middle"
+        class="item-image mx-auto h-(--item-img-size) w-(--item-img-size) align-middle"
       />
     </figure>
-    <span v-if="showAmount && amount !== undefined" class="item_amount">
+    <span
+      v-if="showAmount && amount !== undefined"
+      class="item_amount absolute top-0 right-0"
+    >
       {{ itemAmountWithDelimiter }}
     </span>
     <ul
       ref="tooltipEl"
       popover="manual"
-      class="item-tooltip bg-primary-800 min-h-20 max-w-[125px] border-2 border-black py-2 text-center text-xs text-white"
+      class="item-tooltip bg-primary-800 min-h-20 max-w-[125px] border-2 border-black py-2 text-center text-xs text-inherit"
     >
       <li class="w-[120px]">
         <span class="tooltip_item">{{ jsUcWords(item) }}</span>
@@ -95,7 +104,7 @@ const onMouseLeave = () => {
   }
 };
 </script>
-<style>
+<style scoped>
 .item figure {
   anchor-name: v-bind(anchorName);
 }

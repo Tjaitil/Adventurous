@@ -16,7 +16,7 @@
         v-else
         id="stockpile"
         ref="stockpileContainerRef"
-        class="grid grid-cols-[repeat(auto-fill,minmax(88px,1fr))] gap-3"
+        class="item-container"
       >
         <BaseItem
           v-for="item in stockpileItems"

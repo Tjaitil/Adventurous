@@ -1,7 +1,7 @@
 <template>
   <div id="selected-item-data-wrapper">
     <div
-      class="border-primary-900 border-outset mx-auto mt-1 mb-1 box-content h-12 w-12 border-2"
+      class="border-primary-900 border-outset mx-auto mt-1 mb-1 box-content h-(--item-img-size) w-(--item-img-size) border-2"
       :role="isItemSet ? 'button' : ''"
       :title="isItemSet ? 'Remove item' : ''"
       :aria-label="isItemSet ? 'Remove item' : ''"

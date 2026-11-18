@@ -132,11 +132,18 @@
   height: 30px;
   vertical-align: middle;
 }
-.item .tooltip {
+
+/**
+ * Legacy styling for items not using scoped styles
+ */
+.item:not([data-scoped-styled='true']) .tooltip {
   display: none;
 }
 
-.item {
+/**
+ * Legacy styling for items not using scoped styles
+ */
+.item:not([data-scoped-styled='true']) {
   display: inline-block;
   max-width: 104px;
   min-width: 70px;
@@ -149,29 +156,16 @@
   border: 3px ridge var(--layoutBgColorShadow);
   border-radius: 4px;
 }
-.stockpile_item {
-  display: inline-block;
-  max-width: 104px;
-  width: 30%;
-  height: 90px;
-  position: relative;
-}
-
-.stockpile_item img:not(.gold) {
-  width: 48px;
-  height: 48px;
-  cursor: pointer;
-  image-rendering: pixelated;
-  image-rendering: -moz-crisp-edges;
-}
-
 .item_img .gold {
   width: 48px;
   height: 48px;
   vertical-align: middle;
 }
 
-.item figure {
+/**
+ * Legacy styling for item images of gold
+ */
+.item:not([data-scoped-styled='true']) figure {
   position: relative;
 }
 
@@ -187,7 +181,7 @@
   text-align: center;
 }
 
-.item_amount {
+.item:not([data-scoped-styled='true']) .item_amount {
   position: relative;
   top: -64%;
   left: 24%;
@@ -196,7 +190,7 @@
   float: none;
 }
 
-.item .item_amount {
+.item:not([data-scoped-styled='true']) .item_amount {
   position: absolute;
   top: 0px;
   right: 10px;
