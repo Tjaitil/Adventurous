@@ -14,7 +14,6 @@ use App\Http\Controllers\DevToolsController;
 use App\Http\Controllers\GameLoggerController;
 use App\Http\Controllers\HungerController;
 use App\Http\Controllers\InventoryController;
-use App\Http\Controllers\LandingController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MerchantController;
@@ -41,7 +40,7 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-Route::get('/', [LandingController::class, 'index']);
+Route::redirect('/', '/login');
 Route::post('/logout', [LoginController::class, 'logout']);
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/authenticate', [LoginController::class, 'authenticate']);
