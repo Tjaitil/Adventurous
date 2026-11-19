@@ -4,6 +4,7 @@ namespace Tests\Feature\Controllers;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Testing\AssertableInertia;
 use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 
@@ -24,7 +25,7 @@ class LoginControllerTest extends TestCase
         $response = $this->get('/login');
 
         $response->assertStatus(200);
-        $response->assertSee('Login');
+        $response->assertInertia(fn (AssertableInertia $page) => $page->component('LoginPage'));
     }
 
     #[Group('authentication')]

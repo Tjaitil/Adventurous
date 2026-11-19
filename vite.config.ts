@@ -119,7 +119,6 @@ export default defineConfig(({ mode }) => {
           'resources/js/ui/inertia.app.ts',
           'resources/js/app.js',
           'resources/js/clientScripts/inventory.ts',
-          'resources/js/backgroundScroller.ts',
           'resources/css/app.css',
         ],
         refresh: false,
