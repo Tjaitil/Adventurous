@@ -13,6 +13,7 @@ interface Miner {
   location: string;
   mineral_ore: string | null;
   mining_finishes_at: string | null;
+  permits: number;
   workforce?: Workforce[];
 }
 
