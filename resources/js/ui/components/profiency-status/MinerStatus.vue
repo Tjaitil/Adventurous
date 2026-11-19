@@ -3,6 +3,7 @@
     <h3 class="mb-2 w-fit border-b-2 border-stone-300 pb-0.5 font-bold">
       {{ formatLocationName(status.location) }}
     </h3>
+    <p class="mb-2">{{ $t('Permits') }}: {{ status.permits }}</p>
     <template v-if="status.mineral_ore != null">
       <div v-show="!isFinished" class="flex flex-row items-center">
         <BaseItem :item="status.mineral_ore" :is-ineractive="false" />
