@@ -70,7 +70,7 @@ final class ConversationService
             }
             $newIndex = $this->newIndex .= $matchedOption->nextKey;
 
-            if (isset($matchedOption->optionValues)) {
+            if ($matchedOption->optionValues !== []) {
 
                 ConversationTracker::where('user_id', Auth::user()?->id)
                     ->update(['selected_option_values' => $matchedOption->optionValues]);

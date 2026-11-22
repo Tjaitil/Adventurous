@@ -115,6 +115,23 @@ class ConversationServiceTest extends TestCase
         $ConversationTracker = ConversationTracker::where('user_id', $this->RandomUser->id)->first();
         $this->assertEquals('foorrrrSr0', $ConversationTracker->current_index);
     }
+
+    public function test_option_without_option_values_keeps_saved_option_values(): void
+    {
+        $this->app->bind('App\Conversation\Handlers\Foo', \App\Conversation\Handlers\FooHandler::class);
+
+        ConversationTracker::where('user_id', $this->RandomUser->id)->update([
+            'current_index' => 'fooa',
+            'selected_option_values' => ['someValue' => 'foo'],
+        ]);
+
+        $conversationService = $this->app->make(ConversationService::class);
+        $conversationService->getConversation('Foo', 0, false);
+
+        $ConversationTracker = ConversationTracker::where('user_id', $this->RandomUser->id)->firstOrFail();
+        $this->assertEquals('fooar', $ConversationTracker->current_index);
+        $this->assertSame(['someValue' => 'foo'], $ConversationTracker->selected_option_values);
+    }
 }
 
 namespace App\Conversation\Handlers;
