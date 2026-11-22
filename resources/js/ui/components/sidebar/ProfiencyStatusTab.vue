@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-6 px-4">
+  <div v-if="profiencyStatuses" class="space-y-6 px-4">
     <UCard variant="soft">
       <img
         src="/images/farmer icon.png"
@@ -32,22 +32,12 @@
 </template>
 
 <script setup lang="ts">
-import type { ProficiencyStatuses } from '@/types/ProficiencyStatuses';
 import FarmerStatus from '../profiency-status/FarmerStatus.vue';
 import MinerStatus from '../profiency-status/MinerStatus.vue';
 import TraderStatus from '../profiency-status/TraderStatus.vue';
 import WarriorStatus from '../profiency-status/WarriorStatus.vue';
-import { reactive } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useProfiencyStatusStore } from '@/ui/stores/ProfiencyStatusStore';
 
-interface Props {
-  initProfiencyStatuses: ProficiencyStatuses;
-}
-
-const { initProfiencyStatuses } = defineProps<Props>();
-
-const profiencyStatuses = reactive<ProficiencyStatuses>(initProfiencyStatuses);
-
-const updateProfiencyStatuses = () => {
-  // update
-};
+const { profiencyStatuses } = storeToRefs(useProfiencyStatusStore());
 </script>

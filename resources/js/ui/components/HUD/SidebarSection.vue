@@ -31,7 +31,7 @@
           <GameLogTab :init-messages />
         </template>
         <template #countdown>
-          <ProfiencyStatusTab :init-profiency-statuses="profiencyStatuses" />
+          <ProfiencyStatusTab />
         </template>
         <template #adventure>
           <div>Adventure</div>
@@ -63,6 +63,7 @@ import type { GameLog } from '@/types/GameLog';
 import type { DiplomacyResource } from '@/types/Diplomacy';
 import type { ProficiencyStatuses } from '@/types/ProficiencyStatuses';
 import { useSkillsStore } from '@/ui/stores/SkillsStore';
+import { useProfiencyStatusStore } from '@/ui/stores/ProfiencyStatusStore';
 
 interface Props {
   username: string;
@@ -74,7 +75,7 @@ interface Props {
   diplomacyResource: DiplomacyResource;
 }
 
-const { initLevels } = defineProps<Props>();
+const { initLevels, profiencyStatuses } = defineProps<Props>();
 
 const { t } = useI18n();
 
@@ -131,6 +132,7 @@ const expanded = ref(false);
 
 const store = useSkillsStore();
 store.setUserLevelsResource(initLevels);
+useProfiencyStatusStore().setProfiencyStatuses(profiencyStatuses);
 </script>
 <style scoped>
 #sidebar-section {
