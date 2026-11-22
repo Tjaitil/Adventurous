@@ -3,6 +3,7 @@
 namespace App\Conversation\Handlers;
 
 use App\Attributes\SelectedConversationOptionValue;
+use App\Events\PermitsUpdated;
 use App\Models\Miner;
 use App\Models\MinerPermitCost;
 use App\Models\User;
@@ -73,6 +74,8 @@ final class KapysHandler extends BaseHandler
 
         $Miner->permits += $MinerPermitCost->permit_amount;
         $Miner->save();
+
+        event(new PermitsUpdated($Miner));
 
         return 'r0';
     }

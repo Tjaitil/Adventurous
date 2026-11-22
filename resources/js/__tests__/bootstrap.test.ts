@@ -1,4 +1,5 @@
 import { setupEchoListeners } from '@/bootstrap';
+import { useProfiencyStatusStore } from '@/ui/stores/ProfiencyStatusStore';
 import { useInventoryStore } from '@/ui/stores/InventoryStore';
 import { createPinia, setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
@@ -40,5 +41,25 @@ describe('setupEchoListeners tests', () => {
     listeners.InventoryUpdated({ items });
 
     expect(useInventoryStore().inventoryItems).toEqual(items);
+  });
+
+  test('PermitsUpdated sets miner permits for the location', () => {
+    const store = useProfiencyStatusStore();
+    store.setProfiencyStatuses({
+      miners: [
+        {
+          id: 1,
+          username: 'test',
+          location: 'golbak',
+          mineral_ore: null,
+          mining_finishes_at: null,
+          permits: 1,
+        },
+      ],
+    } as never);
+
+    listeners.PermitsUpdated({ location: 'golbak', permits: 51 });
+
+    expect(store.profiencyStatuses?.miners?.[0].permits).toBe(51);
   });
 });

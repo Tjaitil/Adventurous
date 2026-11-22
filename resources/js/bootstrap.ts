@@ -23,6 +23,7 @@ import { useSkillsStore } from './ui/stores/SkillsStore';
 import { useDiplomacyStore } from './ui/stores/DiplomacyStore';
 import type { DiplomacyResource } from '@/types/Diplomacy';
 import { useHungerStore } from './ui/stores/HungerStore';
+import { useProfiencyStatusStore } from './ui/stores/ProfiencyStatusStore';
 
 window.Pusher = Pusher;
 
@@ -50,5 +51,8 @@ export const setupEchoListeners = (userId: number) => {
     })
     .listen('HungerUpdated', (e: { Hunger: number }) => {
       useHungerStore().setCurrentHunger(e.Hunger);
+    })
+    .listen('PermitsUpdated', (e: { location: string; permits: number }) => {
+      useProfiencyStatusStore().setMinerPermits(e.location, e.permits);
     });
 };

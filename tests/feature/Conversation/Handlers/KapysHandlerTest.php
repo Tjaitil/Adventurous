@@ -5,9 +5,11 @@ namespace Tests\Feature\Conversation\Handlers;
 use App\Conversation\Handlers\KapysHandler;
 use App\Enums\GameLocations;
 use App\Enums\GameMaps;
+use App\Events\PermitsUpdated;
 use App\Models\Miner;
 use App\Models\MinerPermitCost;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\ConversationTestCase;
 
@@ -71,7 +73,15 @@ final class KapysHandlerTest extends ConversationTestCase
 
         $MinerPermitCost = MinerPermitCost::where('location', $location)->first();
 
+        Event::fake([PermitsUpdated::class]);
+
         $result = $this->kapysHandler->buyPermits($location, $User);
+
+        Event::assertDispatched(PermitsUpdated::class, function (PermitsUpdated $event) use ($location, $Miner, $MinerPermitCost) {
+            return $event->location === $location
+                && $event->userId === $this->RandomUser->id
+                && $event->permits === $Miner->permits + $MinerPermitCost->permit_amount;
+        });
 
         $this->assertDatabaseHas('miner', [
             'user_id' => $this->RandomUser->id,
@@ -88,7 +98,11 @@ final class KapysHandlerTest extends ConversationTestCase
         $User->player->map_location = \array_flip(GameMaps::locationMapping())[GameLocations::GOLBAK_LOCATION->value];
 
         $this->insertItemToInventory($User, 'gold', 0);
+        Event::fake([PermitsUpdated::class]);
+
         $result = $this->kapysHandler->buyPermits(GameLocations::GOLBAK_LOCATION->value, $User);
+
+        Event::assertNotDispatched(PermitsUpdated::class);
         $this->assertEquals('r1', $result);
     }
 }
