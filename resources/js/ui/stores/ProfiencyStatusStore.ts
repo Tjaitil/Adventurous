@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import type { ProficiencyStatuses } from '@/types/ProficiencyStatuses';
 
 export const useProfiencyStatusStore = defineStore('profiencyStatus', () => {
-  const profiencyStatuses = ref<ProficiencyStatuses>();
+  const profiencyStatuses = ref<ProficiencyStatuses | null>(null);
 
   const setProfiencyStatuses = (statuses: ProficiencyStatuses) => {
     profiencyStatuses.value = statuses;
