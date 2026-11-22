@@ -104,6 +104,28 @@
     "has_server_event": true,
     "server_event_results": ["r0", "r1"]
   },
+  "fooa": {
+    "index": "fooa",
+    "options": [
+      {
+        "person": "foo",
+        "text": "Option without option values",
+        "next_key": "r",
+        "id": 0
+      }
+    ]
+  },
+  "fooar": {
+    "index": "fooar",
+    "options": [
+      {
+        "person": "foo",
+        "text": "Next segment",
+        "next_key": "end",
+        "id": 0
+      }
+    ]
+  },
   "foorrrrSr0": {
     "index": "foorrrrSr0",
     "options": [
