@@ -385,4 +385,35 @@ describe('Game.setup player respawn', () => {
       'respawn',
     );
   });
+
+  test('registers exactly one death handler', () => {
+    const deathSubscriptions = vi
+      .mocked(GamePieces.player.events.on)
+      .mock.calls.filter(([event]) => event === 'death');
+
+    expect(deathSubscriptions).toHaveLength(1);
+  });
+
+  test('requests the respawn world before emitting respawn', () => {
+    getDeathHandler()();
+
+    vi.advanceTimersByTime(2000);
+
+    const setWorldOrder = vi.mocked(Game.setWorld).mock.invocationCallOrder[0];
+    const emitOrder = vi.mocked(GamePieces.player.events.emit).mock
+      .invocationCallOrder[0];
+    expect(setWorldOrder).toBeLessThan(emitOrder);
+  });
+
+  test('respawns once per death', () => {
+    const onDeath = getDeathHandler();
+
+    onDeath();
+    vi.advanceTimersByTime(2000);
+    onDeath();
+    vi.advanceTimersByTime(2000);
+
+    expect(Game.setWorld).toHaveBeenCalledTimes(2);
+    expect(GamePieces.player.events.emit).toHaveBeenCalledTimes(2);
+  });
 });
