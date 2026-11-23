@@ -3,7 +3,6 @@
     ref="listboxRootRef"
     v-model="selected"
     selection-behavior="replace"
-    :orientation="layout === 'grid' ? 'horizontal' : orientation"
     @keydown.capture="onKeydownCapture"
   >
     <RekaListboxContent :class="$attrs.class">
@@ -22,31 +21,25 @@ import { useTemplateRef } from 'vue';
 
 defineOptions({ inheritAttrs: false });
 
-interface Props {
-  /**
-   * 'list' - a single row/column of items; only the arrow-key pair matching
-   * `orientation` moves the highlight (reka-ui's native behavior).
-   * 'grid' - a multi-column grid of items; left/right step to the
-   * previous/next item, up/down jump a full `columns` to reach the same
-   * column in the row above/below.
-   */
-  layout?: 'list' | 'grid';
-  orientation?: 'vertical' | 'horizontal';
-  /** Items per row. Only used (and required to be accurate) when layout="grid". */
-  columns?: number;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  layout: 'list',
-  orientation: 'vertical',
-  columns: 1,
-});
-
 const selected = defineModel<T | null>({ default: null });
 
 const listboxRootRef = useTemplateRef('listboxRootRef');
 
-const moveGridHighlight = (rowOffset: 1 | -1) => {
+/**
+ * Only the last row of a row-major grid can be ragged, so column count is
+ * the number of leading elements sharing the first element's offsetTop.
+ * A vertical list resolves to 1, a horizontal row to its item count.
+ */
+const getColumnCount = (elements: HTMLElement[]): number => {
+  const firstRowTop = elements[0].offsetTop;
+  const columns = elements.findIndex(
+    element => element.offsetTop !== firstRowTop,
+  );
+
+  return columns === -1 ? elements.length : columns;
+};
+
+const moveHighlight = (rowOffset: number, columnOffset: number) => {
   const instance = listboxRootRef.value;
   if (!instance) return;
 
@@ -58,26 +51,33 @@ const moveGridHighlight = (rowOffset: 1 | -1) => {
     : -1;
 
   if (currentIndex === -1) {
-    instance.highlightItem(items[rowOffset === 1 ? 0 : items.length - 1].value);
+    const isForward = rowOffset + columnOffset > 0;
+    instance.highlightItem(items[isForward ? 0 : items.length - 1].value);
     return;
   }
 
-  const targetIndex = currentIndex + rowOffset * props.columns;
+  const columns = getColumnCount(items.map(item => item.ref));
+  const nextColumn = (currentIndex % columns) + columnOffset;
+  if (nextColumn < 0 || nextColumn >= columns) return;
+
+  const targetIndex = currentIndex + rowOffset * columns + columnOffset;
   if (targetIndex < 0 || targetIndex >= items.length) return;
 
   instance.highlightItem(items[targetIndex].value);
 };
 
-// In grid layout, reka-ui's underlying orientation is forced to "horizontal"
-// so left/right keep their native (±1) behavior; up/down are intercepted
-// here, before reka-ui's own keydown handler sees them, and moved by a full
-// row (`columns`) instead of by one item.
+const arrowKeyOffsets: Record<string, [row: number, column: number]> = {
+  ArrowDown: [1, 0],
+  ArrowUp: [-1, 0],
+  ArrowRight: [0, 1],
+  ArrowLeft: [0, -1],
+};
+
 const onKeydownCapture = (event: KeyboardEvent) => {
-  if (props.layout !== 'grid') return;
-  if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
+  const offsets = arrowKeyOffsets[event.key];
 
   event.preventDefault();
   event.stopPropagation();
-  moveGridHighlight(event.key === 'ArrowDown' ? 1 : -1);
+  moveHighlight(...offsets);
 };
 </script>

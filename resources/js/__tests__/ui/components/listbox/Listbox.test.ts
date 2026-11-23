@@ -3,19 +3,32 @@ import { describe, expect, test } from 'vitest';
 import { h } from 'vue';
 import ListboxRoot from '@/ui/components/listbox/ListboxRoot.vue';
 import ListboxItem from '@/ui/components/listbox/ListboxItem.vue';
+import { mockGridLayout } from '@/__tests__/mocks/gridLayout';
 
 const items = ['wheat', 'corn', 'barley'];
 
-function mountListbox(modelValue: string | null = null) {
-  return mount(ListboxRoot, {
+function mountListbox(
+  modelValue: string | null = null,
+  values: string[] = items,
+  columns = 1,
+) {
+  const wrapper = mount(ListboxRoot, {
+    attachTo: document.body,
     props: { modelValue, 'onUpdate:modelValue': () => {} },
     slots: {
       default: () =>
-        items.map(item =>
+        values.map(item =>
           h(ListboxItem, { key: item, value: item }, () => item),
         ),
     },
   });
+  mockGridLayout(
+    wrapper
+      .findAll('[role="option"]')
+      .map(option => option.element as HTMLElement),
+    columns,
+  );
+  return wrapper;
 }
 
 describe('ListboxRoot + ListboxItem', () => {
@@ -69,7 +82,7 @@ describe('ListboxRoot + ListboxItem', () => {
     expect(options[1].attributes('tabindex')).toBe('-1');
   });
 
-  test('left/right do nothing in the default "list" layout', async () => {
+  test('left/right do nothing in a single-column list', async () => {
     const wrapper = mountListbox();
 
     const listbox = wrapper.find('[role="listbox"]');
@@ -88,18 +101,11 @@ describe('ListboxRoot + ListboxItem', () => {
   });
 });
 
-describe('ListboxRoot layout="grid"', () => {
+describe('ListboxRoot in a multi-column grid', () => {
   const gridItems = ['a', 'b', 'c', 'd', 'e', 'f'];
 
-  function mountGridListbox(columns: number, modelValue: string | null = null) {
-    return mount(ListboxRoot, {
-      props: { modelValue, 'onUpdate:modelValue': () => {}, layout: 'grid', columns },
-      slots: {
-        default: () =>
-          gridItems.map(item => h(ListboxItem, { key: item, value: item }, () => item)),
-      },
-    });
-  }
+  const mountGridListbox = (columns: number) =>
+    mountListbox(null, gridItems, columns);
 
   test('ArrowRight/ArrowLeft still move by one item, same as a list', async () => {
     const wrapper = mountGridListbox(3);
