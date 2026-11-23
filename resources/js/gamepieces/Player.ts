@@ -155,11 +155,7 @@ export class Player extends MovingGameObject implements Drawable {
       canvasTextHeader.setDraw('You died!', 2);
 
       this.health = 100;
-      setTimeout(() => {
-        Game.setWorld({
-          method: 'respawn',
-        });
-      }, 2000);
+      this.events.emit('death');
     }
     gameEventBus.emit('PLAYER_HEALTH_UPDATE', {
       health: this.health,
