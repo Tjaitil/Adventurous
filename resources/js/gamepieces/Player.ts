@@ -22,8 +22,10 @@ export class Player extends MovingGameObject implements Drawable {
   speedX = 0;
   speedY = 0;
   speed = 1.5;
-  x = null;
-  y = null;
+  /** The x-coordinate of the player's spawn position on the current map. */
+  x = 0;
+  /* The y-coordinate of the player's spawn position on the current map. */
+  y = 0;
   travel = false;
   attack = false;
   xMovement = 0;
@@ -290,8 +292,8 @@ export class Player extends MovingGameObject implements Drawable {
     this.right = '';
     //drawing starts at x (diameterLeft) and y (diameterUp) line
     if (newPos) {
-      this.xpos = Game.properties.xbase + this.xMovement;
-      this.ypos = Game.properties.ybase + this.yMovement;
+      this.xpos = this.x + this.xMovement;
+      this.ypos = this.y + this.yMovement;
       // game.properties.xMapMin = this.xpos - 320;
       // game.properties.xMapMax = this.xpos + 320;
       // game.properties.yMapMin = this.ypos - 320;
