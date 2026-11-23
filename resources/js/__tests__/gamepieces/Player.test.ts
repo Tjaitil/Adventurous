@@ -18,7 +18,6 @@ vi.mock('@/clientScripts/canvasText', () => ({
 vi.mock('@/advclient', () => ({
   Game: {
     setWorld: vi.fn(),
-    properties: { duration: 0 },
   },
 }));
 
@@ -118,5 +117,59 @@ describe('Player events', () => {
     player.regenerateHealth();
 
     expect(callback).not.toHaveBeenCalled();
+  });
+});
+
+describe('Player newPos', () => {
+  let player: Player;
+
+  beforeEach(() => {
+    player = new Player();
+    player.load(100, 200, null);
+  });
+
+  test('sets position to loaded position plus movement', () => {
+    player.xMovement = 15;
+    player.yMovement = -25;
+
+    player.newPos(0);
+
+    expect(player.xpos).toBe(115);
+    expect(player.ypos).toBe(175);
+    expect(player.diameterUp).toBe(195);
+    expect(player.diameterRight).toBe(147);
+    expect(player.diameterDown).toBe(211);
+    expect(player.diameterLeft).toBe(119);
+  });
+
+  test('does not accumulate movement across calls', () => {
+    player.xMovement = 15;
+
+    player.newPos(0);
+    player.newPos(0);
+
+    expect(player.xpos).toBe(115);
+  });
+
+  test('uses the new position and resets movement after loading again', () => {
+    player.xMovement = 15;
+    player.yMovement = 15;
+    player.newPos(0);
+
+    player.load(500, 600, null);
+    player.newPos(0);
+
+    expect(player.xpos).toBe(500);
+    expect(player.ypos).toBe(600);
+  });
+
+  test('keeps position when newPos is false', () => {
+    player.xMovement = 15;
+    player.yMovement = 15;
+
+    player.newPos(0, false);
+
+    expect(player.xpos).toBe(100);
+    expect(player.ypos).toBe(200);
   });
 });
