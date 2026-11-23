@@ -49,19 +49,21 @@ import {
   useTemplateRef,
   watch,
   nextTick,
+  type Component,
 } from 'vue';
 import ArmoryPage from '../buildings/ArmoryPage.vue';
+import CropsPage from '../buildings/CropsPage.vue';
+import MinerPage from '../buildings/MinerPage.vue';
+import WorkforceLodgePage from '../buildings/WorkforceLodgePage.vue';
 import { ClientOverlayInterface } from '@/clientScripts/clientOverlayInterface';
 import { buildingDataPreloader } from '@/ui/services/buildingDataPreloader';
 import StockpilePage from '../buildings/StockpilePage.vue';
-import WorkforceLodgePage from '../buildings/WorkforceLodgePage.vue';
 
 const isOpen = ref(false);
 const loadingElement = useTemplateRef('loadingIcon');
 const externalContent = ref<HTMLElement | null>(null);
 
-// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-const internalComponent = shallowRef<typeof ArmoryPage | null>(null);
+const internalComponent = shallowRef<Component | null>(null);
 
 const currentComponent = computed({
   get() {
@@ -103,6 +105,16 @@ const unsubRenderBuilding = gameEventBus.subscribe('RENDER_BUILDING', obj => {
       case 'workforcelodge': {
         currentComponent.value = WorkforceLodgePage;
         void buildingDataPreloader.preloadWorkforceLodge();
+        break;
+      }
+      case 'crops': {
+        currentComponent.value = CropsPage;
+        void buildingDataPreloader.preloadCrops();
+        break;
+      }
+      case 'mine': {
+        currentComponent.value = MinerPage;
+        void buildingDataPreloader.preloadMine();
         break;
       }
       default: {
