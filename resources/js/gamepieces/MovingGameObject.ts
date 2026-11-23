@@ -1,6 +1,8 @@
 import { controls } from '../clientScripts/controls';
 import type { SpatialGrid, SpatialObject } from '@/engine/SpatialGrid';
 import type { GameObject } from '../types/gamepieces/GameObject';
+import type { MovingGameEvents } from '../types/gamepieces/MovingGameEvents';
+import { EventEmitter } from '@/engine/EventEmitter';
 
 export type DirectionBlockedCheck = 'blocked' | '';
 
@@ -42,6 +44,7 @@ export abstract class MovingGameObject implements Omit<GameObject, 'type'> {
   abstract movementSpeed: number;
   abstract currentAnimation: string;
   abstract animTimer: number;
+  events = new EventEmitter<MovingGameEvents>();
 
   collisionCheck(spatialGrid: SpatialGrid<SpatialObject>, debug = false) {
     this.down = '';
