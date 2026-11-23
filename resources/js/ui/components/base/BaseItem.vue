@@ -2,7 +2,7 @@
   <component
     :is="isIneractive ? 'button' : 'div'"
     :class="['item group', { 'u-focus-ring': showFocusStyle && isIneractive }]"
-    class="relative h-(--item-wrapper-size) w-(--item-wrapper-size)"
+    class="relative flex h-(--item-wrapper-size) w-(--item-wrapper-size) items-center justify-center"
     data-scoped-styled="true"
   >
     <figure
