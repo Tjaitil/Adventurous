@@ -8,7 +8,7 @@ export const canvasTextHeader = {
   transition: false,
   timer: 0,
   setDraw(text: string, timer: number) {
-    if (text.length > 0) {
+    if (text.length === 0) {
       return false;
     }
     this.text = text;
@@ -26,9 +26,9 @@ export const canvasTextHeader = {
   draw() {
     viewport.layer.text.clearRect(0, 0, viewport.width, viewport.height);
     const contentY = viewport.height * 0.15;
-    viewport.layer.text.fillStyle = 'rgba(38, 38, 38,' + this.opacity + ')';
+    viewport.layer.text.fillStyle = `rgba(38, 38, 38, ${this.opacity})`;
     viewport.layer.text.fillRect(0, contentY, viewport.width, 200);
-    viewport.layer.text.fillStyle = 'rgba(255,255,255' + this.opacity + ')';
+    viewport.layer.text.fillStyle = `rgba(255,255,255,${this.opacity})`;
     viewport.layer.text.font = '35px Times New Roman';
     viewport.layer.text.textAlign = 'center';
     viewport.layer.text.fillText(
@@ -113,7 +113,7 @@ export const loadingCanvas = {
         this.opacity += 0.02;
       }
     }
-    viewport.layer.text.fillStyle = 'rgba(0, 0, 0, ' + this.opacity + ')';
+    viewport.layer.text.fillStyle = `rgba(0, 0, 0, ${this.opacity})`;
     viewport.layer.text.clearRect(0, 0, viewport.width, viewport.height);
     viewport.layer.text.fillRect(0, 0, viewport.width, viewport.height);
     this.intervalID = window.requestAnimationFrame(() => { this.drawCurtain(); });
