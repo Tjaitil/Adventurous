@@ -234,6 +234,13 @@ export class Game {
 
       controls.setup();
 
+      GamePieces.player.events.on('death', () => {
+        setTimeout(() => {
+          Game.setWorld({ method: 'respawn' });
+          GamePieces.player.events.emit('respawn');
+        }, 2000);
+      });
+
       GamePieces.loadAssets(
         Game.properties.xbase,
         Game.properties.ybase,

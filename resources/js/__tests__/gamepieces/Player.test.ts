@@ -1,6 +1,8 @@
 import { describe, expect, beforeEach, vi, test } from 'vitest';
 import { gameEventBus } from '@/gameEventsBus';
 import { Player } from '@/gamepieces/Player';
+import { Game } from '@/advclient';
+import { canvasTextHeader } from '@/clientScripts/canvasText';
 
 vi.mock('@/clientScripts/viewport', () => ({
   default: {
@@ -171,5 +173,92 @@ describe('Player newPos', () => {
 
     expect(player.xpos).toBe(100);
     expect(player.ypos).toBe(200);
+  });
+});
+
+describe('Player death event', () => {
+  let player: Player;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.useFakeTimers();
+    player = new Player();
+    player.health = 100;
+  });
+
+  test('takeDamage emits death when health reaches 0', () => {
+    const onDeath = vi.fn();
+    player.events.on('death', onDeath);
+
+    player.takeDamage(100);
+
+    expect(onDeath).toHaveBeenCalledOnce();
+  });
+
+  test('takeDamage does not emit death when the player survives', () => {
+    const onDeath = vi.fn();
+    player.events.on('death', onDeath);
+
+    player.takeDamage(99);
+
+    expect(onDeath).not.toHaveBeenCalled();
+  });
+
+  test('takeDamage emits death once per lethal hit', () => {
+    const onDeath = vi.fn();
+    player.events.on('death', onDeath);
+
+    player.takeDamage(500);
+
+    expect(onDeath).toHaveBeenCalledOnce();
+  });
+
+  test('takeDamage does not emit death for zero or NaN damage', () => {
+    const onDeath = vi.fn();
+    player.events.on('death', onDeath);
+
+    player.takeDamage(0);
+    player.takeDamage(NaN);
+
+    expect(onDeath).not.toHaveBeenCalled();
+  });
+
+  test('death handlers see health already reset to 100', () => {
+    let healthOnDeath = -1;
+    player.events.on('death', () => {
+      healthOnDeath = player.health;
+    });
+
+    player.takeDamage(100);
+
+    expect(healthOnDeath).toBe(100);
+  });
+
+  test('takeDamage shows the death text only when the player dies', () => {
+    player.takeDamage(50);
+    expect(canvasTextHeader.setDraw).not.toHaveBeenCalled();
+
+    player.takeDamage(50);
+    expect(canvasTextHeader.setDraw).toHaveBeenCalledExactlyOnceWith(
+      'You died!',
+      2,
+    );
+  });
+
+  test('player can die again after the health reset', () => {
+    const onDeath = vi.fn();
+    player.events.on('death', onDeath);
+
+    player.takeDamage(100);
+    player.takeDamage(100);
+
+    expect(onDeath).toHaveBeenCalledTimes(2);
+  });
+
+  test('takeDamage does not request a respawn itself', () => {
+    player.takeDamage(100);
+    vi.advanceTimersByTime(5000);
+
+    expect(Game.setWorld).not.toHaveBeenCalled();
   });
 });
